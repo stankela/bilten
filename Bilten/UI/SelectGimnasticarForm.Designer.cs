@@ -41,6 +41,7 @@ namespace Bilten.UI
             this.ClientSize = new System.Drawing.Size(695, 363);
             this.Name = "SelectGimnasticarForm";
             this.Text = "SelectGimnasticarForm";
+            this.Load += new System.EventHandler(this.SelectGimnasticarForm_Load);
             this.ResumeLayout(false);
 
         }

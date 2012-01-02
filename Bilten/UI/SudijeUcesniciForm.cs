@@ -20,10 +20,9 @@ namespace Bilten.UI
         {
             this.Text = "Sudije na takmicenju";
             btnEditItem.Enabled = false;
-            InitializeGrid();
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
-            FetchModes.Add(new AssociationFetch(
-                "Drzava", AssociationFetchMode.Eager));
 
             try
             {
@@ -32,11 +31,12 @@ namespace Bilten.UI
                 dataContext.BeginTransaction();
 
                 takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                this.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
 
-                ShowFirstPage();
-                dataContext.Clear();
-                dataContext.Commit();
+                IList<SudijaUcesnik> sudije = loadAll(takmicenjeId);
+                SetItems(sudije);
+                dataGridViewUserControl1.sort<SudijaUcesnik>(
+                    new string[] { "Prezime", "Ime" },
+                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
             }
             catch (Exception ex)
             {
@@ -53,22 +53,31 @@ namespace Bilten.UI
             }
         }
 
+        private IList<SudijaUcesnik> loadAll(int takmicenjeId)
+        {
+            string query = @"from SudijaUcesnik s
+                left join fetch s.Drzava
+                where s.Takmicenje.Id = :takmicenjeId";
+            IList<SudijaUcesnik> result = dataContext.
+                ExecuteQuery<SudijaUcesnik>(QueryLanguageType.HQL, query,
+                        new string[] { "takmicenjeId" }, new object[] { takmicenjeId });
+            return result;
+        }
+
+        private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
+            GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<SudijaUcesnik>(e.DataGridViewCellMouseEventArgs);
+        }
+
         private void InitializeGridColumns()
         {
             AddColumn("Ime", "Ime", 100);
             AddColumn("Prezime", "Prezime", 100);
             AddColumn("Pol", "Pol", 100);
             AddColumn("Drzava", "Drzava", 100);
-        }
-
-        protected override int getEntityId(SudijaUcesnik entity)
-        {
-            return entity.Id;
-        }
-
-        protected override string DefaultSortingPropertyName
-        {
-            get { return "Prezime"; }
         }
 
         protected override void AddNew()
@@ -116,14 +125,14 @@ namespace Bilten.UI
                 if (okSudije.Count > 0)
                 {
                     IList<SudijaUcesnik> sudije =
-                        dgwItemList.DataSource as IList<SudijaUcesnik>;
+                         dataGridViewUserControl1.DataGridView.DataSource as IList<SudijaUcesnik>;
                     foreach (SudijaUcesnik s in okSudije)
                     {
                         sudije.Add(s);
                     }
 
                     CurrencyManager currencyManager =
-                        (CurrencyManager)this.BindingContext[dgwItemList.DataSource];
+                        (CurrencyManager)this.BindingContext[dataGridViewUserControl1.DataGridView.DataSource];
                     currencyManager.Position = sudije.Count - 1;
                     currencyManager.Refresh();
                 }

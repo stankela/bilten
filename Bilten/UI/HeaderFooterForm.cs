@@ -18,7 +18,8 @@ namespace Bilten.UI
             set { deoTakKod = value; }
         }
 
-        public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible)
+        public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible,
+            bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool brojEOcenaFormularVisible)
         {
             InitializeComponent();
             this.Text = "Opcije za stampanje";
@@ -29,6 +30,17 @@ namespace Bilten.UI
 
             panel1.Visible = brojSpravaPoStraniVisible;
             panel1.Enabled = brojSpravaPoStraniVisible;
+
+            ckbPenalSprave.Visible = prikaziPenalSpravaVisible;
+            ckbPenalSprave.Enabled = prikaziPenalSpravaVisible;
+
+            ckbStampajRedniBroj.Visible = stampajRedniBrojVisible;
+            ckbStampajRedniBroj.Enabled = stampajRedniBrojVisible;
+            if (stampajRedniBrojVisible)
+                ckbStampajRedniBroj.Location = new Point(ckbPenalSprave.Location.X, ckbStampajRedniBroj.Location.Y);
+
+            label1.Visible = brojEOcenaFormularVisible;
+            txtBrojEOcena.Visible = brojEOcenaFormularVisible;
             
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -316,6 +328,39 @@ namespace Bilten.UI
             }
         }
 
+        private int _brojEOcenaFormular;
+        public virtual int BrojEOcenaFormular
+        {
+            get { return _brojEOcenaFormular; }
+            set
+            {
+                _brojEOcenaFormular = value;
+                txtBrojEOcena.Text = value.ToString();
+            }
+        }
+
+        private bool _prikaziPenalSprave;
+        public bool PrikaziPenalSprave
+        {
+            get { return _prikaziPenalSprave; }
+            set
+            {
+                _prikaziPenalSprave = value;
+                ckbPenalSprave.Checked = value;
+            }
+        }
+
+        private bool _stampajRedniBrojNaStartListi;
+        public bool StampajRedniBrojNaStartListi
+        {
+            get { return _stampajRedniBrojNaStartListi; }
+            set
+            {
+                _stampajRedniBrojNaStartListi = value;
+                ckbStampajRedniBroj.Checked = value;
+            }
+        }
+
         private void selectFont(ComboBox cmb, string value)
         {
             List<string> fontNames = cmb.DataSource as List<string>;
@@ -346,14 +391,35 @@ namespace Bilten.UI
                 {
                     errorMsg = "Unesite broj sprava po strani.";
                 }
-                else if (!int.TryParse(txtBrojSprava.Text, out dummyInt) || dummyInt < 1 || dummyInt > 3)
+                else if (!int.TryParse(txtBrojSprava.Text, out dummyInt) || dummyInt < 1 || dummyInt > 6)
                 {
-                    errorMsg = "Broj sprava po strani moze da bude 1, 2 ili 3.";
+                    errorMsg = "Neispravna vrednost za broj sprava po strani.";
                 }
                 if (errorMsg != String.Empty)
                 {
                     MessageDialogs.showMessage(errorMsg, this.Text);
                     txtBrojSprava.Focus();
+                    this.DialogResult = DialogResult.None;
+                    return;
+                }
+            }
+
+            if (txtBrojEOcena.Enabled)
+            {
+                int dummyInt;
+                string errorMsg = String.Empty;
+                if (txtBrojEOcena.Text.Trim() == String.Empty)
+                {
+                    errorMsg = "Unesite broj E ocena.";
+                }
+                else if (!int.TryParse(txtBrojEOcena.Text, out dummyInt) || dummyInt < 0 || dummyInt > 6)
+                {
+                    errorMsg = "Neispravna vrednost za broj E ocena.";
+                }
+                if (errorMsg != String.Empty)
+                {
+                    MessageDialogs.showMessage(errorMsg, this.Text);
+                    txtBrojEOcena.Focus();
                     this.DialogResult = DialogResult.None;
                     return;
                 }
@@ -393,6 +459,9 @@ namespace Bilten.UI
             _stampajSveSprave = rbtSveSprave.Checked;
             if (_stampajSveSprave)
                 _brojSpravaPoStrani = Int32.Parse(txtBrojSprava.Text);
+            _prikaziPenalSprave = ckbPenalSprave.Checked;
+            _stampajRedniBrojNaStartListi = ckbStampajRedniBroj.Checked;
+            _brojEOcenaFormular = Int32.Parse(txtBrojEOcena.Text);
         }
 
         private string getSelectedFont(ComboBox cmb)

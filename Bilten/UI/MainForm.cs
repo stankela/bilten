@@ -55,7 +55,7 @@ namespace Bilten.UI
             MakeCaption();
 
             mnTakmicenje1RasporedSudija.Visible = false;
-            mnTakmicenje1StartListe.Visible = false;
+            mnTakmicenje1StartListe.Visible = true;
             mnOpcije.Visible = false;
         }
 
@@ -274,6 +274,7 @@ namespace Bilten.UI
                     Takmicenje t = (Takmicenje)form.Entity;
                     newTakmicenje(t);
                     loadBrojDecimalaUOpcije(t);
+                    Opcije.Instance.HeaderFooterInitialized = false;
                 }
             }
             catch (InfrastructureException ex)
@@ -328,6 +329,7 @@ namespace Bilten.UI
                 {
                     loadTakmicenje(form.Takmicenje);
                     loadBrojDecimalaUOpcije(form.Takmicenje);
+                    Opcije.Instance.HeaderFooterInitialized = false;
                 }
             }
             catch (InfrastructureException ex)
@@ -1010,6 +1012,41 @@ namespace Bilten.UI
             {
                 RezultatiEkipeForm form = new RezultatiEkipeForm(takmicenjeId.Value,
                     DeoTakmicenjaKod.Takmicenje1);
+                form.ShowDialog();
+            }
+            catch (BusinessException ex)
+            {
+                MessageDialogs.showMessage(ex.Message, strProgName);
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
+        }
+
+        private void mnTakmicenje3StartListe_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                StartListeForm form = new StartListeForm(takmicenjeId.Value,
+                    DeoTakmicenjaKod.Takmicenje3);
+                form.ShowDialog();
+            }
+            catch (BusinessException ex)
+            {
+                MessageDialogs.showMessage(ex.Message, strProgName);
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
+        }
+
+        private void zrebZaFinalePoSpravamaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ZrebForm form = new ZrebForm(takmicenjeId.Value);
                 form.ShowDialog();
             }
             catch (BusinessException ex)

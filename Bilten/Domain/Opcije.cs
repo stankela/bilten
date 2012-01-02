@@ -49,7 +49,7 @@ namespace Bilten.Domain
         protected Opcije()
         { 
             _header1Font = "Garamond";
-            _header1FontSize = 18;
+            _header1FontSize = 15;
             _header1FontBold = true;
 
             _header2Font = "Garamond";
@@ -398,6 +398,27 @@ namespace Bilten.Domain
             set { _brojSpravaPoStraniTak3 = value; }
         }
 
+        private bool _prikaziPenalSprave = false;
+        public virtual bool PrikaziPenalSprave
+        {
+            get { return _prikaziPenalSprave; }
+            set { _prikaziPenalSprave = value; }
+        }
+
+        private bool _stampajRedniBrojNaStartListi = false;
+        public virtual bool StampajRedniBrojNaStartListi
+        {
+            get { return _stampajRedniBrojNaStartListi; }
+            set { _stampajRedniBrojNaStartListi = value; }
+        }
+
+        private int _brojEOcenaFormular;
+        public virtual int BrojEOcenaFormular
+        {
+            get { return _brojEOcenaFormular; }
+            set { _brojEOcenaFormular = value; }
+        }
+
         public virtual void initHeaderFooterFromForm(HeaderFooterForm form)
         {
             Header1Text = form.Header1Text;
@@ -443,6 +464,9 @@ namespace Bilten.Domain
                 if (StampajSveSpraveTak3)
                     BrojSpravaPoStraniTak3 = form.BrojSpravaPoStrani;
             }
+            PrikaziPenalSprave = form.PrikaziPenalSprave;
+            StampajRedniBrojNaStartListi = form.StampajRedniBrojNaStartListi;
+            BrojEOcenaFormular = form.BrojEOcenaFormular;
         }
 
         public virtual void initHeaderFooterFormFromOpcije(HeaderFooterForm form)
@@ -494,6 +518,9 @@ namespace Bilten.Domain
                 else
                     form.BrojSpravaPoStrani = INITIAL_BROJ_SPRAVA_PO_STRANI_TAK3;
             }
+            form.PrikaziPenalSprave = PrikaziPenalSprave;
+            form.StampajRedniBrojNaStartListi = StampajRedniBrojNaStartListi;
+            form.BrojEOcenaFormular = BrojEOcenaFormular;
         }
 
         public virtual FontStyle getFontStyle(bool bold, bool italic)

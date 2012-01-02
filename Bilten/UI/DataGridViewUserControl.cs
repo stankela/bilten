@@ -132,9 +132,14 @@ namespace Bilten.UI
             return column;
         }
 
+        public List<T> getItems<T>()
+        {
+            return DataGridView.DataSource as List<T>;
+        }
+
         public void setItems<T>(List<T> items)
         {
-            DataGridView.DataSource = items;
+            DataGridView.DataSource = new List<T>(items);
             resort<T>();
         }
 

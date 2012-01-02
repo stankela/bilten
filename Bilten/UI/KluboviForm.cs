@@ -17,18 +17,21 @@ namespace Bilten.UI
         public KluboviForm()
         {
             this.Text = "Klubovi";
-            InitializeGrid();
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
-            FetchModes.Add(new AssociationFetch("Mesto", AssociationFetchMode.Eager));
 
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
-                ShowFirstPage();
-        
-                //dataContext.Commit();
+
+                IList<Klub> klubovi = loadAll();
+                SetItems(klubovi);
+                dataGridViewUserControl1.sort<Klub>(
+                    new string[] { "Naziv" },
+                    new ListSortDirection[] { ListSortDirection.Ascending });
             }
             catch (Exception ex)
             {
@@ -45,6 +48,24 @@ namespace Bilten.UI
             }
         }
 
+        private IList<Klub> loadAll()
+        {
+            string query = @"from Klub k
+                left join fetch k.Mesto";
+            IList<Klub> result = dataContext.
+                ExecuteQuery<Klub>(QueryLanguageType.HQL, query,
+                        new string[] { }, new object[] { });
+            return result;
+        }
+
+        private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
+            GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<Klub>(e.DataGridViewCellMouseEventArgs);
+        }
+
         private void InitializeGridColumns()
         {
             AddColumn("Naziv kluba", "Naziv", 200);
@@ -55,32 +76,6 @@ namespace Bilten.UI
         protected override EntityDetailForm createEntityDetailForm(Nullable<int> entityId)
         {
             return new KlubForm(entityId);
-        }
-
-        protected override int getEntityId(Klub entity)
-        {
-            return entity.Id;
-        }
-
-        protected override string DefaultSortingPropertyName
-        {
-            get { return "Naziv"; }
-        }
-
-        protected override void beforeSort()
-        {
-            for (int i = SortPropertyNames.Count - 1; i >= 0; i--)
-            {
-                if (SortPropertyNames[i] == "Mesto")
-                {
-                    // TODO: Obraditi situaciju (i ovde i na ostalim mestima) kada se
-                    // sortira po koloni tipa entiteta. Tada nije moguce koristiti
-                    //      SortPropertyNames[i] = "Mesto.Naziv";
-                    // jer se dobija greska.
-                    // Pokusaj da grid u tom slucaju sortiras rucno ili koristi HQL
-                    // queries.
-                }
-            }
         }
 
         protected override string deleteConfirmationMessage(Klub klub)

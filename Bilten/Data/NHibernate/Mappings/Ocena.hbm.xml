@@ -63,6 +63,16 @@
     ]]>
   </query>
 
+  <query name="FindAllOceneForGimnasticar">
+    <![CDATA[
+      select o
+      from Ocena o
+      left join fetch o.Ocena2
+      join o.Gimnasticar g
+      where g = :gim
+    ]]>
+  </query>
+
   <query name="FindVezbaneSpraveForGimnasticar">
     <![CDATA[
       select o.Sprava

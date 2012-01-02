@@ -30,7 +30,6 @@ namespace Bilten.UI
         public TakmicariKategorijeForm(int takmicenjeId)
         {
             InitializeComponent();
-            btnDelete.Enabled = false;
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -81,7 +80,7 @@ namespace Bilten.UI
         private void initUI()
         {
             Text = "Takmicari - kategorije";
-            this.ClientSize = new Size(ClientSize.Width, 500);
+            this.ClientSize = new Size(ClientSize.Width, 550);
             initTabs();
         }
 
@@ -443,9 +442,6 @@ namespace Bilten.UI
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Jos nije uradjeno.");
-            return;
-
             deleteCmd();
         }
 
@@ -470,23 +466,55 @@ namespace Bilten.UI
             if (!delete)
                 return;
 
+            List<GimnasticarUcesnik> activeGimnasticari = gimnasticari[tabControl1.SelectedIndex];
+            foreach (GimnasticarUcesnik g in selItems)
+            {
+                // TODO: Kada se brise vise takmicara, kursor u obliku pescanika se naizmenicno aktivira i deaktivira za
+                // svakog gimnasticara. Izmeni da se pescanik kursor neprekidno prikazuje.
+                if (deleteGimnasticar(g))
+                    activeGimnasticari.Remove(g);
+            }
+
+            setGimnasticari(activeGimnasticari);
+            if (!getActiveDataGridViewUserControl().isSorted())
+                getActiveDataGridViewUserControl().refreshItems();
+        }
+
+        private bool deleteGimnasticar(GimnasticarUcesnik g)
+        {
+            if (!canDeleteGimnasticar(g))
+                return false;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                List<GimnasticarUcesnik> activeGimnasticari = gimnasticari[tabControl1.SelectedIndex];
-                foreach (GimnasticarUcesnik g in selItems)
+                dataContext.Attach(g, false);
+                IList<RezultatskoTakmicenje> rezTakmicenja = loadRezTakmicenja(g);
+                foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
                 {
-                    deleteGimnasticar(g);
-                    activeGimnasticari.Remove(g);
-                }
-                dataContext.Commit();
+                    rezTak.Takmicenje1.removeGimnasticar(g);
 
-                setGimnasticari(activeGimnasticari);
-                if (!getActiveDataGridViewUserControl().isSorted())
-                    getActiveDataGridViewUserControl().refreshItems();
+                    // najpre ucitavam sprave na kojima je gimnasticar vezbao, da bih
+                    // azurirao samo te poretke. Inace bi se u metodu 
+                    // Takmicenje1.gimnasticarDeleted ucitavali svi poretci (da bi se
+                    // proverilo u kojima se gimnasticar nalazi) i zatim bi se svi 
+                    // ponovo snimali u bazu.
+                    IList sprave = loadVezbaneSpraveTak1(g);
+                    rezTak.Takmicenje1.gimnasticarDeleted(g, sprave, rezTak);
+
+                    dataContext.Save(rezTak.Takmicenje1);
+                    foreach (GimnasticarUcesnik g2 in rezTak.Takmicenje1.Gimnasticari)
+                      dataContext.Evict(g2);
+                }
+
+                dataContext.Delete(g);
+                dataContext.Commit();
+                return true;
             }
             catch (Exception ex)
             {
@@ -495,6 +523,95 @@ namespace Bilten.UI
                 MessageDialogs.showError(
                     String.Format("{0} \n\n{1}", deleteErrorMessage(), ex.Message),
                     this.Text);
+                return false;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+        }
+
+        private bool canDeleteGimnasticar(GimnasticarUcesnik g)
+        {
+            // TODO: Potrebno je brisati gimnasticara i iz ekipa, rezultatskih
+            // takmicenja, nastupa na spravi, ocena (i svih drugih mesta ako postoje). 
+            // Takodje je potrebno obavestiti korisnika sta ce sve biti brisano.            
+            // Generalno, kada zavrsis program (tj. kada model bude stabilizovan), 
+            // potrebno je jos jednom pregledati sva mesta na kojima se nesto brise
+            // i proveriti da li se brise sve sto treba da se brise
+
+            if (ucesnikTakmicenja2(g))
+            {
+                string msg = "Nije dozvoljeno brisanje takmicara koji ucestvuje u takmicenju II.";
+                MessageDialogs.showMessage(msg, this.Text);
+                return false;
+            }
+
+            if (ucesnikTakmicenja3(g))
+            {
+                string msg = "Nije dozvoljeno brisanje takmicara koji ucestvuje u takmicenju III.";
+                MessageDialogs.showMessage(msg, this.Text);
+                return false;
+            }
+
+            if (hasEkipa(g))
+            {
+                string msg = "Nije dozvoljeno brisanje takmicara koji je clan ekipe.\n Morate najpre da izbrisete " +
+                    "takmicara iz ekipe.";
+                MessageDialogs.showMessage(msg, this.Text);
+                return false;
+            }
+
+            if (hasNastup(g))
+            {
+                string msg = "Nije dozvoljeno brisanje takmicara koji je u start listi.\n Morate najpre da izbrisete " +
+                    "takmicara iz svih start listi.";
+                MessageDialogs.showMessage(msg, this.Text);
+                return false;
+            }
+
+            // TODO: Proveri i eventualne ostale klase koje imaju asocijaciju prema GimnasticarUcesniku
+            // (osim TakmicenjaI)
+
+            if (hasOcene(g))
+            {
+                string msg = "Nije dozvoljeno brisanje takmicara za koga postoje unete ocene.";
+                MessageDialogs.showMessage(msg, this.Text);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool hasEkipa(GimnasticarUcesnik g)
+        {
+            IDataContext dataContext = null;
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                string query = @"select distinct e
+                    from Ekipa e
+                    join e.Gimnasticari g
+                    where g.Id = :id";
+                IList<Ekipa> result = dataContext.
+                    ExecuteQuery<Ekipa>(QueryLanguageType.HQL, query,
+                            new string[] { "id" }, new object[] { g.Id });
+                return result.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw new InfrastructureException(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
             finally
             {
@@ -504,34 +621,141 @@ namespace Bilten.UI
             }
         }
 
-        private void deleteGimnasticar(GimnasticarUcesnik g)
-        {
-            // TODO: Potrebno je brisati gimnasticara i iz ekipa, rezultatskih
-            // takmicenja, nastupa na spravi, ocena (i svih drugih mesta ako postoje). 
-            // Takodje je potrebno obavestiti korisnika sta ce sve biti brisano.            
-            // Generalno, kada zavrsis program (tj. kada model bude stabilizovan), 
-            // potrebno je jos jednom pregledati sva mesta na kojima se nesto brise
-            // i proveriti da li se brise sve sto treba da se brise
-
-            IList<RezultatskoTakmicenje> rezTakmicenja = loadRezTakmicenja(g);
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+        private bool hasNastup(GimnasticarUcesnik g)
+        { 
+            IDataContext dataContext = null;
+            try
             {
-                rezTak.Takmicenje1.removeGimnasticar(g);
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
 
-                // najpre ucitavam sprave na kojima je gimnasticar vezbao, da bih
-                // azurirao samo te poretke. Inace bi se u metodu 
-                // Takmicenje1.gimnasticarDeleted ucitavali svi poretci (da bi se
-                // proverilo u kojima se gimnasticar nalazi) i zatim bi se svi 
-                // ponovo snimali u bazu.
-                IList sprave = loadVezbaneSpraveTak1(g);
-                rezTak.Takmicenje1.gimnasticarDeleted(g, sprave, rezTak);
-
-                dataContext.Save(rezTak.Takmicenje1);
-                foreach (GimnasticarUcesnik g2 in rezTak.Takmicenje1.Gimnasticari)
-                    dataContext.Evict(g2);
+                string query = @"select distinct n
+                    from NastupNaSpravi n
+                    where n.Gimnasticar = :gim";
+                IList<NastupNaSpravi> result = dataContext.
+                    ExecuteQuery<NastupNaSpravi>(QueryLanguageType.HQL, query,
+                            new string[] { "gim" }, new object[] { g });
+                return result.Count > 0;
             }
-            
-//            dataContext.Delete(g);
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw new InfrastructureException(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }                                  
+        }
+
+        private bool hasOcene(GimnasticarUcesnik g)
+        {
+            IDataContext dataContext = null;
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                IList<Ocena> result = dataContext.ExecuteNamedQuery<Ocena>(
+                    "FindAllOceneForGimnasticar",
+                    new string[] { "gim" },
+                    new object[] { g });
+                return result.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw new InfrastructureException(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+        }
+
+        // TODO: Nije moguce izbrisati takmicara zato sto se uvek vodi kao ucesnik takmicenja II, cak i ako ne postoji
+        // odvojeno takmicenje II, verovatno zbog greske koja postoji u tom slucaju da kada ne postoji odvojeno
+        // takmicenje II svi gimnasticari se oznace kao kvalifikovani. Ispravi ovo, tj. kada ne postoji odvojeno 
+        // takmicenje II verovatno ne bi niko trebalo da bude oznacen kao kvalifikovan.
+        // Druga mogucnost je da nije moguce brisati takmicara zato sto postoje njegovi rezultati u takmicenju II, cak i 
+        // ako ne postoji odvojeno takmicenje II.
+        // Mozda bi najbolje bilo da se ne dozvoli brisanje takmicara koji je ucesnik takmicenja II i III (zato sam gore
+        // stavio da se prvo ispituje da li je gimnasticar ucesnik takmicenja II ili III)
+
+        private bool ucesnikTakmicenja2(GimnasticarUcesnik g)
+        {
+            IDataContext dataContext = null;
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                string query = @"select count(*)
+                    from Takmicenje2 t
+                    join t.Ucesnici u
+                    where u.Gimnasticar.Id = :id";
+                IList result = dataContext.
+                    ExecuteQuery(QueryLanguageType.HQL, query,
+                            new string[] { "id" }, new object[] { g.Id });
+                return (long)result[0] > 0;
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw new InfrastructureException(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+        }
+
+        private bool ucesnikTakmicenja3(GimnasticarUcesnik g)
+        {
+            IDataContext dataContext = null;
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                string query = @"select count(*)
+                    from Takmicenje3 t
+                    join t.Ucesnici u
+                    where u.Gimnasticar.Id = :id";
+                IList result = dataContext.
+                    ExecuteQuery(QueryLanguageType.HQL, query,
+                            new string[] { "id" }, new object[] { g.Id });
+                return (long)result[0] > 0;
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw new InfrastructureException(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
         }
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(GimnasticarUcesnik g)

@@ -16,8 +16,15 @@ namespace Bilten.UI
     {
         public KategorijeGimnasticaraForm()
         {
+            // NOTE: Kada form nasledjuje drugi form koji ima genericki parametar,
+            // dizajner nece da ga prikaze. Zato sam izbacio fajl
+            // GimnasticariForm.Designer.cs (jer je nepotreban) i poziv
+            // InitializeComponent(). Ukoliko form treba da dodaje neke kontrole
+            // (osim onih koje je nasledio), to treba da se radi programski.
+
             this.Text = "Kategorije gimnasticara";
-            InitializeGrid();
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
             try
@@ -25,9 +32,12 @@ namespace Bilten.UI
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
-                ShowFirstPage();
-     
-                //dataContext.Commit();
+
+                IList<KategorijaGimnasticara> kategorije = loadAll();
+                SetItems(kategorije);
+                dataGridViewUserControl1.sort<KategorijaGimnasticara>(
+                    new string[] { "Naziv" },
+                    new ListSortDirection[] { ListSortDirection.Ascending });
             }
             catch (Exception ex)
             {
@@ -44,6 +54,23 @@ namespace Bilten.UI
             }
         }
 
+        private IList<KategorijaGimnasticara> loadAll()
+        {
+            string query = @"from KategorijaGimnasticara";
+            IList<KategorijaGimnasticara> result = dataContext.
+                ExecuteQuery<KategorijaGimnasticara>(QueryLanguageType.HQL, query,
+                        new string[] { }, new object[] { });
+            return result;
+        }
+
+        private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
+            GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<KategorijaGimnasticara>(e.DataGridViewCellMouseEventArgs);
+        }
+
         private void InitializeGridColumns()
         {
             AddColumn("Naziv kategorije", "Naziv", 100);
@@ -53,16 +80,6 @@ namespace Bilten.UI
         protected override EntityDetailForm createEntityDetailForm(Nullable<int> entityId)
         {
             return new KategorijaGimnasticaraForm(entityId);
-        }
-
-        protected override int getEntityId(KategorijaGimnasticara entity)
-        {
-            return entity.Id;
-        }
-
-        protected override string DefaultSortingPropertyName
-        {
-            get { return "Naziv"; }
         }
 
         protected override string deleteConfirmationMessage(KategorijaGimnasticara kat)

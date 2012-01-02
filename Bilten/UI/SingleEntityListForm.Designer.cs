@@ -30,8 +30,6 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.dgwItemList = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dgwItemList)).BeginInit();
             this.SuspendLayout();
             // 
             // btnNewItem
@@ -50,46 +48,20 @@ namespace Bilten.UI
             // 
             this.btnDeleteItem.Click += new System.EventHandler(this.btnDeleteItem_Click);
             // 
-            // btnRefreshList
+            // btnApplyFilter
             // 
-            this.btnRefreshList.Click += new System.EventHandler(this.btnRefreshList_Click);
-            // 
-            // btnShowFirstPage
-            // 
-            this.btnShowFirstPage.Click += new System.EventHandler(this.btnShowFirstPage_Click);
-            // 
-            // btnShowLastPage
-            // 
-            this.btnShowLastPage.Click += new System.EventHandler(this.btnShowLastPage_Click);
-            // 
-            // btnShowNextPage
-            // 
-            this.btnShowNextPage.Click += new System.EventHandler(this.btnShowNextPage_Click);
-            // 
-            // btnShowPreviousPage
-            // 
-            this.btnShowPreviousPage.Click += new System.EventHandler(this.btnShowPreviousPage_Click);
-            // 
-            // dgwItemList
-            // 
-            this.dgwItemList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgwItemList.Location = new System.Drawing.Point(0, 0);
-            this.dgwItemList.Name = "dgwItemList";
-            this.dgwItemList.TabIndex = 0;
-            this.dgwItemList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgwItemList_ColumnHeaderMouseClick);
+            this.btnApplyFilter.Click += new System.EventHandler(this.btnApplyFilter_Click);
             // 
             // SingleEntityListForm
             // 
-            this.pnlListPlaceholder.Controls.Add(dgwItemList);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.ClientSize = new System.Drawing.Size(539, 371);
             this.Name = "SingleEntityListForm";
-            ((System.ComponentModel.ISupportInitialize)(this.dgwItemList)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        
-        protected DataGridView dgwItemList;
+
     }
 }

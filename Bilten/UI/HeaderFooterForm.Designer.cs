@@ -64,10 +64,14 @@ namespace Bilten.UI
             this.btnCancel = new System.Windows.Forms.Button();
             this.ckbPrikaziDEOcene = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtBrojSprava = new System.Windows.Forms.TextBox();
+            this.lblBrojSprava = new System.Windows.Forms.Label();
             this.rbtSveSprave = new System.Windows.Forms.RadioButton();
             this.rbtSamoIzabranaSprava = new System.Windows.Forms.RadioButton();
-            this.lblBrojSprava = new System.Windows.Forms.Label();
-            this.txtBrojSprava = new System.Windows.Forms.TextBox();
+            this.ckbPenalSprave = new System.Windows.Forms.CheckBox();
+            this.ckbStampajRedniBroj = new System.Windows.Forms.CheckBox();
+            this.txtBrojEOcena = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -388,8 +392,24 @@ namespace Bilten.UI
             this.panel1.Controls.Add(this.rbtSamoIzabranaSprava);
             this.panel1.Location = new System.Drawing.Point(2, 339);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(205, 97);
+            this.panel1.Size = new System.Drawing.Size(205, 88);
             this.panel1.TabIndex = 49;
+            // 
+            // txtBrojSprava
+            // 
+            this.txtBrojSprava.Location = new System.Drawing.Point(148, 59);
+            this.txtBrojSprava.Name = "txtBrojSprava";
+            this.txtBrojSprava.Size = new System.Drawing.Size(33, 20);
+            this.txtBrojSprava.TabIndex = 55;
+            // 
+            // lblBrojSprava
+            // 
+            this.lblBrojSprava.AutoSize = true;
+            this.lblBrojSprava.Location = new System.Drawing.Point(39, 62);
+            this.lblBrojSprava.Name = "lblBrojSprava";
+            this.lblBrojSprava.Size = new System.Drawing.Size(103, 13);
+            this.lblBrojSprava.TabIndex = 54;
+            this.lblBrojSprava.Text = "Broj sprava po strani";
             // 
             // rbtSveSprave
             // 
@@ -414,21 +434,41 @@ namespace Bilten.UI
             this.rbtSamoIzabranaSprava.Text = "Stampaj samo izabranu spravu";
             this.rbtSamoIzabranaSprava.UseVisualStyleBackColor = true;
             // 
-            // lblBrojSprava
+            // ckbPenalSprave
             // 
-            this.lblBrojSprava.AutoSize = true;
-            this.lblBrojSprava.Location = new System.Drawing.Point(39, 62);
-            this.lblBrojSprava.Name = "lblBrojSprava";
-            this.lblBrojSprava.Size = new System.Drawing.Size(103, 13);
-            this.lblBrojSprava.TabIndex = 54;
-            this.lblBrojSprava.Text = "Broj sprava po strani";
+            this.ckbPenalSprave.AutoSize = true;
+            this.ckbPenalSprave.Location = new System.Drawing.Point(12, 433);
+            this.ckbPenalSprave.Name = "ckbPenalSprave";
+            this.ckbPenalSprave.Size = new System.Drawing.Size(115, 17);
+            this.ckbPenalSprave.TabIndex = 50;
+            this.ckbPenalSprave.Text = "Prikazi penalizaciju";
+            this.ckbPenalSprave.UseVisualStyleBackColor = true;
             // 
-            // txtBrojSprava
+            // ckbStampajRedniBroj
             // 
-            this.txtBrojSprava.Location = new System.Drawing.Point(148, 59);
-            this.txtBrojSprava.Name = "txtBrojSprava";
-            this.txtBrojSprava.Size = new System.Drawing.Size(33, 20);
-            this.txtBrojSprava.TabIndex = 55;
+            this.ckbStampajRedniBroj.AutoSize = true;
+            this.ckbStampajRedniBroj.Location = new System.Drawing.Point(150, 433);
+            this.ckbStampajRedniBroj.Name = "ckbStampajRedniBroj";
+            this.ckbStampajRedniBroj.Size = new System.Drawing.Size(110, 17);
+            this.ckbStampajRedniBroj.TabIndex = 51;
+            this.ckbStampajRedniBroj.Text = "Stampaj redni broj";
+            this.ckbStampajRedniBroj.UseVisualStyleBackColor = true;
+            // 
+            // txtBrojEOcena
+            // 
+            this.txtBrojEOcena.Location = new System.Drawing.Point(98, 471);
+            this.txtBrojEOcena.Name = "txtBrojEOcena";
+            this.txtBrojEOcena.Size = new System.Drawing.Size(46, 20);
+            this.txtBrojEOcena.TabIndex = 52;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 474);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.TabIndex = 53;
+            this.label1.Text = "Broj E ocena";
             // 
             // HeaderFooterForm
             // 
@@ -436,7 +476,11 @@ namespace Bilten.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(695, 443);
+            this.ClientSize = new System.Drawing.Size(695, 508);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtBrojEOcena);
+            this.Controls.Add(this.ckbStampajRedniBroj);
+            this.Controls.Add(this.ckbPenalSprave);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.ckbPrikaziDEOcene);
             this.Controls.Add(this.btnCancel);
@@ -530,5 +574,9 @@ namespace Bilten.UI
         private System.Windows.Forms.RadioButton rbtSamoIzabranaSprava;
         private System.Windows.Forms.TextBox txtBrojSprava;
         private System.Windows.Forms.Label lblBrojSprava;
+        private System.Windows.Forms.CheckBox ckbPenalSprave;
+        private System.Windows.Forms.CheckBox ckbStampajRedniBroj;
+        private System.Windows.Forms.TextBox txtBrojEOcena;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -258,6 +258,8 @@ namespace Bilten.UI
                 btnOk.Visible = true;
                 btnCancel.Enabled = true;
                 btnCancel.Visible = true;
+                btnClose.Enabled = false;
+                btnClose.Visible = false;
             }
             else
             {
@@ -265,6 +267,9 @@ namespace Bilten.UI
                 btnOk.Visible = false;
                 btnCancel.Enabled = false;
                 btnCancel.Visible = false;
+                btnClose.Enabled = true;
+                btnClose.Visible = true;
+                btnClose.Location = new Point(btnOk.Location.X + 10, btnClose.Location.Y);
             }
         }
 
@@ -343,27 +348,26 @@ namespace Bilten.UI
         {
             spravaGridUserControl1.init(sprava);
 
-            bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
+            GridColumnsInitializer.initRezultatiSprava(
+                spravaGridUserControl1.DataGridViewUserControl,
+                takmicenje, kvalColumnVisible(), obaPreskoka);
+        }
+
+        private bool kvalColumnVisible()
+        {
+            bool result = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                 && ActiveTakmicenje.Propozicije.PostojiTak3
                 && ActiveTakmicenje.Propozicije.OdvojenoTak3;
             if (ActiveSprava == Sprava.Preskok)
             {
                 if (!obaPreskoka)
-                    kvalColumn = kvalColumn
+                    result = result
                         && !ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
                 else
-                    kvalColumn = kvalColumn
+                    result = result
                         && ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
             }
-
-            // TODO2: Nece da brise takmicenje i ekipe (ovo verovatno ima veze sa time
-            // sto sam promenio da ekipno takmicenje moze da vazi za sve kategorije)
-
-            // 
-
-            GridColumnsInitializer.initRezultatiSprava(
-                spravaGridUserControl1.DataGridViewUserControl,
-                takmicenje, kvalColumn, obaPreskoka);
+            return result;
         }
 
         private int getRezultatiKey(RezultatskoTakmicenje tak, Sprava sprava)
@@ -463,11 +467,10 @@ namespace Bilten.UI
                 nazivIzvestaja = "Finale po spravama";
             }
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, true, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                Opcije.Instance.HeaderFooterInitialized = true;
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -487,30 +490,23 @@ namespace Bilten.UI
             if (form.ShowDialog() != DialogResult.OK)
                 return;
             Opcije.Instance.initHeaderFooterFromForm(form);
-            
+            Opcije.Instance.HeaderFooterInitialized = true;
+    
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             try
             {
                 PreviewDialog p = new PreviewDialog();
 
-
-                bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                    && ActiveTakmicenje.Propozicije.PostojiTak3
-                    && ActiveTakmicenje.Propozicije.OdvojenoTak3;
-                if (ActiveSprava == Sprava.Preskok)
-                {
-                    if (!obaPreskoka)
-                        kvalColumn = kvalColumn
-                            && !ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-                    else
-                        kvalColumn = kvalColumn
-                            && ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-                }
+                bool kvalColumn;
 
                 string documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava);
                 if (form.StampajSveSprave)
                 {
+                    kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                      && ActiveTakmicenje.Propozicije.PostojiTak3
+                      && ActiveTakmicenje.Propozicije.OdvojenoTak3;
+
                     bool obaPresk = ActiveTakmicenje.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
 
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
@@ -551,10 +547,12 @@ namespace Bilten.UI
                         }
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
-                        obaPresk, ActiveTakmicenje.Gimnastika, kvalColumn, documentName, form.BrojSpravaPoStrani));
+                        obaPresk, ActiveTakmicenje.Gimnastika, kvalColumn, documentName, form.BrojSpravaPoStrani,
+                        form.PrikaziPenalSprave));
                 }
                 else
                 {
+                    kvalColumn = kvalColumnVisible();
                     if (ActiveSprava != Sprava.Preskok)
                     {
                         List<RezultatSprava> rezultati =
@@ -566,7 +564,7 @@ namespace Bilten.UI
                             ListSortDirection.Ascending));
 
                         p.setIzvestaj(new SpravaIzvestaj(ActiveSprava, rezultati,
-                            kvalColumn, documentName));
+                            kvalColumn, documentName, form.PrikaziPenalSprave));
 
                     }
                     else if (!obaPreskoka)
@@ -579,7 +577,7 @@ namespace Bilten.UI
                             ListSortDirection.Ascending));
 
                         p.setIzvestaj(new SpravaIzvestaj(false, rezultati,
-                            kvalColumn, documentName));
+                            kvalColumn, documentName, form.PrikaziPenalSprave));
                     }
                     else
                     {
@@ -590,17 +588,11 @@ namespace Bilten.UI
                             ListSortDirection.Ascending));
 
                         p.setIzvestaj(new SpravaIzvestaj(true, rezultati,
-                            kvalColumn, documentName));
+                            kvalColumn, documentName, form.PrikaziPenalSprave));
                     }
                 }
 
                 p.ShowDialog();
-
-                // TODO2: Ispravi sledecu gresku: za DKMT se takmicenje III racuna na
-                // osnovu takmicenja I, a za Memorijal postoji posebno takmicenje III.
-                // Kada neki takmicar nastupa u takmicenju III u Memorijalu, onda mu
-                // se ocena upisuje i u takmicenje III za DKMT kup, tako da u
-                // rezultatima za takmicenje III za DKMT kup stoji pogresna ocena
 
                 // TODO2: U izvestajima za spravu treba da bude i penalizacija, a
                 // slika sprave treba da bude iznad izvestaja. Naziv kolone total
@@ -616,14 +608,6 @@ namespace Bilten.UI
                 // TODO2: Proveri zasto u PropozicijeForm ne prikazuje takmicenja
                 // po onom redosledu kojim su zadata.
 
-                // TODO2: Na osnovu startnih lista (sa turnusima i rotacijama) stampaj
-                // liste za sudije na kojima ce se nalaziti redni broj,
-                // ime gimnastica, klub, kategorija, godiste, D ocena, E ocena, 
-                // (eventualno i ocene E1, E2, ...) i Total. Ovo uradi i za
-                // kvalifikacije i za finale (za finale treba da se zadaju pravila
-                // na koji nacin se od plasmana u kvalifikacijma odredjuju startne
-                // liste za finale)
-
                 // TODO2: U izvestajima uvedi opciju da grupa koja ne moze da stane
                 // cela na jednu stranu pocinje na vrhu sledece strane
 
@@ -637,6 +621,11 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
     }

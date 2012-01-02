@@ -1143,18 +1143,27 @@ namespace Bilten.UI
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                 {
-                    rezTak.Takmicenje2.ocenaAdded(o, rezTak);
-                    dataContext.Save(rezTak.Takmicenje2);
+                    if (rezTak.Propozicije.OdvojenoTak2)
+                    {
+                        rezTak.Takmicenje2.ocenaAdded(o, rezTak);
+                        dataContext.Save(rezTak.Takmicenje2);
+                    }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
                 {
-                    rezTak.Takmicenje3.ocenaAdded(o, rezTak);
-                    dataContext.Save(rezTak.Takmicenje3);
+                    if (rezTak.Propozicije.OdvojenoTak3)
+                    {
+                        rezTak.Takmicenje3.ocenaAdded(o, rezTak);
+                        dataContext.Save(rezTak.Takmicenje3);
+                    }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
                 {
-                    rezTak.Takmicenje4.ocenaAdded(o, rezTak);
-                    dataContext.Save(rezTak.Takmicenje4);
+                    if (rezTak.Propozicije.OdvojenoTak4)
+                    {
+                        rezTak.Takmicenje4.ocenaAdded(o, rezTak);
+                        dataContext.Save(rezTak.Takmicenje4);
+                    }
                 }
             }
 
@@ -1211,18 +1220,27 @@ namespace Bilten.UI
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                 {
-                    rezTak.Takmicenje2.ocenaEdited(o, original, rezTak);
-                    dataContext.Save(rezTak.Takmicenje2);
+                    if (rezTak.Propozicije.OdvojenoTak2)
+                    {
+                        rezTak.Takmicenje2.ocenaEdited(o, original, rezTak);
+                        dataContext.Save(rezTak.Takmicenje2);
+                    }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
                 {
-                    rezTak.Takmicenje3.ocenaEdited(o, rezTak);
-                    dataContext.Save(rezTak.Takmicenje3);
+                    if (rezTak.Propozicije.OdvojenoTak3)
+                    {
+                        rezTak.Takmicenje3.ocenaEdited(o, rezTak);
+                        dataContext.Save(rezTak.Takmicenje3);
+                    }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
                 {
-                    rezTak.Takmicenje4.ocenaEdited(o, original, rezTak);
-                    dataContext.Save(rezTak.Takmicenje4);
+                    if (rezTak.Propozicije.OdvojenoTak4)
+                    {
+                        rezTak.Takmicenje4.ocenaEdited(o, original, rezTak);
+                        dataContext.Save(rezTak.Takmicenje4);
+                    }
                 }
             }
 

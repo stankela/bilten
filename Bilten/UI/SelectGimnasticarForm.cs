@@ -133,6 +133,7 @@ namespace Bilten.UI
                 setEntities(gimnasticari);
                 if (gimnasticari.Count == 0)
                     MessageDialogs.showMessage(failureMsg, this.Text);
+                dataGridViewUserControl1.clearSelection();
             }
             catch (Exception ex)
             {
@@ -196,6 +197,11 @@ namespace Bilten.UI
         protected override FilterForm createFilterForm()
         {
             return new FilterGimnasticarForm(gimnastika);
+        }
+
+        private void SelectGimnasticarForm_Load(object sender, EventArgs e)
+        {
+            dataGridViewUserControl1.clearSelection();
         }
     }
 }

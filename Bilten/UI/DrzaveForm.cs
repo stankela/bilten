@@ -17,7 +17,8 @@ namespace Bilten.UI
         public DrzaveForm()
         {
             this.Text = "Drzave";
-            InitializeGrid();
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
             try
@@ -25,9 +26,12 @@ namespace Bilten.UI
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
-                // TODO: Ne zaboravi da izbacis ovo ShowFirstPage, i prikazes sve
-                // objekte
-                ShowFirstPage();
+
+                IList<Drzava> drzave = loadAll();
+                SetItems(drzave);
+                dataGridViewUserControl1.sort<Drzava>(
+                    new string[] { "Naziv" },
+                    new ListSortDirection[] { ListSortDirection.Ascending });
 
                 // NOTE: Iako pozivam Commit a ne pozivam Clear, ne generise se
                 // UPDATE za svaku drzavu (isto vazi i za form koji prikazuje
@@ -52,6 +56,23 @@ namespace Bilten.UI
             }
         }
 
+        private IList<Drzava> loadAll()
+        {
+            string query = @"from Drzava";
+            IList<Drzava> result = dataContext.
+                ExecuteQuery<Drzava>(QueryLanguageType.HQL, query,
+                        new string[] { }, new object[] { });
+            return result;
+        }
+
+        private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
+            GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<Drzava>(e.DataGridViewCellMouseEventArgs);
+        }
+
         private void InitializeGridColumns()
         {
             AddColumn("Naziv drzave", "Naziv", 100);
@@ -61,16 +82,6 @@ namespace Bilten.UI
         protected override EntityDetailForm createEntityDetailForm(Nullable<int> entityId)
         {
             return new DrzavaForm(entityId);
-        }
-
-        protected override int getEntityId(Drzava entity)
-        {
-            return entity.Id;
-        }
-
-        protected override string DefaultSortingPropertyName
-        {
-            get { return "Naziv"; }
         }
 
         protected override string deleteConfirmationMessage(Drzava drzava)

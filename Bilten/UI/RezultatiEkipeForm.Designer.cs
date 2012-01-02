@@ -96,6 +96,7 @@ namespace Bilten.UI
             this.Controls.Add(this.dataGridViewUserControl1);
             this.Controls.Add(this.cmbTakmicenje);
             this.Name = "RezultatiEkipeForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RezultatiEkipeForm";
             this.Shown += new System.EventHandler(this.RezultatiEkipeForm_Shown);
             this.ResumeLayout(false);

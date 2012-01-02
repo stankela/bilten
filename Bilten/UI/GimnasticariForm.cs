@@ -16,31 +16,30 @@ namespace Bilten.UI
     {
         public GimnasticariForm()
         {
-            // NOTE: Kada form nasledjuje drugi form koji ima genericki parametar,
-            // dizajner nece da ga prikaze. Zato sam izbacio fajl
-            // GimnasticariForm.Designer.cs (jer je nepotreban) i poziv
-            // InitializeComponent(). Ukoliko form treba da dodaje neke kontrole
-            // (osim onih koje je nasledio), to treba da se radi programski.
-            
             this.Text = "Gimnasticari";
-            InitializeGrid();
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
+
+            // potrebno za filtriranje
             FetchModes.Add(new AssociationFetch(
-                "Kategorija", AssociationFetchMode.Eager));
+               "Kategorija", AssociationFetchMode.Eager));
             FetchModes.Add(new AssociationFetch(
                 "Klub", AssociationFetchMode.Eager));
             FetchModes.Add(new AssociationFetch(
-                "Drzava", AssociationFetchMode.Eager));
-
+                "Drzava", AssociationFetchMode.Eager)); 
+            
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                ShowFirstPage();
-
-        //        dataContext.Commit();
+                IList<Gimnasticar> gimnasticari = loadAll();
+                SetItems(gimnasticari);
+                dataGridViewUserControl1.sort<Gimnasticar>(
+                    new string[] { "Prezime", "Ime" },
+                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
             }
             catch (Exception ex)
             {
@@ -55,6 +54,26 @@ namespace Bilten.UI
                     dataContext.Dispose();
                 dataContext = null;
             }
+        }
+
+        private IList<Gimnasticar> loadAll()
+        {
+            string query = @"from Gimnasticar g
+                left join fetch g.Kategorija
+                left join fetch g.Klub
+                left join fetch g.Drzava";
+            IList<Gimnasticar> result = dataContext.
+                ExecuteQuery<Gimnasticar>(QueryLanguageType.HQL, query,
+                        new string[] { }, new object[] { });
+            return result;
+        }
+
+        private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
+            GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<Gimnasticar>(e.DataGridViewCellMouseEventArgs);
         }
 
         private void InitializeGridColumns()
@@ -75,40 +94,6 @@ namespace Bilten.UI
             return new GimnasticarForm(entityId);
         }
 
-        protected override int getEntityId(Gimnasticar entity)
-        {
-            return entity.Id;
-        }
-
-        protected override string DefaultSortingPropertyName
-        {
-            get { return "Prezime"; }
-        }
-
-        protected override void beforeSort()
-        {
-            // bitno je da brojac ide u nazad zato sto se umece u listu
-            for (int i = SortPropertyNames.Count - 1; i >= 0; i--)
-            {
-                if (SortPropertyNames[i] == "DatumRodjenja")
-                {
-                    SortPropertyNames[i] = "DatumRodjenja.Dan";
-                    SortPropertyNames.Insert(i, "DatumRodjenja.Mesec");
-                    SortPropertyNames.Insert(i, "DatumRodjenja.Godina");
-                }
-                if (SortPropertyNames[i] == "RegistarskiBroj")
-                {
-                    SortPropertyNames[i] = "RegistarskiBroj.Broj";
-                }
-                if (SortPropertyNames[i] == "DatumPoslednjeRegistracije")
-                {
-                    SortPropertyNames[i] = "DatumPoslednjeRegistracije.Dan";
-                    SortPropertyNames.Insert(i, "DatumPoslednjeRegistracije.Mesec");
-                    SortPropertyNames.Insert(i, "DatumPoslednjeRegistracije.Godina");
-                }
-            }
-        }
-
         protected override string deleteConfirmationMessage(Gimnasticar gimnasticar)
         {
             return String.Format("Da li zelite da izbrisete gimnasticara \"{0}\"?", gimnasticar);
@@ -119,5 +104,131 @@ namespace Bilten.UI
             return "Neuspesno brisanje gimnasticara.";
         }
 
+        protected override void onApplyFilter()
+        {
+            if (filterForm == null || filterForm.IsDisposed)
+            {
+                // NOTE: IsDisposed je true kada se form zatvori (bilo pritiskom na X
+                // ili pozivom Close)
+
+                try
+                {
+                    filterForm = new FilterGimnasticarForm(null); // can throw
+                    filterForm.Filter += new EventHandler(filterForm_Filter);
+                    filterForm.Show();
+                }
+                catch (InfrastructureException ex)
+                {
+                    MessageDialogs.showError(ex.Message, this.Text);
+                }
+            }
+            else
+            {
+                filterForm.Activate();
+            }
+        }
+
+        private void filterForm_Filter(object sender, EventArgs e)
+        {
+            object filterObject = filterForm.FilterObject;
+            if (filterObject != null)
+                filter(filterObject);
+        }
+
+        private void filter(object filterObject)
+        {
+            GimnasticarFilter flt = filterObject as GimnasticarFilter;
+            if (flt == null)
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+
+                // biranje gimnasticara sa prethodnog takmicenja
+                //Takmicenje takmicenje = dataContext.GetById<Takmicenje>(5);
+                //gimnasticari = dataContext.ExecuteNamedQuery<Gimnasticar>(
+                //    "FindGimnasticariByTakmicenje",
+                //    new string[] { "takmicenje" }, new object[] { takmicenje });
+
+                IList<Gimnasticar> gimnasticari;
+                string failureMsg = "";
+                if (flt.RegBroj != null)
+                {
+                    gimnasticari = findGimnasticari(flt.RegBroj);
+                    if (gimnasticari.Count == 0)
+                        failureMsg = "Ne postoji gimnasticar sa datim registarskim brojem.";
+                }
+                else
+                {
+                    gimnasticari = findGimnasticari(flt.Ime, flt.Prezime,
+                        flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija,
+                        flt.Klub);
+                    if (gimnasticari.Count == 0)
+                        failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
+                }
+                SetItems(gimnasticari);
+                if (gimnasticari.Count == 0)
+                    MessageDialogs.showMessage(failureMsg, this.Text);
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+        }
+
+        private IList<Gimnasticar> findGimnasticari(RegistarskiBroj regBroj)
+        {
+            Query q = new Query();
+            q.Criteria.Add(new Criterion("RegistarskiBroj", CriteriaOperator.Equal, regBroj));
+            foreach (AssociationFetch f in this.FetchModes)
+            {
+                q.FetchModes.Add(f);
+            }
+            return dataContext.GetByCriteria<Gimnasticar>(q);
+        }
+
+        private IList<Gimnasticar> findGimnasticari(string ime, string prezime,
+            Nullable<int> godRodj, Nullable<Gimnastika> gimnastika, Drzava drzava,
+            KategorijaGimnasticara kategorija, Klub klub)
+        {
+            Query q = new Query();
+            if (!String.IsNullOrEmpty(ime))
+                q.Criteria.Add(new Criterion("Ime", CriteriaOperator.Like, ime, StringMatchMode.Start, true));
+            if (!String.IsNullOrEmpty(prezime))
+                q.Criteria.Add(new Criterion("Prezime", CriteriaOperator.Like, prezime, StringMatchMode.Start, true));
+            if (godRodj != null)
+            {
+                q.Criteria.Add(new Criterion("DatumRodjenja.Godina",
+                    CriteriaOperator.Equal, (short)godRodj.Value));
+            }
+            if (gimnastika != null)
+                q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)gimnastika.Value));
+            if (drzava != null)
+                q.Criteria.Add(new Criterion("Drzava", CriteriaOperator.Equal, drzava));
+            if (kategorija != null)
+                q.Criteria.Add(new Criterion("Kategorija", CriteriaOperator.Equal, kategorija));
+            if (klub != null)
+                q.Criteria.Add(new Criterion("Klub", CriteriaOperator.Equal, klub));
+
+            q.Operator = QueryOperator.And;
+            q.OrderClauses.Add(new OrderClause("Prezime", OrderClause.OrderClauseCriteria.Ascending));
+            q.OrderClauses.Add(new OrderClause("Ime", OrderClause.OrderClauseCriteria.Ascending));
+            foreach (AssociationFetch f in this.FetchModes)
+            {
+                q.FetchModes.Add(f);
+            }
+            return dataContext.GetByCriteria<Gimnasticar>(q);
+        }
     }
 }

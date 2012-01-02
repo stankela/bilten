@@ -48,7 +48,7 @@ namespace Bilten.UI
             this.tabControl1.Location = new System.Drawing.Point(12, 54);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(671, 303);
+            this.tabControl1.Size = new System.Drawing.Size(882, 364);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -58,7 +58,7 @@ namespace Bilten.UI
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(663, 277);
+            this.tabPage1.Size = new System.Drawing.Size(874, 338);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -70,7 +70,7 @@ namespace Bilten.UI
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.takmicariKategorijeUserControl1.Location = new System.Drawing.Point(15, 16);
             this.takmicariKategorijeUserControl1.Name = "takmicariKategorijeUserControl1";
-            this.takmicariKategorijeUserControl1.Size = new System.Drawing.Size(629, 250);
+            this.takmicariKategorijeUserControl1.Size = new System.Drawing.Size(840, 311);
             this.takmicariKategorijeUserControl1.TabIndex = 0;
             // 
             // btnAdd
@@ -117,13 +117,14 @@ namespace Bilten.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(695, 369);
+            this.ClientSize = new System.Drawing.Size(906, 430);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.tabControl1);
             this.Name = "TakmicariKategorijeForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TakmicariKategorijeForm";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

@@ -126,7 +126,7 @@ namespace Bilten.UI
         }
 
         public static void initRezultatiUkupno(DataGridViewUserControl dgw, 
-            Takmicenje takmicenje, DeoTakmicenjaKod deoTakKod)
+            Takmicenje takmicenje, bool kvalColumn)
         {
             dgw.DataGridView.Columns.Clear();
 
@@ -156,7 +156,7 @@ namespace Bilten.UI
             }
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            if (kvalColumn)
                 dgw.AddColumn("", "KvalStatus", 30);
         }
 
@@ -226,7 +226,7 @@ namespace Bilten.UI
             dgw.AddColumn("Kval. rank", "QualRank", 40);
         }
 
-        public static void initRezultatiEkipno(DataGridViewUserControl dgw, Takmicenje takmicenje, DeoTakmicenjaKod deoTakKod)
+        public static void initRezultatiEkipno(DataGridViewUserControl dgw, Takmicenje takmicenje, bool kvalColumn)
         {
             dgw.DataGridView.Columns.Clear();
 
@@ -254,7 +254,7 @@ namespace Bilten.UI
             }
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
 
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            if (kvalColumn)
                 dgw.AddColumn("", "KvalStatus", 30);
         }
 

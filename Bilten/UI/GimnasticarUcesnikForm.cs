@@ -18,6 +18,10 @@ namespace Bilten.UI
         private TakmicarskaKategorija kategorija;
         private IList<RezultatskoTakmicenje> rezTakmicenja;
 
+        // TODO: Dodaj mogucnost promene kategorije (samo bi se promenila kategorija dok bi sve drugo ostalo
+        // isto - gimnasticar bi i dalje bio u istim takmicenjima, ekipama, imao bi iste ocene. Prvo proveri da
+        // li je ovo uopste moguce, tj. da li nece da dovede do greske u nekom drugom delu programa).
+
         public GimnasticarUcesnikForm(Nullable<int> gimnasticarUcesnikId,
             TakmicarskaKategorija kategorija)
         {

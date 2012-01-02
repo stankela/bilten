@@ -15,11 +15,6 @@ namespace Bilten.UI
             InitializeComponent();
         }
 
-        public virtual void PrepareItemSelection()
-        {
-            
-        }
-
         public virtual object Selection
         {
             get { throw new NotSupportedException(); }

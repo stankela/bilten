@@ -84,7 +84,8 @@ create table takmicenja (
     broj_decimala_e tinyint,
     broj_decimala_pen tinyint,
     broj_decimala_total tinyint,
-	zavrseno_tak1 bit
+	zavrseno_tak1 bit,
+	zreb_za_finale_tak3 nvarchar(128)
 );
 
 create table takmicarske_kategorije (
@@ -384,6 +385,7 @@ create table ucesnici_tak4 (
 	qual_order smallint,
 	qual_score real,
 	qual_rank smallint,
+	kval_status tinyint,
 	ekipa_id int references ekipe(ekipa_id),
 	takmicenje4_id int references takmicenje4(takmicenje4_id)
 );

@@ -31,19 +31,19 @@ namespace Bilten.UI
             this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
             this.SuspendLayout();
             // 
-            // rasporedSudijaNaSpraviUserControl1
+            // spravaGridUserControl1
             // 
             this.spravaGridUserControl1.Location = new System.Drawing.Point(0, 0);
-            this.spravaGridUserControl1.Name = "rasporedSudijaNaSpraviUserControl1";
-            this.spravaGridUserControl1.Size = new System.Drawing.Size(396, 275);
+            this.spravaGridUserControl1.Name = "spravaGridUserControl1";
+            this.spravaGridUserControl1.Size = new System.Drawing.Size(501, 275);
             this.spravaGridUserControl1.TabIndex = 0;
             // 
-            // RasporedSudijaUserControl
+            // SpravaGridGroupUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.spravaGridUserControl1);
-            this.Name = "RasporedSudijaUserControl";
+            this.Name = "SpravaGridGroupUserControl";
             this.Size = new System.Drawing.Size(606, 371);
             this.ResumeLayout(false);
 

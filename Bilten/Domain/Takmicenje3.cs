@@ -221,5 +221,71 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual UcesnikTakmicenja3 addKvalifikant(GimnasticarUcesnik gimnasticar, Sprava sprava,
+            Nullable<float> qualScore, Nullable<short> qualRank)
+        {
+            if (getUcesnikKvalifikant(gimnasticar, sprava) != null)
+                return null;
+
+            short qualOrder = (short)(getUcesniciKvalifikanti(sprava).Count + 1);
+            UcesnikTakmicenja3 u = new UcesnikTakmicenja3(gimnasticar, sprava,
+                        qualOrder, qualScore, qualRank, KvalifikacioniStatus.Q);
+            Ucesnici.Add(u);
+            return u;
+        }
+
+        public virtual void removeKvalifikant(GimnasticarUcesnik gimnasticar, Sprava sprava)
+        {
+            UcesnikTakmicenja3 kvalifikant = getUcesnikKvalifikant(gimnasticar, sprava);
+            if (kvalifikant != null)
+            {
+                foreach (UcesnikTakmicenja3 u in getUcesniciKvalifikanti(sprava))
+                {
+                    if (u.QualOrder > kvalifikant.QualOrder)
+                        u.QualOrder--;
+                }
+                Ucesnici.Remove(kvalifikant);
+            }
+        }
+
+        public virtual bool moveKvalifikantUp(UcesnikTakmicenja3 u, Sprava sprava)
+        {
+            if (getUcesnikKvalifikant(u.Gimnasticar, sprava) == null)
+                return false;
+            if (u.QualOrder == 1)
+                return false;
+
+            foreach (UcesnikTakmicenja3 u2 in getUcesniciKvalifikanti(sprava))
+            {
+                if (u2.QualOrder == u.QualOrder - 1)
+                {
+                    u2.QualOrder++;
+                    break;
+                }
+            }
+            u.QualOrder--;
+            return true;
+        }
+
+        public virtual bool moveKvalifikantDown(UcesnikTakmicenja3 u, Sprava sprava)
+        {
+            if (getUcesnikKvalifikant(u.Gimnasticar, sprava) == null)
+                return false;
+
+            IList<UcesnikTakmicenja3> kvalifikanti = getUcesniciKvalifikanti(sprava);
+            if (u.QualOrder == kvalifikanti.Count)
+                return false;
+
+            foreach (UcesnikTakmicenja3 u2 in kvalifikanti)
+            {
+                if (u2.QualOrder == u.QualOrder + 1)
+                {
+                    u2.QualOrder--;
+                    break;
+                }
+            }
+            u.QualOrder++;
+            return true;
+        }
     }
 }

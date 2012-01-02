@@ -101,6 +101,13 @@ namespace Bilten.Domain
             set { zavrsenoTak1 = value; }
         }
 
+        private string zrebZaFinalePoSpravama;
+        public virtual string ZrebZaFinalePoSpravama
+        {
+            get { return zrebZaFinalePoSpravama; }
+            set { zrebZaFinalePoSpravama = value; }
+        }
+
         private ISet<RezultatskoTakmicenjeDescription> takmicenjeDescriptions = 
             new HashedSet<RezultatskoTakmicenjeDescription>();
         public virtual ISet<RezultatskoTakmicenjeDescription> TakmicenjeDescriptions

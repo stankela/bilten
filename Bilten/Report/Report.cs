@@ -219,7 +219,13 @@ namespace Bilten.Report
 	{
         protected List<ReportColumn> columns = new List<ReportColumn>();
 		protected Izvestaj izvestaj;
-		private int firstPageNum;
+		
+        private int firstPageNum;
+        public int FirstPageNum
+        {
+            get { return firstPageNum; }
+            set { firstPageNum = value; }
+        }
 
 		private float startY;
 		public float StartY

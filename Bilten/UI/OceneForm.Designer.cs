@@ -118,6 +118,7 @@ namespace Bilten.UI
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnAdd);
             this.Name = "OceneForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OceneForm";
             this.ResumeLayout(false);
 

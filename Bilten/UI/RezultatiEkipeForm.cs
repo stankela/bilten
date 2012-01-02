@@ -57,6 +57,7 @@ namespace Bilten.UI
                 rezultatiUkupno = createRezultatiUkupno(rezTakmicenja, ocene);
 
                 takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
+                NHibernateUtil.Initialize(takmicenje);
 
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
@@ -231,8 +232,6 @@ namespace Bilten.UI
             dataGridViewUserControl1.DataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(DataGridViewEkipe_CellMouseClick);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-            GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1,
-                takmicenje, deoTakKod);
             GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2,
                 takmicenje);
         }
@@ -307,6 +306,12 @@ namespace Bilten.UI
 
         private bool onSelectedTakmicenjeChanged()
         {
+            bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                && ActiveTakmicenje.Propozicije.PostojiTak4
+                && ActiveTakmicenje.Propozicije.OdvojenoTak4;
+            GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1,
+                takmicenje, kvalColumn);
+            
             bool save = false;
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
             {
@@ -368,11 +373,10 @@ namespace Bilten.UI
                     nazivIzvestaja = "Rezultati ekipno";
             }
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                Opcije.Instance.HeaderFooterInitialized = true;
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -392,6 +396,7 @@ namespace Bilten.UI
             if (form.ShowDialog() != DialogResult.OK)
                 return;
             Opcije.Instance.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();

@@ -32,8 +32,9 @@ namespace Bilten.UI
             this.cmbSprava = new System.Windows.Forms.ComboBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
             this.btnPrint = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
             this.SuspendLayout();
             // 
             // cmbTakmicenje
@@ -76,16 +77,6 @@ namespace Bilten.UI
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // spravaGridUserControl1
-            // 
-            this.spravaGridUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.spravaGridUserControl1.Location = new System.Drawing.Point(12, 56);
-            this.spravaGridUserControl1.Name = "spravaGridUserControl1";
-            this.spravaGridUserControl1.Size = new System.Drawing.Size(683, 295);
-            this.spravaGridUserControl1.TabIndex = 2;
-            // 
             // btnPrint
             // 
             this.btnPrint.Location = new System.Drawing.Point(458, 13);
@@ -96,13 +87,34 @@ namespace Bilten.UI
             this.btnPrint.UseVisualStyleBackColor = true;
             this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
+            // btnClose
+            // 
+            this.btnClose.Location = new System.Drawing.Point(721, 13);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.TabIndex = 6;
+            this.btnClose.Text = "Zatvori";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
+            // spravaGridUserControl1
+            // 
+            this.spravaGridUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.spravaGridUserControl1.Location = new System.Drawing.Point(12, 56);
+            this.spravaGridUserControl1.Name = "spravaGridUserControl1";
+            this.spravaGridUserControl1.Size = new System.Drawing.Size(822, 295);
+            this.spravaGridUserControl1.TabIndex = 2;
+            // 
             // RezultatiSpravaForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(707, 363);
+            this.ClientSize = new System.Drawing.Size(846, 363);
+            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
@@ -110,6 +122,7 @@ namespace Bilten.UI
             this.Controls.Add(this.cmbSprava);
             this.Controls.Add(this.cmbTakmicenje);
             this.Name = "RezultatiSpravaForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RezultatiSpravaForm";
             this.Shown += new System.EventHandler(this.RezultatiSpravaForm_Shown);
             this.ResumeLayout(false);
@@ -124,5 +137,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnPrint;
+        private System.Windows.Forms.Button btnClose;
     }
 }

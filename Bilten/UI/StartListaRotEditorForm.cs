@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
+using NHibernate;
 
 namespace Bilten.UI
 {
@@ -38,6 +39,12 @@ namespace Bilten.UI
 
                 raspored = loadRaspored(rasporedId);
                 startLista = raspored.getStartLista(sprava, grupa, rotacija);
+                foreach (NastupNaSpravi n in startLista.Nastupi)
+                {
+                    //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
+                    // za koje start lista vazi.
+                    NHibernateUtil.Initialize(n.Gimnasticar.TakmicarskaKategorija);   
+                }
                 
                 initUI();
                 spravaGridUserControl1.setItems(startLista.Nastupi);
@@ -110,7 +117,7 @@ namespace Bilten.UI
                     illegalGimnasticari.Add(g);
             }
 
-            for (int i = okGimnasticari.Count - 1; i >= 0; i--)
+            /*for (int i = okGimnasticari.Count - 1; i >= 0; i--)
             {
                 GimnasticarUcesnik g = okGimnasticari[i];
                 if (!raspored.Kategorije.Contains(g.TakmicarskaKategorija))
@@ -118,7 +125,7 @@ namespace Bilten.UI
                     okGimnasticari.RemoveAt(i);
                     illegalGimnasticari.Add(g);
                 }
-            }
+            }*/
 
             foreach (GimnasticarUcesnik g in okGimnasticari)
             {

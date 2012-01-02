@@ -203,7 +203,7 @@ namespace Bilten.Report
             return x / 2.54f;
         }
 
-		public void drawPage(Graphics g, int pageNum)
+        public void drawPage(Graphics g, int pageNum)
 		{
 			drawHeader(g, pageNum);
 			drawContent(g, pageNum);

@@ -135,6 +135,7 @@ namespace Bilten.UI
                 setEntities(gimnasticari);
                 if (gimnasticari.Count == 0)
                     MessageDialogs.showMessage(failureMsg, this.Text);
+                dataGridViewUserControl1.clearSelection();
             }
             catch (Exception ex)
             {
@@ -196,6 +197,11 @@ namespace Bilten.UI
             // od stanja u gridu. Razmisli o varijanti da se FilterForm uvek 
             // inicijalizuje na osnovu stanja u gridu
             return new FilterGimnasticarUcesnikForm(takmicenjeId, gimnastika, kategorija);
+        }
+
+        private void SelectGimnasticarUcesnikForm_Load(object sender, EventArgs e)
+        {
+            dataGridViewUserControl1.clearSelection();
         }
     }
 }

@@ -58,7 +58,8 @@ namespace Bilten.UI
                 }
 
                 takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                
+                NHibernateUtil.Initialize(takmicenje);
+      
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
                 cmbTakmicenje.SelectedIndex = 0;
@@ -158,9 +159,6 @@ namespace Bilten.UI
 
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-            GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1, 
-                takmicenje, deoTakKod);
-
 
             this.ClientSize = new Size(ClientSize.Width, 450);
         }
@@ -201,6 +199,12 @@ namespace Bilten.UI
 
         private void onSelectedTakmicenjeChanged()
         {
+            bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                && ActiveTakmicenje.Propozicije.PostojiTak2
+                && ActiveTakmicenje.Propozicije.OdvojenoTak2;
+            GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
+                takmicenje, kvalColumn);
+            
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
             {
                 takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
@@ -249,11 +253,10 @@ namespace Bilten.UI
                     nazivIzvestaja = "Vi" + shMalo + "eboj";
             }
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                Opcije.Instance.HeaderFooterInitialized = true;
 
                 string mestoDatum = takmicenje.Mesto + "  " 
                     + takmicenje.Datum.ToShortDateString();
@@ -273,6 +276,7 @@ namespace Bilten.UI
             if (form.ShowDialog() != DialogResult.OK)
                 return;
             Opcije.Instance.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();

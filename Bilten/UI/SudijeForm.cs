@@ -17,19 +17,21 @@ namespace Bilten.UI
         public SudijeForm()
         {
             this.Text = "Sudije";
-            InitializeGrid();
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
-            FetchModes.Add(new AssociationFetch(
-                "Drzava", AssociationFetchMode.Eager));
 
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
-                ShowFirstPage();
 
-                //dataContext.Commit();
+                IList<Sudija> sudije = loadAll();
+                SetItems(sudije);
+                dataGridViewUserControl1.sort<Sudija>(
+                    new string[] { "Prezime", "Ime" },
+                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
             }
             catch (Exception ex)
             {
@@ -46,6 +48,24 @@ namespace Bilten.UI
             }
         }
 
+        private IList<Sudija> loadAll()
+        {
+            string query = @"from Sudija g
+                left join fetch g.Drzava";
+            IList<Sudija> result = dataContext.
+                ExecuteQuery<Sudija>(QueryLanguageType.HQL, query,
+                        new string[] { }, new object[] { });
+            return result;
+        }
+
+        private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
+            GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<Sudija>(e.DataGridViewCellMouseEventArgs);
+        }
+
         private void InitializeGridColumns()
         {
             AddColumn("Ime", "Ime", 100);
@@ -57,16 +77,6 @@ namespace Bilten.UI
         protected override EntityDetailForm createEntityDetailForm(Nullable<int> entityId)
         {
             return new SudijaForm(entityId);
-        }
-
-        protected override int getEntityId(Sudija entity)
-        {
-            return entity.Id;
-        }
-
-        protected override string DefaultSortingPropertyName
-        {
-            get { return "Prezime"; }
         }
 
         protected override string deleteConfirmationMessage(Sudija sudija)

@@ -71,7 +71,7 @@ namespace Bilten.UI
         private void initUI()
         {
             Text = "Takmicari - takmicenja";
-            this.ClientSize = new Size(ClientSize.Width, 500);
+            this.ClientSize = new Size(ClientSize.Width, 550);
             initTabs();
         }
 

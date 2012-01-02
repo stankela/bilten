@@ -17,7 +17,8 @@ namespace Bilten.UI
         public MestaForm()
         {
             this.Text = "Mesta";
-            InitializeGrid();
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
             try
@@ -25,9 +26,12 @@ namespace Bilten.UI
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
-                ShowFirstPage();
-      
-                //dataContext.Commit();
+
+                IList<Mesto> mesta = loadAll();
+                SetItems(mesta);
+                dataGridViewUserControl1.sort<Mesto>(
+                    new string[] { "Naziv" },
+                    new ListSortDirection[] { ListSortDirection.Ascending });
             }
             catch (Exception ex)
             {
@@ -44,6 +48,23 @@ namespace Bilten.UI
             }
         }
 
+        private IList<Mesto> loadAll()
+        {
+            string query = @"from Mesto";
+            IList<Mesto> result = dataContext.
+                ExecuteQuery<Mesto>(QueryLanguageType.HQL, query,
+                        new string[] { }, new object[] { });
+            return result;
+        }
+
+        private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
+            GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<Mesto>(e.DataGridViewCellMouseEventArgs);
+        }
+
         private void InitializeGridColumns()
         {
             AddColumn("Naziv mesta", "Naziv", 100);
@@ -52,16 +73,6 @@ namespace Bilten.UI
         protected override EntityDetailForm createEntityDetailForm(Nullable<int> entityId)
         {
             return new MestoForm(entityId);
-        }
-
-        protected override int getEntityId(Mesto entity)
-        {
-            return entity.Id;
-        }
-
-        protected override string DefaultSortingPropertyName
-        {
-            get { return "Naziv"; }
         }
 
         protected override string deleteConfirmationMessage(Mesto m)

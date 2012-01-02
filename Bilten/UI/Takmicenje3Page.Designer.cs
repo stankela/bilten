@@ -143,9 +143,9 @@ namespace Bilten.UI
             this.lblPoredakPreskok.AutoSize = true;
             this.lblPoredakPreskok.Location = new System.Drawing.Point(15, 333);
             this.lblPoredakPreskok.Name = "lblPoredakPreskok";
-            this.lblPoredakPreskok.Size = new System.Drawing.Size(205, 13);
+            this.lblPoredakPreskok.Size = new System.Drawing.Size(234, 13);
             this.lblPoredakPreskok.TabIndex = 12;
-            this.lblPoredakPreskok.Text = "Poredak za preskok se racuna na osnovu";
+            this.lblPoredakPreskok.Text = "Poredak u finalu preskoka se racuna na osnovu";
             // 
             // panel1
             // 

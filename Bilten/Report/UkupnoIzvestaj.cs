@@ -153,18 +153,27 @@ namespace Bilten.Report
                 totalWidthCm = 1.3f;
             }
 
+            float spravaWidth = Izvestaj.convCmToInch(spravaWidthCm);
+
 			float xRank = contentBounds.X;
             float xIme = xRank + Izvestaj.convCmToInch(rankWidthCm);
             float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
             float xParter = xKlub + Izvestaj.convCmToInch(klubWidthCm);
-            float xKonj = xParter + Izvestaj.convCmToInch(spravaWidthCm);
-            float xKarike = xKonj + Izvestaj.convCmToInch(spravaWidthCm);
-            float xPreskok = xKarike + Izvestaj.convCmToInch(spravaWidthCm);
-            float xRazboj = xPreskok + Izvestaj.convCmToInch(spravaWidthCm);
-            float xVratilo = xRazboj + Izvestaj.convCmToInch(spravaWidthCm);
-            float xTotal = xVratilo + Izvestaj.convCmToInch(spravaWidthCm);
-            float xKval = xTotal + Izvestaj.convCmToInch(totalWidthCm);
+            float xKonj = xParter + spravaWidth;
+            float xKarike = xKonj + spravaWidth;
+            float xPreskok = xKarike + spravaWidth;
+            float xRazboj = xPreskok + spravaWidth;
+            float xVratilo = xRazboj + spravaWidth;
+            float xTotal = xVratilo + spravaWidth;
+            if (gimnastika == Gimnastika.ZSG)
+                xTotal = xRazboj;
 
+            float totalWidth = Izvestaj.convCmToInch(totalWidthCm);
+            float xKval = xTotal + totalWidth;
+            
+            float kvalWidth = Izvestaj.convCmToInch(kvalWidthCm);
+            float xRightEnd = xKval + kvalWidth;
+            
             float dWidth = (xKonj - xParter) / 3;
 
             float xParterE = xParter + dWidth;
@@ -179,20 +188,46 @@ namespace Bilten.Report
             float xRazbojTot = xRazbojE + dWidth;
             float xVratiloE = xVratilo + dWidth;
             float xVratiloTot = xVratiloE + dWidth;
+
+            if (xRightEnd < contentBounds.Right)
+            {
+                float delta = (contentBounds.Right - xRightEnd) / 2;
+                xRank += delta;
+                xIme += delta;
+                xKlub += delta;
+                xParter += delta;
+                xKonj += delta;
+                xKarike += delta;
+                xPreskok += delta;
+                xRazboj += delta;
+                xVratilo += delta;
+                xTotal += delta;
+                xKval += delta;
+                xRightEnd += delta;
+
+                xParterE += delta;
+                xKonjE += delta;
+                xKarikeE += delta;
+                xPreskokE += delta;
+                xRazbojE += delta;
+                xVratiloE += delta;
+
+                xParterTot += delta;
+                xKonjTot += delta;
+                xKarikeTot += delta;
+                xPreskokTot += delta;
+                xRazbojTot += delta;
+                xVratiloTot += delta;
+            }
             
             float rankWidth = xIme - xRank;
 			float imeWidth = xKlub - xIme;
 			float klubWidth = xParter - xKlub;
 
-            float spravaWidth = Izvestaj.convCmToInch(spravaWidthCm);
-            
             float spravaDWidth = dWidth;
             float spravaEWidth = dWidth;
             float spravaTotWidth = xKonj - xParter - 2*dWidth;
 
-            float totalWidth = xKval - xTotal;
-            float kvalWidth = Izvestaj.convCmToInch(kvalWidthCm);
-            
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
@@ -248,7 +283,7 @@ namespace Bilten.Report
                     column.Image = SlikeSprava.getImage(sprave[i]);
                     column.Split = true;
 
-                    column = addColumn(x[3 * i + 2], spravaTotWidth, fmtTot, spravaFormat, "\u2211", spravaHeaderFormat);
+                    column = addColumn(x[3 * i + 2], spravaTotWidth, fmtTot, spravaFormat, "Total", spravaHeaderFormat);
                     column.Image = SlikeSprava.getImage(sprave[i]);
                     column.Split = true;
                     column.Brush = totalBrush;
@@ -265,12 +300,6 @@ namespace Bilten.Report
                     column = addColumn(x[i], spravaWidth, fmtTot, spravaFormat, "", spravaHeaderFormat);
                     column.Image = SlikeSprava.getImage(sprave[i]);
                 }
-            }
-
-            if (gimnastika == Gimnastika.ZSG)
-            {
-                xTotal = xRazboj;
-                xKval = xTotal + totalWidth;
             }
 
             column = addColumn(xTotal, totalWidth, fmtTot, totalFormat, totalTitle, totalHeaderFormat);

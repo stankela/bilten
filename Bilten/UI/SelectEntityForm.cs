@@ -13,12 +13,6 @@ namespace Bilten.UI
 {
     public partial class SelectEntityForm : Form
     {
-        // TODO: Kada se form prvi put prikaze ili kada se izvrsi filtriranje,
-        // ukloni selekciju tako da mora da se eksplicitno selektuju objekti pre
-        // nego sto se pritisne OK. Ovo zbog toga da bi se sprecile greske kada je
-        // po defoltu selektovan prvi element u listi, i korisnik pritisne OK pre
-        // neko sto je izabrao ekemente
-
         protected IDataContext dataContext;
         protected FilterForm filterForm;
 
