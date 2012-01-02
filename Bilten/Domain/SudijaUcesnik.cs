@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Bilten.Domain
+{
+    public class SudijaUcesnik : DomainObject
+    {
+        private string ime;
+        public virtual string Ime
+        {
+            get { return ime; }
+            set { ime = value; }
+        }
+
+        private string prezime;
+        public virtual string Prezime
+        {
+            get { return prezime; }
+            set { prezime = value; }
+        }
+
+        private Pol pol;
+        public virtual Pol Pol
+        {
+            get { return pol; }
+            set { pol = value; }
+        }
+
+        private DrzavaUcesnik drzava;
+        public virtual DrzavaUcesnik Drzava
+        {
+            get { return drzava; }
+            set { drzava = value; }
+        }
+
+        private SudijskaUloga ulogaUGlavnomSudijskomOdboru;
+        public virtual SudijskaUloga UlogaUGlavnomSudijskomOdboru
+        {
+            get { return ulogaUGlavnomSudijskomOdboru; }
+            set { ulogaUGlavnomSudijskomOdboru = value; }
+        }
+
+        private Takmicenje takmicenje;
+        public virtual Takmicenje Takmicenje
+        {
+            get { return takmicenje; }
+            set { takmicenje = value; }
+        }
+
+        public virtual string PrezimeIme
+        {
+            get { return Prezime + ' ' + Ime; }
+        }
+
+        public SudijaUcesnik()
+        { 
+        
+        }
+
+        public override string ToString()
+        {
+            return Ime + ' ' + Prezime;
+        }
+
+        public override bool Equals(object other)
+        {
+            if (object.ReferenceEquals(this, other)) return true;
+            if (!(other is SudijaUcesnik)) return false;
+            SudijaUcesnik that = (SudijaUcesnik)other;
+            return this.Ime.ToUpper() == that.Ime.ToUpper()
+                && this.Prezime.ToUpper() == that.Prezime.ToUpper();
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = 14;
+                result = 29 * result + Ime.GetHashCode();
+                result = 29 * result + Prezime.GetHashCode();
+                return result;
+            }
+        }
+    }
+}

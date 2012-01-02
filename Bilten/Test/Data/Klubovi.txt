@@ -1,0 +1,12 @@
+﻿SO"Partizan" Kostolac		Kostolac			KO
+Sportski centar Kruševac	Kruševac			KŠ
+GD"Partizan" Subotica		Subotica			SU
+SD"Vojvodina" Novi Sad		Novi Sad			SDV
+GK"DIF" Beograd				Beograd				BG DIF
+GK"Niš"						Niš					NI
+GK"Beograd"					Beograd				BG GK
+Sokolsko društvo SM			Sremska Mitrovica	SM
+GK"Pobednik" Beograd		Beograd				BG POB
+GK"Soko" Sombor				Sombor				SO
+GK"Linea" Senta				Senta				SN
+GK"Soko" Zrenjanin			Zrenjanin			ZR

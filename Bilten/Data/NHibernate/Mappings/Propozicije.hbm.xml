@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="Propozicije" table="propozicije" >
+    <id name="Id" column="propozicije_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <property name="MaxBrojTakmicaraIzKlubaTak1" column="max_tak_tak1" type="Byte" />
+    
+    <property name="PostojiTak2" column="postoji_tak2" type="Boolean" />
+    <property name="OdvojenoTak2" column="odvojeno_tak2" type="Boolean" />
+    <property name="Tak2NaOsnovuTak1" column="tak2_na_osnovu_tak1" type="Boolean" />
+    <property name="NeogranicenBrojTakmicaraIzKlubaTak2" 
+              column="neogr_broj_tak_tak2" type="Boolean" />
+    <property name="MaxBrojTakmicaraIzKlubaTak2" column="max_tak_tak2" type="Byte" />
+    <property name="BrojFinalistaTak2" column="broj_finalista_tak2" type="Byte" />
+    <property name="BrojRezerviTak2" column="broj_rezervi_tak2" type="Byte" />
+
+    <property name="PostojiTak3" column="postoji_tak3" type="Boolean" />
+    <property name="OdvojenoTak3" column="odvojeno_tak3" type="Boolean" />
+    <property name="Tak3NaOsnovuTak1" column="tak3_na_osnovu_tak1" type="Boolean" />
+    <property name="NeogranicenBrojTakmicaraIzKlubaTak3" 
+              column="neogr_broj_tak_tak3" type="Boolean" />
+    <property name="MaxBrojTakmicaraIzKlubaTak3" column="max_tak_tak3" type="Byte" />
+    <property name="MaxBrojTakmicaraTak3VaziZaDrzavu" column="max_tak_tak3_vazi_za_drzavu" type="Boolean" />
+    <property name="BrojFinalistaTak3" column="broj_finalista_tak3" type="Byte" />
+    <property name="BrojRezerviTak3" column="broj_rezervi_tak3" type="Byte" />
+    <property name="KvalifikantiTak3PreskokNaOsnovuObaPreskoka" 
+              column="kval_tak3_oba_preskoka" type="Boolean" />
+    <property name="PoredakTak3PreskokNaOsnovuObaPreskoka" 
+              column="poredak_tak3_oba_preskoka" type="Boolean" />
+
+    <property name="PostojiTak4" column="postoji_tak4" type="Boolean" />
+    <property name="OdvojenoTak4" column="odvojeno_tak4" type="Boolean" />
+    <property name="Tak4NaOsnovuTak1" column="tak4_na_osnovu_tak1" type="Boolean" />
+    <property name="JednoTak4ZaSveKategorije" column="jedno_tak4_za_sve_kat" type="Boolean" />
+    <property name="BrojGimnasticaraUEkipi" column="broj_gim_u_ekipi" type="Byte" />
+    <property name="BrojRezultataKojiSeBodujuZaEkipu" column="broj_rezultata_ekipe" type="Byte" />
+    <property name="BrojEkipaUFinalu" column="broj_ekipa_u_finalu" type="Byte" />
+
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="DrzavaUcesnik" table="drzave_ucesnici" lazy="true">
+    <id name="Id" column="drzava_id">
+      <generator class="identity" />
+    </id>
+    <property name="Naziv" column="naziv" />
+    <property name="Kod" column="kod" />
+    <many-to-one name="Takmicenje" class="Takmicenje" column="takmicenje_id" />
+  </class>
+
+</hibernate-mapping>

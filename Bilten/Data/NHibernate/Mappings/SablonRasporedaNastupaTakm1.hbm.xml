@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="SablonRasporedaNastupaTakm1" table="sablon_rasporeda_nastupa_takm1" >
+    <id name="Id" column="sablon_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <many-to-one name="RasporedNastupa" class="RasporedNastupa" column="raspored_id" />
+    <property name="Grupa" column="grupa" type="Byte" />
+    <set name="Items" lazy="true" cascade="all-delete-orphan" >
+      <key column="sablon_id" />
+      <one-to-many class="SablonRasporedaNastupaTakm1Item" />
+    </set>
+  </class>
+
+  <query name="FindSablonRasporedaNastupaById">
+    <![CDATA[
+      select distinct s
+      from SablonRasporedaNastupaTakm1 s
+      left join fetch s.RasporedNastupa r
+      left join fetch r.Kategorije k
+      where s.Id = :sablonId
+    ]]>
+  </query>
+  
+</hibernate-mapping>

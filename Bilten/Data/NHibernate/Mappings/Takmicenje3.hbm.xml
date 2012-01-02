@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="Takmicenje3" table="takmicenje3" >
+    <id name="Id" column="takmicenje3_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <set name="Ucesnici" lazy="true" cascade="all-delete-orphan" >
+      <key column="takmicenje3_id" />
+      <one-to-many class="UcesnikTakmicenja3" />
+    </set>
+    <set name="Poredak" lazy="true" cascade="all" >
+      <key column="takmicenje3_id" />
+      <one-to-many class="PoredakSprava" />
+    </set>
+    <many-to-one name="PoredakPreskok" class="PoredakPreskok" column="poredak_preskok_id" 
+      cascade="all" />
+  </class>
+
+</hibernate-mapping>

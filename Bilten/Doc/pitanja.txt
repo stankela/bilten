@@ -1,0 +1,8 @@
+- pitaj Jakoba za pol 4 gimnasticara i azuriraj test fajl.
+- da li gimnasticar moze da se takmici u vise kategorija (i ako moze, koliko puta
+	nastupa u kvalifikacijama, i kako ovo utice na start liste. Pitaj i generalno
+	za start liste - da li ce biti za svaku kategoriju posebna start lista ili
+	komnbinovano)
+- u pojedinacnoj konkurenciji na medjunarodnim takmicenjima, sta stoji pored
+	imena gimnasticara - klub ili drzava
+- da li gimnasticar moze da se takmici za vise ekipa

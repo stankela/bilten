@@ -1,0 +1,4 @@
+Promene od r22:
+-Dodata tabela mesta
+-Dodata tabela ekipe
+-U tabeli gimnasticari_ucesnici dodata kolona ekipa_id

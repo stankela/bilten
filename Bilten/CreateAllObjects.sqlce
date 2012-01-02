@@ -1,0 +1,458 @@
+create table mesta (
+	mesto_id int identity(1,1) primary key,
+	naziv nvarchar(32)
+);
+
+create table klubovi (
+	klub_id int identity(1,1) primary key,
+	naziv nvarchar(128),
+	kod nvarchar(7),
+	mesto_id int references mesta(mesto_id)
+);
+
+create table gimnasticari (
+	gimnasticar_id int identity(1,1) primary key,
+	ime nvarchar(32),
+	srednje_ime nvarchar(32),
+	prezime nvarchar(32),
+	dan_rodj tinyint,
+	mesec_rodj tinyint,
+	god_rodj smallint,
+	gimnastika tinyint,
+	reg_broj int,
+	god_reg smallint,
+	dan_posl_reg tinyint,
+	mesec_posl_reg tinyint,
+	god_posl_reg smallint,
+	kat_id int references kategorije_gimnasticara(kategorija_id),
+	klub_id int references klubovi(klub_id),
+	drzava_id int references drzave(drzava_id)
+);
+
+create table kategorije_gimnasticara (
+	kategorija_id int identity(1,1) primary key,
+	naziv nvarchar(32),
+	gimnastika tinyint
+);
+
+create table drzave (
+	drzava_id int identity(1,1) primary key,
+	naziv nvarchar(32),
+	kod nvarchar(3)
+);
+
+create table propozicije (
+	propozicije_id int identity (1,1) primary key,
+	max_tak_tak1 tinyint,
+	postoji_tak2 bit,
+	odvojeno_tak2 bit,
+	tak2_na_osnovu_tak1 bit,
+	neogr_broj_tak_tak2 bit,
+	max_tak_tak2 tinyint,
+	broj_finalista_tak2 tinyint,
+	broj_rezervi_tak2 tinyint,
+	postoji_tak3 bit,
+	odvojeno_tak3 bit,
+	tak3_na_osnovu_tak1 bit,
+	neogr_broj_tak_tak3 bit,
+	max_tak_tak3 tinyint,
+	max_tak_tak3_vazi_za_drzavu bit,
+	broj_finalista_tak3 tinyint,
+	broj_rezervi_tak3 tinyint,
+	kval_tak3_oba_preskoka bit,
+	poredak_tak3_oba_preskoka bit,
+	postoji_tak4 bit,
+	odvojeno_tak4 bit,
+	tak4_na_osnovu_tak1 bit,
+	jedno_tak4_za_sve_kat bit,
+	broj_gim_u_ekipi tinyint,
+	broj_rezultata_ekipe tinyint,
+	broj_ekipa_u_finalu tinyint
+);
+
+create table takmicenja (
+	takmicenje_id int identity(1,1) primary key,
+	naziv nvarchar(128),
+	gimnastika tinyint,
+	datum datetime,
+	mesto nvarchar(32),
+	broj_e_sudija tinyint,
+	broj_lin_sudija tinyint,
+	broj_meraca_vremena tinyint,
+	broj_decimala_d tinyint,
+    broj_decimala_e1 tinyint,
+    broj_decimala_e tinyint,
+    broj_decimala_pen tinyint,
+    broj_decimala_total tinyint,
+	zavrseno_tak1 bit
+);
+
+create table takmicarske_kategorije (
+	kategorija_id int identity(1,1) primary key,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	naziv nvarchar(32),
+	gimnastika tinyint,
+	redBroj tinyint
+);
+
+create table rezultatsko_takmicenje_description (
+	description_id int identity(1,1) primary key,
+	naziv nvarchar(128),
+	red_broj tinyint,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	propozicije_id int references propozicije(propozicije_id)
+);
+
+create table poredak_ukupno (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+
+create table poredak_ekipno (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+
+create table takmicenje1 (
+	takmicenje1_id int identity(1,1) primary key,
+	poredak_ukupno_id int references poredak_ukupno(poredak_id),
+	poredak_preskok_id int references poredak_sprava(poredak_id),
+	poredak_ekipno_id int references poredak_ekipno(poredak_id)
+);
+
+create table takmicenje2 (
+	takmicenje2_id int identity(1,1) primary key,
+	poredak_id int references poredak_ukupno(poredak_id)
+);
+
+create table takmicenje3 (
+	takmicenje3_id int identity(1,1) primary key,
+	poredak_preskok_id int references poredak_sprava(poredak_id)
+);
+
+create table takmicenje4 (
+	takmicenje4_id int identity(1,1) primary key,
+	poredak_id int references poredak_ekipno(poredak_id)
+);
+
+create table rezultatsko_takmicenje (
+	rez_takmicenje_id int identity(1,1) primary key,
+	red_broj tinyint,
+	gimnastika tinyint,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	kategorija_id int references takmicarske_kategorije(kategorija_id),
+	description_id int references rezultatsko_takmicenje_description(description_id),
+	propozicije_id int references propozicije(propozicije_id),
+	takmicenje1_id int references takmicenje1(takmicenje1_id),
+	takmicenje2_id int references takmicenje2(takmicenje2_id),
+	takmicenje3_id int references takmicenje3(takmicenje3_id),
+	takmicenje4_id int references takmicenje4(takmicenje4_id),
+	ima_ekipno_tak bit,
+	komb_ekipno_tak bit
+);
+
+create table poredak_sprava (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint,
+	sprava tinyint,
+	takmicenje1_id int references takmicenje1(takmicenje1_id),
+	takmicenje3_id int references takmicenje3(takmicenje3_id)
+);
+
+create table gimnasticari_ucesnici (
+	gimnasticar_id int identity(1,1) primary key,
+	ime nvarchar(32),
+	srednje_ime nvarchar(32),
+	prezime nvarchar(32),
+	dan_rodj tinyint,
+	mesec_rodj tinyint,
+	god_rodj smallint,
+	gimnastika tinyint,
+	reg_broj int,
+	god_reg smallint,
+	takmicarski_broj int,
+	nastupa_za_drzavu bit,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	kategorija_id int references takmicarske_kategorije(kategorija_id),
+	klub_id int references klubovi_ucesnici(klub_id),
+	drzava_id int references drzave_ucesnici(drzava_id),
+	ekipa_id int references ekipe(ekipa_id)
+);
+
+create table klubovi_ucesnici (
+	klub_id int identity(1,1) primary key,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	naziv nvarchar(128),
+	kod nvarchar(7)
+);
+
+create table drzave_ucesnici (
+	drzava_id int identity(1,1) primary key,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	naziv nvarchar(32),
+	kod nvarchar(3)
+);
+
+create table sudije (
+	sudija_id int identity(1,1) primary key,
+	ime nvarchar(32),
+	prezime nvarchar(32),
+	pol tinyint,
+	drzava_id int references drzave(drzava_id)
+);
+
+create table ekipe (
+	ekipa_id int identity(1,1) primary key,
+	naziv nvarchar(64),
+	kod nvarchar(7),
+	klub_id int references klubovi_ucesnici(klub_id),
+	drzava_id int references drzave_ucesnici(drzava_id),
+	takmicenje1_id int references takmicenje1(takmicenje1_id)
+);
+
+create table ekipa_gimnasticar (
+	ekipa_id int references ekipe(ekipa_id),
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+   	constraint PK_ekipa_gimnasticar 
+		primary key (ekipa_id, gimnasticar_id)
+);
+
+create table raspored_sudija (
+	raspored_sud_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+
+create table raspored_sudija_kategorija (
+	raspored_sud_id int references raspored_sudija(raspored_sud_id),
+	kategorija_id int references takmicarske_kategorije(kategorija_id),
+   	constraint PK_raspored_sudija_kategorija 
+		primary key (raspored_sud_id, kategorija_id)
+);
+
+create table raspored_nastupa (
+	raspored_nastupa_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+
+create table raspored_nastupa_kategorija (
+	raspored_nastupa_id int references raspored_nastupa(raspored_nastupa_id),
+	kategorija_id int references takmicarske_kategorije(kategorija_id),
+   	constraint PK_raspored_nastupa_kategorija 
+		primary key (raspored_nastupa_id, kategorija_id)
+);
+
+create table druga_ocena (
+	ocena2_id int identity(1,1) primary key,
+    d real,
+    e1 real,
+    e2 real,
+    e3 real,
+    e4 real,
+    e5 real,
+    e6 real,
+    e real,
+    penalty real,
+    line_penalty real,
+    other_penalty real,
+    total real,
+	broj_e_ocena tinyint,
+	rucno_uneta_ocena bit
+);
+
+create table ocene (
+	ocena_id int identity(1,1) primary key,
+	sprava tinyint,
+	deo_takmicenja_kod tinyint,
+    d real,
+    e1 real,
+    e2 real,
+    e3 real,
+    e4 real,
+    e5 real,
+    e6 real,
+    e real,
+    penalty real,
+    line_penalty real,
+    time_penalty real,
+    other_penalty real,
+    total real,
+    vreme_vezbe smallint,
+	total_obe_ocene real,
+	broj_e_ocena tinyint,
+	rucno_uneta_ocena bit,
+	ocena2_id int references druga_ocena(ocena2_id),
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id)
+);
+
+create table sudija_ucesnik (
+	sudija_id int identity(1,1) primary key,
+	ime nvarchar(32),
+    prezime nvarchar(32),
+    pol tinyint,
+	uloga_u_glav_sud_odboru tinyint,
+    drzava_id int references drzave_ucesnici(drzava_id),
+	takmicenje_id int references takmicenja(takmicenje_id)
+);
+
+create table sud_odbor_na_spravi (
+    sud_odbor_id int identity(1,1) primary key,
+	sprava tinyint,
+    broj_d_sudija tinyint,
+ 	broj_e_sudija tinyint,
+	broj_lin_sudija tinyint,
+	broj_meraca_vremena tinyint,
+	raspored_sud_id int references raspored_sudija(raspored_sud_id)
+);
+
+create table sudija_na_spravi (
+    sud_odbor_id int references sud_odbor_na_spravi(sud_odbor_id),
+    uloga tinyint,
+   	constraint PK_sudija_na_spravi primary key (sud_odbor_id, uloga),
+	sudija_id int references sudija_ucesnik(sudija_id)
+);
+
+create table start_lista_sprava (
+	start_lista_id int identity(1,1) primary key,
+    sprava tinyint,
+    grupa tinyint,
+    rotacija tinyint,
+	raspored_nastupa_id int references raspored_nastupa(raspored_nastupa_id)
+);
+
+create table nastup_na_spravi (
+    nastup_id int identity(1,1) primary key,
+	red_broj smallint,
+    nastupa_dva_puta bit,
+	start_lista_id int references start_lista_sprava(start_lista_id),
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id)
+);
+
+create table sablon_rasporeda_nastupa_takm1 (
+    sablon_id int identity(1,1) primary key,
+    raspored_id int references raspored_nastupa(raspored_nastupa_id),
+    grupa tinyint
+);
+
+create table sablon_item (
+    sablon_item_id int identity(1,1) primary key,
+    sablon_id int references sablon_rasporeda_nastupa_takm1(sablon_id),
+    sprava tinyint,
+	ekipa_id int references ekipe(ekipa_id),
+	broj_ucesnika tinyint,
+	red_broj tinyint
+);
+
+create table opcije (
+	opcije_id int identity(1,1) primary key,
+	broj_decimala_d tinyint,
+    broj_decimala_e1 tinyint,
+    broj_decimala_e tinyint,
+    broj_decimala_pen tinyint,
+    broj_decimala_total tinyint
+);
+
+create table ucesnici_tak1 (
+	takmicenje1_id int references takmicenje1(takmicenje1_id),
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+   	constraint PK_ucesnici_tak1 
+		primary key (takmicenje1_id, gimnasticar_id)
+);
+
+create table ucesnici_tak2 (
+	ucesnik_tak2_id int identity(1,1) primary key,
+	qual_order smallint,
+	qual_score real,
+	qual_rank smallint,
+	kval_status tinyint,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	takmicenje2_id int references takmicenje2(takmicenje2_id)
+);
+
+create table ucesnici_tak3 (
+	ucesnik_tak3_id int identity(1,1) primary key,
+	sprava tinyint,
+	qual_order smallint,
+	qual_score real,
+	qual_rank smallint,
+	kval_status tinyint,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	takmicenje3_id int references takmicenje3(takmicenje3_id)
+);
+
+create table ucesnici_tak4 (
+	ucesnik_tak4_id int identity(1,1) primary key,
+	qual_order smallint,
+	qual_score real,
+	qual_rank smallint,
+	ekipa_id int references ekipe(ekipa_id),
+	takmicenje4_id int references takmicenje4(takmicenje4_id)
+);
+
+create table rezultati_ukupno (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+	parter real,
+	konj real,
+	karike real,
+	preskok real,
+	razboj real,
+	vratilo real,
+	greda real,
+	dvo_razboj real,
+	total real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_ukupno(poredak_id)
+);
+
+create table rezultati_sprava (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+	d real,
+	e real,
+	penalty real,
+	total real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_sprava(poredak_id)
+);
+
+create table rezultati_preskok (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+	d real,
+	e real,
+	penalty real,
+	total real,
+	red_broj2 smallint,
+	rank2 smallint,
+	d_2 real,
+	e_2 real,
+	penalty_2 real,
+	total_2 real,
+	total_obe_ocene real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_sprava(poredak_id)
+);
+
+create table rezultati_ekipno (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+   	parter real,
+	konj real,
+	karike real,
+	preskok real,
+	razboj real,
+	vratilo real,
+	greda real,
+	dvo_razboj real,
+	total real,
+	ekipa_id int references ekipe(ekipa_id),
+	poredak_id int references poredak_ekipno(poredak_id)
+);

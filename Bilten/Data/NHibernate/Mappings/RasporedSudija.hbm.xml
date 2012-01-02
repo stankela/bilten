@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="RasporedSudija" table="raspored_sudija" lazy="true">
+    <id name="Id" column="raspored_sud_id">
+      <generator class="identity" />
+    </id>
+    <property name="DeoTakmicenjaKod" column="deo_takmicenja_kod" type="Byte" />
+    <set name="Kategorije" table="raspored_sudija_kategorija" lazy="true">
+      <key column="raspored_sud_id"/>
+      <many-to-many class="TakmicarskaKategorija" column="kategorija_id"/>
+    </set>
+    <set name="Odbori" lazy="true" cascade="all" >
+      <key column="raspored_sud_id" />
+      <one-to-many class="SudijskiOdborNaSpravi" />
+    </set>
+  </class>
+
+  <query name="FindRaspSudByTakDeoTakmFetch">
+    <![CDATA[
+      select distinct r
+      from RasporedSudija r
+      left join fetch r.Kategorije k
+      left join fetch r.Odbori o
+      left join fetch o.Sudije s
+      left join fetch s.Drzava dr
+      where r.DeoTakmicenjaKod = :deoTak
+      and k.Takmicenje.Id = :takmicenje
+    ]]>
+  </query>
+
+  <query name="FindRaspSudById">
+    <![CDATA[
+      select distinct r
+      from RasporedSudija r
+      left join fetch r.Kategorije k
+      left join fetch r.Odbori o
+      left join fetch o.Sudije s
+      left join fetch s.Drzava dr
+      where r.Id = :id
+    ]]>
+  </query>
+
+</hibernate-mapping>

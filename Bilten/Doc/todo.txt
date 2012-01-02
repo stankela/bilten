@@ -1,0 +1,22 @@
+-kada se zatvara dijalog dugmetom X, promeni pitanje u "da li zelite da sacuvate ..."
+(u stvari, najpre proveri da li je u dijalogu nesto menjano. a za pitanje jos razmisli)
+-jedan gimnasticar moze da nastupa u vise kategorija (on u stvari nastupa jednom, ali
+mu se taj rezultat boduje u vise kategorija - npr. DKMT i International competition)
+-proveri da li je dozvoljeno da istovremeno budu zadati i klub i drzava za ekipu
+-check box prikazi skole u EkipaForm
+-filtriraj gimnasticare po prethodnim takmicenjima
+- u SingleEntityListForm zameni DataGridView sa DataGridViewUserControl
+- pitaj Jakoba za pol 4 gimnasticara i azuriraj test fajl.
+- dodaj skole
+- kada se desi izuzetak prilikom kreiranja nove konfiguracije (npr. zato sto nisam
+neko svojstvo oznacio kao virtual), kada sledeci put pokrenem program javlja
+gresku 'End of stream encountered' (pretpostavljam za fajl NHibernateConfig). Proveri
+o cemu se radi, i da li bi to moglo da ugrozi aplikaciju kod korisnika (razmisli o 
+drugim metodima ubrzavanja ucitavanja konfiguracije)
+ - nek filteri budu u posebnom prozoru (da ne zbunjuju)
+ - u SQL skriptu CreateAllObjects navedi referencijalna ogranicenja svugde gde treba.
+   Postojanje referencijalnih ogranicenja u bazi je garancija da cak i ako negde u
+   programu propustim da prilikom operacije DELETE ili UPDATE azuriram sve potrebne
+   objekte da bi referential constraints bili zadovoljeni, baza nece dozvoliti datu
+   operaciju, NHibernate ce generisati izuzetak a program ce izvrsiti rollback
+   transakcije i prikazati poruku o gresci

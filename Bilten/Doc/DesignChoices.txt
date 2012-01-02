@@ -1,0 +1,4 @@
+-asocijacija izmedju Takmicenja i TakmicarskeKategorije je usmerena od Takmicenja
+ka TakmicarskojKategoriji zato sto mi to omogucava da mapiranjem asocijacije kao
+list kolekcije sacuvam poredak elemenata. Inace bi prirodnije bilo da je usmerena
+obratno, ali onda mora da se rucno cuva poredak elemenata (pokusaj ovo da izvedes)

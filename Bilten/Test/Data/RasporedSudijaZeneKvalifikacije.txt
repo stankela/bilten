@@ -1,0 +1,57 @@
+Superior Jury
+BRASIER			Yvette		UEG FRA President
+MARTINET		Sylvie		UEG SUI	
+FAIRBROTHER		Lynda		UEG GBR	
+UBIA CARNICER	Montserrat	UEG ESP Vault Supervisor
+LISKAROVA		Hana		UEG CZE Uneven Bars Supervisor
+MURTONEN		Satu Sirpa	UEG FIN Beam Supervisor
+SHAI			Orna Erena	UEG ISR Floor Supervisor
+
+Vault
+D1		KLAESBERG				Sabrina		UEG GER
+D2		LESIVA					Aksana		BLR
+E1		OMELIANCHYK-ZIURKALOV	Oksana		UKR
+E2		VASBINDER				Jitske		NED
+E3		SEILE					Nadezda		LAT
+E4		REUTER					Martine		LUX
+E5		DOS SANTOS MENDES		Lina Maria	POR
+E6		ZSILINSZKI				Tunde		HUN
+Line 1	BOGATAJ					Katarina	SLO
+
+Uneven Bars
+D1		BASLA			Carmen Maria			UEG ITA
+D2		HOFEN			Karen Ann				GBR
+E1		KOLESNIKOVA		Vera					RUS
+E2		DIDILESCU		Olga Fanica				ROU
+E3		KENNEDY			Suzanne					IRL
+E4		NILSSON			Anna Kristina Oskarina	SWE
+E5		LEDERER			Dunja					CRO
+E6		FUNK RAITHEL	Inge Elsa Lisa			GER
+Timer 1	GRUBMUELLER		Elke					AUT
+
+Beam
+D1		MOLEMA-DE JONG		Aukje				UEG NED
+D2		KALMAR				Zsuzsanna Katalin	HUN
+E1		IOANNOU				Maria				CYP
+E2		MICHELS				Anna				POL
+E3		RISOVA				Lubica				SVK
+E4		MULAZIMOGLU BALLI	Ozgur				TUR
+E5		SMITH				Pauline				GBR
+E6		FRAUENKNECHT		Christina			SUI
+Timer 1	MADSEN				Agnete Louise		DEN
+Timer 2	CALLON				Corinne Elisabeth	FRA
+
+Floor
+D1		GRATT		Johanna						UEG AUT
+D2		GIRAL		Patricia Raymonde Yvette	FRA
+E1		DONTI		Olyvia						GRE
+E2		ARNADOTTIR	Sandra						ISL
+E3		PASCUAL		Carmen						ESP
+E4		HEINO		Lisbet Annika				FIN
+E5		GUSTIENE	Ruta						LTU
+E6		CORTIGIANI	Dora						ITA
+Timer 1	HORKA		Alena						CZE
+Line 1	TANKOUCHEVA	Neli Nikolova				BUL
+Line 2	KOVAC		Marjeta						SLO
+Line 3	ANEN		Nicole Marie Anne			LUX
+Line 4	SPOELMAN	Ingrid						NED

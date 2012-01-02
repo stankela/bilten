@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="Takmicenje" table="takmicenja" lazy="true">
+    <id name="Id" column="takmicenje_id">
+      <generator class="identity" />
+    </id>
+    <property name="Naziv" column="naziv" type="String" not-null="false" length="128"/>
+    <property name="Gimnastika" column="gimnastika" type="Byte" />
+    <property name="Datum" />
+    <property name="Mesto" />
+    <property name="BrojESudija" column="broj_e_sudija" type="Byte" />
+    <property name="BrojLinijskihSudija" column="broj_lin_sudija" type="Byte" />
+    <property name="BrojMeracaVremena" column="broj_meraca_vremena" type="Byte" />
+    <property name="BrojDecimalaD" column="broj_decimala_d" type="Byte" />
+    <property name="BrojDecimalaE1" column="broj_decimala_e1" type="Byte" />
+    <property name="BrojDecimalaE" column="broj_decimala_e" type="Byte" />
+    <property name="BrojDecimalaPen" column="broj_decimala_pen" type="Byte" />
+    <property name="BrojDecimalaTotal" column="broj_decimala_total" type="Byte" />
+    <property name="ZavrsenoTak1" column="zavrseno_tak1" type="Boolean" />
+    <set name="Kategorije" lazy="true" cascade="save-update"
+      inverse="true" >
+      <key column="takmicenje_id" />
+      <one-to-many class="TakmicarskaKategorija" />
+    </set>
+    <set name="TakmicenjeDescriptions" lazy="true" cascade="save-update" >
+      <key column="takmicenje_id" />
+      <one-to-many class="RezultatskoTakmicenjeDescription" />
+    </set>
+  </class>
+
+</hibernate-mapping>

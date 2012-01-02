@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="Ekipa" table="ekipe" lazy="true">
+    <id name="Id" column="ekipa_id">
+      <generator class="identity" />
+    </id>
+    <property name="Naziv" column="naziv" type="String" not-null="false" length="32"/>
+    <property name="Kod" />
+    
+    <many-to-one name="KlubUcesnik" class="KlubUcesnik" column="klub_id" />
+    <many-to-one name="DrzavaUcesnik" class="DrzavaUcesnik" column="drzava_id" />
+    <set name="Gimnasticari" table="ekipa_gimnasticar" lazy="true">
+      <key column="ekipa_id" />
+      <many-to-many class="GimnasticarUcesnik" column="gimnasticar_id"/>
+    </set>
+  </class>
+
+</hibernate-mapping>

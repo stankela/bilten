@@ -1,0 +1,17 @@
+--alter table propozicije add column jedno_tak4_za_sve_kat bit;
+--update propozicije set jedno_tak4_za_sve_kat = 0;
+--alter table rezultatsko_takmicenje add column ima_ekipno_tak bit, komb_ekipno_tak bit;
+--update rezultatsko_takmicenje set ima_ekipno_tak = 1, komb_ekipno_tak = 0;
+
+--alter table ucesnici_tak2 add column kval_status tinyint;
+--update ucesnici_tak2 set kval_status = 1;
+--alter table ucesnici_tak3 add column kval_status tinyint;
+--update ucesnici_tak3 set kval_status = 1;
+
+--alter table gimnasticari_ucesnici add column nastupa_za_drzavu bit;
+--update gimnasticari_ucesnici set nastupa_za_drzavu = 0;
+
+--alter table propozicije add column max_tak_tak3_vazi_za_drzavu bit;
+--update propozicije set max_tak_tak3_vazi_za_drzavu = 0;
+
+

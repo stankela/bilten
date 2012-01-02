@@ -1,0 +1,917 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bilten</RootNamespace>
+    <AssemblyName>Bilten</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="NHibernate, Version=2.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.ByteCode.LinFu, Version=2.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\NHibernate.ByteCode.LinFu.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SqlServerCe, Version=9.0.242.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\System.Data.SqlServerCe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConfigurationParameters.cs" />
+    <Compile Include="Dao\DAOFactory.cs" />
+    <Compile Include="Dao\DAOFactoryFactory.cs" />
+    <Compile Include="Dao\GenericDAO.cs" />
+    <Compile Include="Dao\KlubDAO.cs" />
+    <Compile Include="Dao\NHibernate\GenericNHibernateDAO.cs" />
+    <Compile Include="Dao\NHibernate\KlubDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\NHibernateDAOFactory.cs" />
+    <Compile Include="Data\DataAccessProviderFactory.cs" />
+    <Compile Include="Data\IDataContext.cs" />
+    <Compile Include="Data\IDataProviderFactory.cs" />
+    <Compile Include="Data\NHibernate\DataProviderFactory.cs" />
+    <Compile Include="Data\NHibernate\NHibernateDataContext.cs" />
+    <Compile Include="Data\NHibernate\NHibernateHelper.cs" />
+    <Compile Include="Data\NHibernate\QueryTranslator.cs" />
+    <Compile Include="Data\QueryLanguageType.cs" />
+    <Compile Include="Data\QueryModel\AssociationAlias.cs" />
+    <Compile Include="Data\QueryModel\AssociationFetch.cs" />
+    <Compile Include="Data\QueryModel\CriteriaOperator.cs" />
+    <Compile Include="Data\QueryModel\Criterion.cs" />
+    <Compile Include="Data\QueryModel\OrderClause.cs" />
+    <Compile Include="Data\QueryModel\Query.cs" />
+    <Compile Include="Data\QueryModel\QueryOperator.cs" />
+    <Compile Include="Data\QueryModel\StringMatchMode.cs" />
+    <Compile Include="Data\TransactionException.cs" />
+    <Compile Include="Domain\Datum.cs" />
+    <Compile Include="Domain\DeoTakmicenjaKod.cs" />
+    <Compile Include="Domain\DomainObject.cs" />
+    <Compile Include="Domain\DrugaOcena.cs" />
+    <Compile Include="Domain\Drzava.cs" />
+    <Compile Include="Domain\Ekipa.cs" />
+    <Compile Include="Domain\Gimnasticar.cs" />
+    <Compile Include="Domain\GimnasticarUcesnik.cs" />
+    <Compile Include="Domain\Gimnastika.cs" />
+    <Compile Include="Domain\KvalifikacioniStatus.cs" />
+    <Compile Include="Domain\Mesto.cs" />
+    <Compile Include="Domain\KategorijaGimnasticara.cs" />
+    <Compile Include="Domain\Klub.cs" />
+    <Compile Include="Domain\KlubUcesnik.cs" />
+    <Compile Include="Domain\NastupNaSpravi.cs" />
+    <Compile Include="Domain\Ocena.cs" />
+    <Compile Include="Domain\OcenaBase.cs" />
+    <Compile Include="Domain\Opcije.cs" />
+    <Compile Include="Domain\Pol.cs" />
+    <Compile Include="Domain\PoredakEkipno.cs" />
+    <Compile Include="Domain\PoredakPreskok.cs" />
+    <Compile Include="Domain\PoredakSprava.cs" />
+    <Compile Include="Domain\PoredakUkupno.cs" />
+    <Compile Include="Domain\Propozicije.cs" />
+    <Compile Include="Domain\RasporedNastupa.cs" />
+    <Compile Include="Domain\RasporedSudija.cs" />
+    <Compile Include="Domain\RegistarskiBroj.cs" />
+    <Compile Include="Domain\Rezultat.cs" />
+    <Compile Include="Domain\RezultatEkipno.cs" />
+    <Compile Include="Domain\RezultatPreskok.cs" />
+    <Compile Include="Domain\RezultatskoTakmicenje.cs" />
+    <Compile Include="Domain\RezultatskoTakmicenjeDescription.cs" />
+    <Compile Include="Domain\RezultatSprava.cs" />
+    <Compile Include="Domain\RezultatUkupno.cs" />
+    <Compile Include="Domain\RezultatUkupnoExtended.cs" />
+    <Compile Include="Domain\SablonRasporedaNastupaTakm1.cs" />
+    <Compile Include="Domain\SablonRasporedaNastupaTakm1Item.cs" />
+    <Compile Include="Domain\Sprava.cs" />
+    <Compile Include="Domain\StartListaNaSpravi.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Domain\Sudija.cs" />
+    <Compile Include="Domain\SudijaNaSpravi.cs" />
+    <Compile Include="Domain\SudijaUcesnik.cs" />
+    <Compile Include="Domain\SudijskaUloga.cs" />
+    <Compile Include="Domain\SudijskiOdborNaSpravi.cs" />
+    <Compile Include="Domain\TakmicarskaKategorija.cs" />
+    <Compile Include="Domain\Takmicenje.cs" />
+    <Compile Include="Domain\DrzavaUcesnik.cs" />
+    <Compile Include="Domain\Takmicenje1.cs" />
+    <Compile Include="Domain\Takmicenje2.cs" />
+    <Compile Include="Domain\Takmicenje3.cs" />
+    <Compile Include="Domain\Takmicenje4.cs" />
+    <Compile Include="Domain\UcesnikFinala.cs" />
+    <Compile Include="Domain\UcesnikTakmicenja2.cs" />
+    <Compile Include="Domain\UcesnikTakmicenja3.cs" />
+    <Compile Include="Domain\UcesnikTakmicenja4.cs" />
+    <Compile Include="Exceptions\BusinessException.cs" />
+    <Compile Include="Exceptions\InfrastructureException.cs" />
+    <Compile Include="Exceptions\SmallPageSizeException.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="Notification.cs" />
+    <Compile Include="NotificationMessage.cs" />
+    <Compile Include="Data\NHibernate\PersistentConfigurationBuilder.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Content Include="BiltenPodaci.sdf">
+    </Content>
+    <None Include="App.config" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja2.hbm.xml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Report\EkipeIzvestaj.cs" />
+    <Compile Include="Report\Izvestaj.cs" />
+    <Compile Include="Report\Report.cs" />
+    <Compile Include="Report\SpravaIzvestaj.cs" />
+    <Compile Include="Report\UkupnoIzvestaj.cs" />
+    <Compile Include="SingleInstanceApplication.cs" />
+    <Compile Include="SlikeSprava.cs" />
+    <Compile Include="Strings.cs" />
+    <Compile Include="StringUtil.cs" />
+    <Compile Include="Test\DrzaveParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Test\GimnasticariParser.cs" />
+    <Compile Include="Test\KluboviParser.cs" />
+    <Compile Include="Test\MilanoInitializer.cs" />
+    <Compile Include="Test\OceneParser.cs" />
+    <Compile Include="Test\RegistarInitializer.cs" />
+    <Compile Include="Test\RegistrovaniGimnasticariParser.cs" />
+    <Compile Include="Test\StartListaParser.cs" />
+    <Compile Include="Test\SudijeParser.cs" />
+    <Compile Include="UI\BaseEntityListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\BaseEntityListForm.Designer.cs">
+      <DependentUpon>BaseEntityListForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DataGridViewUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\DataGridViewUserControl.Designer.cs">
+      <DependentUpon>DataGridViewUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DrzavaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\DrzavaForm.Designer.cs">
+      <DependentUpon>DrzavaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DrzaveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EkipaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EkipaForm.Designer.cs">
+      <DependentUpon>EkipaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EkipeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EkipeForm.Designer.cs">
+      <DependentUpon>EkipeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EkipeUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\EkipeUserControl.Designer.cs">
+      <DependentUpon>EkipeUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EntityDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EntityDetailForm.Designer.cs">
+      <DependentUpon>EntityDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EtchedLine.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\EtchedLine.Designer.cs">
+      <DependentUpon>EtchedLine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FilterGimnasticarUcesnikForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\FilterGimnasticarUcesnikForm.Designer.cs">
+      <DependentUpon>FilterGimnasticarUcesnikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FilterGimnasticarUcesnikUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\FilterGimnasticarUcesnikUserControl.Designer.cs">
+      <DependentUpon>FilterGimnasticarUcesnikUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FilterGimnasticarUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\FilterGimnasticarUserControl.Designer.cs">
+      <DependentUpon>FilterGimnasticarUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\FilterForm.Designer.cs">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GimnasticarFilter.cs" />
+    <Compile Include="UI\FilterGimnasticarForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\FilterGimnasticarForm.Designer.cs">
+      <DependentUpon>FilterGimnasticarForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GimnasticarForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\GimnasticarForm.Designer.cs">
+      <DependentUpon>GimnasticarForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GimnasticariForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\GimnasticarUcesnikFilter.cs" />
+    <Compile Include="UI\GimnasticarUcesnikForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\GimnasticarUcesnikForm.Designer.cs">
+      <DependentUpon>GimnasticarUcesnikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GridColumnHeaderMouseClickEventArgs.cs" />
+    <Compile Include="UI\GridColumnsInitializer.cs" />
+    <Compile Include="UI\HeaderFooterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\HeaderFooterForm.Designer.cs">
+      <DependentUpon>HeaderFooterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\KategorijaGimnasticaraForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KategorijaGimnasticaraForm.Designer.cs">
+      <DependentUpon>KategorijaGimnasticaraForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\KategorijeGimnasticaraForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KlubForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KlubForm.Designer.cs">
+      <DependentUpon>KlubForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\KluboviForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KvalifikantiTak2Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KvalifikantiTak2Form.Designer.cs">
+      <DependentUpon>KvalifikantiTak2Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\KvalifikantiTak3Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KvalifikantiTak3Form.Designer.cs">
+      <DependentUpon>KvalifikantiTak3Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MessageDialogs.cs" />
+    <Compile Include="UI\MestaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MestoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MestoForm.Designer.cs">
+      <DependentUpon>MestoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OcenaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OcenaForm.Designer.cs">
+      <DependentUpon>OcenaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OceneForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OceneForm.Designer.cs">
+      <DependentUpon>OceneForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OpcijeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OpcijeForm.Designer.cs">
+      <DependentUpon>OpcijeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OtvoriTakmicenjeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OtvoriTakmicenjeForm.Designer.cs">
+      <DependentUpon>OtvoriTakmicenjeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PreviewDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\PreviewDialog.Designer.cs">
+      <DependentUpon>PreviewDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PropertyPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\PropertyPage.Designer.cs">
+      <DependentUpon>PropertyPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PropozicijeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\PropozicijeForm.designer.cs">
+      <DependentUpon>PropozicijeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RasporedSudijaEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RasporedSudijaEditorForm.Designer.cs">
+      <DependentUpon>RasporedSudijaEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RasporedSudijaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RasporedSudijaForm.Designer.cs">
+      <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatiEkipeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiEkipeForm.Designer.cs">
+      <DependentUpon>RezultatiEkipeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatiSpravaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiSpravaForm.Designer.cs">
+      <DependentUpon>RezultatiSpravaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatiUkupnoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiUkupnoForm.Designer.cs">
+      <DependentUpon>RezultatiUkupnoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatskoTakmicenjeDescriptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatskoTakmicenjeDescriptionForm.Designer.cs">
+      <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SablonRasporedaNastupaTakm1Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SablonRasporedaNastupaTakm1Form.Designer.cs">
+      <DependentUpon>SablonRasporedaNastupaTakm1Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SablonRasporedaNastupaTakm1ItemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SablonRasporedaNastupaTakm1ItemForm.Designer.cs">
+      <DependentUpon>SablonRasporedaNastupaTakm1ItemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectEntityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectEntityForm.Designer.cs">
+      <DependentUpon>SelectEntityForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectGimnasticarForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectGimnasticarForm.Designer.cs">
+      <DependentUpon>SelectGimnasticarForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectGimnasticarUcesnikForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectGimnasticarUcesnikForm.Designer.cs">
+      <DependentUpon>SelectGimnasticarUcesnikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectKategorijaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectKategorijaForm.designer.cs">
+      <DependentUpon>SelectKategorijaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectSpravaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectSpravaForm.Designer.cs">
+      <DependentUpon>SelectSpravaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectSudijaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectSudijaForm.Designer.cs">
+      <DependentUpon>SelectSudijaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectSudijaUcesnikForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectSudijaUcesnikForm.Designer.cs">
+      <DependentUpon>SelectSudijaUcesnikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SingleEntityListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SingleEntityListForm.Designer.cs">
+      <DependentUpon>SingleEntityListForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SplashScreenForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SplashScreenForm.Designer.cs">
+      <DependentUpon>SplashScreenForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SpravaGridGroupUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SpravaGridGroupUserControl.Designer.cs">
+      <DependentUpon>SpravaGridGroupUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SpravaGridMouseDownEventArgs.cs" />
+    <Compile Include="UI\SpravaGridMouseUpEventArgs.cs" />
+    <Compile Include="UI\SpravaGridRightClickEventArgs.cs" />
+    <Compile Include="UI\SpravaGridUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SpravaGridUserControl.Designer.cs">
+      <DependentUpon>SpravaGridUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\StartListaRotEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\StartListaRotEditorForm.Designer.cs">
+      <DependentUpon>StartListaRotEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\StartListeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\StartListeForm.Designer.cs">
+      <DependentUpon>StartListeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SudijaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SudijaForm.Designer.cs">
+      <DependentUpon>SudijaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SudijeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SudijeIOcenePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SudijeIOcenePage.designer.cs">
+      <DependentUpon>SudijeIOcenePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SudijeUcesniciForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SudijskeUlogeEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SudijskeUlogeEditorForm.Designer.cs">
+      <DependentUpon>SudijskeUlogeEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TakmicariKategorijeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\TakmicariKategorijeForm.Designer.cs">
+      <DependentUpon>TakmicariKategorijeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TakmicariKategorijeUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\TakmicariKategorijeUserControl.designer.cs">
+      <DependentUpon>TakmicariKategorijeUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TakmicariTakmicenjaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\TakmicariTakmicenjaForm.designer.cs">
+      <DependentUpon>TakmicariTakmicenjaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TakmicarskeKategorijeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\TakmicarskeKategorijeForm.Designer.cs">
+      <DependentUpon>TakmicarskeKategorijeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Takmicenje2Page.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Takmicenje2Page.designer.cs">
+      <DependentUpon>Takmicenje2Page.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Takmicenje3Page.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Takmicenje3Page.Designer.cs">
+      <DependentUpon>Takmicenje3Page.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Takmicenje4Page.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Takmicenje4Page.designer.cs">
+      <DependentUpon>Takmicenje4Page.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TakmicenjeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\TakmicenjeForm.Designer.cs">
+      <DependentUpon>TakmicenjeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Util\RounderToZero.cs" />
+    <Compile Include="Util\SortComparer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\BaseEntityListForm.resx">
+      <DependentUpon>BaseEntityListForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DataGridViewUserControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DataGridViewUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DrzavaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DrzavaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\EkipaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EkipaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\EkipeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EkipeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\EkipeUserControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EkipeUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\EntityDetailForm.resx">
+      <DependentUpon>EntityDetailForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\FilterGimnasticarUcesnikForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FilterGimnasticarUcesnikForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\FilterGimnasticarUcesnikUserControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FilterGimnasticarUcesnikUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\FilterGimnasticarUserControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FilterGimnasticarUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\FilterForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\FilterGimnasticarForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FilterGimnasticarForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\GimnasticarForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GimnasticarForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\GimnasticarUcesnikForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GimnasticarUcesnikForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\HeaderFooterForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>HeaderFooterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\KategorijaGimnasticaraForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>KategorijaGimnasticaraForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\KlubForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>KlubForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\KvalifikantiTak2Form.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>KvalifikantiTak2Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\KvalifikantiTak3Form.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>KvalifikantiTak3Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MestoForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MestoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OcenaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OcenaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OceneForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OceneForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OpcijeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OpcijeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OtvoriTakmicenjeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OtvoriTakmicenjeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\PreviewDialog.resx">
+      <DependentUpon>PreviewDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\PropozicijeForm.resx">
+      <DependentUpon>PropozicijeForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RasporedSudijaEditorForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RasporedSudijaEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RasporedSudijaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiEkipeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RezultatiEkipeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiSpravaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RezultatiSpravaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiUkupnoForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RezultatiUkupnoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatskoTakmicenjeDescriptionForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SablonRasporedaNastupaTakm1Form.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SablonRasporedaNastupaTakm1Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SablonRasporedaNastupaTakm1ItemForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SablonRasporedaNastupaTakm1ItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectEntityForm.resx">
+      <DependentUpon>SelectEntityForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectGimnasticarForm.resx">
+      <DependentUpon>SelectGimnasticarForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectGimnasticarUcesnikForm.resx">
+      <DependentUpon>SelectGimnasticarUcesnikForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectKategorijaForm.resx">
+      <DependentUpon>SelectKategorijaForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectSpravaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SelectSpravaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectSudijaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SelectSudijaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SingleEntityListForm.resx">
+      <DependentUpon>SingleEntityListForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Gimnasticar.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Klub.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Drzava.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\KategorijaGimnasticara.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\TakmicarskaKategorija.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\GimnasticarUcesnik.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\DrzavaUcesnik.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\KlubUcesnik.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Sudija.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Mesto.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Ekipa.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\NastupNaSpravi.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Ocena.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\SudijaUcesnik.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\SudijskiOdborNaSpravi.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RasporedSudija.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RasporedNastupa.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\StartListaNaSpravi.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\SablonRasporedaNastupaTakm1.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\SablonRasporedaNastupaTakm1Item.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Opcije.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatskoTakmicenjeDescription.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatskoTakmicenje.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Propozicije.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\DrugaOcena.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatUkupno.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakUkupno.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatSprava.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakSprava.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakEkipno.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatEkipno.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje1.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje2.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje3.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje4.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja3.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja4.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakPreskok.hbm.xml" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatPreskok.hbm.xml" />
+    <Content Include="Doc\DesignChoices.txt" />
+    <Content Include="Doc\pitanja.txt" />
+    <Content Include="Doc\Promene.txt" />
+    <Content Include="Doc\todo.txt" />
+    <Content Include="hibernate.cfg.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test\Data\DrzaveEng.txt" />
+    <Content Include="Test\Data\DrzaveSrb.txt" />
+    <Content Include="Test\Data\Klubovi.txt" />
+    <Content Include="Test\Data\KvalifikantiMuskarci.txt" />
+    <Content Include="Test\Data\KvalifikantiZene.txt" />
+    <Content Include="Test\Data\OceneKvalifikacijeMuskarci.txt" />
+    <Content Include="Test\Data\OceneKvalifikacijeZene.txt" />
+    <Content Include="Test\Data\OceneSpraveMuskarci.txt" />
+    <Content Include="Test\Data\OceneSpraveZene.txt" />
+    <Content Include="Test\Data\OceneVisebojMuskarci.txt" />
+    <Content Include="Test\Data\OceneVisebojZene.txt" />
+    <Content Include="Test\Data\RasporedSudijaMuskarciKvalifikacije.txt" />
+    <Content Include="Test\Data\RasporedSudijaMuskarciViseboj.txt" />
+    <Content Include="Test\Data\RasporedSudijaZeneKvalifikacije.txt" />
+    <Content Include="Test\Data\RasporedSudijaZeneViseboj.txt" />
+    <Content Include="Test\Data\RegistracijaTakmicara2009.txt" />
+    <Content Include="Test\Data\StartListaKvalifikacijeMuskarci.txt" />
+    <Content Include="Test\Data\StartListaKvalifikacijeZene.txt" />
+    <Content Include="Test\Data\StartListaSpraveMuskarci.txt" />
+    <Content Include="Test\Data\StartListaSpraveZene.txt" />
+    <Content Include="Test\Data\StartListaVisebojMuskarci.txt" />
+    <Content Include="Test\Data\StartListaVisebojZene.txt" />
+    <Content Include="Test\NoviSad\Kvalifikacije.txt" />
+    <Content Include="Test\NoviSad\VisebojDKMT.txt" />
+    <EmbeddedResource Include="Images\UEG.jpg" />
+    <EmbeddedResource Include="Images\Parter.bmp" />
+    <EmbeddedResource Include="Images\DvovisinskiRazboj.bmp" />
+    <EmbeddedResource Include="Images\Greda.bmp" />
+    <EmbeddedResource Include="Images\Karike.bmp" />
+    <EmbeddedResource Include="Images\Konj.bmp" />
+    <EmbeddedResource Include="Images\Preskok.bmp" />
+    <EmbeddedResource Include="Images\Razboj.bmp" />
+    <EmbeddedResource Include="Images\Vratilo.bmp" />
+    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje.hbm.xml" />
+    <EmbeddedResource Include="UI\SplashScreenForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SplashScreenForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SpravaGridGroupUserControl.resx">
+      <DependentUpon>SpravaGridGroupUserControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SpravaGridUserControl.resx">
+      <DependentUpon>SpravaGridUserControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\StartListaRotEditorForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StartListaRotEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\StartListeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StartListeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SudijaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SudijaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SudijeIOcenePage.resx">
+      <DependentUpon>SudijeIOcenePage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SudijskeUlogeEditorForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SudijskeUlogeEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TakmicariKategorijeForm.resx">
+      <DependentUpon>TakmicariKategorijeForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TakmicariKategorijeUserControl.resx">
+      <DependentUpon>TakmicariKategorijeUserControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TakmicariTakmicenjaForm.resx">
+      <DependentUpon>TakmicariTakmicenjaForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TakmicarskeKategorijeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TakmicarskeKategorijeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Takmicenje2Page.resx">
+      <DependentUpon>Takmicenje2Page.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Takmicenje3Page.resx">
+      <DependentUpon>Takmicenje3Page.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Takmicenje4Page.resx">
+      <DependentUpon>Takmicenje4Page.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TakmicenjeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TakmicenjeForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)..\Libs\sqlce*.dll" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)..\Libs\LinFu.DynamicProxy.dll" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,75 @@
+﻿Superior Jury
+MARZOLLA	Gianfranco		UEG ITA President
+APOLZAN		Mircea Dumitru	UEG ROU 
+HALLER		Claus			UEG SUI	
+GRECU		Danut			UEG ROU Floor Supervisor
+THINGVOLD	Tom				UEG NOR Pommel Horse Supervisor
+MACCHIA		Alain			UEG FRA Rings Supervisor
+STRUPLER	Andreas			UEG SUI Vault Supervisor
+WISCHNIA	Jacob			UEG ISR Parallel Bars Supervisor
+ALBRECHT	Holger			UEG GER High Bar Supervisor
+
+Floor
+D1		LAZZARICH	Diego			UEG ITA
+D2		BLANQUINO	Jean-François	FRA
+E1		ROCHA		Joao			POR
+E2		ALFOSOV		Valery			RUS
+E3		NUOTIO		Timo			FIN
+E4		JOHANSEN	Borge			NOR
+E5		FEDERAU		Andrey			BLR
+E6		PROVIAS		Nikolaos		GRE
+Timer 1	BIRZU		Dragos			ROU
+Line 1	REZACS		Peter			HUN
+Line 2	KODRIC		Severin			SLO
+
+Pommel Horse
+D1	REIMERING	Vincent		UEG NED
+D2	MITEV		Dimitar		BUL
+E1	DEJANOVIĆ	Dejan		SRB
+E2	GUNNARSSON	Heimir Jon	ISL
+E3	REZIC		Petar		CRO
+E4	SOSNIN		Valerij		LTU
+E5	HANLEY		Nikki		GBR
+E6	CARRILES	Pablo		ESP
+
+Rings
+D1	SOUSA			Alvaro		UEG POR
+D2	VUKOJA			Mario		CRO
+E1	JANSSON			Gunnar		SWE
+E2	KURTEV			Zdravko		BUL
+E3	JUCKER			Kurt		SUI
+E4	KELEMEN			Zoltan		HUN
+E5	DRABEK			Libor		CZE
+E6	GAMSAKHURDIA	Besarion	GEO
+
+Vault
+D1		BERCZI				Istvan		UEG HUN
+D2		DONOGHUE			Denis		IRL
+E1		FETZER				Joerg		GER
+E2		INNOCENTI			Giovanni	ITA
+E3		HODZIC LEDERER		Enis		SLO
+E4		GEERAETS			Paul		NED
+E5		KONSTANTINOVICHS	Bronislavs	LAT
+E6		MAKUTS				Bogdan		UKR
+Line 1	BOUTAKIS			Eleftherios	GRE
+
+Parallel Bars
+D1		TOMBS		Andrew		UEG GBR
+D2		TOTH		Josef		AUT
+E1		BRANDTOFT	Morten		DEN
+E2		SHIPPIS		Pnayiotis	CYP
+E3		CAGLAR		Ali Eftal	TUR
+E4		BAGUELIN	Xavier		FRA
+E5		SEROBJAN	Hakob		ARM
+E6		KUKSENKOV	Yuliy		UKR
+Timer 1	MANDICH		Flavio		ITA
+
+High Bar
+D1	MITSKEVICH	Artur		UEG LAT
+D2	COUSSEMENT	Alain		BEL
+E1	ALIYEV		Rza			AZE
+E2	BRICKNER	Rafael		ISR
+E3	RUPCIK		Lubos		SVK
+E4	POP			Augustin	ROU
+E5	KOPERSKI	Adam		POL
+E6	SCHEDLER	Andreas		AUT

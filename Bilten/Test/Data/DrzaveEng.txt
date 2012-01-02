@@ -1,0 +1,39 @@
+ARM Armenia
+AUT Austria
+AZE Azerbaijan
+BEL Belgium
+BLR Belarus
+BUL Bulgaria
+CRO Croatia
+CYP Cyprus
+CZE Czech Republic
+DEN Denmark
+ESP Spain
+FIN Finland
+FRA France
+GBR Great Britain
+GEO Georgia
+GER Germany
+GRE Greece
+HUN Hungary
+IRL Ireland
+ISL Iceland
+ISR Israel
+ITA Italy
+LAT Latvia
+LTU Lithuania
+LUX Luxembourg
+NED Netherlands
+NOR Norway
+POL Poland
+POR Portugal
+ROU Romania
+RUS Russia
+SLO Slovenia
+SRB Serbia
+SUI Switzerland
+SVK Slovakia
+SWE Sweden
+TUR Turkey
+UKR Ukraine
+

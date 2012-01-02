@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <!-- NOTE: Koristim istu tabelu kao PoredakSprava -->
+  <class name="PoredakPreskok" table="poredak_sprava" >
+    <id name="Id" column="poredak_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <property name="DeoTakmicenjaKod" column="deo_takmicenja_kod" type="Byte" />
+    <property name="Sprava" column="sprava" type="Byte" />
+    <bag name="Rezultati" lazy="true" cascade="all-delete-orphan" >
+      <key column="poredak_id" />
+      <one-to-many class="RezultatPreskok" />
+    </bag>
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="RasporedNastupa" table="raspored_nastupa" lazy="true">
+    <id name="Id" column="raspored_nastupa_id">
+      <generator class="identity" />
+    </id>
+    <property name="DeoTakmicenjaKod" column="deo_takmicenja_kod" type="Byte" />
+    <set name="Kategorije" table="raspored_nastupa_kategorija" lazy="true">
+      <key column="raspored_nastupa_id"/>
+      <many-to-many class="TakmicarskaKategorija" column="kategorija_id"/>
+    </set>
+    <set name="StartListe" lazy="true" cascade="all-delete-orphan" >
+      <key column="raspored_nastupa_id" />
+      <one-to-many class="StartListaNaSpravi" />
+    </set>
+  </class>
+
+  <query name="FindRaspNastByTakDeoTakmFetch">
+    <![CDATA[
+      select distinct r
+      from RasporedNastupa r
+      join fetch r.Kategorije k
+      left join fetch r.StartListe s
+      left join fetch s.Nastupi n
+      left join fetch n.Gimnasticar g
+      left join fetch g.DrzavaUcesnik dr
+      left join fetch g.KlubUcesnik kl
+      where r.DeoTakmicenjaKod = :deoTak
+      and k.Takmicenje.Id = :takmicenje
+    ]]>
+  </query>
+
+  <query name="FindRaspNastById">
+    <![CDATA[
+      select distinct r
+      from RasporedNastupa r
+      join fetch r.Kategorije k
+      left join fetch r.StartListe s
+      left join fetch s.Nastupi n
+      left join fetch n.Gimnasticar g
+      left join fetch g.DrzavaUcesnik dr
+      left join fetch g.KlubUcesnik kl
+      where r.Id = :id
+    ]]>
+  </query>
+
+</hibernate-mapping>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="NastupNaSpravi" table="nastup_na_spravi" >
+    <id name="Id" column="nastup_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <property name="NastupaDvaPuta" column="nastupa_dva_puta" type="Boolean" />
+    <many-to-one name="Gimnasticar" class="GimnasticarUcesnik" column="gimnasticar_id" />
+  </class>
+
+</hibernate-mapping>

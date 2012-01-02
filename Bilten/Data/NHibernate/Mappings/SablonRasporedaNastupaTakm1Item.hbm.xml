@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten"
+                   namespace="Bilten.Domain">
+
+  <class name="SablonRasporedaNastupaTakm1Item" table="sablon_item" >
+    <id name="Id" column="sablon_item_id" type="Int32">
+      <generator class="identity"/>
+    </id>
+    <property name="Sprava" column="sprava" type="Byte" />
+    <many-to-one name="Ekipa" class="Ekipa" column="ekipa_id" />
+    <property name="BrojUcesnika" column="broj_ucesnika" type="Byte" />
+    <property name="RedBroj" column="red_broj" type="Byte" />
+  </class>
+
+</hibernate-mapping>
