@@ -193,7 +193,8 @@ namespace Bilten.UI
                 else
                     add();
 
-                dataContext.Commit();
+                if (persistEntity)
+                    dataContext.Commit();
                 closedByOK = true;
             }
             catch (BusinessException ex)
