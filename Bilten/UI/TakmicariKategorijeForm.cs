@@ -193,6 +193,21 @@ namespace Bilten.UI
             return new List<GimnasticarUcesnik>(dataContext.GetByCriteria<GimnasticarUcesnik>(q));
         }
 
+        private IList<GimnasticarUcesnik> loadGimnasticari(Takmicenje tak, TakmicarskaKategorija kat)
+        {
+            string query = @"select distinct g
+                    from GimnasticarUcesnik g
+                    where g.Takmicenje = :tak
+                    and g.TakmicarskaKategorija = :kat
+                    order by g.Prezime, g.Ime";
+
+            IList<GimnasticarUcesnik> result = dataContext.
+                ExecuteQuery<GimnasticarUcesnik>(QueryLanguageType.HQL, query,
+                        new string[] { "tak", "kat" },
+                        new object[] { tak, kat });
+            return result;
+        }
+
         private void setGimnasticari(List<GimnasticarUcesnik> gimnasticari)
         {
             getActiveDataGridViewUserControl().setItems<GimnasticarUcesnik>(gimnasticari);
@@ -216,36 +231,77 @@ namespace Bilten.UI
 
         private void addCmd()
         {
-            DialogResult dlgResult = DialogResult.None;
-            SelectGimnasticarForm form = null;
-            try
-            {
-                form = new SelectGimnasticarForm(ActiveKategorija.Gimnastika);
-                dlgResult = form.ShowDialog();
-            }
-            catch (InfrastructureException ex)
-            {
-                MessageDialogs.showError(ex.Message, this.Text);
-            }
-
-            if (dlgResult != DialogResult.OK || form.SelectedEntities.Count == 0)
+            NacinIzboraGimnasticaraForm form2 = new NacinIzboraGimnasticaraForm();
+            if (form2.ShowDialog() != DialogResult.OK)
                 return;
+
+            List<GimnasticarUcesnik> selGimnasticari = new List<GimnasticarUcesnik>();
+
+            DialogResult dlgResult = DialogResult.None;
+            SelectGimnasticariPrethTakmForm form3 = null;
+            SelectGimnasticarForm form = null;
+            if (form2.IzPrethodnogTakmicenja)
+            {
+                try
+                {
+                    form3 = new SelectGimnasticariPrethTakmForm(ActiveKategorija.Gimnastika);
+                    dlgResult = form3.ShowDialog();
+                }
+                catch (InfrastructureException ex)
+                {
+                    MessageDialogs.showError(ex.Message, this.Text);
+                }
+                if (dlgResult != DialogResult.OK || form3.SelectedGimnasticari.Count == 0)
+                    return;
+            }
+            else
+            {
+                try
+                {
+                    form = new SelectGimnasticarForm(ActiveKategorija.Gimnastika);
+                    dlgResult = form.ShowDialog();
+                }
+                catch (InfrastructureException ex)
+                {
+                    MessageDialogs.showError(ex.Message, this.Text);
+                }
+
+                if (dlgResult != DialogResult.OK || form.SelectedEntities.Count == 0)
+                    return;
+            }
 
             bool added = false;
             List<GimnasticarUcesnik> okGimnasticari = new List<GimnasticarUcesnik>();
-            List<Gimnasticar> illegalGimnasticari = new List<Gimnasticar>();
+            List<GimnasticarUcesnik> illegalGimnasticari = new List<GimnasticarUcesnik>();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                foreach (Gimnasticar g in form.SelectedEntities)
+                if (form2.IzPrethodnogTakmicenja)
                 {
-                    GimnasticarUcesnik gimnasticar = createGimnasticarUcesnik(
-                        g, ActiveKategorija);
-                    if (canAddGimnasticar(gimnasticar, ActiveKategorija))
-                        okGimnasticari.Add(gimnasticar);
+                    foreach (GimnasticarUcesnik g in form3.SelectedGimnasticari)
+                    {
+                        selGimnasticari.Add(createGimnasticarUcesnik(
+                            g, ActiveKategorija));
+                    }
+                }
+                else
+                {
+                    foreach (Gimnasticar g in form.SelectedEntities)
+                    {
+                        selGimnasticari.Add(createGimnasticarUcesnik(
+                            g, ActiveKategorija));
+                    }
+                }
+                
+                foreach (GimnasticarUcesnik g in selGimnasticari)
+                {
+                    //GimnasticarUcesnik gimnasticar = createGimnasticarUcesnik(
+                    //    g, ActiveKategorija);
+                    if (canAddGimnasticar(g/*imnasticar*/, ActiveKategorija))
+                        okGimnasticari.Add(g/*imnasticar*/);
                     else
                         illegalGimnasticari.Add(g);
                 }
@@ -368,6 +424,53 @@ namespace Bilten.UI
                     klubUcesnik = new KlubUcesnik();
                     klubUcesnik.Naziv = g.Klub.Naziv;
                     klubUcesnik.Kod = g.Klub.Kod;
+                    klubUcesnik.Takmicenje = kategorija.Takmicenje;
+                    dataContext.Add(klubUcesnik);
+                }
+                result.KlubUcesnik = klubUcesnik;
+            }
+            return result;
+        }
+
+        private GimnasticarUcesnik createGimnasticarUcesnik(GimnasticarUcesnik g,
+            TakmicarskaKategorija kategorija)
+        {
+            GimnasticarUcesnik result = new GimnasticarUcesnik();
+            result.Ime = g.Ime;
+            result.SrednjeIme = g.SrednjeIme;
+            result.Prezime = g.Prezime;
+            result.Gimnastika = g.Gimnastika;
+            result.DatumRodjenja = g.DatumRodjenja;
+            result.RegistarskiBroj = g.RegistarskiBroj;
+            result.TakmicarskaKategorija = kategorija;
+            result.Takmicenje = kategorija.Takmicenje;
+            if (g.DrzavaUcesnik == null)
+                result.DrzavaUcesnik = null;
+            else
+            {
+                DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(kategorija.Takmicenje.Id,
+                    g.DrzavaUcesnik.Naziv);
+                if (drzavaUcesnik == null)
+                {
+                    drzavaUcesnik = new DrzavaUcesnik();
+                    drzavaUcesnik.Naziv = g.DrzavaUcesnik.Naziv;
+                    drzavaUcesnik.Kod = g.DrzavaUcesnik.Kod;
+                    drzavaUcesnik.Takmicenje = kategorija.Takmicenje;
+                    dataContext.Add(drzavaUcesnik);
+                }
+                result.DrzavaUcesnik = drzavaUcesnik;
+            }
+            if (g.KlubUcesnik == null)
+                result.KlubUcesnik = null;
+            else
+            {
+                KlubUcesnik klubUcesnik = findKlubUcesnik(kategorija.Takmicenje.Id,
+                    g.KlubUcesnik.Naziv);
+                if (klubUcesnik == null)
+                {
+                    klubUcesnik = new KlubUcesnik();
+                    klubUcesnik.Naziv = g.KlubUcesnik.Naziv;
+                    klubUcesnik.Kod = g.KlubUcesnik.Kod;
                     klubUcesnik.Takmicenje = kategorija.Takmicenje;
                     dataContext.Add(klubUcesnik);
                 }

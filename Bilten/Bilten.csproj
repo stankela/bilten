@@ -5,7 +5,7 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -350,6 +350,12 @@
     <Compile Include="UI\MestoForm.Designer.cs">
       <DependentUpon>MestoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\NacinIzboraGimnasticaraForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\NacinIzboraGimnasticaraForm.Designer.cs">
+      <DependentUpon>NacinIzboraGimnasticaraForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\OcenaForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -481,6 +487,12 @@
     </Compile>
     <Compile Include="UI\SelectSudijaUcesnikForm.Designer.cs">
       <DependentUpon>SelectSudijaUcesnikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SelectGimnasticariPrethTakmForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectGimnasticariPrethTakmForm.Designer.cs">
+      <DependentUpon>SelectGimnasticariPrethTakmForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SingleEntityListForm.cs">
       <SubType>Form</SubType>
@@ -691,6 +703,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>MestoForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\NacinIzboraGimnasticaraForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NacinIzboraGimnasticaraForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\OcenaForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>OcenaForm.cs</DependentUpon>
@@ -770,6 +786,10 @@
     <EmbeddedResource Include="UI\SelectSudijaForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SelectSudijaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectGimnasticariPrethTakmForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SelectGimnasticariPrethTakmForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SingleEntityListForm.resx">
       <DependentUpon>SingleEntityListForm.cs</DependentUpon>
