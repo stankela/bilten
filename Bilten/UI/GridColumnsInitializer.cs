@@ -19,6 +19,15 @@ namespace Bilten.UI
             dgw.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 
+        public static void initGimnasticarUcesnik2(DataGridViewUserControl dgw)
+        {
+            dgw.AddColumn("Ime", "Ime", 100);
+            dgw.AddColumn("Prezime", "Prezime", 100);
+            dgw.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
+            dgw.AddColumn("Klub", "KlubUcesnik", 130);
+            dgw.AddColumn("Drzava", "DrzavaUcesnik", 100);
+        }
+
         public static void initRasporedSudija(DataGridViewUserControl dgw)
         {
             dgw.AddColumn("Funkcija", "Uloga", 100);

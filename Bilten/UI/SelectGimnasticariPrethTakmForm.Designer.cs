@@ -38,6 +38,7 @@ namespace Bilten.UI
             // 
             // btnOK
             // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(905, 402);
             this.btnOK.Name = "btnOK";
@@ -49,6 +50,7 @@ namespace Bilten.UI
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(999, 402);
             this.btnCancel.Name = "btnCancel";
@@ -77,6 +79,8 @@ namespace Bilten.UI
             // 
             // treeView1
             // 
+            this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.treeView1.Location = new System.Drawing.Point(15, 42);
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(422, 383);
@@ -86,13 +90,16 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl2
             // 
+            this.dataGridViewUserControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl2.ColumnHeaderSorting = true;
             this.dataGridViewUserControl2.Location = new System.Drawing.Point(463, 42);
             this.dataGridViewUserControl2.Name = "dataGridViewUserControl2";
             this.dataGridViewUserControl2.Size = new System.Drawing.Size(611, 341);
             this.dataGridViewUserControl2.TabIndex = 6;
             // 
-            // SelectTakmicenjeKategorijaForm
+            // SelectGimnasticariPrethTakmForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -105,7 +112,8 @@ namespace Bilten.UI
             this.Controls.Add(this.lblTakmicenja);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
-            this.Name = "SelectTakmicenjeKategorijaForm";
+            this.Name = "SelectGimnasticariPrethTakmForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SelectTakmicenjeKategorijaForm";
             this.ResumeLayout(false);
             this.PerformLayout();

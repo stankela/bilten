@@ -16,8 +16,26 @@ namespace Bilten.UI
     {
         private Nullable<int> oldTakBroj;
         private TakmicarskaKategorija kategorija;
+        private IList<KlubUcesnik> klubovi;
+        private IList<DrzavaUcesnik> drzave;
         private IList<RezultatskoTakmicenje> rezTakmicenja;
 
+        private KlubUcesnik emptyKlub;
+        private DrzavaUcesnik emptyDrzava;
+        private readonly string PRAZNO = "<<Prazno>>";
+
+        private KlubUcesnik SelectedKlub
+        {
+            get { return cmbKlub.SelectedItem as KlubUcesnik; }
+            set { cmbKlub.SelectedItem = value; }
+        }
+
+        private DrzavaUcesnik SelectedDrzava
+        {
+            get { return cmbDrzava.SelectedItem as DrzavaUcesnik; }
+            set { cmbDrzava.SelectedItem = value; }
+        }
+        
         // TODO: Dodaj mogucnost promene kategorije (samo bi se promenila kategorija dok bi sve drugo ostalo
         // isto - gimnasticar bi i dalje bio u istim takmicenjima, ekipama, imao bi iste ocene. Prvo proveri da
         // li je ovo uopste moguce, tj. da li nece da dovede do greske u nekom drugom delu programa).
@@ -28,13 +46,47 @@ namespace Bilten.UI
             if (gimnasticarUcesnikId == null)
                 throw new ArgumentException("GimnasticarUcesnikForm only works in edit mode.");
             InitializeComponent();
+
+            emptyKlub = new KlubUcesnik();
+            emptyKlub.Naziv = PRAZNO;
+            emptyDrzava = new DrzavaUcesnik();
+            emptyDrzava.Naziv = PRAZNO;
+
             this.kategorija = kategorija;
             initialize(gimnasticarUcesnikId, true);
         }
 
         protected override void loadData()
         {
+            klubovi = loadKlubovi(kategorija.Takmicenje.Id);
+            drzave = loadDrzave(kategorija.Takmicenje.Id);
             rezTakmicenja = loadRezTakmicenja((GimnasticarUcesnik)entity);
+        }
+
+        private IList<KlubUcesnik> loadKlubovi(int takmicenjeId)
+        {
+            string query = @"from KlubUcesnik k
+                    where k.Takmicenje.Id = :takmicenjeId
+                    order by k.Naziv";
+            IList<KlubUcesnik> result = dataContext.
+                ExecuteQuery<KlubUcesnik>(QueryLanguageType.HQL, query,
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            result.Insert(0, emptyKlub);
+            return result;
+        }
+
+        private IList<DrzavaUcesnik> loadDrzave(int takmicenjeId)
+        {
+            string query = @"from DrzavaUcesnik d
+                    where d.Takmicenje.Id = :takmicenjeId
+                    order by d.Naziv";
+            IList<DrzavaUcesnik> result = dataContext.
+                ExecuteQuery<DrzavaUcesnik>(QueryLanguageType.HQL, query,
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            result.Insert(0, emptyDrzava);
+            return result;
         }
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(GimnasticarUcesnik g)
@@ -55,8 +107,14 @@ namespace Bilten.UI
             txtGimnastika.Text = String.Empty;
             txtDatumRodj.Text = String.Empty;
             txtRegBroj.Text = String.Empty;
-            txtKlub.Text = String.Empty;
-            txtDrzava.Text = String.Empty;
+
+            cmbKlub.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKlub.DataSource = klubovi;
+            cmbKlub.DisplayMember = "Naziv";
+
+            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDrzava.DataSource = drzave;
+            cmbDrzava.DisplayMember = "Naziv";
 
             txtTakKategorija.Text = kategorija.ToString();
             txtTakBroj.Text = String.Empty;
@@ -93,14 +151,8 @@ namespace Bilten.UI
             if (gimnasticar.RegistarskiBroj != null)
                 txtRegBroj.Text = gimnasticar.RegistarskiBroj.ToString();
 
-            txtKlub.Text = String.Empty;
-            if (gimnasticar.KlubUcesnik != null)
-                txtKlub.Text = gimnasticar.KlubUcesnik.Naziv;
-
-            txtDrzava.Text = String.Empty;
-            if (gimnasticar.DrzavaUcesnik != null)
-                txtDrzava.Text = gimnasticar.DrzavaUcesnik.Naziv;
-
+            SelectedKlub = gimnasticar.KlubUcesnik;
+            SelectedDrzava = gimnasticar.DrzavaUcesnik;
             txtTakKategorija.Text = kategorija.ToString();
 
             txtTakBroj.Text = String.Empty;
@@ -145,6 +197,14 @@ namespace Bilten.UI
             else
                 gimnasticar.TakmicarskiBroj = int.Parse(txtTakBroj.Text);
 
+            gimnasticar.KlubUcesnik = SelectedKlub;
+            if (gimnasticar.KlubUcesnik != null && gimnasticar.KlubUcesnik.Naziv == PRAZNO)
+                gimnasticar.KlubUcesnik = null;
+            
+            gimnasticar.DrzavaUcesnik = SelectedDrzava;
+            if (gimnasticar.DrzavaUcesnik != null && gimnasticar.DrzavaUcesnik.Naziv == PRAZNO)
+                gimnasticar.DrzavaUcesnik = null;
+            
             gimnasticar.NastupaZaDrzavu = rbtDrzava.Checked;
         }
 

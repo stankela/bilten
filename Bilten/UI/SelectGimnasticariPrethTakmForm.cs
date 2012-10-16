@@ -59,7 +59,16 @@ namespace Bilten.UI
         {
             this.Text = "Izaberi gimnasticare";
 
-            GridColumnsInitializer.initGimnasticarUcesnik(dataGridViewUserControl2);
+            dataGridViewUserControl2.GridColumnHeaderMouseClick +=
+                new EventHandler<GridColumnHeaderMouseClickEventArgs>(dataGridViewUserControl2_GridColumnHeaderMouseClick);
+            GridColumnsInitializer.initGimnasticarUcesnik2(dataGridViewUserControl2);
+        }
+
+        void dataGridViewUserControl2_GridColumnHeaderMouseClick(object sender, GridColumnHeaderMouseClickEventArgs e)
+        {
+            DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
+            if (dgwuc != null)
+                dgwuc.onColumnHeaderMouseClick<GimnasticarUcesnik>(e.DataGridViewCellMouseEventArgs);
         }
 
         private void setGimnasticari(List<GimnasticarUcesnik> gimnasticari, TakmicarskaKategorija kat)
