@@ -7,18 +7,18 @@ namespace Bilten.Domain
 {
     public class PoredakUkupno : DomainObject
     {
-        private IList<RezultatUkupno> _rezultati = new List<RezultatUkupno>();
-        public virtual IList<RezultatUkupno> Rezultati
-        {
-            get { return _rezultati; }
-            private set { _rezultati = value; }
-        }
-
         private DeoTakmicenjaKod deoTakKod;
         public virtual DeoTakmicenjaKod DeoTakmicenjaKod
         {
             get { return deoTakKod; }
             set { deoTakKod = value; }
+        }
+
+        private IList<RezultatUkupno> _rezultati = new List<RezultatUkupno>();
+        public virtual IList<RezultatUkupno> Rezultati
+        {
+            get { return _rezultati; }
+            private set { _rezultati = value; }
         }
 
         protected PoredakUkupno()
@@ -49,7 +49,7 @@ namespace Bilten.Domain
         public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene)
         {
             IList<GimnasticarUcesnik> gimnasticari;
-            if (DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
             else
                 gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje2.getUcesniciGimKvalifikanti());
@@ -119,7 +119,7 @@ namespace Bilten.Domain
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (DeoTakmicenjaKod != DeoTakmicenjaKod.Takmicenje1)
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1)
                 return;
             if (!propozicije.PostojiTak2)
                 return;

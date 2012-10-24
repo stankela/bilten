@@ -125,6 +125,13 @@ namespace Bilten.Domain
             set { _poredakEkipno = value; }
         }
 
+        private PoredakUkupnoFinaleKupa _poredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
+        public virtual PoredakUkupnoFinaleKupa PoredakUkupnoFinaleKupa
+        {
+            get { return _poredakUkupnoFinaleKupa; }
+            set { _poredakUkupnoFinaleKupa = value; }
+        }
+
         protected Takmicenje1()
         { 
         

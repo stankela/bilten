@@ -36,15 +36,18 @@ namespace Bilten.UI
             this.txtMesto = new System.Windows.Forms.TextBox();
             this.lblGimnastika = new System.Windows.Forms.Label();
             this.cmbGimnastika = new System.Windows.Forms.ComboBox();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.btnIzaberiPrvaDvaKola = new System.Windows.Forms.Button();
+            this.ckbFinaleKupa = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(203, 237);
+            this.btnOk.Location = new System.Drawing.Point(219, 371);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(295, 237);
+            this.btnCancel.Location = new System.Drawing.Point(311, 371);
             // 
             // lblNaziv
             // 
@@ -111,11 +114,42 @@ namespace Bilten.UI
             this.cmbGimnastika.Size = new System.Drawing.Size(98, 21);
             this.cmbGimnastika.TabIndex = 9;
             // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(24, 275);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(325, 43);
+            this.listBox1.TabIndex = 11;
+            // 
+            // btnIzaberiPrvaDvaKola
+            // 
+            this.btnIzaberiPrvaDvaKola.Location = new System.Drawing.Point(24, 324);
+            this.btnIzaberiPrvaDvaKola.Name = "btnIzaberiPrvaDvaKola";
+            this.btnIzaberiPrvaDvaKola.Size = new System.Drawing.Size(130, 23);
+            this.btnIzaberiPrvaDvaKola.TabIndex = 12;
+            this.btnIzaberiPrvaDvaKola.Text = "Izaberi I kolo i II kolo";
+            this.btnIzaberiPrvaDvaKola.UseVisualStyleBackColor = true;
+            this.btnIzaberiPrvaDvaKola.Click += new System.EventHandler(this.btnIzaberiPrvaDvaKola_Click);
+            // 
+            // ckbFinaleKupa
+            // 
+            this.ckbFinaleKupa.AutoSize = true;
+            this.ckbFinaleKupa.Location = new System.Drawing.Point(24, 252);
+            this.ckbFinaleKupa.Name = "ckbFinaleKupa";
+            this.ckbFinaleKupa.Size = new System.Drawing.Size(81, 17);
+            this.ckbFinaleKupa.TabIndex = 10;
+            this.ckbFinaleKupa.Text = "Finale kupa";
+            this.ckbFinaleKupa.UseVisualStyleBackColor = true;
+            // 
             // TakmicenjeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(396, 278);
+            this.ClientSize = new System.Drawing.Size(398, 408);
+            this.Controls.Add(this.ckbFinaleKupa);
+            this.Controls.Add(this.btnIzaberiPrvaDvaKola);
+            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.cmbGimnastika);
             this.Controls.Add(this.lblGimnastika);
             this.Controls.Add(this.lblNaziv);
@@ -136,6 +170,9 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.lblNaziv, 0);
             this.Controls.SetChildIndex(this.lblGimnastika, 0);
             this.Controls.SetChildIndex(this.cmbGimnastika, 0);
+            this.Controls.SetChildIndex(this.listBox1, 0);
+            this.Controls.SetChildIndex(this.btnIzaberiPrvaDvaKola, 0);
+            this.Controls.SetChildIndex(this.ckbFinaleKupa, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -151,5 +188,8 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtMesto;
         private System.Windows.Forms.Label lblGimnastika;
         private System.Windows.Forms.ComboBox cmbGimnastika;
+        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Button btnIzaberiPrvaDvaKola;
+        private System.Windows.Forms.CheckBox ckbFinaleKupa;
     }
 }

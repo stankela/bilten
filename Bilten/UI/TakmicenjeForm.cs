@@ -8,19 +8,19 @@ using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
+using Bilten.Data;
 
 namespace Bilten.UI
 {
     public partial class TakmicenjeForm : EntityDetailForm
     {
-        private string oldNaziv;
-        private DateTime oldDatum;
-        private Gimnastika oldGimnastika;
+        private Takmicenje prvoKolo;
+        private Takmicenje drugoKolo;
         
-        public TakmicenjeForm(Nullable<int> takmicenjeId)
+        public TakmicenjeForm()
         {
             InitializeComponent();
-            initialize(takmicenjeId, true);
+            initialize(null, true);
         }
 
         protected override void initUI()
@@ -32,37 +32,19 @@ namespace Bilten.UI
             txtDatum.Text = String.Empty;
             txtMesto.Text = String.Empty;
 
+            prvoKolo = null;
+            drugoKolo = null;
+            listBox1.Items.Clear();
+
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbGimnastika.Items.AddRange(new string[] { "MSG", "ZSG" });
             cmbGimnastika.SelectedIndex = -1;
-        }
 
-        protected override DomainObject getEntityById(int id)
-        {
-            return dataContext.GetById<Takmicenje>(id);
-        }
+            ckbFinaleKupa.Checked = false;
+            listBox1.Enabled = false;
+            btnIzaberiPrvaDvaKola.Enabled = false;
 
-        protected override void saveOriginalData(DomainObject entity)
-        {
-            Takmicenje takmicenje = (Takmicenje)entity;
-            oldNaziv = takmicenje.Naziv;
-            oldDatum = takmicenje.Datum;
-            oldGimnastika = takmicenje.Gimnastika;
-        }
-
-        protected override void updateUIFromEntity(DomainObject entity)
-        {
-            Takmicenje takmicenje = (Takmicenje)entity;
-            txtNaziv.Text = takmicenje.Naziv;
-            txtDatum.Text = takmicenje.Datum.ToString("d");
-            txtMesto.Text = takmicenje.Mesto;
-
-            if (takmicenje.Gimnastika == Gimnastika.MSG)
-                cmbGimnastika.SelectedIndex = 0;
-            else if (takmicenje.Gimnastika == Gimnastika.ZSG)
-                cmbGimnastika.SelectedIndex = 1;
-            else
-                cmbGimnastika.SelectedIndex = -1;
+            this.ckbFinaleKupa.CheckedChanged += new System.EventHandler(this.ckbFinaleKupa_CheckedChanged);
         }
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
@@ -99,6 +81,12 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "Mesto", "Mesto odrzavanja je obavezno.");
             }
+
+            if (ckbFinaleKupa.Checked && (prvoKolo == null || drugoKolo == null))
+            {
+                notification.RegisterMessage(
+                    "FinaleKupa", "Izaberite I i II kolo kupa.");
+            }
         }
 
         private bool tryParseDateTime(string s)
@@ -132,6 +120,10 @@ namespace Bilten.UI
                     txtMesto.Focus();
                     break;
 
+                case "FinaleKupa":
+                    listBox1.Focus();
+                    break;
+
                 default:
                     throw new ArgumentException();
             }
@@ -148,7 +140,18 @@ namespace Bilten.UI
             takmicenje.Naziv = txtNaziv.Text.Trim();
             takmicenje.Datum = Datum.Parse(txtDatum.Text).ToDateTime();
             takmicenje.Mesto = txtMesto.Text.Trim();
-            
+            takmicenje.FinaleKupa = ckbFinaleKupa.Checked;
+            if (takmicenje.FinaleKupa)
+            {
+                takmicenje.PrvoKolo = prvoKolo;
+                takmicenje.DrugoKolo = drugoKolo;
+            }
+            else
+            {
+                takmicenje.PrvoKolo = null;
+                takmicenje.DrugoKolo = null;
+            }
+
             if (cmbGimnastika.SelectedIndex == 0)
                 takmicenje.Gimnastika = Gimnastika.MSG;
             else if (cmbGimnastika.SelectedIndex == 1)
@@ -178,19 +181,46 @@ namespace Bilten.UI
             return dataContext.GetCount<Takmicenje>(q) > 0;
         }
 
-        protected override void checkBusinessRulesOnUpdate(DomainObject entity)
+        private void ckbFinaleKupa_CheckedChanged(object sender, EventArgs e)
         {
-            Takmicenje takmicenje = (Takmicenje)entity;
-            Notification notification = new Notification();
+            listBox1.Enabled = ckbFinaleKupa.Checked;
+            btnIzaberiPrvaDvaKola.Enabled = ckbFinaleKupa.Checked;
+        }
 
-            bool changed = (takmicenje.Naziv != oldNaziv
-                || takmicenje.Gimnastika != oldGimnastika
-                || takmicenje.Datum != oldDatum) ? true : false;
-            if (changed && existsTakmicenje(takmicenje))
+        private void btnIzaberiPrvaDvaKola_Click(object sender, EventArgs e)
+        {
+            OtvoriTakmicenjeForm form;
+            DialogResult result;
+            try
             {
-                notification.RegisterMessage("Naziv",
-                    "Takmicenje sa datim nazivom, gimnastikom i datumom vec postoji.");
-                throw new BusinessException(notification);
+                form = new OtvoriTakmicenjeForm(null, true, 2);
+                result = form.ShowDialog();
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+
+            if (result != DialogResult.OK)
+                return;
+            if (ckbFinaleKupa.Checked && form.SelTakmicenja.Count != 2)
+                return;
+
+            if (ckbFinaleKupa.Checked)
+            {
+                prvoKolo = form.SelTakmicenja[0];
+                drugoKolo = form.SelTakmicenja[1];
+                if (prvoKolo.Datum > drugoKolo.Datum)
+                {
+                    Takmicenje temp = prvoKolo;
+                    prvoKolo = drugoKolo;
+                    drugoKolo = temp;
+                }
+
+                listBox1.Items.Clear();
+                listBox1.Items.Add(prvoKolo.Naziv);
+                listBox1.Items.Add(drugoKolo.Naziv);
             }
         }
     }

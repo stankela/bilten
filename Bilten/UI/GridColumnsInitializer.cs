@@ -297,5 +297,20 @@ namespace Bilten.UI
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
         }
 
+        public static void initRezultatiUkupnoFinaleKupa(DataGridViewUserControl dgw,
+            Takmicenje takmicenje, bool kvalColumn)
+        {
+            dgw.DataGridView.Columns.Clear();
+
+            dgw.AddColumn("Rank", "Rank", 40);
+            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
+            dgw.AddColumn("Ime", "PrezimeIme", 170);
+            dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
+            dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("II Kolo", "TotalDrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (kvalColumn)
+                dgw.AddColumn("", "KvalStatus", 30);
+        }
     }
 }

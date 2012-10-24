@@ -41,6 +41,7 @@ namespace Bilten.UI
             this.txtBrojDecD = new System.Windows.Forms.TextBox();
             this.lblBrojDecD = new System.Windows.Forms.Label();
             this.lblBrojDecimala = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblBrojESudija
@@ -154,9 +155,19 @@ namespace Bilten.UI
             this.lblBrojDecimala.TabIndex = 11;
             this.lblBrojDecimala.Text = "Broj decimala ocena";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(84, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(250, 13);
+            this.label1.TabIndex = 22;
+            this.label1.Text = "Unesite 0 ako ne zelite da unosite ocene E1, E2, ...";
+            // 
             // SudijeIOcenePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtBrojDecTotal);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.txtBrojDecPen);
@@ -171,7 +182,7 @@ namespace Bilten.UI
             this.Controls.Add(this.txtBrojESudija);
             this.Controls.Add(this.lblBrojESudija);
             this.Name = "SudijeIOcenePage";
-            this.Size = new System.Drawing.Size(211, 241);
+            this.Size = new System.Drawing.Size(347, 241);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,5 +203,6 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtBrojDecD;
         private System.Windows.Forms.Label lblBrojDecD;
         private System.Windows.Forms.Label lblBrojDecimala;
+        private System.Windows.Forms.Label label1;
     }
 }

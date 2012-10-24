@@ -11,6 +11,7 @@
     <property name="Gimnastika" column="gimnastika" type="Byte" />
     <property name="Datum" />
     <property name="Mesto" />
+    <property name="FinaleKupa" column="finale_kupa" />
     <property name="BrojESudija" column="broj_e_sudija" type="Byte" />
     <property name="BrojLinijskihSudija" column="broj_lin_sudija" type="Byte" />
     <property name="BrojMeracaVremena" column="broj_meraca_vremena" type="Byte" />
@@ -30,6 +31,8 @@
       <key column="takmicenje_id" />
       <one-to-many class="RezultatskoTakmicenjeDescription" />
     </set>
+    <many-to-one name="PrvoKolo" class="Takmicenje" column="prvo_kolo_id" />
+    <many-to-one name="DrugoKolo" class="Takmicenje" column="drugo_kolo_id" />
   </class>
 
 </hibernate-mapping>

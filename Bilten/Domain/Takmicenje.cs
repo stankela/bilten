@@ -38,6 +38,27 @@ namespace Bilten.Domain
             set { mesto = value; }
         }
 
+        private bool finaleKupa;
+        public virtual bool FinaleKupa
+        {
+            get { return finaleKupa; }
+            set { finaleKupa = value; }
+        }
+
+        private Takmicenje prvoKolo;
+        public virtual Takmicenje PrvoKolo
+        {
+            get { return prvoKolo; }
+            set { prvoKolo = value; }
+        }
+
+        private Takmicenje drugoKolo;
+        public virtual Takmicenje DrugoKolo
+        {
+            get { return drugoKolo; }
+            set { drugoKolo = value; }
+        }
+
         private byte brojESudija = 6;
         public virtual byte BrojESudija
         {

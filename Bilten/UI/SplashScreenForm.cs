@@ -26,7 +26,7 @@ namespace Bilten.UI
             //        on the resource name itself
             // NOTE3: Build action for UEG.jpg must be Embedded resource 
             Stream stream =
-              asm.GetManifestResourceStream("Bilten.Images.UEG.jpg");
+              asm.GetManifestResourceStream("Bilten.Images.Soko.jpg");
 
             // Load the bitmap from the stream
             this.BackgroundImage = new Bitmap(stream);

@@ -239,7 +239,9 @@ namespace Bilten.UI
 
                     rt.updateTakmicenjaFromChangedPropozicije(
                         out deletedTak2, out deletedTak3, out deletedTak4);
-                    
+                 
+                    // TODO: Sledece tri Delete naredbe najverovatnije nemaju efekta zato sto ako je npr. deletedTak2 == true,
+                    // tada je rt.Takmicenje2 == null
                     if (deletedTak2)
                         dataContext.Delete(rt.Takmicenje2);
                     if (deletedTak3)

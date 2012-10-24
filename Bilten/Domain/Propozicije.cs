@@ -181,5 +181,82 @@ namespace Bilten.Domain
             set { jednoTak4ZaSveKategorije = value; }
         }
 
+        // Finale kupa
+
+        // Takmicenje 2
+
+        private bool tak2NaOsnovuPrethodnihKola;
+        public virtual bool Tak2NaOsnovuPrethodnihKola
+        {
+            get { return tak2NaOsnovuPrethodnihKola; }
+            set { tak2NaOsnovuPrethodnihKola = value; }
+        }
+
+        private bool tak2FinalnaOcenaJeZbirObaKola;
+        public virtual bool Tak2FinalnaOcenaJeZbirObaKola
+        {
+            get { return tak2FinalnaOcenaJeZbirObaKola; }
+            set { tak2FinalnaOcenaJeZbirObaKola = value; }
+        }
+
+        private bool tak2FinalnaOcenaJeMaxObaKola;
+        public virtual bool Tak2FinalnaOcenaJeMaxObaKola
+        {
+            get { return tak2FinalnaOcenaJeMaxObaKola; }
+            set { tak2FinalnaOcenaJeMaxObaKola = value; }
+        }
+
+        private bool tak2FinalnaOcenaJeProsekObaKola;
+        public virtual bool Tak2FinalnaOcenaJeProsekObaKola
+        {
+            get { return tak2FinalnaOcenaJeProsekObaKola; }
+            set { tak2FinalnaOcenaJeProsekObaKola = value; }
+        }
+
+        private bool tak2NeRacunajProsekAkoNemaOceneIzObaKola = true;
+        public virtual bool Tak2NeRacunajProsekAkoNemaOceneIzObaKola
+        {
+            get { return tak2NeRacunajProsekAkoNemaOceneIzObaKola; }
+            set { tak2NeRacunajProsekAkoNemaOceneIzObaKola = value; }
+        }
+
+        // Takmicenje 4
+
+        private bool tak4NaOsnovuPrethodnihKola;
+        public virtual bool Tak4NaOsnovuPrethodnihKola
+        {
+            get { return tak4NaOsnovuPrethodnihKola; }
+            set { tak4NaOsnovuPrethodnihKola = value; }
+        }
+
+        private bool tak4FinalnaOcenaJeZbirObaKola;
+        public virtual bool Tak4FinalnaOcenaJeZbirObaKola
+        {
+            get { return tak4FinalnaOcenaJeZbirObaKola; }
+            set { tak4FinalnaOcenaJeZbirObaKola = value; }
+        }
+
+        private bool tak4FinalnaOcenaJeMaxObaKola;
+        public virtual bool Tak4FinalnaOcenaJeMaxObaKola
+        {
+            get { return tak4FinalnaOcenaJeMaxObaKola; }
+            set { tak4FinalnaOcenaJeMaxObaKola = value; }
+        }
+
+        private bool tak4FinalnaOcenaJeProsekObaKola;
+        public virtual bool Tak4FinalnaOcenaJeProsekObaKola
+        {
+            get { return tak4FinalnaOcenaJeProsekObaKola; }
+            set { tak4FinalnaOcenaJeProsekObaKola = value; }
+        }
+
+        private bool tak4NeRacunajProsekAkoNemaOceneIzObaKola = true;
+        public virtual bool Tak4NeRacunajProsekAkoNemaOceneIzObaKola
+        {
+            get { return tak4NeRacunajProsekAkoNemaOceneIzObaKola; }
+            set { tak4NeRacunajProsekAkoNemaOceneIzObaKola = value; }
+        }
+
+
     }
 }

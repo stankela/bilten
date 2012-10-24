@@ -17,6 +17,8 @@ namespace Bilten.UI
         private Nullable<int> currTakmicenjeId;
         private List<Takmicenje> takmicenja;
         private IDataContext dataContext;
+        bool selectMode;
+        int broj;
 
         private Takmicenje takmicenje;
         public Takmicenje Takmicenje
@@ -24,34 +26,29 @@ namespace Bilten.UI
             get { return takmicenje; }
         }
 
-        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId)
+        private IList<Takmicenje> selTakmicenja;
+        public IList<Takmicenje> SelTakmicenja
+        {
+            get { return selTakmicenja; }
+        }
+
+        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId, bool selectMode, int broj)
         {
             InitializeComponent();
             this.currTakmicenjeId = currTakmicenjeId;
-            initUI();
-            loadData();
-        }
-
-        private void initUI()
-        {
-            this.Text = "Otvori takmicenje";
-
-            dataGridViewUserControl1.DataGridView.MultiSelect = false;
-            GridColumnsInitializer.initTakmicenje(dataGridViewUserControl1);
-        }
-
-        private void loadData()
-        {
+            this.selectMode = selectMode;
+            this.broj = broj;
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
+                initUI();
                 takmicenja = loadTakmicenja();
                 setTakmicenja(takmicenja);
 
-      //          dataContext.Commit();
+                //          dataContext.Commit();
             }
             catch (Exception ex)
             {
@@ -66,6 +63,25 @@ namespace Bilten.UI
                     dataContext.Dispose();
                 dataContext = null;
             }
+        }
+
+        private void initUI()
+        {
+            if (!selectMode)
+            {
+                this.Text = "Otvori takmicenje";
+                dataGridViewUserControl1.DataGridView.MultiSelect = false;
+            }
+            else
+            {
+                this.Text = "Izaberi takmicenje";
+                dataGridViewUserControl1.DataGridView.MultiSelect = true;
+                btnDelete.Visible = false;
+                btnDelete.Enabled = false;
+                btnOpen.Text = "OK";
+            }
+
+            GridColumnsInitializer.initTakmicenje(dataGridViewUserControl1);
         }
 
         private List<Takmicenje> loadTakmicenja()
@@ -83,11 +99,30 @@ namespace Bilten.UI
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            Takmicenje selTakmicenje = dataGridViewUserControl1.getSelectedItem<Takmicenje>();
-            if (selTakmicenje != null)
-                takmicenje = selTakmicenje;
+            if (!selectMode)
+            {
+                Takmicenje selTakmicenje = dataGridViewUserControl1.getSelectedItem<Takmicenje>();
+                if (selTakmicenje != null)
+                    takmicenje = selTakmicenje;
+                else
+                    DialogResult = DialogResult.None;
+            }
             else
-                DialogResult = DialogResult.None;
+            {
+                IList<Takmicenje> selItems = dataGridViewUserControl1.getSelectedItems<Takmicenje>();
+                if (selItems.Count == broj)
+                    selTakmicenja = selItems;
+                else
+                {
+                    string msg;
+                    if (broj == 1)
+                        msg = "Izaberite jedno takmicenje.";
+                    else
+                        msg = String.Format("Izaberite {0} takmicenja.", broj);
+                    MessageDialogs.showMessage(msg, this.Text);
+                    DialogResult = DialogResult.None;
+                }
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -141,7 +176,9 @@ namespace Bilten.UI
             }
 
             takmicenja.Remove(selTakmicenje);
-            dataGridViewUserControl1.refreshItems();
+            setTakmicenja(takmicenja);
+            if (dataGridViewUserControl1.isSorted())
+                dataGridViewUserControl1.refreshItems();
         }
 
         private void deleteTakmicenje(Takmicenje takmicenje)

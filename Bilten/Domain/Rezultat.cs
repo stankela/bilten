@@ -33,6 +33,5 @@ namespace Bilten.Domain
             get { return total; }
             protected set { total = value; }
         }
-
     }
 }

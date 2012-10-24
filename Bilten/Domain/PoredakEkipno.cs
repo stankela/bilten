@@ -7,18 +7,18 @@ namespace Bilten.Domain
 {
     public class PoredakEkipno : DomainObject
     {
-        private IList<RezultatEkipno> _rezultati = new List<RezultatEkipno>();
-        public virtual IList<RezultatEkipno> Rezultati
-        {
-            get { return _rezultati; }
-            private set { _rezultati = value; }
-        }
-
         private DeoTakmicenjaKod deoTakKod;
         public virtual DeoTakmicenjaKod DeoTakmicenjaKod
         {
             get { return deoTakKod; }
             set { deoTakKod = value; }
+        }
+        
+        private IList<RezultatEkipno> _rezultati = new List<RezultatEkipno>();
+        public virtual IList<RezultatEkipno> Rezultati
+        {
+            get { return _rezultati; }
+            private set { _rezultati = value; }
         }
 
         protected PoredakEkipno()
@@ -49,7 +49,7 @@ namespace Bilten.Domain
         public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene)
         {
             IList<Ekipa> ekipe;
-            if (DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 ekipe = new List<Ekipa>(rezTak.Takmicenje1.Ekipe);
             else
                 ekipe = new List<Ekipa>(rezTak.Takmicenje4.getUcesnici());
@@ -168,7 +168,7 @@ namespace Bilten.Domain
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (DeoTakmicenjaKod != DeoTakmicenjaKod.Takmicenje1)
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1)
                 return;
             if (!propozicije.PostojiTak4)
                 return;
@@ -176,6 +176,10 @@ namespace Bilten.Domain
             doUpdateKvalStatus(propozicije.OdvojenoTak4, propozicije.BrojEkipaUFinalu, 0);
         }
 
+        // TODO3: izbaci parametar odvojenoFinale i podesi da se ovaj metod poziva samo kada je odvojenoFinale == true.
+        // Kada je odvojenoFinale == false, kvalStatus nema smisla. Takodje i u Propozicijama promeni da kada ne postoji
+        // odvojeno finale da se ne zadaje . Proveri sve ovo detaljnije. Isto uradi i u klasama
+        // PoredakUkupno, PoredakSprava i PoredakPreskok.
         private void doUpdateKvalStatus(bool odvojenoFinale, int brojFinalista,
             int brojRezervi)
         {
@@ -222,6 +226,7 @@ namespace Bilten.Domain
             }
         }
 
+        // TODO3: Proveri zasto sam zakomentarisao ovaj i sledece metode.
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
             /*

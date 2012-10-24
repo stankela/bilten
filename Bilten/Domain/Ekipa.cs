@@ -5,7 +5,7 @@ using Iesi.Collections.Generic;
 
 namespace Bilten.Domain
 {
-    public class Ekipa : DomainObject
+    public class Ekipa : DomainObject, IEquatable<Ekipa>
     {
         private static readonly int NAZIV_MAX_LENGTH = 64;
         private static readonly int KOD_MAX_LENGTH = 7;
@@ -115,5 +115,14 @@ namespace Bilten.Domain
                 return result;
             }
         }
+
+        #region IEquatable<Ekipa> Members
+
+        public virtual bool Equals(Ekipa other)
+        {
+            return this.Equals((object)other);
+        }
+
+        #endregion
     }
 }

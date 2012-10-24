@@ -45,7 +45,8 @@ namespace Bilten.UI
 
                 kategorijeCount = getKategorijeCount(takmicenjeId);
                 if (kategorijeCount == 0)
-                    throw new Exception("Greska u programu.");
+                    throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+
                 rasporedi = loadRasporedi(takmicenjeId, deoTakKod);
 
                 takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
@@ -79,6 +80,18 @@ namespace Bilten.UI
                     tabControl1.TabPages.Remove(tabPage1);
 
                 //    dataContext.Commit();
+            }
+            catch (BusinessException)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw;
+            }
+            catch (InfrastructureException)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw;
             }
             catch (Exception ex)
             {

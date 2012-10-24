@@ -102,21 +102,25 @@
     <Compile Include="Domain\Opcije.cs" />
     <Compile Include="Domain\Pol.cs" />
     <Compile Include="Domain\PoredakEkipno.cs" />
+    <Compile Include="Domain\PoredakEkipnoFinaleKupa.cs" />
     <Compile Include="Domain\PoredakPreskok.cs" />
     <Compile Include="Domain\PoredakSprava.cs" />
     <Compile Include="Domain\PoredakUkupno.cs" />
+    <Compile Include="Domain\PoredakUkupnoFinaleKupa.cs" />
     <Compile Include="Domain\Propozicije.cs" />
     <Compile Include="Domain\RasporedNastupa.cs" />
     <Compile Include="Domain\RasporedSudija.cs" />
     <Compile Include="Domain\RegistarskiBroj.cs" />
     <Compile Include="Domain\Rezultat.cs" />
     <Compile Include="Domain\RezultatEkipno.cs" />
+    <Compile Include="Domain\RezultatEkipnoFinaleKupa.cs" />
     <Compile Include="Domain\RezultatPreskok.cs" />
     <Compile Include="Domain\RezultatskoTakmicenje.cs" />
     <Compile Include="Domain\RezultatskoTakmicenjeDescription.cs" />
     <Compile Include="Domain\RezultatSprava.cs" />
     <Compile Include="Domain\RezultatUkupno.cs" />
     <Compile Include="Domain\RezultatUkupnoExtended.cs" />
+    <Compile Include="Domain\RezultatUkupnoFinaleKupa.cs" />
     <Compile Include="Domain\SablonRasporedaNastupaTakm1.cs" />
     <Compile Include="Domain\SablonRasporedaNastupaTakm1Item.cs" />
     <Compile Include="Domain\Sprava.cs" />
@@ -161,6 +165,7 @@
     </Content>
     <None Include="App.config" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja2.hbm.xml" />
+    <None Include="CreateAllObjects.sqlce" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -410,22 +415,40 @@
     <Compile Include="UI\RasporedSudijaForm.Designer.cs">
       <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\RezultatiEkipeFinaleKupaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiEkipeFinaleKupaForm.Designer.cs">
+      <DependentUpon>RezultatiEkipeFinaleKupaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\RezultatiEkipeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\RezultatiEkipeForm.Designer.cs">
+    <Compile Include="UI\RezultatiEkipeForm.designer.cs">
       <DependentUpon>RezultatiEkipeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatiSpravaFinaleKupaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiSpravaFinaleKupaForm.Designer.cs">
+      <DependentUpon>RezultatiSpravaFinaleKupaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RezultatiSpravaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\RezultatiSpravaForm.Designer.cs">
+    <Compile Include="UI\RezultatiSpravaForm.designer.cs">
       <DependentUpon>RezultatiSpravaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatiUkupnoFinaleKupaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiUkupnoFinaleKupaForm.Designer.cs">
+      <DependentUpon>RezultatiUkupnoFinaleKupaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RezultatiUkupnoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\RezultatiUkupnoForm.Designer.cs">
+    <Compile Include="UI\RezultatiUkupnoForm.designer.cs">
       <DependentUpon>RezultatiUkupnoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RezultatskoTakmicenjeDescriptionForm.cs">
@@ -739,17 +762,29 @@
       <SubType>Designer</SubType>
       <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RezultatiEkipeForm.resx">
+    <EmbeddedResource Include="UI\RezultatiEkipeFinaleKupaForm.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>RezultatiEkipeFinaleKupaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiEkipeForm.resx">
       <DependentUpon>RezultatiEkipeForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiSpravaFinaleKupaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RezultatiSpravaFinaleKupaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RezultatiSpravaForm.resx">
-      <SubType>Designer</SubType>
       <DependentUpon>RezultatiSpravaForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiUkupnoFinaleKupaForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RezultatiUkupnoFinaleKupaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RezultatiUkupnoForm.resx">
-      <SubType>Designer</SubType>
       <DependentUpon>RezultatiUkupnoForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RezultatskoTakmicenjeDescriptionForm.resx">
       <SubType>Designer</SubType>
@@ -834,6 +869,7 @@
     <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja4.hbm.xml" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakPreskok.hbm.xml" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatPreskok.hbm.xml" />
+    <Content Include="DatabaseUpdate.txt" />
     <Content Include="Doc\DesignChoices.txt" />
     <Content Include="Doc\pitanja.txt" />
     <Content Include="Doc\Promene.txt" />
@@ -841,6 +877,7 @@
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Images\Soko.jpg" />
     <Content Include="Test\Data\DrzaveEng.txt" />
     <Content Include="Test\Data\DrzaveSrb.txt" />
     <Content Include="Test\Data\Klubovi.txt" />

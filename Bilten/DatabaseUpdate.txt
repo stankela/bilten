@@ -1,0 +1,8 @@
+18-Okt-2012
+
+ALTER TABLE takmicenja ADD COLUMN finale_kupa bit;
+
+21-Okt-2012
+
+ALTER TABLE takmicenja ADD COLUMN prvo_kolo_id int references takmicenja(takmicenje_id);
+ALTER TABLE takmicenja ADD COLUMN drugo_kolo_id int references takmicenja(takmicenje_id);

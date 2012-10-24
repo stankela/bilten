@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Bilten.Domain
 {
-    public class GimnasticarUcesnik : DomainObject
+    public class GimnasticarUcesnik : DomainObject, IEquatable<GimnasticarUcesnik>
     {
         private string ime;
         public virtual string Ime
@@ -202,5 +202,14 @@ namespace Bilten.Domain
                 return result;
             }
         }
+
+        #region IEquatable<GimnasticarUcesnik> Members
+
+        public virtual bool Equals(GimnasticarUcesnik other)
+        {
+            return this.Equals((object)other);
+        }
+
+        #endregion
     }
 }

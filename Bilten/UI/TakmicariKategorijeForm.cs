@@ -193,21 +193,6 @@ namespace Bilten.UI
             return new List<GimnasticarUcesnik>(dataContext.GetByCriteria<GimnasticarUcesnik>(q));
         }
 
-        private IList<GimnasticarUcesnik> loadGimnasticari(Takmicenje tak, TakmicarskaKategorija kat)
-        {
-            string query = @"select distinct g
-                    from GimnasticarUcesnik g
-                    where g.Takmicenje = :tak
-                    and g.TakmicarskaKategorija = :kat
-                    order by g.Prezime, g.Ime";
-
-            IList<GimnasticarUcesnik> result = dataContext.
-                ExecuteQuery<GimnasticarUcesnik>(QueryLanguageType.HQL, query,
-                        new string[] { "tak", "kat" },
-                        new object[] { tak, kat });
-            return result;
-        }
-
         private void setGimnasticari(List<GimnasticarUcesnik> gimnasticari)
         {
             getActiveDataGridViewUserControl().setItems<GimnasticarUcesnik>(gimnasticari);

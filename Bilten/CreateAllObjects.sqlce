@@ -76,6 +76,7 @@ create table takmicenja (
 	gimnastika tinyint,
 	datum datetime,
 	mesto nvarchar(32),
+	finale_kupa bit,
 	broj_e_sudija tinyint,
 	broj_lin_sudija tinyint,
 	broj_meraca_vremena tinyint,
@@ -85,7 +86,9 @@ create table takmicenja (
     broj_decimala_pen tinyint,
     broj_decimala_total tinyint,
 	zavrseno_tak1 bit,
-	zreb_za_finale_tak3 nvarchar(128)
+	zreb_za_finale_tak3 nvarchar(128),
+	prvo_kolo_id int references takmicenja(takmicenje_id),
+	drugo_kolo_id int references takmicenja(takmicenje_id)
 );
 
 create table takmicarske_kategorije (
