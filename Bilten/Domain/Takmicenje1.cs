@@ -132,6 +132,30 @@ namespace Bilten.Domain
             set { _poredakUkupnoFinaleKupa = value; }
         }
 
+        private ISet<PoredakSpravaFinaleKupa> _poredakSpravaFinaleKupa = new HashedSet<PoredakSpravaFinaleKupa>();
+        public virtual ISet<PoredakSpravaFinaleKupa> PoredakSpravaFinaleKupa
+        {
+            get { return _poredakSpravaFinaleKupa; }
+            set { _poredakSpravaFinaleKupa = value; }
+        }
+
+        public virtual PoredakSpravaFinaleKupa getPoredakSpravaFinaleKupa(Sprava sprava)
+        {
+            foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
+            {
+                if (p.Sprava == sprava)
+                    return p;
+            }
+            return null;
+        }
+
+        private PoredakEkipnoFinaleKupa _poredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();
+        public virtual PoredakEkipnoFinaleKupa PoredakEkipnoFinaleKupa
+        {
+            get { return _poredakEkipnoFinaleKupa; }
+            set { _poredakEkipnoFinaleKupa = value; }
+        }
+
         protected Takmicenje1()
         { 
         
@@ -148,6 +172,16 @@ namespace Bilten.Domain
             _poredakPreskok = new PoredakPreskok(DeoTakmicenjaKod.Takmicenje1);
             _poredakEkipno = new PoredakEkipno(DeoTakmicenjaKod.Takmicenje1);
 
+        }
+
+        public virtual void initPoredakSpravaFinaleKupa(Gimnastika gimnastika)
+        {
+            foreach (Sprava s in Sprave.getSprave(gimnastika))
+            {
+                PoredakSpravaFinaleKupa poredak = new PoredakSpravaFinaleKupa();
+                poredak.Sprava = s;
+                _poredakSpravaFinaleKupa.Add(poredak);
+            }
         }
 
         public virtual void ocenaAdded(Ocena o, RezultatskoTakmicenje rezTak)

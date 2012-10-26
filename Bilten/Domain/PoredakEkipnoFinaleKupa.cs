@@ -7,13 +7,6 @@ namespace Bilten.Domain
 {
     public class PoredakEkipnoFinaleKupa : DomainObject
     {
-        private DeoTakmicenjaKod deoTakKod;
-        public virtual DeoTakmicenjaKod DeoTakmicenjaKod
-        {
-            get { return deoTakKod; }
-            set { deoTakKod = value; }
-        }
-
         private IList<RezultatEkipnoFinaleKupa> _rezultati = new List<RezultatEkipnoFinaleKupa>();
         public virtual IList<RezultatEkipnoFinaleKupa> Rezultati
         {
@@ -21,18 +14,13 @@ namespace Bilten.Domain
             private set { _rezultati = value; }
         }
 
-        protected PoredakEkipnoFinaleKupa()
+        public PoredakEkipnoFinaleKupa()
         {
 
         }
 
-        public PoredakEkipnoFinaleKupa(DeoTakmicenjaKod deoTakKod)
-        {
-            this.deoTakKod = deoTakKod;
-        }
-
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno poredakPrvoKolo,
-            PoredakUkupno poredakDrugoKolo)
+        public virtual void create(RezultatskoTakmicenje rezTak, PoredakEkipno poredakPrvoKolo,
+            PoredakEkipno poredakDrugoKolo)
         {
             IList<Ekipa> ekipe = new List<Ekipa>(rezTak.Takmicenje1.Ekipe);
 

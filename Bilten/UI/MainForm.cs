@@ -1257,19 +1257,31 @@ namespace Bilten.UI
 
             IDictionary<GimnasticarUcesnik, GimnasticarUcesnik> gimnasticariMap =
                 new Dictionary<GimnasticarUcesnik, GimnasticarUcesnik>();
+            List<GimnasticarUcesnik> dupliGimnasticari = new List<GimnasticarUcesnik>();
             foreach (TakmicarskaKategorija kat in takmicenje.Kategorije)
             {
                 foreach (GimnasticarUcesnik g in loadGimnasticari(from, kat.Naziv))
                 {
-                    GimnasticarUcesnik g2 = createGimnasticarUcesnik(g, kat);
-                    if (!gimnasticariMap.ContainsKey(g2))
+                    if (!gimnasticariMap.ContainsKey(g))
                     {
                         // Ovo proveravam zato sto se vec desilo da isti gimnasticar bude prijavljen u dve razlicite
                         // kategorije (program to ne proverava). Npr. na takmicenju I KOLO PGL SRBIJE MSG od 21.05.2011.
-                        // Sinisa Jurkovic je bio prijavljen u dve kategorije.
+                        // Sinisa Jurkovic je bio prijavljen u dve kategorije. U novoj verziji programa nije moguce da
+                        // isti gimnsticar bude prijavljen u dve razlicite kategorije.
+
+                        GimnasticarUcesnik g2 = createGimnasticarUcesnik(g, kat);
                         gimnasticariMap.Add(g2, g2);
                     }
+                    else
+                        dupliGimnasticari.Add(g);
                 }
+            }
+            // Proveravanje gimnasticara koji su prijavljeni u vise kategorija je samo za legacy baze. Program je vec
+            // promenjen da ne dozvoljava da isti gimnasticar bude prijavljen u vise kategorija.
+            foreach (GimnasticarUcesnik g in dupliGimnasticari)
+            {
+                if (gimnasticariMap.ContainsKey(g))
+                    gimnasticariMap.Remove(g);
             }
 
             // TODO2: Izgleda da prikazuje rezultate za sprave u takmicenju I cak i kada se u propozicijama selektuje da
@@ -1302,7 +1314,7 @@ namespace Bilten.UI
                         ekipa.DrzavaUcesnik = null;
                     else
                     {
-                        DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(takmicenje.Id, e.DrzavaUcesnik.Naziv);
+                        DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(takmicenje, e.DrzavaUcesnik.Naziv);
                         if (drzavaUcesnik == null)
                         {
                             drzavaUcesnik = new DrzavaUcesnik();
@@ -1317,7 +1329,7 @@ namespace Bilten.UI
                         ekipa.KlubUcesnik = null;
                     else
                     {
-                        KlubUcesnik klubUcesnik = findKlubUcesnik(takmicenje.Id, e.KlubUcesnik.Naziv);
+                        KlubUcesnik klubUcesnik = findKlubUcesnik(takmicenje, e.KlubUcesnik.Naziv);
                         if (klubUcesnik == null)
                         {
                             klubUcesnik = new KlubUcesnik();
@@ -1355,6 +1367,14 @@ namespace Bilten.UI
             foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
             {
                 dataContext.Add(g);
+            }
+
+            if (dupliGimnasticari.Count > 0)
+            {
+                string msg = "Sledeci gimnasticari nisu dodati zato sto su prijavljeni u vise " +
+                    "kategorija.  Ove gimnasticare morate da unesete rucno: \n\n";
+                msg += StringUtil.getListString(dupliGimnasticari.ToArray());
+                MessageDialogs.showMessage(msg, this.Text);
             }
         }
 
@@ -1543,7 +1563,7 @@ namespace Bilten.UI
                 result.DrzavaUcesnik = null;
             else
             {
-                DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(kategorija.Takmicenje.Id,
+                DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(kategorija.Takmicenje,
                     g.DrzavaUcesnik.Naziv);
                 if (drzavaUcesnik == null)
                 {
@@ -1559,7 +1579,7 @@ namespace Bilten.UI
                 result.KlubUcesnik = null;
             else
             {
-                KlubUcesnik klubUcesnik = findKlubUcesnik(kategorija.Takmicenje.Id,
+                KlubUcesnik klubUcesnik = findKlubUcesnik(kategorija.Takmicenje,
                     g.KlubUcesnik.Naziv);
                 if (klubUcesnik == null)
                 {
@@ -1574,10 +1594,10 @@ namespace Bilten.UI
             return result;
         }
 
-        private DrzavaUcesnik findDrzavaUcesnik(int takmicenjeId, string naziv)
+        private DrzavaUcesnik findDrzavaUcesnik(Takmicenje takmicenje, string naziv)
         {
             Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
+            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
             q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
             q.Operator = QueryOperator.And;
             IList<DrzavaUcesnik> result = dataContext.GetByCriteria<DrzavaUcesnik>(q);
@@ -1587,10 +1607,10 @@ namespace Bilten.UI
                 return result[0];
         }
 
-        private KlubUcesnik findKlubUcesnik(int takmicenjeId, string naziv)
+        private KlubUcesnik findKlubUcesnik(Takmicenje takmicenje, string naziv)
         {
             Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
+            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
             q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
             q.Operator = QueryOperator.And;
             IList<KlubUcesnik> result = dataContext.GetByCriteria<KlubUcesnik>(q);
@@ -1598,6 +1618,40 @@ namespace Bilten.UI
                 return null;
             else
                 return result[0];
+        }
+
+        private void mnPrvoDrugoKoloEkipno_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RezultatiEkipeFinaleKupaForm form = new RezultatiEkipeFinaleKupaForm(takmicenjeId.Value);
+                form.ShowDialog();
+            }
+            catch (BusinessException ex)
+            {
+                MessageDialogs.showMessage(ex.Message, strProgName);
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
+        }
+
+        private void mnPrvoDrugoKoloSprave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RezultatiSpravaFinaleKupaForm form = new RezultatiSpravaFinaleKupaForm(takmicenjeId.Value);
+                form.ShowDialog();
+            }
+            catch (BusinessException ex)
+            {
+                MessageDialogs.showMessage(ex.Message, strProgName);
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
         }
 
     }

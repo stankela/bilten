@@ -18,6 +18,7 @@ namespace Bilten.UI
         private IList<TakmicarskaKategorija> takmicarskeKategorije;
         private IDataContext dataContext;
         private List<GimnasticarUcesnik>[] gimnasticari;
+        private bool[] tabOpened;
 
         private TakmicarskaKategorija ActiveKategorija
         {
@@ -40,9 +41,10 @@ namespace Bilten.UI
                 if (takmicarskeKategorije.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
                 
-                gimnasticari = new List<GimnasticarUcesnik>[takmicarskeKategorije.Count];
+                loadGimnasticari();
                 
                 initUI();
+                tabOpened = new bool[takmicarskeKategorije.Count];
                 onSelectedIndexChanged();
 
                 //dataContext.Commit();
@@ -75,6 +77,16 @@ namespace Bilten.UI
                 new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
             q.OrderClauses.Add(new OrderClause("RedBroj", OrderClause.OrderClauseCriteria.Ascending));
             return dataContext.GetByCriteria<TakmicarskaKategorija>(q);
+        }
+
+        private void loadGimnasticari()
+        {
+            gimnasticari = new List<GimnasticarUcesnik>[takmicarskeKategorije.Count];
+            for (int i = 0; i < takmicarskeKategorije.Count; i++)
+            {
+                List<GimnasticarUcesnik> gimList = loadGimnasticari(takmicarskeKategorije[i]);
+                gimnasticari[i] = gimList;
+            }
         }
 
         private void initUI()
@@ -165,12 +177,11 @@ namespace Bilten.UI
 
         private void onSelectedIndexChanged()
         {
-            if (gimnasticari[tabControl1.SelectedIndex] != null)
+            if (tabOpened[tabControl1.SelectedIndex])
                 return;
 
-            List<GimnasticarUcesnik> gimList = loadGimnasticari(ActiveKategorija);
-            gimnasticari[tabControl1.SelectedIndex] = gimList;
-            setGimnasticari(gimList);
+            tabOpened[tabControl1.SelectedIndex] = true;
+            setGimnasticari(gimnasticari[tabControl1.SelectedIndex]);
             getActiveDataGridViewUserControl().sort<GimnasticarUcesnik>(
                 new string[] { "Prezime", "Ime" },
                 new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
@@ -356,16 +367,13 @@ namespace Bilten.UI
             if (g.Gimnastika != kategorija.Gimnastika)
                 return false;
 
-            // TODO: Izmeni ovo ako je moguce da gimnasticar bude prijavljen
-            // u vise takmicarskih kategorija (tada bi prvo trebalo ucitati
-            // liste gimnasticara za kategorije koje se proveravaju)
-
-            IList<GimnasticarUcesnik> gimList = 
-                gimnasticari[takmicarskeKategorije.IndexOf(kategorija)];
-            foreach (GimnasticarUcesnik g2 in gimList)
+            foreach (IList<GimnasticarUcesnik> gimList in gimnasticari)
             {
-                if (g2.Equals(g))
-                    return false;
+                foreach (GimnasticarUcesnik g2 in gimList)
+                {
+                    if (g2.Equals(g))
+                        return false;
+                }
             }
             return true;
         }

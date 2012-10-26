@@ -105,6 +105,7 @@
     <Compile Include="Domain\PoredakEkipnoFinaleKupa.cs" />
     <Compile Include="Domain\PoredakPreskok.cs" />
     <Compile Include="Domain\PoredakSprava.cs" />
+    <Compile Include="Domain\PoredakSpravaFinaleKupa.cs" />
     <Compile Include="Domain\PoredakUkupno.cs" />
     <Compile Include="Domain\PoredakUkupnoFinaleKupa.cs" />
     <Compile Include="Domain\Propozicije.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Domain\RezultatskoTakmicenje.cs" />
     <Compile Include="Domain\RezultatskoTakmicenjeDescription.cs" />
     <Compile Include="Domain\RezultatSprava.cs" />
+    <Compile Include="Domain\RezultatSpravaFinaleKupa.cs" />
     <Compile Include="Domain\RezultatUkupno.cs" />
     <Compile Include="Domain\RezultatUkupnoExtended.cs" />
     <Compile Include="Domain\RezultatUkupnoFinaleKupa.cs" />

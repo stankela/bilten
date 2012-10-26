@@ -45,6 +45,7 @@ namespace Bilten.UI
             this.mnSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnZatvoriTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnKopirajPostojeceTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.mnKategorijeITakmicenja = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPropozicije = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicariKategorije = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,7 +79,6 @@ namespace Bilten.UI
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcije = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcijeOpcije = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnKopirajPostojeceTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -229,6 +229,13 @@ namespace Bilten.UI
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(219, 6);
             // 
+            // mnKopirajPostojeceTakmicenje
+            // 
+            this.mnKopirajPostojeceTakmicenje.Name = "mnKopirajPostojeceTakmicenje";
+            this.mnKopirajPostojeceTakmicenje.Size = new System.Drawing.Size(222, 22);
+            this.mnKopirajPostojeceTakmicenje.Text = "Kopiraj postojece takmicenje";
+            this.mnKopirajPostojeceTakmicenje.Click += new System.EventHandler(this.mnKopirajPostojeceTakmicenje_Click);
+            // 
             // mnKategorijeITakmicenja
             // 
             this.mnKategorijeITakmicenja.Name = "mnKategorijeITakmicenja";
@@ -321,12 +328,14 @@ namespace Bilten.UI
             this.mnPrvoDrugoKoloSprave.Name = "mnPrvoDrugoKoloSprave";
             this.mnPrvoDrugoKoloSprave.Size = new System.Drawing.Size(218, 22);
             this.mnPrvoDrugoKoloSprave.Text = "I i II Kolo - sprave";
+            this.mnPrvoDrugoKoloSprave.Click += new System.EventHandler(this.mnPrvoDrugoKoloSprave_Click);
             // 
             // mnPrvoDrugoKoloEkipno
             // 
             this.mnPrvoDrugoKoloEkipno.Name = "mnPrvoDrugoKoloEkipno";
             this.mnPrvoDrugoKoloEkipno.Size = new System.Drawing.Size(218, 22);
             this.mnPrvoDrugoKoloEkipno.Text = "I i II Kolo - ekipno";
+            this.mnPrvoDrugoKoloEkipno.Click += new System.EventHandler(this.mnPrvoDrugoKoloEkipno_Click);
             // 
             // mnRezultatiUkupnoTak1
             // 
@@ -476,13 +485,6 @@ namespace Bilten.UI
             this.mnOpcijeOpcije.Size = new System.Drawing.Size(115, 22);
             this.mnOpcijeOpcije.Text = "Opcije";
             this.mnOpcijeOpcije.Click += new System.EventHandler(this.mnOpcijeOpcije_Click);
-            // 
-            // mnKopirajPostojeceTakmicenje
-            // 
-            this.mnKopirajPostojeceTakmicenje.Name = "mnKopirajPostojeceTakmicenje";
-            this.mnKopirajPostojeceTakmicenje.Size = new System.Drawing.Size(222, 22);
-            this.mnKopirajPostojeceTakmicenje.Text = "Kopiraj postojece takmicenje";
-            this.mnKopirajPostojeceTakmicenje.Click += new System.EventHandler(this.mnKopirajPostojeceTakmicenje_Click);
             // 
             // MainForm
             // 

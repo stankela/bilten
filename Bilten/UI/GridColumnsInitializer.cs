@@ -312,5 +312,41 @@ namespace Bilten.UI
             if (kvalColumn)
                 dgw.AddColumn("", "KvalStatus", 30);
         }
+
+        public static void initRezultatiSpravaFinaleKupa(DataGridViewUserControl dgw,
+            Takmicenje takmicenje, bool kvalColumn)
+        {
+            dgw.DataGridView.Columns.Clear();
+
+            dgw.AddColumn("Rank", "Rank", 40);
+            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
+            dgw.AddColumn("Ime", "PrezimeIme", 170);
+            dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
+
+            dgw.AddColumn("    D \n I kolo", "D_PrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaD + "}");
+            dgw.AddColumn("    E \n I kolo", "E_PrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaE + "}");
+            dgw.AddColumn("Total \nI kolo", "TotalPrvoKolo", 60, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("    D \n II kolo", "D_DrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaD + "}");
+            dgw.AddColumn("    E \n II kolo", "E_DrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaE + "}");
+            dgw.AddColumn("Total \nII kolo", "TotalDrugoKolo", 70, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("Finalna ocena", "Total", 60, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+
+            if (kvalColumn)
+                dgw.AddColumn("", "KvalStatus", 30);
+        }
+
+        public static void initRezultatiEkipnoFinaleKupa(DataGridViewUserControl dgw, Takmicenje takmicenje, bool kvalColumn)
+        {
+            dgw.DataGridView.Columns.Clear();
+
+            dgw.AddColumn("Rank", "Rank", 40);
+            dgw.AddColumn("Ekipa", "NazivEkipe", 170);
+            dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("II Kolo", "TotalDrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (kvalColumn)
+                dgw.AddColumn("", "KvalStatus", 30);
+        }
+
     }
 }

@@ -104,6 +104,7 @@ namespace Bilten.UI
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
                     left join fetch t.Gimnasticari g
                     left join fetch g.DrzavaUcesnik dr
@@ -120,6 +121,8 @@ namespace Bilten.UI
                 // potrebno u Poredak.create
                 NHibernateUtil.Initialize(tak.Propozicije);
 
+                // TODO3: Ovo ce raditi samo ako su prvo i drugo kolo imali samo jedno takmicenje. (takodje i kod
+                // poretka ekipa i sprava)
                 PoredakUkupno poredak1 = loadPoredakUkupnoTak1(takmicenje.PrvoKolo.Id, tak.Kategorija);
                 PoredakUkupno poredak2 = loadPoredakUkupnoTak1(takmicenje.DrugoKolo.Id, tak.Kategorija);
                 tak.Takmicenje1.PoredakUkupnoFinaleKupa.create(tak, poredak1, poredak2);
@@ -133,6 +136,7 @@ namespace Bilten.UI
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
                     left join fetch t.Gimnasticari g
                     where r.Takmicenje.Id = :takmicenjeId
@@ -157,7 +161,7 @@ namespace Bilten.UI
 
         private void initUI()
         {
-            Text = "I i II Kolo - rezultati";
+            Text = "I i II Kolo - rezultati viseboj";
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;
@@ -174,7 +178,7 @@ namespace Bilten.UI
         {
             DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
             if (dgwuc != null)
-                dgwuc.onColumnHeaderMouseClick<RezultatUkupno>(e.DataGridViewCellMouseEventArgs);
+                dgwuc.onColumnHeaderMouseClick<RezultatUkupnoFinaleKupa>(e.DataGridViewCellMouseEventArgs);
         }
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)

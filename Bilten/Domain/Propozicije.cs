@@ -220,6 +220,43 @@ namespace Bilten.Domain
             set { tak2NeRacunajProsekAkoNemaOceneIzObaKola = value; }
         }
 
+        // Takmicenje 3
+
+        private bool tak3NaOsnovuPrethodnihKola;
+        public virtual bool Tak3NaOsnovuPrethodnihKola
+        {
+            get { return tak3NaOsnovuPrethodnihKola; }
+            set { tak3NaOsnovuPrethodnihKola = value; }
+        }
+
+        private bool tak3FinalnaOcenaJeZbirObaKola;
+        public virtual bool Tak3FinalnaOcenaJeZbirObaKola
+        {
+            get { return tak3FinalnaOcenaJeZbirObaKola; }
+            set { tak3FinalnaOcenaJeZbirObaKola = value; }
+        }
+
+        private bool tak3FinalnaOcenaJeMaxObaKola;
+        public virtual bool Tak3FinalnaOcenaJeMaxObaKola
+        {
+            get { return tak3FinalnaOcenaJeMaxObaKola; }
+            set { tak3FinalnaOcenaJeMaxObaKola = value; }
+        }
+
+        private bool tak3FinalnaOcenaJeProsekObaKola;
+        public virtual bool Tak3FinalnaOcenaJeProsekObaKola
+        {
+            get { return tak3FinalnaOcenaJeProsekObaKola; }
+            set { tak3FinalnaOcenaJeProsekObaKola = value; }
+        }
+
+        private bool tak3NeRacunajProsekAkoNemaOceneIzObaKola = true;
+        public virtual bool Tak3NeRacunajProsekAkoNemaOceneIzObaKola
+        {
+            get { return tak3NeRacunajProsekAkoNemaOceneIzObaKola; }
+            set { tak3NeRacunajProsekAkoNemaOceneIzObaKola = value; }
+        }
+
         // Takmicenje 4
 
         private bool tak4NaOsnovuPrethodnihKola;

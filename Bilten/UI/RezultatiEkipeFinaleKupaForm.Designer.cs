@@ -31,7 +31,6 @@ namespace Bilten.UI
             this.cmbTakmicenje = new System.Windows.Forms.ComboBox();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnZatvori = new System.Windows.Forms.Button();
-            this.dataGridViewUserControl2 = new Bilten.UI.DataGridViewUserControl();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.SuspendLayout();
             // 
@@ -64,16 +63,6 @@ namespace Bilten.UI
             this.btnZatvori.UseVisualStyleBackColor = true;
             this.btnZatvori.Click += new System.EventHandler(this.btnZatvori_Click);
             // 
-            // dataGridViewUserControl2
-            // 
-            this.dataGridViewUserControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridViewUserControl2.ColumnHeaderSorting = true;
-            this.dataGridViewUserControl2.Location = new System.Drawing.Point(12, 218);
-            this.dataGridViewUserControl2.Name = "dataGridViewUserControl2";
-            this.dataGridViewUserControl2.Size = new System.Drawing.Size(652, 135);
-            this.dataGridViewUserControl2.TabIndex = 2;
-            // 
             // dataGridViewUserControl1
             // 
             this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -82,7 +71,7 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(12, 53);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(652, 138);
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(652, 300);
             this.dataGridViewUserControl1.TabIndex = 1;
             // 
             // RezultatiEkipeFinaleKupaForm
@@ -92,7 +81,6 @@ namespace Bilten.UI
             this.ClientSize = new System.Drawing.Size(693, 365);
             this.Controls.Add(this.btnZatvori);
             this.Controls.Add(this.btnPrint);
-            this.Controls.Add(this.dataGridViewUserControl2);
             this.Controls.Add(this.dataGridViewUserControl1);
             this.Controls.Add(this.cmbTakmicenje);
             this.Name = "RezultatiEkipeFinaleKupaForm";
@@ -107,7 +95,6 @@ namespace Bilten.UI
 
         private System.Windows.Forms.ComboBox cmbTakmicenje;
         private DataGridViewUserControl dataGridViewUserControl1;
-        private DataGridViewUserControl dataGridViewUserControl2;
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Button btnZatvori;
     }

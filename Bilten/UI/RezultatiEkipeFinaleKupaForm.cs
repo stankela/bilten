@@ -19,10 +19,7 @@ namespace Bilten.UI
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private IDataContext dataContext;
         private bool[] takmicenjeOpened;
-        private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
-        private IList<RezultatUkupno> rezultatiUkupno;
-        private IList<Ocena> ocene;
 
         private RezultatskoTakmicenje ActiveTakmicenje
         {
@@ -30,16 +27,17 @@ namespace Bilten.UI
             set { cmbTakmicenje.SelectedItem = value; }
         }
 
-        public RezultatiEkipeFinaleKupaForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
+        public RezultatiEkipeFinaleKupaForm(int takmicenjeId)
         {
             InitializeComponent();
-            this.deoTakKod = deoTakKod;
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
+                takmicenje = loadTakmicenje(takmicenjeId);
+                
                 IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
                 if (svaRezTakmicenja.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
@@ -52,12 +50,6 @@ namespace Bilten.UI
                 }
                 if (rezTakmicenja.Count == 0)
                     throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
-
-                ocene = loadOcene(takmicenjeId, deoTakKod);
-                rezultatiUkupno = createRezultatiUkupno(rezTakmicenja, ocene);
-
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                NHibernateUtil.Initialize(takmicenje);
 
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
@@ -94,35 +86,28 @@ namespace Bilten.UI
             }
         }
 
+        private Takmicenje loadTakmicenje(int takmicenjeId)
+        {
+            string query = @"from Takmicenje t
+                             where t.Id = :takmicenjeId";
+            IList<Takmicenje> result = dataContext.
+                ExecuteQuery<Takmicenje>(QueryLanguageType.HQL, query,
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            if (result.Count == 0)
+                return null;
+            else
+                return result[0];
+        }
+
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
         {
-
-            string query;
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                query = @"select distinct r
+            string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.Kategorija kat
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
-                    left join fetch t.PoredakEkipno
                     left join fetch t.Ekipe e
-                    left join fetch e.Gimnasticari g
-                    left join fetch g.DrzavaUcesnik dr
-                    left join fetch g.KlubUcesnik kl
-                    where r.Takmicenje.Id = :takmicenjeId
-                    order by r.RedBroj";
-            else
-                query = @"select distinct r
-                    from RezultatskoTakmicenje r
-                    left join fetch r.Kategorija kat
-                    left join fetch r.TakmicenjeDescription d
-                    left join fetch r.Takmicenje4 t
-                    left join fetch t.Poredak
-                    left join fetch t.Ucesnici u
-                    left join fetch u.Ekipa e
-                    left join fetch e.Gimnasticari g
-                    left join fetch g.DrzavaUcesnik dr
-                    left join fetch g.KlubUcesnik kl
                     where r.Takmicenje.Id = :takmicenjeId
                     order by r.RedBroj";
 
@@ -136,137 +121,51 @@ namespace Bilten.UI
                 // potrebno u Poredak.create
                 NHibernateUtil.Initialize(tak.Propozicije);
 
-                // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
-                // fetch u queriju, jako se sporo izvrsava (verovato
-                // zato sto se dobavljaju dve kolekcije - Gimnasticari i 
-                // Rezultati).
-                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                    NHibernateUtil.Initialize(tak.Takmicenje1.PoredakEkipno.Rezultati);
-                else
-                {
-                    if (tak.Propozicije.PostojiTak4)
-                        NHibernateUtil.Initialize(tak.Takmicenje4.Poredak.Rezultati);
-                }
-
+                PoredakEkipno poredak1 = loadPoredakEkipnoTak1(takmicenje.PrvoKolo.Id, tak.Kategorija);
+                PoredakEkipno poredak2 = loadPoredakEkipnoTak1(takmicenje.DrugoKolo.Id, tak.Kategorija);
+                tak.Takmicenje1.PoredakEkipnoFinaleKupa.create(tak, poredak1, poredak2);
             }
             return result;
         }
 
-        private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
+        private PoredakEkipno loadPoredakEkipnoTak1(int takmicenjeId, TakmicarskaKategorija kat)
         {
-            IDataContext dataContext = null;
-            try
-            {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+            string query = @"select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Kategorija kat
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.Ekipe e
+                    where r.Takmicenje.Id = :takmicenjeId
+                    and kat.Naziv = :nazivKat";
 
-                return dataContext.ExecuteNamedQuery<Ocena>(
-                    "FindOceneByDeoTakmicenja",
-                    new string[] { "takId", "deoTakKod" },
-                    new object[] { takmicenjeId, deoTakKod });
-            }
-            catch (Exception ex)
-            {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-            finally
-            {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-            }
-        }
+            IList<RezultatskoTakmicenje> result = dataContext.
+                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
+                        new string[] { "takmicenjeId", "nazivKat" },
+                        new object[] { takmicenjeId, kat.Naziv });
+            if (result.Count == 0)
+                return null;
 
-        private IList<RezultatUkupno> createRezultatiUkupno(
-            IList<RezultatskoTakmicenje> rezTak, IList<Ocena> ocene)
-        {
-            List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
-            foreach (RezultatskoTakmicenje rt in rezTak)
-            {
-                IList<Ekipa> ekipe;
-                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                    ekipe = new List<Ekipa>(rt.Takmicenje1.Ekipe);
-                else
-                    ekipe = new List<Ekipa>(rt.Takmicenje4.getUcesnici());
+            RezultatskoTakmicenje rezTak = result[0];
 
-                foreach (Ekipa e in ekipe)
-                {
-                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
-                    {
-                        if (!gimnasticari.Contains(g))
-                            gimnasticari.Add(g);
-                    }
-                }
-            }
-            
-            IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
-            foreach (GimnasticarUcesnik g in gimnasticari)
-            {
-                RezultatUkupno rezultat = new RezultatUkupno();
-                rezultat.Gimnasticar = g;
-                rezultatiMap.Add(g.Id, rezultat);
-            }
-
-            foreach (Ocena o in ocene)
-            {
-                if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
-                    rezultatiMap[o.Gimnasticar.Id].addOcena(o);
-            }
-
-            List<RezultatUkupno> result = new List<RezultatUkupno>(rezultatiMap.Values);
-            return result;
+            // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
+            // fetch u queriju, jako se sporo izvrsava (verovato
+            // zato sto se dobavljaju dve kolekcije - Gimnasticari i 
+            // Rezultati).
+            NHibernateUtil.Initialize(rezTak.Takmicenje1.PoredakEkipno.Rezultati);
+            return rezTak.Takmicenje1.PoredakEkipno;
         }
 
         private void initUI()
         {
-            Text = "Rezultati ekipno - " + DeoTakmicenjaKodovi.toString(deoTakKod);
+            Text = "I i II Kolo - rezultati ekipno";
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "NazivEkipnog";
 
-            dataGridViewUserControl1.DataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(DataGridViewEkipe_CellMouseClick);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-            GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2,
-                takmicenje);
-        }
-
-        void DataGridViewEkipe_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            onEkipeCellMouseClick();
-        }
-
-        private void onEkipeCellMouseClick()
-        {
-            RezultatEkipno rez = dataGridViewUserControl1.getSelectedItem<RezultatEkipno>();
-            if (rez != null)
-                setRezultatiUkupno(rez.Ekipa);
-        }
-
-        private void setRezultatiUkupno(Ekipa e)
-        {
-            IList<RezultatUkupno> rezultati = getRezultatiUkupno(e);
-            dataGridViewUserControl2.setItems<RezultatUkupno>(rezultati);
-            dataGridViewUserControl2.sort<RezultatUkupno>("PrezimeIme", ListSortDirection.Ascending);
-        }
-
-        private IList<RezultatUkupno> getRezultatiUkupno(Ekipa e)
-        {
-            IList<RezultatUkupno> result = new List<RezultatUkupno>();
-            foreach (GimnasticarUcesnik g in e.Gimnasticari)
-            {
-                foreach (RezultatUkupno rez in rezultatiUkupno)
-                {
-                    if (g.Equals(rez.Gimnasticar))
-                        result.Add(rez);
-                }
-            }
-            return result;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -274,7 +173,7 @@ namespace Bilten.UI
         {
             DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
             if (dgwuc != null)
-                dgwuc.onColumnHeaderMouseClick<RezultatEkipno>(e.DataGridViewCellMouseEventArgs);
+                dgwuc.onColumnHeaderMouseClick<RezultatEkipnoFinaleKupa>(e.DataGridViewCellMouseEventArgs);
         }
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
@@ -306,42 +205,28 @@ namespace Bilten.UI
 
         private bool onSelectedTakmicenjeChanged()
         {
-            bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak4
-                && ActiveTakmicenje.Propozicije.OdvojenoTak4;
-            GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1,
+            bool kvalColumn = !ActiveTakmicenje.Propozicije.Tak4NaOsnovuPrethodnihKola;
+            GridColumnsInitializer.initRezultatiEkipnoFinaleKupa(dataGridViewUserControl1,
                 takmicenje, kvalColumn);
             
             bool save = false;
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
             {
                 takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
-                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                {
-                    ActiveTakmicenje.Takmicenje1.PoredakEkipno.create(ActiveTakmicenje, ocene);
-                    dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
-                }
-                else
-                {
-                    ActiveTakmicenje.Takmicenje4.Poredak.create(ActiveTakmicenje, ocene);
-                    dataContext.Save(ActiveTakmicenje.Takmicenje4.Poredak);
-                }
-                save = true;
+                //ActiveTakmicenje.Takmicenje1.PoredakEkipno.create(ActiveTakmicenje, ocene);
+                //dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
+                //save = true;
             }
 
-            dataGridViewUserControl1.setItems<RezultatEkipno>(getRezultatiEkipno(ActiveTakmicenje));
-            dataGridViewUserControl1.sort<RezultatEkipno>("RedBroj", ListSortDirection.Ascending);
-            onEkipeCellMouseClick();
+            dataGridViewUserControl1.setItems<RezultatEkipnoFinaleKupa>(getRezultatiEkipno(ActiveTakmicenje));
+            dataGridViewUserControl1.sort<RezultatEkipnoFinaleKupa>("RedBroj", ListSortDirection.Ascending);
 
             return save;
         }
 
-        private IList<RezultatEkipno> getRezultatiEkipno(RezultatskoTakmicenje rezTakmicenje)
+        private IList<RezultatEkipnoFinaleKupa> getRezultatiEkipno(RezultatskoTakmicenje rezTakmicenje)
         {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.PoredakEkipno.Rezultati;
-            else
-                return rezTakmicenje.Takmicenje4.Poredak.Rezultati;
+            return rezTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.Rezultati;
         }
 
         private void RezultatiEkipeFinaleKupaForm_Shown(object sender, EventArgs e)
@@ -357,7 +242,7 @@ namespace Bilten.UI
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            string nazivIzvestaja;
+            /*string nazivIzvestaja;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 if (ActiveTakmicenje.Propozicije.OdvojenoTak4)
@@ -428,7 +313,7 @@ namespace Bilten.UI
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
-            }
+            }*/
         }
 
         private void btnZatvori_Click(object sender, EventArgs e)
