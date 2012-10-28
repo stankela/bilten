@@ -11,6 +11,7 @@ using Bilten.Domain;
 using Bilten.Data;
 using NHibernate;
 using Bilten.Data.QueryModel;
+using Iesi.Collections.Generic;
 
 namespace Bilten.UI
 {
@@ -64,7 +65,7 @@ namespace Bilten.UI
             mnTakmicenje1RasporedSudija.Visible = false;
             mnTakmicenje1StartListe.Visible = true;
             mnOpcije.Visible = false;
-            mnKopirajPostojeceTakmicenje.Enabled = false;
+            mnKopirajPrethodnoTakmicenje.Enabled = false;
         }
 
         protected override void OnMove(EventArgs ea)
@@ -326,7 +327,7 @@ namespace Bilten.UI
             mnTakmicenje3.Visible = false;
             mnTakmicenje4.Visible = false;
 
-            mnKopirajPostojeceTakmicenje.Enabled = true;
+            mnKopirajPrethodnoTakmicenje.Enabled = true;
 
             mnPrvoDrugoKoloViseboj.Visible = takmicenje.FinaleKupa;
             mnPrvoDrugoKoloSprave.Visible = takmicenje.FinaleKupa;
@@ -425,7 +426,7 @@ namespace Bilten.UI
             mnTakmicenje3.Visible = takmicenje.ZavrsenoTak1;
             mnTakmicenje4.Visible = takmicenje.ZavrsenoTak1;
 
-            mnKopirajPostojeceTakmicenje.Enabled = false;
+            mnKopirajPrethodnoTakmicenje.Enabled = false;
             
             mnPrvoDrugoKoloViseboj.Visible = takmicenje.FinaleKupa;
             mnPrvoDrugoKoloSprave.Visible = takmicenje.FinaleKupa;
@@ -527,7 +528,7 @@ namespace Bilten.UI
                 TakmicarskeKategorijeForm form = new TakmicarskeKategorijeForm(takmicenjeId.Value);
                 DialogResult dlgResult = form.ShowDialog();
                 if (dlgResult == DialogResult.OK)
-                    mnKopirajPostojeceTakmicenje.Enabled = false;
+                    mnKopirajPrethodnoTakmicenje.Enabled = false;
             }
             catch (InfrastructureException ex)
             {
@@ -1106,13 +1107,13 @@ namespace Bilten.UI
             }
         }
 
-        private void mnKopirajPostojeceTakmicenje_Click(object sender, EventArgs e)
+        private void mnKopirajPrethodnoTakmicenje_Click(object sender, EventArgs e)
         {
-            OtvoriTakmicenjeForm form;
+            KopirajTakmicenjeForm form;
             DialogResult result;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1);
+                form = new KopirajTakmicenjeForm();
                 result = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -1121,7 +1122,7 @@ namespace Bilten.UI
                 return;
             }
 
-            if (result != DialogResult.OK || form.SelTakmicenja.Count != 1)
+            if (result != DialogResult.OK || form.SelDescriptions.Count == 0 || form.SelKategorije.Count == 0)
                 return;
 
             Cursor.Current = Cursors.WaitCursor;
@@ -1132,7 +1133,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                cloneTakmicenje(takmicenje, form.SelTakmicenja[0]);
+                cloneTakmicenje(takmicenje, form.Takmicenje, form.SelDescriptions, form.SelKategorije);
                 dataContext.Commit();
             }
             catch (Exception ex)
@@ -1153,13 +1154,19 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
             }
 
-            mnKopirajPostojeceTakmicenje.Enabled = false;
+            mnKopirajPrethodnoTakmicenje.Enabled = false;
         }
 
-        void cloneTakmicenje(Takmicenje takmicenje, Takmicenje from)
+        void cloneTakmicenje(Takmicenje takmicenje, Takmicenje from, List<RezultatskoTakmicenjeDescription> descriptionsFrom,
+            List<TakmicarskaKategorija> kategorijeFrom)
         {
             dataContext.Attach(takmicenje, false);
             dataContext.Attach(from, false);
+            foreach (RezultatskoTakmicenjeDescription d in descriptionsFrom)
+            {
+                dataContext.Attach(d, false);
+            }
+            
             // TODO3: Ovaj metod bi trebalo updateovati svaki put kada se promene neka svojstva koja se kloniraju.
 
             takmicenje.BrojESudija = from.BrojESudija;
@@ -1175,20 +1182,32 @@ namespace Bilten.UI
             // TODO: Kreiraj metod u klasi TakmicarskaKategorija koji vraca kategorije sortirane po rednom broju.
             // Pronadji sva mesta na kojima sortiram kategorije po rednom broju, i zameni ih pozivom novog metoda.
             // Uradi isto i za klasu RezultatskoTakmicenjeDescription, a i za druge ako postoje.
-            List<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>(from.Kategorije);
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
-            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
+            kategorijeFrom.Sort(new SortComparer<TakmicarskaKategorija>(
                 propDesc, ListSortDirection.Ascending));
-            foreach (TakmicarskaKategorija k in kategorije)
+            foreach (TakmicarskaKategorija k in kategorijeFrom)
             {
                 takmicenje.addKategorija(new TakmicarskaKategorija(k.Naziv, takmicenje.Gimnastika));
             }
 
+            PropertyDescriptor propDesc2 =
+                TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
+            descriptionsFrom.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
+                propDesc2, ListSortDirection.Ascending));
+
+            // prvi description je uvek kao naziv takmicenja.
             RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
             desc.Naziv = takmicenje.Naziv;
             desc.Propozicije = new Propozicije();
             takmicenje.addTakmicenjeDescription(desc);
+            for (int i = 1; i < descriptionsFrom.Count; i++)
+            {
+                desc = new RezultatskoTakmicenjeDescription();
+                desc.Naziv = descriptionsFrom[i].Naziv;
+                desc.Propozicije = new Propozicije();
+                takmicenje.addTakmicenjeDescription(desc);
+            }
 
             IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
@@ -1201,17 +1220,33 @@ namespace Bilten.UI
                 }
             }
 
-            List<RezultatskoTakmicenjeDescription> fromDescriptions =
-                new List<RezultatskoTakmicenjeDescription>(from.TakmicenjeDescriptions);
+            List<RezultatskoTakmicenjeDescription> descriptions =
+                new List<RezultatskoTakmicenjeDescription>(takmicenje.TakmicenjeDescriptions);
             propDesc = TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
-            fromDescriptions.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
+            descriptions.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
                 propDesc, ListSortDirection.Ascending));
-            clonePropozicije(desc.Propozicije, fromDescriptions[0].Propozicije);
+            for (int i = 0; i < descriptions.Count; i++)
+            {
+                clonePropozicije(descriptions[i].Propozicije, descriptionsFrom[i].Propozicije);
+            }
 
-            IList<RezultatskoTakmicenje> rezTakmicenjaFrom = loadRezTakmicenja(from.Id);
+            IList<RezultatskoTakmicenje> rezTakmicenjaFrom = new List<RezultatskoTakmicenje>();
+            foreach (RezultatskoTakmicenje rt in loadRezTakmicenja(from.Id))
+            {
+                // filtriraj rez. takmicenja.
+                ISet<TakmicarskaKategorija> katFromSet = new HashedSet<TakmicarskaKategorija>(kategorijeFrom);
+                ISet<RezultatskoTakmicenjeDescription> descFromSet
+                    = new HashedSet<RezultatskoTakmicenjeDescription>(descriptionsFrom);
+                if (katFromSet.Contains(rt.Kategorija) && descFromSet.Contains(rt.TakmicenjeDescription))
+                {
+                    rezTakmicenjaFrom.Add(rt);
+                }
+
+            }
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
-                RezultatskoTakmicenje rezTak2 = findRezTakmicenje(rezTakmicenjaFrom, fromDescriptions[0], rezTak.Kategorija);
+                RezultatskoTakmicenje rezTak2 = findRezTakmicenje(rezTakmicenjaFrom, rezTak.TakmicenjeDescription.Naziv,
+                    rezTak.Kategorija);
                 clonePropozicije(rezTak.Propozicije, rezTak2.Propozicije);
             }
 
@@ -1240,8 +1275,6 @@ namespace Bilten.UI
             }
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                //dataContext.Save(rt.Propozicije);
-
                 bool deletedTak2, deletedTak3, deletedTak4;
 
                 rt.updateTakmicenjaFromChangedPropozicije(
@@ -1285,11 +1318,13 @@ namespace Bilten.UI
             }
 
             // TODO2: Izgleda da prikazuje rezultate za sprave u takmicenju I cak i kada se u propozicijama selektuje da
-            // ne postoji takmicenje III
+            // ne postoji takmicenje III. U stvari tako i treba zato sto ipak treba da postoji pregled nastupa po spravama
+            // cak i kada se selektuje da ne postoji takmicenje III. Tako da ovo treba da ostane.
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaFrom, fromDescriptions[0], rt.Kategorija);
+                RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaFrom, rt.TakmicenjeDescription.Naziv,
+                    rt.Kategorija);
                 foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
                 {
                     if (gimnasticariMap.ContainsKey(g))
@@ -1304,7 +1339,8 @@ namespace Bilten.UI
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaFrom, fromDescriptions[0], rt.Kategorija);
+                RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaFrom, rt.TakmicenjeDescription.Naziv,
+                    rt.Kategorija);
                 foreach (Ekipa e in rtFrom.Takmicenje1.Ekipe)
                 {
                     Ekipa ekipa = new Ekipa();
@@ -1379,14 +1415,38 @@ namespace Bilten.UI
         }
 
         private RezultatskoTakmicenje findRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
-            RezultatskoTakmicenjeDescription rezTakDesc, TakmicarskaKategorija kat)
+            string nazivDesc, TakmicarskaKategorija kat)
         {
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
-                if (rezTak.TakmicenjeDescription.Equals(rezTakDesc)
+                if (rezTak.TakmicenjeDescription.Naziv == nazivDesc
                 && rezTak.Kategorija.Equals(kat))
                     return rezTak;
             }
+
+            // Nije pronadjeno rez. takmicenje. Ovo je situacija koja se najcesce desava zato sto se najcesce kopira
+            // takmicenje za koje postoji samo jedno takmicenje description, i data se description takmicenja koje se
+            // kopira i description takmicenja u koje se kopira ne poklapaju (naziv descriptiona po defaultu je naziv
+            // takmicenja). Pronadji sva descriptions za datu kategoriju. Description koji trazimo je descriptions sa
+            // najnizim brojem.
+            List<RezultatskoTakmicenjeDescription> descriptions = new List<RezultatskoTakmicenjeDescription>();
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.Kategorija.Equals(kat))
+                    descriptions.Add(rezTak.TakmicenjeDescription);
+            }
+            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
+            descriptions.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
+                propDesc, ListSortDirection.Ascending));
+
+            // ponovljen kod sa pocetka funkcije
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.TakmicenjeDescription.Naziv == descriptions[0].Naziv
+                && rezTak.Kategorija.Equals(kat))
+                    return rezTak;
+            }
+
             return null;
         }
 

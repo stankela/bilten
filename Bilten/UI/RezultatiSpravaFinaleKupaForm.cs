@@ -118,7 +118,6 @@ namespace Bilten.UI
                     left join fetch r.Kategorija kat
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
-                    left join fetch t.PoredakSprava
                     left join fetch t.Gimnasticari g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
@@ -166,7 +165,6 @@ namespace Bilten.UI
                     left join fetch r.Kategorija kat
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
-                    left join fetch t.PoredakSprava
                     left join fetch t.Gimnasticari g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
