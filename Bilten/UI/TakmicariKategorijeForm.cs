@@ -240,7 +240,7 @@ namespace Bilten.UI
             {
                 try
                 {
-                    form3 = new SelectGimnasticariPrethTakmForm(ActiveKategorija.Gimnastika);
+                    form3 = new SelectGimnasticariPrethTakmForm(ActiveKategorija.Gimnastika, false);
                     dlgResult = form3.ShowDialog();
                 }
                 catch (InfrastructureException ex)

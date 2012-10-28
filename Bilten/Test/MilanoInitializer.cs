@@ -117,7 +117,6 @@ namespace Bilten.Test
 
             result.PostojiTak3 = true;
             result.OdvojenoTak3 = true;
-            result.Tak3NaOsnovuTak1 = false;
             result.NeogranicenBrojTakmicaraIzKlubaTak3 = false;
             result.MaxBrojTakmicaraIzKlubaTak3 = 2;
             result.MaxBrojTakmicaraTak3VaziZaDrzavu = true;

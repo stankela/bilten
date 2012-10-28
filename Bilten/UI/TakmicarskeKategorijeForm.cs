@@ -155,9 +155,7 @@ namespace Bilten.UI
 
         private void btnDeleteKategorija_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Jos nije uradjeno.");
-            return;
-
+            // TODO: Uradi brisanje kategorija
             if (SelectedKategorija == null)
                 return;
             string msgFmt = "Da li zelite da izbrisete kategoriju '{0}'?";

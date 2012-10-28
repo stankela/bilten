@@ -16,6 +16,7 @@ namespace Bilten.UI
         IDataContext dataContext;
         private IList<RezultatskoTakmicenjeDescription> takmicenja = new List<RezultatskoTakmicenjeDescription>();
         private IList<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>();
+        Gimnastika gimnastika;
 
         private Takmicenje takmicenje;
         public Takmicenje Takmicenje
@@ -35,20 +36,21 @@ namespace Bilten.UI
             get { return selKategorije; }
         }
 
-        public KopirajTakmicenjeForm()
+        public KopirajTakmicenjeForm(Gimnastika gim)
         {
             InitializeComponent();
+            this.gimnastika = gim;
             this.Text = "Izaberi takmicenje i kategorije";
         }
 
         private void btnIzaberi_Click(object sender, EventArgs e)
         {
-            OtvoriTakmicenjeForm form;
-            DialogResult result;
+            DialogResult dlgResult = DialogResult.None;
+            SelectGimnasticariPrethTakmForm form = null;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1);
-                result = form.ShowDialog();
+                form = new SelectGimnasticariPrethTakmForm(gimnastika, true);
+                dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
             {
@@ -56,7 +58,7 @@ namespace Bilten.UI
                 return;
             }
 
-            if (result != DialogResult.OK || form.SelTakmicenja.Count != 1)
+            if (dlgResult != DialogResult.OK || form.SelTakmicenje == null)
                 return;
 
             try
@@ -65,7 +67,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                takmicenje = form.SelTakmicenja[0];
+                takmicenje = form.SelTakmicenje;
                 txtTakmicenje.Text = takmicenje.Naziv;
                 dataContext.Attach(takmicenje, false);
 

@@ -119,8 +119,12 @@ namespace Bilten.UI
 
                 // takmicenje III
                 node = takmicenjeNode.Nodes.Add("Takmicenje III");
-                page = new Takmicenje3Page(d.Propozicije,
-                    getDependentPropozicije(d));
+                if (takmicenje.FinaleKupa)
+                    page = new Takmicenje3FinaleKupaPage(d.Propozicije,
+                        getDependentPropozicije(d));
+                else
+                    page = new Takmicenje3Page(d.Propozicije,
+                        getDependentPropozicije(d));
                 node.Tag = page;
                 Pages.Add(page);
 
@@ -145,7 +149,10 @@ namespace Bilten.UI
 
                 // takmicenje III
                 node = takmicenjeNode.Nodes.Add("Takmicenje III");
-                page = new Takmicenje3Page(rt.Propozicije, null);
+                if (takmicenje.FinaleKupa)
+                    page = new Takmicenje3FinaleKupaPage(rt.Propozicije, null);
+                else
+                    page = new Takmicenje3Page(rt.Propozicije, null);
                 node.Tag = page;
                 Pages.Add(page);
 

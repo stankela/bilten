@@ -624,6 +624,12 @@
     <Compile Include="UI\Takmicenje3Page.Designer.cs">
       <DependentUpon>Takmicenje3Page.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Takmicenje3FinaleKupaPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Takmicenje3FinaleKupaPage.designer.cs">
+      <DependentUpon>Takmicenje3FinaleKupaPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Takmicenje4Page.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -978,6 +984,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Takmicenje3Page.resx">
       <DependentUpon>Takmicenje3Page.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Takmicenje3FinaleKupaPage.resx">
+      <DependentUpon>Takmicenje3FinaleKupaPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Takmicenje4Page.resx">

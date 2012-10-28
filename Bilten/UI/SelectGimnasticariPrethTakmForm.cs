@@ -18,17 +18,25 @@ namespace Bilten.UI
         private IDataContext dataContext;
         Gimnastika gim;
         private Dictionary<int, List<GimnasticarUcesnik>> gimMap;
+        bool izborTakmicenja;
 
-        protected IList<GimnasticarUcesnik> selectedGimnasticari = new List<GimnasticarUcesnik>();
+        private IList<GimnasticarUcesnik> selectedGimnasticari = new List<GimnasticarUcesnik>();
         public IList<GimnasticarUcesnik> SelectedGimnasticari
         {
             get { return selectedGimnasticari; }
         }
 
-        public SelectGimnasticariPrethTakmForm(Gimnastika gim)
+        private Takmicenje takmicenje;
+        public Takmicenje SelTakmicenje
+        {
+            get { return takmicenje; }
+        }
+
+        public SelectGimnasticariPrethTakmForm(Gimnastika gim, bool izborTakmicenja)
         {
             InitializeComponent();
             this.gim = gim;
+            this.izborTakmicenja = izborTakmicenja;
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -57,7 +65,10 @@ namespace Bilten.UI
 
         private void initUI()
         {
-            this.Text = "Izaberi gimnasticare";
+            if (izborTakmicenja)
+                this.Text = "Izaberi takmicenje";
+            else
+                this.Text = "Izaberi gimnasticare";
 
             dataGridViewUserControl2.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(dataGridViewUserControl2_GridColumnHeaderMouseClick);
@@ -161,6 +172,11 @@ namespace Bilten.UI
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            TreeNode node = e.Node;
+            while (node.Parent != null)
+                node = node.Parent;
+            takmicenje = node.Tag as Takmicenje;
+
             if (e.Node.Parent == null)
                 return;
 
@@ -173,15 +189,26 @@ namespace Bilten.UI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            IList<GimnasticarUcesnik> selItems
-                = dataGridViewUserControl2.getSelectedItems<GimnasticarUcesnik>();
-            if (selItems.Count == 0)
+            if (izborTakmicenja)
             {
-                DialogResult = DialogResult.None;
-                return;
+                if (takmicenje == null)
+                {
+                    DialogResult = DialogResult.None;
+                    return;
+                }
             }
-            selectedGimnasticari = selItems;
-            DialogResult = DialogResult.OK;
+            else
+            {
+                IList<GimnasticarUcesnik> selItems
+                    = dataGridViewUserControl2.getSelectedItems<GimnasticarUcesnik>();
+                if (selItems.Count == 0)
+                {
+                    DialogResult = DialogResult.None;
+                    return;
+                }
+                selectedGimnasticari = selItems;
+                DialogResult = DialogResult.OK;
+            }
         }
     }
 }

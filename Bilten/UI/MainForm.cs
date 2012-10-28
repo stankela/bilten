@@ -26,6 +26,7 @@ namespace Bilten.UI
         // tipa Nullable<int>, a takmicenje.Id je tipa int. Proveri sva mesta gde se koristi takmicenjeId)
         private string nazivTakmicenja;
         private bool finaleKupa;
+        private Gimnastika gimnastika;
         private Nullable<int> takmicenjeId;
         Takmicenje takmicenje;
 
@@ -315,6 +316,7 @@ namespace Bilten.UI
             this.takmicenje = takmicenje;
             takmicenjeId = takmicenje.Id;
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
+            gimnastika = takmicenje.Gimnastika;
             finaleKupa = takmicenje.FinaleKupa;
             mnKategorijeITakmicenja.Enabled = true;
             mnPropozicije.Enabled = true;
@@ -414,6 +416,7 @@ namespace Bilten.UI
             takmicenjeId = takmicenje.Id;
             this.takmicenje = takmicenje;
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
+            gimnastika = takmicenje.Gimnastika;
             finaleKupa = takmicenje.FinaleKupa;
             mnKategorijeITakmicenja.Enabled = true;
             mnPropozicije.Enabled = true;
@@ -1113,7 +1116,7 @@ namespace Bilten.UI
             DialogResult result;
             try
             {
-                form = new KopirajTakmicenjeForm();
+                form = new KopirajTakmicenjeForm(this.gimnastika);
                 result = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -1525,7 +1528,6 @@ namespace Bilten.UI
             propozicije.BrojRezerviTak2 = from.BrojRezerviTak2;
             propozicije.PostojiTak3 = from.PostojiTak3;
             propozicije.OdvojenoTak3 = from.OdvojenoTak3;
-            propozicije.Tak3NaOsnovuTak1 = from.Tak3NaOsnovuTak1;
             propozicije.NeogranicenBrojTakmicaraIzKlubaTak3 = from.NeogranicenBrojTakmicaraIzKlubaTak3;
             propozicije.MaxBrojTakmicaraIzKlubaTak3 = from.MaxBrojTakmicaraIzKlubaTak3;
             propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu = from.MaxBrojTakmicaraTak3VaziZaDrzavu;

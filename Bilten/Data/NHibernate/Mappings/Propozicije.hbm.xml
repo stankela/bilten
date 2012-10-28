@@ -20,7 +20,6 @@
 
     <property name="PostojiTak3" column="postoji_tak3" type="Boolean" />
     <property name="OdvojenoTak3" column="odvojeno_tak3" type="Boolean" />
-    <property name="Tak3NaOsnovuTak1" column="tak3_na_osnovu_tak1" type="Boolean" />
     <property name="NeogranicenBrojTakmicaraIzKlubaTak3" 
               column="neogr_broj_tak_tak3" type="Boolean" />
     <property name="MaxBrojTakmicaraIzKlubaTak3" column="max_tak_tak3" type="Byte" />
@@ -31,6 +30,10 @@
               column="kval_tak3_oba_preskoka" type="Boolean" />
     <property name="PoredakTak3PreskokNaOsnovuObaPreskoka" 
               column="poredak_tak3_oba_preskoka" type="Boolean" />
+    <property name="Tak3FinalnaOcenaJeZbirObaKola" column="tak3_fin_ocena_je_zbir" type="Boolean" />
+    <property name="Tak3FinalnaOcenaJeMaxObaKola" column="tak3_fin_ocena_je_max" type="Boolean" />
+    <property name="Tak3FinalnaOcenaJeProsekObaKola" column="tak3_fin_ocena_je_prosek" type="Boolean" />
+    <property name="Tak3NeRacunajProsekAkoNemaOceneIzObaKola" column="tak3_ne_racunaj_prosek" type="Boolean" />
 
     <property name="PostojiTak4" column="postoji_tak4" type="Boolean" />
     <property name="OdvojenoTak4" column="odvojeno_tak4" type="Boolean" />

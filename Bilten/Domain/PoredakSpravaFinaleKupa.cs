@@ -101,7 +101,7 @@ namespace Bilten.Domain
             }
 
             rankRezultati();
-            if (!rezTak.Propozicije.Tak3NaOsnovuPrethodnihKola)
+            if (rezTak.Propozicije.OdvojenoTak3)
                 updateKvalStatus(rezTak.Propozicije.BrojFinalistaTak3,
                                  rezTak.Propozicije.NeogranicenBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak3,
@@ -199,7 +199,7 @@ namespace Bilten.Domain
             }
 
             rankRezultati();
-            if (!rezTak.Propozicije.Tak3NaOsnovuPrethodnihKola)
+            if (rezTak.Propozicije.OdvojenoTak3)
                 updateKvalStatus(rezTak.Propozicije.BrojFinalistaTak3,
                                  rezTak.Propozicije.NeogranicenBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak3,

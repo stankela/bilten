@@ -277,7 +277,7 @@ namespace Bilten.UI
 
         private bool kvalColumnVisible()
         {
-            bool result = !ActiveTakmicenje.Propozicije.Tak3NaOsnovuPrethodnihKola;
+            bool result = ActiveTakmicenje.Propozicije.OdvojenoTak3;
             return result;
         }
 
