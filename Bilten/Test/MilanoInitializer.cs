@@ -126,8 +126,6 @@ namespace Bilten.Test
 
             result.PostojiTak4 = false;
             result.OdvojenoTak4 = false;
-            result.Tak4NaOsnovuTak1 = false;
-            result.BrojGimnasticaraUEkipi = 0;
             result.BrojRezultataKojiSeBodujuZaEkipu = 0;
             result.BrojEkipaUFinalu = 0;
 

@@ -83,7 +83,7 @@ namespace Bilten.Domain
             }
 
             rankRezultati();
-            if (!rezTak.Propozicije.Tak4NaOsnovuPrethodnihKola)
+            if (rezTak.Propozicije.OdvojenoTak4)
                 updateKvalStatus(rezTak.Propozicije.BrojEkipaUFinalu, 0);
         }
 

@@ -40,11 +40,13 @@
 
     <property name="PostojiTak4" column="postoji_tak4" type="Boolean" />
     <property name="OdvojenoTak4" column="odvojeno_tak4" type="Boolean" />
-    <property name="Tak4NaOsnovuTak1" column="tak4_na_osnovu_tak1" type="Boolean" />
     <property name="JednoTak4ZaSveKategorije" column="jedno_tak4_za_sve_kat" type="Boolean" />
-    <property name="BrojGimnasticaraUEkipi" column="broj_gim_u_ekipi" type="Byte" />
     <property name="BrojRezultataKojiSeBodujuZaEkipu" column="broj_rezultata_ekipe" type="Byte" />
     <property name="BrojEkipaUFinalu" column="broj_ekipa_u_finalu" type="Byte" />
+    <property name="Tak4FinalnaOcenaJeZbirObaKola" column="tak4_fin_ocena_je_zbir" type="Boolean" />
+    <property name="Tak4FinalnaOcenaJeMaxObaKola" column="tak4_fin_ocena_je_max" type="Boolean" />
+    <property name="Tak4FinalnaOcenaJeProsekObaKola" column="tak4_fin_ocena_je_prosek" type="Boolean" />
+    <property name="Tak4NeRacunajProsekAkoNemaOceneIzObaKola" column="tak4_ne_racunaj_prosek" type="Boolean" />
 
   </class>
 

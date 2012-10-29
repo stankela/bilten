@@ -134,8 +134,12 @@ namespace Bilten.UI
 
                 // takmicenje IV
                 node = takmicenjeNode.Nodes.Add("Takmicenje IV");
-                page = new Takmicenje4Page(d.Propozicije,
-                    getDependentPropozicije(d));
+                if (takmicenje.FinaleKupa)
+                    page = new Takmicenje4FinaleKupaPage(d.Propozicije,
+                        getDependentPropozicije(d));
+                else
+                    page = new Takmicenje4Page(d.Propozicije,
+                        getDependentPropozicije(d));
                 node.Tag = page;
                 Pages.Add(page);
             }
@@ -165,7 +169,10 @@ namespace Bilten.UI
 
                 // takmicenje IV
                 node = takmicenjeNode.Nodes.Add("Takmicenje IV");
-                page = new Takmicenje4Page(rt.Propozicije, null);
+                if (takmicenje.FinaleKupa)
+                    page = new Takmicenje4FinaleKupaPage(rt.Propozicije, null);
+                else
+                    page = new Takmicenje4Page(rt.Propozicije, null);
                 node.Tag = page;
                 Pages.Add(page);
             }

@@ -237,8 +237,8 @@ namespace Bilten.UI
             if (!rbtOdvojenoTak2.Checked && !rbtNaOsnovuPrvogIDrugogKola.Checked)
             {
                 notification.RegisterMessage(
-                    "OdvojenoTak2", "Izaberite da li se takmicenje II posebno odrzava, " +
-                    "ili se racuna na osnovu rezultata takmicenja I.");
+                    "OdvojenoTak2", "Izaberite da li se finale takmicenja II posebno odrzava, " +
+                    "ili se racuna na osnovu rezultata 1. i 2. kola.");
             }
             if (!rbtFinalnaOcenaJeMax.Checked && !rbtFinalnaOcenaJeZbir.Checked && !rbtFinalnaOcenaJeProsek.Checked)
             {

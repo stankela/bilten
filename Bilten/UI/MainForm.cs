@@ -1393,9 +1393,6 @@ namespace Bilten.UI
                 }
             }
 
-            // TODO3: Kod kopiranja takmicenja, najpre prikazi dialog gde bi se biralo takmicenje i kategorije sa tog
-            // takmicenja.
-
             dataContext.Add(takmicenje);
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
@@ -1536,8 +1533,6 @@ namespace Bilten.UI
             propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = from.PoredakTak3PreskokNaOsnovuObaPreskoka;
             propozicije.PostojiTak4 = from.PostojiTak4;
             propozicije.OdvojenoTak4 = from.OdvojenoTak4;
-            propozicije.Tak4NaOsnovuTak1 = from.Tak4NaOsnovuTak1;
-            propozicije.BrojGimnasticaraUEkipi = from.BrojGimnasticaraUEkipi;
             propozicije.BrojRezultataKojiSeBodujuZaEkipu = from.BrojRezultataKojiSeBodujuZaEkipu;
             propozicije.BrojEkipaUFinalu = from.BrojEkipaUFinalu;
             propozicije.JednoTak4ZaSveKategorije = from.JednoTak4ZaSveKategorije;
@@ -1547,7 +1542,6 @@ namespace Bilten.UI
             propozicije.Tak2FinalnaOcenaJeProsekObaKola = from.Tak2FinalnaOcenaJeProsekObaKola;
             propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = from.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
 
-            propozicije.Tak4NaOsnovuPrethodnihKola = from.Tak4NaOsnovuPrethodnihKola;
             propozicije.Tak4FinalnaOcenaJeZbirObaKola = from.Tak4FinalnaOcenaJeZbirObaKola;
             propozicije.Tak4FinalnaOcenaJeMaxObaKola = from.Tak4FinalnaOcenaJeMaxObaKola;
             propozicije.Tak4FinalnaOcenaJeProsekObaKola = from.Tak4FinalnaOcenaJeProsekObaKola;

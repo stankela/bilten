@@ -69,11 +69,13 @@ create table propozicije (
     tak3_ne_racunaj_prosek bit,
 	postoji_tak4 bit,
 	odvojeno_tak4 bit,
-	tak4_na_osnovu_tak1 bit,
 	jedno_tak4_za_sve_kat bit,
-	broj_gim_u_ekipi tinyint,
 	broj_rezultata_ekipe tinyint,
-	broj_ekipa_u_finalu tinyint
+	broj_ekipa_u_finalu tinyint,
+    tak4_fin_ocena_je_zbir bit,
+    tak4_fin_ocena_je_max bit,
+    tak4_fin_ocena_je_prosek bit,
+    tak4_ne_racunaj_prosek bit
 );
 
 create table takmicenja (

@@ -132,20 +132,6 @@ namespace Bilten.Domain
             set { odvojenoTak4 = value; }
         }
 
-        private bool tak4NaOsnovuTak1;
-        public virtual bool Tak4NaOsnovuTak1
-        {
-            get { return tak4NaOsnovuTak1; }
-            set { tak4NaOsnovuTak1 = value; }
-        }
-
-        private byte brojGimnasticaraUEkipi;
-        public virtual byte BrojGimnasticaraUEkipi
-        {
-            get { return brojGimnasticaraUEkipi; }
-            set { brojGimnasticaraUEkipi = value; }
-        }
-
         private byte brojRezultataKojiSeBodujuZaEkipu;
         public virtual byte BrojRezultataKojiSeBodujuZaEkipu
         {
@@ -230,13 +216,6 @@ namespace Bilten.Domain
         }
 
         // Takmicenje 4
-
-        private bool tak4NaOsnovuPrethodnihKola;
-        public virtual bool Tak4NaOsnovuPrethodnihKola
-        {
-            get { return tak4NaOsnovuPrethodnihKola; }
-            set { tak4NaOsnovuPrethodnihKola = value; }
-        }
 
         private bool tak4FinalnaOcenaJeZbirObaKola;
         public virtual bool Tak4FinalnaOcenaJeZbirObaKola

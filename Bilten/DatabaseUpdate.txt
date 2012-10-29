@@ -20,3 +20,11 @@ ALTER TABLE propozicije ADD COLUMN tak2_fin_ocena_je_zbir bit;
 ALTER TABLE propozicije ADD COLUMN tak2_fin_ocena_je_max bit;
 ALTER TABLE propozicije ADD COLUMN tak2_fin_ocena_je_prosek bit;
 ALTER TABLE propozicije ADD COLUMN tak2_ne_racunaj_prosek bit;
+
+ALTER TABLE propozicije DROP COLUMN broj_gim_u_ekipi;
+ALTER TABLE propozicije DROP COLUMN tak4_na_osnovu_tak1;
+ALTER TABLE propozicije ADD COLUMN tak4_fin_ocena_je_zbir bit;
+ALTER TABLE propozicije ADD COLUMN tak4_fin_ocena_je_max bit;
+ALTER TABLE propozicije ADD COLUMN tak4_fin_ocena_je_prosek bit;
+ALTER TABLE propozicije ADD COLUMN tak4_ne_racunaj_prosek bit;
+
