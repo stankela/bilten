@@ -335,7 +335,7 @@ namespace Bilten.UI
 
                 IList<Ocena> ocene;
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                || rezTakmicenje.Propozicije.Tak2NaOsnovuTak1)
+                || !rezTakmicenje.Propozicije.OdvojenoTak2)
                     ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
                 else
                     ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje2);

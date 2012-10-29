@@ -1521,7 +1521,6 @@ namespace Bilten.UI
             propozicije.MaxBrojTakmicaraIzKlubaTak1 = from.MaxBrojTakmicaraIzKlubaTak1;
             propozicije.PostojiTak2 = from.PostojiTak2;
             propozicije.OdvojenoTak2 = from.OdvojenoTak2;
-            propozicije.Tak2NaOsnovuTak1 = from.Tak2NaOsnovuTak1;
             propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 = from.NeogranicenBrojTakmicaraIzKlubaTak2;
             propozicije.MaxBrojTakmicaraIzKlubaTak2 = from.MaxBrojTakmicaraIzKlubaTak2;
             propozicije.BrojFinalistaTak2 = from.BrojFinalistaTak2;
@@ -1543,7 +1542,6 @@ namespace Bilten.UI
             propozicije.BrojEkipaUFinalu = from.BrojEkipaUFinalu;
             propozicije.JednoTak4ZaSveKategorije = from.JednoTak4ZaSveKategorije;
 
-            propozicije.Tak2NaOsnovuPrethodnihKola = from.Tak2NaOsnovuPrethodnihKola;
             propozicije.Tak2FinalnaOcenaJeZbirObaKola = from.Tak2FinalnaOcenaJeZbirObaKola;
             propozicije.Tak2FinalnaOcenaJeMaxObaKola = from.Tak2FinalnaOcenaJeMaxObaKola;
             propozicije.Tak2FinalnaOcenaJeProsekObaKola = from.Tak2FinalnaOcenaJeProsekObaKola;

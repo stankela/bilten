@@ -130,7 +130,7 @@ namespace Bilten.UI
             if (propozicije.PostojiTak2)
             {
                 rbtOdvojenoTak2.Checked = propozicije.OdvojenoTak2;
-                rbtNaOsnovuTak1.Checked = propozicije.Tak2NaOsnovuTak1;
+                rbtNaOsnovuTak1.Checked = !propozicije.OdvojenoTak2;
 
                 ckbNeogranicenBrojTak.Checked = propozicije.NeogranicenBrojTakmicaraIzKlubaTak2;
                 if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
@@ -288,7 +288,6 @@ namespace Bilten.UI
             if (propozicije.PostojiTak2)
             {
                 propozicije.OdvojenoTak2 = rbtOdvojenoTak2.Checked;
-                propozicije.Tak2NaOsnovuTak1 = rbtNaOsnovuTak1.Checked;
 
                 propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 = ckbNeogranicenBrojTak.Checked;
                 if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
@@ -307,7 +306,6 @@ namespace Bilten.UI
                 {
                     p.PostojiTak2 = propozicije.PostojiTak2;
                     p.OdvojenoTak2 = propozicije.OdvojenoTak2;
-                    p.Tak2NaOsnovuTak1 = propozicije.Tak2NaOsnovuTak1;
                     p.NeogranicenBrojTakmicaraIzKlubaTak2 = propozicije.NeogranicenBrojTakmicaraIzKlubaTak2;
                     p.MaxBrojTakmicaraIzKlubaTak2 = propozicije.MaxBrojTakmicaraIzKlubaTak2;
                     p.BrojFinalistaTak2 = propozicije.BrojFinalistaTak2;

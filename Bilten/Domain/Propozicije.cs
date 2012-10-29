@@ -27,13 +27,6 @@ namespace Bilten.Domain
             set { odvojenoTak2 = value; }
         }
 
-        private bool tak2NaOsnovuTak1;
-        public virtual bool Tak2NaOsnovuTak1
-        {
-            get { return tak2NaOsnovuTak1; }
-            set { tak2NaOsnovuTak1 = value; }
-        }
-
         private bool neogranicenBrojTakmicaraIzKlubaTak2;
         public virtual bool NeogranicenBrojTakmicaraIzKlubaTak2
         {
@@ -177,13 +170,6 @@ namespace Bilten.Domain
         // Finale kupa
 
         // Takmicenje 2
-
-        private bool tak2NaOsnovuPrethodnihKola;
-        public virtual bool Tak2NaOsnovuPrethodnihKola
-        {
-            get { return tak2NaOsnovuPrethodnihKola; }
-            set { tak2NaOsnovuPrethodnihKola = value; }
-        }
 
         private bool tak2FinalnaOcenaJeZbirObaKola;
         public virtual bool Tak2FinalnaOcenaJeZbirObaKola

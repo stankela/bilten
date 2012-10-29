@@ -11,12 +11,15 @@
     
     <property name="PostojiTak2" column="postoji_tak2" type="Boolean" />
     <property name="OdvojenoTak2" column="odvojeno_tak2" type="Boolean" />
-    <property name="Tak2NaOsnovuTak1" column="tak2_na_osnovu_tak1" type="Boolean" />
     <property name="NeogranicenBrojTakmicaraIzKlubaTak2" 
               column="neogr_broj_tak_tak2" type="Boolean" />
     <property name="MaxBrojTakmicaraIzKlubaTak2" column="max_tak_tak2" type="Byte" />
     <property name="BrojFinalistaTak2" column="broj_finalista_tak2" type="Byte" />
     <property name="BrojRezerviTak2" column="broj_rezervi_tak2" type="Byte" />
+    <property name="Tak2FinalnaOcenaJeZbirObaKola" column="tak2_fin_ocena_je_zbir" type="Boolean" />
+    <property name="Tak2FinalnaOcenaJeMaxObaKola" column="tak2_fin_ocena_je_max" type="Boolean" />
+    <property name="Tak2FinalnaOcenaJeProsekObaKola" column="tak2_fin_ocena_je_prosek" type="Boolean" />
+    <property name="Tak2NeRacunajProsekAkoNemaOceneIzObaKola" column="tak2_ne_racunaj_prosek" type="Boolean" />
 
     <property name="PostojiTak3" column="postoji_tak3" type="Boolean" />
     <property name="OdvojenoTak3" column="odvojeno_tak3" type="Boolean" />

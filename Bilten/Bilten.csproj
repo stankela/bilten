@@ -612,6 +612,12 @@
     <Compile Include="UI\TakmicarskeKategorijeForm.Designer.cs">
       <DependentUpon>TakmicarskeKategorijeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Takmicenje2FinaleKupaPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Takmicenje2FinaleKupaPage.designer.cs">
+      <DependentUpon>Takmicenje2FinaleKupaPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Takmicenje2Page.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -977,6 +983,10 @@
     <EmbeddedResource Include="UI\TakmicarskeKategorijeForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TakmicarskeKategorijeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Takmicenje2FinaleKupaPage.resx">
+      <DependentUpon>Takmicenje2FinaleKupaPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Takmicenje2Page.resx">
       <DependentUpon>Takmicenje2Page.cs</DependentUpon>

@@ -209,7 +209,7 @@ namespace Bilten.UI
 
         private void onSelectedTakmicenjeChanged()
         {
-            bool kvalColumn = !ActiveTakmicenje.Propozicije.Tak2NaOsnovuPrethodnihKola;
+            bool kvalColumn = ActiveTakmicenje.Propozicije.OdvojenoTak2;
             GridColumnsInitializer.initRezultatiUkupnoFinaleKupa(dataGridViewUserControl1,
                 takmicenje, kvalColumn);
             

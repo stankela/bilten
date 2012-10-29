@@ -83,7 +83,7 @@ namespace Bilten.Domain
             }
 
             rankRezultati();
-            if (!rezTak.Propozicije.Tak2NaOsnovuPrethodnihKola)
+            if (rezTak.Propozicije.OdvojenoTak2)
                 updateKvalStatus(rezTak.Propozicije.BrojFinalistaTak2,
                                  rezTak.Propozicije.NeogranicenBrojTakmicaraIzKlubaTak2,
                                  rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak2,
