@@ -29,7 +29,13 @@ namespace Bilten
       //      new RegistarInitializer().insert();
       //      new MilanoInitializer(Gimnastika.MSG).insert();
       //      new MilanoInitializer(Gimnastika.ZSG).insert();
+
             
+            // Kreiranje prazne baze
+            //new SqlCeUtilities().CreateDatabase(@"..\..\clanovi_podaci2.sdf", "sdv");
+            
+            //new DatabaseUpdater().updateDatabase();
+       
             //MainForm mainForm = new MainForm();
             //Application.Run(mainForm);
             SingleInstanceApplication.Application.Run(args);

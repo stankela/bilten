@@ -21,5 +21,10 @@ namespace Bilten
                 }
             }
         }
+
+        public static string ConnectionString
+        {
+            get { return @"Data Source=..\..\BiltenPodaci.sdf"; }
+        }
     }
 }

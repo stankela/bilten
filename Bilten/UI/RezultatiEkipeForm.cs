@@ -53,12 +53,25 @@ namespace Bilten.UI
                 if (rezTakmicenja.Count == 0)
                     throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
 
-                ocene = loadOcene(takmicenjeId, deoTakKod);
-                rezultatiUkupno = createRezultatiUkupno(rezTakmicenja, ocene);
-
                 takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
                 NHibernateUtil.Initialize(takmicenje);
 
+                if (takmicenje.FinaleKupa)
+                {
+                    List<RezultatskoTakmicenje> rezTakmicenja2 = new List<RezultatskoTakmicenje>(rezTakmicenja);
+                    rezTakmicenja.Clear();
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
+                    {
+                        if (rt.Propozicije.OdvojenoTak4)
+                            rezTakmicenja.Add(rt);
+                    }
+                    if (rezTakmicenja.Count == 0)
+                        throw new BusinessException("Ne postoji posebno takmicenje IV ni za jednu kategoriju.");
+                }
+                
+                ocene = loadOcene(takmicenjeId, deoTakKod);
+                rezultatiUkupno = createRezultatiUkupno(rezTakmicenja, ocene);
+               
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
                 cmbTakmicenje.SelectedIndex = 0;
@@ -309,6 +322,8 @@ namespace Bilten.UI
             bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                 && ActiveTakmicenje.Propozicije.PostojiTak4
                 && ActiveTakmicenje.Propozicije.OdvojenoTak4;
+            if (takmicenje.FinaleKupa)
+                kvalColumn = false;
             GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1,
                 takmicenje, kvalColumn);
             

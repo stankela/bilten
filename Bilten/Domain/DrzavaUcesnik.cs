@@ -36,5 +36,27 @@ namespace Bilten.Domain
         {
             return Naziv;
         }
+
+        public override bool Equals(object other)
+        {
+            if (object.ReferenceEquals(this, other)) return true;
+            if (!(other is DrzavaUcesnik)) return false;
+
+            DrzavaUcesnik that = (DrzavaUcesnik)other;
+            bool result = this.Naziv.ToUpper() == that.Naziv.ToUpper()
+                && this.Kod.ToUpper() == that.Kod.ToUpper();
+            return result;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = 14;
+                result = 29 * result + Naziv.GetHashCode();
+                result = 29 * result + Kod.GetHashCode();
+                return result;
+            }
+        }
     }
 }

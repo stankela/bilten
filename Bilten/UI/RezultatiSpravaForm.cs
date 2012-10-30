@@ -92,6 +92,19 @@ namespace Bilten.UI
                 takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
                 NHibernateUtil.Initialize(takmicenje);
 
+                if (takmicenje.FinaleKupa)
+                {
+                    List<RezultatskoTakmicenje> rezTakmicenja2 = new List<RezultatskoTakmicenje>(rezTakmicenja);
+                    rezTakmicenja.Clear();
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
+                    {
+                        if (rt.Propozicije.OdvojenoTak3)
+                            rezTakmicenja.Add(rt);
+                    }
+                    if (rezTakmicenja.Count == 0)
+                        throw new BusinessException("Ne postoji posebno takmicenje III ni za jednu kategoriju.");
+                }
+                
                 initUI();
                 rezultatiOpened = new HashedSet<int>();
 
@@ -355,6 +368,9 @@ namespace Bilten.UI
 
         private bool kvalColumnVisible()
         {
+            if (takmicenje.FinaleKupa)
+                return false;
+
             bool result = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                 && ActiveTakmicenje.Propozicije.PostojiTak3
                 && ActiveTakmicenje.Propozicije.OdvojenoTak3;

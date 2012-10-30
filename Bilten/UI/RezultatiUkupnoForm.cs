@@ -21,7 +21,7 @@ namespace Bilten.UI
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
 
-        List<RezultatUkupnoExtended> rezultatiExtended;
+        List<RezultatUkupnoExtended>[] rezultatiExtended;
 
         private RezultatskoTakmicenje ActiveTakmicenje
         {
@@ -59,9 +59,23 @@ namespace Bilten.UI
 
                 takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
                 NHibernateUtil.Initialize(takmicenje);
-      
+
+                if (takmicenje.FinaleKupa)
+                {
+                    List<RezultatskoTakmicenje> rezTakmicenja2 = new List<RezultatskoTakmicenje>(rezTakmicenja);
+                    rezTakmicenja.Clear();
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
+                    {
+                        if (rt.Propozicije.OdvojenoTak2)
+                            rezTakmicenja.Add(rt);
+                    }
+                    if (rezTakmicenja.Count == 0)
+                        throw new BusinessException("Ne postoji posebno takmicenje II ni za jednu kategoriju.");
+                }
+                
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
+                rezultatiExtended = new List<RezultatUkupnoExtended>[rezTakmicenja.Count];
                 cmbTakmicenje.SelectedIndex = 0;
 
                 cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
@@ -202,6 +216,8 @@ namespace Bilten.UI
             bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                 && ActiveTakmicenje.Propozicije.PostojiTak2
                 && ActiveTakmicenje.Propozicije.OdvojenoTak2;
+            if (takmicenje.FinaleKupa)
+                kvalColumn = false;
             GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
                 takmicenje, kvalColumn);
             
@@ -329,7 +345,7 @@ namespace Bilten.UI
         private List<RezultatUkupnoExtended> getRezultatiExtended(
             RezultatskoTakmicenje rezTakmicenje)
         {
-            if (rezultatiExtended == null)
+            if (rezultatiExtended[rezTakmicenja.IndexOf(rezTakmicenje)] == null)
             {
                 IList<RezultatUkupno> rezultati = getRezultati(ActiveTakmicenje);
 
@@ -355,9 +371,9 @@ namespace Bilten.UI
                         rezultatiMap[o.Gimnasticar.Id].setEOcena(o.Sprava, o.E);
                     }
                 }
-                rezultatiExtended = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
+                rezultatiExtended[rezTakmicenja.IndexOf(rezTakmicenje)] = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
             }
-            return rezultatiExtended;
+            return rezultatiExtended[rezTakmicenja.IndexOf(rezTakmicenje)];
         }
 
         private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)

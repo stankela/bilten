@@ -165,16 +165,18 @@ namespace Bilten.UI
                     left join fetch r.Kategorija kat
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakSprava
+                    left join fetch t.PoredakPreskok
                     left join fetch t.Gimnasticari g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
                     where r.Takmicenje.Id = :takmicenjeId
-                    order by r.RedBroj";
+                    and kat.Naziv = :nazivKat";
 
             IList<RezultatskoTakmicenje> result = dataContext.
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
+                        new string[] { "takmicenjeId", "nazivKat" },
+                        new object[] { takmicenjeId, kat.Naziv });
             if (result.Count == 0)
                 return null;
 

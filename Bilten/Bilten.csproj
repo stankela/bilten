@@ -660,8 +660,12 @@
     <Compile Include="UI\ZrebForm.Designer.cs">
       <DependentUpon>ZrebForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\ColumnAdder.cs" />
+    <Compile Include="Util\Database.cs" />
+    <Compile Include="Util\DatabaseUpdater.cs" />
     <Compile Include="Util\RounderToZero.cs" />
     <Compile Include="Util\SortComparer.cs" />
+    <Compile Include="Util\SqlCeUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\BaseEntityListForm.resx">

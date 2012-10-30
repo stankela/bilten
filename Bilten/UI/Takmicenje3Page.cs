@@ -299,7 +299,7 @@ namespace Bilten.UI
                 }
             }
 
-            if (!rbtPoredakPreskok1.Checked && !rbtPoredakPreskok2.Checked)
+            if (rbtPoredakPreskok1.Enabled && !rbtPoredakPreskok1.Checked && !rbtPoredakPreskok2.Checked)
             {
                 notification.RegisterMessage(
                     "PoredakTak3PreskokNaOsnovuObaPreskoka",

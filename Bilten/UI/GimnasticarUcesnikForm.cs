@@ -9,6 +9,7 @@ using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Data;
+using Iesi.Collections.Generic;
 
 namespace Bilten.UI
 {
@@ -16,8 +17,8 @@ namespace Bilten.UI
     {
         private Nullable<int> oldTakBroj;
         private TakmicarskaKategorija kategorija;
-        private IList<KlubUcesnik> klubovi;
-        private IList<DrzavaUcesnik> drzave;
+        private List<KlubUcesnik> klubovi;
+        private List<DrzavaUcesnik> drzave;
         private IList<RezultatskoTakmicenje> rezTakmicenja;
 
         private KlubUcesnik emptyKlub;
@@ -58,12 +59,12 @@ namespace Bilten.UI
 
         protected override void loadData()
         {
-            klubovi = loadKlubovi(kategorija.Takmicenje.Id);
-            drzave = loadDrzave(kategorija.Takmicenje.Id);
+            loadKlubovi(kategorija.Takmicenje.Id);
+            loadDrzave(kategorija.Takmicenje.Id);
             rezTakmicenja = loadRezTakmicenja((GimnasticarUcesnik)entity);
         }
 
-        private IList<KlubUcesnik> loadKlubovi(int takmicenjeId)
+        private void loadKlubovi(int takmicenjeId)
         {
             string query = @"from KlubUcesnik k
                     where k.Takmicenje.Id = :takmicenjeId
@@ -72,11 +73,36 @@ namespace Bilten.UI
                 ExecuteQuery<KlubUcesnik>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
-            result.Insert(0, emptyKlub);
-            return result;
+
+            ISet<KlubUcesnik> kluboviSet = new HashedSet<KlubUcesnik>(result);
+
+            string query2 = @"from Klub k
+                    order by k.Naziv";
+            IList<Klub> result2 = dataContext.
+                ExecuteQuery<Klub>(QueryLanguageType.HQL, query2,
+                        new string[] { },
+                        new object[] { });
+
+            foreach (Klub k in result2)
+            { 
+                KlubUcesnik ku = new KlubUcesnik();
+                ku.Naziv = k.Naziv;
+                ku.Kod = k.Kod;
+                if (!kluboviSet.Contains(ku))
+                {
+                    kluboviSet.Add(ku);
+                }
+            }
+
+            klubovi = new List<KlubUcesnik>(kluboviSet);
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(KlubUcesnik))["Naziv"];
+            klubovi.Sort(new SortComparer<KlubUcesnik>(propDesc, ListSortDirection.Ascending));
+
+            klubovi.Insert(0, emptyKlub);
         }
 
-        private IList<DrzavaUcesnik> loadDrzave(int takmicenjeId)
+        private void loadDrzave(int takmicenjeId)
         {
             string query = @"from DrzavaUcesnik d
                     where d.Takmicenje.Id = :takmicenjeId
@@ -85,8 +111,33 @@ namespace Bilten.UI
                 ExecuteQuery<DrzavaUcesnik>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
-            result.Insert(0, emptyDrzava);
-            return result;
+            
+            ISet<DrzavaUcesnik> drzaveSet = new HashedSet<DrzavaUcesnik>(result);
+
+            string query2 = @"from Drzava d
+                    order by d.Naziv";
+            IList<Drzava> result2 = dataContext.
+                ExecuteQuery<Drzava>(QueryLanguageType.HQL, query2,
+                        new string[] { },
+                        new object[] { });
+
+            foreach (Drzava d in result2)
+            {
+                DrzavaUcesnik du = new DrzavaUcesnik();
+                du.Naziv = d.Naziv;
+                du.Kod = d.Kod;
+                if (!drzaveSet.Contains(du))
+                {
+                    drzaveSet.Add(du);
+                }
+            }
+
+            drzave = new List<DrzavaUcesnik>(drzaveSet);
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(DrzavaUcesnik))["Naziv"];
+            drzave.Sort(new SortComparer<DrzavaUcesnik>(propDesc, ListSortDirection.Ascending));
+
+            drzave.Insert(0, emptyDrzava);
         }
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(GimnasticarUcesnik g)
@@ -231,6 +282,22 @@ namespace Bilten.UI
             q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, kategorija.Takmicenje));
             q.Operator = QueryOperator.And;
             return dataContext.GetCount<GimnasticarUcesnik>(q) > 0;
+        }
+
+        protected override void updateEntity(DomainObject entity)
+        {
+            GimnasticarUcesnik g = (GimnasticarUcesnik)entity;
+            if (g.KlubUcesnik != null && g.KlubUcesnik.Id == 0)
+            {
+                g.KlubUcesnik.Takmicenje = kategorija.Takmicenje;
+                dataContext.Add(g.KlubUcesnik);
+            }
+            if (g.DrzavaUcesnik != null && g.DrzavaUcesnik.Id == 0)
+            {
+                g.DrzavaUcesnik.Takmicenje = kategorija.Takmicenje;
+                dataContext.Add(g.DrzavaUcesnik);
+            }
+            dataContext.Save(g);
         }
 
     }
