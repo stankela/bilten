@@ -10,8 +10,11 @@ namespace Bilten.Report
 	{
 		private float x;
 		private float width;
-		private int itemsColumnIndex;
-		private string format;
+		
+        protected int itemsIndex;
+        protected int itemsSpan = 1;
+
+        private string format;
 		private StringFormat itemRectFormat = new StringFormat();
 
         private Image _image;
@@ -75,9 +78,9 @@ namespace Bilten.Report
 
 		}
 
-		public ReportColumn(int index, float x, float width, string headerTitle)
+        public ReportColumn(int itemsIndex, float x, float width, string headerTitle)
 		{
-			this.itemsColumnIndex = index;
+            this.itemsIndex = itemsIndex;
 			this.x = x;
 			this.width = width;
 			this.headerTitle = headerTitle;
@@ -93,12 +96,6 @@ namespace Bilten.Report
 		{
 			get { return width; }
 			set { width = value; }
-		}
-
-		public int ItemsColumnIndex
-		{
-			get { return itemsColumnIndex; }
-			set { itemsColumnIndex = value; }
 		}
 
 		public string Format
@@ -130,10 +127,10 @@ namespace Bilten.Report
 			get { return headerFormat; }
 			set { headerFormat = value; }
 		}
-		
-		public string getFormattedString(object[] itemsRow)
+
+        public string getFormattedString(object[] itemsRow, int itemsIndex)
 		{
-			object item = itemsRow[itemsColumnIndex];
+			object item = itemsRow[itemsIndex];
 			if (item == null)
 				return String.Empty;
 			else if (String.IsNullOrEmpty(format))
@@ -144,7 +141,49 @@ namespace Bilten.Report
 				return String.Format(fmt, item);
 			}
 		}
-	}
+
+        protected RectangleF itemRect;
+
+        public virtual void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
+        {
+            if (this.Brush != null)
+            {
+                g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+            if (this.DrawItemRect)
+            {
+                g.DrawRectangle(pen, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+
+            string item = this.getFormattedString(itemsRow, itemsIndex);
+            g.DrawString(item, itemFont, blackBrush,
+                itemRect, this.ItemRectFormat);
+        }
+
+        public void createItemRect(float y, float itemHeight)
+        {
+            itemRect = new RectangleF(
+                this.X, y, this.Width, itemHeight);
+        }
+
+        public void offsetY_ItemRect(float itemHeight)
+        {
+            this.itemRect.Y += itemHeight;
+        }
+
+        public int getItemsIndexEnd()
+        {
+            return itemsIndex + itemsSpan;
+        }
+
+        public virtual float getMaxWidth(Graphics g, object[] itemsRow, Font f)
+        {
+            string str = this.getFormattedString(itemsRow, itemsIndex);
+            return g.MeasureString(str, f).Width;
+        }
+    }
 
 	public class ReportGrupa
 	{
@@ -349,8 +388,7 @@ namespace Bilten.Report
 			for (int i = 0; i < items.Count; i++)
 			{
 				object[] itemsRow = items[i];
-				string str = col.getFormattedString(itemsRow);
-				max = Math.Max(max, g.MeasureString(str, f).Width);
+                max = Math.Max(max, col.getMaxWidth(g, itemsRow, f));
 			}
 			return max;
 		}
@@ -498,8 +536,7 @@ namespace Bilten.Report
 				RectangleF[] itemRect = new RectangleF[columns.Count];
 				foreach (ReportColumn col in columns)
 				{
-					itemRect[col.ItemsColumnIndex] = new RectangleF(
-						col.X, y, col.Width, itemHeight);
+                    col.createItemRect(y, itemHeight);
 				}
 
 				for (int i = part.RecNum; i < part.RecNum + part.NumItems; i++)
@@ -507,21 +544,8 @@ namespace Bilten.Report
 					object[] itemsRow = items[i];
 					foreach (ReportColumn col in columns)
 					{
-                        if (col.Brush != null)
-                        {
-                            g.FillRectangle(col.Brush, itemRect[col.ItemsColumnIndex].X, itemRect[col.ItemsColumnIndex].Y,
-                                itemRect[col.ItemsColumnIndex].Width, itemRect[col.ItemsColumnIndex].Height);
-                        }
-                        if (col.DrawItemRect)
-                        {
-                            g.DrawRectangle(pen, itemRect[col.ItemsColumnIndex].X, itemRect[col.ItemsColumnIndex].Y,
-                                itemRect[col.ItemsColumnIndex].Width, itemRect[col.ItemsColumnIndex].Height);
-                        }
-                        
-                        string item = col.getFormattedString(itemsRow);
-						g.DrawString(item, itemFont, blackBrush, 
-							itemRect[col.ItemsColumnIndex], col.ItemRectFormat); 
-						itemRect[col.ItemsColumnIndex].Y += itemHeight;
+                        col.draw(g, pen, itemsRow, itemFont, blackBrush);
+                        col.offsetY_ItemRect(itemHeight);
 					}
 				}
                 if (part.GroupFooter)

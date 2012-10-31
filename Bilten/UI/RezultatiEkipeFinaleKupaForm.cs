@@ -102,6 +102,9 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
         {
+            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
+            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
+
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.Kategorija kat
@@ -121,39 +124,39 @@ namespace Bilten.UI
                 // potrebno u Poredak.create
                 NHibernateUtil.Initialize(tak.Propozicije);
 
-                PoredakEkipno poredak1 = loadPoredakEkipnoTak1(takmicenje.PrvoKolo.Id, tak.Kategorija);
-                PoredakEkipno poredak2 = loadPoredakEkipnoTak1(takmicenje.DrugoKolo.Id, tak.Kategorija);
+                PoredakEkipno poredak1 = findPoredakEkipnoTak1(rezTakmicenjaPrvoKolo, tak.Kategorija);
+                PoredakEkipno poredak2 = findPoredakEkipnoTak1(rezTakmicenjaDrugoKolo, tak.Kategorija);
                 tak.Takmicenje1.PoredakEkipnoFinaleKupa.create(tak, poredak1, poredak2);
             }
             return result;
         }
 
-        private PoredakEkipno loadPoredakEkipnoTak1(int takmicenjeId, TakmicarskaKategorija kat)
+        private IList<RezultatskoTakmicenje> loadRezTakmicenjaPrethKolo(int takmicenjeId)
         {
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Kategorija kat
                     left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakEkipno
                     left join fetch t.Ekipe e
-                    where r.Takmicenje.Id = :takmicenjeId
-                    and kat.Naziv = :nazivKat";
+                    where r.Takmicenje.Id = :takmicenjeId";
 
             IList<RezultatskoTakmicenje> result = dataContext.
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId", "nazivKat" },
-                        new object[] { takmicenjeId, kat.Naziv });
-            if (result.Count == 0)
-                return null;
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            return result;
+        }
 
-            RezultatskoTakmicenje rezTak = result[0];
-
-            // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
-            // fetch u queriju, jako se sporo izvrsava (verovato
-            // zato sto se dobavljaju dve kolekcije - Gimnasticari i 
-            // Rezultati).
-            NHibernateUtil.Initialize(rezTak.Takmicenje1.PoredakEkipno.Rezultati);
-            return rezTak.Takmicenje1.PoredakEkipno;
+        private PoredakEkipno findPoredakEkipnoTak1(IList<RezultatskoTakmicenje> rezTakmicenja, TakmicarskaKategorija kat)
+        {
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.Kategorija.Equals(kat))
+                    return rezTak.Takmicenje1.PoredakEkipno;
+            }
+            return null;
         }
 
         private void initUI()

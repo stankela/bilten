@@ -8,13 +8,15 @@ using System.Drawing.Printing;
 
 namespace Bilten.Report
 {
-	public class UkupnoIzvestaj : Izvestaj
+	public class UkupnoFinaleKupaIzvestaj : Izvestaj
 	{
-		private UkupnoLista lista;
+        private UkupnoFinaleKupaLista lista;
 
-		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
+        public UkupnoFinaleKupaIzvestaj(IList<RezultatUkupnoFinaleKupa> rezultati, Gimnastika gim,
             bool extended, bool kvalColumn)
 		{
+            extended = false; // TODO3: Ispravi ovo.
+
             Font itemFont = new Font("Arial", 8);
             Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
 
@@ -24,7 +26,7 @@ namespace Bilten.Report
             else
                 Margins = new Margins(75, 75, 75, 75);
 
-            lista = new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
+            lista = new UkupnoFinaleKupaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
                 gim, extended, kvalColumn);
 		}
 
@@ -41,11 +43,12 @@ namespace Bilten.Report
 		}
     }
 
-	public class UkupnoLista : ReportLista
+	public class UkupnoFinaleKupaLista : ReportLista
 	{
         private float rankWidthCm = 1f;
         private float imeWidthCm = 3.1f;
         private float klubWidthCm = 3.5f;
+        private float koloWidthCm = 0.5f;
         private float spravaWidthCm = 3.1f;
         private float totalWidthCm = 1.5f;
         private float kvalWidthCm = 0.5f;
@@ -56,8 +59,8 @@ namespace Bilten.Report
         private bool kvalColumn;
         private Gimnastika gimnastika;
 
-		public UkupnoLista(Izvestaj izvestaj, int pageNum, float y,
-            Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoExtended> rezultati, 
+        public UkupnoFinaleKupaLista(Izvestaj izvestaj, int pageNum, float y,
+            Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoFinaleKupa> rezultati, 
             Gimnastika gim, bool extended, bool kvalColumn)
             : base(izvestaj, pageNum, y, itemFont,
 			itemsHeaderFont)
@@ -72,7 +75,7 @@ namespace Bilten.Report
             fetchItems(rezultati, gim, extended);
         }
 
-        private void fetchItems(IList<RezultatUkupnoExtended> rezultati, 
+        private void fetchItems(IList<RezultatUkupnoFinaleKupa> rezultati, 
             Gimnastika gim, bool extended)
 		{
             items = getUkupnoReportItems(rezultati, gim, extended);
@@ -81,15 +84,15 @@ namespace Bilten.Report
 			groups.Add(new ReportGrupa(0, items.Count));
 		}
 
-        private List<object[]> getUkupnoReportItems(IList<RezultatUkupnoExtended> rezultati,
+        private List<object[]> getUkupnoReportItems(IList<RezultatUkupnoFinaleKupa> rezultati,
             Gimnastika gim, bool extended)
         {
             List<object[]> result = new List<object[]>();
-            foreach (RezultatUkupnoExtended rez in rezultati)
+            foreach (RezultatUkupnoFinaleKupa rez in rezultati)
             {
                 if (gim == Gimnastika.MSG)
                 {
-                    if (extended)
+                    /*if (extended)
                     {
                         result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
                             rez.ParterD, rez.ParterE, rez.Parter, 
@@ -101,15 +104,17 @@ namespace Bilten.Report
                             rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
                     }
                     else
-                    {
-                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.Parter, rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, 
-                            rez.Vratilo, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
-                    }
+                    {*/
+                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "I", "II",
+                            rez.ParterPrvoKolo, rez.ParterDrugoKolo, rez.KonjPrvoKolo, rez.KonjDrugoKolo,
+                            rez.KarikePrvoKolo, rez.KarikeDrugoKolo, rez.PreskokPrvoKolo, rez.PreskokDrugoKolo,
+                            rez.RazbojPrvoKolo, rez.RazbojDrugoKolo, rez.VratiloPrvoKolo, rez.VratiloDrugoKolo,
+                            rez.TotalPrvoKolo, rez.TotalDrugoKolo, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                    //}
                 }
                 else
                 {
-                    if (extended)
+                    /*if (extended)
                     {
                         result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
                             rez.PreskokD, rez.PreskokE, rez.Preskok, 
@@ -119,11 +124,13 @@ namespace Bilten.Report
                             rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
                     }
                     else
-                    {
-                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.Preskok, rez.DvovisinskiRazboj, rez.Greda, rez.Parter, 
-                            rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
-                    }
+                    {*/
+                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "I", "II",
+                            rez.PreskokPrvoKolo, rez.PreskokDrugoKolo,
+                            rez.DvovisinskiRazbojPrvoKolo, rez.DvovisinskiRazbojDrugoKolo,
+                            rez.GredaPrvoKolo, rez.GredaDrugoKolo, rez.ParterPrvoKolo, rez.ParterDrugoKolo,
+                            rez.TotalPrvoKolo, rez.TotalDrugoKolo, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                        //}
                 }
             }
             return result;
@@ -133,7 +140,7 @@ namespace Bilten.Report
 		{
 			createColumns(g, contentBounds);
 
-			itemHeight = itemFont.GetHeight(g) * 1.4f;
+			itemHeight = itemFont.GetHeight(g) * 4.4f;
             if (extended)
 			    itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             else
@@ -158,7 +165,8 @@ namespace Bilten.Report
 			float xRank = contentBounds.X;
             float xIme = xRank + Izvestaj.convCmToInch(rankWidthCm);
             float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
-            float xParter = xKlub + Izvestaj.convCmToInch(klubWidthCm);
+            float xKolo = xKlub + Izvestaj.convCmToInch(klubWidthCm);
+            float xParter = xKolo + Izvestaj.convCmToInch(koloWidthCm);
             float xKonj = xParter + spravaWidth;
             float xKarike = xKonj + spravaWidth;
             float xPreskok = xKarike + spravaWidth;
@@ -195,6 +203,7 @@ namespace Bilten.Report
                 xRank += delta;
                 xIme += delta;
                 xKlub += delta;
+                xKolo += delta;
                 xParter += delta;
                 xKonj += delta;
                 xKarike += delta;
@@ -219,10 +228,14 @@ namespace Bilten.Report
                 xRazbojTot += delta;
                 xVratiloTot += delta;
             }
-            
+
+            // TODO3: Za klubove ucesnike definise novo svojstvo koje ce sluziti samo za stampanje. Dodaj form gde ce
+            // to moci da se podesava.
+
             float rankWidth = xIme - xRank;
 			float imeWidth = xKlub - xIme;
-			float klubWidth = xParter - xKlub;
+			float klubWidth = xKolo - xKlub;
+            float koloWidth = xParter - xKolo;
 
             float spravaDWidth = dWidth;
             float spravaEWidth = dWidth;
@@ -230,16 +243,17 @@ namespace Bilten.Report
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
 
-            // TODO3: Ispravi sledece greske gde je umesto Alignment stavljeno ponovljeno LineAlignment. Uradi to i u 
-            // ostalim izvestajima.
-
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
-            imeFormat.LineAlignment = StringAlignment.Near;
+            imeFormat.Alignment = StringAlignment.Near;
             imeFormat.LineAlignment = StringAlignment.Center;
 
             StringFormat klubFormat = new StringFormat(StringFormatFlags.NoWrap);
+            klubFormat.Alignment = StringAlignment.Near;
             klubFormat.LineAlignment = StringAlignment.Center;
-            klubFormat.LineAlignment = StringAlignment.Center;
+
+            StringFormat koloFormat = new StringFormat(StringFormatFlags.NoWrap);
+            koloFormat.Alignment = StringAlignment.Center;
+            koloFormat.LineAlignment = StringAlignment.Center;
 
             StringFormat spravaFormat = Izvestaj.centerCenterFormat;
             StringFormat totalFormat = Izvestaj.centerCenterFormat;
@@ -248,12 +262,14 @@ namespace Bilten.Report
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat koloHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
             String rankTitle = "Rank";
 			String imeTitle = "Ime";
 			String klubTitle = "Klub";
+            String koloTitle = ""; // TODO3: Neka bude uspravno.
             String totalTitle = "Total";
             String kvalTitle = String.Empty;
 
@@ -261,14 +277,15 @@ namespace Bilten.Report
 
 			addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
 			addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
-			addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            column = addKoloColumn(column.getItemsIndexEnd(), 2, xKolo, koloWidth, null, koloFormat,
+                koloTitle, koloHeaderFormat);
 
             string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
             string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
             Sprava[] sprave = Sprave.getSprave(gimnastika);
-            ReportColumn column;
 
             if (extended)
             {
@@ -300,12 +317,14 @@ namespace Bilten.Report
                 float[] x = { xParter, xKonj, xKarike, xPreskok, xRazboj, xVratilo };
                 for (int i = 0; i < sprave.Length; i++)
                 {
-                    column = addColumn(x[i], spravaWidth, fmtTot, spravaFormat, "", spravaHeaderFormat);
+                    column = addSpravaColumn(column.getItemsIndexEnd(), 2, x[i], spravaWidth, fmtTot,
+                        spravaFormat, "", spravaHeaderFormat);
                     column.Image = SlikeSprava.getImage(sprave[i]);
                 }
             }
 
-            column = addColumn(xTotal, totalWidth, fmtTot, totalFormat, totalTitle, totalHeaderFormat);
+            column = addTotalColumn(column.getItemsIndexEnd(), 3, xTotal, totalWidth, fmtTot, totalFormat, 
+                totalTitle, totalHeaderFormat);
             column.Brush = totalAllBrush;
 
             if (kvalColumn)
@@ -315,8 +334,35 @@ namespace Bilten.Report
                 column.DrawItemRect = false;
             }
         }
-		
-		protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
+
+        private UkupnoFinaleKupaSpravaReportColumn addKoloColumn(int itemsIndex, int itemsSpan, float x, float width,
+            string format, StringFormat itemRectFormat, string headerTitle,
+            StringFormat headerFormat)
+        {
+            return addSpravaColumn(itemsIndex, itemsSpan, x, width, format, itemRectFormat, headerTitle, headerFormat);
+        }
+
+        private UkupnoFinaleKupaSpravaReportColumn addSpravaColumn(int itemsIndex, int itemsSpan, float x, float width,
+            string format, StringFormat itemRectFormat, string headerTitle,
+			StringFormat headerFormat)
+        {
+            UkupnoFinaleKupaSpravaReportColumn result = new UkupnoFinaleKupaSpravaReportColumn(
+                itemsIndex, itemsSpan, x, width, headerTitle);
+            result.Format = format;
+            result.ItemRectFormat = itemRectFormat;
+            result.HeaderFormat = headerFormat;
+            columns.Add(result);
+            return result;
+        }
+
+        private UkupnoFinaleKupaSpravaReportColumn addTotalColumn(int itemsIndex, int itemsSpan, float x, float width,
+            string format, StringFormat itemRectFormat, string headerTitle,
+            StringFormat headerFormat)
+        {
+            return addSpravaColumn(itemsIndex, itemsSpan, x, width, format, itemRectFormat, headerTitle, headerFormat);
+        }
+
+        protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
 		{
             foreach (ReportColumn col in columns)
             {
@@ -370,5 +416,47 @@ namespace Bilten.Report
             }
         }
 
+    }
+
+    public class UkupnoFinaleKupaSpravaReportColumn : ReportColumn
+    {
+        public UkupnoFinaleKupaSpravaReportColumn(int itemsIndex, int itemsSpan, float x, float width, string headerTitle)
+            : base(itemsIndex, x, width, headerTitle)
+		{
+            this.itemsSpan = itemsSpan;
+        }
+
+        public override void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
+        {
+            if (this.Brush != null)
+            {
+                g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+            if (this.DrawItemRect)
+            {
+                g.DrawRectangle(pen, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+
+            RectangleF itemRect1 = new RectangleF(itemRect.X, itemRect.Y, itemRect.Width, itemRect.Height/3);
+            RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + itemRect.Height / 3, itemRect.Width, 
+                itemRect.Height / 3);
+
+            // TODO3: Dodaj zumiranje (i forma i print previewa)
+
+            string item1 = this.getFormattedString(itemsRow, itemsIndex);
+            string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);
+            g.DrawString(item1, itemFont, blackBrush, itemRect1, this.ItemRectFormat);
+            g.DrawString(item2, itemFont, blackBrush, itemRect2, this.ItemRectFormat);
+
+            if (itemsSpan == 3)
+            {
+                RectangleF itemRect3 = new RectangleF(itemRect.X, itemRect.Y + 2 * itemRect.Height / 3, itemRect.Width,
+                    itemRect.Height / 3);
+                string item3 = this.getFormattedString(itemsRow, itemsIndex + 2);
+                g.DrawString(item3, itemFont, blackBrush, itemRect3, this.ItemRectFormat);
+            }
+        }
     }
 }

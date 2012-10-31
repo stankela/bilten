@@ -113,6 +113,9 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
         {
+            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
+            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
+
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.Kategorija kat
@@ -133,8 +136,8 @@ namespace Bilten.UI
                 // potrebno u Poredak.create
                 NHibernateUtil.Initialize(rezTak.Propozicije);
 
-                RezultatskoTakmicenje rezTakPrvoKolo = loadTak1AndInitPoredakSprava(takmicenje.PrvoKolo.Id, rezTak.Kategorija);
-                RezultatskoTakmicenje rezTakDrugoKolo = loadTak1AndInitPoredakSprava(takmicenje.DrugoKolo.Id, rezTak.Kategorija);
+                RezultatskoTakmicenje rezTakPrvoKolo = findRezTakmicenje(rezTakmicenjaPrvoKolo, rezTak.Kategorija);
+                RezultatskoTakmicenje rezTakDrugoKolo = findRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
 
                 rezTak.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
                 foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
@@ -158,7 +161,7 @@ namespace Bilten.UI
             return result;
         }
 
-        private RezultatskoTakmicenje loadTak1AndInitPoredakSprava(int takmicenjeId, TakmicarskaKategorija kat)
+        private IList<RezultatskoTakmicenje> loadRezTakmicenjaPrethKolo(int takmicenjeId)
         {
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
@@ -170,22 +173,24 @@ namespace Bilten.UI
                     left join fetch t.Gimnasticari g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
-                    where r.Takmicenje.Id = :takmicenjeId
-                    and kat.Naziv = :nazivKat";
+                    where r.Takmicenje.Id = :takmicenjeId";
 
             IList<RezultatskoTakmicenje> result = dataContext.
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId", "nazivKat" },
-                        new object[] { takmicenjeId, kat.Naziv });
-            if (result.Count == 0)
-                return null;
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            return result;
+        }
 
-            RezultatskoTakmicenje rezTak = result[0];
-
-            foreach (PoredakSprava p in rezTak.Takmicenje1.PoredakSprava)
-                NHibernateUtil.Initialize(p.Rezultati);
-            NHibernateUtil.Initialize(rezTak.Takmicenje1.PoredakPreskok.Rezultati);
-            return rezTak;
+        private RezultatskoTakmicenje findRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
+            TakmicarskaKategorija kat)
+        {
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.Kategorija.Equals(kat))
+                    return rezTak;
+            }
+            return null;
         }
 
         private void initUI()

@@ -101,6 +101,9 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
         {
+            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
+            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
+
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.Kategorija kat
@@ -123,40 +126,40 @@ namespace Bilten.UI
 
                 // TODO3: Ovo ce raditi samo ako su prvo i drugo kolo imali samo jedno takmicenje. (takodje i kod
                 // poretka ekipa i sprava)
-                PoredakUkupno poredak1 = loadPoredakUkupnoTak1(takmicenje.PrvoKolo.Id, tak.Kategorija);
-                PoredakUkupno poredak2 = loadPoredakUkupnoTak1(takmicenje.DrugoKolo.Id, tak.Kategorija);
+                PoredakUkupno poredak1 = findPoredakUkupnoTak1(rezTakmicenjaPrvoKolo, tak.Kategorija);
+                PoredakUkupno poredak2 = findPoredakUkupnoTak1(rezTakmicenjaDrugoKolo, tak.Kategorija);
                 tak.Takmicenje1.PoredakUkupnoFinaleKupa.create(tak, poredak1, poredak2);
 
             }
             return result;
         }
 
-        private PoredakUkupno loadPoredakUkupnoTak1(int takmicenjeId, TakmicarskaKategorija kat)
+        private IList<RezultatskoTakmicenje> loadRezTakmicenjaPrethKolo(int takmicenjeId)
         {
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
                     left join fetch r.Kategorija kat
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakUkupno
                     left join fetch t.Gimnasticari g
-                    where r.Takmicenje.Id = :takmicenjeId
-                    and kat.Naziv = :nazivKat";
+                    where r.Takmicenje.Id = :takmicenjeId";
 
             IList<RezultatskoTakmicenje> result = dataContext.
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId", "nazivKat" },
-                        new object[] { takmicenjeId, kat.Naziv });
-            if (result.Count == 0)
-                return null;
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            return result;
+        }
 
-            RezultatskoTakmicenje rezTak = result[0];
-
-            // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
-            // fetch u queriju, jako se sporo izvrsava (verovato
-            // zato sto se dobavljaju dve kolekcije - Gimnasticari i 
-            // Rezultati).
-            NHibernateUtil.Initialize(rezTak.Takmicenje1.PoredakUkupno.Rezultati);
-            return rezTak.Takmicenje1.PoredakUkupno;
+        private PoredakUkupno findPoredakUkupnoTak1(IList<RezultatskoTakmicenje> rezTakmicenja, TakmicarskaKategorija kat)
+        {
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.Kategorija.Equals(kat))
+                    return rezTak.Takmicenje1.PoredakUkupno;
+            }
+            return null;
         }
 
         private void initUI()
@@ -241,24 +244,11 @@ namespace Bilten.UI
         private void btnPrint_Click(object sender, EventArgs e)
         {
             //char shVeliko = '\u0160';
-            /*char shMalo = '\u0161';
+            char shMalo = '\u0161';
             string nazivIzvestaja;
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-            {
-                if (ActiveTakmicenje.Propozicije.OdvojenoTak2)
-                    nazivIzvestaja = "Kvalifikacije za finale vi" + shMalo + "eboja";
-                else
-                    nazivIzvestaja = "Vi" + shMalo + "eboj";
-            }
-            else
-            {
-                if (ActiveTakmicenje.Propozicije.OdvojenoTak2)
-                    nazivIzvestaja = "Finale vi" + shMalo + "eboja";
-                else
-                    nazivIzvestaja = "Vi" + shMalo + "eboj";
-            }
+            nazivIzvestaja = "I i II kolo - Rezultati vi" + shMalo + "eboj";
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1, true, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
@@ -289,34 +279,19 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                List<RezultatUkupnoExtended> rezultati;
                 bool extended = Opcije.Instance.PrikaziDEOcene;
-                if (extended)
-                {
-                    rezultati = getRezultatiExtended(ActiveTakmicenje);
-                }
-                else
-                {
-                    rezultati = new List<RezultatUkupnoExtended>();
-
-                    List<RezultatUkupno> rez =
-                        new List<RezultatUkupno>(getRezultati(ActiveTakmicenje));
-                    foreach (RezultatUkupno r in rez)
-                    {
-                        rezultati.Add(new RezultatUkupnoExtended(r));
-                    }
-                }
+                List<RezultatUkupnoFinaleKupa> rezultati
+                    = new List<RezultatUkupnoFinaleKupa>(getRezultati(ActiveTakmicenje)); ;
                 
                 PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(RezultatUkupnoExtended))["RedBroj"];
-                rezultati.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc,
+                    TypeDescriptor.GetProperties(typeof(RezultatUkupnoFinaleKupa))["RedBroj"];
+                rezultati.Sort(new SortComparer<RezultatUkupnoFinaleKupa>(propDesc,
                     ListSortDirection.Ascending));
 
-                bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak2
-                && ActiveTakmicenje.Propozicije.OdvojenoTak2;
+                bool kvalColumn = ActiveTakmicenje.Propozicije.PostojiTak2
+                    && ActiveTakmicenje.Propozicije.OdvojenoTak2;
 
-                p.setIzvestaj(new UkupnoIzvestaj(rezultati, 
+                p.setIzvestaj(new UkupnoFinaleKupaIzvestaj(rezultati, 
                     ActiveTakmicenje.Gimnastika, extended, kvalColumn));
                 p.ShowDialog();
             }
@@ -328,7 +303,12 @@ namespace Bilten.UI
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
-            }*/
+            }
+        }
+
+        private List<RezultatUkupnoExtended> getRezultatiExtended(RezultatskoTakmicenje ActiveTakmicenje)
+        {
+            throw new Exception("TODO3: The method or operation is not implemented.");
         }
 
         /*private List<RezultatUkupnoExtended> getRezultatiExtended(

@@ -132,7 +132,7 @@ namespace Bilten.UI
             Text = "Start liste - " +
                 DeoTakmicenjaKodovi.toString(deoTakKod);
             this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, 540);
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 || takmicenje.FinaleKupa)
             {
                 cmbRotacija.Enabled = false;
                 btnOstaleRotacije.Text = "Kreiraj na osnovu kvalifikanata";
@@ -982,7 +982,12 @@ namespace Bilten.UI
         private void btnOstaleRotacije_Click(object sender, EventArgs e)
         {
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                kreirajPreostaleRotacije();
+            {
+                if (takmicenje.FinaleKupa)
+                    kreirajNaOsnovuKvalifikanataFinaleKupa();
+                else
+                    kreirajPreostaleRotacije();
+            }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
                 kreirajNaOsnovuKvalifikanata();
         }
@@ -1211,6 +1216,142 @@ namespace Bilten.UI
             return result;
         }
 
+        private void kreirajNaOsnovuKvalifikanataFinaleKupa()
+        {
+            if (ActiveRaspored == null)
+                return;
+
+            string msg = "Da li zelite da kreirate start listu na osnovu kvalifikanata?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje.Id);
+
+                IList<RezultatskoTakmicenje> svaRezTakmicenja2 = new List<RezultatskoTakmicenje>();
+                foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
+                {
+                    if (rt.Propozicije.PostojiTak3 && rt.Propozicije.OdvojenoTak3)
+                        svaRezTakmicenja2.Add(rt);
+                }
+                if (svaRezTakmicenja2.Count == 0)
+                {
+                    MessageDialogs.showMessage("Ne postoji posebno takmicenje III ni za jednu kategoriju.", this.Text);
+                    return;
+                }
+
+                IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
+                List<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>(ActiveRaspored.Kategorije);
+                foreach (TakmicarskaKategorija k in kategorije)
+                {
+                    foreach (RezultatskoTakmicenje rt in svaRezTakmicenja2)
+                    {
+                        if (rt.Kategorija.Equals(k))
+                        {
+                            rezTakmicenja.Add(rt);
+                        }
+                    }
+                }
+                if (rezTakmicenja.Count == 0)
+                {
+                    return;
+                }
+
+                for (int j = 0; j < sprave.Length; j++)
+                {
+                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, ActiveRotacija);
+                    startLista.clear();
+
+                    foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+                    {
+                        List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(
+                            rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(sprave[j]).Rezultati);
+
+                        PropertyDescriptor propDesc =
+                            TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["RedBroj"];
+                        rezultati.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc, ListSortDirection.Ascending));
+
+                        foreach (RezultatSpravaFinaleKupa rez in rezultati)
+                        {
+                            if (rez.KvalStatus == KvalifikacioniStatus.Q)
+                            {
+                                startLista.addNastup(new NastupNaSpravi(false, rez.Gimnasticar));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                for (int j = 0; j < sprave.Length; j++)
+                {
+                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, ActiveRotacija);
+                    foreach (NastupNaSpravi n in startLista.Nastupi)
+                    {
+                        //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
+                        // za koje start lista vazi.
+                        NHibernateUtil.Initialize(n.Gimnasticar.TakmicarskaKategorija);
+                    }
+                    dataContext.Save(startLista);
+                }
+                dataContext.Commit();
+
+                setStartListe(ActiveRaspored, ActiveGrupa, ActiveRotacija);
+                getActiveSpravaGridGroupUserControl().clearSelection();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+        }
+
         private RezultatskoTakmicenje loadRezTakmicenje(int takmicenjeId, TakmicarskaKategorija kat)
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -1285,6 +1426,88 @@ namespace Bilten.UI
                     result.Add(rt);
             }
             return result[0];
+        }
+
+        private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
+        {
+            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
+            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
+
+            string query = @"select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.Gimnasticari g
+                    left join fetch g.DrzavaUcesnik dr
+                    left join fetch g.KlubUcesnik kl
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj";
+
+            IList<RezultatskoTakmicenje> result = dataContext.
+                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            foreach (RezultatskoTakmicenje rezTak in result)
+            {
+                // potrebno u Poredak.create
+                NHibernateUtil.Initialize(rezTak.Propozicije);
+
+                RezultatskoTakmicenje rezTakPrvoKolo = findRezTakmicenje(rezTakmicenjaPrvoKolo, rezTak.Kategorija);
+                RezultatskoTakmicenje rezTakDrugoKolo = findRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
+
+                rezTak.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
+                foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+                {
+                    if (s != Sprava.Preskok)
+                    {
+                        rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
+                            rezTakPrvoKolo.Takmicenje1.getPoredakSprava(s),
+                            rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s));
+                    }
+                    else
+                    {
+                        rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
+                            rezTakPrvoKolo.Takmicenje1.PoredakPreskok,
+                            rezTakDrugoKolo.Takmicenje1.PoredakPreskok,
+                            rezTakPrvoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                            rezTakDrugoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private IList<RezultatskoTakmicenje> loadRezTakmicenjaPrethKolo(int takmicenjeId)
+        {
+            string query = @"select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakSprava
+                    left join fetch t.PoredakPreskok
+                    left join fetch t.Gimnasticari g
+                    left join fetch g.DrzavaUcesnik dr
+                    left join fetch g.KlubUcesnik kl
+                    where r.Takmicenje.Id = :takmicenjeId";
+
+            IList<RezultatskoTakmicenje> result = dataContext.
+                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
+                        new string[] { "takmicenjeId" },
+                        new object[] { takmicenjeId });
+            return result;
+        }
+
+        private RezultatskoTakmicenje findRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
+            TakmicarskaKategorija kat)
+        {
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.Kategorija.Equals(kat))
+                    return rezTak;
+            }
+            return null;
         }
 
         private void mnOcene_Click(object sender, EventArgs e)
