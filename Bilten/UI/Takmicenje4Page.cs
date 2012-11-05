@@ -112,6 +112,7 @@ namespace Bilten.UI
                 rbtOdvojenoTak4.Checked = propozicije.OdvojenoTak4;
                 rbtNaOsnovuTak1.Checked = !propozicije.OdvojenoTak4;
 
+                rbtPostojiTak4ZaSvakuKategoriju.Checked = !propozicije.JednoTak4ZaSveKategorije;
                 rbtJednoTak4ZaSveKategorije.Checked = propozicije.JednoTak4ZaSveKategorije;
 
                 txtBrojRezultata.Text = propozicije.BrojRezultataKojiSeBodujuZaEkipu.ToString();

@@ -144,6 +144,11 @@ namespace Bilten.Report
 
         protected RectangleF itemRect;
 
+        public float getItemRectY()
+        {
+            return itemRect.Y;
+        }
+
         public virtual void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
         {
             if (this.Brush != null)
@@ -533,7 +538,6 @@ namespace Bilten.Report
 					y += groupHeaderHeight;
 				}
 
-				RectangleF[] itemRect = new RectangleF[columns.Count];
 				foreach (ReportColumn col in columns)
 				{
                     col.createItemRect(y, itemHeight);
@@ -551,7 +555,7 @@ namespace Bilten.Report
                 if (part.GroupFooter)
                 {
                     RectangleF groupFooterRect = new RectangleF(
-                        contentBounds.X, itemRect[0].Y, contentBounds.Width, groupFooterHeight);
+                        contentBounds.X, columns[0].getItemRectY(), contentBounds.Width, groupFooterHeight);
                     drawGroupFooter(g, part.GroupId, groupFooterRect);
                 }
 			}

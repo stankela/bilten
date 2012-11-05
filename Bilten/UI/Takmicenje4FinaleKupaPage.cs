@@ -124,6 +124,7 @@ namespace Bilten.UI
                 rbtOdvojenoTak4.Checked = propozicije.OdvojenoTak4;
                 rbtNaOsnovuPrvogIDrugogKola.Checked = !propozicije.OdvojenoTak4;
 
+                rbtPostojiTak4ZaSvakuKategoriju.Checked = !propozicije.JednoTak4ZaSveKategorije;
                 rbtJednoTak4ZaSveKategorije.Checked = propozicije.JednoTak4ZaSveKategorije;
 
                 rbtFinalnaOcenaJeMax.Checked = propozicije.Tak4FinalnaOcenaJeMaxObaKola;
@@ -218,6 +219,11 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "JednoTak4ZaSveKategorije", "Izaberite da li za svaku kategoriju " +
                     "postoji takmicenje IV, ili postoji jedno takmicenje IV za sve kategorije.");
+            }
+            if (!rbtFinalnaOcenaJeMax.Checked && !rbtFinalnaOcenaJeZbir.Checked && !rbtFinalnaOcenaJeProsek.Checked)
+            {
+                notification.RegisterMessage(
+                    "FinalnaOcena", "Izaberite kako se izracunava finalna ocena.");
             }
 
             if (txtBrojRezultata.Enabled)
