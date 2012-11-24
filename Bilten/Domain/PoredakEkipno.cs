@@ -304,15 +304,15 @@ namespace Bilten.Domain
 
         public virtual void deleteEkipa(Ekipa e, RezultatskoTakmicenje rezTak)
         {
-            /*
+            // Ovde je deo ostao otkometarisan zato sto mi je davao gresku kod brisanja ekipa.
             RezultatEkipno r = getRezultat(e);
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                //rankRezultati();
+                //updateKvalStatus(rezTak.Propozicije);
             }
-             */
+             
         }
 
         private RezultatEkipno getRezultat(Ekipa e)

@@ -225,12 +225,6 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "Kod", "Kod ekipe je obavezan.");
             }
-
-            if (dgwUserControlClanovi.DataGridView.Rows.Count == 0)
-            {
-                notification.RegisterMessage(
-                    "Gimnasticari", "Unesite clanove ekipe.");
-            }
         }
 
         protected override void setFocus(string propertyName)
