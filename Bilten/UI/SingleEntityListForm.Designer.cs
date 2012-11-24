@@ -48,6 +48,10 @@ namespace Bilten.UI
             // 
             this.btnDeleteItem.Click += new System.EventHandler(this.btnDeleteItem_Click);
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // btnApplyFilter
             // 
             this.btnApplyFilter.Click += new System.EventHandler(this.btnApplyFilter_Click);

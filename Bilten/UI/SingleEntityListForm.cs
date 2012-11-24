@@ -27,7 +27,6 @@ namespace Bilten.UI
         {
             InitializeComponent();
             pnlPager.Visible = false;
-            btnRefreshList.Visible = false;
             btnPrintItem.Visible = false;
             btnPrintPreview.Visible = false;
             btnDuplicate.Visible = false;
@@ -221,6 +220,16 @@ namespace Bilten.UI
         }
 
         protected virtual void onApplyFilter()
+        {
+
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            prikaziSve();
+        }
+
+        protected virtual void prikaziSve()
         {
 
         }

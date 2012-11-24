@@ -70,17 +70,33 @@ namespace Bilten.UI
             setGimnastike();
             SelectedGimnastika = Gimnastika.Undefined;
 
-            cmbKategorija.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKategorija.DropDownStyle = ComboBoxStyle.DropDown;
             setKategorije(kategorije);
             SelectedKategorija = null;
+            cmbKategorija.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbKategorija.AutoCompleteSource = AutoCompleteSource.ListItems;
 
-            cmbKlub.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
             setKlubovi(klubovi);
             SelectedKlub = null;
+            cmbKlub.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbKlub.AutoCompleteSource = AutoCompleteSource.ListItems;
 
-            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDown;
             setDrzave(drzave);
-            SelectedDrzava = null;
+            SelectedDrzava = getSrbija();
+            cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
+        }
+
+        private Drzava getSrbija()
+        {
+            foreach (Drzava d in drzave)
+            {
+                if (d.Naziv.ToUpper() == "SRBIJA")
+                    return d;
+            }
+            return null;
         }
 
         private void setGimnastike()
@@ -246,8 +262,29 @@ namespace Bilten.UI
 
             if (SelectedDrzava == null)
             {
+                if (cmbDrzava.Text.Trim() != String.Empty)
+                {
+                    notification.RegisterMessage(
+                        "Drzava", "Uneli ste nepostojecu drzavu.");
+                }
+                else
+                {
+                    notification.RegisterMessage(
+                        "Drzava", "Drzava je obavezna.");
+                }
+            }
+
+            if (cmbKlub.Text.Trim() != String.Empty && cmbKlub.Text.Trim() != PRAZNO_ITEM && SelectedKlub == null)
+            {
                 notification.RegisterMessage(
-                    "Drzava", "Drzava je obavezna.");
+                    "Klub", "Uneli ste nepostojeci klub.");
+            }
+
+            if (cmbKategorija.Text.Trim() != String.Empty && cmbKategorija.Text.Trim() != PRAZNO_ITEM
+                && SelectedKategorija == null)
+            {
+                notification.RegisterMessage(
+                    "Kategorija", "Uneli ste nepostojecu kategoriju.");
             }
         }
 
@@ -550,6 +587,14 @@ namespace Bilten.UI
             }
 
             setKategorije(kategorije);
+        }
+
+        private void GimnasticarForm_Shown(object sender, EventArgs e)
+        {
+            if (!editMode)
+            {
+                txtIme.Focus();
+            }
         }
 
     }

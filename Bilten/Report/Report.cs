@@ -143,10 +143,9 @@ namespace Bilten.Report
 		}
 
         protected RectangleF itemRect;
-
-        public float getItemRectY()
+        public RectangleF getItemRect()
         {
-            return itemRect.Y;
+            return itemRect;
         }
 
         public virtual void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
@@ -555,7 +554,7 @@ namespace Bilten.Report
                 if (part.GroupFooter)
                 {
                     RectangleF groupFooterRect = new RectangleF(
-                        contentBounds.X, columns[0].getItemRectY(), contentBounds.Width, groupFooterHeight);
+                        contentBounds.X, columns[0].getItemRect().Y, contentBounds.Width, groupFooterHeight);
                     drawGroupFooter(g, part.GroupId, groupFooterRect);
                 }
 			}

@@ -56,6 +56,34 @@ namespace Bilten.UI
             }
         }
 
+        protected override void prikaziSve()
+        {
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                IList<Gimnasticar> gimnasticari = loadAll();
+                SetItems(gimnasticari);
+                dataGridViewUserControl1.sort<Gimnasticar>(
+                    new string[] { "Prezime", "Ime" },
+                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+        }
+
         private IList<Gimnasticar> loadAll()
         {
             string query = @"from Gimnasticar g

@@ -287,6 +287,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblPrezime);
             this.Name = "GimnasticarForm";
             this.Text = "GimnasticarForm";
+            this.Shown += new System.EventHandler(this.GimnasticarForm_Shown);
             this.Controls.SetChildIndex(this.lblPrezime, 0);
             this.Controls.SetChildIndex(this.lblIme, 0);
             this.Controls.SetChildIndex(this.txtPrezime, 0);

@@ -159,13 +159,17 @@ namespace Bilten.UI
             txtDatumRodj.Text = String.Empty;
             txtRegBroj.Text = String.Empty;
 
-            cmbKlub.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
             cmbKlub.DataSource = klubovi;
             cmbKlub.DisplayMember = "Naziv";
+            cmbKlub.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbKlub.AutoCompleteSource = AutoCompleteSource.ListItems;
 
-            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDown;
             cmbDrzava.DataSource = drzave;
             cmbDrzava.DisplayMember = "Naziv";
+            cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
 
             txtTakKategorija.Text = kategorija.ToString();
             txtTakBroj.Text = String.Empty;
@@ -220,10 +224,20 @@ namespace Bilten.UI
         {
             int dummyInt;
             if (txtTakBroj.Text.Trim() != String.Empty &&
-            !int.TryParse(txtTakBroj.Text, out dummyInt))
+                !int.TryParse(txtTakBroj.Text, out dummyInt))
             {
                 notification.RegisterMessage(
                     "TakmicarskiBroj", "Neispravan format za takmicarski broj.");
+            }
+            if (cmbKlub.Text.Trim() != String.Empty && cmbKlub.Text.Trim() != PRAZNO && SelectedKlub == null)
+            {
+                notification.RegisterMessage(
+                    "Klub", "Uneli ste nepostojeci klub.");
+            }
+            if (cmbDrzava.Text.Trim() != String.Empty && cmbDrzava.Text.Trim() != PRAZNO && SelectedDrzava == null)
+            {
+                notification.RegisterMessage(
+                    "Drzava", "Uneli ste nepostojecu drzavu.");
             }
         }
 
@@ -233,6 +247,14 @@ namespace Bilten.UI
             {
                 case "TakmicarskiBroj":
                     txtTakBroj.Focus();
+                    break;
+
+                case "Klub":
+                    cmbKlub.Focus();
+                    break;
+
+                case "Drzava":
+                    cmbDrzava.Focus();
                     break;
 
                 default:
