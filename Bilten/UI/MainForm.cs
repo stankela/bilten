@@ -792,10 +792,14 @@ namespace Bilten.UI
 
                 foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                 {
-                    rt.Takmicenje1.PoredakUkupno.create(rt, ocene);
+                    // Ovo je zakomentarisano zato sto je moguce da je poredak rucno promenjen, pa ga ne treba ponovo
+                    // kreirati.
+                    /*rt.Takmicenje1.PoredakUkupno.create(rt, ocene);
                     foreach (PoredakSprava p in rt.Takmicenje1.PoredakSprava)
                         p.create(rt, ocene);
-                    rt.Takmicenje1.PoredakPreskok.create(rt, ocene);
+                    rt.Takmicenje1.PoredakPreskok.create(rt, ocene);*/
+
+                    // TODO3: Zakomentarisi ovo kada budes ponovo uveo da se ekipni poredak automatski azurira.
                     rt.Takmicenje1.PoredakEkipno.create(rt, ocene);
 
                     if (rt.Propozicije.PostojiTak2)

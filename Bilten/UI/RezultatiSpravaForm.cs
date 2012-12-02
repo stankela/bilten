@@ -28,6 +28,8 @@ namespace Bilten.UI
 
         private bool selectMode = false;
 
+        private List<RezultatSprava> istiRezultati = new List<RezultatSprava>();
+
         private RezultatSprava selResult;
         public RezultatSprava SelectedResult
         {
@@ -265,6 +267,8 @@ namespace Bilten.UI
             else
                 spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = true;
 
+            spravaGridUserControl1.SpravaGridMouseUp += new EventHandler<SpravaGridMouseUpEventArgs>(spravaGridUserControl1_SpravaGridMouseUp);
+
             if (selectMode)
             {
                 btnOk.Enabled = true;
@@ -273,6 +277,7 @@ namespace Bilten.UI
                 btnCancel.Visible = true;
                 btnClose.Enabled = false;
                 btnClose.Visible = false;
+                btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
             }
             else
             {
@@ -280,9 +285,11 @@ namespace Bilten.UI
                 btnOk.Visible = false;
                 btnCancel.Enabled = false;
                 btnCancel.Visible = false;
+                btnIzracunaj.Enabled = btnIzracunaj.Visible = true;
+                btnIzracunaj.Location = new Point(btnOk.Location.X + 10, btnClose.Location.Y);
                 btnClose.Enabled = true;
                 btnClose.Visible = true;
-                btnClose.Location = new Point(btnOk.Location.X + 10, btnClose.Location.Y);
+                btnClose.Location = new Point(btnCancel.Location.X + 20, btnCancel.Location.Y);
             }
         }
 
@@ -333,7 +340,11 @@ namespace Bilten.UI
             {
                 rezultatiOpened.Add(rezultatiKey);
             }
+            setItemsSortedByRedBroj();
+        }
 
+        private void setItemsSortedByRedBroj()
+        {
             if (ActiveSprava != Sprava.Preskok)
             {
                 spravaGridUserControl1.DataGridViewUserControl
@@ -415,6 +426,57 @@ namespace Bilten.UI
                 return rezTakmicenje.Takmicenje1.PoredakPreskok.getRezultatiDvaPreskoka();
             else
                 return new List<RezultatPreskok>(rezTakmicenje.Takmicenje3.PoredakPreskok.Rezultati);
+        }
+
+        private List<RezultatSprava> getRezultatiSpravaSorted(RezultatskoTakmicenje rezTakmicenje, Sprava sprava,
+       string sortColumn)
+        {
+            List<RezultatSprava> result =
+                new List<RezultatSprava>(getRezultatiSprava(rezTakmicenje, sprava));
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatSprava))[sortColumn];
+            result.Sort(new SortComparer<RezultatSprava>(propDesc,
+                ListSortDirection.Ascending));
+            return result;
+        }
+
+        private List<RezultatPreskok> getRezultatiPreskok1Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
+        {
+            List<RezultatPreskok> result =
+                new List<RezultatPreskok>(getRezultatiPreskok1(rezTakmicenje));
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
+            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
+                ListSortDirection.Ascending));
+            return result;
+        }
+
+        private List<RezultatPreskok> getRezultatiPreskok2Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
+        {
+            List<RezultatPreskok> result =
+                new List<RezultatPreskok>(getRezultatiPreskok2(rezTakmicenje));
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
+            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
+                ListSortDirection.Ascending));
+            return result;
+        }
+
+        private PoredakSprava getPoredakSprava(RezultatskoTakmicenje rezTakmicenje,
+            Sprava sprava)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return rezTakmicenje.Takmicenje1.getPoredakSprava(sprava);
+            else
+                return rezTakmicenje.Takmicenje3.getPoredak(sprava);
+        }
+
+        private PoredakPreskok getPoredakPreskok(RezultatskoTakmicenje rezTakmicenje)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return rezTakmicenje.Takmicenje1.PoredakPreskok;
+            else
+                return rezTakmicenje.Takmicenje3.PoredakPreskok;
         }
 
         private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)
@@ -533,33 +595,15 @@ namespace Bilten.UI
                     {
                         if (s != Sprava.Preskok)
                         {
-                            List<RezultatSprava> rezultati =
-                                new List<RezultatSprava>(getRezultatiSprava(ActiveTakmicenje, s));
-
-                            PropertyDescriptor propDesc =
-                                TypeDescriptor.GetProperties(typeof(RezultatSprava))["RedBroj"];
-                            rezultati.Sort(new SortComparer<RezultatSprava>(propDesc,
-                                ListSortDirection.Ascending));
-
-                            rezultatiSprave.Add(rezultati);
+                            rezultatiSprave.Add(getRezultatiSpravaSorted(ActiveTakmicenje, s, "RedBroj"));
                         }
                         else if (!obaPresk)
                         {
-                            rezultatiPreskok =
-                                new List<RezultatPreskok>(getRezultatiPreskok1(ActiveTakmicenje));
-                            PropertyDescriptor propDesc =
-                                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj"];
-                            rezultatiPreskok.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                                ListSortDirection.Ascending));
+                            rezultatiPreskok = getRezultatiPreskok1Sorted(ActiveTakmicenje, "RedBroj");
                         }
                         else
                         {
-                            rezultatiPreskok =
-                                new List<RezultatPreskok>(getRezultatiPreskok2(ActiveTakmicenje));
-                            PropertyDescriptor propDesc =
-                                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj2"];
-                            rezultatiPreskok.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                                ListSortDirection.Ascending));
+                            rezultatiPreskok = getRezultatiPreskok2Sorted(ActiveTakmicenje, "RedBroj2");
                         }
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
@@ -642,6 +686,370 @@ namespace Bilten.UI
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        void spravaGridUserControl1_SpravaGridMouseUp(object sender, SpravaGridMouseUpEventArgs e)
+        {
+            DataGridView grid = spravaGridUserControl1.DataGridViewUserControl.DataGridView;
+            int x = e.MouseEventArgs.X;
+            int y = e.MouseEventArgs.Y;
+            if (e.MouseEventArgs.Button == MouseButtons.Right && grid.HitTest(x, y).Type == DataGridViewHitTestType.Cell)
+            {
+                mnQ.Enabled = /*mnQ.Visible =*/ kvalColumnVisible();
+                mnR.Enabled = /*mnR.Visible =*/ kvalColumnVisible();
+                mnPrazno.Enabled = /*mnPrazno.Visible =*/ kvalColumnVisible();
+                findIstiRezultati();
+                mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
+                contextMenuStrip1.Show(grid, new Point(x, y));
+            }
+        }
+
+        private void findIstiRezultati()
+        {
+            istiRezultati.Clear();
+            RezultatSprava rez;
+            if (ActiveSprava != Sprava.Preskok)
+            {
+                rez = spravaGridUserControl1.DataGridViewUserControl
+                    .getSelectedItem<RezultatSprava>();
+            }
+            else
+            {
+                rez = spravaGridUserControl1.DataGridViewUserControl
+                    .getSelectedItem<RezultatPreskok>();
+            }
+            if (rez == null)
+                return;
+            if ((ActiveSprava != Sprava.Preskok || !obaPreskoka) && rez.Total == null)
+                return;
+            if ((ActiveSprava == Sprava.Preskok && obaPreskoka) && (rez as RezultatPreskok).TotalObeOcene == null)
+                return;
+
+            if (ActiveSprava != Sprava.Preskok)
+            {
+                List<RezultatSprava> rezultatiSprava = getRezultatiSpravaSorted(ActiveTakmicenje, ActiveSprava, "RedBroj");
+                foreach (RezultatSprava r in rezultatiSprava)
+                {
+                    if (r.Total == rez.Total)
+                        istiRezultati.Add(r);
+                }
+            }
+            else if (!obaPreskoka)
+            {
+                List<RezultatPreskok> rezultatiPreskok = getRezultatiPreskok1Sorted(ActiveTakmicenje, "RedBroj");
+                foreach (RezultatPreskok r in rezultatiPreskok)
+                {
+                    if (r.Total == rez.Total)
+                        istiRezultati.Add(r);
+                }
+            }
+            else
+            {
+                List<RezultatPreskok> rezultatiPreskok = getRezultatiPreskok2Sorted(ActiveTakmicenje, "RedBroj2");
+                foreach (RezultatPreskok r in rezultatiPreskok)
+                {
+                    if (r.TotalObeOcene == (rez as RezultatPreskok).TotalObeOcene)
+                        istiRezultati.Add(r);
+                }
+            }
+
+        }
+
+        private void mnQ_Click(object sender, EventArgs e)
+        {
+            promeniKvalStatus(KvalifikacioniStatus.Q);
+        }
+
+        private void mnR_Click(object sender, EventArgs e)
+        {
+            promeniKvalStatus(KvalifikacioniStatus.R);
+        }
+
+        private void mnPrazno_Click(object sender, EventArgs e)
+        {
+            promeniKvalStatus(KvalifikacioniStatus.None);
+        }
+
+        private void promeniKvalStatus(KvalifikacioniStatus kvalStatus)
+        {
+            RezultatSprava rez;
+            if (ActiveSprava != Sprava.Preskok)
+            {
+                rez = spravaGridUserControl1.DataGridViewUserControl
+                    .getSelectedItem<RezultatSprava>();
+            }
+            else
+            {
+                rez = spravaGridUserControl1.DataGridViewUserControl
+                    .getSelectedItem<RezultatPreskok>();
+            }
+            if (rez == null)
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                rez.KvalStatus = kvalStatus;
+                if (ActiveSprava != Sprava.Preskok)
+                {
+                    // uvek koristim Takmicenje1 kada snimam poredak zato sto su Q, R i Prazno meniji omoguceni samo kada je
+                    // vidljiva kolona KvalStatus, a to je samo za takmicenje1
+                    dataContext.Save(ActiveTakmicenje.Takmicenje1.getPoredakSprava(ActiveSprava));
+                }
+                else
+                {
+                    dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakPreskok);
+                }
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            spravaGridUserControl1.DataGridViewUserControl.refreshItems();
+            if (ActiveSprava != Sprava.Preskok)
+            {
+                spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatSprava>(rez);
+            }
+            else
+            {
+                spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatPreskok>(rez as RezultatPreskok);
+            }
+        }
+
+        private void mnPromeniPoredakZaIsteOcene_Click(object sender, EventArgs e)
+        {
+            if (ActiveSprava != Sprava.Preskok)
+                promeniPoredakSprava();
+            else
+                promeniPoredakPreskok();
+        }
+
+        private void promeniPoredakSprava()
+        {
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, false);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            for (int i = 0; i < istiRezultati.Count; ++i)
+            {
+                istiRezultati[i].Rank = (short)form.Poredak[i];
+            }
+
+            PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                TypeDescriptor.GetProperties(typeof(RezultatSprava))["Rank"],
+                TypeDescriptor.GetProperties(typeof(RezultatSprava))["PrezimeIme"]
+            };
+            ListSortDirection[] sortDir = new ListSortDirection[] {
+                ListSortDirection.Ascending,
+                ListSortDirection.Ascending
+            };
+
+            short redBroj = istiRezultati[0].RedBroj;
+            istiRezultati.Sort(new SortComparer<RezultatSprava>(propDesc, sortDir));
+            foreach (RezultatSprava r in istiRezultati)
+            {
+                r.RedBroj = redBroj++;
+            }
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                dataContext.Save(getPoredakSprava(ActiveTakmicenje, ActiveSprava));
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            spravaGridUserControl1.DataGridViewUserControl
+                .sort<RezultatSprava>("RedBroj", ListSortDirection.Ascending);
+            //spravaGridUserControl1.DataGridViewUserControl.refreshItems();
+            spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatSprava>(istiRezultati[0]);
+        }
+
+        private void promeniPoredakPreskok()
+        {
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, obaPreskoka);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            for (int i = 0; i < istiRezultati.Count; ++i)
+            {
+                if (!obaPreskoka)
+                    istiRezultati[i].Rank = (short)form.Poredak[i];
+                else
+                    (istiRezultati[i] as RezultatPreskok).Rank2 = (short)form.Poredak[i];
+            }
+
+            string rank = (!obaPreskoka) ? "Rank" : "Rank2";
+            PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[rank],
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["PrezimeIme"]
+            };
+            ListSortDirection[] sortDir = new ListSortDirection[] {
+                ListSortDirection.Ascending,
+                ListSortDirection.Ascending
+            };
+
+            short redBroj = (!obaPreskoka) ? istiRezultati[0].RedBroj : (istiRezultati[0] as RezultatPreskok).RedBroj2.Value;
+            istiRezultati.Sort(new SortComparer<RezultatSprava>(propDesc, sortDir));
+            foreach (RezultatPreskok r in istiRezultati)
+            {
+                if (!obaPreskoka)
+                    r.RedBroj = redBroj++;
+                else
+                    r.RedBroj2 = redBroj++;
+            }
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                dataContext.Save(getPoredakPreskok(ActiveTakmicenje));
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            string redBrojStr = (!obaPreskoka) ? "RedBroj" : "RedBroj2";
+            spravaGridUserControl1.DataGridViewUserControl
+                .sort<RezultatPreskok>(redBrojStr, ListSortDirection.Ascending);
+            //spravaGridUserControl1.DataGridViewUserControl.refreshItems();
+            spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatPreskok>(
+                istiRezultati[0] as RezultatPreskok);
+        }
+
+        private void btnIzracunaj_Click(object sender, EventArgs e)
+        {
+            string msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                Cursor.Current = Cursors.WaitCursor;
+                Cursor.Show();
+
+                IList<Ocena> ocene = loadOcene(takmicenje.Id, deoTakKod);
+                if (ActiveSprava != Sprava.Preskok)
+                {
+                    PoredakSprava p = getPoredakSprava(ActiveTakmicenje, ActiveSprava);
+                    p.create(ActiveTakmicenje, ocene);
+                    dataContext.Save(p);
+                }
+                else
+                {
+                    PoredakPreskok p = getPoredakPreskok(ActiveTakmicenje);
+                    p.create(ActiveTakmicenje, ocene);
+                    dataContext.Save(p);
+                }
+                dataContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+            }
+            catch (InfrastructureException ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+
+            setItemsSortedByRedBroj();
+        }
+
+        private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
+        {
+            IDataContext dataContext = null;
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                return dataContext.ExecuteNamedQuery<Ocena>(
+                    "FindOceneByDeoTakmicenja",
+                    new string[] { "takId", "deoTakKod" },
+                    new object[] { takmicenjeId, deoTakKod });
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw new InfrastructureException(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
         }
 
     }

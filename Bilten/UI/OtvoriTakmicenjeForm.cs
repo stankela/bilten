@@ -81,7 +81,17 @@ namespace Bilten.UI
                 btnOpen.Text = "OK";
             }
 
+            dataGridViewUserControl1.DataGridView.CellDoubleClick += new DataGridViewCellEventHandler(DataGridView_CellDoubleClick);
             GridColumnsInitializer.initTakmicenje(dataGridViewUserControl1);
+        }
+
+        void DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                otvoriTakmicenje();
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private List<Takmicenje> loadTakmicenja()
@@ -98,6 +108,11 @@ namespace Bilten.UI
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
+        {
+            otvoriTakmicenje();
+        }
+
+        private void otvoriTakmicenje()
         {
             if (!selectMode)
             {

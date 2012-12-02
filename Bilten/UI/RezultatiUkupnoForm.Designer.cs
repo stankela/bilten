@@ -28,10 +28,16 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmbTakmicenje = new System.Windows.Forms.ComboBox();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.qToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.niQNiRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbTakmicenje
@@ -74,6 +80,33 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.Size = new System.Drawing.Size(688, 287);
             this.dataGridViewUserControl1.TabIndex = 0;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.qToolStripMenuItem,
+            this.rToolStripMenuItem,
+            this.niQNiRToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
+            // 
+            // qToolStripMenuItem
+            // 
+            this.qToolStripMenuItem.Name = "qToolStripMenuItem";
+            this.qToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.qToolStripMenuItem.Text = "Q";
+            // 
+            // rToolStripMenuItem
+            // 
+            this.rToolStripMenuItem.Name = "rToolStripMenuItem";
+            this.rToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rToolStripMenuItem.Text = "R";
+            // 
+            // niQNiRToolStripMenuItem
+            // 
+            this.niQNiRToolStripMenuItem.Name = "niQNiRToolStripMenuItem";
+            this.niQNiRToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.niQNiRToolStripMenuItem.Text = "Prazno";
+            // 
             // RezultatiUkupnoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -87,6 +120,7 @@ namespace Bilten.UI
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RezultatiUkupnoForm";
             this.Shown += new System.EventHandler(this.RezultatiUkupnoForm_Shown);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -97,5 +131,9 @@ namespace Bilten.UI
         private DataGridViewUserControl dataGridViewUserControl1;
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem qToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem niQNiRToolStripMenuItem;
     }
 }
