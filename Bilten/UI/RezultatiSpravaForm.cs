@@ -1052,5 +1052,20 @@ namespace Bilten.UI
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewColumn col in spravaGridUserControl1.DataGridViewUserControl.DataGridView.Columns)
+            {
+                if (col.HeaderText == "Ime")
+                {
+                    RezultatSprava rez = spravaGridUserControl1.DataGridViewUserControl.getSelectedItem<RezultatSprava>();
+                    Graphics g = spravaGridUserControl1.DataGridViewUserControl.DataGridView.CreateGraphics();
+                    float width = g.MeasureString(rez.PrezimeIme, spravaGridUserControl1.DataGridViewUserControl.DataGridView.Font).Width;
+                    MessageDialogs.showMessage(col.Width.ToString() + "    " + width.ToString(), "");
+                    g.Dispose();
+                }
+            }
+        }
+
     }
 }

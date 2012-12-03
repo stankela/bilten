@@ -42,6 +42,7 @@ namespace Bilten.UI
             this.mnPromeniPoredakZaIsteOcene = new System.Windows.Forms.ToolStripMenuItem();
             this.btnIzracunaj = new System.Windows.Forms.Button();
             this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
+            this.button1 = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -163,6 +164,16 @@ namespace Bilten.UI
             this.spravaGridUserControl1.Size = new System.Drawing.Size(869, 295);
             this.spravaGridUserControl1.TabIndex = 2;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(765, 13);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // RezultatiSpravaForm
             // 
             this.AcceptButton = this.btnOk;
@@ -170,6 +181,7 @@ namespace Bilten.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(893, 363);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.btnIzracunaj);
@@ -202,5 +214,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnPrazno;
         private System.Windows.Forms.ToolStripMenuItem mnPromeniPoredakZaIsteOcene;
         private System.Windows.Forms.Button btnIzracunaj;
+        private System.Windows.Forms.Button button1;
     }
 }

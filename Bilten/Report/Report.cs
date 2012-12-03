@@ -375,7 +375,19 @@ namespace Bilten.Report
 			return result;
 		}
 
-		protected ReportColumn addColumn(float x, float width,
+        protected ReportColumn addColumn(int itemsIndex, float x, float width, string format,
+            StringFormat itemRectFormat, string headerTitle,
+            StringFormat headerFormat)
+        {
+            ReportColumn result = new ReportColumn(itemsIndex, x, width, headerTitle);
+            result.Format = format;
+            result.ItemRectFormat = itemRectFormat;
+            result.HeaderFormat = headerFormat;
+            columns.Add(result);
+            return result;
+        }
+
+        protected ReportColumn addColumn(float x, float width,
 			StringFormat itemRectFormat, string format)
 		{
 			ReportColumn result = new ReportColumn(columns.Count, x, width, String.Empty);
@@ -385,7 +397,17 @@ namespace Bilten.Report
 			return result;
 		}
 
-		protected float getColumnMaxWidth(int colIndex, Graphics g, Font f)
+        protected ReportColumn addColumn(int itemsIndex, float x, float width,
+            StringFormat itemRectFormat, string format)
+        {
+            ReportColumn result = new ReportColumn(itemsIndex, x, width, String.Empty);
+            result.Format = format;
+            result.ItemRectFormat = itemRectFormat;
+            columns.Add(result);
+            return result;
+        }
+
+        protected float getColumnMaxWidth(int colIndex, Graphics g, Font f)
 		{
 			ReportColumn col = columns[colIndex];
 			float max = 0;
