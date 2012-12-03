@@ -89,6 +89,7 @@ namespace Bilten.Report
         private float rankWidthCm = 0.7f;
         private float imeWidthCm = 3.5f;
         private float klubWidthCm = 3.5f;
+        private float skokWidthCm = 0.5f;
         private float ocenaWidthCm = 2.0f;
 
         private Sprava sprava;
@@ -104,25 +105,9 @@ namespace Bilten.Report
             this.brojEOcena = brojEOcena;
             this.stampajRedniBroj = stampajRedniBroj;
 
-            if (sprava == Sprava.Preskok)
+            if (brojEOcena > 0)
             {
-                if (brojEOcena == 0)
-                {
-                    imeWidthCm = 3.0f;
-                    ocenaWidthCm = 1.7f;
-                }
-                else
-                {
-                    imeWidthCm = 2.7f;
-                    ocenaWidthCm = 1.4f;
-                }
-            }
-            else
-            {
-                if (brojEOcena > 0)
-                {
-                    ocenaWidthCm = 1.9f;
-                }
+                ocenaWidthCm = 1.9f;
             }
 
             fetchItems(startLista);
@@ -147,62 +132,62 @@ namespace Bilten.Report
                 {
                     if (brojEOcena == 0)
                         result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
-                            "", "", "", "",
-                            "" });
+                            "", "", "", "" });
                     else if (brojEOcena == 1)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "",
-                            "" });
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                            "", "", "", "", "" });
                     else if (brojEOcena == 2)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "",
-                            "" });
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                            "", "", "", "", "", "" });
                     else if (brojEOcena == 3)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "",
-                            "" });
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                            "", "", "", "", "", "", "" });
                     else if (brojEOcena == 4)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "",
-                            "" });
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                            "", "", "", "", "", "", "", "" });
                     else if (brojEOcena == 5)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "",
-                            "" });
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                            "", "", "", "", "", "", "", "", "" });
                     else if (brojEOcena == 6)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "", "",
-                            "" });
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                            "", "", "", "", "", "", "", "", "", "" });
                 }
                 else
                 {
                     if (brojEOcena == 0)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "",  "", "",
-                            "" });
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                            "", "", "", "", 
+                            "", "", "", "", 
+                            ""});
                     else if (brojEOcena == 1)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "",  "", "",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                            "", "", "", "", "",
+                            "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 2)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "", "", "", "", "",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                            "", "", "", "", "", "",
+                            "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 3)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                            "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 4)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                            "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 5)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                            "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 6)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, /*nastup.KlubDrzava,*/
-                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                            "", "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "", "",
                             "" });
                 }
             }
@@ -213,7 +198,10 @@ namespace Bilten.Report
         {
             createColumns(g, contentBounds);
 
-            itemHeight = itemFont.GetHeight(g) * 1.4f;
+            if (sprava == Sprava.Preskok)
+                itemHeight = itemFont.GetHeight(g) * 4.8f;
+            else
+                itemHeight = itemFont.GetHeight(g) * 2.4f;
             itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             groupHeaderHeight = itemsHeaderHeight;
             float afterGroupHeight = itemHeight;
@@ -229,32 +217,33 @@ namespace Bilten.Report
             float xRank = contentBounds.X;
             float xIme = xRank + Izvestaj.convCmToInch(rankWidthCm);
             float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
-
+            float xSkok = 0.0f;
             float xSprava;
-            if (brojEOcena == 0 && sprava != Sprava.Preskok)
-                xSprava = xKlub + Izvestaj.convCmToInch(klubWidthCm);
-            else
-                xSprava = xKlub;
-
-            float xSprava2 = xSprava + ocenaWidth * (4 + brojEOcena);
-            float xTotal = xSprava2 + ocenaWidth * (4 + brojEOcena);
-            float xRightEnd;
-            if (sprava != Sprava.Preskok)
-                xRightEnd = xSprava + ocenaWidth * (4 + brojEOcena);
-            else
-                xRightEnd = xTotal + ocenaWidth;
-
-            if (xRightEnd < contentBounds.Right)
+            if (sprava == Sprava.Preskok)
             {
-                float delta = (contentBounds.Right - xRightEnd) / 2;
-                xRank += delta;
-                xIme += delta;
-                xKlub += delta;
-                xSprava += delta;
-                xSprava2 += delta;
-                xTotal += delta;
-                xRightEnd += delta;
+                xSkok = xKlub + Izvestaj.convCmToInch(klubWidthCm);
+                xSprava = xSkok + Izvestaj.convCmToInch(skokWidthCm);
             }
+            else
+                xSprava = xKlub + Izvestaj.convCmToInch(klubWidthCm);
+            float xTotal = xSprava + ocenaWidth * (4 + brojEOcena);
+
+            float xRightEnd = xSprava + ocenaWidth * (4 + brojEOcena);
+            if (sprava == Sprava.Preskok)
+                xRightEnd += ocenaWidth;
+
+            float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
+            if (delta < -contentBounds.X)
+                delta = -contentBounds.X;
+
+            xRank += delta;
+            xIme += delta;
+            xKlub += delta;
+            if (sprava == Sprava.Preskok)
+                xSkok += delta;
+            xSprava += delta;
+            xTotal += delta;
+            xRightEnd += delta;
 
             float[] xEn = new float[6];
             for (int i = 0; i < brojEOcena; i++)
@@ -272,128 +261,127 @@ namespace Bilten.Report
             float xPen = xE + ocenaWidth;
             float xTot = xPen + ocenaWidth;
 
-            float[] xEn2 = new float[6];
-            for (int i = 0; i < brojEOcena; i++)
-            {
-                if (i == 0)
-                    xEn2[i] = xSprava2 + ocenaWidth;
-                else
-                    xEn2[i] = xEn2[i - 1] + ocenaWidth;
-            }
-            float xE2;
-            if (brojEOcena == 0)
-                xE2 = xSprava2 + ocenaWidth;
-            else
-                xE2 = xEn2[brojEOcena - 1] + ocenaWidth;
-            float xPen2 = xE2 + ocenaWidth;
-            float xTot2 = xPen2 + ocenaWidth;
-
             float rankWidth = xIme - xRank;
             float imeWidth = xKlub - xIme;
-            float klubWidth = xSprava - xKlub;
+
+            float klubWidth;
+            if (sprava == Sprava.Preskok)
+                klubWidth = xSkok - xKlub;
+            else
+                klubWidth = xSprava - xKlub;
+            float skokWidth = xSprava - xSkok;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
-            imeFormat.LineAlignment = StringAlignment.Near;
+            imeFormat.Alignment = StringAlignment.Near;
             imeFormat.LineAlignment = StringAlignment.Center;
 
             StringFormat klubFormat = new StringFormat(StringFormatFlags.NoWrap);
+            klubFormat.Alignment = StringAlignment.Near;
             klubFormat.LineAlignment = StringAlignment.Center;
-            klubFormat.LineAlignment = StringAlignment.Center;
+
+            StringFormat skokFormat = new StringFormat(StringFormatFlags.NoWrap);
+            skokFormat.Alignment = StringAlignment.Center;
+            skokFormat.LineAlignment = StringAlignment.Center;
 
             StringFormat spravaFormat = Izvestaj.centerCenterFormat;
             StringFormat totalFormat = Izvestaj.centerCenterFormat;
-            StringFormat kvalFormat = Izvestaj.centerCenterFormat;
 
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat skokHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
             String rankTitle = "RB";
             String imeTitle = "Ime";
             String klubTitle = "Klub";
+            String skokTitle = ""; // TODO3: Neka bude uspravno.
             String totalTitle = "Total";
-            String kvalTitle = String.Empty;
 
             columns.Clear();
 
             addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
-            if (brojEOcena == 0 && sprava != Sprava.Preskok)
-                addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            if (sprava == Sprava.Preskok)
+            {
+                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSkok, skokWidth, null, skokFormat,
+                  skokTitle, skokHeaderFormat, true);
+            }
 
             string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
             string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
             string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
-            ReportColumn column1 = addColumn(xSprava, ocenaWidth, fmtD, spravaFormat, "D", spravaHeaderFormat);
+            ReportColumn column1;
+            if (sprava == Sprava.Preskok)
+                column1 = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSprava, ocenaWidth, fmtD, spravaFormat,
+                    "D", spravaHeaderFormat, true);
+            else
+                column1 = addColumn(xSprava, ocenaWidth, fmtD, spravaFormat, "D", spravaHeaderFormat);
             column1.Image = SlikeSprava.getImage(sprava);
             column1.Split = true;
             column1.Span = true;
 
-            ReportColumn column;
             if (brojEOcena > 0)
             {
                 for (int i = 0; i < brojEOcena; i++)
                 {
-                    column = addColumn(xEn[i], ocenaWidth, fmtE, spravaFormat, "E" + (i + 1).ToString(), spravaHeaderFormat);
+                    if (sprava == Sprava.Preskok)
+                    {
+                        ReportColumn prevColumn = column;
+                        if (i == 0)
+                            prevColumn = column1;
+                        column = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, xEn[i], ocenaWidth, fmtE, 
+                            spravaFormat, "E" + (i + 1).ToString(), spravaHeaderFormat, true);
+                    }
+                    else
+                        column = addColumn(xEn[i], ocenaWidth, fmtE, spravaFormat, "E" + (i + 1).ToString(),
+                            spravaHeaderFormat);
                     column.Image = SlikeSprava.getImage(sprava);
                     column.Split = true;
                 }
             }
 
-            column = addColumn(xE, ocenaWidth, fmtE, spravaFormat, "E", spravaHeaderFormat);
-            column.Image = SlikeSprava.getImage(sprava);
-            column.Split = true;
-
-            column = addColumn(xPen, ocenaWidth, fmtPen, spravaFormat, "Pen.", spravaHeaderFormat);
-            column.Image = SlikeSprava.getImage(sprava);
-            column.Split = true;
-
-            string title = "Total";
+            ReportColumn prevColumn2 = column;
+            if (brojEOcena == 0)
+                prevColumn2 = column1;
             if (sprava == Sprava.Preskok)
-                title = "1. skok";
-            column = addColumn(xTot, ocenaWidth, fmtTot, spravaFormat, title, spravaHeaderFormat);
+                column = addDvaPreskokaColumn(prevColumn2.getItemsIndexEnd(), 2, xE, ocenaWidth, fmtE, spravaFormat, 
+                    "E", spravaHeaderFormat, true);
+            else
+                column = addColumn(xE, ocenaWidth, fmtE, spravaFormat, "E", spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 
             if (sprava == Sprava.Preskok)
-            {
-                column = addColumn(xSprava2, ocenaWidth, fmtD, spravaFormat, "D", spravaHeaderFormat);
-                column.Image = SlikeSprava.getImage(sprava);
-                column.Split = true;
+                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xPen, ocenaWidth, fmtPen, spravaFormat,
+                    "Pen.", spravaHeaderFormat, true);
+            else
+                column = addColumn(xPen, ocenaWidth, fmtPen, spravaFormat, "Pen.", spravaHeaderFormat);
+            column.Image = SlikeSprava.getImage(sprava);
+            column.Split = true;
 
-                if (brojEOcena > 0)
-                {
-                    for (int i = 0; i < brojEOcena; i++)
-                    {
-                        column = addColumn(xEn2[i], ocenaWidth, fmtE, spravaFormat, "E" + (i + 1).ToString(), spravaHeaderFormat);
-                        column.Image = SlikeSprava.getImage(sprava);
-                        column.Split = true;
-                    }
-                }
-
-                column = addColumn(xE2, ocenaWidth, fmtE, spravaFormat, "E", spravaHeaderFormat);
-                column.Image = SlikeSprava.getImage(sprava);
-                column.Split = true;
-
-                column = addColumn(xPen2, ocenaWidth, fmtPen, spravaFormat, "Pen.", spravaHeaderFormat);
-                column.Image = SlikeSprava.getImage(sprava);
-                column.Split = true;
-
-                column = addColumn(xTot2, ocenaWidth, fmtTot, spravaFormat, "2. skok", spravaHeaderFormat);
-                column.Image = SlikeSprava.getImage(sprava);
-                column.Split = true;
-
-                ReportColumn columnTot = addColumn(xTotal, ocenaWidth, fmtTot, totalFormat, totalTitle, totalHeaderFormat);
-            }
+            if (sprava == Sprava.Preskok)
+                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, ocenaWidth, fmtTot, spravaFormat, 
+                    "Total", spravaHeaderFormat, true);
+            else
+                column = addColumn(xTot, ocenaWidth, fmtTot, spravaFormat, "Total", spravaHeaderFormat);
+            column.Image = SlikeSprava.getImage(sprava);
+            column.Split = true;
 
             if (column1.Span)
                 column1.SpanEndColumn = column;
+
+            if (sprava == Sprava.Preskok)
+            {
+                column = addColumn(column.getItemsIndexEnd(), xTotal, ocenaWidth, fmtTot, totalFormat,
+                    totalTitle, totalHeaderFormat);
+            }
         }
 
         protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
@@ -444,5 +432,20 @@ namespace Bilten.Report
                 }
             }
         }
+
+        private DvaPreskokaReportColumn addDvaPreskokaColumn(int itemsIndex, int itemsSpan, float x, float width,
+          string format, StringFormat itemRectFormat, string headerTitle,
+          StringFormat headerFormat, bool drawPartItemRect)
+        {
+            DvaPreskokaReportColumn result = new DvaPreskokaReportColumn(
+                itemsIndex, itemsSpan, x, width, headerTitle);
+            result.Format = format;
+            result.ItemRectFormat = itemRectFormat;
+            result.HeaderFormat = headerFormat;
+            result.DrawPartItemRect = drawPartItemRect;
+            columns.Add(result);
+            return result;
+        }
+
     }
 }

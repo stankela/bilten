@@ -23,7 +23,7 @@ namespace Bilten.Report
                 kvalColumn, sprava, prikaziPenal));
 		}
 
-        public SpravaIzvestaj(bool extended, IList<RezultatPreskok> rezultati,
+        public SpravaIzvestaj(bool obaPreskoka, IList<RezultatPreskok> rezultati,
             bool kvalColumn, string documentName, bool prikaziPenal)
         {
             DocumentName = documentName;
@@ -32,7 +32,7 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, extended, prikaziPenal));
+                kvalColumn, obaPreskoka, prikaziPenal));
         }
 
         public SpravaIzvestaj(List<List<RezultatSprava>> rezultatiSprave,
@@ -116,7 +116,7 @@ namespace Bilten.Report
 
         private bool kvalColumn;
         private Sprava sprava;
-        private bool extended;
+        private bool obaPreskoka;
         private bool prikaziPenal;
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
@@ -137,12 +137,12 @@ namespace Bilten.Report
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatPreskok> rezultati,
-            bool kvalColumn, bool extended, bool prikaziPenal)
+            bool kvalColumn, bool obaPreskoka, bool prikaziPenal)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont)
         {
             this.kvalColumn = kvalColumn;
             this.sprava = Sprava.Preskok;
-            this.extended = extended;
+            this.obaPreskoka = obaPreskoka;
             this.prikaziPenal = prikaziPenal;
 
             totalBrush = Brushes.LightGray;
@@ -187,7 +187,7 @@ namespace Bilten.Report
             List<object[]> result = new List<object[]>();
             foreach (RezultatPreskok rez in rezultati)
             {
-                if (extended)
+                if (obaPreskoka)
                 {
                     if (prikaziPenal)
                         result.Add(new object[] { rez.Rank2, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
@@ -215,7 +215,7 @@ namespace Bilten.Report
         {
             createColumns(g, contentBounds);
 
-            if (extended)
+            if (obaPreskoka)
                 itemHeight = itemFont.GetHeight(g) * 2.9f;
             else
                 itemHeight = itemFont.GetHeight(g) * 1.4f;
@@ -241,7 +241,7 @@ namespace Bilten.Report
             float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
             float xSkok = 0.0f;
             float xSprava;
-            if (extended)
+            if (obaPreskoka)
             {
                 xSkok = xKlub + Izvestaj.convCmToInch(klubWidthCm);
                 xSprava = xSkok + Izvestaj.convCmToInch(skokWidthCm);
@@ -251,7 +251,7 @@ namespace Bilten.Report
 
             float xTotal = xSprava + (ocenaWidth * brojOcena);
             float xKval = xTotal + ocenaWidth;
-            if (!extended)
+            if (!obaPreskoka)
                 xKval = xSprava + (ocenaWidth * brojOcena);
 
             float kvalWidth = Izvestaj.convCmToInch(kvalWidthCm);
@@ -262,7 +262,7 @@ namespace Bilten.Report
                 xRank += delta;
                 xIme += delta;
                 xKlub += delta;
-                if (extended)
+                if (obaPreskoka)
                     xSkok += delta;
                 xSprava += delta;
                 xTotal += delta;
@@ -281,7 +281,7 @@ namespace Bilten.Report
             float rankWidth = xIme - xRank;
             float imeWidth = xKlub - xIme;
             float klubWidth;
-            if (extended)
+            if (obaPreskoka)
                 klubWidth = xSkok - xKlub;
             else
                 klubWidth = xSprava - xKlub;
@@ -328,7 +328,7 @@ namespace Bilten.Report
             addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
-            if (extended)
+            if (obaPreskoka)
             {
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSkok, skokWidth, null, skokFormat,
                   skokTitle, skokHeaderFormat);
@@ -340,7 +340,7 @@ namespace Bilten.Report
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
             ReportColumn column1;
-            if (extended)
+            if (obaPreskoka)
                 column1 = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSprava, spravaDWidth, fmtD,
                   spravaFormat, "D", spravaHeaderFormat);
             else
@@ -349,7 +349,7 @@ namespace Bilten.Report
             column1.Split = true;
             column1.Span = true;
 
-            if (extended)
+            if (obaPreskoka)
                 column = addDvaPreskokaColumn(column1.getItemsIndexEnd(), 2, xE, spravaEWidth, fmtE, spravaFormat,
                   "E", spravaHeaderFormat);
             else
@@ -359,7 +359,7 @@ namespace Bilten.Report
 
             if (prikaziPenal)
             {
-                if (extended)
+                if (obaPreskoka)
                     column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xPen, ocenaWidth, fmtPen, spravaFormat,
                       "Pen.", spravaHeaderFormat);
                 else
@@ -369,7 +369,7 @@ namespace Bilten.Report
             }
 
             string title = "Total";
-            if (extended)
+            if (obaPreskoka)
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, spravaTotWidth, fmtTot, spravaFormat,
                     title, spravaHeaderFormat);
             else
@@ -381,7 +381,7 @@ namespace Bilten.Report
             if (column1.Span)
                 column1.SpanEndColumn = column;
 
-            if (extended)
+            if (obaPreskoka)
             {
                 column = addColumn(column.getItemsIndexEnd(), xTotal, ocenaWidth, fmtTot, totalFormat,
                     totalTitle, totalHeaderFormat);
@@ -462,6 +462,13 @@ namespace Bilten.Report
     // TODO3: Ovu klasu bi trebalo merdzovati sa klasom  UkupnoFinaleKupaSpravaReportColumn
     public class DvaPreskokaReportColumn : ReportColumn
     {
+        private bool drawPartItemRect;
+        public bool DrawPartItemRect
+        {
+            get { return drawPartItemRect; }
+            set { drawPartItemRect = value; }
+        }
+
         public DvaPreskokaReportColumn(int itemsIndex, int itemsSpan, float x, float width, string headerTitle)
             : base(itemsIndex, x, width, headerTitle)
         {
@@ -484,6 +491,14 @@ namespace Bilten.Report
             RectangleF itemRect1 = new RectangleF(itemRect.X, itemRect.Y, itemRect.Width, itemRect.Height / 2);
             RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + itemRect.Height / 2, itemRect.Width,
                 itemRect.Height / 2);
+
+            if (this.DrawPartItemRect)
+            {
+                g.DrawRectangle(pen, itemRect1.X, itemRect1.Y,
+                    itemRect1.Width, itemRect1.Height);
+                g.DrawRectangle(pen, itemRect2.X, itemRect2.Y,
+                    itemRect2.Width, itemRect2.Height);
+            }
 
             string item1 = this.getFormattedString(itemsRow, itemsIndex);
             string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);

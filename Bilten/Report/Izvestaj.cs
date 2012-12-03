@@ -33,7 +33,8 @@ namespace Bilten.Report
         protected RectangleF header4Bounds;
         protected RectangleF headerSpaceBounds;
 
-		protected RectangleF contentBounds;
+        protected RectangleF pageBounds;
+        protected RectangleF contentBounds;
         protected RectangleF footerBounds;
 
 		protected int lastPageNum;
@@ -247,8 +248,10 @@ namespace Bilten.Report
                 footerBounds.Right, footerBounds.Top + pageNumFont.GetHeight(g) * 1.5f, dateFormat);
         }
 
-		public void setupContent(Graphics g, RectangleF marginBounds)
+        public void setupContent(Graphics g, RectangleF marginBounds, RectangleF pageBounds)
 		{
+            this.pageBounds = pageBounds;
+
 			calculateHeaderBounds(g, marginBounds);
             calculateContentBounds(g, marginBounds);
             calculateFooterBounds(g, marginBounds);
