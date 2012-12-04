@@ -12,14 +12,6 @@ namespace Bilten.Report
         private List<SpravaLista> liste = new List<SpravaLista>();
         private bool svakaSpravaNaPosebnojStrani;
 
-        public static float getGridTestWidth(DataGridView dgw, string text)
-        {
-            Graphics g = dgw.CreateGraphics();
-            float width = g.MeasureString(text, dgw.Font).Width;
-            g.Dispose();
-            return width;
-        }
-
         public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati, 
             bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid)
 		{

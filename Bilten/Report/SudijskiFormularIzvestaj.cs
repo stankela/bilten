@@ -4,6 +4,8 @@ using System.Text;
 using Bilten.Domain;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.Windows.Forms;
+using Bilten.UI;
 
 namespace Bilten.Report
 {
@@ -13,7 +15,8 @@ namespace Bilten.Report
         private float itemFontSize = 10;
         private bool svakaSpravaNaPosebnojStrani;
 
-        public SudijskiFormularIzvestaj(StartListaNaSpravi startLista, string documentName, int brojEOcena, bool stampajRedniBroj)
+        public SudijskiFormularIzvestaj(StartListaNaSpravi startLista, string documentName, int brojEOcena, 
+            bool stampajRedniBroj, DataGridView formGrid)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -24,13 +27,14 @@ namespace Bilten.Report
             Margins = new Margins(30, 30, 75, 75);
 
             SudijskiFormularLista lista = new SudijskiFormularLista(this, 1, 0f, itemFont, itemsHeaderFont, startLista,
-                brojEOcena, stampajRedniBroj);
+                brojEOcena, stampajRedniBroj, formGrid);
             lista.RelY = 0.0f + 0.03f;
             reportListe.Add(lista);
 		}
 
         public SudijskiFormularIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
-            string documentName, int brojEOcena, int brojSpravaPoStrani, bool stampajRedniBroj)
+            string documentName, int brojEOcena, int brojSpravaPoStrani, bool stampajRedniBroj,
+            SpravaGridGroupUserControl spravaGridGroupUserControl)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -56,7 +60,8 @@ namespace Bilten.Report
                     relY = 0.0f + 0.03f;
                 }
                 SudijskiFormularLista lista = new SudijskiFormularLista(this, page, 0f, itemFont, itemsHeaderFont,
-                    startListe[i], brojEOcena, stampajRedniBroj);
+                    startListe[i], brojEOcena, stampajRedniBroj,
+                    spravaGridGroupUserControl[sprava].DataGridViewUserControl.DataGridView);
                 lista.RelY = relY;
                 reportListe.Add(lista);
             }
@@ -86,29 +91,18 @@ namespace Bilten.Report
 
     public class SudijskiFormularLista : ReportLista
     {
-        private float rankWidthCm = 0.7f;
-        private float imeWidthCm = 3.5f;
-        private float klubWidthCm = 3.5f;
-        private float skokWidthCm = 0.5f;
-        private float ocenaWidthCm = 2.0f;
-
         private Sprava sprava;
         private int brojEOcena;
         private bool stampajRedniBroj;
 
         public SudijskiFormularLista(Izvestaj izvestaj, int pageNum, float y,
-            Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, int brojEOcena, bool stampajRedniBroj)
-            : base(izvestaj, pageNum, y, itemFont,
-            itemsHeaderFont, null)
+            Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, int brojEOcena, bool stampajRedniBroj,
+            DataGridView formGrid)
+            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = startLista.Sprava;
             this.brojEOcena = brojEOcena;
             this.stampajRedniBroj = stampajRedniBroj;
-
-            if (brojEOcena > 0)
-            {
-                ocenaWidthCm = 1.9f;
-            }
 
             fetchItems(startLista);
         }
@@ -199,7 +193,7 @@ namespace Bilten.Report
             createColumns(g, contentBounds);
 
             if (sprava == Sprava.Preskok)
-                itemHeight = itemFont.GetHeight(g) * 4.8f;
+                itemHeight = itemFont.GetHeight(g) * 4.0f;
             else
                 itemHeight = itemFont.GetHeight(g) * 2.4f;
             itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
@@ -212,20 +206,33 @@ namespace Bilten.Report
 
         private void createColumns(Graphics g, RectangleF contentBounds)
         {
+            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
+
+            float rankWidthCm = 0.7f;
+            float skokWidthCm = 0.5f;
+            float ocenaWidthCm = 2.0f;
+            if (brojEOcena > 0)
+                ocenaWidthCm = 1.9f;
+
+            float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
+            float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            float skokWidth = Izvestaj.convCmToInch(skokWidthCm);
             float ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);
 
             float xRank = contentBounds.X;
             float xIme = xRank + Izvestaj.convCmToInch(rankWidthCm);
-            float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
+            float xKlub = xIme + imeWidth;
             float xSkok = 0.0f;
             float xSprava;
             if (sprava == Sprava.Preskok)
             {
-                xSkok = xKlub + Izvestaj.convCmToInch(klubWidthCm);
+                xSkok = xKlub + klubWidth;
                 xSprava = xSkok + Izvestaj.convCmToInch(skokWidthCm);
             }
             else
-                xSprava = xKlub + Izvestaj.convCmToInch(klubWidthCm);
+                xSprava = xKlub + klubWidth;
             float xTotal = xSprava + ocenaWidth * (4 + brojEOcena);
 
             float xRightEnd = xSprava + ocenaWidth * (4 + brojEOcena);
@@ -260,16 +267,6 @@ namespace Bilten.Report
                 xE = xEn[brojEOcena - 1] + ocenaWidth;
             float xPen = xE + ocenaWidth;
             float xTot = xPen + ocenaWidth;
-
-            float rankWidth = xIme - xRank;
-            float imeWidth = xKlub - xIme;
-
-            float klubWidth;
-            if (sprava == Sprava.Preskok)
-                klubWidth = xSkok - xKlub;
-            else
-                klubWidth = xSprava - xKlub;
-            float skokWidth = xSprava - xSkok;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
 

@@ -1688,12 +1688,15 @@ namespace Bilten.UI
                         startListe.Add(ActiveRaspored.getStartLista(s, ActiveGrupa, ActiveRotacija));
                     }
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, takmicenje.Gimnastika, documentName,
-                        brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi));
+                        brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
+                        getActiveSpravaGridGroupUserControl()));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
-                    p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena, form.StampajRedniBrojNaStartListi));
+                    p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena,
+                        form.StampajRedniBrojNaStartListi,
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
                 }
 
                 p.ShowDialog();
