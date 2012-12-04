@@ -265,7 +265,9 @@ namespace Bilten.Report
             if (!obaPreskoka)
                 xKval = xSprava + (ocenaWidth * brojOcena);
 
-            float xRightEnd = xKval + kvalWidth;
+            float xRightEnd = xKval;
+            if (kvalColumn)
+                xRightEnd += kvalWidth;
 
             float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
             if (delta < -contentBounds.X)
