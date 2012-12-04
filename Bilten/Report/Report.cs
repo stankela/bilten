@@ -3,6 +3,7 @@ using System.Drawing;
 using Bilten.Exceptions;
 using System.Collections.Generic;
 using Bilten.Domain;
+using System.Windows.Forms;
 
 namespace Bilten.Report
 {
@@ -262,6 +263,8 @@ namespace Bilten.Report
 	{
         protected List<ReportColumn> columns = new List<ReportColumn>();
 		protected Izvestaj izvestaj;
+
+        protected DataGridView formGrid;
 		
         private int firstPageNum;
         public int FirstPageNum
@@ -323,12 +326,25 @@ namespace Bilten.Report
         protected IDictionary<int, List<ReportGroupPart>> listLayout;
         protected bool startNewPageWithGroupHeader = true;
 
-		public ReportLista(Izvestaj izvestaj, int pageNum, float y, Font itemFont,
-			Font itemsHeaderFont)
+        public static string TEST_TEXT = "0123456789abcdef";
+
+        public static float getGridTextWidth(DataGridView dgw, string text)
+        {
+            Graphics g = dgw.CreateGraphics();
+            // rezultat je smanjen za 5% zato sto kada u gridu namestim velicinu kolone prema najduzem tekstu, velicina
+            // teksta koju daje metod MeasureString je nesto veca od velicine kolone.
+            float width = g.MeasureString(text, dgw.Font).Width * 0.95f;
+            g.Dispose();
+            return width;
+        }
+
+        public ReportLista(Izvestaj izvestaj, int pageNum, float y, Font itemFont,
+            Font itemsHeaderFont, DataGridView formGrid)
 		{
 			this.izvestaj = izvestaj;
 			this.firstPageNum = pageNum;
 			this.startY = y;
+            this.formGrid = formGrid;
 
 			this.itemFont = itemFont;
 			this.itemsHeaderFont = itemsHeaderFont;

@@ -55,7 +55,7 @@ namespace Bilten.Report
             List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno, 
             Gimnastika gim, bool kvalColumn)
             : base(izvestaj, pageNum, y, itemFont,
-            itemsHeaderFont)
+            itemsHeaderFont, null)
         {
             this.nazivEkipeFont = nazivEkipeFont;
             this.kvalColumn = kvalColumn;

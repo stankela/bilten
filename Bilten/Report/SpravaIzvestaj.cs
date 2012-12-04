@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Bilten.Domain;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Bilten.Report
 {
@@ -11,8 +12,16 @@ namespace Bilten.Report
         private List<SpravaLista> liste = new List<SpravaLista>();
         private bool svakaSpravaNaPosebnojStrani;
 
+        public static float getGridTestWidth(DataGridView dgw, string text)
+        {
+            Graphics g = dgw.CreateGraphics();
+            float width = g.MeasureString(text, dgw.Font).Width;
+            g.Dispose();
+            return width;
+        }
+
         public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati, 
-            bool kvalColumn, string documentName, bool prikaziPenal)
+            bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -20,11 +29,11 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, sprava, prikaziPenal));
+                kvalColumn, sprava, prikaziPenal, formGrid));
 		}
 
         public SpravaIzvestaj(bool obaPreskoka, IList<RezultatPreskok> rezultati,
-            bool kvalColumn, string documentName, bool prikaziPenal)
+            bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -32,12 +41,12 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, obaPreskoka, prikaziPenal));
+                kvalColumn, obaPreskoka, prikaziPenal, formGrid));
         }
 
         public SpravaIzvestaj(List<List<RezultatSprava>> rezultatiSprave,
             List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, Gimnastika gim,
-            bool kvalColumn, string documentName, int brojSpravaPoStrani, bool prikaziPenal)
+            bool kvalColumn, string documentName, int brojSpravaPoStrani, bool prikaziPenal, DataGridView formGrid)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -67,14 +76,14 @@ namespace Bilten.Report
                         spravaIndex--;
 
                     SpravaLista lista = new SpravaLista(this, page, 0f, itemFont, itemsHeaderFont,
-                        rezultatiSprave[spravaIndex], kvalColumn, sprava, prikaziPenal);
+                        rezultatiSprave[spravaIndex], kvalColumn, sprava, prikaziPenal, formGrid);
                     lista.RelY = relY;
                     liste.Add(lista);
                 }
                 else
                 {
                     SpravaLista lista = new SpravaLista(this, page, 0f, itemFont, itemsHeaderFont,
-                        rezultatiPreskok, kvalColumn, obaPreskoka, prikaziPenal);
+                        rezultatiPreskok, kvalColumn, obaPreskoka, prikaziPenal, formGrid);
                     lista.RelY = relY;
                     liste.Add(lista);
                 }
@@ -105,12 +114,6 @@ namespace Bilten.Report
 
     public class SpravaLista : ReportLista
     {
-        private float rankWidthCm = 1f;
-        private float imeWidthCm = 3.5f;
-        private float klubWidthCm = 3.5f;
-        private float skokWidthCm = 0.5f;
-        private float ocenaWidthCm = 1.3f;
-        private float kvalWidthCm = 0.5f;
         private Brush totalBrush;
         private Brush totalAllBrush;
 
@@ -121,9 +124,9 @@ namespace Bilten.Report
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatSprava> rezultati,
-            bool kvalColumn, Sprava sprava, bool prikaziPenal)
+            bool kvalColumn, Sprava sprava, bool prikaziPenal, DataGridView formGrid)
             : base(izvestaj, pageNum, y, itemFont,
-            itemsHeaderFont)
+            itemsHeaderFont, formGrid)
         {
             this.kvalColumn = kvalColumn;
             this.sprava = sprava;
@@ -137,8 +140,8 @@ namespace Bilten.Report
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatPreskok> rezultati,
-            bool kvalColumn, bool obaPreskoka, bool prikaziPenal)
-            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont)
+            bool kvalColumn, bool obaPreskoka, bool prikaziPenal, DataGridView formGrid)
+            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.kvalColumn = kvalColumn;
             this.sprava = Sprava.Preskok;
@@ -229,7 +232,23 @@ namespace Bilten.Report
 
         private void createColumns(Graphics g, RectangleF contentBounds)
         {
-            float ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);
+            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
+
+            // TODO3: Ne bi trebalo pristupati kolonama po fixnom indexu (kao u sledecoj liniji) zato sto je moguce da se
+            // index promeni (ako npr. dodam novu kolonu).
+
+            // TODO3: Trenutno se velice svih kolona za ocene podesavaju prema velicini prve kolone (D). Promeni da se
+            // svaka podesava odvojeno. (i u ostalim izvestajima)
+
+            // skok i kval sam podesio kao polovinu Rank kolone.
+            float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+            float imeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            float skokWidth = rankWidth / 2;
+            float ocenaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float kvalWidth = rankWidth / 2;
+
             int brojOcena;
             if (prikaziPenal)
                 brojOcena = 4;
@@ -237,38 +256,38 @@ namespace Bilten.Report
                 brojOcena = 3;
 
             float xRank = contentBounds.X;
-            float xIme = xRank + Izvestaj.convCmToInch(rankWidthCm);
-            float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
+            float xIme = xRank + rankWidth;
+            float xKlub = xIme + imeWidth;
             float xSkok = 0.0f;
             float xSprava;
             if (obaPreskoka)
             {
-                xSkok = xKlub + Izvestaj.convCmToInch(klubWidthCm);
-                xSprava = xSkok + Izvestaj.convCmToInch(skokWidthCm);
+                xSkok = xKlub + klubWidth;
+                xSprava = xSkok + skokWidth;
             }
             else
-                xSprava = xKlub + Izvestaj.convCmToInch(klubWidthCm);
+                xSprava = xKlub + klubWidth;
 
             float xTotal = xSprava + (ocenaWidth * brojOcena);
             float xKval = xTotal + ocenaWidth;
             if (!obaPreskoka)
                 xKval = xSprava + (ocenaWidth * brojOcena);
 
-            float kvalWidth = Izvestaj.convCmToInch(kvalWidthCm);
             float xRightEnd = xKval + kvalWidth;
-            if (xRightEnd < contentBounds.Right)
-            {
-                float delta = (contentBounds.Right - xRightEnd) / 2;
-                xRank += delta;
-                xIme += delta;
-                xKlub += delta;
-                if (obaPreskoka)
-                    xSkok += delta;
-                xSprava += delta;
-                xTotal += delta;
-                xKval += delta;
-                xRightEnd += delta;
-            }
+
+            float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
+            if (delta < -contentBounds.X)
+                delta = -contentBounds.X;
+
+            xRank += delta;
+            xIme += delta;
+            xKlub += delta;
+            if (obaPreskoka)
+                xSkok += delta;
+            xSprava += delta;
+            xTotal += delta;
+            xKval += delta;
+            xRightEnd += delta;
 
             float xE = xSprava + ocenaWidth;
             float xPen = xE + ocenaWidth;
@@ -277,15 +296,6 @@ namespace Bilten.Report
                 xTot = xPen + ocenaWidth;
             else
                 xTot = xPen;
-
-            float rankWidth = xIme - xRank;
-            float imeWidth = xKlub - xIme;
-            float klubWidth;
-            if (obaPreskoka)
-                klubWidth = xSkok - xKlub;
-            else
-                klubWidth = xSprava - xKlub;
-            float skokWidth = xSprava - xSkok;
 
             float spravaDWidth = ocenaWidth;
             float spravaEWidth = ocenaWidth;

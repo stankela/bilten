@@ -333,6 +333,7 @@ namespace Bilten.UI
 
         private void onSelectedRezultatiChanged()
         {
+            // TODO: Kada se promeni sprava trebalo bi da kolone zadrze postojecu sirinu.
             initSpravaGridUserControl(ActiveSprava, obaPreskoka);
 
             int rezultatiKey = getRezultatiKey(ActiveTakmicenje, ActiveSprava);
@@ -608,7 +609,7 @@ namespace Bilten.UI
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
                         obaPresk, ActiveTakmicenje.Gimnastika, kvalColumn, documentName, form.BrojSpravaPoStrani,
-                        form.PrikaziPenalSprave));
+                        form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                 }
                 else
                 {
@@ -624,7 +625,8 @@ namespace Bilten.UI
                             ListSortDirection.Ascending));
 
                         p.setIzvestaj(new SpravaIzvestaj(ActiveSprava, rezultati,
-                            kvalColumn, documentName, form.PrikaziPenalSprave));
+                            kvalColumn, documentName, form.PrikaziPenalSprave,
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
 
                     }
                     else if (!obaPreskoka)
@@ -637,7 +639,8 @@ namespace Bilten.UI
                             ListSortDirection.Ascending));
 
                         p.setIzvestaj(new SpravaIzvestaj(false, rezultati,
-                            kvalColumn, documentName, form.PrikaziPenalSprave));
+                            kvalColumn, documentName, form.PrikaziPenalSprave,
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
                     else
                     {
@@ -648,7 +651,8 @@ namespace Bilten.UI
                             ListSortDirection.Ascending));
 
                         p.setIzvestaj(new SpravaIzvestaj(true, rezultati,
-                            kvalColumn, documentName, form.PrikaziPenalSprave));
+                            kvalColumn, documentName, form.PrikaziPenalSprave,
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
                 }
 
@@ -1049,21 +1053,6 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            foreach (DataGridViewColumn col in spravaGridUserControl1.DataGridViewUserControl.DataGridView.Columns)
-            {
-                if (col.HeaderText == "Ime")
-                {
-                    RezultatSprava rez = spravaGridUserControl1.DataGridViewUserControl.getSelectedItem<RezultatSprava>();
-                    Graphics g = spravaGridUserControl1.DataGridViewUserControl.DataGridView.CreateGraphics();
-                    float width = g.MeasureString(rez.PrezimeIme, spravaGridUserControl1.DataGridViewUserControl.DataGridView.Font).Width;
-                    MessageDialogs.showMessage(col.Width.ToString() + "    " + width.ToString(), "");
-                    g.Dispose();
-                }
             }
         }
 

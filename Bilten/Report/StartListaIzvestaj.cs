@@ -102,7 +102,7 @@ namespace Bilten.Report
         public StartListaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, bool stampajRedniBroj,
             bool sveSpraveNaJednojStrani, int columnNumber)
-            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont)
+            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, null)
         {
             this.sprava = startLista.Sprava;
             this.stampajRedniBroj = stampajRedniBroj;

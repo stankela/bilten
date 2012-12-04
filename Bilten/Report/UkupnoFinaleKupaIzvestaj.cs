@@ -63,7 +63,7 @@ namespace Bilten.Report
             Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoFinaleKupa> rezultati, 
             Gimnastika gim, bool extended, bool kvalColumn)
             : base(izvestaj, pageNum, y, itemFont,
-			itemsHeaderFont)
+            itemsHeaderFont, null)
 		{
             this.extended = extended;
             this.kvalColumn = kvalColumn;

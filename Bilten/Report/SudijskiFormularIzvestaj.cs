@@ -99,7 +99,7 @@ namespace Bilten.Report
         public SudijskiFormularLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, int brojEOcena, bool stampajRedniBroj)
             : base(izvestaj, pageNum, y, itemFont,
-            itemsHeaderFont)
+            itemsHeaderFont, null)
         {
             this.sprava = startLista.Sprava;
             this.brojEOcena = brojEOcena;
