@@ -4,6 +4,7 @@ using System.Text;
 using Bilten.Domain;
 using System.Drawing;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Bilten.Report
 {
@@ -11,15 +12,15 @@ namespace Bilten.Report
     {
    		private EkipeLista lista;
 
-		public EkipeIzvestaj(List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno, 
-            Gimnastika gim, bool kvalColumn)
+		public EkipeIzvestaj(List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno,
+            Gimnastika gim, bool kvalColumn, DataGridView formGrid)
 		{
             Font itemFont = new Font("Arial", 8);
             Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
             Font nazivEkipeFont = new Font("Arial", 10, FontStyle.Bold);
 
             lista = new EkipeLista(this, 1, 0f, itemFont, itemsHeaderFont, nazivEkipeFont,
-                rezultati, rezultatiUkupno, gim, kvalColumn);
+                rezultati, rezultatiUkupno, gim, kvalColumn, formGrid);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -37,11 +38,6 @@ namespace Bilten.Report
 
     public class EkipeLista : ReportLista
     {
-        private float imeWidthCm = 3.1f;
-        private float klubWidthCm = 3.5f;
-        private float spravaWidthCm = 1.5f;
-        private float totalWidthCm = 1.5f;
-        private float kvalWidthCm = 0.5f;
         private Brush totalBrush;
         private Brush totalAllBrush;
         private Font nazivEkipeFont;
@@ -50,12 +46,13 @@ namespace Bilten.Report
         private Gimnastika gimnastika;
         private String totalTitle;
 
+        private float delta;
+
         public EkipeLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, Font nazivEkipeFont,
-            List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno, 
-            Gimnastika gim, bool kvalColumn)
-            : base(izvestaj, pageNum, y, itemFont,
-            itemsHeaderFont, null)
+            List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno,
+            Gimnastika gim, bool kvalColumn, DataGridView formGrid)
+            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.nazivEkipeFont = nazivEkipeFont;
             this.kvalColumn = kvalColumn;
@@ -175,24 +172,47 @@ namespace Bilten.Report
 
         private void createColumns(Graphics g, RectangleF contentBounds)
         {
+            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
+
+            float imeWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+            float spravaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            float totalWidth = spravaWidth;
+            float kvalWidth = spravaWidth / 3;
+
             float xIme = contentBounds.X;
-            float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
-            float xParter = xKlub + Izvestaj.convCmToInch(klubWidthCm);
-            float xKonj = xParter + Izvestaj.convCmToInch(spravaWidthCm);
-            float xKarike = xKonj + Izvestaj.convCmToInch(spravaWidthCm);
-            float xPreskok = xKarike + Izvestaj.convCmToInch(spravaWidthCm);
-            float xRazboj = xPreskok + Izvestaj.convCmToInch(spravaWidthCm);
-            float xVratilo = xRazboj + Izvestaj.convCmToInch(spravaWidthCm);
-            float xTotal = xVratilo + Izvestaj.convCmToInch(spravaWidthCm);
-            float xKval = xTotal + Izvestaj.convCmToInch(totalWidthCm);
+            float xKlub = xIme + imeWidth;
+            float xParter = xKlub + klubWidth;
+            float xKonj = xParter + spravaWidth;
+            float xKarike = xKonj + spravaWidth;
+            float xPreskok = xKarike + spravaWidth;
+            float xRazboj = xPreskok + spravaWidth;
+            float xVratilo = xRazboj + spravaWidth;
+            float xTotal = xVratilo + spravaWidth;
+            if (gimnastika == Gimnastika.ZSG)
+                xTotal = xRazboj;
 
-            float imeWidth = xKlub - xIme;
-            float klubWidth = xParter - xKlub;
+            float xKval = xTotal + totalWidth;
 
-            float spravaWidth = Izvestaj.convCmToInch(spravaWidthCm);
+            float xRightEnd = xKval;
+            if (kvalColumn)
+                xRightEnd += kvalWidth;
 
-            float totalWidth = xKval - xTotal;
-            float kvalWidth = Izvestaj.convCmToInch(kvalWidthCm);
+            delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
+            if (delta < -contentBounds.X)
+                delta = -contentBounds.X;
+            xIme += delta;
+            xKlub += delta;
+            xParter += delta;
+            xKonj += delta;
+            xKarike += delta;
+            xPreskok += delta;
+            xRazboj += delta;
+            xVratilo += delta;
+            xTotal += delta;
+            xKval += delta;
+            xRightEnd += delta;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
             imeFormat.LineAlignment = StringAlignment.Near;
@@ -233,12 +253,6 @@ namespace Bilten.Report
                 column.Sprava = sprave[i];
             }
 
-            if (gimnastika == Gimnastika.ZSG)
-            {
-                xTotal = xRazboj;
-                xKval = xTotal + totalWidth;
-            }
-
             column = addColumn(xTotal, totalWidth, fmtTot, totalFormat, totalTitle, totalHeaderFormat);
 
             if (kvalColumn)
@@ -252,7 +266,7 @@ namespace Bilten.Report
         protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
         {
             float headerHeight = groupHeaderRect.Height / 2;
-            RectangleF nazivEkipeRectangle = new RectangleF(groupHeaderRect.X,
+            RectangleF nazivEkipeRectangle = new RectangleF(groupHeaderRect.X + delta,
                 groupHeaderRect.Y, groupHeaderRect.Width, headerHeight);
 
             ReportGrupa gr = groups[groupId];
