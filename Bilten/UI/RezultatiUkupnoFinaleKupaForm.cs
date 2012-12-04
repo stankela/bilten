@@ -292,7 +292,7 @@ namespace Bilten.UI
                     && ActiveTakmicenje.Propozicije.OdvojenoTak2;
 
                 p.setIzvestaj(new UkupnoFinaleKupaIzvestaj(rezultati, 
-                    ActiveTakmicenje.Gimnastika, extended, kvalColumn));
+                    ActiveTakmicenje.Gimnastika, extended, kvalColumn, dataGridViewUserControl1.DataGridView));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)

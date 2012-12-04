@@ -5,6 +5,7 @@ using Bilten.Exceptions;
 using System.Collections.Generic;
 using Bilten.Data;
 using System.Drawing.Printing;
+using System.Windows.Forms;
 
 namespace Bilten.Report
 {
@@ -13,7 +14,7 @@ namespace Bilten.Report
         private UkupnoFinaleKupaLista lista;
 
         public UkupnoFinaleKupaIzvestaj(IList<RezultatUkupnoFinaleKupa> rezultati, Gimnastika gim,
-            bool extended, bool kvalColumn)
+            bool extended, bool kvalColumn, DataGridView formGrid)
 		{
             extended = false; // TODO3: Ispravi ovo.
 
@@ -27,7 +28,7 @@ namespace Bilten.Report
                 Margins = new Margins(75, 75, 75, 75);
 
             lista = new UkupnoFinaleKupaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, kvalColumn);
+                gim, extended, kvalColumn, formGrid);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -45,13 +46,6 @@ namespace Bilten.Report
 
 	public class UkupnoFinaleKupaLista : ReportLista
 	{
-        private float rankWidthCm = 1f;
-        private float imeWidthCm = 3.1f;
-        private float klubWidthCm = 3.5f;
-        private float koloWidthCm = 0.5f;
-        private float spravaWidthCm = 3.1f;
-        private float totalWidthCm = 1.5f;
-        private float kvalWidthCm = 0.5f;
         private Brush totalBrush;
         private Brush totalAllBrush;
 
@@ -60,10 +54,9 @@ namespace Bilten.Report
         private Gimnastika gimnastika;
 
         public UkupnoFinaleKupaLista(Izvestaj izvestaj, int pageNum, float y,
-            Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoFinaleKupa> rezultati, 
-            Gimnastika gim, bool extended, bool kvalColumn)
-            : base(izvestaj, pageNum, y, itemFont,
-            itemsHeaderFont, null)
+            Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoFinaleKupa> rezultati,
+            Gimnastika gim, bool extended, bool kvalColumn, DataGridView formGrid)
+            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.extended = extended;
             this.kvalColumn = kvalColumn;
@@ -154,19 +147,27 @@ namespace Bilten.Report
 
 		private void createColumns(Graphics g, RectangleF contentBounds)
 		{
-            if (!extended)
-            {
-                spravaWidthCm = 1.3f;
-                totalWidthCm = 1.3f;
-            }
+            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            float spravaWidth = Izvestaj.convCmToInch(spravaWidthCm);
+            float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+            float imeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            float koloWidth = rankWidth / 2;
+
+            float spravaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float totalWidth = spravaWidth;
+            if (extended)
+            {
+                spravaWidth = spravaWidth * 2.3f;
+            }
+            float kvalWidth = rankWidth / 2;
 
 			float xRank = contentBounds.X;
-            float xIme = xRank + Izvestaj.convCmToInch(rankWidthCm);
-            float xKlub = xIme + Izvestaj.convCmToInch(imeWidthCm);
-            float xKolo = xKlub + Izvestaj.convCmToInch(klubWidthCm);
-            float xParter = xKolo + Izvestaj.convCmToInch(koloWidthCm);
+            float xIme = xRank + rankWidth;
+            float xKlub = xIme + imeWidth;
+            float xKolo = xKlub + klubWidth;
+            float xParter = xKolo + koloWidth;
             float xKonj = xParter + spravaWidth;
             float xKarike = xKonj + spravaWidth;
             float xPreskok = xKarike + spravaWidth;
@@ -176,11 +177,11 @@ namespace Bilten.Report
             if (gimnastika == Gimnastika.ZSG)
                 xTotal = xRazboj;
 
-            float totalWidth = Izvestaj.convCmToInch(totalWidthCm);
             float xKval = xTotal + totalWidth;
-            
-            float kvalWidth = Izvestaj.convCmToInch(kvalWidthCm);
-            float xRightEnd = xKval + kvalWidth;
+
+            float xRightEnd = xKval;
+            if (kvalColumn)
+                xRightEnd += kvalWidth;
             
             float dWidth = (xKonj - xParter) / 3;
 
@@ -197,45 +198,39 @@ namespace Bilten.Report
             float xVratiloE = xVratilo + dWidth;
             float xVratiloTot = xVratiloE + dWidth;
 
-            if (xRightEnd < contentBounds.Right)
-            {
-                float delta = (contentBounds.Right - xRightEnd) / 2;
-                xRank += delta;
-                xIme += delta;
-                xKlub += delta;
-                xKolo += delta;
-                xParter += delta;
-                xKonj += delta;
-                xKarike += delta;
-                xPreskok += delta;
-                xRazboj += delta;
-                xVratilo += delta;
-                xTotal += delta;
-                xKval += delta;
-                xRightEnd += delta;
+            float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
+            if (delta < -contentBounds.X)
+                delta = -contentBounds.X;
+            xRank += delta;
+            xIme += delta;
+            xKlub += delta;
+            xKolo += delta;
+            xParter += delta;
+            xKonj += delta;
+            xKarike += delta;
+            xPreskok += delta;
+            xRazboj += delta;
+            xVratilo += delta;
+            xTotal += delta;
+            xKval += delta;
+            xRightEnd += delta;
 
-                xParterE += delta;
-                xKonjE += delta;
-                xKarikeE += delta;
-                xPreskokE += delta;
-                xRazbojE += delta;
-                xVratiloE += delta;
+            xParterE += delta;
+            xKonjE += delta;
+            xKarikeE += delta;
+            xPreskokE += delta;
+            xRazbojE += delta;
+            xVratiloE += delta;
 
-                xParterTot += delta;
-                xKonjTot += delta;
-                xKarikeTot += delta;
-                xPreskokTot += delta;
-                xRazbojTot += delta;
-                xVratiloTot += delta;
-            }
+            xParterTot += delta;
+            xKonjTot += delta;
+            xKarikeTot += delta;
+            xPreskokTot += delta;
+            xRazbojTot += delta;
+            xVratiloTot += delta;
 
             // TODO3: Za klubove ucesnike definise novo svojstvo koje ce sluziti samo za stampanje. Dodaj form gde ce
             // to moci da se podesava.
-
-            float rankWidth = xIme - xRank;
-			float imeWidth = xKlub - xIme;
-			float klubWidth = xKolo - xKlub;
-            float koloWidth = xParter - xKolo;
 
             float spravaDWidth = dWidth;
             float spravaEWidth = dWidth;
