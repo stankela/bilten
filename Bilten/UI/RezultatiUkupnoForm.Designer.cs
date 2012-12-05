@@ -32,11 +32,14 @@ namespace Bilten.UI
             this.cmbTakmicenje = new System.Windows.Forms.ComboBox();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.qToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.niQNiRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnQ = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnR = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPrazno = new System.Windows.Forms.ToolStripMenuItem();
+            this.prikaziKlubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.prikaziDrzavuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
+            this.mnPromeniPoredakZaIsteOcene = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,6 +72,50 @@ namespace Bilten.UI
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.prikaziKlubToolStripMenuItem,
+            this.prikaziDrzavuToolStripMenuItem,
+            this.mnQ,
+            this.mnR,
+            this.mnPrazno,
+            this.mnPromeniPoredakZaIsteOcene});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(232, 136);
+            // 
+            // mnQ
+            // 
+            this.mnQ.Name = "mnQ";
+            this.mnQ.Size = new System.Drawing.Size(231, 22);
+            this.mnQ.Text = "Q";
+            // 
+            // mnR
+            // 
+            this.mnR.Name = "mnR";
+            this.mnR.Size = new System.Drawing.Size(231, 22);
+            this.mnR.Text = "R";
+            // 
+            // mnPrazno
+            // 
+            this.mnPrazno.Name = "mnPrazno";
+            this.mnPrazno.Size = new System.Drawing.Size(231, 22);
+            this.mnPrazno.Text = "Prazno";
+            // 
+            // prikaziKlubToolStripMenuItem
+            // 
+            this.prikaziKlubToolStripMenuItem.Name = "prikaziKlubToolStripMenuItem";
+            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.prikaziKlubToolStripMenuItem.Text = "Prikazi klub";
+            this.prikaziKlubToolStripMenuItem.Click += new System.EventHandler(this.prikaziKlubToolStripMenuItem_Click);
+            // 
+            // prikaziDrzavuToolStripMenuItem
+            // 
+            this.prikaziDrzavuToolStripMenuItem.Name = "prikaziDrzavuToolStripMenuItem";
+            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.prikaziDrzavuToolStripMenuItem.Text = "Prikazi drzavu";
+            this.prikaziDrzavuToolStripMenuItem.Click += new System.EventHandler(this.prikaziDrzavuToolStripMenuItem_Click);
+            // 
             // dataGridViewUserControl1
             // 
             this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -80,32 +127,11 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.Size = new System.Drawing.Size(688, 287);
             this.dataGridViewUserControl1.TabIndex = 0;
             // 
-            // contextMenuStrip1
+            // mnPromeniPoredakZaIsteOcene
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.qToolStripMenuItem,
-            this.rToolStripMenuItem,
-            this.niQNiRToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
-            // 
-            // qToolStripMenuItem
-            // 
-            this.qToolStripMenuItem.Name = "qToolStripMenuItem";
-            this.qToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.qToolStripMenuItem.Text = "Q";
-            // 
-            // rToolStripMenuItem
-            // 
-            this.rToolStripMenuItem.Name = "rToolStripMenuItem";
-            this.rToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.rToolStripMenuItem.Text = "R";
-            // 
-            // niQNiRToolStripMenuItem
-            // 
-            this.niQNiRToolStripMenuItem.Name = "niQNiRToolStripMenuItem";
-            this.niQNiRToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.niQNiRToolStripMenuItem.Text = "Prazno";
+            this.mnPromeniPoredakZaIsteOcene.Name = "mnPromeniPoredakZaIsteOcene";
+            this.mnPromeniPoredakZaIsteOcene.Size = new System.Drawing.Size(231, 22);
+            this.mnPromeniPoredakZaIsteOcene.Text = "Promeni poredak za iste ocene";
             // 
             // RezultatiUkupnoForm
             // 
@@ -132,8 +158,11 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem qToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem rToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem niQNiRToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnQ;
+        private System.Windows.Forms.ToolStripMenuItem mnR;
+        private System.Windows.Forms.ToolStripMenuItem mnPrazno;
+        private System.Windows.Forms.ToolStripMenuItem prikaziKlubToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem prikaziDrzavuToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnPromeniPoredakZaIsteOcene;
     }
 }

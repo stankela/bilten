@@ -59,7 +59,7 @@ namespace Bilten.UI
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (e.RowIndex >= 0)
+                if (e.RowIndex >= 0 && !dataGridViewUserControl1.DataGridView.Rows[e.RowIndex].Selected)
                 {
                     // selektuj vrstu
                     clearSelection();

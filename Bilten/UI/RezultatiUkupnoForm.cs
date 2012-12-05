@@ -23,6 +23,8 @@ namespace Bilten.UI
 
         List<RezultatUkupnoExtended>[] rezultatiExtended;
 
+        private List<RezultatUkupno> istiRezultati = new List<RezultatUkupno>();
+
         private RezultatskoTakmicenje ActiveTakmicenje
         {
             get { return cmbTakmicenje.SelectedItem as RezultatskoTakmicenje; }
@@ -171,10 +173,48 @@ namespace Bilten.UI
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "Naziv";
 
+            dataGridViewUserControl1.DataGridView.CellMouseDown += new DataGridViewCellMouseEventHandler(DataGridView_CellMouseDown);
+            dataGridViewUserControl1.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
 
             this.ClientSize = new Size(ClientSize.Width, 450);
+        }
+
+        void DataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e.RowIndex >= 0 && !dataGridViewUserControl1.DataGridView.Rows[e.RowIndex].Selected)
+                {
+                    // selektuj vrstu
+                    dataGridViewUserControl1.clearSelection();
+                    dataGridViewUserControl1.DataGridView.Rows[e.RowIndex].Selected = true;
+                }
+            }
+        }
+
+        void DataGridView_MouseUp(object sender, MouseEventArgs e)
+        {
+            DataGridView grid = dataGridViewUserControl1.DataGridView;
+            int x = e.X;
+            int y = e.Y;
+            if (e.Button == MouseButtons.Right && grid.HitTest(x, y).Type == DataGridViewHitTestType.Cell)
+            {
+                mnQ.Enabled = /*mnQ.Visible =*/ kvalColumnVisible();
+                mnR.Enabled = /*mnR.Visible =*/ kvalColumnVisible();
+                mnPrazno.Enabled = /*mnPrazno.Visible =*/ kvalColumnVisible();
+                findIstiRezultati();
+                mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
+                contextMenuStrip1.Show(grid, new Point(x, y));
+            }
+        }
+
+        private bool kvalColumnVisible()
+        {
+            return deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                && ActiveTakmicenje.Propozicije.PostojiTak2
+                && ActiveTakmicenje.Propozicije.OdvojenoTak2;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -213,9 +253,7 @@ namespace Bilten.UI
 
         private void onSelectedTakmicenjeChanged()
         {
-            bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak2
-                && ActiveTakmicenje.Propozicije.OdvojenoTak2;
+            bool kvalColumn = kvalColumnVisible();
             if (takmicenje.FinaleKupa)
                 kvalColumn = false;
             GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
@@ -323,12 +361,8 @@ namespace Bilten.UI
                 rezultati.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc,
                     ListSortDirection.Ascending));
 
-                bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak2
-                && ActiveTakmicenje.Propozicije.OdvojenoTak2;
-
-                p.setIzvestaj(new UkupnoIzvestaj(rezultati, 
-                    ActiveTakmicenje.Gimnastika, extended, kvalColumn, dataGridViewUserControl1.DataGridView));
+                p.setIzvestaj(new UkupnoIzvestaj(rezultati,
+                    ActiveTakmicenje.Gimnastika, extended, kvalColumnVisible(), dataGridViewUserControl1.DataGridView));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -408,6 +442,81 @@ namespace Bilten.UI
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void prikaziKlubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(true);
+        }
+
+        private void prikaziDrzavuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(false);
+        }
+
+        private void promeniKlubDrzava(bool prikaziKlub)
+        {
+            List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
+            foreach (RezultatUkupno r in dataGridViewUserControl1.getSelectedItems<RezultatUkupno>())
+                gimnasticari.Add(r.Gimnasticar);
+            if (gimnasticari.Count == 0)
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                foreach (GimnasticarUcesnik g in gimnasticari)
+                {
+                    g.NastupaZaDrzavu = !prikaziKlub;
+                    dataContext.Save(g);
+                }
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            dataGridViewUserControl1.refreshItems();
+        }
+
+        private void findIstiRezultati()
+        {
+            istiRezultati.Clear();
+            RezultatUkupno rez = dataGridViewUserControl1.getSelectedItem<RezultatUkupno>();
+            if (rez == null)
+                return;
+            if (rez.Total == null)
+                return;
+
+            List<RezultatUkupno> rezultati = getRezultatiSorted(ActiveTakmicenje, "RedBroj");
+            foreach (RezultatUkupno r in rezultati)
+            {
+                if (r.Total == rez.Total)
+                    istiRezultati.Add(r);
+            }
+        }
+
+        private List<RezultatUkupno> getRezultatiSorted(RezultatskoTakmicenje rezTakmicenje,
+            string sortColumn)
+        {
+            List<RezultatUkupno> result = new List<RezultatUkupno>(getRezultati(rezTakmicenje));
+            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatUkupno))[sortColumn];
+            result.Sort(new SortComparer<RezultatUkupno>(propDesc, ListSortDirection.Ascending));
+            return result;
         }
 
     }

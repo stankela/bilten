@@ -325,10 +325,10 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.lblSrednjeIme, 0);
             this.Controls.SetChildIndex(this.txtSrednjeIme, 0);
             this.Controls.SetChildIndex(this.btnPromeni, 0);
-            this.Controls.SetChildIndex(this.btnOk, 0);
             this.Controls.SetChildIndex(this.btnAddKlub, 0);
-            this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.btnAddKategorija, 0);
+            this.Controls.SetChildIndex(this.btnOk, 0);
+            this.Controls.SetChildIndex(this.btnCancel, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 

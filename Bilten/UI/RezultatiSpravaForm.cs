@@ -756,7 +756,6 @@ namespace Bilten.UI
                         istiRezultati.Add(r);
                 }
             }
-
         }
 
         private void mnQ_Click(object sender, EventArgs e)
@@ -1054,6 +1053,63 @@ namespace Bilten.UI
                     dataContext.Dispose();
                 dataContext = null;
             }
+        }
+
+        private void prikaziKlubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(true);
+        }
+
+        private void prikaziDrzavuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(false);
+        }
+
+        private void promeniKlubDrzava(bool prikaziKlub)
+        {
+            List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
+            if (ActiveSprava != Sprava.Preskok)
+            {
+                foreach (RezultatSprava r in spravaGridUserControl1.DataGridViewUserControl.getSelectedItems<RezultatSprava>())
+                    gimnasticari.Add(r.Gimnasticar);
+            }
+            else
+            {
+                foreach (RezultatPreskok r in spravaGridUserControl1.DataGridViewUserControl.getSelectedItems<RezultatPreskok>())
+                    gimnasticari.Add(r.Gimnasticar);
+            }
+            if (gimnasticari.Count == 0)
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                foreach (GimnasticarUcesnik g in gimnasticari)
+                {
+                    g.NastupaZaDrzavu = !prikaziKlub;
+                    dataContext.Save(g);
+                }
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            spravaGridUserControl1.DataGridViewUserControl.refreshItems();
         }
 
     }
