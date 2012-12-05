@@ -298,7 +298,7 @@ namespace Bilten.Report
             String skokTitle = ""; // TODO3: Neka bude uspravno.
             String totalTitle = "Total";
 
-            columns.Clear();
+            Columns.Clear();
 
             addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
@@ -383,7 +383,7 @@ namespace Bilten.Report
 
         protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
         {
-            foreach (ReportColumn col in columns)
+            foreach (ReportColumn col in Columns)
             {
                 RectangleF columnHeaderRect = new RectangleF(
                     col.X, groupHeaderRect.Y, col.Width, groupHeaderRect.Height);
@@ -440,7 +440,7 @@ namespace Bilten.Report
             result.ItemRectFormat = itemRectFormat;
             result.HeaderFormat = headerFormat;
             result.DrawPartItemRect = drawPartItemRect;
-            columns.Add(result);
+            Columns.Add(result);
             return result;
         }
 

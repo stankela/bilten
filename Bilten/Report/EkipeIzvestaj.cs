@@ -236,7 +236,7 @@ namespace Bilten.Report
             totalTitle = "Total";
             String kvalTitle = String.Empty;
 
-            columns.Clear();
+            Columns.Clear();
 
             addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
@@ -289,8 +289,8 @@ namespace Bilten.Report
             
             g.DrawString(text, nazivEkipeFont, blackBrush, nazivEkipeRectangle,
                 nazivEkipeFormat);
-            
-            foreach (ReportColumn col in columns)
+
+            foreach (ReportColumn col in Columns)
             {
                 RectangleF columnHeaderRect = new RectangleF(
                     col.X, groupHeaderRect.Y + headerHeight, col.Width, headerHeight);
@@ -313,8 +313,8 @@ namespace Bilten.Report
         {
             ReportGrupa gr = groups[groupId];
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
-            
-            foreach (ReportColumn col in columns)
+
+            foreach (ReportColumn col in Columns)
             {
                 RectangleF columnFooterRect = new RectangleF(
                     col.X, groupFooterRect.Y, col.Width, groupFooterRect.Height);

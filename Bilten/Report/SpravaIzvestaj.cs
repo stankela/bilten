@@ -327,7 +327,7 @@ namespace Bilten.Report
             String totalTitle = "Total";
             String kvalTitle = String.Empty;
 
-            columns.Clear();
+            Columns.Clear();
 
             addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
@@ -409,13 +409,13 @@ namespace Bilten.Report
             result.Format = format;
             result.ItemRectFormat = itemRectFormat;
             result.HeaderFormat = headerFormat;
-            columns.Add(result);
+            Columns.Add(result);
             return result;
         }
 
         protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
         {
-            foreach (ReportColumn col in columns)
+            foreach (ReportColumn col in Columns)
             {
                 RectangleF columnHeaderRect = new RectangleF(
                     col.X, groupHeaderRect.Y, col.Width, groupHeaderRect.Height);

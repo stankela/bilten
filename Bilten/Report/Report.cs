@@ -261,7 +261,12 @@ namespace Bilten.Report
 
 	public abstract class ReportLista
 	{
-        protected List<ReportColumn> columns = new List<ReportColumn>();
+        private List<ReportColumn> columns = new List<ReportColumn>();
+        public List<ReportColumn> Columns
+        {
+            get { return columns; }
+        }
+
 		protected Izvestaj izvestaj;
 
         protected DataGridView formGrid;

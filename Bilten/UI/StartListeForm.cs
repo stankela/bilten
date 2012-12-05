@@ -912,6 +912,10 @@ namespace Bilten.UI
                 form.Header3Text = nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
                 form.FooterText = mestoDatum;
+                if (takmicenje.Gimnastika == Gimnastika.ZSG)
+                    form.BrojSpravaPoStrani = 4;
+                else
+                    form.BrojSpravaPoStrani = 6;
             }
             else
             {
@@ -955,12 +959,14 @@ namespace Bilten.UI
                         startListe.Add(ActiveRaspored.getStartLista(s, ActiveGrupa, ActiveRotacija));
                     }
                     p.setIzvestaj(new StartListaIzvestaj(startListe, takmicenje.Gimnastika, documentName,
-                        form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi));
+                        form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
+                        getActiveSpravaGridGroupUserControl()));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
-                    p.setIzvestaj(new StartListaIzvestaj(startLista, documentName, form.StampajRedniBrojNaStartListi));
+                    p.setIzvestaj(new StartListaIzvestaj(startLista, documentName, form.StampajRedniBrojNaStartListi,
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
                 }
 
                 p.ShowDialog();
