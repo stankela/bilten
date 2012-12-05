@@ -9,6 +9,7 @@ using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
 using Bilten.Data;
+using System.Collections.Specialized;
 
 namespace Bilten.UI
 {
@@ -22,6 +23,13 @@ namespace Bilten.UI
         private string oldSrednjeIme;
         private RegistarskiBroj oldRegBroj;
         private readonly string PRAZNO_ITEM = "<<Prazno>>";
+        private List<Gimnasticar> gimnasticari;
+
+        private Gimnasticar gimnasticarToEdit;
+        public Gimnasticar GimnasticarToEdit
+        {
+            get { return gimnasticarToEdit; }
+        }
 
         public GimnasticarForm(Nullable<int> gimnasticarId)
         {
@@ -43,6 +51,10 @@ namespace Bilten.UI
             q = new Query();
             q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
             drzave = new List<Drzava>(dataContext.GetByCriteria<Drzava>(q));
+
+            q = new Query();
+            q.OrderClauses.Add(new OrderClause("Prezime", OrderClause.OrderClauseCriteria.Ascending));
+            gimnasticari = new List<Gimnasticar>(dataContext.GetByCriteria<Gimnasticar>(q));
         }
 
         private List<KategorijaGimnasticara> loadKategorije(Gimnastika gimnastika)
@@ -61,7 +73,11 @@ namespace Bilten.UI
 
             txtIme.Text = String.Empty;
             txtSrednjeIme.Text = String.Empty;
+
             txtPrezime.Text = String.Empty;
+            txtPrezime.AutoCompleteMode = AutoCompleteMode.Suggest;
+            txtPrezime.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
             txtDatRodj.Text = String.Empty;
             txtRegBroj.Text = String.Empty;
             txtDatumPoslReg.Text = String.Empty;
@@ -87,6 +103,8 @@ namespace Bilten.UI
             SelectedDrzava = getSrbija();
             cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
+
+            btnPromeni.Enabled = !editMode;
         }
 
         private Drzava getSrbija()
@@ -595,6 +613,84 @@ namespace Bilten.UI
             {
                 txtIme.Focus();
             }
+        }
+
+        private void txtPrezime_Enter(object sender, EventArgs e)
+        {
+            AutoCompleteStringCollection col = new AutoCompleteStringCollection();
+            
+            string ime = txtIme.Text.Trim();
+            foreach (Gimnasticar g in gimnasticari)
+            {
+                if (g.Ime.ToUpper() == ime.ToUpper())
+                {
+                    if (g.SrednjeIme == null || g.SrednjeIme == string.Empty)
+                        col.Add(g.Prezime);
+                    else
+                        col.Add(g.Prezime + "   (" + g.ImeSrednjeImePrezime + ")");
+                }
+            }
+
+            txtPrezime.AutoCompleteCustomSource = col;
+        }
+
+        private void txtPrezime_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter)
+                return;
+
+            if (txtPrezime.Text.IndexOf('(') != -1 && txtPrezime.Text.IndexOf(')') != -1)
+            {
+                string prezime = txtPrezime.Text.Substring(0, txtPrezime.Text.IndexOf('(')).Trim();
+                string imeSrednjeImePrezime = txtPrezime.Text.Substring(txtPrezime.Text.IndexOf('(')).Trim();
+
+                // Ukloni zagrade
+                imeSrednjeImePrezime = imeSrednjeImePrezime.Substring(1, imeSrednjeImePrezime.Length - 2).Trim();
+
+                txtPrezime.Text = prezime.Trim();
+                Gimnasticar g = findGimnasticar(imeSrednjeImePrezime.Trim());
+                if (g != null)
+                    txtSrednjeIme.Text = g.SrednjeIme;
+                else
+                    txtSrednjeIme.Text = string.Empty;
+            }
+            else
+                txtSrednjeIme.Text = String.Empty;
+        }
+
+        private Gimnasticar findGimnasticar(string imeSrednjeImePrezime)
+        {
+            foreach (Gimnasticar g in gimnasticari)
+            {
+                if (g.ImeSrednjeImePrezime.ToUpper() == imeSrednjeImePrezime.ToUpper())
+                    return g;
+            }
+            return null;
+        }
+
+        private void btnPromeni_Click(object sender, EventArgs e)
+        {
+            Gimnasticar g = findGimnasticar(txtIme.Text.Trim(), txtPrezime.Text.Trim(), txtSrednjeIme.Text.Trim());
+            if (g == null)
+            {
+                MessageDialogs.showMessage("Gimnasticar sa datim imenom i prezimenom ne postoji u bazi.", this.Text);
+                return;
+            }
+            gimnasticarToEdit = g;
+            closedByOK = true;
+            DialogResult = DialogResult.OK;
+        }
+
+        private Gimnasticar findGimnasticar(string ime, string prezime, string srednjeIme)
+        {
+            foreach (Gimnasticar g in gimnasticari)
+            {
+                string srednjeImeGim = g.SrednjeIme == null ? String.Empty : g.SrednjeIme.ToUpper();
+                if (g.Ime.ToUpper() == ime.Trim().ToUpper() && g.Prezime.ToUpper() == prezime.Trim().ToUpper()
+                        && srednjeImeGim == srednjeIme.Trim().ToUpper())
+                    return g;
+            }
+            return null;
         }
 
     }

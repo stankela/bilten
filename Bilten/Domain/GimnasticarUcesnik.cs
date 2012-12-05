@@ -147,7 +147,7 @@ namespace Bilten.Domain
                 if (NastupaZaDrzavu)
                 {
                     if (DrzavaUcesnik != null)
-                        return DrzavaUcesnik.Naziv;
+                        return DrzavaUcesnik.Kod;
                     else if (KlubUcesnik != null)
                         return KlubUcesnik.Naziv;
                     else
@@ -158,7 +158,7 @@ namespace Bilten.Domain
                     if (KlubUcesnik != null)
                         return KlubUcesnik.Naziv;
                     else if (DrzavaUcesnik != null)
-                        return DrzavaUcesnik.Naziv;
+                        return DrzavaUcesnik.Kod;
                     else
                         return String.Empty;
                 }

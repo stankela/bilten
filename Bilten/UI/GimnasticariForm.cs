@@ -258,5 +258,34 @@ namespace Bilten.UI
             }
             return dataContext.GetByCriteria<Gimnasticar>(q);
         }
+
+        protected override void AddNew()
+        {
+            try
+            {
+                GimnasticarForm form = (GimnasticarForm)createEntityDetailForm(null);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    if (form.GimnasticarToEdit == null)
+                    {
+                        Gimnasticar newEntity = (Gimnasticar)form.Entity;
+                        List<Gimnasticar> items = dataGridViewUserControl1.getItems<Gimnasticar>();
+                        items.Add(newEntity);
+                        dataGridViewUserControl1.setItems<Gimnasticar>(items);
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(newEntity);
+                    }
+                    else
+                    {
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(form.GimnasticarToEdit);
+                        Edit();
+                    }
+                }
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+        }
+
     }
 }

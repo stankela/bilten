@@ -19,7 +19,7 @@ namespace Bilten.UI
         protected bool initializing;
         protected IDataContext dataContext;
         private bool persistEntity;
-        private bool closedByOK;
+        protected bool closedByOK;
         private bool closedByCancel;
         protected bool showWaitCursor;
 
