@@ -35,6 +35,7 @@ namespace Bilten.UI
             this.btnNewGroup = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
             this.lblGrupa = new System.Windows.Forms.Label();
             this.lblRotacija = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
@@ -51,7 +52,8 @@ namespace Bilten.UI
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnOstaleRotacije = new System.Windows.Forms.Button();
             this.btnPrintUnosOcena = new System.Windows.Forms.Button();
-            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
+            this.mnPrikaziKlub = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -121,6 +123,13 @@ namespace Bilten.UI
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             // 
+            // spravaGridGroupUserControl1
+            // 
+            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(3, 6);
+            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
+            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(444, 206);
+            this.spravaGridGroupUserControl1.TabIndex = 0;
+            // 
             // lblGrupa
             // 
             this.lblGrupa.AutoSize = true;
@@ -187,9 +196,11 @@ namespace Bilten.UI
             this.mnRezultatiViseboj,
             this.mnRezultatiSprave,
             this.mnRezultatiEkipno,
-            this.mnOcene});
+            this.mnOcene,
+            this.mnPrikaziKlub,
+            this.mnPrikaziDrzavu});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 136);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 202);
             // 
             // mnUnesiOcenu
             // 
@@ -263,12 +274,19 @@ namespace Bilten.UI
             this.btnPrintUnosOcena.UseVisualStyleBackColor = true;
             this.btnPrintUnosOcena.Click += new System.EventHandler(this.btnPrintUnosOcena_Click);
             // 
-            // spravaGridGroupUserControl1
+            // mnPrikaziKlub
             // 
-            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(3, 6);
-            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
-            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(444, 206);
-            this.spravaGridGroupUserControl1.TabIndex = 0;
+            this.mnPrikaziKlub.Name = "mnPrikaziKlub";
+            this.mnPrikaziKlub.Size = new System.Drawing.Size(171, 22);
+            this.mnPrikaziKlub.Text = "Prikazi klub";
+            this.mnPrikaziKlub.Click += new System.EventHandler(this.mnPrikaziKlub_Click);
+            // 
+            // mnPrikaziDrzavu
+            // 
+            this.mnPrikaziDrzavu.Name = "mnPrikaziDrzavu";
+            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(171, 22);
+            this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
+            this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
             // 
             // StartListeForm
             // 
@@ -327,5 +345,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnOcene;
         private System.Windows.Forms.ToolStripMenuItem mnPromeniStartListu;
         private System.Windows.Forms.Button btnPrintUnosOcena;
+        private System.Windows.Forms.ToolStripMenuItem mnPrikaziKlub;
+        private System.Windows.Forms.ToolStripMenuItem mnPrikaziDrzavu;
     }
 }

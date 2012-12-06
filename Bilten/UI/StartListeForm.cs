@@ -183,10 +183,19 @@ namespace Bilten.UI
             {
                 clickedRow = grid.HitTest(x, y).RowIndex;
                 clickedColumn = grid.HitTest(x, y).ColumnIndex;
-                mnUnesiOcenu.Enabled = true;
+                int selCount = getActiveSpravaGridGroupUserControl()[clickedSprava]
+                    .DataGridViewUserControl.getSelectedItems<NastupNaSpravi>().Count;
+                mnUnesiOcenu.Enabled = selCount == 1;
+                mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = true;
+                mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = true;
+
             }
             else
+            {
                 mnUnesiOcenu.Enabled = false;
+                mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = false;
+                mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = false;
+            }
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -1717,6 +1726,59 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
+        }
+
+        private void mnPrikaziKlub_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(true);
+        }
+
+        private void mnPrikaziDrzavu_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(false);
+        }
+
+        private void promeniKlubDrzava(bool prikaziKlub)
+        {
+            DataGridViewUserControl dgw = getActiveSpravaGridGroupUserControl()[clickedSprava]
+                .DataGridViewUserControl;
+            List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
+            foreach (NastupNaSpravi n in dgw.getSelectedItems<NastupNaSpravi>())
+                gimnasticari.Add(n.Gimnasticar);
+            if (gimnasticari.Count == 0)
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                foreach (GimnasticarUcesnik g in gimnasticari)
+                {
+                    g.NastupaZaDrzavu = !prikaziKlub;
+                    dataContext.Save(g);
+                }
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            NastupNaSpravi n2 = dgw.getSelectedItem<NastupNaSpravi>();
+            dgw.refreshItems();
+            dgw.setSelectedItem<NastupNaSpravi>(n2);
         }
 
     }

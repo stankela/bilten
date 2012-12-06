@@ -45,6 +45,20 @@ namespace Bilten.UI
             
             dataGridView1.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView1_CellFormatting);
             dataGridView1.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(dataGridView1_ColumnHeaderMouseClick);
+            dataGridView1.CellMouseDown += new DataGridViewCellMouseEventHandler(dataGridView1_CellMouseDown);
+        }
+
+        void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e.RowIndex >= 0 && !DataGridView.Rows[e.RowIndex].Selected)
+                {
+                    // selektuj vrstu
+                    clearSelection();
+                    DataGridView.Rows[e.RowIndex].Selected = true;
+                }
+            }
         }
 
         void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

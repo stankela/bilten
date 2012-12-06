@@ -29,7 +29,7 @@ namespace Bilten.UI
         {
             InitializeComponent();
 
-            dataGridViewUserControl1.DataGridView.MultiSelect = false;
+            dataGridViewUserControl1.DataGridView.MultiSelect = true;
 
             dataGridViewUserControl1.DataGridView.CellMouseDown += new DataGridViewCellMouseEventHandler(DataGridView_CellMouseDown);
             dataGridViewUserControl1.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
@@ -57,15 +57,6 @@ namespace Bilten.UI
 
         void DataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                if (e.RowIndex >= 0 && !dataGridViewUserControl1.DataGridView.Rows[e.RowIndex].Selected)
-                {
-                    // selektuj vrstu
-                    clearSelection();
-                    dataGridViewUserControl1.DataGridView.Rows[e.RowIndex].Selected = true;
-                }
-            }
             OnSpravaGridMouseDown(new SpravaGridMouseDownEventArgs(sprava));
         }
 

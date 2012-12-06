@@ -247,6 +247,17 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2,
                 takmicenje);
+
+            dataGridViewUserControl2.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
+        }
+
+        void DataGridView_MouseUp(object sender, MouseEventArgs e)
+        {
+            DataGridView grid = dataGridViewUserControl2.DataGridView;
+            if (e.Button == MouseButtons.Right && grid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
+            {
+                contextMenuStrip1.Show(grid, new Point(e.X, e.Y));
+            }
         }
 
         void DataGridViewEkipe_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -449,6 +460,57 @@ namespace Bilten.UI
         private void btnZatvori_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void prikaziKlubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(true);
+        }
+
+        private void prikaziDrzavuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(false);
+        }
+
+        private void promeniKlubDrzava(bool prikaziKlub)
+        {
+            List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
+            foreach (RezultatUkupno r in dataGridViewUserControl2.getSelectedItems<RezultatUkupno>())
+                gimnasticari.Add(r.Gimnasticar);
+            if (gimnasticari.Count == 0)
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                foreach (GimnasticarUcesnik g in gimnasticari)
+                {
+                    g.NastupaZaDrzavu = !prikaziKlub;
+                    dataContext.Save(g);
+                }
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            RezultatUkupno rez = dataGridViewUserControl2.getSelectedItem<RezultatUkupno>();
+            dataGridViewUserControl2.refreshItems();
+            dataGridViewUserControl2.setSelectedItem<RezultatUkupno>(rez);
         }
 
     }

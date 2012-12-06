@@ -28,11 +28,16 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmbTakmicenje = new System.Windows.Forms.ComboBox();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnZatvori = new System.Windows.Forms.Button();
             this.dataGridViewUserControl2 = new Bilten.UI.DataGridViewUserControl();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.prikaziKlubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.prikaziDrzavuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbTakmicenje
@@ -85,6 +90,28 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.Size = new System.Drawing.Size(652, 138);
             this.dataGridViewUserControl1.TabIndex = 1;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.prikaziKlubToolStripMenuItem,
+            this.prikaziDrzavuToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
+            // 
+            // prikaziKlubToolStripMenuItem
+            // 
+            this.prikaziKlubToolStripMenuItem.Name = "prikaziKlubToolStripMenuItem";
+            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.prikaziKlubToolStripMenuItem.Text = "Prikazi klub";
+            this.prikaziKlubToolStripMenuItem.Click += new System.EventHandler(this.prikaziKlubToolStripMenuItem_Click);
+            // 
+            // prikaziDrzavuToolStripMenuItem
+            // 
+            this.prikaziDrzavuToolStripMenuItem.Name = "prikaziDrzavuToolStripMenuItem";
+            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.prikaziDrzavuToolStripMenuItem.Text = "Prikazi drzavu";
+            this.prikaziDrzavuToolStripMenuItem.Click += new System.EventHandler(this.prikaziDrzavuToolStripMenuItem_Click);
+            // 
             // RezultatiEkipeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -99,6 +126,7 @@ namespace Bilten.UI
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RezultatiEkipeForm";
             this.Shown += new System.EventHandler(this.RezultatiEkipeForm_Shown);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -110,5 +138,8 @@ namespace Bilten.UI
         private DataGridViewUserControl dataGridViewUserControl2;
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Button btnZatvori;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem prikaziKlubToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem prikaziDrzavuToolStripMenuItem;
     }
 }

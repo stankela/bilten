@@ -173,7 +173,6 @@ namespace Bilten.UI
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "Naziv";
 
-            dataGridViewUserControl1.DataGridView.CellMouseDown += new DataGridViewCellMouseEventHandler(DataGridView_CellMouseDown);
             dataGridViewUserControl1.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -181,32 +180,17 @@ namespace Bilten.UI
             this.ClientSize = new Size(ClientSize.Width, 450);
         }
 
-        void DataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                if (e.RowIndex >= 0 && !dataGridViewUserControl1.DataGridView.Rows[e.RowIndex].Selected)
-                {
-                    // selektuj vrstu
-                    dataGridViewUserControl1.clearSelection();
-                    dataGridViewUserControl1.DataGridView.Rows[e.RowIndex].Selected = true;
-                }
-            }
-        }
-
         void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
             DataGridView grid = dataGridViewUserControl1.DataGridView;
-            int x = e.X;
-            int y = e.Y;
-            if (e.Button == MouseButtons.Right && grid.HitTest(x, y).Type == DataGridViewHitTestType.Cell)
+            if (e.Button == MouseButtons.Right && grid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
             {
                 mnQ.Enabled = /*mnQ.Visible =*/ kvalColumnVisible();
                 mnR.Enabled = /*mnR.Visible =*/ kvalColumnVisible();
                 mnPrazno.Enabled = /*mnPrazno.Visible =*/ kvalColumnVisible();
                 findIstiRezultati();
                 mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
-                contextMenuStrip1.Show(grid, new Point(x, y));
+                contextMenuStrip1.Show(grid, new Point(e.X, e.Y));
             }
         }
 

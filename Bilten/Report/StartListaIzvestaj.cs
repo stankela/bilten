@@ -116,6 +116,7 @@ namespace Bilten.Report
         private bool stampajRedniBroj;
         bool sveSpraveNaJednojStrani;
         int columnNumber;
+        bool praznaLista;
 
         public StartListaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, bool stampajRedniBroj,
@@ -126,6 +127,7 @@ namespace Bilten.Report
             this.stampajRedniBroj = stampajRedniBroj;
             this.sveSpraveNaJednojStrani = sveSpraveNaJednojStrani;
             this.columnNumber = columnNumber;
+            this.praznaLista = startLista.Nastupi.Count == 0;
 
             fetchItems(startLista);
         }
@@ -147,6 +149,9 @@ namespace Bilten.Report
                 NastupNaSpravi nastup = startLista.Nastupi[i];
                 result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava });
             }
+            if (result.Count == 0)
+                // hack kojim se obezbedjuje da se stampaju hederi i za liste koje su prazne
+                result.Add(new object[] { "", "", "" });
             return result;
         }
 
@@ -186,6 +191,16 @@ namespace Bilten.Report
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            if (this.praznaLista)
+            {
+                // Kada je lista prazna, namerno biram male vrednosti da bih sprecio da velicina kolona prazne liste
+                // u Form-u utice na konacnu velicinu kolona. Npr. ako imam dve prazne i dve pune liste, i ako podesim dve
+                // pune liste tako da su kolone manje od kolona prazne liste, konacna velicina kolone ce ipak biti ona u 
+                // praznoj listi. Ovim se to sprecava.
+                rankWidth = Izvestaj.convCmToInch(rankWidthCm);
+                imeWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
+                klubWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
+            }
 
             doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth);
         }
