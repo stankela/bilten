@@ -264,16 +264,26 @@ namespace Bilten.UI
                 takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
             }
 
+            setItemsSortedByRedBroj();
+        }
+
+        private void setItemsSortedByRedBroj()
+        {
             dataGridViewUserControl1.setItems<RezultatUkupno>(getRezultati(ActiveTakmicenje));
             dataGridViewUserControl1.sort<RezultatUkupno>("RedBroj", ListSortDirection.Ascending);
         }
 
-        private IList<RezultatUkupno> getRezultati(RezultatskoTakmicenje rezTakmicenje)
+        private PoredakUkupno getPoredak(RezultatskoTakmicenje rezTakmicenje)
         {
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.PoredakUkupno.Rezultati;
+                return rezTakmicenje.Takmicenje1.PoredakUkupno;
             else
-                return rezTakmicenje.Takmicenje2.Poredak.Rezultati;
+                return rezTakmicenje.Takmicenje2.Poredak;
+        }
+
+        private IList<RezultatUkupno> getRezultati(RezultatskoTakmicenje rezTakmicenje)
+        {
+            return getPoredak(rezTakmicenje).Rezultati;
         }
 
         private void cmbTakmicenja_DropDownClosed(object sender, EventArgs e)
@@ -490,7 +500,9 @@ namespace Bilten.UI
                 dataContext = null;
             }
 
+            RezultatUkupno rez = dataGridViewUserControl1.getSelectedItem<RezultatUkupno>();
             dataGridViewUserControl1.refreshItems();
+            dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(rez);
         }
 
         private void findIstiRezultati()
@@ -517,6 +529,172 @@ namespace Bilten.UI
             PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatUkupno))[sortColumn];
             result.Sort(new SortComparer<RezultatUkupno>(propDesc, ListSortDirection.Ascending));
             return result;
+        }
+
+        private void mnQ_Click(object sender, EventArgs e)
+        {
+            promeniKvalStatus(KvalifikacioniStatus.Q);
+        }
+
+        private void mnR_Click(object sender, EventArgs e)
+        {
+            promeniKvalStatus(KvalifikacioniStatus.R);
+        }
+
+        private void mnPrazno_Click(object sender, EventArgs e)
+        {
+            promeniKvalStatus(KvalifikacioniStatus.None);
+        }
+
+        private void promeniKvalStatus(KvalifikacioniStatus kvalStatus)
+        {
+            RezultatUkupno rez = dataGridViewUserControl1.getSelectedItem<RezultatUkupno>();
+            if (rez == null || rez.KvalStatus == kvalStatus)
+                return;
+
+            string msg = String.Empty;
+            if (kvalStatus != KvalifikacioniStatus.None)
+            {
+                string msgFmt = "Da li zelite da oznacite sa \"{1}\" gimnasticara \"{0}\"?";
+                msg = String.Format(msgFmt, rez.Gimnasticar, kvalStatus);
+            }
+            else
+            {
+                string msgFmt = "Da li zelite da ponistite oznaku \"{1}\" za gimnasticara \"{0}\"?";
+                msg = String.Format(msgFmt, rez.Gimnasticar, rez.KvalStatus);
+            }
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                rez.KvalStatus = kvalStatus;
+                dataContext.Save(getPoredak(ActiveTakmicenje));
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            dataGridViewUserControl1.refreshItems();
+            dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(rez);
+        }
+
+        private void btnIzracunaj_Click(object sender, EventArgs e)
+        {
+            string msg;
+            if (kvalColumnVisible())
+                msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";
+            else
+                msg = "Da li zelite da izracunate poredak?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                Cursor.Current = Cursors.WaitCursor;
+                Cursor.Show();
+
+                IList<Ocena> ocene = loadOcene(takmicenje.Id, deoTakKod);
+                PoredakUkupno p = getPoredak(ActiveTakmicenje);
+                p.create(ActiveTakmicenje, ocene);
+                dataContext.Save(p);
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+
+            setItemsSortedByRedBroj();
+        }
+
+        private void mnPromeniPoredakZaIsteOcene_Click(object sender, EventArgs e)
+        {
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            for (int i = 0; i < istiRezultati.Count; ++i)
+            {
+                istiRezultati[i].Rank = (short)form.Poredak[i];
+            }
+
+            PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                TypeDescriptor.GetProperties(typeof(RezultatUkupno))["Rank"],
+                TypeDescriptor.GetProperties(typeof(RezultatUkupno))["PrezimeIme"]
+            };
+            ListSortDirection[] sortDir = new ListSortDirection[] {
+                ListSortDirection.Ascending,
+                ListSortDirection.Ascending
+            };
+
+            short redBroj = istiRezultati[0].RedBroj;
+            istiRezultati.Sort(new SortComparer<RezultatUkupno>(propDesc, sortDir));
+            foreach (RezultatUkupno r in istiRezultati)
+            {
+                r.RedBroj = redBroj++;
+            }
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                dataContext.Save(getPoredak(ActiveTakmicenje));
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            dataGridViewUserControl1.sort<RezultatUkupno>("RedBroj", ListSortDirection.Ascending);
+            //dataGridViewUserControl1.refreshItems();
+            dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(istiRezultati[0]);
         }
 
     }

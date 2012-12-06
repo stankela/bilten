@@ -12,6 +12,7 @@ namespace Bilten.UI
     public partial class RazresiIsteOceneForm : Form
     {
         List<RezultatSprava> istiRezultati;
+        List<RezultatUkupno> istiRezultatiUkupno;
         Takmicenje takmicenje;
         bool obaPreskoka;
 
@@ -39,13 +40,32 @@ namespace Bilten.UI
             }
         }
 
+        public RazresiIsteOceneForm(List<RezultatUkupno> istiRezultatiUkupno, Takmicenje takmicenje)
+        {
+            InitializeComponent();
+            this.istiRezultatiUkupno = istiRezultatiUkupno;
+            this.takmicenje = takmicenje;
+            initUI();
+            dataGridViewUserControl1.setItems<RezultatUkupno>(istiRezultatiUkupno);
+        }
+
         private void initUI()
         {
             Text = "Promeni poredak za iste ocene";
             if (obaPreskoka)
                 this.ClientSize = new Size(ClientSize.Width + 150, ClientSize.Height);
-            GridColumnsInitializer.initRezultatiSprava(
-               dataGridViewUserControl1, takmicenje, /*kvalColumnVisible*/false, obaPreskoka);
+            else if (istiRezultatiUkupno != null)
+                this.ClientSize = new Size(ClientSize.Width + 75, ClientSize.Height);
+            if (istiRezultatiUkupno != null)
+            {
+                GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1, takmicenje,
+                    /*kvalColumnVisible*/false);
+            }
+            else
+            {
+                GridColumnsInitializer.initRezultatiSprava(
+                   dataGridViewUserControl1, takmicenje, /*kvalColumnVisible*/false, obaPreskoka);
+            }
         }
 
         private List<int> parsePoredak()
@@ -77,19 +97,31 @@ namespace Bilten.UI
 
         private bool checkPoredak()
         {
+            List<Rezultat> rezultati = new List<Rezultat>();
+            if (istiRezultatiUkupno != null)
+            {
+                foreach (Rezultat r in istiRezultatiUkupno)
+                    rezultati.Add(r);
+            }
+            else
+            {
+                foreach (Rezultat r in istiRezultati)
+                    rezultati.Add(r);
+            }
+
             List<int> sortedPoredak = new List<int>(poredak);
             sortedPoredak.Sort();
 
             int rank;
             if (!obaPreskoka)
-                rank = istiRezultati[0].Rank.Value;
+                rank = rezultati[0].Rank.Value;
             else
-                rank = (istiRezultati[0] as RezultatPreskok).Rank2.Value;
+                rank = (rezultati[0] as RezultatPreskok).Rank2.Value;
             int prevPoredak = rank;
             int count = 0;
             foreach (int i in sortedPoredak)
             {
-                if (++count > istiRezultati.Count)
+                if (++count > rezultati.Count)
                     // Prvih istiRezultati.Count brojeva je u redu.
                     return true;
 
@@ -99,7 +131,7 @@ namespace Bilten.UI
                 prevPoredak = i;
                 ++rank;
             }
-            return count == istiRezultati.Count;
+            return count == rezultati.Count;
         }
     }
 }

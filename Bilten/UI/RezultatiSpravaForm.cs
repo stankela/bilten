@@ -786,7 +786,21 @@ namespace Bilten.UI
                 rez = spravaGridUserControl1.DataGridViewUserControl
                     .getSelectedItem<RezultatPreskok>();
             }
-            if (rez == null)
+            if (rez == null || rez.KvalStatus == kvalStatus)
+                return;
+
+            string msg = String.Empty;
+            if (kvalStatus != KvalifikacioniStatus.None)
+            {
+                string msgFmt = "Da li zelite da oznacite sa \"{1}\" gimnasticara \"{0}\"?";
+                msg = String.Format(msgFmt, rez.Gimnasticar, kvalStatus);
+            }
+            else
+            {
+                string msgFmt = "Da li zelite da ponistite oznaku \"{1}\" za gimnasticara \"{0}\"?";
+                msg = String.Format(msgFmt, rez.Gimnasticar, rez.KvalStatus);
+            }
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
             try
@@ -797,15 +811,9 @@ namespace Bilten.UI
 
                 rez.KvalStatus = kvalStatus;
                 if (ActiveSprava != Sprava.Preskok)
-                {
-                    // uvek koristim Takmicenje1 kada snimam poredak zato sto su Q, R i Prazno meniji omoguceni samo kada je
-                    // vidljiva kolona KvalStatus, a to je samo za takmicenje1
-                    dataContext.Save(ActiveTakmicenje.Takmicenje1.getPoredakSprava(ActiveSprava));
-                }
+                    dataContext.Save(getPoredakSprava(ActiveTakmicenje, ActiveSprava));
                 else
-                {
-                    dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakPreskok);
-                }
+                    dataContext.Save(getPoredakPreskok(ActiveTakmicenje));
                 dataContext.Commit();
             }
             catch (Exception ex)
@@ -967,7 +975,11 @@ namespace Bilten.UI
 
         private void btnIzracunaj_Click(object sender, EventArgs e)
         {
-            string msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";
+            string msg;
+            if (kvalColumnVisible())
+                msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";
+            else
+                msg = "Da li zelite da izracunate poredak?";
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
@@ -995,23 +1007,13 @@ namespace Bilten.UI
                 }
                 dataContext.Commit();
             }
-            catch (BusinessException ex)
-            {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showMessage(ex.Message, this.Text);
-            }
-            catch (InfrastructureException ex)
-            {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-            }
             catch (Exception ex)
             {
                 if (dataContext != null && dataContext.IsInTransaction)
                     dataContext.Rollback();
                 MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
             }
             finally
             {
@@ -1109,7 +1111,16 @@ namespace Bilten.UI
                 dataContext = null;
             }
 
+            RezultatSprava rez;
+            if (ActiveSprava != Sprava.Preskok)
+                rez = spravaGridUserControl1.DataGridViewUserControl.getSelectedItem<RezultatSprava>();
+            else
+                rez = spravaGridUserControl1.DataGridViewUserControl.getSelectedItem<RezultatPreskok>();
             spravaGridUserControl1.DataGridViewUserControl.refreshItems();
+            if (ActiveSprava != Sprava.Preskok)
+                spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatSprava>(rez);
+            else
+                spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatPreskok>(rez as RezultatPreskok);
         }
 
     }
