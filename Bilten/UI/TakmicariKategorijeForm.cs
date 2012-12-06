@@ -19,6 +19,7 @@ namespace Bilten.UI
         private IDataContext dataContext;
         private List<GimnasticarUcesnik>[] gimnasticari;
         private bool[] tabOpened;
+        private StatusBar statusBar;
 
         private TakmicarskaKategorija ActiveKategorija
         {
@@ -93,6 +94,13 @@ namespace Bilten.UI
         {
             Text = "Takmicari - kategorije";
             this.ClientSize = new Size(ClientSize.Width, 550);
+
+            statusBar = new StatusBar();
+            statusBar.Parent = this;
+            statusBar.ShowPanels = true;
+            StatusBarPanel sbPanel1 = new StatusBarPanel();
+            statusBar.Panels.Add(sbPanel1);
+
             initTabs();
         }
 
@@ -178,13 +186,26 @@ namespace Bilten.UI
         private void onSelectedIndexChanged()
         {
             if (tabOpened[tabControl1.SelectedIndex])
+            {
+                updateGimnasticariCount();
                 return;
+            }
 
             tabOpened[tabControl1.SelectedIndex] = true;
             setGimnasticari(gimnasticari[tabControl1.SelectedIndex]);
             getActiveDataGridViewUserControl().sort<GimnasticarUcesnik>(
                 new string[] { "Prezime", "Ime" },
                 new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+            updateGimnasticariCount();
+        }
+
+        private void updateGimnasticariCount()
+        {
+            int count = getActiveDataGridViewUserControl().getItems<GimnasticarUcesnik>().Count;
+            if (count == 1)
+                statusBar.Panels[0].Text = count.ToString() + " gimnasticar";
+            else
+                statusBar.Panels[0].Text = count.ToString() + " gimnasticara";
         }
 
         private List<GimnasticarUcesnik> loadGimnasticari(TakmicarskaKategorija kategorija)
@@ -351,6 +372,7 @@ namespace Bilten.UI
 
                 getActiveDataGridViewUserControl().setSelectedItem<GimnasticarUcesnik>
                     (okGimnasticari[okGimnasticari.Count - 1]);
+                updateGimnasticariCount();
             }
 
             if (illegalGimnasticari.Count > 0)
@@ -574,6 +596,7 @@ namespace Bilten.UI
             setGimnasticari(activeGimnasticari);
             if (!getActiveDataGridViewUserControl().isSorted())
                 getActiveDataGridViewUserControl().refreshItems();
+            updateGimnasticariCount();
         }
 
         private bool deleteGimnasticar(GimnasticarUcesnik g)

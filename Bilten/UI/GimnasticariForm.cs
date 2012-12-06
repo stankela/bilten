@@ -14,9 +14,18 @@ namespace Bilten.UI
 {
     public partial class GimnasticariForm : SingleEntityListForm<Gimnasticar>
     {
+        private StatusBar statusBar;
+        
         public GimnasticariForm()
         {
             this.Text = "Gimnasticari";
+            
+            statusBar = new StatusBar();
+            statusBar.Parent = this;
+            statusBar.ShowPanels = true;
+            StatusBarPanel sbPanel1 = new StatusBarPanel();
+            statusBar.Panels.Add(sbPanel1);
+
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
@@ -40,6 +49,7 @@ namespace Bilten.UI
                 dataGridViewUserControl1.sort<Gimnasticar>(
                     new string[] { "Prezime", "Ime" },
                     new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                updateGimnasticariCount();
             }
             catch (Exception ex)
             {
@@ -56,6 +66,15 @@ namespace Bilten.UI
             }
         }
 
+        private void updateGimnasticariCount()
+        {
+            int count = dataGridViewUserControl1.getItems<Gimnasticar>().Count;
+            if (count == 1)
+                statusBar.Panels[0].Text = count.ToString() + " gimnasticar";
+            else
+                statusBar.Panels[0].Text = count.ToString() + " gimnasticara";
+        }
+
         protected override void prikaziSve()
         {
             try
@@ -69,6 +88,7 @@ namespace Bilten.UI
                 dataGridViewUserControl1.sort<Gimnasticar>(
                     new string[] { "Prezime", "Ime" },
                     new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                updateGimnasticariCount();
             }
             catch (Exception ex)
             {
@@ -197,6 +217,7 @@ namespace Bilten.UI
                         failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
                 }
                 SetItems(gimnasticari);
+                updateGimnasticariCount();
                 if (gimnasticari.Count == 0)
                     MessageDialogs.showMessage(failureMsg, this.Text);
             }
@@ -273,6 +294,7 @@ namespace Bilten.UI
                         items.Add(newEntity);
                         dataGridViewUserControl1.setItems<Gimnasticar>(items);
                         dataGridViewUserControl1.setSelectedItem<Gimnasticar>(newEntity);
+                        updateGimnasticariCount();
                     }
                     else
                     {
@@ -285,6 +307,11 @@ namespace Bilten.UI
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }
+        }
+
+        protected override void updateEntityCount()
+        {
+            updateGimnasticariCount();
         }
 
     }

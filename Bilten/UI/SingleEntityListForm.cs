@@ -153,6 +153,7 @@ namespace Bilten.UI
                     CurrencyManager currencyManager =
                         (CurrencyManager)this.BindingContext[dataGridViewUserControl1.DataGridView.DataSource];
                     currencyManager.Refresh();
+                    updateEntityCount();
                 }
                 else
                 {
@@ -173,6 +174,11 @@ namespace Bilten.UI
                     dataContext.Dispose();
                 dataContext = null;
             }
+        }
+
+        protected virtual void updateEntityCount()
+        {
+
         }
 
         protected virtual string deleteConfirmationMessage(T item)

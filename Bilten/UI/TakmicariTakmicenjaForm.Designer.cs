@@ -47,7 +47,7 @@ namespace Bilten.UI
             this.tabControl1.Location = new System.Drawing.Point(12, 60);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(915, 357);
+            this.tabControl1.Size = new System.Drawing.Size(915, 339);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -57,7 +57,7 @@ namespace Bilten.UI
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(907, 331);
+            this.tabPage1.Size = new System.Drawing.Size(907, 313);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -70,7 +70,7 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(17, 16);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(872, 297);
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(872, 279);
             this.dataGridViewUserControl1.TabIndex = 0;
             // 
             // btnAdd

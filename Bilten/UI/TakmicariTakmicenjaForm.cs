@@ -19,7 +19,8 @@ namespace Bilten.UI
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private IDataContext dataContext;
         private bool[] tabOpened;
-   
+        private StatusBar statusBar;
+        
         public TakmicariTakmicenjaForm(int takmicenjeId)
         {
             InitializeComponent();
@@ -72,6 +73,13 @@ namespace Bilten.UI
         {
             Text = "Takmicari - takmicenja";
             this.ClientSize = new Size(ClientSize.Width, 550);
+            
+            statusBar = new StatusBar();
+            statusBar.Parent = this;
+            statusBar.ShowPanels = true;
+            StatusBarPanel sbPanel1 = new StatusBarPanel();
+            statusBar.Panels.Add(sbPanel1);
+
             initTabs();
         }
 
@@ -156,13 +164,26 @@ namespace Bilten.UI
         private void onSelectedIndexChanged()
         {
             if (tabOpened[tabControl1.SelectedIndex])
+            {
+                updateGimnasticariCount();
                 return;
+            }
 
             tabOpened[tabControl1.SelectedIndex] = true;
             setGimnasticari(ActiveRezTakmicenje.Takmicenje1.Gimnasticari);
             getActiveDataGridViewUserControl().sort<GimnasticarUcesnik>(
                 new string[] { "Prezime", "Ime" },
                 new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+            updateGimnasticariCount();
+        }
+
+        private void updateGimnasticariCount()
+        {
+            int count = getActiveDataGridViewUserControl().getItems<GimnasticarUcesnik>().Count;
+            if (count == 1)
+                statusBar.Panels[0].Text = count.ToString() + " gimnasticar";
+            else
+                statusBar.Panels[0].Text = count.ToString() + " gimnasticara";
         }
 
         private void setGimnasticari(ISet<GimnasticarUcesnik> gimnasticari)
@@ -275,7 +296,10 @@ namespace Bilten.UI
             }
 
             if (added)
+            {
                 setGimnasticari(ActiveRezTakmicenje.Takmicenje1.Gimnasticari);
+                updateGimnasticariCount();
+            }
 
             if (illegalGimnasticari.Count > 0)
             {
@@ -380,6 +404,7 @@ namespace Bilten.UI
                 dataContext.Commit();
             
                 setGimnasticari(ActiveRezTakmicenje.Takmicenje1.Gimnasticari);
+                updateGimnasticariCount();
             }
             catch (Exception ex)
             {

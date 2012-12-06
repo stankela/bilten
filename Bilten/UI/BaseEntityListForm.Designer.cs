@@ -45,13 +45,13 @@ namespace Bilten.UI
             this.btnShowHelp = new System.Windows.Forms.Button();
             this.btnDuplicate = new System.Windows.Forms.Button();
             this.pnlListPlaceholder = new System.Windows.Forms.Panel();
-            this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.pnlPager = new System.Windows.Forms.Panel();
             this.lblPageCounter = new System.Windows.Forms.Label();
             this.btnShowLastPage = new System.Windows.Forms.Button();
             this.btnShowNextPage = new System.Windows.Forms.Button();
             this.btnShowPreviousPage = new System.Windows.Forms.Button();
             this.btnShowFirstPage = new System.Windows.Forms.Button();
+            this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.layoutPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -225,15 +225,6 @@ namespace Bilten.UI
             this.pnlListPlaceholder.Size = new System.Drawing.Size(433, 276);
             this.pnlListPlaceholder.TabIndex = 2;
             // 
-            // dataGridViewUserControl1
-            // 
-            this.dataGridViewUserControl1.ColumnHeaderSorting = true;
-            this.dataGridViewUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewUserControl1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(433, 276);
-            this.dataGridViewUserControl1.TabIndex = 0;
-            // 
             // pnlPager
             // 
             this.layoutPanel.SetColumnSpan(this.pnlPager, 2);
@@ -294,6 +285,15 @@ namespace Bilten.UI
             this.btnShowFirstPage.Text = "|<";
             this.btnShowFirstPage.UseVisualStyleBackColor = true;
             // 
+            // dataGridViewUserControl1
+            // 
+            this.dataGridViewUserControl1.ColumnHeaderSorting = true;
+            this.dataGridViewUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewUserControl1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(433, 276);
+            this.dataGridViewUserControl1.TabIndex = 0;
+            // 
             // BaseEntityListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -316,8 +316,8 @@ namespace Bilten.UI
 
         #endregion
 
-        private Panel panel1;
-        private Panel panel2;
+        protected Panel panel1;
+        protected Panel panel2;
         protected Button btnNewItem;
         protected Button btnEditItem;
         protected Button btnClose;
