@@ -344,16 +344,17 @@ namespace Bilten.UI
 
                 string mestoDatum = takmicenje.Mesto + "  " 
                     + takmicenje.Datum.ToShortDateString();
-                form.Header1Text = takmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
             }
             
@@ -368,6 +369,7 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
+                nazivIzvestaja += " - " + ActiveTakmicenje.Kategorija.Naziv;
                 List<RezultatUkupnoExtended> rezultati;
                 bool extended = Opcije.Instance.PrikaziDEOcene;
                 if (extended)
@@ -392,7 +394,8 @@ namespace Bilten.UI
                     ListSortDirection.Ascending));
 
                 p.setIzvestaj(new UkupnoIzvestaj(rezultati,
-                    ActiveTakmicenje.Gimnastika, extended, kvalColumnVisible(), dataGridViewUserControl1.DataGridView));
+                    ActiveTakmicenje.Gimnastika, extended, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
+                    nazivIzvestaja));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)

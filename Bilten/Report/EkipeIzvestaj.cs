@@ -13,8 +13,10 @@ namespace Bilten.Report
    		private EkipeLista lista;
 
 		public EkipeIzvestaj(List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno,
-            Gimnastika gim, bool kvalColumn, DataGridView formGrid)
+            Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName)
 		{
+            DocumentName = documentName;
+
             Font itemFont = new Font("Arial", 8);
             Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
             Font nazivEkipeFont = new Font("Arial", 10, FontStyle.Bold);

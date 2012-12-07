@@ -945,12 +945,11 @@ namespace Bilten.UI
         {
             //char shVeliko = '\u0160';
             char chMalo = '\u010d';
-            string gimnasticariNaziv;
+            string nazivIzvestaja;
             if (takmicenje.Gimnastika == Gimnastika.MSG)
-                gimnasticariNaziv = "Gimnasti" + chMalo + "ari";
+                nazivIzvestaja = "Gimnasti" + chMalo + "ari";
             else
-                gimnasticariNaziv = "Gimnasti" + chMalo + "arke";
-            string nazivIzvestaja = gimnasticariNaziv + " - " + ActiveKategorija.Naziv;
+                nazivIzvestaja = "Gimnasti" + chMalo + "arke";
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
@@ -962,14 +961,14 @@ namespace Bilten.UI
                 form.Header1Text = takmicenje.Naziv;
                 form.Header2Text = mestoDatum;
                 form.Header3Text = ActiveKategorija.Naziv;
-                form.Header4Text = gimnasticariNaziv;
+                form.Header4Text = nazivIzvestaja;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
                 form.Header3Text = ActiveKategorija.Naziv;
-                form.Header4Text = gimnasticariNaziv;
+                form.Header4Text = nazivIzvestaja;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
@@ -983,6 +982,7 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
+                nazivIzvestaja = nazivIzvestaja + " - " + ActiveKategorija.Naziv;
                 List<GimnasticarUcesnik> gimnasticari = getActiveDataGridViewUserControl().getItems<GimnasticarUcesnik>();
 
                 /*PropertyDescriptor propDesc =
@@ -1006,7 +1006,7 @@ namespace Bilten.UI
                 gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc, sortDir));
 
                 p.setIzvestaj(new TakmicariIzvestaj(gimnasticari,
-                    takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView));
+                    takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView, nazivIzvestaja));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)

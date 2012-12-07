@@ -14,8 +14,10 @@ namespace Bilten.Report
 		private UkupnoLista lista;
 
 		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
-            bool extended, bool kvalColumn, DataGridView formGrid)
+            bool extended, bool kvalColumn, DataGridView formGrid, string documentName)
 		{
+            DocumentName = documentName;
+
             Font itemFont = new Font("Arial", 8);
             Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
 

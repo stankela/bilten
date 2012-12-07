@@ -14,8 +14,9 @@ namespace Bilten.Report
         private UkupnoFinaleKupaLista lista;
 
         public UkupnoFinaleKupaIzvestaj(IList<RezultatUkupnoFinaleKupa> rezultati, Gimnastika gim,
-            bool extended, bool kvalColumn, DataGridView formGrid)
+            bool extended, bool kvalColumn, DataGridView formGrid, string documentName)
 		{
+            DocumentName = documentName;
             extended = false; // TODO3: Ispravi ovo.
 
             Font itemFont = new Font("Arial", 8);

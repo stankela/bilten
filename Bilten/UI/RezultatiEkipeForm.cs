@@ -426,16 +426,19 @@ namespace Bilten.UI
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
-                form.Header1Text = takmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                // TODO: Ispis za heder3 treba da bude drugaciji ako je jedno ekipno takmicenje za sve kategorije. Isto vazi
+                // i za documentName
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
             }
 
@@ -450,6 +453,8 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
+                string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
+
                 List<RezultatEkipno> rezultatiEkipno =
                     new List<RezultatEkipno>(getRezultatiEkipno(ActiveTakmicenje));
 
@@ -463,7 +468,7 @@ namespace Bilten.UI
                 && ActiveTakmicenje.Propozicije.OdvojenoTak4;
 
                 p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, rezultatiUkupno,
-                    ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView));
+                    ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)

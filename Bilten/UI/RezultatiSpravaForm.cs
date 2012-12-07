@@ -289,10 +289,7 @@ namespace Bilten.UI
                 btnCancel.Visible = false;
 
                 btnStampajKvalifikante.Location = new Point(550, btnClose.Location.Y);
-                btnStampajKvalifikante.Enabled = !takmicenje.FinaleKupa
-                    && deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                    && ActiveTakmicenje.Propozicije.PostojiTak3
-                    && ActiveTakmicenje.Propozicije.OdvojenoTak3;
+                btnStampajKvalifikante.Enabled = updateBtnStampajKvalifikanteEnabled();
 
                 btnIzracunaj.Enabled = btnIzracunaj.Visible = true;                                                             
                 btnIzracunaj.Location = new Point(btnStampajKvalifikante.Location.X + btnStampajKvalifikante.Size.Width + 20,
@@ -343,6 +340,8 @@ namespace Bilten.UI
 
         private void onSelectedRezultatiChanged()
         {
+            btnStampajKvalifikante.Enabled = updateBtnStampajKvalifikanteEnabled(); 
+            
             // TODO: Kada se promeni sprava trebalo bi da kolone zadrze postojecu sirinu.
             initSpravaGridUserControl(ActiveSprava, obaPreskoka);
 
@@ -352,6 +351,14 @@ namespace Bilten.UI
                 rezultatiOpened.Add(rezultatiKey);
             }
             setItemsSortedByRedBroj();
+        }
+
+        private bool updateBtnStampajKvalifikanteEnabled()
+        {
+            return !takmicenje.FinaleKupa
+                && deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                && ActiveTakmicenje.Propozicije.PostojiTak3
+                && ActiveTakmicenje.Propozicije.OdvojenoTak3;
         }
 
         private void setItemsSortedByRedBroj()
@@ -612,16 +619,17 @@ namespace Bilten.UI
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
-                form.Header1Text = takmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
             }
 
@@ -638,7 +646,16 @@ namespace Bilten.UI
 
                 bool kvalColumn;
 
-                string documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava);
+                string documentName;
+                if (form.StampajSveSprave)
+                {
+                    documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
+                }
+                else
+                {
+                    documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
+                        + ActiveTakmicenje.Kategorija.Naziv;
+                }
                 if (form.StampajSveSprave)
                 {
                     kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
@@ -1194,9 +1211,9 @@ namespace Bilten.UI
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
-                form.Header1Text = takmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
                 form.FooterText = mestoDatum;
                 if (takmicenje.Gimnastika == Gimnastika.ZSG)
@@ -1207,7 +1224,8 @@ namespace Bilten.UI
             else
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
             }
 
@@ -1225,7 +1243,15 @@ namespace Bilten.UI
                 string documentName;
                 if (form.StampajSveSprave)
                 {
-                    documentName = nazivIzvestaja;
+                    documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
+                }
+                else
+                {
+                    documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
+                        + ActiveTakmicenje.Kategorija.Naziv;
+                }
+                if (form.StampajSveSprave)
+                {
                     bool obaPresk = ActiveTakmicenje.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
 
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
@@ -1253,7 +1279,6 @@ namespace Bilten.UI
                 }
                 else
                 {
-                    documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava);
                     if (ActiveSprava != Sprava.Preskok)
                     {
                         List<RezultatSprava> rezultati =
