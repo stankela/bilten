@@ -43,7 +43,6 @@ namespace Bilten.UI
             this.btnApplySort = new System.Windows.Forms.Button();
             this.btnPrintItem = new System.Windows.Forms.Button();
             this.btnShowHelp = new System.Windows.Forms.Button();
-            this.btnDuplicate = new System.Windows.Forms.Button();
             this.pnlListPlaceholder = new System.Windows.Forms.Panel();
             this.pnlPager = new System.Windows.Forms.Panel();
             this.lblPageCounter = new System.Windows.Forms.Label();
@@ -51,6 +50,7 @@ namespace Bilten.UI
             this.btnShowNextPage = new System.Windows.Forms.Button();
             this.btnShowPreviousPage = new System.Windows.Forms.Button();
             this.btnShowFirstPage = new System.Windows.Forms.Button();
+            this.btnDuplicate = new System.Windows.Forms.Button();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.layoutPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -75,7 +75,7 @@ namespace Bilten.UI
             this.layoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.layoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.layoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.layoutPanel.Size = new System.Drawing.Size(539, 371);
+            this.layoutPanel.Size = new System.Drawing.Size(539, 436);
             this.layoutPanel.TabIndex = 7;
             // 
             // panel1
@@ -87,11 +87,10 @@ namespace Bilten.UI
             this.panel1.Controls.Add(this.btnClose);
             this.panel1.Controls.Add(this.btnApplyFilter);
             this.panel1.Controls.Add(this.btnDeleteItem);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(442, 3);
             this.panel1.Name = "panel1";
             this.layoutPanel.SetRowSpan(this.panel1, 2);
-            this.panel1.Size = new System.Drawing.Size(94, 325);
+            this.panel1.Size = new System.Drawing.Size(94, 390);
             this.panel1.TabIndex = 0;
             // 
             // btnNewItem
@@ -171,7 +170,7 @@ namespace Bilten.UI
             this.panel2.Controls.Add(this.btnShowHelp);
             this.panel2.Controls.Add(this.btnDuplicate);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 285);
+            this.panel2.Location = new System.Drawing.Point(3, 350);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(433, 43);
             this.panel2.TabIndex = 1;
@@ -206,23 +205,13 @@ namespace Bilten.UI
             this.btnShowHelp.Text = "Help";
             this.btnShowHelp.UseVisualStyleBackColor = true;
             // 
-            // btnDuplicate
-            // 
-            this.btnDuplicate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDuplicate.Location = new System.Drawing.Point(8, 8);
-            this.btnDuplicate.Name = "btnDuplicate";
-            this.btnDuplicate.Size = new System.Drawing.Size(82, 28);
-            this.btnDuplicate.TabIndex = 0;
-            this.btnDuplicate.Text = "Duplicate";
-            this.btnDuplicate.UseVisualStyleBackColor = true;
-            // 
             // pnlListPlaceholder
             // 
             this.pnlListPlaceholder.Controls.Add(this.dataGridViewUserControl1);
             this.pnlListPlaceholder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlListPlaceholder.Location = new System.Drawing.Point(3, 3);
             this.pnlListPlaceholder.Name = "pnlListPlaceholder";
-            this.pnlListPlaceholder.Size = new System.Drawing.Size(433, 276);
+            this.pnlListPlaceholder.Size = new System.Drawing.Size(433, 341);
             this.pnlListPlaceholder.TabIndex = 2;
             // 
             // pnlPager
@@ -234,7 +223,7 @@ namespace Bilten.UI
             this.pnlPager.Controls.Add(this.btnShowPreviousPage);
             this.pnlPager.Controls.Add(this.btnShowFirstPage);
             this.pnlPager.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlPager.Location = new System.Drawing.Point(3, 334);
+            this.pnlPager.Location = new System.Drawing.Point(3, 399);
             this.pnlPager.Name = "pnlPager";
             this.pnlPager.Size = new System.Drawing.Size(533, 34);
             this.pnlPager.TabIndex = 3;
@@ -285,20 +274,30 @@ namespace Bilten.UI
             this.btnShowFirstPage.Text = "|<";
             this.btnShowFirstPage.UseVisualStyleBackColor = true;
             // 
+            // btnDuplicate
+            // 
+            this.btnDuplicate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDuplicate.Location = new System.Drawing.Point(8, 8);
+            this.btnDuplicate.Name = "btnDuplicate";
+            this.btnDuplicate.Size = new System.Drawing.Size(82, 28);
+            this.btnDuplicate.TabIndex = 0;
+            this.btnDuplicate.Text = "Duplicate";
+            this.btnDuplicate.UseVisualStyleBackColor = true;
+            // 
             // dataGridViewUserControl1
             // 
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(433, 276);
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(433, 341);
             this.dataGridViewUserControl1.TabIndex = 0;
             // 
             // BaseEntityListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(539, 371);
+            this.ClientSize = new System.Drawing.Size(539, 436);
             this.Controls.Add(this.layoutPanel);
             this.MinimumSize = new System.Drawing.Size(547, 405);
             this.Name = "BaseEntityListForm";
@@ -336,7 +335,7 @@ namespace Bilten.UI
         protected Button btnApplySort;
         protected Button btnApplyFilter;
         protected Button btnShowHelp;
-        protected Button btnDuplicate;
         protected DataGridViewUserControl dataGridViewUserControl1;
+        protected Button btnDuplicate;
     }
 }

@@ -32,6 +32,8 @@ namespace Bilten.UI
             btnDuplicate.Visible = false;
             btnShowHelp.Visible = false;
             btnApplySort.Visible = false;
+            panel2.Height = 0;
+            pnlPager.Height = 0; // nema efekta
         }
 
         public T SelectedItem

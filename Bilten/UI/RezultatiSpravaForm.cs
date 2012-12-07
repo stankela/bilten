@@ -275,9 +275,11 @@ namespace Bilten.UI
                 btnOk.Visible = true;
                 btnCancel.Enabled = true;
                 btnCancel.Visible = true;
+                btnPrint.Enabled = btnPrint.Visible = false;
                 btnClose.Enabled = false;
                 btnClose.Visible = false;
                 btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
+                btnStampajKvalifikante.Enabled = btnStampajKvalifikante.Visible = false;
             }
             else
             {
@@ -285,11 +287,19 @@ namespace Bilten.UI
                 btnOk.Visible = false;
                 btnCancel.Enabled = false;
                 btnCancel.Visible = false;
-                btnIzracunaj.Enabled = btnIzracunaj.Visible = true;
-                btnIzracunaj.Location = new Point(btnOk.Location.X + 10, btnClose.Location.Y);
+
+                btnStampajKvalifikante.Location = new Point(550, btnClose.Location.Y);
+                btnStampajKvalifikante.Enabled = !takmicenje.FinaleKupa
+                    && deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                    && ActiveTakmicenje.Propozicije.PostojiTak3
+                    && ActiveTakmicenje.Propozicije.OdvojenoTak3;
+
+                btnIzracunaj.Enabled = btnIzracunaj.Visible = true;                                                             
+                btnIzracunaj.Location = new Point(btnStampajKvalifikante.Location.X + btnStampajKvalifikante.Size.Width + 20,
+                    btnCancel.Location.Y);
                 btnClose.Enabled = true;
                 btnClose.Visible = true;
-                btnClose.Location = new Point(btnCancel.Location.X + 20, btnCancel.Location.Y);
+                btnClose.Location = new Point(btnIzracunaj.Location.X + btnIzracunaj.Size.Width + 20, btnCancel.Location.Y);
             }
         }
 
@@ -430,7 +440,7 @@ namespace Bilten.UI
         }
 
         private List<RezultatSprava> getRezultatiSpravaSorted(RezultatskoTakmicenje rezTakmicenje, Sprava sprava,
-       string sortColumn)
+            string sortColumn)
         {
             List<RezultatSprava> result =
                 new List<RezultatSprava>(getRezultatiSprava(rezTakmicenje, sprava));
@@ -586,6 +596,7 @@ namespace Bilten.UI
                       && ActiveTakmicenje.Propozicije.PostojiTak3
                       && ActiveTakmicenje.Propozicije.OdvojenoTak3;
 
+                    // TODO3: Proveri da li ovo valja.
                     bool obaPresk = ActiveTakmicenje.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
 
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
@@ -1121,6 +1132,159 @@ namespace Bilten.UI
                 spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatSprava>(rez);
             else
                 spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatPreskok>(rez as RezultatPreskok);
+        }
+
+        private void btnStampajKvalifikante_Click(object sender, EventArgs e)
+        {
+            string nazivIzvestaja = "Finale po spravama - kvalifikanti i rezerve";
+
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = takmicenje.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header4Text = nazivIzvestaja;
+                form.FooterText = mestoDatum;
+                if (takmicenje.Gimnastika == Gimnastika.ZSG)
+                    form.BrojSpravaPoStrani = 4;
+                else
+                    form.BrojSpravaPoStrani = 6;
+            }
+            else
+            {
+                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                form.Header3Text = ActiveTakmicenje.Naziv;
+                form.Header4Text = nazivIzvestaja;
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            Opcije.Instance.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                PreviewDialog p = new PreviewDialog();
+
+                string documentName;
+                if (form.StampajSveSprave)
+                {
+                    documentName = nazivIzvestaja;
+                    bool obaPresk = ActiveTakmicenje.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+
+                    List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
+                    List<RezultatPreskok> rezultatiPreskok = null;
+
+                    Sprava[] sprave = Sprave.getSprave(ActiveTakmicenje.Gimnastika);
+                    foreach (Sprava s in sprave)
+                    {
+                        if (s != Sprava.Preskok)
+                        {
+                            rezultatiSprave.Add(getKvalifikantiIRezerveSpravaSorted(ActiveTakmicenje, s, "RedBroj"));
+                        }
+                        else if (!obaPresk)
+                        {
+                            rezultatiPreskok = getKvalifikantiIRezervePreskok1Sorted(ActiveTakmicenje, "RedBroj");
+                        }
+                        else
+                        {
+                            rezultatiPreskok = getKvalifikantiIRezervePreskok2Sorted(ActiveTakmicenje, "RedBroj2");
+                        }
+                    }
+                    p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultatiSprave, rezultatiPreskok, obaPresk, 
+                        takmicenje.Gimnastika, documentName, form.BrojSpravaPoStrani,
+                        spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                }
+                else
+                {
+                    documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava);
+                    if (ActiveSprava != Sprava.Preskok)
+                    {
+                        List<RezultatSprava> rezultati =
+                            getKvalifikantiIRezerveSpravaSorted(ActiveTakmicenje, ActiveSprava, "RedBroj");
+                        p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, ActiveSprava, documentName,
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                    }
+                    else if (!obaPreskoka)
+                    {
+                        List<RezultatPreskok> rezultati =
+                            getKvalifikantiIRezervePreskok1Sorted(ActiveTakmicenje, "RedBroj");
+                        p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, false, documentName,
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                    }
+                    else
+                    {
+                        List<RezultatPreskok> rezultati =
+                            getKvalifikantiIRezervePreskok2Sorted(ActiveTakmicenje, "RedBroj2");
+                        p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, true, documentName,
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                    }
+                }
+
+                p.ShowDialog();
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+        }
+
+        private List<RezultatSprava> getKvalifikantiIRezerveSpravaSorted(RezultatskoTakmicenje rezTakmicenje, Sprava sprava,
+            string sortColumn)
+        {
+            List<RezultatSprava> result = new List<RezultatSprava>();
+            foreach (RezultatSprava r in getRezultatiSprava(rezTakmicenje, sprava))
+            {
+                if (r.KvalStatus == KvalifikacioniStatus.Q || r.KvalStatus == KvalifikacioniStatus.R)
+                    result.Add(r);
+            }
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatSprava))[sortColumn];
+            result.Sort(new SortComparer<RezultatSprava>(propDesc,
+                ListSortDirection.Ascending));
+            return result;
+        }
+
+        private List<RezultatPreskok> getKvalifikantiIRezervePreskok1Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
+        {
+            List<RezultatPreskok> result = new List<RezultatPreskok>();
+            foreach (RezultatPreskok r in getRezultatiPreskok1(rezTakmicenje))
+            {
+                if (r.KvalStatus == KvalifikacioniStatus.Q || r.KvalStatus == KvalifikacioniStatus.R)
+                    result.Add(r);
+            }
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
+            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
+                ListSortDirection.Ascending));
+            return result;
+        }
+
+        private List<RezultatPreskok> getKvalifikantiIRezervePreskok2Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
+        {
+            List<RezultatPreskok> result = new List<RezultatPreskok>();
+            foreach (RezultatPreskok r in getRezultatiPreskok2(rezTakmicenje))
+            {
+                if (r.KvalStatus == KvalifikacioniStatus.Q || r.KvalStatus == KvalifikacioniStatus.R)
+                    result.Add(r);
+            }
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
+            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
+                ListSortDirection.Ascending));
+            return result;
         }
 
     }

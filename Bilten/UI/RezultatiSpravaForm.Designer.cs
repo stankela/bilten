@@ -36,13 +36,14 @@ namespace Bilten.UI
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.prikaziKlubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.prikaziDrzavuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnQ = new System.Windows.Forms.ToolStripMenuItem();
             this.mnR = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrazno = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPromeniPoredakZaIsteOcene = new System.Windows.Forms.ToolStripMenuItem();
             this.btnIzracunaj = new System.Windows.Forms.Button();
-            this.prikaziKlubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.prikaziDrzavuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnStampajKvalifikante = new System.Windows.Forms.Button();
             this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -117,7 +118,21 @@ namespace Bilten.UI
             this.mnPrazno,
             this.mnPromeniPoredakZaIsteOcene});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(232, 158);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(232, 136);
+            // 
+            // prikaziKlubToolStripMenuItem
+            // 
+            this.prikaziKlubToolStripMenuItem.Name = "prikaziKlubToolStripMenuItem";
+            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.prikaziKlubToolStripMenuItem.Text = "Prikazi klub";
+            this.prikaziKlubToolStripMenuItem.Click += new System.EventHandler(this.prikaziKlubToolStripMenuItem_Click);
+            // 
+            // prikaziDrzavuToolStripMenuItem
+            // 
+            this.prikaziDrzavuToolStripMenuItem.Name = "prikaziDrzavuToolStripMenuItem";
+            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.prikaziDrzavuToolStripMenuItem.Text = "Prikazi drzavu";
+            this.prikaziDrzavuToolStripMenuItem.Click += new System.EventHandler(this.prikaziDrzavuToolStripMenuItem_Click);
             // 
             // mnQ
             // 
@@ -157,19 +172,15 @@ namespace Bilten.UI
             this.btnIzracunaj.UseVisualStyleBackColor = true;
             this.btnIzracunaj.Click += new System.EventHandler(this.btnIzracunaj_Click);
             // 
-            // prikaziKlubToolStripMenuItem
+            // btnStampajKvalifikante
             // 
-            this.prikaziKlubToolStripMenuItem.Name = "prikaziKlubToolStripMenuItem";
-            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.prikaziKlubToolStripMenuItem.Text = "Prikazi klub";
-            this.prikaziKlubToolStripMenuItem.Click += new System.EventHandler(this.prikaziKlubToolStripMenuItem_Click);
-            // 
-            // prikaziDrzavuToolStripMenuItem
-            // 
-            this.prikaziDrzavuToolStripMenuItem.Name = "prikaziDrzavuToolStripMenuItem";
-            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.prikaziDrzavuToolStripMenuItem.Text = "Prikazi drzavu";
-            this.prikaziDrzavuToolStripMenuItem.Click += new System.EventHandler(this.prikaziDrzavuToolStripMenuItem_Click);
+            this.btnStampajKvalifikante.Location = new System.Drawing.Point(721, 42);
+            this.btnStampajKvalifikante.Name = "btnStampajKvalifikante";
+            this.btnStampajKvalifikante.Size = new System.Drawing.Size(132, 23);
+            this.btnStampajKvalifikante.TabIndex = 8;
+            this.btnStampajKvalifikante.Text = "Stampaj kvalifikante";
+            this.btnStampajKvalifikante.UseVisualStyleBackColor = true;
+            this.btnStampajKvalifikante.Click += new System.EventHandler(this.btnStampajKvalifikante_Click);
             // 
             // spravaGridUserControl1
             // 
@@ -188,6 +199,7 @@ namespace Bilten.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(893, 363);
+            this.Controls.Add(this.btnStampajKvalifikante);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.btnIzracunaj);
@@ -222,5 +234,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnIzracunaj;
         private System.Windows.Forms.ToolStripMenuItem prikaziKlubToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem prikaziDrzavuToolStripMenuItem;
+        private System.Windows.Forms.Button btnStampajKvalifikante;
     }
 }

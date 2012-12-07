@@ -289,9 +289,15 @@ namespace Bilten.Report
                 headerBounds.Width, headerSec4Height);
         }
 
+        // TODO3: Nadji bolji nacin za podesavanje velicine hedera i futera
+        protected bool kvalifikantiIzvestaj;
+
         public virtual float getHeaderHeight(Graphics g, RectangleF marginBounds)
         {
-            return convCmToInch(3.5f);
+            if (kvalifikantiIzvestaj)
+                return convCmToInch(2.5f);
+            else
+                return convCmToInch(3.5f);
         }
 
         private void calculateContentBounds(Graphics g, RectangleF marginBounds)
@@ -307,8 +313,11 @@ namespace Bilten.Report
 
         public virtual float getFooterHeight(Graphics g, RectangleF marginBounds)
         {
-            return convCmToInch(1f);
-        }
+            if (kvalifikantiIzvestaj)
+                return convCmToInch(0.3f);
+            else
+                return convCmToInch(1f);
+    }
 
         private void calculateFooterBounds(Graphics g, RectangleF marginBounds)
         {
