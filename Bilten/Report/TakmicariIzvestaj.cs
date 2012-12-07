@@ -18,8 +18,6 @@ namespace Bilten.Report
             Font itemFont = new Font("Arial", 10);
             Font itemsHeaderFont = new Font("Arial", 10, FontStyle.Bold);
 
-            Margins = new Margins(50, 50, 50, 50);
-
             lista = new TakmicariLista(this, 1, 0f, itemFont, itemsHeaderFont, gimnasticari, gim, formGrid);
 		}
 

@@ -245,8 +245,28 @@ namespace Bilten.UI
             dataGridViewUserControl1.DataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(DataGridViewEkipe_CellMouseClick);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
+            
             GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2,
                 takmicenje);
+            List<string> imena = new List<string>();
+            List<string> klubovi = new List<string>();
+            foreach (RezultatUkupno r in rezultatiUkupno)
+            {
+                imena.Add(r.Gimnasticar.PrezimeIme);
+                klubovi.Add(r.Gimnasticar.KlubDrzava);
+            }
+            // TODO: Indexi kolona bi trebali da budu konstante
+            if (imena.Count > 0)
+            {
+                dataGridViewUserControl2.DataGridView.Columns[0].Width =
+                    GridColumnsInitializer.getMaxWidth(imena, dataGridViewUserControl2.DataGridView);
+            }
+            if (klubovi.Count > 0)
+            {
+                dataGridViewUserControl2.DataGridView.Columns[1].Width =
+                    GridColumnsInitializer.getMaxWidth(klubovi, dataGridViewUserControl2.DataGridView);
+            }
+
 
             dataGridViewUserControl2.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
         }

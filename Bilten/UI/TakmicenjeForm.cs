@@ -223,5 +223,11 @@ namespace Bilten.UI
                 listBox1.Items.Add(drugoKolo.Naziv);
             }
         }
+
+        private void TakmicenjeForm_Shown(object sender, EventArgs e)
+        {
+            txtNaziv.Focus();
+        }
+
     }
 }

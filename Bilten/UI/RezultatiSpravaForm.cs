@@ -383,9 +383,58 @@ namespace Bilten.UI
         {
             spravaGridUserControl1.init(sprava);
 
-            GridColumnsInitializer.initRezultatiSprava(
-                spravaGridUserControl1.DataGridViewUserControl,
-                takmicenje, kvalColumnVisible(), obaPreskoka);
+            DataGridView dgw = spravaGridUserControl1.DataGridViewUserControl.DataGridView;
+            // TODO: Indexi kolona bi trebali da budu konstante
+            if (dgw.Columns.Count == 0)
+            {
+                GridColumnsInitializer.initRezultatiSprava(
+                    spravaGridUserControl1.DataGridViewUserControl,
+                    takmicenje, kvalColumnVisible(), obaPreskoka);
+
+                List<string> imena = new List<string>();
+                List<string> klubovi = new List<string>();
+                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                {
+                    foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
+                    {
+                        if (s != Sprava.Preskok)
+                        {
+                            foreach (RezultatSprava r in getRezultatiSprava(rt, s))
+                            {
+                                imena.Add(r.Gimnasticar.PrezimeIme);
+                                klubovi.Add(r.Gimnasticar.KlubDrzava);
+                            }
+                        }
+                        else
+                        {
+                            foreach (RezultatPreskok r in getRezultatiPreskok1(rt))
+                            {
+                                imena.Add(r.Gimnasticar.PrezimeIme);
+                                klubovi.Add(r.Gimnasticar.KlubDrzava);
+                            }
+                        }
+                    }
+                }
+                if (imena.Count > 0)
+                {
+                    dgw.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw);
+                }
+                if (klubovi.Count > 0)
+                {
+                    dgw.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw);
+                }
+            }
+            else
+            {
+                // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
+                int oldImeWidth = dgw.Columns[2].Width;
+                int oldKlubWidth = dgw.Columns[3].Width;
+                GridColumnsInitializer.initRezultatiSprava(
+                    spravaGridUserControl1.DataGridViewUserControl,
+                    takmicenje, kvalColumnVisible(), obaPreskoka);
+                dgw.Columns[2].Width = oldImeWidth;
+                dgw.Columns[3].Width = oldKlubWidth;
+            }
         }
 
         private bool kvalColumnVisible()

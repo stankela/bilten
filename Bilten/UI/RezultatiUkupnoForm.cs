@@ -240,8 +240,44 @@ namespace Bilten.UI
             bool kvalColumn = kvalColumnVisible();
             if (takmicenje.FinaleKupa)
                 kvalColumn = false;
-            GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
-                takmicenje, kvalColumn);
+
+            // TODO: Indexi kolona bi trebali da budu konstante
+            if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
+            {
+                GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
+                    takmicenje, kvalColumn);
+
+                List<string> imena = new List<string>();
+                List<string> klubovi = new List<string>();
+                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                {
+                    foreach (RezultatUkupno r in getRezultati(rt))
+                    {
+                        imena.Add(r.Gimnasticar.PrezimeIme);
+                        klubovi.Add(r.Gimnasticar.KlubDrzava);
+                    }
+                }
+                if (imena.Count > 0)
+                {
+                    dataGridViewUserControl1.DataGridView.Columns[2].Width =
+                        GridColumnsInitializer.getMaxWidth(imena, dataGridViewUserControl1.DataGridView);
+                }
+                if (klubovi.Count > 0)
+                {
+                    dataGridViewUserControl1.DataGridView.Columns[3].Width =
+                        GridColumnsInitializer.getMaxWidth(klubovi, dataGridViewUserControl1.DataGridView);
+                }
+            }
+            else
+            {
+                // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
+                int oldImeWidth = dataGridViewUserControl1.DataGridView.Columns[2].Width;
+                int oldKlubWidth = dataGridViewUserControl1.DataGridView.Columns[3].Width;
+                GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
+                    takmicenje, kvalColumn);
+                dataGridViewUserControl1.DataGridView.Columns[2].Width = oldImeWidth;
+                dataGridViewUserControl1.DataGridView.Columns[3].Width = oldKlubWidth;
+            }
             
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
             {

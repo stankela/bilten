@@ -141,6 +141,7 @@ namespace Bilten.UI
             // da li je u Designer.cs fajlu nesto menjano, i ako jeste promeni ovde.
             TakmicariKategorijeUserControl takmicariKategorijeUserControl = 
                 new TakmicariKategorijeUserControl();
+
             takmicariKategorijeUserControl.Anchor = this.takmicariKategorijeUserControl1.Anchor;
             takmicariKategorijeUserControl.Location = this.takmicariKategorijeUserControl1.Location;
             takmicariKategorijeUserControl.Size = this.takmicariKategorijeUserControl1.Size;
@@ -992,9 +993,13 @@ namespace Bilten.UI
 
                 PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
                     TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["DrzavaString"],
-                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubDrzava"]
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubString"],
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Prezime"],
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Ime"]
                 };
                 ListSortDirection[] sortDir = new ListSortDirection[] {
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending,
                     ListSortDirection.Ascending,
                     ListSortDirection.Ascending
                 };

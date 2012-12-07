@@ -112,7 +112,7 @@ namespace Bilten.UI
             this.cmbGimnastika.Location = new System.Drawing.Point(24, 84);
             this.cmbGimnastika.Name = "cmbGimnastika";
             this.cmbGimnastika.Size = new System.Drawing.Size(98, 21);
-            this.cmbGimnastika.TabIndex = 9;
+            this.cmbGimnastika.TabIndex = 4;
             // 
             // listBox1
             // 
@@ -160,6 +160,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblMesto);
             this.Name = "TakmicenjeForm";
             this.Text = "TakmicenjeForm";
+            this.Shown += new System.EventHandler(this.TakmicenjeForm_Shown);
             this.Controls.SetChildIndex(this.lblMesto, 0);
             this.Controls.SetChildIndex(this.txtMesto, 0);
             this.Controls.SetChildIndex(this.txtDatum, 0);

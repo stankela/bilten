@@ -177,6 +177,17 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual string KlubString
+        {
+            get
+            {
+                if (KlubUcesnik != null)
+                    return klubUcesnik.Naziv;
+                else
+                    return String.Empty;
+            }
+        }
+
         public override void validate(Notification notification)
         {
             // TODO: 
