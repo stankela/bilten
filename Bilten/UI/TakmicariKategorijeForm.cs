@@ -10,6 +10,8 @@ using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
 using System.Collections;
+using NHibernate;
+using Bilten.Report;
 
 namespace Bilten.UI
 {
@@ -20,6 +22,7 @@ namespace Bilten.UI
         private List<GimnasticarUcesnik>[] gimnasticari;
         private bool[] tabOpened;
         private StatusBar statusBar;
+        private Takmicenje takmicenje;
 
         private TakmicarskaKategorija ActiveKategorija
         {
@@ -43,7 +46,10 @@ namespace Bilten.UI
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
                 
                 loadGimnasticari();
-                
+
+                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
+                NHibernateUtil.Initialize(takmicenje);
+     
                 initUI();
                 tabOpened = new bool[takmicarskeKategorije.Count];
                 onSelectedIndexChanged();
@@ -932,6 +938,81 @@ namespace Bilten.UI
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void btnPrint_Click(object sender, EventArgs e)
+        {
+            //char shVeliko = '\u0160';
+            char chMalo = '\u010d';
+            string gimnasticariNaziv;
+            if (takmicenje.Gimnastika == Gimnastika.MSG)
+                gimnasticariNaziv = "Gimnasti" + chMalo + "ari";
+            else
+                gimnasticariNaziv = "Gimnasti" + chMalo + "arke";
+            string nazivIzvestaja = gimnasticariNaziv + " - " + ActiveKategorija.Naziv;
+
+            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1, false, false, false, false, false);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = takmicenje.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = ActiveKategorija.Naziv;
+                form.Header4Text = gimnasticariNaziv;
+                form.FooterText = mestoDatum;
+            }
+            else
+            {
+                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                form.Header3Text = ActiveKategorija.Naziv;
+                form.Header4Text = gimnasticariNaziv;
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            Opcije.Instance.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                PreviewDialog p = new PreviewDialog();
+
+                List<GimnasticarUcesnik> gimnasticari = getActiveDataGridViewUserControl().getItems<GimnasticarUcesnik>();
+
+                /*PropertyDescriptor propDesc =
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubDrzava"];
+                gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc,
+                    ListSortDirection.Ascending));*/
+
+
+                PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["DrzavaString"],
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubDrzava"]
+                };
+                ListSortDirection[] sortDir = new ListSortDirection[] {
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending
+                };
+                gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc, sortDir));
+
+                p.setIzvestaj(new TakmicariIzvestaj(gimnasticari,
+                    takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView));
+                p.ShowDialog();
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
         }
     }
 }

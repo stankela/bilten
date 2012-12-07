@@ -184,6 +184,7 @@
     <Compile Include="Report\SpravaIzvestaj.cs" />
     <Compile Include="Report\StartListaIzvestaj.cs" />
     <Compile Include="Report\SudijskiFormularIzvestaj.cs" />
+    <Compile Include="Report\TakmicariIzvestaj.cs" />
     <Compile Include="Report\UkupnoFinaleKupaIzvestaj.cs" />
     <Compile Include="Report\UkupnoIzvestaj.cs" />
     <Compile Include="SingleInstanceApplication.cs" />

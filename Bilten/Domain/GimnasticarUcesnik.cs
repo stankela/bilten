@@ -166,6 +166,17 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual string DrzavaString
+        {
+            get
+            {
+                if (DrzavaUcesnik != null)
+                    return DrzavaUcesnik.Kod;
+                else
+                    return String.Empty;
+            }
+        }
+
         public override void validate(Notification notification)
         {
             // TODO: 
