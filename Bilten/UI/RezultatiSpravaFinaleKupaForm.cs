@@ -144,17 +144,36 @@ namespace Bilten.UI
                 {
                     if (s != Sprava.Preskok)
                     {
+                        PoredakSprava poredakPrvoKolo = null;
+                        PoredakSprava poredakDrugoKolo = null;
+                        if (rezTakPrvoKolo != null)
+                            poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.getPoredakSprava(s);
+                        if (rezTakDrugoKolo != null)
+                            poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s);
                         rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                            rezTakPrvoKolo.Takmicenje1.getPoredakSprava(s),
-                            rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s));
+                            poredakPrvoKolo, poredakDrugoKolo);
                     }
                     else
                     {
+                        PoredakPreskok poredakPrvoKolo = null;
+                        PoredakPreskok poredakDrugoKolo = null;
+                        if (rezTakPrvoKolo != null)
+                            poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.PoredakPreskok;
+                        if (rezTakDrugoKolo != null)
+                            poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.PoredakPreskok;
+
+                        bool poredakNaOsnovuObaPreskokaPrvoKolo = false;
+                        bool poredakNaOsnovuObaPreskokaDrugoKolo = false;
+                        if (rezTakPrvoKolo != null)
+                            poredakNaOsnovuObaPreskokaPrvoKolo =
+                                rezTakPrvoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                        if (rezTakDrugoKolo != null)
+                            poredakNaOsnovuObaPreskokaDrugoKolo =
+                                rezTakDrugoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+
                         rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                            rezTakPrvoKolo.Takmicenje1.PoredakPreskok,
-                            rezTakDrugoKolo.Takmicenje1.PoredakPreskok,
-                            rezTakPrvoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
-                            rezTakDrugoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka);
+                            poredakPrvoKolo, poredakDrugoKolo,
+                            poredakNaOsnovuObaPreskokaPrvoKolo, poredakNaOsnovuObaPreskokaDrugoKolo);
                     }
                 }
             }

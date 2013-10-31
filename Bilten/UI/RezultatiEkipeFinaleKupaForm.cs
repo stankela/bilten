@@ -245,23 +245,10 @@ namespace Bilten.UI
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            /*string nazivIzvestaja;
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-            {
-                if (ActiveTakmicenje.Propozicije.OdvojenoTak4)
-                    nazivIzvestaja = "Rezultati ekipno - kvalifikacije";
-                else
-                    nazivIzvestaja = "Rezultati ekipno";
-            }
-            else
-            {
-                if (ActiveTakmicenje.Propozicije.OdvojenoTak4)
-                    nazivIzvestaja = "Finale ekipno";
-                else
-                    nazivIzvestaja = "Rezultati ekipno";
-            }
+            string nazivIzvestaja;
+            nazivIzvestaja = "I i II kolo - Rezultati ekipno";
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, false, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
@@ -292,20 +279,20 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                List<RezultatEkipno> rezultatiEkipno =
-                    new List<RezultatEkipno>(getRezultatiEkipno(ActiveTakmicenje));
+                List<RezultatEkipnoFinaleKupa> rezultatiEkipno =
+                    new List<RezultatEkipnoFinaleKupa>(getRezultatiEkipno(ActiveTakmicenje));
 
                 PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(RezultatEkipno))["RedBroj"];
-                rezultatiEkipno.Sort(new SortComparer<RezultatEkipno>(propDesc,
+                    TypeDescriptor.GetProperties(typeof(RezultatEkipnoFinaleKupa))["RedBroj"];
+                rezultatiEkipno.Sort(new SortComparer<RezultatEkipnoFinaleKupa>(propDesc,
                     ListSortDirection.Ascending));
 
-                bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak4
-                && ActiveTakmicenje.Propozicije.OdvojenoTak4;
+                bool kvalColumn = ActiveTakmicenje.Propozicije.PostojiTak4
+                    && ActiveTakmicenje.Propozicije.OdvojenoTak4;
 
-                p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, rezultatiUkupno,
-                    ActiveTakmicenje.Gimnastika, kvalColumn));
+                p.setIzvestaj(new EkipeFinaleKupaIzvestaj(rezultatiEkipno,
+                    ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl1.DataGridView,
+                    nazivIzvestaja));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -316,7 +303,7 @@ namespace Bilten.UI
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
-            }*/
+            }
         }
 
         private void btnZatvori_Click(object sender, EventArgs e)

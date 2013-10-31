@@ -49,11 +49,11 @@ namespace Bilten.UI
             this.mnRezultatiSprave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRezultatiEkipno = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOcene = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPrikaziKlub = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnOstaleRotacije = new System.Windows.Forms.Button();
             this.btnPrintUnosOcena = new System.Windows.Forms.Button();
-            this.mnPrikaziKlub = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -200,7 +200,7 @@ namespace Bilten.UI
             this.mnPrikaziKlub,
             this.mnPrikaziDrzavu});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 202);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 180);
             // 
             // mnUnesiOcenu
             // 
@@ -244,6 +244,20 @@ namespace Bilten.UI
             this.mnOcene.Text = "Ocene";
             this.mnOcene.Click += new System.EventHandler(this.mnOcene_Click);
             // 
+            // mnPrikaziKlub
+            // 
+            this.mnPrikaziKlub.Name = "mnPrikaziKlub";
+            this.mnPrikaziKlub.Size = new System.Drawing.Size(171, 22);
+            this.mnPrikaziKlub.Text = "Prikazi klub";
+            this.mnPrikaziKlub.Click += new System.EventHandler(this.mnPrikaziKlub_Click);
+            // 
+            // mnPrikaziDrzavu
+            // 
+            this.mnPrikaziDrzavu.Name = "mnPrikaziDrzavu";
+            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(171, 22);
+            this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
+            this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
+            // 
             // btnPrint
             // 
             this.btnPrint.Location = new System.Drawing.Point(834, 24);
@@ -270,23 +284,9 @@ namespace Bilten.UI
             this.btnPrintUnosOcena.Name = "btnPrintUnosOcena";
             this.btnPrintUnosOcena.Size = new System.Drawing.Size(176, 23);
             this.btnPrintUnosOcena.TabIndex = 11;
-            this.btnPrintUnosOcena.Text = "Stampaj formular za unos ucena";
+            this.btnPrintUnosOcena.Text = "Stampaj liste za unos ucena";
             this.btnPrintUnosOcena.UseVisualStyleBackColor = true;
             this.btnPrintUnosOcena.Click += new System.EventHandler(this.btnPrintUnosOcena_Click);
-            // 
-            // mnPrikaziKlub
-            // 
-            this.mnPrikaziKlub.Name = "mnPrikaziKlub";
-            this.mnPrikaziKlub.Size = new System.Drawing.Size(171, 22);
-            this.mnPrikaziKlub.Text = "Prikazi klub";
-            this.mnPrikaziKlub.Click += new System.EventHandler(this.mnPrikaziKlub_Click);
-            // 
-            // mnPrikaziDrzavu
-            // 
-            this.mnPrikaziDrzavu.Name = "mnPrikaziDrzavu";
-            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(171, 22);
-            this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
-            this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
             // 
             // StartListeForm
             // 

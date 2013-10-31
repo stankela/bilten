@@ -43,25 +43,31 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            foreach (RezultatSprava r in poredakPrvoKolo.Rezultati)
+            if (poredakPrvoKolo != null)
             {
-                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                foreach (RezultatSprava r in poredakPrvoKolo.Rezultati)
                 {
-                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                    r2.D_PrvoKolo = r.D;
-                    r2.E_PrvoKolo = r.E;
-                    r2.TotalPrvoKolo = r.Total;
+                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                    {
+                        RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                        r2.D_PrvoKolo = r.D;
+                        r2.E_PrvoKolo = r.E;
+                        r2.TotalPrvoKolo = r.Total;
+                    }
                 }
             }
 
-            foreach (RezultatSprava r in poredakDrugoKolo.Rezultati)
+            if (poredakDrugoKolo != null)
             {
-                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                foreach (RezultatSprava r in poredakDrugoKolo.Rezultati)
                 {
-                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                    r2.D_DrugoKolo = r.D;
-                    r2.E_DrugoKolo = r.E;
-                    r2.TotalDrugoKolo = r.Total;
+                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                    {
+                        RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                        r2.D_DrugoKolo = r.D;
+                        r2.E_DrugoKolo = r.E;
+                        r2.TotalDrugoKolo = r.Total;
+                    }
                 }
             }
 
@@ -123,42 +129,48 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            foreach (RezultatPreskok r in poredakPrvoKolo.Rezultati)
+            if (poredakPrvoKolo != null)
             {
-                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                foreach (RezultatPreskok r in poredakPrvoKolo.Rezultati)
                 {
-                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                    if (!poredak1NaOsnovuObaPreskoka)
+                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     {
-                        r2.D_PrvoKolo = r.D;
-                        r2.E_PrvoKolo = r.E;
-                        r2.TotalPrvoKolo = r.Total;
-                    }
-                    else
-                    {
-                        r2.D_PrvoKolo = null;
-                        r2.E_PrvoKolo = null;
-                        r2.TotalPrvoKolo = r.TotalObeOcene;
+                        RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                        if (!poredak1NaOsnovuObaPreskoka)
+                        {
+                            r2.D_PrvoKolo = r.D;
+                            r2.E_PrvoKolo = r.E;
+                            r2.TotalPrvoKolo = r.Total;
+                        }
+                        else
+                        {
+                            r2.D_PrvoKolo = null;
+                            r2.E_PrvoKolo = null;
+                            r2.TotalPrvoKolo = r.TotalObeOcene;
+                        }
                     }
                 }
             }
 
-            foreach (RezultatPreskok r in poredakDrugoKolo.Rezultati)
+            if (poredakDrugoKolo != null)
             {
-                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                foreach (RezultatPreskok r in poredakDrugoKolo.Rezultati)
                 {
-                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                    if (!poredak2NaOsnovuObaPreskoka)
+                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     {
-                        r2.D_DrugoKolo = r.D;
-                        r2.E_DrugoKolo = r.E;
-                        r2.TotalDrugoKolo = r.Total;
-                    }
-                    else
-                    {
-                        r2.D_DrugoKolo = null;
-                        r2.E_DrugoKolo = null;
-                        r2.TotalDrugoKolo = r.TotalObeOcene;
+                        RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                        if (!poredak2NaOsnovuObaPreskoka)
+                        {
+                            r2.D_DrugoKolo = r.D;
+                            r2.E_DrugoKolo = r.E;
+                            r2.TotalDrugoKolo = r.Total;
+                        }
+                        else
+                        {
+                            r2.D_DrugoKolo = null;
+                            r2.E_DrugoKolo = null;
+                            r2.TotalDrugoKolo = r.TotalObeOcene;
+                        }
                     }
                 }
             }

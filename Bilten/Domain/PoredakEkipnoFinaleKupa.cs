@@ -35,16 +35,42 @@ namespace Bilten.Domain
                 rezultatiMap.Add(e, rezultat);
             }
 
-            foreach (RezultatEkipno r in poredakPrvoKolo.Rezultati)
+            if (poredakPrvoKolo != null)
             {
-                if (rezultatiMap.ContainsKey(r.Ekipa))
-                    rezultatiMap[r.Ekipa].TotalPrvoKolo = r.Total;
+                foreach (RezultatEkipno r in poredakPrvoKolo.Rezultati)
+                {
+                    if (rezultatiMap.ContainsKey(r.Ekipa))
+                    {
+                        rezultatiMap[r.Ekipa].ParterPrvoKolo = r.Parter;
+                        rezultatiMap[r.Ekipa].KonjPrvoKolo = r.Konj;
+                        rezultatiMap[r.Ekipa].KarikePrvoKolo = r.Karike;
+                        rezultatiMap[r.Ekipa].PreskokPrvoKolo = r.Preskok;
+                        rezultatiMap[r.Ekipa].RazbojPrvoKolo = r.Razboj;
+                        rezultatiMap[r.Ekipa].VratiloPrvoKolo = r.Vratilo;
+                        rezultatiMap[r.Ekipa].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
+                        rezultatiMap[r.Ekipa].GredaPrvoKolo = r.Greda;
+                        rezultatiMap[r.Ekipa].TotalPrvoKolo = r.Total;
+                    }
+                }
             }
 
-            foreach (RezultatEkipno r in poredakDrugoKolo.Rezultati)
+            if (poredakDrugoKolo != null)
             {
-                if (rezultatiMap.ContainsKey(r.Ekipa))
-                    rezultatiMap[r.Ekipa].TotalDrugoKolo = r.Total;
+                foreach (RezultatEkipno r in poredakDrugoKolo.Rezultati)
+                {
+                    if (rezultatiMap.ContainsKey(r.Ekipa))
+                    {
+                        rezultatiMap[r.Ekipa].ParterDrugoKolo = r.Parter;
+                        rezultatiMap[r.Ekipa].KonjDrugoKolo = r.Konj;
+                        rezultatiMap[r.Ekipa].KarikeDrugoKolo = r.Karike;
+                        rezultatiMap[r.Ekipa].PreskokDrugoKolo = r.Preskok;
+                        rezultatiMap[r.Ekipa].RazbojDrugoKolo = r.Razboj;
+                        rezultatiMap[r.Ekipa].VratiloDrugoKolo = r.Vratilo;
+                        rezultatiMap[r.Ekipa].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
+                        rezultatiMap[r.Ekipa].GredaDrugoKolo = r.Greda;
+                        rezultatiMap[r.Ekipa].TotalDrugoKolo = r.Total;
+                    }
+                }
             }
 
             List<RezultatEkipnoFinaleKupa> rezultati = new List<RezultatEkipnoFinaleKupa>(rezultatiMap.Values);

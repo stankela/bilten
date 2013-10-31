@@ -4,28 +4,8 @@ using System.Text;
 
 namespace Bilten.Domain
 {
-    public class RezultatEkipnoFinaleKupa : Rezultat
+    public class RezultatEkipnoFinaleKupa : RezultatUkupnoFinaleKupa
     {
-        private Nullable<float> _totalPrvoKolo;
-        public virtual Nullable<float> TotalPrvoKolo
-        {
-            get { return _totalPrvoKolo; }
-            set { _totalPrvoKolo = value; }
-        }
-
-        private Nullable<float> _totalDrugoKolo;
-        public virtual Nullable<float> TotalDrugoKolo
-        {
-            get { return _totalDrugoKolo; }
-            set { _totalDrugoKolo = value; }
-        }
-
-        // moram ovako jer je set accessor za Total protected u klasi Rezultat
-        public void setTotal(Nullable<float> value)
-        {
-            Total = value;
-        }
-
         private Ekipa _ekipa;
         public virtual Ekipa Ekipa
         {
