@@ -131,6 +131,7 @@ namespace Bilten.Domain
 
             if (poredakPrvoKolo != null)
             {
+                bool postojiTotalObeOcene = false;
                 foreach (RezultatPreskok r in poredakPrvoKolo.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
@@ -147,6 +148,25 @@ namespace Bilten.Domain
                             r2.D_PrvoKolo = null;
                             r2.E_PrvoKolo = null;
                             r2.TotalPrvoKolo = r.TotalObeOcene;
+                            postojiTotalObeOcene |= (r.TotalObeOcene != null);
+                        }
+                    }
+                }
+                if (poredak1NaOsnovuObaPreskoka && !postojiTotalObeOcene)
+                {
+                    // U propozicijama za prvo kolo je stavljeno da se preskok racuna na osnovu
+                    // oba preskoka, ali ni za jednog gimnasticara ne postoji ocena za oba preskoka.
+                    // Ova situacija najverovatnije nastaje kada se u prvom kolu kao prvi preskok
+                    // unosila konacna ocena za oba preskoka.
+                    // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
+                    foreach (RezultatPreskok r in poredakPrvoKolo.Rezultati)
+                    {
+                        if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                        {
+                            RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                            r2.D_PrvoKolo = r.D;
+                            r2.E_PrvoKolo = r.E;
+                            r2.TotalPrvoKolo = r.Total;
                         }
                     }
                 }
@@ -154,6 +174,7 @@ namespace Bilten.Domain
 
             if (poredakDrugoKolo != null)
             {
+                bool postojiTotalObeOcene = false;
                 foreach (RezultatPreskok r in poredakDrugoKolo.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
@@ -170,6 +191,21 @@ namespace Bilten.Domain
                             r2.D_DrugoKolo = null;
                             r2.E_DrugoKolo = null;
                             r2.TotalDrugoKolo = r.TotalObeOcene;
+                            postojiTotalObeOcene |= (r.TotalObeOcene != null);
+                        }
+                    }
+                }
+                if (poredak2NaOsnovuObaPreskoka && !postojiTotalObeOcene)
+                {
+                    // Isti komentar kao za prvo kolo.
+                    foreach (RezultatPreskok r in poredakDrugoKolo.Rezultati)
+                    {
+                        if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                        {
+                            RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                            r2.D_DrugoKolo = r.D;
+                            r2.E_DrugoKolo = r.E;
+                            r2.TotalDrugoKolo = r.Total;
                         }
                     }
                 }
