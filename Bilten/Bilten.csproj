@@ -182,6 +182,7 @@
     <Compile Include="Report\Izvestaj.cs" />
     <Compile Include="Report\KvalifikantiTak3Izvestaj.cs" />
     <Compile Include="Report\Report.cs" />
+    <Compile Include="Report\SpravaFinaleKupaIzvestaj.cs" />
     <Compile Include="Report\SpravaIzvestaj.cs" />
     <Compile Include="Report\StartListaIzvestaj.cs" />
     <Compile Include="Report\SudijskiFormularIzvestaj.cs" />

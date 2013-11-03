@@ -28,13 +28,19 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmbTakmicenje = new System.Windows.Forms.ComboBox();
             this.cmbSprava = new System.Windows.Forms.ComboBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnQ = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnR = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPrazno = new System.Windows.Forms.ToolStripMenuItem();
             this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbTakmicenje
@@ -96,6 +102,36 @@ namespace Bilten.UI
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnQ,
+            this.mnR,
+            this.mnPrazno});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
+            // 
+            // mnQ
+            // 
+            this.mnQ.Name = "mnQ";
+            this.mnQ.Size = new System.Drawing.Size(152, 22);
+            this.mnQ.Text = "Q";
+            this.mnQ.Click += new System.EventHandler(this.mnQ_Click);
+            // 
+            // mnR
+            // 
+            this.mnR.Name = "mnR";
+            this.mnR.Size = new System.Drawing.Size(152, 22);
+            this.mnR.Text = "R";
+            this.mnR.Click += new System.EventHandler(this.mnR_Click);
+            // 
+            // mnPrazno
+            // 
+            this.mnPrazno.Name = "mnPrazno";
+            this.mnPrazno.Size = new System.Drawing.Size(152, 22);
+            this.mnPrazno.Text = "Prazno";
+            this.mnPrazno.Click += new System.EventHandler(this.mnPrazno_Click);
+            // 
             // spravaGridUserControl1
             // 
             this.spravaGridUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -124,6 +160,7 @@ namespace Bilten.UI
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RezultatiSpravaFinaleKupaForm";
             this.Shown += new System.EventHandler(this.RezultatiSpravaFinaleKupaForm_Shown);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -137,5 +174,9 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem mnQ;
+        private System.Windows.Forms.ToolStripMenuItem mnR;
+        private System.Windows.Forms.ToolStripMenuItem mnPrazno;
     }
 }
