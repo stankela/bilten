@@ -1,3 +1,14 @@
+10-Nov-2013
+
+create table rezultati_sprava_finale_kupa_update (
+	rez_takmicenje_id int references rezultatsko_takmicenje(rez_takmicenje_id),
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	sprava tinyint,
+	kval_status tinyint,
+	constraint PK_rezultati_sprava_finale_kupa_update 
+		primary key (rez_takmicenje_id, gimnasticar_id, sprava)
+);
+
 18-Okt-2012
 
 ALTER TABLE takmicenja ADD COLUMN finale_kupa bit;

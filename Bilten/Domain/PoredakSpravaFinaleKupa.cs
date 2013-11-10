@@ -30,7 +30,7 @@ namespace Bilten.Domain
         // TODO3: Kod finala kupa bi trebalo kod kloniranja ubaciti gimnasticare iz oba kola.
 
         public virtual void create(RezultatskoTakmicenje rezTak, PoredakSprava poredakPrvoKolo,
-            PoredakSprava poredakDrugoKolo)
+            PoredakSprava poredakDrugoKolo, List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -108,15 +108,36 @@ namespace Bilten.Domain
 
             rankRezultati();
             if (rezTak.Propozicije.OdvojenoTak3)
+            {
                 updateKvalStatus(rezTak.Propozicije.BrojFinalistaTak3,
                                  rezTak.Propozicije.NeogranicenBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu,
                                  rezTak.Propozicije.BrojRezerviTak3);
+                applyRezultatiUpdate(rezultatiUpdate);
+            }
+        }
+
+        private void applyRezultatiUpdate(List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)
+        {
+            foreach (RezultatSpravaFinaleKupaUpdate rezultatUpdate in rezultatiUpdate)
+            {
+                if (rezultatUpdate.Sprava != this.Sprava)
+                    continue;
+                foreach (RezultatSpravaFinaleKupa rezultat in Rezultati)
+                {
+                    if (rezultatUpdate.GimnasticarId == rezultat.Gimnasticar.Id)
+                    {
+                        rezultat.KvalStatus = rezultatUpdate.KvalStatus;
+                        break;
+                    }
+                }
+            }
         }
 
         public virtual void create(RezultatskoTakmicenje rezTak, PoredakPreskok poredakPrvoKolo,
-            PoredakPreskok poredakDrugoKolo, bool poredak1NaOsnovuObaPreskoka, bool poredak2NaOsnovuObaPreskoka)
+            PoredakPreskok poredakDrugoKolo, bool poredak1NaOsnovuObaPreskoka, bool poredak2NaOsnovuObaPreskoka,
+            List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -248,11 +269,14 @@ namespace Bilten.Domain
 
             rankRezultati();
             if (rezTak.Propozicije.OdvojenoTak3)
+            {
                 updateKvalStatus(rezTak.Propozicije.BrojFinalistaTak3,
                                  rezTak.Propozicije.NeogranicenBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu,
                                  rezTak.Propozicije.BrojRezerviTak3);
+                applyRezultatiUpdate(rezultatiUpdate);
+            }
         }
 
         private void rankRezultati()

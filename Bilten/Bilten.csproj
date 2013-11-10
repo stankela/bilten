@@ -5,7 +5,7 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -81,6 +81,7 @@
     <Compile Include="Data\QueryModel\Query.cs" />
     <Compile Include="Data\QueryModel\QueryOperator.cs" />
     <Compile Include="Data\QueryModel\StringMatchMode.cs" />
+    <Compile Include="Data\RezultatSpravaFinaleKupaDAO.cs" />
     <Compile Include="Data\TransactionException.cs" />
     <Compile Include="Domain\Datum.cs" />
     <Compile Include="Domain\DeoTakmicenjaKod.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Domain\RezultatskoTakmicenjeDescription.cs" />
     <Compile Include="Domain\RezultatSprava.cs" />
     <Compile Include="Domain\RezultatSpravaFinaleKupa.cs" />
+    <Compile Include="Domain\RezultatSpravaFinaleKupaUpdate.cs" />
     <Compile Include="Domain\RezultatUkupno.cs" />
     <Compile Include="Domain\RezultatUkupnoExtended.cs" />
     <Compile Include="Domain\RezultatUkupnoFinaleKupa.cs" />

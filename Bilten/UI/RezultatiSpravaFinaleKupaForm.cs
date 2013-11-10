@@ -131,6 +131,9 @@ namespace Bilten.UI
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
+
+            RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
+
             foreach (RezultatskoTakmicenje rezTak in result)
             {
                 // potrebno u Poredak.create
@@ -140,6 +143,8 @@ namespace Bilten.UI
                 RezultatskoTakmicenje rezTakDrugoKolo = findRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
 
                 rezTak.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
+                List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate = dao.findByRezTak(rezTak);
+
                 foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
                 {
                     if (s != Sprava.Preskok)
@@ -151,7 +156,7 @@ namespace Bilten.UI
                         if (rezTakDrugoKolo != null)
                             poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s);
                         rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                            poredakPrvoKolo, poredakDrugoKolo);
+                            poredakPrvoKolo, poredakDrugoKolo, rezultatiUpdate);
                     }
                     else
                     {
@@ -173,7 +178,7 @@ namespace Bilten.UI
 
                         rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
                             poredakPrvoKolo, poredakDrugoKolo,
-                            poredakNaOsnovuObaPreskokaPrvoKolo, poredakNaOsnovuObaPreskokaDrugoKolo);
+                            poredakNaOsnovuObaPreskokaPrvoKolo, poredakNaOsnovuObaPreskokaDrugoKolo, rezultatiUpdate);
                     }
                 }
             }
@@ -500,19 +505,21 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
-            rez.KvalStatus = kvalStatus;
-          
-            // TODO3: Implementiraj Hibernate persistance za klasu PoredakSpravaFinaleKupa
-            /*
+            // NOTE: Promena kval. statusa kod finala kupa namerno je implementirana da se cuva u posebnoj tabeli kao
+            // update na postojece rezultate. Ako bih implementirao drugacije, tj. da se cuva u istoj tabeli gde su i rezultati,
+            // tada bi se poredak snimio u bazu prilikom prvog otvaranja prozora, i ne bi se ponovo izracunavao prilikom
+            // svakog sledeceg otvaranja prozora vec bi se ucitavao iz baze. U tom slucaju ne bih mogao da postignem da se
+            // npr. promeni neki rezultat iz prvog i drugog kola i da ta promena automatski bude vidljiva kada se ponovo
+            // otvori prozor za finale kupa.
+            
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
+                insertRezultatSpravaFinaleKupaUpdate(rez.Gimnasticar, ActiveTakmicenje, ActiveSprava, kvalStatus);
                 rez.KvalStatus = kvalStatus;
-                dataContext.Save(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava));
-                        dataContext.Commit();
             }
             catch (Exception ex)
             {
@@ -527,12 +534,21 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
-            }*/
+            }
 
             spravaGridUserControl1.DataGridViewUserControl.refreshItems();
             spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatSpravaFinaleKupa>(rez);
         }
 
+        private void insertRezultatSpravaFinaleKupaUpdate(GimnasticarUcesnik gimnasticar, RezultatskoTakmicenje rezTak,
+            Sprava sprava, KvalifikacioniStatus newKvalStatus)
+        {
+            RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
+            if (!dao.postojiRezultatSpravaFinaleKupaUpdate(gimnasticar, rezTak, sprava))
+                dao.insert(gimnasticar, rezTak, sprava, newKvalStatus);
+            else
+                dao.update(gimnasticar, rezTak, sprava, newKvalStatus);
+        }
 
     }
 }

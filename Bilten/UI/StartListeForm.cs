@@ -1088,7 +1088,11 @@ namespace Bilten.UI
         private void kreirajNaOsnovuKvalifikanata()
         {
             if (ActiveRaspored == null)
+            {
+                string msg2 = "Morate najpre da kreirate praznu start listu (dugme \"Nova start lista\").";
+                MessageDialogs.showMessage(msg2, this.Text);
                 return;
+            }
 
             string msg = "Da li zelite da kreirate start listu na osnovu kvalifikanata?";
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
@@ -1234,7 +1238,11 @@ namespace Bilten.UI
         private void kreirajNaOsnovuKvalifikanataFinaleKupa()
         {
             if (ActiveRaspored == null)
+            {
+                string msg2 = "Morate najpre da kreirate praznu start listu (dugme \"Nova start lista\").";
+                MessageDialogs.showMessage(msg2, this.Text);
                 return;
+            }
 
             string msg = "Da li zelite da kreirate start listu na osnovu kvalifikanata?";
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
@@ -1463,6 +1471,9 @@ namespace Bilten.UI
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
+
+            RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
+            
             foreach (RezultatskoTakmicenje rezTak in result)
             {
                 // potrebno u Poredak.create
@@ -1472,21 +1483,42 @@ namespace Bilten.UI
                 RezultatskoTakmicenje rezTakDrugoKolo = findRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
 
                 rezTak.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
+                List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate = dao.findByRezTak(rezTak);
+                
                 foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
                 {
                     if (s != Sprava.Preskok)
                     {
+                        PoredakSprava poredakPrvoKolo = null;
+                        PoredakSprava poredakDrugoKolo = null;
+                        if (rezTakPrvoKolo != null)
+                            poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.getPoredakSprava(s);
+                        if (rezTakDrugoKolo != null)
+                            poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s);
                         rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                            rezTakPrvoKolo.Takmicenje1.getPoredakSprava(s),
-                            rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s));
+                            poredakPrvoKolo, poredakDrugoKolo, rezultatiUpdate);
                     }
                     else
                     {
+                        PoredakPreskok poredakPrvoKolo = null;
+                        PoredakPreskok poredakDrugoKolo = null;
+                        if (rezTakPrvoKolo != null)
+                            poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.PoredakPreskok;
+                        if (rezTakDrugoKolo != null)
+                            poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.PoredakPreskok;
+
+                        bool poredakNaOsnovuObaPreskokaPrvoKolo = false;
+                        bool poredakNaOsnovuObaPreskokaDrugoKolo = false;
+                        if (rezTakPrvoKolo != null)
+                            poredakNaOsnovuObaPreskokaPrvoKolo =
+                                rezTakPrvoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                        if (rezTakDrugoKolo != null)
+                            poredakNaOsnovuObaPreskokaDrugoKolo =
+                                rezTakDrugoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+
                         rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                            rezTakPrvoKolo.Takmicenje1.PoredakPreskok,
-                            rezTakDrugoKolo.Takmicenje1.PoredakPreskok,
-                            rezTakPrvoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
-                            rezTakDrugoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka);
+                            poredakPrvoKolo, poredakDrugoKolo,
+                            poredakNaOsnovuObaPreskokaPrvoKolo, poredakNaOsnovuObaPreskokaDrugoKolo, rezultatiUpdate);
                     }
                 }
             }
