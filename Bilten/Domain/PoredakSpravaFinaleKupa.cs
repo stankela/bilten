@@ -438,5 +438,24 @@ namespace Bilten.Domain
                 }
             }
         }
+
+        public List<RezultatSpravaFinaleKupa> getRezultatiKvalifikanti()
+        {
+            List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(Rezultati);
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["RedBroj"];
+            rezultati.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc, ListSortDirection.Ascending));
+
+            List<RezultatSpravaFinaleKupa> result = new List<RezultatSpravaFinaleKupa>();
+            foreach (RezultatSpravaFinaleKupa rez in rezultati)
+            {
+                if (rez.KvalStatus == KvalifikacioniStatus.Q)
+                {
+                    result.Add(rez);
+                }
+            }
+            return result;
+        }
     }
 }

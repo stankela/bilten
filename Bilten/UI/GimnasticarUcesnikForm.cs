@@ -154,6 +154,7 @@ namespace Bilten.UI
             Text = "Prijavljeni gimnasticar";
 
             txtIme.Text = String.Empty;
+            txtSrednjeIme.Text = String.Empty;
             txtPrezime.Text = String.Empty;
             txtGimnastika.Text = String.Empty;
             txtDatumRodj.Text = String.Empty;
@@ -195,6 +196,7 @@ namespace Bilten.UI
         {
             GimnasticarUcesnik gimnasticar = (GimnasticarUcesnik)entity;
             txtIme.Text = gimnasticar.Ime;
+            txtSrednjeIme.Text = gimnasticar.SrednjeIme;
             txtPrezime.Text = gimnasticar.Prezime;
             txtGimnastika.Text = gimnasticar.Gimnastika.ToString();
 

@@ -79,6 +79,7 @@ namespace Bilten.UI
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcije = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcijeOpcije = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnZrebZaFinaleKupa = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -282,11 +283,12 @@ namespace Bilten.UI
             // 
             this.mnTakmicenje1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnTakmicenje1RasporedSudija,
-            this.mnTakmicenje1StartListe,
-            this.mnTakmicenje1Ocene,
             this.mnPrvoDrugoKoloViseboj,
             this.mnPrvoDrugoKoloSprave,
             this.mnPrvoDrugoKoloEkipno,
+            this.mnZrebZaFinaleKupa,
+            this.mnTakmicenje1StartListe,
+            this.mnTakmicenje1Ocene,
             this.mnRezultatiUkupnoTak1,
             this.mnTakmicenje1RezultatiSprave,
             this.mnTakmicenje1RezultatiEkipe,
@@ -378,21 +380,21 @@ namespace Bilten.UI
             // mnKvalifikantiTak2
             // 
             this.mnKvalifikantiTak2.Name = "mnKvalifikantiTak2";
-            this.mnKvalifikantiTak2.Size = new System.Drawing.Size(136, 22);
+            this.mnKvalifikantiTak2.Size = new System.Drawing.Size(152, 22);
             this.mnKvalifikantiTak2.Text = "Kvalifikanti";
             this.mnKvalifikantiTak2.Click += new System.EventHandler(this.mnKvalifikantiTak2_Click);
             // 
             // mnTakmicenje2Ocene
             // 
             this.mnTakmicenje2Ocene.Name = "mnTakmicenje2Ocene";
-            this.mnTakmicenje2Ocene.Size = new System.Drawing.Size(136, 22);
+            this.mnTakmicenje2Ocene.Size = new System.Drawing.Size(152, 22);
             this.mnTakmicenje2Ocene.Text = "Ocene";
             this.mnTakmicenje2Ocene.Click += new System.EventHandler(this.mnTakmicenje2Ocene_Click);
             // 
             // mnTakmicenje2Rezultati
             // 
             this.mnTakmicenje2Rezultati.Name = "mnTakmicenje2Rezultati";
-            this.mnTakmicenje2Rezultati.Size = new System.Drawing.Size(136, 22);
+            this.mnTakmicenje2Rezultati.Size = new System.Drawing.Size(152, 22);
             this.mnTakmicenje2Rezultati.Text = "Rezultati";
             this.mnTakmicenje2Rezultati.Click += new System.EventHandler(this.mnTakmicenje2Rezultati_Click);
             // 
@@ -411,35 +413,35 @@ namespace Bilten.UI
             // mnKvalifikantiTak3
             // 
             this.mnKvalifikantiTak3.Name = "mnKvalifikantiTak3";
-            this.mnKvalifikantiTak3.Size = new System.Drawing.Size(150, 22);
+            this.mnKvalifikantiTak3.Size = new System.Drawing.Size(152, 22);
             this.mnKvalifikantiTak3.Text = "Kvalifikanti";
             this.mnKvalifikantiTak3.Click += new System.EventHandler(this.mnKvalifikantiTak3_Click);
             // 
             // zrebZaFinalePoSpravamaToolStripMenuItem
             // 
             this.zrebZaFinalePoSpravamaToolStripMenuItem.Name = "zrebZaFinalePoSpravamaToolStripMenuItem";
-            this.zrebZaFinalePoSpravamaToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.zrebZaFinalePoSpravamaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.zrebZaFinalePoSpravamaToolStripMenuItem.Text = "Zreb za finale";
             this.zrebZaFinalePoSpravamaToolStripMenuItem.Click += new System.EventHandler(this.zrebZaFinalePoSpravamaToolStripMenuItem_Click);
             // 
             // mnTakmicenje3StartListe
             // 
             this.mnTakmicenje3StartListe.Name = "mnTakmicenje3StartListe";
-            this.mnTakmicenje3StartListe.Size = new System.Drawing.Size(150, 22);
+            this.mnTakmicenje3StartListe.Size = new System.Drawing.Size(152, 22);
             this.mnTakmicenje3StartListe.Text = "Start liste";
             this.mnTakmicenje3StartListe.Click += new System.EventHandler(this.mnTakmicenje3StartListe_Click);
             // 
             // mnTakmicenje3Ocene
             // 
             this.mnTakmicenje3Ocene.Name = "mnTakmicenje3Ocene";
-            this.mnTakmicenje3Ocene.Size = new System.Drawing.Size(150, 22);
+            this.mnTakmicenje3Ocene.Size = new System.Drawing.Size(152, 22);
             this.mnTakmicenje3Ocene.Text = "Ocene";
             this.mnTakmicenje3Ocene.Click += new System.EventHandler(this.mnTakmicenje3Ocene_Click);
             // 
             // mnTakmicenje3Rezultati
             // 
             this.mnTakmicenje3Rezultati.Name = "mnTakmicenje3Rezultati";
-            this.mnTakmicenje3Rezultati.Size = new System.Drawing.Size(150, 22);
+            this.mnTakmicenje3Rezultati.Size = new System.Drawing.Size(152, 22);
             this.mnTakmicenje3Rezultati.Text = "Rezultati";
             this.mnTakmicenje3Rezultati.Click += new System.EventHandler(this.mnTakmicenje3Rezultati_Click);
             // 
@@ -485,6 +487,13 @@ namespace Bilten.UI
             this.mnOpcijeOpcije.Size = new System.Drawing.Size(115, 22);
             this.mnOpcijeOpcije.Text = "Opcije";
             this.mnOpcijeOpcije.Click += new System.EventHandler(this.mnOpcijeOpcije_Click);
+            // 
+            // mnZrebZaFinaleKupa
+            // 
+            this.mnZrebZaFinaleKupa.Name = "mnZrebZaFinaleKupa";
+            this.mnZrebZaFinaleKupa.Size = new System.Drawing.Size(218, 22);
+            this.mnZrebZaFinaleKupa.Text = "Zreb za finale";
+            this.mnZrebZaFinaleKupa.Click += new System.EventHandler(this.mnZrebZaFinaleKupa_Click);
             // 
             // MainForm
             // 
@@ -555,6 +564,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnPrvoDrugoKoloSprave;
         private System.Windows.Forms.ToolStripMenuItem mnPrvoDrugoKoloEkipno;
         private System.Windows.Forms.ToolStripMenuItem mnKopirajPrethodnoTakmicenje;
+        private System.Windows.Forms.ToolStripMenuItem mnZrebZaFinaleKupa;
     }
 }
 

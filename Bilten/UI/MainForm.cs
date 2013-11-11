@@ -335,6 +335,7 @@ namespace Bilten.UI
             mnPrvoDrugoKoloSprave.Visible = takmicenje.FinaleKupa;
             mnPrvoDrugoKoloEkipno.Visible = takmicenje.FinaleKupa;
             mnKreirajTakmicenja234.Visible = !takmicenje.FinaleKupa;
+            mnZrebZaFinaleKupa.Visible = takmicenje.FinaleKupa;
 
             MakeCaption();
         }
@@ -435,6 +436,7 @@ namespace Bilten.UI
             mnPrvoDrugoKoloSprave.Visible = takmicenje.FinaleKupa;
             mnPrvoDrugoKoloEkipno.Visible = takmicenje.FinaleKupa;
             mnKreirajTakmicenja234.Visible = !takmicenje.FinaleKupa;
+            mnZrebZaFinaleKupa.Visible = takmicenje.FinaleKupa;
 
             MakeCaption();
         }
@@ -1116,6 +1118,7 @@ namespace Bilten.UI
 
         private void mnKopirajPrethodnoTakmicenje_Click(object sender, EventArgs e)
         {
+            // TODO3: Za finale kupa treba da se ponudi da se kopiraju prva dva kola.
             KopirajTakmicenjeForm form;
             DialogResult result;
             try
@@ -1700,6 +1703,23 @@ namespace Bilten.UI
             try
             {
                 RezultatiSpravaFinaleKupaForm form = new RezultatiSpravaFinaleKupaForm(takmicenjeId.Value);
+                form.ShowDialog();
+            }
+            catch (BusinessException ex)
+            {
+                MessageDialogs.showMessage(ex.Message, strProgName);
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
+        }
+
+        private void mnZrebZaFinaleKupa_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ZrebForm form = new ZrebForm(takmicenjeId.Value);
                 form.ShowDialog();
             }
             catch (BusinessException ex)

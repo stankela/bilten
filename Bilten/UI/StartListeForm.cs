@@ -1120,7 +1120,7 @@ namespace Bilten.UI
             Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
             for (int j = 0; j < sprave.Length; j++)
             {
-                StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, ActiveRotacija);
+                StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
                 startLista.clear();
 
                 List<UcesnikTakmicenja3> kvalifikanti = new List<UcesnikTakmicenja3>(
@@ -1154,7 +1154,7 @@ namespace Bilten.UI
 
                 for (int j = 0; j < sprave.Length; j++)
                 {
-                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, ActiveRotacija);
+                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
                     foreach (NastupNaSpravi n in startLista.Nastupi)
                     {
                         //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
@@ -1165,7 +1165,7 @@ namespace Bilten.UI
                 }
                 dataContext.Commit();
 
-                setStartListe(ActiveRaspored, ActiveGrupa, ActiveRotacija);
+                setStartListe(ActiveRaspored, ActiveGrupa, 1 /*ActiveRotacija*/);
                 getActiveSpravaGridGroupUserControl().clearSelection();
             }
             catch (Exception ex)
@@ -1248,6 +1248,20 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
+            List<int> zreb = parseZreb();
+            if (zreb == null)
+            {
+                msg = "Nepravilno unesen zreb za finale.";
+                MessageDialogs.showMessage(msg, this.Text);
+                return;
+            }
+            else if (zreb.Count == 0)
+            {
+                msg = "Nije unesen zreb za start liste. Da li zelite da kreirate start listu bez zreba?";
+                if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                    return;
+            }
+
             Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -1290,25 +1304,31 @@ namespace Bilten.UI
 
                 for (int j = 0; j < sprave.Length; j++)
                 {
-                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, ActiveRotacija);
+                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
                     startLista.clear();
 
+                    List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>();
                     foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
                     {
-                        List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(
-                            rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(sprave[j]).Rezultati);
-
-                        PropertyDescriptor propDesc =
-                            TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["RedBroj"];
-                        rezultati.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc, ListSortDirection.Ascending));
-
-                        foreach (RezultatSpravaFinaleKupa rez in rezultati)
+                        PoredakSpravaFinaleKupa poredak = rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(sprave[j]);
+                        foreach (RezultatSpravaFinaleKupa rez in poredak.getRezultatiKvalifikanti())
                         {
-                            if (rez.KvalStatus == KvalifikacioniStatus.Q)
-                            {
-                                startLista.addNastup(new NastupNaSpravi(false, rez.Gimnasticar));
-                            }
+                            rezultati.Add(rez);
                         }
+                    }
+
+                    int k = 0;
+                    while (k < zreb.Count)
+                    {
+                        if (zreb[k] <= rezultati.Count)
+                            startLista.addNastup(new NastupNaSpravi(false, rezultati[zreb[k] - 1].Gimnasticar));
+                        k++;
+                    }
+                    k = startLista.Nastupi.Count;
+                    while (k < rezultati.Count)
+                    {
+                        startLista.addNastup(new NastupNaSpravi(false, rezultati[k].Gimnasticar));
+                        k++;
                     }
                 }
             }
@@ -1341,7 +1361,7 @@ namespace Bilten.UI
 
                 for (int j = 0; j < sprave.Length; j++)
                 {
-                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, ActiveRotacija);
+                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
                     foreach (NastupNaSpravi n in startLista.Nastupi)
                     {
                         //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
@@ -1352,7 +1372,7 @@ namespace Bilten.UI
                 }
                 dataContext.Commit();
 
-                setStartListe(ActiveRaspored, ActiveGrupa, ActiveRotacija);
+                setStartListe(ActiveRaspored, ActiveGrupa, 1 /*ActiveRotacija*/);
                 getActiveSpravaGridGroupUserControl().clearSelection();
             }
             catch (Exception ex)
