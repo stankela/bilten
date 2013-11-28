@@ -155,6 +155,8 @@ namespace Bilten.Domain
             }
             if (result == Sprava.Undefined && sprava.ToUpper() == "KONJ")
                 result = Sprava.Konj;
+            if (result == Sprava.Undefined && sprava.ToUpper() == "DVOVISINSKI RAZBOJ")
+                result = Sprava.DvovisinskiRazboj;
             return result;
         }
 

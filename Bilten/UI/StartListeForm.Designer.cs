@@ -51,9 +51,11 @@ namespace Bilten.UI
             this.mnOcene = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrikaziKlub = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnOznaciKaoEkipu = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnOstaleRotacije = new System.Windows.Forms.Button();
             this.btnPrintUnosOcena = new System.Windows.Forms.Button();
+            this.mnOznaciKaoPojedinca = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -198,65 +200,74 @@ namespace Bilten.UI
             this.mnRezultatiEkipno,
             this.mnOcene,
             this.mnPrikaziKlub,
-            this.mnPrikaziDrzavu});
+            this.mnPrikaziDrzavu,
+            this.mnOznaciKaoEkipu,
+            this.mnOznaciKaoPojedinca});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 180);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(187, 246);
             // 
             // mnUnesiOcenu
             // 
             this.mnUnesiOcenu.Name = "mnUnesiOcenu";
-            this.mnUnesiOcenu.Size = new System.Drawing.Size(171, 22);
+            this.mnUnesiOcenu.Size = new System.Drawing.Size(186, 22);
             this.mnUnesiOcenu.Text = "Unesi ocenu";
             this.mnUnesiOcenu.Click += new System.EventHandler(this.mnUnesiOcenu_Click);
             // 
             // mnPromeniStartListu
             // 
             this.mnPromeniStartListu.Name = "mnPromeniStartListu";
-            this.mnPromeniStartListu.Size = new System.Drawing.Size(171, 22);
+            this.mnPromeniStartListu.Size = new System.Drawing.Size(186, 22);
             this.mnPromeniStartListu.Text = "Promeni start listu";
             this.mnPromeniStartListu.Click += new System.EventHandler(this.mnPromeniStartListu_Click);
             // 
             // mnRezultatiViseboj
             // 
             this.mnRezultatiViseboj.Name = "mnRezultatiViseboj";
-            this.mnRezultatiViseboj.Size = new System.Drawing.Size(171, 22);
+            this.mnRezultatiViseboj.Size = new System.Drawing.Size(186, 22);
             this.mnRezultatiViseboj.Text = "Rezultati viseboj";
             this.mnRezultatiViseboj.Click += new System.EventHandler(this.mnRezultatiViseboj_Click);
             // 
             // mnRezultatiSprave
             // 
             this.mnRezultatiSprave.Name = "mnRezultatiSprave";
-            this.mnRezultatiSprave.Size = new System.Drawing.Size(171, 22);
+            this.mnRezultatiSprave.Size = new System.Drawing.Size(186, 22);
             this.mnRezultatiSprave.Text = "Rezultati sprave";
             this.mnRezultatiSprave.Click += new System.EventHandler(this.mnRezultatiSprave_Click);
             // 
             // mnRezultatiEkipno
             // 
             this.mnRezultatiEkipno.Name = "mnRezultatiEkipno";
-            this.mnRezultatiEkipno.Size = new System.Drawing.Size(171, 22);
+            this.mnRezultatiEkipno.Size = new System.Drawing.Size(186, 22);
             this.mnRezultatiEkipno.Text = "Rezultati ekipno";
             this.mnRezultatiEkipno.Click += new System.EventHandler(this.mnRezultatiEkipno_Click);
             // 
             // mnOcene
             // 
             this.mnOcene.Name = "mnOcene";
-            this.mnOcene.Size = new System.Drawing.Size(171, 22);
+            this.mnOcene.Size = new System.Drawing.Size(186, 22);
             this.mnOcene.Text = "Ocene";
             this.mnOcene.Click += new System.EventHandler(this.mnOcene_Click);
             // 
             // mnPrikaziKlub
             // 
             this.mnPrikaziKlub.Name = "mnPrikaziKlub";
-            this.mnPrikaziKlub.Size = new System.Drawing.Size(171, 22);
+            this.mnPrikaziKlub.Size = new System.Drawing.Size(186, 22);
             this.mnPrikaziKlub.Text = "Prikazi klub";
             this.mnPrikaziKlub.Click += new System.EventHandler(this.mnPrikaziKlub_Click);
             // 
             // mnPrikaziDrzavu
             // 
             this.mnPrikaziDrzavu.Name = "mnPrikaziDrzavu";
-            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(171, 22);
+            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(186, 22);
             this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
             this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
+            // 
+            // mnOznaciKaoEkipu
+            // 
+            this.mnOznaciKaoEkipu.Name = "mnOznaciKaoEkipu";
+            this.mnOznaciKaoEkipu.Size = new System.Drawing.Size(186, 22);
+            this.mnOznaciKaoEkipu.Text = "Oznaci kao ekipu";
+            this.mnOznaciKaoEkipu.Click += new System.EventHandler(this.mnOznaciKaoEkipu_Click);
             // 
             // btnPrint
             // 
@@ -287,6 +298,13 @@ namespace Bilten.UI
             this.btnPrintUnosOcena.Text = "Stampaj liste za unos ucena";
             this.btnPrintUnosOcena.UseVisualStyleBackColor = true;
             this.btnPrintUnosOcena.Click += new System.EventHandler(this.btnPrintUnosOcena_Click);
+            // 
+            // mnOznaciKaoPojedinca
+            // 
+            this.mnOznaciKaoPojedinca.Name = "mnOznaciKaoPojedinca";
+            this.mnOznaciKaoPojedinca.Size = new System.Drawing.Size(186, 22);
+            this.mnOznaciKaoPojedinca.Text = "Oznaci kao pojedinca";
+            this.mnOznaciKaoPojedinca.Click += new System.EventHandler(this.mnOznaciKaoPojedinca_Click);
             // 
             // StartListeForm
             // 
@@ -347,5 +365,7 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnPrintUnosOcena;
         private System.Windows.Forms.ToolStripMenuItem mnPrikaziKlub;
         private System.Windows.Forms.ToolStripMenuItem mnPrikaziDrzavu;
+        private System.Windows.Forms.ToolStripMenuItem mnOznaciKaoEkipu;
+        private System.Windows.Forms.ToolStripMenuItem mnOznaciKaoPojedinca;
     }
 }

@@ -80,7 +80,7 @@ namespace Bilten.Domain
                 throw new BusinessException(
                     String.Format("Gimnasticar {0} je vec na start listi.", g));
 
-            NastupNaSpravi nastup = new NastupNaSpravi(nastupaDvaPuta, g);
+            NastupNaSpravi nastup = new NastupNaSpravi(nastupaDvaPuta, g, 0);
             addNastup(nastup);
         }
 

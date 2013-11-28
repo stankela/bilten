@@ -454,7 +454,7 @@ namespace Bilten.Test
                     if (gimnasticar == null)
                         throw new Exception("Greska prilikom dodavanja rasporeda nastupa.");
                     NastupNaSpravi nastup = new NastupNaSpravi(
-                        nastupaDvaPuta, gimnasticar);
+                        nastupaDvaPuta, gimnasticar, 0);
 
                     while (raspored.getStartLista(sprava, grupa, rot) == null)
                         raspored.addNewGrupa();

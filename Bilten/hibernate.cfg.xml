@@ -7,7 +7,7 @@
 
     
     <!-- Promeni takodje i u ConfigurationParameters.ConnectionString -->
-    <property name="connection.connection_string">Data Source=..\..\BiltenPodaci.sdf</property>       
+    <property name="connection.connection_string">Data Source=BiltenPodaci.sdf</property>       
     
     
     <property name="proxyfactory.factory_class">

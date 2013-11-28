@@ -5,7 +5,7 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -478,6 +478,12 @@
     <Compile Include="UI\RezultatskoTakmicenjeDescriptionForm.Designer.cs">
       <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\RotacijeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RotacijeForm.Designer.cs">
+      <DependentUpon>RotacijeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SablonRasporedaNastupaTakm1Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -564,6 +570,12 @@
     </Compile>
     <Compile Include="UI\SpravaGridUserControl.Designer.cs">
       <DependentUpon>SpravaGridUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SpraveNaRotacijiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SpraveNaRotacijiForm.Designer.cs">
+      <DependentUpon>SpraveNaRotacijiForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\StartListaRotEditorForm.cs">
       <SubType>Form</SubType>
@@ -841,6 +853,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\RotacijeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RotacijeForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SablonRasporedaNastupaTakm1Form.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SablonRasporedaNastupaTakm1Form.cs</DependentUpon>
@@ -974,6 +990,10 @@
     <EmbeddedResource Include="UI\SpravaGridUserControl.resx">
       <DependentUpon>SpravaGridUserControl.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SpraveNaRotacijiForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SpraveNaRotacijiForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\StartListaRotEditorForm.resx">
       <SubType>Designer</SubType>

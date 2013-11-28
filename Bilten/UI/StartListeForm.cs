@@ -154,6 +154,8 @@ namespace Bilten.UI
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
                     GridColumnsInitializer.initStartListaRotacija(c.DataGridViewUserControl);
+                    c.DataGridViewUserControl.DataGridView.CellFormatting +=
+                        new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
                 }
                 tabPage1.AutoScroll = true;
                 tabPage1.AutoScrollMinSize = new Size(
@@ -196,6 +198,11 @@ namespace Bilten.UI
                 mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = false;
                 mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = false;
             }
+
+            mnOznaciKaoEkipu.Enabled = deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                                       && !takmicenje.FinaleKupa
+                                       && ActiveRotacija == 1;
+            mnOznaciKaoPojedinca.Enabled = mnOznaciKaoEkipu.Enabled;
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -273,6 +280,8 @@ namespace Bilten.UI
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
                 GridColumnsInitializer.initStartListaRotacija(c.DataGridViewUserControl);
+                c.DataGridViewUserControl.DataGridView.CellFormatting +=
+                    new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
             }
             spravaGridGroupUserControl.TabIndex = this.spravaGridGroupUserControl1.TabIndex;
 
@@ -1012,34 +1021,47 @@ namespace Bilten.UI
             if (ActiveRaspored == null)
                 return;
 
-            int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
+            /*int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
             string preostaleRot = "2-" + finalRot.ToString();
             string msgFmt = "Da li zelite da kreirate rotacije {0}? Prethodni raspored koji je postojao na rotacijama {0} " +
                 "bice izbrisan.";
             if (!MessageDialogs.queryConfirmation(String.Format(msgFmt, preostaleRot), this.Text))
-                return;
+                return;*/
 
-            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
-            for (int i = 2; i <= finalRot; i++)
+            RotacijeForm form = null;
+            try
             {
-                for (int j = 0; j < sprave.Length; j++)
+                form = new RotacijeForm(takmicenje.Gimnastika);
+                if (form.ShowDialog() != DialogResult.OK)
                 {
-                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, i);
-                    Sprava prethSprava = (j == 0) ? sprave[sprave.Length - 1] : sprave[j - 1];
-                    StartListaNaSpravi startLista2 = ActiveRaspored.getStartLista(prethSprava, ActiveGrupa, i - 1);
-
-                    startLista.clear();
-                    foreach (NastupNaSpravi n in startLista2.Nastupi)
-                    {
-                        startLista.addNastup(new NastupNaSpravi(false, n.Gimnasticar));
-                    }
-                    if (startLista.Nastupi.Count > 1)
-                    {
-                        NastupNaSpravi n2 = startLista.Nastupi[0];
-                        startLista.removeNastup(n2);
-                        startLista.addNastup(n2);
-                    }
+                    return;
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+
+            // Najpre proveri da li se raspored na rotaciji 1 poklapa sa aktivnim spravama za rotaciju 1.
+            List<Sprava> aktivneSpraveRot1 = form.AktivneSprave[0];
+            foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+            {
+                if (aktivneSpraveRot1.IndexOf(s) == -1
+                    && ActiveRaspored.getStartLista(s, ActiveGrupa, 1).Nastupi.Count != 0)
+                {
+                    string msg = String.Format("Greska - na rotaciji 1 postoji start lista za spravu {0} koja " +
+                        "nije aktivna na rotaciji 1.", Sprave.toString(s));
+                    MessageDialogs.showMessage(msg, "Greska");
+                    return;
+                }
+            }
+
+            int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
+            for (int rot = 2; rot <= finalRot; rot++)
+            {
+                kreirajRotaciju(rot, form.RotirajEkipeRotirajGimnasticare, form.NeRotirajEkipeRotirajGimnasticare,
+                    form.RotirajSveGimnasticare, form.NeRotirajNista, form.AktivneSprave);
             }
      
             Cursor.Current = Cursors.WaitCursor;
@@ -1050,6 +1072,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
+                Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
                 for (int i = 2; i <= finalRot; i++)
                 {
                     for (int j = 0; j < sprave.Length; j++)
@@ -1082,6 +1105,108 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
             }
         }
+
+        private void kreirajRotaciju(int rot, bool rotirajEkipeRotirajGimnasticare, bool neRotirajEkipeRotirajGimnasticare,
+            bool rotirajSveGimnasticare, bool neRotirajNista, List<List<Sprava>> aktivneSprave)
+        {
+            foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+            {
+                StartListaNaSpravi startLista = ActiveRaspored.getStartLista(s, ActiveGrupa, rot);
+                startLista.clear();
+
+                StartListaNaSpravi startListaPrethRot = getStartListaPrethRot(ActiveRaspored, ActiveGrupa, rot, s,
+                    aktivneSprave);
+                if (startListaPrethRot == null)
+                    continue;
+
+                if (startListaPrethRot.Nastupi.Count > 0)
+                {
+                    if (rotirajSveGimnasticare || neRotirajNista)
+                    {
+                        foreach (NastupNaSpravi n in startListaPrethRot.Nastupi)
+                        {
+                            startLista.addNastup(new NastupNaSpravi(n.NastupaDvaPuta, n.Gimnasticar, n.Ekipa));
+                        }
+
+                        if (rotirajSveGimnasticare)
+                        {
+                            NastupNaSpravi n2 = startLista.Nastupi[0];
+                            startLista.removeNastup(n2);
+                            startLista.addNastup(n2);
+                        }
+                    }
+                    else if (rotirajEkipeRotirajGimnasticare || neRotirajEkipeRotirajGimnasticare)
+                    {
+                        // Najpre pronadji ekipe
+                        List<List<NastupNaSpravi>> listaEkipa = new List<List<NastupNaSpravi>>();
+                        int m = 0;
+                        while (m < startListaPrethRot.Nastupi.Count)
+                        {
+                            NastupNaSpravi prethNastup = startListaPrethRot.Nastupi[m];
+                            if (prethNastup.Ekipa == 0)
+                            {
+                                List<NastupNaSpravi> pojedinac = new List<NastupNaSpravi>();
+                                pojedinac.Add(new NastupNaSpravi(prethNastup.NastupaDvaPuta, prethNastup.Gimnasticar, 0));
+                                listaEkipa.Add(pojedinac);
+                                ++m;
+                                continue;
+                            }
+
+                            List<NastupNaSpravi> novaEkipa = new List<NastupNaSpravi>();
+                            int ekipaId = prethNastup.Ekipa;
+                            while (m < startListaPrethRot.Nastupi.Count
+                                   && prethNastup.Ekipa == ekipaId)
+                            {
+                                novaEkipa.Add(new NastupNaSpravi(prethNastup.NastupaDvaPuta, prethNastup.Gimnasticar,
+                                                                 prethNastup.Ekipa));
+                                ++m;
+                                if (m < startListaPrethRot.Nastupi.Count)
+                                    prethNastup = startListaPrethRot.Nastupi[m];
+                            }
+                            listaEkipa.Add(novaEkipa);
+                        }
+
+                        if (rotirajEkipeRotirajGimnasticare)
+                        {
+                            // Rotiraj ekipe
+                            List<NastupNaSpravi> prvaEkipa = listaEkipa[0];
+                            listaEkipa.RemoveAt(0);
+                            listaEkipa.Add(prvaEkipa);
+                        }
+
+                        foreach (List<NastupNaSpravi> ekipa in listaEkipa)
+                        {
+                            // Rotiraj clanove ekipe
+                            NastupNaSpravi nastup = ekipa[0];
+                            ekipa.RemoveAt(0);
+                            ekipa.Add(nastup);
+
+                            foreach (NastupNaSpravi n in ekipa)
+                            {
+                                startLista.addNastup(new NastupNaSpravi(n.NastupaDvaPuta, n.Gimnasticar, n.Ekipa));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private StartListaNaSpravi getStartListaPrethRot(RasporedNastupa ActiveRaspored, int ActiveGrupa, int rot,
+            Sprava sprava, List<List<Sprava>> aktivneSprave)
+        {
+            List<Sprava> sprave = aktivneSprave[rot - 1];
+            int i = sprave.IndexOf(sprava);
+            if (i == -1)
+                // Sprava nije aktivna u rotaciji.
+                return null;
+
+            List<Sprava> prethSprave = aktivneSprave[rot - 2];
+
+            Sprava prethSprava = (i == 0) ? prethSprave[prethSprave.Count - 1] : prethSprave[i - 1];
+            StartListaNaSpravi result = ActiveRaspored.getStartLista(prethSprava, ActiveGrupa, rot - 1);
+            return result;
+        }
+
 
         // TODO: Ceo ovaj deo gde se kreira na osnovu kvalifikanata je radjen na brzinu, gde je jedino bilo bitno da moze da
         // se primeni na Memorijal. Trebalo bi ga temeljno proveriti i uciniti robustnijim.
@@ -1133,13 +1258,13 @@ namespace Bilten.UI
                 while (k < zreb.Count)
                 {
                     if (zreb[k] <= kvalifikanti.Count)
-                        startLista.addNastup(new NastupNaSpravi(false, kvalifikanti[zreb[k] - 1].Gimnasticar));
+                        startLista.addNastup(new NastupNaSpravi(false, kvalifikanti[zreb[k] - 1].Gimnasticar, 0));
                     k++;
                 }
                 k = startLista.Nastupi.Count;
                 while (k < kvalifikanti.Count)
                 {
-                    startLista.addNastup(new NastupNaSpravi(false, kvalifikanti[k].Gimnasticar));
+                    startLista.addNastup(new NastupNaSpravi(false, kvalifikanti[k].Gimnasticar, 0));
                     k++;
                 }
             }
@@ -1321,13 +1446,13 @@ namespace Bilten.UI
                     while (k < zreb.Count)
                     {
                         if (zreb[k] <= rezultati.Count)
-                            startLista.addNastup(new NastupNaSpravi(false, rezultati[zreb[k] - 1].Gimnasticar));
+                            startLista.addNastup(new NastupNaSpravi(false, rezultati[zreb[k] - 1].Gimnasticar, 0));
                         k++;
                     }
                     k = startLista.Nastupi.Count;
                     while (k < rezultati.Count)
                     {
-                        startLista.addNastup(new NastupNaSpravi(false, rezultati[k].Gimnasticar));
+                        startLista.addNastup(new NastupNaSpravi(false, rezultati[k].Gimnasticar, 0));
                         k++;
                     }
                 }
@@ -1831,6 +1956,181 @@ namespace Bilten.UI
             NastupNaSpravi n2 = dgw.getSelectedItem<NastupNaSpravi>();
             dgw.refreshItems();
             dgw.setSelectedItem<NastupNaSpravi>(n2);
+        }
+
+        private Color[] bojeZaEkipe = new Color[] { Color.LightPink, Color.LightGreen,
+                                                    Color.Thistle, Color.LightBlue, Color.Wheat, Color.Yellow,
+                                                    Color.Aqua, Color.LightGray };
+
+        private bool areConsecutiveRowsSelected(DataGridView dgw)
+        {
+            List<DataGridViewRow> selRows = new List<DataGridViewRow>();
+            foreach (DataGridViewRow r in dgw.Rows)
+            {
+                if (r.Selected)
+                    selRows.Add(r);
+            }
+
+            if (selRows.Count < 2)
+                return true;
+
+            int prevIndex = selRows[0].Index;
+            for (int i = 1; i < selRows.Count; ++i)
+            {
+                int index = selRows[i].Index;
+                if (index != prevIndex + 1)
+                    return false;
+                prevIndex = index;
+            }
+            return true;
+        }
+
+        private bool areSelectedRowsTrueSubsetOfEkipa(DataGridView dgw)
+        {
+            List<DataGridViewRow> selRows = new List<DataGridViewRow>();
+            foreach (DataGridViewRow r in dgw.Rows)
+            {
+                if (r.Selected)
+                    selRows.Add(r);
+            }
+            if (selRows.Count == 0)
+                return false;
+
+            int firstIndex = selRows[0].Index;
+            int lastIndex = selRows[selRows.Count - 1].Index;
+
+            if (firstIndex == 0 || lastIndex == dgw.Rows.Count - 1)
+                // Nije selektovan pravi podskup svih vrsta, pa sledi da ne moze biti selektovan ni pravi podskup ekipa.
+                return false;
+
+            int firstEkipa = (dgw.Rows[firstIndex - 1].DataBoundItem as NastupNaSpravi).Ekipa;
+            int lastEkipa = (dgw.Rows[lastIndex + 1].DataBoundItem as NastupNaSpravi).Ekipa;
+
+            if (firstEkipa == 0 || lastEkipa == 0 || firstEkipa != lastEkipa)
+                // Prva ekipa pre selektovanih i prva ekipa nakon selektovanih nisu iste.
+                return false;
+
+            for (int i = firstIndex; i <= lastIndex; i++)
+            {
+                if ((dgw.Rows[i].DataBoundItem as NastupNaSpravi).Ekipa != firstEkipa)
+                    return false;
+            }
+            return true;
+        }
+
+        private void oznaci(bool oznaciKaoPojedinca)
+        {
+            StartListaNaSpravi startLista = ActiveRaspored.getStartLista(clickedSprava, ActiveGrupa, ActiveRotacija);
+
+            IList<NastupNaSpravi> selNastupi = getActiveSpravaGridGroupUserControl()[clickedSprava]
+                .DataGridViewUserControl.getSelectedItems<NastupNaSpravi>();
+            if (selNastupi.Count == 0)
+                return;
+
+            if (!areConsecutiveRowsSelected(getActiveSpravaGridGroupUserControl()[clickedSprava]
+                                              .DataGridViewUserControl.DataGridView))
+            {
+                string msg;
+                if (oznaciKaoPojedinca)
+                    msg = "Samo uzastopne gimnasticare je moguce oznaciti kao pojedinca.";
+                else
+                    msg = "Samo uzastopne gimnasticare je moguce oznaciti kao ekipu.";
+                MessageDialogs.showMessage(msg, this.Text);
+                return;
+            }
+
+            if (areSelectedRowsTrueSubsetOfEkipa(getActiveSpravaGridGroupUserControl()[clickedSprava]
+                                              .DataGridViewUserControl.DataGridView))
+            {
+                // Selektovan je pravi podskup neke ekipe. Ponisti ekipe za sve gimnasticare iz ekipe.
+                // Time se sprecava da imamo ekipu ciji clanovi nisu uzastopni u start listi.
+
+                List<int> selEkipe = getEkipe(getActiveSpravaGridGroupUserControl()[clickedSprava]
+                    .DataGridViewUserControl.DataGridView, true);
+                IList<NastupNaSpravi> sviNastupi = getActiveSpravaGridGroupUserControl()[clickedSprava]
+                    .DataGridViewUserControl.getItems<NastupNaSpravi>();
+                foreach (NastupNaSpravi n in sviNastupi)
+                {
+                    if (selEkipe.IndexOf(n.Ekipa) != -1)
+                        n.Ekipa = 0;
+                }
+            }
+            else
+            {
+                // Ponisti ekipe za selektovane gimnasticare.
+                foreach (NastupNaSpravi n in selNastupi)
+                {
+                    n.Ekipa = 0;
+                }
+            }
+
+            if (!oznaciKaoPojedinca)
+            {
+                int maxEkipa = getMaxEkipa(getActiveSpravaGridGroupUserControl()[clickedSprava]
+                    .DataGridViewUserControl.DataGridView);
+                foreach (NastupNaSpravi n in selNastupi)
+                    n.Ekipa = maxEkipa + 1;
+            }
+
+            getActiveSpravaGridGroupUserControl()[clickedSprava].clearSelection();
+            getActiveSpravaGridGroupUserControl()[clickedSprava].DataGridViewUserControl.DataGridView.Refresh();
+        }
+
+        private void mnOznaciKaoEkipu_Click(object sender, EventArgs e)
+        {
+            oznaci(false);
+        }
+
+        void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (ActiveRotacija != 1)
+                return;
+
+            if (e.ColumnIndex != 0)
+                return;
+
+            NastupNaSpravi n = (sender as DataGridView).Rows[e.RowIndex].DataBoundItem as NastupNaSpravi;
+            if (n == null)
+                return;
+
+            List<int> ekipe = getEkipe(sender as DataGridView, false);
+            if (n.Ekipa > 0)
+                e.CellStyle.BackColor = bojeZaEkipe[ekipe.IndexOf(n.Ekipa)];
+            else
+                e.CellStyle.BackColor = Color.White;
+        }
+
+        List<int> getEkipe(DataGridView dgw, bool samoSelektovane)
+        {
+            List<int> result = new List<int>();
+            foreach (DataGridViewRow row in dgw.Rows)
+            {
+                if (!row.Selected && samoSelektovane)
+                    continue;
+                NastupNaSpravi n = row.DataBoundItem as NastupNaSpravi;
+                if (n.Ekipa > 0 && result.IndexOf(n.Ekipa) == -1)
+                {
+                    result.Add(n.Ekipa);
+                }
+            }
+            return result;
+        }
+
+        int getMaxEkipa(DataGridView dgw)
+        {
+            List<int> ekipe = getEkipe(dgw, false);
+            int result = 0;
+            foreach (int i in ekipe)
+            {
+                if (i > result)
+                    result = i;
+            }
+            return result;
+        }
+
+        private void mnOznaciKaoPojedinca_Click(object sender, EventArgs e)
+        {
+            oznaci(true);
         }
 
     }

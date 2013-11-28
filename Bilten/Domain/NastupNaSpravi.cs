@@ -20,15 +20,23 @@ namespace Bilten.Domain
             set { gimnasticar = value; }
         }
 
+        private int ekipa;
+        public virtual int Ekipa
+        {
+            get { return ekipa; }
+            set { ekipa = value; }
+        }
+
         public NastupNaSpravi()
         { 
         
         }
 
-        public NastupNaSpravi(bool nastupaDvaPuta, GimnasticarUcesnik gimnasticar)
+        public NastupNaSpravi(bool nastupaDvaPuta, GimnasticarUcesnik gimnasticar, int ekipa)
         {
             this.nastupaDvaPuta = nastupaDvaPuta;
             this.gimnasticar = gimnasticar;
+            this.ekipa = ekipa;
         }
 
         public virtual string TakmicarskiBroj
