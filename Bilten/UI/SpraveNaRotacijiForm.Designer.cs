@@ -29,25 +29,25 @@ namespace Bilten.UI
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.checkBox10 = new System.Windows.Forms.CheckBox();
+            this.checkBox9 = new System.Windows.Forms.CheckBox();
+            this.checkBox8 = new System.Windows.Forms.CheckBox();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.checkBox8 = new System.Windows.Forms.CheckBox();
-            this.checkBox9 = new System.Windows.Forms.CheckBox();
-            this.checkBox10 = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.checkBox11 = new System.Windows.Forms.CheckBox();
             this.checkBox12 = new System.Windows.Forms.CheckBox();
@@ -98,6 +98,13 @@ namespace Bilten.UI
             this.checkBox50 = new System.Windows.Forms.CheckBox();
             this.checkBox51 = new System.Windows.Forms.CheckBox();
             this.checkBox52 = new System.Windows.Forms.CheckBox();
+            this.lblBrojSprava = new System.Windows.Forms.Label();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.rbtCetiriSprave = new System.Windows.Forms.RadioButton();
+            this.rbtSestSprava = new System.Windows.Forms.RadioButton();
+            this.rbtTriSprave = new System.Windows.Forms.RadioButton();
+            this.rbtDveSprave = new System.Windows.Forms.RadioButton();
+            this.rbtJednaSprava = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.panel7.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -108,6 +115,7 @@ namespace Bilten.UI
             this.panel8.SuspendLayout();
             this.panel9.SuspendLayout();
             this.panel10.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -119,15 +127,75 @@ namespace Bilten.UI
             this.panel1.Controls.Add(this.checkBox3);
             this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.checkBox1);
-            this.panel1.Location = new System.Drawing.Point(28, 52);
+            this.panel1.Location = new System.Drawing.Point(29, 212);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(116, 148);
             this.panel1.TabIndex = 0;
             // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Location = new System.Drawing.Point(3, 118);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(55, 17);
+            this.checkBox6.TabIndex = 5;
+            this.checkBox6.Text = "Vratilo";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Location = new System.Drawing.Point(3, 95);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(59, 17);
+            this.checkBox5.TabIndex = 4;
+            this.checkBox5.Text = "Razboj";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Location = new System.Drawing.Point(3, 72);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(65, 17);
+            this.checkBox4.TabIndex = 3;
+            this.checkBox4.Text = "Preskok";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(3, 49);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(56, 17);
+            this.checkBox3.TabIndex = 2;
+            this.checkBox3.Text = "Karike";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(3, 27);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(47, 17);
+            this.checkBox2.TabIndex = 1;
+            this.checkBox2.Text = "Konj";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(3, 4);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(54, 17);
+            this.checkBox1.TabIndex = 0;
+            this.checkBox1.Text = "Parter";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(703, 329);
+            this.btnOK.Location = new System.Drawing.Point(714, 391);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 1;
@@ -138,7 +206,7 @@ namespace Bilten.UI
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(799, 329);
+            this.btnCancel.Location = new System.Drawing.Point(810, 391);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -151,154 +219,10 @@ namespace Bilten.UI
             this.panel7.Controls.Add(this.checkBox9);
             this.panel7.Controls.Add(this.checkBox8);
             this.panel7.Controls.Add(this.checkBox7);
-            this.panel7.Location = new System.Drawing.Point(28, 215);
+            this.panel7.Location = new System.Drawing.Point(28, 330);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(117, 100);
             this.panel7.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "1. Rotacija";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(171, 28);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(58, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "2. Rotacija";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(316, 28);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(58, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "3. Rotacija";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(463, 28);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(58, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "4. Rotacija";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(607, 28);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(58, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "5. Rotacija";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(755, 28);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(58, 13);
-            this.label6.TabIndex = 9;
-            this.label6.Text = "6. Rotacija";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(3, 4);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(54, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Parter";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(3, 27);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(47, 17);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Konj";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(3, 49);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(56, 17);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "Karike";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // checkBox4
-            // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(3, 72);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(65, 17);
-            this.checkBox4.TabIndex = 3;
-            this.checkBox4.Text = "Preskok";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // checkBox5
-            // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(3, 95);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(59, 17);
-            this.checkBox5.TabIndex = 4;
-            this.checkBox5.Text = "Razboj";
-            this.checkBox5.UseVisualStyleBackColor = true;
-            // 
-            // checkBox6
-            // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(3, 118);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(55, 17);
-            this.checkBox6.TabIndex = 5;
-            this.checkBox6.Text = "Vratilo";
-            this.checkBox6.UseVisualStyleBackColor = true;
-            // 
-            // checkBox7
-            // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(3, 4);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(65, 17);
-            this.checkBox7.TabIndex = 0;
-            this.checkBox7.Text = "Preskok";
-            this.checkBox7.UseVisualStyleBackColor = true;
-            // 
-            // checkBox8
-            // 
-            this.checkBox8.AutoSize = true;
-            this.checkBox8.Location = new System.Drawing.Point(3, 29);
-            this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(111, 17);
-            this.checkBox8.TabIndex = 1;
-            this.checkBox8.Text = "Dvovisinski razboj";
-            this.checkBox8.UseVisualStyleBackColor = true;
-            // 
-            // checkBox9
-            // 
-            this.checkBox9.AutoSize = true;
-            this.checkBox9.Location = new System.Drawing.Point(3, 52);
-            this.checkBox9.Name = "checkBox9";
-            this.checkBox9.Size = new System.Drawing.Size(55, 17);
-            this.checkBox9.TabIndex = 2;
-            this.checkBox9.Text = "Greda";
-            this.checkBox9.UseVisualStyleBackColor = true;
             // 
             // checkBox10
             // 
@@ -310,6 +234,90 @@ namespace Bilten.UI
             this.checkBox10.Text = "Parter";
             this.checkBox10.UseVisualStyleBackColor = true;
             // 
+            // checkBox9
+            // 
+            this.checkBox9.AutoSize = true;
+            this.checkBox9.Location = new System.Drawing.Point(3, 52);
+            this.checkBox9.Name = "checkBox9";
+            this.checkBox9.Size = new System.Drawing.Size(55, 17);
+            this.checkBox9.TabIndex = 2;
+            this.checkBox9.Text = "Greda";
+            this.checkBox9.UseVisualStyleBackColor = true;
+            // 
+            // checkBox8
+            // 
+            this.checkBox8.AutoSize = true;
+            this.checkBox8.Location = new System.Drawing.Point(3, 29);
+            this.checkBox8.Name = "checkBox8";
+            this.checkBox8.Size = new System.Drawing.Size(111, 17);
+            this.checkBox8.TabIndex = 1;
+            this.checkBox8.Text = "Dvovisinski razboj";
+            this.checkBox8.UseVisualStyleBackColor = true;
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.Location = new System.Drawing.Point(3, 4);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(65, 17);
+            this.checkBox7.TabIndex = 0;
+            this.checkBox7.Text = "Preskok";
+            this.checkBox7.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(29, 188);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "1. Rotacija";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(172, 188);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(58, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "2. Rotacija";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(317, 188);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(58, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "3. Rotacija";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(464, 188);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(58, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "4. Rotacija";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(608, 188);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(58, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "5. Rotacija";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(756, 188);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(58, 13);
+            this.label6.TabIndex = 9;
+            this.label6.Text = "6. Rotacija";
+            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.Control;
@@ -319,7 +327,7 @@ namespace Bilten.UI
             this.panel2.Controls.Add(this.checkBox14);
             this.panel2.Controls.Add(this.checkBox15);
             this.panel2.Controls.Add(this.checkBox16);
-            this.panel2.Location = new System.Drawing.Point(170, 52);
+            this.panel2.Location = new System.Drawing.Point(171, 212);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(116, 148);
             this.panel2.TabIndex = 0;
@@ -393,7 +401,7 @@ namespace Bilten.UI
             this.panel3.Controls.Add(this.checkBox20);
             this.panel3.Controls.Add(this.checkBox21);
             this.panel3.Controls.Add(this.checkBox22);
-            this.panel3.Location = new System.Drawing.Point(315, 52);
+            this.panel3.Location = new System.Drawing.Point(316, 212);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(116, 148);
             this.panel3.TabIndex = 0;
@@ -467,7 +475,7 @@ namespace Bilten.UI
             this.panel4.Controls.Add(this.checkBox26);
             this.panel4.Controls.Add(this.checkBox27);
             this.panel4.Controls.Add(this.checkBox28);
-            this.panel4.Location = new System.Drawing.Point(462, 52);
+            this.panel4.Location = new System.Drawing.Point(463, 212);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(116, 148);
             this.panel4.TabIndex = 0;
@@ -541,7 +549,7 @@ namespace Bilten.UI
             this.panel5.Controls.Add(this.checkBox32);
             this.panel5.Controls.Add(this.checkBox33);
             this.panel5.Controls.Add(this.checkBox34);
-            this.panel5.Location = new System.Drawing.Point(610, 52);
+            this.panel5.Location = new System.Drawing.Point(611, 212);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(116, 148);
             this.panel5.TabIndex = 0;
@@ -615,7 +623,7 @@ namespace Bilten.UI
             this.panel6.Controls.Add(this.checkBox38);
             this.panel6.Controls.Add(this.checkBox39);
             this.panel6.Controls.Add(this.checkBox40);
-            this.panel6.Location = new System.Drawing.Point(758, 52);
+            this.panel6.Location = new System.Drawing.Point(759, 212);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(116, 148);
             this.panel6.TabIndex = 0;
@@ -686,7 +694,7 @@ namespace Bilten.UI
             this.panel8.Controls.Add(this.checkBox42);
             this.panel8.Controls.Add(this.checkBox43);
             this.panel8.Controls.Add(this.checkBox44);
-            this.panel8.Location = new System.Drawing.Point(170, 215);
+            this.panel8.Location = new System.Drawing.Point(170, 330);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(117, 100);
             this.panel8.TabIndex = 3;
@@ -737,7 +745,7 @@ namespace Bilten.UI
             this.panel9.Controls.Add(this.checkBox46);
             this.panel9.Controls.Add(this.checkBox47);
             this.panel9.Controls.Add(this.checkBox48);
-            this.panel9.Location = new System.Drawing.Point(315, 215);
+            this.panel9.Location = new System.Drawing.Point(315, 330);
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(117, 100);
             this.panel9.TabIndex = 3;
@@ -788,7 +796,7 @@ namespace Bilten.UI
             this.panel10.Controls.Add(this.checkBox50);
             this.panel10.Controls.Add(this.checkBox51);
             this.panel10.Controls.Add(this.checkBox52);
-            this.panel10.Location = new System.Drawing.Point(462, 215);
+            this.panel10.Location = new System.Drawing.Point(462, 330);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(117, 100);
             this.panel10.TabIndex = 3;
@@ -833,13 +841,93 @@ namespace Bilten.UI
             this.checkBox52.Text = "Preskok";
             this.checkBox52.UseVisualStyleBackColor = true;
             // 
+            // lblBrojSprava
+            // 
+            this.lblBrojSprava.AutoSize = true;
+            this.lblBrojSprava.Location = new System.Drawing.Point(29, 20);
+            this.lblBrojSprava.Name = "lblBrojSprava";
+            this.lblBrojSprava.Size = new System.Drawing.Size(131, 13);
+            this.lblBrojSprava.TabIndex = 11;
+            this.lblBrojSprava.Text = "Broj sprava koje se rotiraju";
+            // 
+            // panel11
+            // 
+            this.panel11.Controls.Add(this.rbtCetiriSprave);
+            this.panel11.Controls.Add(this.rbtSestSprava);
+            this.panel11.Controls.Add(this.rbtTriSprave);
+            this.panel11.Controls.Add(this.rbtDveSprave);
+            this.panel11.Controls.Add(this.rbtJednaSprava);
+            this.panel11.Location = new System.Drawing.Point(29, 36);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(200, 123);
+            this.panel11.TabIndex = 10;
+            // 
+            // rbtCetiriSprave
+            // 
+            this.rbtCetiriSprave.AutoSize = true;
+            this.rbtCetiriSprave.Location = new System.Drawing.Point(4, 74);
+            this.rbtCetiriSprave.Name = "rbtCetiriSprave";
+            this.rbtCetiriSprave.Size = new System.Drawing.Size(31, 17);
+            this.rbtCetiriSprave.TabIndex = 4;
+            this.rbtCetiriSprave.Text = "4";
+            this.rbtCetiriSprave.UseVisualStyleBackColor = true;
+            this.rbtCetiriSprave.CheckedChanged += new System.EventHandler(this.rbtCetiriSprave_CheckedChanged);
+            // 
+            // rbtSestSprava
+            // 
+            this.rbtSestSprava.AutoSize = true;
+            this.rbtSestSprava.Location = new System.Drawing.Point(4, 97);
+            this.rbtSestSprava.Name = "rbtSestSprava";
+            this.rbtSestSprava.Size = new System.Drawing.Size(31, 17);
+            this.rbtSestSprava.TabIndex = 3;
+            this.rbtSestSprava.Text = "6";
+            this.rbtSestSprava.UseVisualStyleBackColor = true;
+            this.rbtSestSprava.CheckedChanged += new System.EventHandler(this.rbtSestSprava_CheckedChanged);
+            // 
+            // rbtTriSprave
+            // 
+            this.rbtTriSprave.AutoSize = true;
+            this.rbtTriSprave.Location = new System.Drawing.Point(4, 51);
+            this.rbtTriSprave.Name = "rbtTriSprave";
+            this.rbtTriSprave.Size = new System.Drawing.Size(31, 17);
+            this.rbtTriSprave.TabIndex = 2;
+            this.rbtTriSprave.Text = "3";
+            this.rbtTriSprave.UseVisualStyleBackColor = true;
+            this.rbtTriSprave.CheckedChanged += new System.EventHandler(this.rbtTriSprave_CheckedChanged);
+            // 
+            // rbtDveSprave
+            // 
+            this.rbtDveSprave.AutoSize = true;
+            this.rbtDveSprave.Checked = true;
+            this.rbtDveSprave.Location = new System.Drawing.Point(4, 28);
+            this.rbtDveSprave.Name = "rbtDveSprave";
+            this.rbtDveSprave.Size = new System.Drawing.Size(31, 17);
+            this.rbtDveSprave.TabIndex = 1;
+            this.rbtDveSprave.TabStop = true;
+            this.rbtDveSprave.Text = "2";
+            this.rbtDveSprave.UseVisualStyleBackColor = true;
+            this.rbtDveSprave.CheckedChanged += new System.EventHandler(this.rbtDveSprave_CheckedChanged);
+            // 
+            // rbtJednaSprava
+            // 
+            this.rbtJednaSprava.AutoSize = true;
+            this.rbtJednaSprava.Location = new System.Drawing.Point(4, 5);
+            this.rbtJednaSprava.Name = "rbtJednaSprava";
+            this.rbtJednaSprava.Size = new System.Drawing.Size(31, 17);
+            this.rbtJednaSprava.TabIndex = 0;
+            this.rbtJednaSprava.Text = "1";
+            this.rbtJednaSprava.UseVisualStyleBackColor = true;
+            this.rbtJednaSprava.CheckedChanged += new System.EventHandler(this.rbtJednaSprava_CheckedChanged);
+            // 
             // SpraveNaRotacijiForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(914, 383);
+            this.ClientSize = new System.Drawing.Size(914, 436);
+            this.Controls.Add(this.lblBrojSprava);
+            this.Controls.Add(this.panel11);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -885,6 +973,8 @@ namespace Bilten.UI
             this.panel9.PerformLayout();
             this.panel10.ResumeLayout(false);
             this.panel10.PerformLayout();
+            this.panel11.ResumeLayout(false);
+            this.panel11.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -962,5 +1052,12 @@ namespace Bilten.UI
         private System.Windows.Forms.CheckBox checkBox50;
         private System.Windows.Forms.CheckBox checkBox51;
         private System.Windows.Forms.CheckBox checkBox52;
+        private System.Windows.Forms.Label lblBrojSprava;
+        private System.Windows.Forms.Panel panel11;
+        private System.Windows.Forms.RadioButton rbtCetiriSprave;
+        private System.Windows.Forms.RadioButton rbtSestSprava;
+        private System.Windows.Forms.RadioButton rbtTriSprave;
+        private System.Windows.Forms.RadioButton rbtDveSprave;
+        private System.Windows.Forms.RadioButton rbtJednaSprava;
     }
 }

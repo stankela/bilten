@@ -32,6 +32,11 @@ namespace Bilten.UI
         private Sprava clickedSprava;
         private Point USER_CONTROL_LOCATION = new Point(10, 10);
 
+        bool[] rotirajEkipeRotirajGimnasticare = new bool[6] { true, true, true, true, true, true };
+        bool[] neRotirajEkipeRotirajGimnasticare = new bool[6] { false, false, false, false, false, false };
+        bool[] rotirajSveGimnasticare = new bool[6] { false, false, false, false, false, false };
+        bool[] neRotirajNista = new bool[6] { false, false, false, false, false, false };
+
         public StartListeForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {
             InitializeComponent();
@@ -137,7 +142,7 @@ namespace Bilten.UI
                 cmbRotacija.Enabled = false;
                 btnOstaleRotacije.Text = "Kreiraj na osnovu kvalifikanata";
             }
-
+            mnRotirajEkipeRotirajGim.Checked = true;
         }
 
         private void createTab(RasporedNastupa raspored)
@@ -203,6 +208,13 @@ namespace Bilten.UI
                                        && !takmicenje.FinaleKupa
                                        && ActiveRotacija == 1;
             mnOznaciKaoPojedinca.Enabled = mnOznaciKaoEkipu.Enabled;
+            mnNacinRotacije.Enabled = mnOznaciKaoEkipu.Enabled;
+
+            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
+            mnRotirajEkipeRotirajGim.Checked = rotirajEkipeRotirajGimnasticare[indexSprave];
+            mnNeRotirajEkipeRotirajGim.Checked = neRotirajEkipeRotirajGimnasticare[indexSprave];
+            mnRotirajSve.Checked = rotirajSveGimnasticare[indexSprave];
+            mnNeRotirajNista.Checked = neRotirajNista[indexSprave];
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -1028,10 +1040,20 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(String.Format(msgFmt, preostaleRot), this.Text))
                 return;*/
 
-            RotacijeForm form = null;
+            // Nadji aktivne sprave za rotaciju 1.
+            List<Sprava> aktivneSpraveRot1 = new List<Sprava>();
+            foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+            {
+                if (ActiveRaspored.getStartLista(s, ActiveGrupa, 1).Nastupi.Count != 0)
+                {
+                    aktivneSpraveRot1.Add(s);
+                }
+            }
+
+            SpraveNaRotacijiForm form = null;
             try
             {
-                form = new RotacijeForm(takmicenje.Gimnastika);
+                form = new SpraveNaRotacijiForm(takmicenje.Gimnastika, aktivneSpraveRot1);
                 if (form.ShowDialog() != DialogResult.OK)
                 {
                     return;
@@ -1043,25 +1065,10 @@ namespace Bilten.UI
                 return;
             }
 
-            // Najpre proveri da li se raspored na rotaciji 1 poklapa sa aktivnim spravama za rotaciju 1.
-            List<Sprava> aktivneSpraveRot1 = form.AktivneSprave[0];
-            foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
-            {
-                if (aktivneSpraveRot1.IndexOf(s) == -1
-                    && ActiveRaspored.getStartLista(s, ActiveGrupa, 1).Nastupi.Count != 0)
-                {
-                    string msg = String.Format("Greska - na rotaciji 1 postoji start lista za spravu {0} koja " +
-                        "nije aktivna na rotaciji 1.", Sprave.toString(s));
-                    MessageDialogs.showMessage(msg, "Greska");
-                    return;
-                }
-            }
-
             int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
             for (int rot = 2; rot <= finalRot; rot++)
             {
-                kreirajRotaciju(rot, form.RotirajEkipeRotirajGimnasticare, form.NeRotirajEkipeRotirajGimnasticare,
-                    form.RotirajSveGimnasticare, form.NeRotirajNista, form.AktivneSprave);
+                kreirajRotaciju(rot, form.AktivneSprave);
             }
      
             Cursor.Current = Cursors.WaitCursor;
@@ -1106,8 +1113,7 @@ namespace Bilten.UI
             }
         }
 
-        private void kreirajRotaciju(int rot, bool rotirajEkipeRotirajGimnasticare, bool neRotirajEkipeRotirajGimnasticare,
-            bool rotirajSveGimnasticare, bool neRotirajNista, List<List<Sprava>> aktivneSprave)
+        private void kreirajRotaciju(int rot, List<List<Sprava>> aktivneSprave)
         {
             foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
             {
@@ -1119,23 +1125,37 @@ namespace Bilten.UI
                 if (startListaPrethRot == null)
                     continue;
 
+                // Nadji start listu na prvoj rotaciji
+                StartListaNaSpravi currentStartLista = startListaPrethRot;
+                int currentRot = rot - 1;
+                while (currentRot != 1)
+                {
+                    currentStartLista = getStartListaPrethRot(ActiveRaspored, ActiveGrupa, currentRot--,
+                        currentStartLista.Sprava, aktivneSprave);
+                }
+                int indexSprave = Sprave.indexOf(currentStartLista.Sprava, takmicenje.Gimnastika);
+                bool rotirajEkipeRotirajGim = rotirajEkipeRotirajGimnasticare[indexSprave];
+                bool neRotirajEkipeRotirajGim = neRotirajEkipeRotirajGimnasticare[indexSprave];
+                bool rotirajSveGim = rotirajSveGimnasticare[indexSprave];
+                bool neRotNista = neRotirajNista[indexSprave];
+
                 if (startListaPrethRot.Nastupi.Count > 0)
                 {
-                    if (rotirajSveGimnasticare || neRotirajNista)
+                    if (rotirajSveGim || neRotNista)
                     {
                         foreach (NastupNaSpravi n in startListaPrethRot.Nastupi)
                         {
                             startLista.addNastup(new NastupNaSpravi(n.NastupaDvaPuta, n.Gimnasticar, n.Ekipa));
                         }
 
-                        if (rotirajSveGimnasticare)
+                        if (rotirajSveGim)
                         {
                             NastupNaSpravi n2 = startLista.Nastupi[0];
                             startLista.removeNastup(n2);
                             startLista.addNastup(n2);
                         }
                     }
-                    else if (rotirajEkipeRotirajGimnasticare || neRotirajEkipeRotirajGimnasticare)
+                    else if (rotirajEkipeRotirajGim || neRotirajEkipeRotirajGim)
                     {
                         // Najpre pronadji ekipe
                         List<List<NastupNaSpravi>> listaEkipa = new List<List<NastupNaSpravi>>();
@@ -1166,7 +1186,7 @@ namespace Bilten.UI
                             listaEkipa.Add(novaEkipa);
                         }
 
-                        if (rotirajEkipeRotirajGimnasticare)
+                        if (rotirajEkipeRotirajGim)
                         {
                             // Rotiraj ekipe
                             List<NastupNaSpravi> prvaEkipa = listaEkipa[0];
@@ -1958,9 +1978,9 @@ namespace Bilten.UI
             dgw.setSelectedItem<NastupNaSpravi>(n2);
         }
 
-        private Color[] bojeZaEkipe = new Color[] { Color.LightPink, Color.LightGreen,
-                                                    Color.Thistle, Color.LightBlue, Color.Wheat, Color.Yellow,
-                                                    Color.Aqua, Color.LightGray };
+        private Color[] bojeZaEkipe = new Color[] { Color.Aqua, Color.Wheat,
+                                                    Color.Thistle, Color.LightBlue, Color.Yellow,
+                                                     Color.LightPink, Color.LightGray, Color.LightGreen };
 
         private bool areConsecutiveRowsSelected(DataGridView dgw)
         {
@@ -2131,6 +2151,62 @@ namespace Bilten.UI
         private void mnOznaciKaoPojedinca_Click(object sender, EventArgs e)
         {
             oznaci(true);
+        }
+
+        private void mnRotirajEkipeRotirajGim_Click(object sender, EventArgs e)
+        {
+            mnRotirajEkipeRotirajGim.Checked = true;
+            mnNeRotirajEkipeRotirajGim.Checked = false;
+            mnRotirajSve.Checked = false;
+            mnNeRotirajNista.Checked = false;
+
+            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
+            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
+            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
+            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
+            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
+        }
+
+        private void mnNeRotirajEkipeRotirajGim_Click(object sender, EventArgs e)
+        {
+            mnRotirajEkipeRotirajGim.Checked = false;
+            mnNeRotirajEkipeRotirajGim.Checked = true;
+            mnRotirajSve.Checked = false;
+            mnNeRotirajNista.Checked = false;
+
+            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
+            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
+            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
+            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
+            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
+        }
+
+        private void mnRotirajSve_Click(object sender, EventArgs e)
+        {
+            mnRotirajEkipeRotirajGim.Checked = false;
+            mnNeRotirajEkipeRotirajGim.Checked = false;
+            mnRotirajSve.Checked = true;
+            mnNeRotirajNista.Checked = false;
+
+            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
+            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
+            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
+            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
+            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
+        }
+
+        private void mnNeRotirajNista_Click(object sender, EventArgs e)
+        {
+            mnRotirajEkipeRotirajGim.Checked = false;
+            mnNeRotirajEkipeRotirajGim.Checked = false;
+            mnRotirajSve.Checked = false;
+            mnNeRotirajNista.Checked = true;
+
+            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
+            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
+            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
+            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
+            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
         }
 
     }

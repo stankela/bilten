@@ -478,12 +478,6 @@
     <Compile Include="UI\RezultatskoTakmicenjeDescriptionForm.Designer.cs">
       <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\RotacijeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\RotacijeForm.Designer.cs">
-      <DependentUpon>RotacijeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\SablonRasporedaNastupaTakm1Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -852,10 +846,6 @@
     <EmbeddedResource Include="UI\RezultatskoTakmicenjeDescriptionForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RotacijeForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>RotacijeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SablonRasporedaNastupaTakm1Form.resx">
       <SubType>Designer</SubType>

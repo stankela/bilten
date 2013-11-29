@@ -27,6 +27,8 @@ namespace Bilten.Domain
             set { ekipa = value; }
         }
 
+        private string kategorija = String.Empty;
+
         public NastupNaSpravi()
         { 
         
@@ -37,6 +39,20 @@ namespace Bilten.Domain
             this.nastupaDvaPuta = nastupaDvaPuta;
             this.gimnasticar = gimnasticar;
             this.ekipa = ekipa;
+
+            // Svojstvo Kategorija kesiram zato sto sam imao problema na start listama gde nije mogao da ga ocita iz
+            // gimnasticara.
+            if (gimnasticar != null)
+            {
+                try
+                {
+                    kategorija = gimnasticar.TakmicarskaKategorija.ToString();
+                }
+                catch (Exception)
+                {
+                    kategorija = String.Empty;
+                }
+            }
         }
 
         public virtual string TakmicarskiBroj
@@ -65,8 +81,21 @@ namespace Bilten.Domain
         {
             get
             {
+                if (kategorija != String.Empty)
+                    return kategorija;
+
                 if (Gimnasticar != null)
-                    return Gimnasticar.TakmicarskaKategorija.ToString();
+                {
+                    try
+                    {
+                        kategorija = Gimnasticar.TakmicarskaKategorija.ToString();
+                    }
+                    catch (Exception)
+                    {
+                        kategorija = String.Empty;
+                    }
+                    return kategorija;
+                }
                 else
                     return String.Empty;
             }
