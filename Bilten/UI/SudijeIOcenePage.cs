@@ -38,6 +38,7 @@ namespace Bilten.UI
         {
             clearUI();
             txtBrojESudija.Text = takmicenje.BrojESudija.ToString();
+            txtBrojEOcena.Text = takmicenje.BrojEOcena.ToString();
             txtBrojDecD.Text = takmicenje.BrojDecimalaD.ToString();
             txtBrojDecE1.Text = takmicenje.BrojDecimalaE1.ToString();
             txtBrojDecE.Text = takmicenje.BrojDecimalaE.ToString();
@@ -48,6 +49,7 @@ namespace Bilten.UI
         private void clearUI()
         {
             txtBrojESudija.Text = String.Empty;
+            txtBrojEOcena.Text = String.Empty;
             txtBrojDecD.Text = String.Empty;
             txtBrojDecE1.Text = String.Empty;
             txtBrojDecE.Text = String.Empty;
@@ -56,6 +58,11 @@ namespace Bilten.UI
         }
 
         private void txtBrojESudija_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void txtBrojEOcena_TextChanged(object sender, EventArgs e)
         {
             dirty = true;
         }
@@ -106,13 +113,25 @@ namespace Bilten.UI
             if (txtBrojESudija.Text.Trim() == String.Empty)
             {
                 notification.RegisterMessage(
-                    "BrojESudija", "Broj E ocena je obavezan.");
+                    "BrojESudija", "Broj E sudija je obavezan.");
             }
             else if (!byte.TryParse(txtBrojESudija.Text, out dummyByte))
             {
                 notification.RegisterMessage(
-                    "BrojESudija", "Neispravan format za broj E ocena.");
+                    "BrojESudija", "Neispravan format za broj E sudija.");
             }
+            
+            if (txtBrojEOcena.Text.Trim() == String.Empty)
+            {
+                notification.RegisterMessage(
+                    "BrojEOcena", "Broj E ocena je obavezan.");
+            }
+            else if (!byte.TryParse(txtBrojEOcena.Text, out dummyByte))
+            {
+                notification.RegisterMessage(
+                    "BrojEOcena", "Neispravan format za broj E ocena.");
+            }
+            
             if (txtBrojDecD.Text.Trim() == String.Empty)
             {
                 notification.RegisterMessage(
@@ -175,6 +194,12 @@ namespace Bilten.UI
             if (brojESudija < 0 || brojESudija > 6)
             {
                 throw new BusinessException("BrojESudija",
+                    "Neispravna vrednost za broj E sudija.");
+            }
+            byte brojEOcena = byte.Parse(txtBrojEOcena.Text);
+            if (brojEOcena < 0 || brojEOcena > 6)
+            {
+                throw new BusinessException("BrojEOcena",
                     "Neispravna vrednost za broj E ocena.");
             }
             byte brojDecD = byte.Parse(txtBrojDecD.Text);
@@ -215,25 +240,25 @@ namespace Bilten.UI
 
         private void checkBusinessRulesOnUpdate()
         {
-            if (getBrojOcena(takmicenje.Id) == 0) // can throw, a hvata ga PropozicijeForm
+            if (!postojeUneteOcene(takmicenje.Id)) // can throw, a hvata ga PropozicijeForm
                 return;
 
-            byte brojESudija = byte.Parse(txtBrojESudija.Text);
+            byte brojEOcena = byte.Parse(txtBrojEOcena.Text);
             byte brojDecD = byte.Parse(txtBrojDecD.Text);
             byte brojDecE1 = byte.Parse(txtBrojDecE1.Text);
             byte brojDecE = byte.Parse(txtBrojDecE.Text);
             byte brojDecPen = byte.Parse(txtBrojDecPen.Text);
             byte brojDecTotal = byte.Parse(txtBrojDecTotal.Text);
 
-            if (brojESudija != takmicenje.BrojESudija)
+            // TODO3: Obradi ovde i situaciju kada postoje rasporedi sudija.
+            // Verovatno bi trebalo brisati ili dodavati e sudijske uloge 
+            // u sudijskim odborima
+
+            if (brojEOcena != takmicenje.BrojEOcena)
             {
-                throw new BusinessException("BrojESudija",
+                throw new BusinessException("BrojEOcena",
                     "Nije dozvoljeno menjati broj E ocena zato sto " +
                     "vec postoje unete ocene.");
-
-                // TODO: Obradi ovde i situaciju kada postoje rasporedi sudija.
-                // Verovatno bi trebalo brisati ili dodavati e sudijske uloge 
-                // u sudijskim odborima
             }
             else if (brojDecD < takmicenje.BrojDecimalaD
             || brojDecE1 < takmicenje.BrojDecimalaE1
@@ -247,7 +272,7 @@ namespace Bilten.UI
             }
         }
 
-        private int getBrojOcena(int takmicenjeId)
+        private bool postojeUneteOcene(int takmicenjeId)
         {
             IDataContext dataContext = null;
             try
@@ -260,7 +285,7 @@ namespace Bilten.UI
 	                       where o.Gimnasticar.Takmicenje.Id = :id";
                 IList<Ocena> ocene = dataContext.ExecuteQuery<Ocena>(QueryLanguageType.HQL, query,
                         new string[] { "id" }, new object[] { takmicenjeId });
-                return ocene.Count;
+                return ocene.Count > 0;
             }
             catch (Exception ex)
             {
@@ -280,6 +305,7 @@ namespace Bilten.UI
         private void update()
         {
             takmicenje.BrojESudija = byte.Parse(txtBrojESudija.Text);
+            takmicenje.BrojEOcena = byte.Parse(txtBrojEOcena.Text);
             takmicenje.BrojDecimalaD = byte.Parse(txtBrojDecD.Text);
             takmicenje.BrojDecimalaE1 = byte.Parse(txtBrojDecE1.Text);
             takmicenje.BrojDecimalaE = byte.Parse(txtBrojDecE.Text);

@@ -60,7 +60,7 @@ namespace Bilten.UI
             result.Sprava = sprava;
             result.DeoTakmicenjaKod = deoTakKod;
             result.Gimnasticar = gimnasticar;
-            result.BrojEOcena = takmicenje.BrojESudija;
+            result.BrojEOcena = takmicenje.BrojEOcena;
             return result;
         }
 
@@ -111,7 +111,7 @@ namespace Bilten.UI
             ckbUnosOcene.Checked = false;
             updateUIRucniUnos();
 
-            int brojEOcena = takmicenje.BrojESudija;
+            int brojEOcena = takmicenje.BrojEOcena;
             txtE1.Enabled = txtE1.Visible = lblE1.Visible = brojEOcena >= 1;
             txtE2.Enabled = txtE2.Visible = lblE2.Visible = brojEOcena >= 2;
             txtE3.Enabled = txtE3.Visible = lblE3.Visible = brojEOcena >= 3;
@@ -235,7 +235,7 @@ namespace Bilten.UI
             if (ocena.D != null)
                 txtD.Text = ocena.D.Value.ToString(formatD);
 
-            int brojEOcena = takmicenje.BrojESudija;
+            int brojEOcena = takmicenje.BrojEOcena;
             txtE1.Text = String.Empty;
             if (ocena.E1 != null && brojEOcena >= 1)
                 txtE1.Text = ocena.E1.Value.ToString(formatE1);
@@ -402,7 +402,7 @@ namespace Bilten.UI
             }
 
             TextBox[] txtEOcene = new TextBox[6] { txtE1, txtE2, txtE3, txtE4, txtE5, txtE6 };
-            for (byte i = 1; i <= takmicenje.BrojESudija; i++)
+            for (byte i = 1; i <= takmicenje.BrojEOcena; i++)
             {
                 validateEOcenaFormat(notification, txtEOcene[i - 1], i, prefix);
             }
@@ -618,7 +618,7 @@ namespace Bilten.UI
             else
                 ocena.D = float.Parse(txtD.Text);
 
-            int brojEOcena = takmicenje.BrojESudija;
+            int brojEOcena = takmicenje.BrojEOcena;
 
             if (brojEOcena == 0)
             {
@@ -767,7 +767,7 @@ namespace Bilten.UI
         private DrugaOcena createDrugaOcena()
         {
             DrugaOcena result = new DrugaOcena();
-            result.BrojEOcena = takmicenje.BrojESudija;
+            result.BrojEOcena = takmicenje.BrojEOcena;
             return result;
         }
 
@@ -782,9 +782,9 @@ namespace Bilten.UI
             else
                 clearColors2(SystemColors.Window);
 
-            txtE.TabStop = takmicenje.BrojESudija == 0 || ckbUnosOcene.Checked;
+            txtE.TabStop = takmicenje.BrojEOcena == 0 || ckbUnosOcene.Checked;
             txtTotal.TabStop = ckbUnosOcene.Checked;
-            txtE_2.TabStop = takmicenje.BrojESudija == 0 || ckbUnosOcene.Checked;
+            txtE_2.TabStop = takmicenje.BrojEOcena == 0 || ckbUnosOcene.Checked;
             txtTotal_2.TabStop = ckbUnosOcene.Checked;
             txtTotalObeOcene.TabStop = ckbUnosOcene.Checked;
         }
@@ -793,9 +793,9 @@ namespace Bilten.UI
         {
             bool rucniUnos = ckbUnosOcene.Checked;
 
-            txtE.ReadOnly = !rucniUnos && takmicenje.BrojESudija > 0;
+            txtE.ReadOnly = !rucniUnos && takmicenje.BrojEOcena > 0;
             txtTotal.ReadOnly = !rucniUnos;
-            txtE_2.ReadOnly = !rucniUnos && takmicenje.BrojESudija > 0;
+            txtE_2.ReadOnly = !rucniUnos && takmicenje.BrojEOcena > 0;
             txtTotal_2.ReadOnly = !rucniUnos;
             txtTotalObeOcene.ReadOnly = !rucniUnos;
             btnIzracunaj.Enabled = !rucniUnos;
@@ -904,7 +904,7 @@ namespace Bilten.UI
 
         private void doSelectEOcene(TextBox[] txtBoxes, int minBroj, int maxBroj)
         {
-            for (int i = 0; i < takmicenje.BrojESudija; i++)
+            for (int i = 0; i < takmicenje.BrojEOcena; i++)
             {
                 if (i != minBroj - 1 && i != maxBroj - 1)
                     txtBoxes[i].BackColor = selectionColor;
@@ -923,7 +923,7 @@ namespace Bilten.UI
             txtD.TextChanged += new EventHandler(txtBoxOcena1_TextChanged);
             txtD_2.TextChanged += new EventHandler(txtBoxOcena2_TextChanged);
 
-            int brojEOcena = takmicenje.BrojESudija;
+            int brojEOcena = takmicenje.BrojEOcena;
 
             if (brojEOcena == 0)
             {

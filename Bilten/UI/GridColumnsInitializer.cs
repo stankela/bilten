@@ -64,7 +64,7 @@ namespace Bilten.UI
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
             
-            int brojEOcena = takmicenje.BrojESudija;
+            int brojEOcena = takmicenje.BrojEOcena;
             if (sprava == Sprava.Preskok)
             {
                 column = dgw.AddColumn("D", "D_2", ocenaWidth);

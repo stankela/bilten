@@ -28,7 +28,7 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblBrojESudija = new System.Windows.Forms.Label();
+            this.lblBrojEOcena = new System.Windows.Forms.Label();
             this.txtBrojESudija = new System.Windows.Forms.TextBox();
             this.txtBrojDecTotal = new System.Windows.Forms.TextBox();
             this.lblTotal = new System.Windows.Forms.Label();
@@ -42,20 +42,22 @@ namespace Bilten.UI
             this.lblBrojDecD = new System.Windows.Forms.Label();
             this.lblBrojDecimala = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtBrojEOcena = new System.Windows.Forms.TextBox();
+            this.lblBrojESudija = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // lblBrojESudija
+            // lblBrojEOcena
             // 
-            this.lblBrojESudija.AutoSize = true;
-            this.lblBrojESudija.Location = new System.Drawing.Point(16, 18);
-            this.lblBrojESudija.Name = "lblBrojESudija";
-            this.lblBrojESudija.Size = new System.Drawing.Size(68, 13);
-            this.lblBrojESudija.TabIndex = 0;
-            this.lblBrojESudija.Text = "Broj E ocena";
+            this.lblBrojEOcena.AutoSize = true;
+            this.lblBrojEOcena.Location = new System.Drawing.Point(16, 18);
+            this.lblBrojEOcena.Name = "lblBrojEOcena";
+            this.lblBrojEOcena.Size = new System.Drawing.Size(68, 13);
+            this.lblBrojEOcena.TabIndex = 0;
+            this.lblBrojEOcena.Text = "Broj E ocena";
             // 
             // txtBrojESudija
             // 
-            this.txtBrojESudija.Location = new System.Drawing.Point(87, 15);
+            this.txtBrojESudija.Location = new System.Drawing.Point(82, 253);
             this.txtBrojESudija.Name = "txtBrojESudija";
             this.txtBrojESudija.Size = new System.Drawing.Size(37, 20);
             this.txtBrojESudija.TabIndex = 1;
@@ -164,9 +166,28 @@ namespace Bilten.UI
             this.label1.TabIndex = 22;
             this.label1.Text = "Unesite 0 ako ne zelite da unosite ocene E1, E2, ...";
             // 
+            // txtBrojEOcena
+            // 
+            this.txtBrojEOcena.Location = new System.Drawing.Point(87, 15);
+            this.txtBrojEOcena.Name = "txtBrojEOcena";
+            this.txtBrojEOcena.Size = new System.Drawing.Size(37, 20);
+            this.txtBrojEOcena.TabIndex = 24;
+            this.txtBrojEOcena.TextChanged += new System.EventHandler(this.txtBrojEOcena_TextChanged);
+            // 
+            // lblBrojESudija
+            // 
+            this.lblBrojESudija.AutoSize = true;
+            this.lblBrojESudija.Location = new System.Drawing.Point(11, 256);
+            this.lblBrojESudija.Name = "lblBrojESudija";
+            this.lblBrojESudija.Size = new System.Drawing.Size(65, 13);
+            this.lblBrojESudija.TabIndex = 23;
+            this.lblBrojESudija.Text = "Broj E sudija";
+            // 
             // SudijeIOcenePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.txtBrojEOcena);
+            this.Controls.Add(this.lblBrojESudija);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtBrojDecTotal);
             this.Controls.Add(this.lblTotal);
@@ -180,9 +201,9 @@ namespace Bilten.UI
             this.Controls.Add(this.lblBrojDecD);
             this.Controls.Add(this.lblBrojDecimala);
             this.Controls.Add(this.txtBrojESudija);
-            this.Controls.Add(this.lblBrojESudija);
+            this.Controls.Add(this.lblBrojEOcena);
             this.Name = "SudijeIOcenePage";
-            this.Size = new System.Drawing.Size(347, 241);
+            this.Size = new System.Drawing.Size(347, 287);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -190,7 +211,7 @@ namespace Bilten.UI
 
         #endregion
 
-        private System.Windows.Forms.Label lblBrojESudija;
+        private System.Windows.Forms.Label lblBrojEOcena;
         private System.Windows.Forms.TextBox txtBrojESudija;
         private System.Windows.Forms.TextBox txtBrojDecTotal;
         private System.Windows.Forms.Label lblTotal;
@@ -204,5 +225,7 @@ namespace Bilten.UI
         private System.Windows.Forms.Label lblBrojDecD;
         private System.Windows.Forms.Label lblBrojDecimala;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtBrojEOcena;
+        private System.Windows.Forms.Label lblBrojESudija;
     }
 }

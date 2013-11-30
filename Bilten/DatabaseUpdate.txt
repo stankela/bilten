@@ -1,3 +1,8 @@
+20-Nov-2013
+ALTER TABLE takmicenja ADD COLUMN broj_e_ocena tinyint;
+UPDATE takmicenja SET broj_e_ocena = broj_e_sudija;
+
+
 10-Nov-2013
 
 create table rezultati_sprava_finale_kupa_update (

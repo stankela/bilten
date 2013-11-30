@@ -59,6 +59,13 @@ namespace Bilten.Domain
             set { drugoKolo = value; }
         }
 
+        private byte brojEOcena = 6;
+        public virtual byte BrojEOcena
+        {
+            get { return brojEOcena; }
+            set { brojEOcena = value; }
+        }
+
         private byte brojESudija = 6;
         public virtual byte BrojESudija
         {

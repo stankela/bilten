@@ -63,7 +63,7 @@ namespace Bilten.UI
             rectNormal = DesktopBounds;
             MakeCaption();
 
-            mnTakmicenje1RasporedSudija.Visible = false;
+            mnTakmicenje1RasporedSudija.Visible = true;
             mnTakmicenje1StartListe.Visible = true;
             mnOpcije.Visible = false;
             mnKopirajPrethodnoTakmicenje.Enabled = false;
@@ -1180,6 +1180,7 @@ namespace Bilten.UI
             // TODO3: Ovaj metod bi trebalo updateovati svaki put kada se promene neka svojstva koja se kloniraju.
 
             takmicenje.BrojESudija = from.BrojESudija;
+            takmicenje.BrojEOcena = from.BrojEOcena;
             takmicenje.BrojLinijskihSudija = from.BrojLinijskihSudija;
             takmicenje.BrojMeracaVremena = from.BrojMeracaVremena;
             takmicenje.BrojDecimalaD = from.BrojDecimalaD;

@@ -12,6 +12,7 @@
     <property name="Datum" />
     <property name="Mesto" />
     <property name="FinaleKupa" column="finale_kupa" />
+    <property name="BrojEOcena" column="broj_e_ocena" type="Byte" />
     <property name="BrojESudija" column="broj_e_sudija" type="Byte" />
     <property name="BrojLinijskihSudija" column="broj_lin_sudija" type="Byte" />
     <property name="BrojMeracaVremena" column="broj_meraca_vremena" type="Byte" />
