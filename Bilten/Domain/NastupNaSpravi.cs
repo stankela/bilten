@@ -20,8 +20,8 @@ namespace Bilten.Domain
             set { gimnasticar = value; }
         }
 
-        private int ekipa;
-        public virtual int Ekipa
+        private byte ekipa;
+        public virtual byte Ekipa
         {
             get { return ekipa; }
             set { ekipa = value; }
@@ -34,7 +34,7 @@ namespace Bilten.Domain
         
         }
 
-        public NastupNaSpravi(bool nastupaDvaPuta, GimnasticarUcesnik gimnasticar, int ekipa)
+        public NastupNaSpravi(bool nastupaDvaPuta, GimnasticarUcesnik gimnasticar, byte ekipa)
         {
             this.nastupaDvaPuta = nastupaDvaPuta;
             this.gimnasticar = gimnasticar;

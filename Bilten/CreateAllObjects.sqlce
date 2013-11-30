@@ -336,6 +336,7 @@ create table nastup_na_spravi (
     nastup_id int identity(1,1) primary key,
 	red_broj smallint,
     nastupa_dva_puta bit,
+    ekipa tinyint,
 	start_lista_id int references start_lista_sprava(start_lista_id),
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id)
 );

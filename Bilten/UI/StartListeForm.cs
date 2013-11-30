@@ -536,14 +536,20 @@ namespace Bilten.UI
             if (sprava == Sprava.Undefined)
                 return;
 
+            promeniStartListuCommand(sprava);
+        }
+
+        private void promeniStartListuCommand(Sprava sprava)
+        {
             try
             {
-                StartListaRotEditorForm form2 = new StartListaRotEditorForm(
-                    ActiveRaspored.Id, sprava, ActiveGrupa, ActiveRotacija, takmicenje.Id);
-                if (form2.ShowDialog() == DialogResult.OK)
+                StartListaRotEditorForm form = new StartListaRotEditorForm(
+                    ActiveRaspored.Id, sprava, ActiveGrupa, ActiveRotacija, takmicenje.Id, bojeZaEkipe);
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    rasporedi[tabControl1.SelectedIndex] = form2.RasporedNastupa;
+                    rasporedi[tabControl1.SelectedIndex] = form.RasporedNastupa;
                     refresh(sprava);
+                    getActiveSpravaGridGroupUserControl()[sprava].clearSelection();
                 }
             }
             catch (InfrastructureException ex)
@@ -1304,6 +1310,10 @@ namespace Bilten.UI
                     {
                         //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
                         // za koje start lista vazi.
+
+                        // TODO3: Proveri da li ovo (tj. nedostatak ove naredbe na drugim mestima) ima veze sa time sto mi
+                        // za start liste ponekad daje gresku, i zbog cega sam morao da u klasi NastupNaSpravi kesiram
+                        // Kategoriju.
                         NHibernateUtil.Initialize(n.Gimnasticar.TakmicarskaKategorija);
                     }
                     dataContext.Save(startLista);
@@ -1797,20 +1807,7 @@ namespace Bilten.UI
             if (clickedSprava == Sprava.Undefined)
                 return;
 
-            try
-            {
-                StartListaRotEditorForm form = new StartListaRotEditorForm(
-                    ActiveRaspored.Id, clickedSprava, ActiveGrupa, ActiveRotacija, takmicenje.Id);
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    rasporedi[tabControl1.SelectedIndex] = form.RasporedNastupa;
-                    refresh(clickedSprava);
-                }
-            }
-            catch (InfrastructureException ex)
-            {
-                MessageDialogs.showError(ex.Message, this.Text);
-            }
+            promeniStartListuCommand(clickedSprava);
         }
 
         private void btnPrintUnosOcena_Click(object sender, EventArgs e)
@@ -2065,7 +2062,7 @@ namespace Bilten.UI
                 // Selektovan je pravi podskup neke ekipe. Ponisti ekipe za sve gimnasticare iz ekipe.
                 // Time se sprecava da imamo ekipu ciji clanovi nisu uzastopni u start listi.
 
-                List<int> selEkipe = getEkipe(getActiveSpravaGridGroupUserControl()[clickedSprava]
+                List<byte> selEkipe = getEkipe(getActiveSpravaGridGroupUserControl()[clickedSprava]
                     .DataGridViewUserControl.DataGridView, true);
                 IList<NastupNaSpravi> sviNastupi = getActiveSpravaGridGroupUserControl()[clickedSprava]
                     .DataGridViewUserControl.getItems<NastupNaSpravi>();
@@ -2086,10 +2083,45 @@ namespace Bilten.UI
 
             if (!oznaciKaoPojedinca)
             {
-                int maxEkipa = getMaxEkipa(getActiveSpravaGridGroupUserControl()[clickedSprava]
+                byte maxEkipa = getMaxEkipa(getActiveSpravaGridGroupUserControl()[clickedSprava]
                     .DataGridViewUserControl.DataGridView);
                 foreach (NastupNaSpravi n in selNastupi)
-                    n.Ekipa = maxEkipa + 1;
+                    n.Ekipa = (byte)(maxEkipa + 1);
+            }
+
+            bool close = false;
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                dataContext.Save(startLista);
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                close = true;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+            if (close)
+            {
+                Close();
+                return;
             }
 
             getActiveSpravaGridGroupUserControl()[clickedSprava].clearSelection();
@@ -2113,16 +2145,16 @@ namespace Bilten.UI
             if (n == null)
                 return;
 
-            List<int> ekipe = getEkipe(sender as DataGridView, false);
+            List<byte> ekipe = getEkipe(sender as DataGridView, false);
             if (n.Ekipa > 0)
                 e.CellStyle.BackColor = bojeZaEkipe[ekipe.IndexOf(n.Ekipa)];
             else
                 e.CellStyle.BackColor = Color.White;
         }
 
-        List<int> getEkipe(DataGridView dgw, bool samoSelektovane)
+        List<byte> getEkipe(DataGridView dgw, bool samoSelektovane)
         {
-            List<int> result = new List<int>();
+            List<byte> result = new List<byte>();
             foreach (DataGridViewRow row in dgw.Rows)
             {
                 if (!row.Selected && samoSelektovane)
@@ -2136,11 +2168,11 @@ namespace Bilten.UI
             return result;
         }
 
-        int getMaxEkipa(DataGridView dgw)
+        byte getMaxEkipa(DataGridView dgw)
         {
-            List<int> ekipe = getEkipe(dgw, false);
-            int result = 0;
-            foreach (int i in ekipe)
+            List<byte> ekipe = getEkipe(dgw, false);
+            byte result = 0;
+            foreach (byte i in ekipe)
             {
                 if (i > result)
                     result = i;

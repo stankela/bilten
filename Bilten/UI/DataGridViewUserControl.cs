@@ -45,18 +45,35 @@ namespace Bilten.UI
             
             dataGridView1.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView1_CellFormatting);
             dataGridView1.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(dataGridView1_ColumnHeaderMouseClick);
-            dataGridView1.CellMouseDown += new DataGridViewCellMouseEventHandler(dataGridView1_CellMouseDown);
+            dataGridView1.MouseDown += new MouseEventHandler(dataGridView1_MouseDown);
         }
 
-        void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        void dataGridView1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            System.Windows.Forms.DataGridView.HitTestInfo info = DataGridView.HitTest(e.X, e.Y);
+            if (e.Button == MouseButtons.Left)
             {
-                if (e.RowIndex >= 0 && !DataGridView.Rows[e.RowIndex].Selected)
+                if (info.Type == DataGridViewHitTestType.None)
                 {
-                    // selektuj vrstu
+                    // None znaci da nije kliknut ni Cell, ni ColumnHeader, ni RowHeader, ni HorizontalScrollBar, ni
+                    // VerticalScrollBar.
                     clearSelection();
-                    DataGridView.Rows[e.RowIndex].Selected = true;
+                }
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                // TODO: Ovaj deo je ranije bio u eventu CellMouseDown zato sto MouseDown event ne daje informacije o
+                // RowIndex. Medjutim ova informacija (i jos ponesto) moze da se sazna pozivanjem
+                // DataGridView.HitTest(e.X, e.Y). Probaj i na ostalim mestima da CellMouseDown zamenis sa MouseDown.
+
+                if (info.Type == DataGridViewHitTestType.Cell)
+                {
+                    if (info.RowIndex >= 0 && !DataGridView.Rows[info.RowIndex].Selected)
+                    {
+                        // selektuj vrstu
+                        clearSelection();
+                        DataGridView.Rows[info.RowIndex].Selected = true;
+                    }
                 }
             }
         }

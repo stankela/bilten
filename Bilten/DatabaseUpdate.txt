@@ -1,6 +1,9 @@
-20-Nov-2013
+30-Nov-2013
 ALTER TABLE takmicenja ADD COLUMN broj_e_ocena tinyint;
 UPDATE takmicenja SET broj_e_ocena = broj_e_sudija;
+
+ALTER TABLE nastup_na_spravi ADD COLUMN ekipa tinyint;
+UPDATE nastup_na_spravi SET ekipa = 0;
 
 
 10-Nov-2013
