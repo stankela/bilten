@@ -5,6 +5,9 @@ UPDATE takmicenja SET broj_e_ocena = broj_e_sudija;
 ALTER TABLE nastup_na_spravi ADD COLUMN ekipa tinyint;
 UPDATE nastup_na_spravi SET ekipa = 0;
 
+ALTER TABLE sudije ADD COLUMN klub_id int references klubovi(klub_id);
+ALTER TABLE sudija_ucesnik ADD COLUMN klub_id int references klubovi_ucesnici(klub_id);
+
 
 10-Nov-2013
 

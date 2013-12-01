@@ -19,6 +19,7 @@ namespace Bilten.UI
         public SudijeUcesniciForm(int takmicenjeId)
         {
             this.Text = "Sudije na takmicenju";
+            this.ClientSize = new System.Drawing.Size(800, 540);
             btnEditItem.Enabled = false;
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -37,6 +38,7 @@ namespace Bilten.UI
                 dataGridViewUserControl1.sort<SudijaUcesnik>(
                     new string[] { "Prezime", "Ime" },
                     new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                updateSudijeCount();
             }
             catch (Exception ex)
             {
@@ -56,7 +58,8 @@ namespace Bilten.UI
         private IList<SudijaUcesnik> loadAll(int takmicenjeId)
         {
             string query = @"from SudijaUcesnik s
-                left join fetch s.Drzava
+                left join fetch s.DrzavaUcesnik
+                left join fetch s.KlubUcesnik
                 where s.Takmicenje.Id = :takmicenjeId";
             IList<SudijaUcesnik> result = dataContext.
                 ExecuteQuery<SudijaUcesnik>(QueryLanguageType.HQL, query,
@@ -77,7 +80,8 @@ namespace Bilten.UI
             AddColumn("Ime", "Ime", 100);
             AddColumn("Prezime", "Prezime", 100);
             AddColumn("Pol", "Pol", 100);
-            AddColumn("Drzava", "Drzava", 100);
+            AddColumn("Klub", "KlubUcesnik", 150);
+            AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 
         protected override void AddNew()
@@ -136,6 +140,7 @@ namespace Bilten.UI
                     currencyManager.Position = sudije.Count - 1;
                     currencyManager.Refresh();
                 }
+                updateSudijeCount();
 
                 if (illegalSudije.Count > 0)
                 {
@@ -183,7 +188,7 @@ namespace Bilten.UI
             result.UlogaUGlavnomSudijskomOdboru = SudijskaUloga.Undefined;
             result.Takmicenje = takmicenje;
             if (s.Drzava == null)
-                result.Drzava = null;
+                result.DrzavaUcesnik = null;
             else
             {
                 DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(
@@ -196,7 +201,7 @@ namespace Bilten.UI
                     drzavaUcesnik.Takmicenje = takmicenje;
                     dataContext.Add(drzavaUcesnik);
                 }
-                result.Drzava = drzavaUcesnik;
+                result.DrzavaUcesnik = drzavaUcesnik;
             }
             return result;
         }
@@ -245,5 +250,17 @@ namespace Bilten.UI
         {
             return "Neuspesno brisanje sudije.";
         }
+
+        protected override void updateEntityCount()
+        {
+            updateSudijeCount();
+        }
+
+        private void updateSudijeCount()
+        {
+            int count = dataGridViewUserControl1.getItems<SudijaUcesnik>().Count;
+            StatusPanel.Panels[0].Text = count.ToString() + " sudija";
+        }
+
     }
 }

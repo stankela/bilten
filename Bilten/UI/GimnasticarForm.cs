@@ -692,6 +692,5 @@ namespace Bilten.UI
             }
             return null;
         }
-
     }
 }

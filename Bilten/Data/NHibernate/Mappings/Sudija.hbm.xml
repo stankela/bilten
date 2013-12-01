@@ -10,6 +10,7 @@
     <property name="Ime" column="ime" type="String" length="32" />
     <property name="Prezime" />
     <property name="Pol" type="Byte" />
+    <many-to-one name="Klub" class="Klub" column="klub_id" />
     <many-to-one name="Drzava" class="Drzava" column="drzava_id" />
   </class>
 

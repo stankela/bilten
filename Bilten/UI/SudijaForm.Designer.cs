@@ -37,15 +37,18 @@ namespace Bilten.UI
             this.lblDrzava = new System.Windows.Forms.Label();
             this.cmbPol = new System.Windows.Forms.ComboBox();
             this.btnAddDrzava = new System.Windows.Forms.Button();
+            this.btnAddKlub = new System.Windows.Forms.Button();
+            this.cmbKlub = new System.Windows.Forms.ComboBox();
+            this.lblKlub = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(157, 142);
+            this.btnOk.Location = new System.Drawing.Point(214, 212);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(249, 142);
+            this.btnCancel.Location = new System.Drawing.Point(306, 212);
             // 
             // lblIme
             // 
@@ -123,11 +126,41 @@ namespace Bilten.UI
             this.btnAddDrzava.UseVisualStyleBackColor = true;
             this.btnAddDrzava.Click += new System.EventHandler(this.btnAddDrzava_Click);
             // 
+            // btnAddKlub
+            // 
+            this.btnAddKlub.Location = new System.Drawing.Point(228, 146);
+            this.btnAddKlub.Name = "btnAddKlub";
+            this.btnAddKlub.Size = new System.Drawing.Size(24, 23);
+            this.btnAddKlub.TabIndex = 27;
+            this.btnAddKlub.Text = "...";
+            this.btnAddKlub.UseVisualStyleBackColor = true;
+            this.btnAddKlub.Click += new System.EventHandler(this.btnAddKlub_Click);
+            // 
+            // cmbKlub
+            // 
+            this.cmbKlub.FormattingEnabled = true;
+            this.cmbKlub.Location = new System.Drawing.Point(15, 147);
+            this.cmbKlub.Name = "cmbKlub";
+            this.cmbKlub.Size = new System.Drawing.Size(207, 21);
+            this.cmbKlub.TabIndex = 26;
+            // 
+            // lblKlub
+            // 
+            this.lblKlub.AutoSize = true;
+            this.lblKlub.Location = new System.Drawing.Point(12, 131);
+            this.lblKlub.Name = "lblKlub";
+            this.lblKlub.Size = new System.Drawing.Size(28, 13);
+            this.lblKlub.TabIndex = 25;
+            this.lblKlub.Text = "Klub";
+            // 
             // SudijaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(344, 179);
+            this.ClientSize = new System.Drawing.Size(406, 256);
+            this.Controls.Add(this.btnAddKlub);
+            this.Controls.Add(this.cmbKlub);
+            this.Controls.Add(this.lblKlub);
             this.Controls.Add(this.btnAddDrzava);
             this.Controls.Add(this.cmbPol);
             this.Controls.Add(this.lblDrzava);
@@ -150,6 +183,9 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.lblDrzava, 0);
             this.Controls.SetChildIndex(this.cmbPol, 0);
             this.Controls.SetChildIndex(this.btnAddDrzava, 0);
+            this.Controls.SetChildIndex(this.lblKlub, 0);
+            this.Controls.SetChildIndex(this.cmbKlub, 0);
+            this.Controls.SetChildIndex(this.btnAddKlub, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -166,5 +202,8 @@ namespace Bilten.UI
         private System.Windows.Forms.Label lblDrzava;
         private System.Windows.Forms.ComboBox cmbPol;
         private System.Windows.Forms.Button btnAddDrzava;
+        private System.Windows.Forms.Button btnAddKlub;
+        private System.Windows.Forms.ComboBox cmbKlub;
+        private System.Windows.Forms.Label lblKlub;
     }
 }

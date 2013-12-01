@@ -211,6 +211,7 @@ create table sudije (
 	ime nvarchar(32),
 	prezime nvarchar(32),
 	pol tinyint,
+	klub_id int references klubovi(klub_id),
 	drzava_id int references drzave(drzava_id)
 );
 
@@ -303,6 +304,7 @@ create table sudija_ucesnik (
     prezime nvarchar(32),
     pol tinyint,
 	uloga_u_glav_sud_odboru tinyint,
+	klub_id int references klubovi_ucesnici(klub_id),
     drzava_id int references drzave_ucesnici(drzava_id),
 	takmicenje_id int references takmicenja(takmicenje_id)
 );

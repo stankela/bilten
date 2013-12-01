@@ -35,8 +35,8 @@ namespace Bilten.Domain
         {
             get
             {
-                if (Sudija != null && Sudija.Drzava != null)
-                    return Sudija.Drzava.Kod;
+                if (Sudija != null && Sudija.DrzavaUcesnik != null)
+                    return Sudija.DrzavaUcesnik.Kod;
                 else
                     return String.Empty;
             }

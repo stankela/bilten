@@ -14,18 +14,11 @@ namespace Bilten.UI
 {
     public partial class GimnasticariForm : SingleEntityListForm<Gimnasticar>
     {
-        private StatusBar statusBar;
-        
         public GimnasticariForm()
         {
             this.Text = "Gimnasticari";
-            
-            statusBar = new StatusBar();
-            statusBar.Parent = this;
-            statusBar.ShowPanels = true;
-            StatusBarPanel sbPanel1 = new StatusBarPanel();
-            statusBar.Panels.Add(sbPanel1);
-
+            this.ClientSize = new System.Drawing.Size(1100, 540);
+    
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
@@ -70,9 +63,9 @@ namespace Bilten.UI
         {
             int count = dataGridViewUserControl1.getItems<Gimnasticar>().Count;
             if (count == 1)
-                statusBar.Panels[0].Text = count.ToString() + " gimnasticar";
+                StatusPanel.Panels[0].Text = count.ToString() + " gimnasticar";
             else
-                statusBar.Panels[0].Text = count.ToString() + " gimnasticara";
+                StatusPanel.Panels[0].Text = count.ToString() + " gimnasticara";
         }
 
         protected override void prikaziSve()
@@ -130,11 +123,11 @@ namespace Bilten.UI
             AddColumn("Prezime", "Prezime", 100);
             AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             AddColumn("Gimnastika", "Gimnastika", 70);
+            AddColumn("Klub", "Klub", 150);
+            AddColumn("Kategorija", "Kategorija", 100);
             AddColumn("Drzava", "Drzava", 100);
             AddColumn("Registarski broj", "RegistarskiBroj", 100);
             AddColumn("Poslednja registr.", "DatumPoslednjeRegistracije", 100, "{0:d}");
-            AddColumn("Kategorija", "Kategorija", 100);
-            AddColumn("Klub", "Klub", 100);
         }
 
         protected override EntityDetailForm createEntityDetailForm(Nullable<int> entityId)

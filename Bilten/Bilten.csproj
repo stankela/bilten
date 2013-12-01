@@ -5,7 +5,7 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>

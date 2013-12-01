@@ -30,6 +30,13 @@ namespace Bilten.Domain
             set { pol = value; }
         }
 
+        private Klub klub;
+        public virtual Klub Klub
+        {
+            get { return klub; }
+            set { klub = value; }
+        }
+
         private Drzava drzava;
         public virtual Drzava Drzava
         {

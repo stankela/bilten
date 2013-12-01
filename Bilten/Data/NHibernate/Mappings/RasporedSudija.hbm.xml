@@ -25,7 +25,8 @@
       left join fetch r.Kategorije k
       left join fetch r.Odbori o
       left join fetch o.Sudije s
-      left join fetch s.Drzava dr
+      left join fetch s.DrzavaUcesnik dr
+      left join fetch s.KlubUcesnik kl
       where r.DeoTakmicenjaKod = :deoTak
       and k.Takmicenje.Id = :takmicenje
     ]]>
@@ -38,7 +39,8 @@
       left join fetch r.Kategorije k
       left join fetch r.Odbori o
       left join fetch o.Sudije s
-      left join fetch s.Drzava dr
+      left join fetch s.DrzavaUcesnik dr
+      left join fetch s.KlubUcesnik kl
       where r.Id = :id
     ]]>
   </query>

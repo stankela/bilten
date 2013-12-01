@@ -14,8 +14,10 @@ namespace Bilten.UI
     public partial class SudijaForm : EntityDetailForm
     {
         private List<Drzava> drzave;
+        private List<Klub> klubovi;
         private string oldIme;
         private string oldPrezime;
+        private readonly string PRAZNO_ITEM = "<<Prazno>>";
 
         public SudijaForm(Nullable<int> sudijaId)
         {
@@ -29,6 +31,10 @@ namespace Bilten.UI
             string sortingPropertyName = "Naziv";
             q.OrderClauses.Add(new OrderClause(sortingPropertyName, OrderClause.OrderClauseCriteria.Ascending));
             drzave = new List<Drzava>(dataContext.GetByCriteria<Drzava>(q));
+
+            q = new Query();
+            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
+            klubovi = new List<Klub>(dataContext.GetByCriteria<Klub>(q));
         }
 
         protected override void initUI()
@@ -43,25 +49,47 @@ namespace Bilten.UI
             cmbPol.Items.AddRange(new string[] { "Muski", "Zenski" });
             cmbPol.SelectedIndex = -1;
 
-            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDown;
             setDrzave(drzave);
             SelectedDrzava = null;
+            cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
+
+            cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
+            setKlubovi(klubovi);
+            SelectedKlub = null;
+            cmbKlub.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbKlub.AutoCompleteSource = AutoCompleteSource.ListItems;
         }
 
         private void setDrzave(List<Drzava> drzave)
         {
+            List<object> items = new List<object>();
+            items.Add(PRAZNO_ITEM);
+            items.AddRange(drzave.ToArray());
             cmbDrzava.DisplayMember = "Naziv";
-            cmbDrzava.DataSource = drzave;
-
-            CurrencyManager currencyManager =
-                (CurrencyManager)this.BindingContext[drzave];
-            currencyManager.Refresh();
+            cmbDrzava.DataSource = items;
         }
 
         private Drzava SelectedDrzava
         {
             get { return cmbDrzava.SelectedItem as Drzava; }
             set { cmbDrzava.SelectedItem = value; }
+        }
+
+        private void setKlubovi(List<Klub> klubovi)
+        {
+            List<object> items = new List<object>();
+            items.Add(PRAZNO_ITEM);
+            items.AddRange(klubovi.ToArray());
+            cmbKlub.DisplayMember = "Naziv";
+            cmbKlub.DataSource = items;
+        }
+
+        private Klub SelectedKlub
+        {
+            get { return cmbKlub.SelectedItem as Klub; }
+            set { cmbKlub.SelectedItem = value; }
         }
 
         protected override DomainObject getEntityById(int id)
@@ -89,6 +117,7 @@ namespace Bilten.UI
                 cmbPol.SelectedIndex = 1;
 
             SelectedDrzava = sudija.Drzava;
+            SelectedKlub = sudija.Klub;
         }
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
@@ -108,10 +137,25 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "Pol", "Pol sudije je obavezan.");
             }
-            if (cmbDrzava.SelectedIndex == -1)
+
+            if (SelectedDrzava == null)
+            {
+                if (cmbDrzava.Text.Trim() != String.Empty)
+                {
+                    notification.RegisterMessage(
+                        "Drzava", "Uneli ste nepostojecu drzavu.");
+                }
+                else
+                {
+                    notification.RegisterMessage(
+                        "Drzava", "Drzava je obavezna.");
+                }
+            }
+
+            if (cmbKlub.Text.Trim() != String.Empty && cmbKlub.Text.Trim() != PRAZNO_ITEM && SelectedKlub == null)
             {
                 notification.RegisterMessage(
-                    "Drzava", "Drzava je obavezna.");
+                    "Klub", "Uneli ste nepostojeci klub.");
             }
         }
 
@@ -133,6 +177,10 @@ namespace Bilten.UI
 
                 case "Drzava":
                     cmbDrzava.Focus();
+                    break;
+
+                case "Klub":
+                    cmbKlub.Focus();
                     break;
 
                 default:
@@ -157,6 +205,7 @@ namespace Bilten.UI
                 sudija.Pol = Pol.Zenski;
 
             sudija.Drzava = SelectedDrzava;
+            sudija.Klub = SelectedKlub;
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
@@ -209,6 +258,26 @@ namespace Bilten.UI
                     drzave.Sort();
                     setDrzave(drzave);
                     SelectedDrzava = d;
+                }
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+        }
+
+        private void btnAddKlub_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                KlubForm form = new KlubForm(null);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    Klub k = (Klub)form.Entity;
+                    klubovi.Add(k);
+                    klubovi.Sort();
+                    setKlubovi(klubovi);
+                    SelectedKlub = k;
                 }
             }
             catch (InfrastructureException ex)

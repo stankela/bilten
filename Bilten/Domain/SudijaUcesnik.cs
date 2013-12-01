@@ -27,11 +27,18 @@ namespace Bilten.Domain
             set { pol = value; }
         }
 
-        private DrzavaUcesnik drzava;
-        public virtual DrzavaUcesnik Drzava
+        private KlubUcesnik klubUcesnik;
+        public virtual KlubUcesnik KlubUcesnik
         {
-            get { return drzava; }
-            set { drzava = value; }
+            get { return klubUcesnik; }
+            set { klubUcesnik = value; }
+        }
+
+        private DrzavaUcesnik drzavaUcesnik;
+        public virtual DrzavaUcesnik DrzavaUcesnik
+        {
+            get { return drzavaUcesnik; }
+            set { drzavaUcesnik = value; }
         }
 
         private SudijskaUloga ulogaUGlavnomSudijskomOdboru;

@@ -279,8 +279,8 @@ namespace Bilten.Test
                         sudija.UlogaUGlavnomSudijskomOdboru = uloga;
                     else
                         sudija.UlogaUGlavnomSudijskomOdboru = SudijskaUloga.Undefined;
-                    sudija.Drzava = findDrzavaUcesnik(kod, drzave);
-                    if (sudija.Drzava == null)
+                    sudija.DrzavaUcesnik = findDrzavaUcesnik(kod, drzave);
+                    if (sudija.DrzavaUcesnik == null)
                         throw new Exception("Greska prilikom dodavanja sudija ucesnika.");
 
                     sudija.Takmicenje = takmicenje;

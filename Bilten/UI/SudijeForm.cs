@@ -17,6 +17,7 @@ namespace Bilten.UI
         public SudijeForm()
         {
             this.Text = "Sudije";
+            this.ClientSize = new System.Drawing.Size(800, 540);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
@@ -32,6 +33,7 @@ namespace Bilten.UI
                 dataGridViewUserControl1.sort<Sudija>(
                     new string[] { "Prezime", "Ime" },
                     new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                updateSudijeCount();
             }
             catch (Exception ex)
             {
@@ -48,10 +50,20 @@ namespace Bilten.UI
             }
         }
 
+        // TODO: Dodaj i druge stvari koje postoje u GimnasticariForm, kao npr. filtriranje, provera prilikom unosa da li
+        // sudija vec postoji i ako postoji otvaranje dijaloga za edit.
+
+        private void updateSudijeCount()
+        {
+            int count = dataGridViewUserControl1.getItems<Sudija>().Count;
+            StatusPanel.Panels[0].Text = count.ToString() + " sudija";
+        }
+
         private IList<Sudija> loadAll()
         {
-            string query = @"from Sudija g
-                left join fetch g.Drzava";
+            string query = @"from Sudija s
+                left join fetch s.Drzava
+                left join fetch s.Klub";
             IList<Sudija> result = dataContext.
                 ExecuteQuery<Sudija>(QueryLanguageType.HQL, query,
                         new string[] { }, new object[] { });
@@ -71,6 +83,7 @@ namespace Bilten.UI
             AddColumn("Ime", "Ime", 100);
             AddColumn("Prezime", "Prezime", 100);
             AddColumn("Pol", "Pol", 100);
+            AddColumn("Klub", "Klub", 150);
             AddColumn("Drzava", "Drzava", 100);
         }
 
@@ -89,5 +102,9 @@ namespace Bilten.UI
             return "Neuspesno brisanje sudije.";
         }
 
+        protected override void updateEntityCount()
+        {
+            updateSudijeCount();
+        }
     }
 }

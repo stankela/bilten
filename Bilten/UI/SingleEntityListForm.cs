@@ -23,9 +23,22 @@ namespace Bilten.UI
             get { return fetchModes; }
         }
 
+        private StatusBar statusBar;
+        public StatusBar StatusPanel
+        {
+            get { return statusBar; }
+        }
+
         public SingleEntityListForm()
         {
             InitializeComponent();
+
+            statusBar = new StatusBar();
+            statusBar.Parent = this;
+            statusBar.ShowPanels = true;
+            StatusBarPanel sbPanel1 = new StatusBarPanel();
+            statusBar.Panels.Add(sbPanel1);
+
             pnlPager.Visible = false;
             btnPrintItem.Visible = false;
             btnPrintPreview.Visible = false;
@@ -114,6 +127,7 @@ namespace Bilten.UI
                     items.Add(newEntity);
                     dataGridViewUserControl1.setItems<T>(items);
                     dataGridViewUserControl1.setSelectedItem<T>(newEntity);
+                    updateEntityCount();
                 }
             }
             catch (InfrastructureException ex)
