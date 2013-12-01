@@ -51,10 +51,10 @@ namespace Bilten.UI
             dataGridViewUserControl1.AddColumn("Prezime", "Prezime", 100);
             dataGridViewUserControl1.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             dataGridViewUserControl1.AddColumn("Gimnastika", "Gimnastika", 70);
+            dataGridViewUserControl1.AddColumn("Klub", "Klub", 150);
+            dataGridViewUserControl1.AddColumn("Kategorija", "Kategorija", 100);
             dataGridViewUserControl1.AddColumn("Drzava", "Drzava", 100);
             dataGridViewUserControl1.AddColumn("Registarski broj", "RegistarskiBroj", 70);
-            dataGridViewUserControl1.AddColumn("Kategorija", "Kategorija", 100);
-            dataGridViewUserControl1.AddColumn("Klub", "Klub", 100);
         }
 
         private void showAll()

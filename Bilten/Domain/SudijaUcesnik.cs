@@ -55,9 +55,11 @@ namespace Bilten.Domain
             set { takmicenje = value; }
         }
 
-        public virtual string PrezimeIme
+        private bool nastupaZaDrzavu;
+        public virtual bool NastupaZaDrzavu
         {
-            get { return Prezime + ' ' + Ime; }
+            get { return nastupaZaDrzavu; }
+            set { nastupaZaDrzavu = value; }
         }
 
         public SudijaUcesnik()
@@ -68,6 +70,37 @@ namespace Bilten.Domain
         public override string ToString()
         {
             return Ime + ' ' + Prezime;
+        }
+
+        public virtual string PrezimeIme
+        {
+            get { return Prezime + ' ' + Ime; }
+        }
+
+        public virtual string KlubDrzava
+        {
+            get
+            {
+                if (NastupaZaDrzavu)
+                {
+                    if (DrzavaUcesnik != null)
+                        return DrzavaUcesnik.Kod;
+                    else if (KlubUcesnik != null)
+                        return KlubUcesnik.Naziv;
+                    else
+                        return String.Empty;
+                }
+                else
+                {
+                    if (KlubUcesnik != null)
+                        return KlubUcesnik.Naziv;
+                    else if (DrzavaUcesnik != null)
+                        return DrzavaUcesnik.Kod;
+                    else
+                        return String.Empty;
+                }
+
+            }
         }
 
         public override bool Equals(object other)

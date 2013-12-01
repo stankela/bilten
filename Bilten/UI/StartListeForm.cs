@@ -178,7 +178,8 @@ namespace Bilten.UI
             }
         }
 
-        // TODO: Trenutno se meni otvara samo kada se klikne unutar sprave. Promeni da se meni otvara kada se klike bilo gde.
+        // TODO: Trenutno se meni otvara samo kada se klikne unutar sprave. Promeni da se meni otvara kada se klikne bilo gde.
+        // (isto i u rasporedu sudija)
         void spravaGridGroupUserControl1_SpravaGridRightClick(object sender, SpravaGridRightClickEventArgs e)
         {
             clickedSprava = e.Sprava;
@@ -413,12 +414,22 @@ namespace Bilten.UI
 
         private int ActiveGrupa
         {
-            get { return grupa[tabControl1.SelectedIndex];}
+            get
+            {
+                if (grupa.Count != 0)
+                    return grupa[tabControl1.SelectedIndex];
+                return 0;
+            }
         }
 
         private int ActiveRotacija
         {
-            get { return rot[tabControl1.SelectedIndex]; }
+            get
+            {
+                if (rot.Count != 0)
+                    return rot[tabControl1.SelectedIndex];
+                return 0;
+            }
         }
 
         private void setStartListe(RasporedNastupa raspored, int g, int r)

@@ -11,33 +11,41 @@ namespace Bilten.UI
     {
         public static void initGimnasticarUcesnik(DataGridViewUserControl dgw)
         {
+            dgw.DataGridView.Columns.Clear();
+
             dgw.AddColumn("Ime", "Ime", 100);
             dgw.AddColumn("Prezime", "Prezime", 100);
             dgw.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             dgw.AddColumn("Registarski broj", "RegistarskiBroj", 100);
             dgw.AddColumn("Takmicarski broj", "TakmicarskiBroj", 70);
-            dgw.AddColumn("Klub", "KlubUcesnik", 130);
+            dgw.AddColumn("Klub", "KlubUcesnik", 150);
             dgw.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 
         public static void initGimnasticarUcesnik2(DataGridViewUserControl dgw)
         {
+            dgw.DataGridView.Columns.Clear();
+
             dgw.AddColumn("Ime", "Ime", 100);
             dgw.AddColumn("Prezime", "Prezime", 100);
             dgw.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
-            dgw.AddColumn("Klub", "KlubUcesnik", 130);
+            dgw.AddColumn("Klub", "KlubUcesnik", 150);
             dgw.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 
         public static void initRasporedSudija(DataGridViewUserControl dgw)
         {
+            dgw.DataGridView.Columns.Clear();
+
             dgw.AddColumn("Funkcija", "Uloga", 100);
             dgw.AddColumn("Ime", "PrezimeIme", 150);
-            dgw.AddColumn("Drzava", "Drzava", 100);
+            dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
         }
 
         public static void initStartListaRotacija(DataGridViewUserControl dgw)
         {
+            dgw.DataGridView.Columns.Clear();
+
             dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 150);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
@@ -46,6 +54,8 @@ namespace Bilten.UI
 
         public static void initTakmicenje(DataGridViewUserControl dgw)
         {
+            dgw.DataGridView.Columns.Clear();
+
             dgw.AddColumn("Naziv takmicenja", "Naziv", 300);
             dgw.AddColumn("Gimnastika", "Gimnastika", 70);
             dgw.AddColumn("Datum odrzavanja", "Datum", 100, "{0:d}");

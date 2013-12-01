@@ -22,7 +22,7 @@ namespace Bilten.UI
             dgwUserControlClanovi.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             dgwUserControlClanovi.AddColumn("Registarski broj", "RegistarskiBroj", 100);
             dgwUserControlClanovi.AddColumn("Takmicarski broj", "TakmicarskiBroj", 100);
-            dgwUserControlClanovi.AddColumn("Klub", "KlubUcesnik", 100);
+            dgwUserControlClanovi.AddColumn("Klub", "KlubUcesnik", 150);
             dgwUserControlClanovi.AddColumn("Drzava", "DrzavaUcesnik", 100);
 
         }

@@ -19,6 +19,7 @@ namespace Bilten.UI
         {
             InitializeComponent();
             Text = "Izaberi sudiju";
+            this.ClientSize = new System.Drawing.Size(800, 540);
             btnFilter.Enabled = false;
             initializeGridColumns();
 
@@ -26,6 +27,8 @@ namespace Bilten.UI
 
             FetchModes.Add(new AssociationFetch(
                 "Drzava", AssociationFetchMode.Eager));
+            FetchModes.Add(new AssociationFetch(
+                "Klub", AssociationFetchMode.Eager));
 
             showAll();
         }
@@ -71,6 +74,7 @@ namespace Bilten.UI
             dataGridViewUserControl1.AddColumn("Ime", "Ime", 100);
             dataGridViewUserControl1.AddColumn("Prezime", "Prezime", 100);
             dataGridViewUserControl1.AddColumn("Pol", "Pol", 100);
+            dataGridViewUserControl1.AddColumn("Klub", "Klub", 150);
             dataGridViewUserControl1.AddColumn("Drzava", "Drzava", 100);
         }
 

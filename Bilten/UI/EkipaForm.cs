@@ -137,7 +137,7 @@ namespace Bilten.UI
             dgwUserControlClanovi.AddColumn("Prezime", "Prezime", 100);
             dgwUserControlClanovi.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             dgwUserControlClanovi.AddColumn("Takmicarski broj", "TakmicarskiBroj", 100);
-            dgwUserControlClanovi.AddColumn("Klub", "KlubUcesnik", 100);
+            dgwUserControlClanovi.AddColumn("Klub", "KlubUcesnik", 150);
             dgwUserControlClanovi.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 

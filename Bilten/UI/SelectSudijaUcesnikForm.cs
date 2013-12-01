@@ -18,13 +18,16 @@ namespace Bilten.UI
         {
             InitializeComponent();
             Text = "Izaberi sudiju";
+            this.ClientSize = new System.Drawing.Size(800, 540);
             btnFilter.Enabled = false;
             initializeGridColumns();
 
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
 
             FetchModes.Add(new AssociationFetch(
-                "Drzava", AssociationFetchMode.Eager));
+                "DrzavaUcesnik", AssociationFetchMode.Eager));
+            FetchModes.Add(new AssociationFetch(
+                "KlubUcesnik", AssociationFetchMode.Eager));
 
             try
             {
@@ -65,7 +68,8 @@ namespace Bilten.UI
             dataGridViewUserControl1.AddColumn("Ime", "Ime", 100);
             dataGridViewUserControl1.AddColumn("Prezime", "Prezime", 100);
             dataGridViewUserControl1.AddColumn("Pol", "Pol", 100);
-            dataGridViewUserControl1.AddColumn("Drzava", "Drzava", 100);
+            dataGridViewUserControl1.AddColumn("Klub", "KlubUcesnik", 150);
+            dataGridViewUserControl1.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 
         private IList<SudijaUcesnik> loadSudije(int takmicenjeId)

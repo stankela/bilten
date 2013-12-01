@@ -47,6 +47,15 @@ namespace Bilten.UI
             btnApplySort.Visible = false;
             panel2.Height = 0;
             pnlPager.Height = 0; // nema efekta
+
+            this.Load += new EventHandler(SingleEntityListForm_Load);
+        }
+
+        void SingleEntityListForm_Load(object sender, EventArgs e)
+        {
+            // TODO3: Ponisti selekciju i u ostalim prozorima gde je to potrebno (npr, takmicari  kategorije,
+            // takmicari takmicenja, ekipe i sl.)
+            dataGridViewUserControl1.clearSelection();
         }
 
         public T SelectedItem

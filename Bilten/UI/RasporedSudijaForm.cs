@@ -20,15 +20,21 @@ namespace Bilten.UI
         private List<bool> tabOpened;
         private IDataContext dataContext;
         private int kategorijeCount;
+
+        private int clickedRow;
+        private int clickedColumn;
+        private Sprava clickedSprava;
         private Point USER_CONTROL_LOCATION = new Point(10, 10);
 
         public RasporedSudijaForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {
             InitializeComponent();
+            this.ClientSize = new System.Drawing.Size(1150, 540);
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.takmicenjeId = takmicenjeId;
             this.deoTakKod = deoTakKod;
 
-            Text = "Raspored sudija - " +
+            this.Text = "Raspored sudija - " +
                 DeoTakmicenjaKodovi.toString(deoTakKod);
 
             try
@@ -102,6 +108,8 @@ namespace Bilten.UI
                 if (tabControl1.TabPages.IndexOf(tabPage1) < 0)
                     tabControl1.TabPages.Add(tabPage1);
                 spravaGridGroupUserControl1.Location = USER_CONTROL_LOCATION;
+                spravaGridGroupUserControl1.SpravaGridRightClick +=
+                  new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
                 spravaGridGroupUserControl1.init(rasporedi[0].Pol);
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
@@ -121,6 +129,30 @@ namespace Bilten.UI
                 tabControl1.Controls.Add(newTab);
                 initTab(rasporedi.Count - 1, newTab, raspored);
             }
+        }
+
+        void spravaGridGroupUserControl1_SpravaGridRightClick(object sender, SpravaGridRightClickEventArgs e)
+        {
+            clickedSprava = e.Sprava;
+            DataGridView grid = getActiveSpravaGridGroupUserControl()[clickedSprava]
+                .DataGridViewUserControl.DataGridView;
+            int x = e.MouseEventArgs.X;
+            int y = e.MouseEventArgs.Y;
+            if (grid.HitTest(x, y).Type == DataGridViewHitTestType.Cell)
+            {
+                clickedRow = grid.HitTest(x, y).RowIndex;
+                clickedColumn = grid.HitTest(x, y).ColumnIndex;
+                mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = true;
+                mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = true;
+
+            }
+            else
+            {
+                mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = false;
+                mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = false;
+            }
+
+            contextMenuStrip1.Show(grid, new Point(x, y));
         }
 
         private string getTabText(RasporedSudija rasporedSudija)
@@ -147,6 +179,8 @@ namespace Bilten.UI
             // nesto menjano, i ako jeste promeni ovde.
             SpravaGridGroupUserControl spravaGridGroupUserControl = new SpravaGridGroupUserControl();
             spravaGridGroupUserControl.Location = USER_CONTROL_LOCATION;
+            spravaGridGroupUserControl.SpravaGridRightClick +=
+              new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
             //spravaGridGroupUserControl.Size = this.rasporedSudijaUserControl1.Size;
             spravaGridGroupUserControl.init(raspored.Pol); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
@@ -423,5 +457,62 @@ namespace Bilten.UI
             tabOpened.RemoveAt(tabControl1.SelectedIndex);
             tabControl1.TabPages.Remove(tabControl1.SelectedTab);
         }
+
+        private void mnPrikaziKlub_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(true);
+        }
+
+        private void mnPrikaziDrzavu_Click(object sender, EventArgs e)
+        {
+            promeniKlubDrzava(false);
+        }
+
+        private void promeniKlubDrzava(bool prikaziKlub)
+        {
+            DataGridViewUserControl dgw = getActiveSpravaGridGroupUserControl()[clickedSprava]
+                .DataGridViewUserControl;
+            List<SudijaUcesnik> sudije = new List<SudijaUcesnik>();
+            foreach (SudijaNaSpravi s in dgw.getSelectedItems<SudijaNaSpravi>())
+            {
+                if (s.Sudija != null)
+                    sudije.Add(s.Sudija);
+            }
+            if (sudije.Count == 0)
+                return;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                foreach (SudijaUcesnik s in sudije)
+                {
+                    s.NastupaZaDrzavu = !prikaziKlub;
+                    dataContext.Save(s);
+                }
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            SudijaNaSpravi s2 = dgw.getSelectedItem<SudijaNaSpravi>();
+            dgw.refreshItems();
+            dgw.setSelectedItem<SudijaNaSpravi>(s2);
+        }
+
     }
 }

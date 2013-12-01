@@ -11,6 +11,7 @@
     <property name="Prezime" column="prezime" type="String" length="32" />
     <property name="Pol" column="pol" type="Byte" />
     <property name="UlogaUGlavnomSudijskomOdboru" column="uloga_u_glav_sud_odboru" type="Byte" />
+    <property name="NastupaZaDrzavu" column="nastupa_za_drzavu" type="Boolean" />
     <many-to-one name="KlubUcesnik" class="KlubUcesnik" column="klub_id" />
     <many-to-one name="DrzavaUcesnik" class="DrzavaUcesnik" column="drzava_id" />
     <many-to-one name="Takmicenje" class="Takmicenje" column="takmicenje_id" />

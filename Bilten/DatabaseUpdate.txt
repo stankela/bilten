@@ -8,6 +8,9 @@ UPDATE nastup_na_spravi SET ekipa = 0;
 ALTER TABLE sudije ADD COLUMN klub_id int references klubovi(klub_id);
 ALTER TABLE sudija_ucesnik ADD COLUMN klub_id int references klubovi_ucesnici(klub_id);
 
+ALTER TABLE sudija_ucesnik ADD COLUMN nastupa_za_drzavu bit;
+UPDATE sudija_ucesnik SET nastupa_za_drzavu = 0;
+
 
 10-Nov-2013
 

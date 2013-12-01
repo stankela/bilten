@@ -94,11 +94,11 @@ namespace Bilten.Domain
             set { takmicarskaKategorija = value; }
         }
 
-        private bool _nastupaZaDrzavu;
+        private bool nastupaZaDrzavu;
         public virtual bool NastupaZaDrzavu
         {
-            get { return _nastupaZaDrzavu; }
-            set { _nastupaZaDrzavu = value; }
+            get { return nastupaZaDrzavu; }
+            set { nastupaZaDrzavu = value; }
         }
 
         public GimnasticarUcesnik()

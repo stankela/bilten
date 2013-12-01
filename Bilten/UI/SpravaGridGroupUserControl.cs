@@ -48,6 +48,19 @@ namespace Bilten.UI
 
         public void init(Pol pol)
         {
+            // Najpre izbaci sve kontrole koje su dodate u prethodnom pozivu funkcije init, osim prve.
+            List<Control> controls = new List<Control>();
+            foreach (Control c in this.Controls)
+            {
+                controls.Add(c);
+            }
+            foreach (Control c in controls)
+            {
+                SpravaGridUserControl c2 = c as SpravaGridUserControl;
+                if (c2 != null && c2 != spravaGridUserControl1)
+                    this.Controls.Remove(c2);
+            }
+
             Sprava[] sprave = Sprave.getSprave(pol);
 
             int width = spravaGridUserControl1.Width;
@@ -65,6 +78,12 @@ namespace Bilten.UI
                 Sprava sprava = sprave[i];
                 if (i == 0)
                 {
+                    // Za svaki slucaj najpre uklanjam event handlere (za slucaj da je metod init vec pozivan),
+                    // mada predpostavljam da cak i da se operacija += pozove dvaput uzastopce sa istim handlerom
+                    // da ce samo jedan handler biti dodat.
+                    spravaGridUserControl1.SpravaGridMouseDown -= new EventHandler<SpravaGridMouseDownEventArgs>(spravaGrid_MouseDown);
+                    spravaGridUserControl1.SpravaGridMouseUp -= new EventHandler<SpravaGridMouseUpEventArgs>(spravaGrid_MouseUp);
+                    
                     spravaGridUserControl1.SpravaGridMouseDown += new EventHandler<SpravaGridMouseDownEventArgs>(spravaGrid_MouseDown);
                     spravaGridUserControl1.SpravaGridMouseUp += new EventHandler<SpravaGridMouseUpEventArgs>(spravaGrid_MouseUp);
                     spravaGridUserControl1.init(sprava);

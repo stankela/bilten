@@ -28,15 +28,20 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnPrikaziKlub = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
+            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -48,7 +53,7 @@ namespace Bilten.UI
             this.tabControl1.Location = new System.Drawing.Point(12, 49);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(541, 319);
+            this.tabControl1.Size = new System.Drawing.Size(820, 319);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -59,16 +64,9 @@ namespace Bilten.UI
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(533, 293);
+            this.tabPage1.Size = new System.Drawing.Size(812, 293);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
-            // 
-            // spravaGridGroupUserControl1
-            // 
-            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(6, 6);
-            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
-            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(461, 281);
-            this.spravaGridGroupUserControl1.TabIndex = 0;
             // 
             // btnEdit
             // 
@@ -110,11 +108,40 @@ namespace Bilten.UI
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnPrikaziKlub,
+            this.mnPrikaziDrzavu});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
+            // 
+            // mnPrikaziKlub
+            // 
+            this.mnPrikaziKlub.Name = "mnPrikaziKlub";
+            this.mnPrikaziKlub.Size = new System.Drawing.Size(152, 22);
+            this.mnPrikaziKlub.Text = "Prikazi klub";
+            this.mnPrikaziKlub.Click += new System.EventHandler(this.mnPrikaziKlub_Click);
+            // 
+            // mnPrikaziDrzavu
+            // 
+            this.mnPrikaziDrzavu.Name = "mnPrikaziDrzavu";
+            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(152, 22);
+            this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
+            this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
+            // 
+            // spravaGridGroupUserControl1
+            // 
+            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(6, 6);
+            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
+            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(461, 281);
+            this.spravaGridGroupUserControl1.TabIndex = 0;
+            // 
             // RasporedSudijaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(565, 380);
+            this.ClientSize = new System.Drawing.Size(844, 380);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnNew);
             this.Controls.Add(this.btnClose);
@@ -125,6 +152,7 @@ namespace Bilten.UI
             this.Load += new System.EventHandler(this.RasporedSudijaForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -138,5 +166,8 @@ namespace Bilten.UI
         private SpravaGridGroupUserControl spravaGridGroupUserControl1;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem mnPrikaziKlub;
+        private System.Windows.Forms.ToolStripMenuItem mnPrikaziDrzavu;
     }
 }

@@ -41,7 +41,7 @@ namespace Bilten.UI
             // 
             // btnFunkcije
             // 
-            this.btnFunkcije.Location = new System.Drawing.Point(429, 14);
+            this.btnFunkcije.Location = new System.Drawing.Point(494, 27);
             this.btnFunkcije.Name = "btnFunkcije";
             this.btnFunkcije.Size = new System.Drawing.Size(75, 23);
             this.btnFunkcije.TabIndex = 1;
@@ -51,7 +51,7 @@ namespace Bilten.UI
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(429, 71);
+            this.btnAdd.Location = new System.Drawing.Point(494, 84);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 23);
             this.btnAdd.TabIndex = 2;
@@ -61,7 +61,7 @@ namespace Bilten.UI
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(429, 100);
+            this.btnDelete.Location = new System.Drawing.Point(494, 113);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 23);
             this.btnDelete.TabIndex = 3;
@@ -71,7 +71,7 @@ namespace Bilten.UI
             // 
             // btnDeleteAll
             // 
-            this.btnDeleteAll.Location = new System.Drawing.Point(429, 129);
+            this.btnDeleteAll.Location = new System.Drawing.Point(494, 142);
             this.btnDeleteAll.Name = "btnDeleteAll";
             this.btnDeleteAll.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteAll.TabIndex = 4;
@@ -81,7 +81,7 @@ namespace Bilten.UI
             // 
             // btnMoveUp
             // 
-            this.btnMoveUp.Location = new System.Drawing.Point(429, 182);
+            this.btnMoveUp.Location = new System.Drawing.Point(494, 195);
             this.btnMoveUp.Name = "btnMoveUp";
             this.btnMoveUp.Size = new System.Drawing.Size(75, 23);
             this.btnMoveUp.TabIndex = 5;
@@ -91,7 +91,7 @@ namespace Bilten.UI
             // 
             // btnMoveDown
             // 
-            this.btnMoveDown.Location = new System.Drawing.Point(429, 211);
+            this.btnMoveDown.Location = new System.Drawing.Point(494, 224);
             this.btnMoveDown.Name = "btnMoveDown";
             this.btnMoveDown.Size = new System.Drawing.Size(75, 23);
             this.btnMoveDown.TabIndex = 6;
@@ -102,7 +102,7 @@ namespace Bilten.UI
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(429, 266);
+            this.btnOK.Location = new System.Drawing.Point(494, 279);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 7;
@@ -113,18 +113,18 @@ namespace Bilten.UI
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(429, 295);
+            this.btnCancel.Location = new System.Drawing.Point(494, 308);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // spravaGridiUserControl1
+            // spravaGridUserControl1
             // 
             this.spravaGridUserControl1.Location = new System.Drawing.Point(12, 12);
-            this.spravaGridUserControl1.Name = "spravaGridiUserControl1";
-            this.spravaGridUserControl1.Size = new System.Drawing.Size(395, 330);
+            this.spravaGridUserControl1.Name = "spravaGridUserControl1";
+            this.spravaGridUserControl1.Size = new System.Drawing.Size(446, 330);
             this.spravaGridUserControl1.TabIndex = 0;
             // 
             // RasporedSudijaEditorForm
@@ -133,7 +133,7 @@ namespace Bilten.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(524, 354);
+            this.ClientSize = new System.Drawing.Size(597, 354);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnMoveDown);

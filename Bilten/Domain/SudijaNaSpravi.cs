@@ -31,12 +31,12 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual string Drzava
+        public virtual string KlubDrzava
         {
             get
             {
-                if (Sudija != null && Sudija.DrzavaUcesnik != null)
-                    return Sudija.DrzavaUcesnik.Kod;
+                if (Sudija != null)
+                    return Sudija.KlubDrzava;
                 else
                     return String.Empty;
             }

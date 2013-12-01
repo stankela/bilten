@@ -69,7 +69,7 @@ namespace Bilten.UI
             dataGridViewUserControl1.AddColumn("Gimnastika", "Gimnastika", 70);
             dataGridViewUserControl1.AddColumn("Takmicarski broj", "TakmicarskiBroj", 70);
             dataGridViewUserControl1.AddColumn("Kategorija", "TakmicarskaKategorija", 100);
-            dataGridViewUserControl1.AddColumn("Klub", "KlubUcesnik", 130);
+            dataGridViewUserControl1.AddColumn("Klub", "KlubUcesnik", 150);
             dataGridViewUserControl1.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 

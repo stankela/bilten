@@ -203,6 +203,22 @@ namespace Bilten.UI
                 }
                 result.DrzavaUcesnik = drzavaUcesnik;
             }
+            if (s.Klub == null)
+                result.KlubUcesnik = null;
+            else
+            {
+                KlubUcesnik klubUcesnik = findKlubUcesnik(
+                    takmicenje.Id, s.Klub.Naziv);
+                if (klubUcesnik == null)
+                {
+                    klubUcesnik = new KlubUcesnik();
+                    klubUcesnik.Naziv = s.Klub.Naziv;
+                    klubUcesnik.Kod = s.Klub.Kod;
+                    klubUcesnik.Takmicenje = takmicenje;
+                    dataContext.Add(klubUcesnik);
+                }
+                result.KlubUcesnik = klubUcesnik;
+            }
             return result;
         }
 
@@ -213,6 +229,19 @@ namespace Bilten.UI
             q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
             q.Operator = QueryOperator.And;
             IList<DrzavaUcesnik> result = dataContext.GetByCriteria<DrzavaUcesnik>(q);
+            if (result.Count == 0)
+                return null;
+            else
+                return result[0];
+        }
+
+        private KlubUcesnik findKlubUcesnik(int takmicenjeId, string naziv)
+        {
+            Query q = new Query();
+            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
+            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
+            q.Operator = QueryOperator.And;
+            IList<KlubUcesnik> result = dataContext.GetByCriteria<KlubUcesnik>(q);
             if (result.Count == 0)
                 return null;
             else
