@@ -31,6 +31,7 @@ namespace Bilten.UI
             this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
@@ -38,7 +39,7 @@ namespace Bilten.UI
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnPrikaziKlub = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
-            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
+            this.mnPromeniRasporedSudija = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -67,6 +68,13 @@ namespace Bilten.UI
             this.tabPage1.Size = new System.Drawing.Size(812, 293);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
+            // 
+            // spravaGridGroupUserControl1
+            // 
+            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(6, 6);
+            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
+            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(461, 281);
+            this.spravaGridGroupUserControl1.TabIndex = 0;
             // 
             // btnEdit
             // 
@@ -111,31 +119,32 @@ namespace Bilten.UI
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnPromeniRasporedSudija,
             this.mnPrikaziKlub,
             this.mnPrikaziDrzavu});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 92);
             // 
             // mnPrikaziKlub
             // 
             this.mnPrikaziKlub.Name = "mnPrikaziKlub";
-            this.mnPrikaziKlub.Size = new System.Drawing.Size(152, 22);
+            this.mnPrikaziKlub.Size = new System.Drawing.Size(200, 22);
             this.mnPrikaziKlub.Text = "Prikazi klub";
             this.mnPrikaziKlub.Click += new System.EventHandler(this.mnPrikaziKlub_Click);
             // 
             // mnPrikaziDrzavu
             // 
             this.mnPrikaziDrzavu.Name = "mnPrikaziDrzavu";
-            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(152, 22);
+            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(200, 22);
             this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
             this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
             // 
-            // spravaGridGroupUserControl1
+            // mnPromeniRasporedSudija
             // 
-            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(6, 6);
-            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
-            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(461, 281);
-            this.spravaGridGroupUserControl1.TabIndex = 0;
+            this.mnPromeniRasporedSudija.Name = "mnPromeniRasporedSudija";
+            this.mnPromeniRasporedSudija.Size = new System.Drawing.Size(200, 22);
+            this.mnPromeniRasporedSudija.Text = "Promeni raspored sudija";
+            this.mnPromeniRasporedSudija.Click += new System.EventHandler(this.mnPromeniRasporedSudija_Click);
             // 
             // RasporedSudijaForm
             // 
@@ -169,5 +178,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem mnPrikaziKlub;
         private System.Windows.Forms.ToolStripMenuItem mnPrikaziDrzavu;
+        private System.Windows.Forms.ToolStripMenuItem mnPromeniRasporedSudija;
     }
 }

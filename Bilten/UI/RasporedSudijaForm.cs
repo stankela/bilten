@@ -301,15 +301,21 @@ namespace Bilten.UI
             Sprava sprava = form.Sprava;
             if (sprava == Sprava.Undefined)
                 return;
-            
+
+            promeniStartListuCommand(sprava);
+        }
+
+        private void promeniStartListuCommand(Sprava sprava)
+        {
             try
             {
-                RasporedSudijaEditorForm form2 = new RasporedSudijaEditorForm(
+                RasporedSudijaEditorForm form = new RasporedSudijaEditorForm(
                     ActiveRaspored.Id, sprava, takmicenjeId);
-                if (form2.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    rasporedi[tabControl1.SelectedIndex] = form2.RasporedSudija;
+                    rasporedi[tabControl1.SelectedIndex] = form.RasporedSudija;
                     refresh(sprava);
+                    getActiveSpravaGridGroupUserControl()[sprava].clearSelection();
                 }
             }
             catch (InfrastructureException ex)
@@ -512,6 +518,16 @@ namespace Bilten.UI
             SudijaNaSpravi s2 = dgw.getSelectedItem<SudijaNaSpravi>();
             dgw.refreshItems();
             dgw.setSelectedItem<SudijaNaSpravi>(s2);
+        }
+
+        private void mnPromeniRasporedSudija_Click(object sender, EventArgs e)
+        {
+            if (ActiveRaspored == null)
+                return;
+            if (clickedSprava == Sprava.Undefined)
+                return;
+
+            promeniStartListuCommand(clickedSprava);
         }
 
     }

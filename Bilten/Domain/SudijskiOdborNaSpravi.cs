@@ -31,9 +31,9 @@ namespace Bilten.Domain
             if (getSudija(uloga) != null)
                 throw new BusinessException(String.Format(
                     "Vec postoji sudija sa funkcijom {0}.", SudijskeUloge.toString(uloga)));
-            if (sudijaExists(sudija))
+            /*if (sudijaExists(sudija))
                 throw new BusinessException(
-                    String.Format("Sudija {0} je vec clan sudijskog odbora.", sudija));
+                    String.Format("Sudija {0} je vec clan sudijskog odbora.", sudija));*/
 
             doAddSudija(sudija, uloga);
         }
@@ -93,14 +93,14 @@ namespace Bilten.Domain
 
         public virtual bool canAddSudija(SudijaUcesnik sudija)
         {
-            return !sudijaExists(sudija) && !isComplete();
+            return /*!sudijaExists(sudija) &&*/ !isComplete();
         }
 
         public virtual void addSudija(SudijaUcesnik sudija)
         {
-            if (sudijaExists(sudija))
+            /*if (sudijaExists(sudija))
                 throw new BusinessException(
-                    String.Format("Sudija {0} je vec clan sudijskog odbora.", sudija));
+                    String.Format("Sudija {0} je vec clan sudijskog odbora.", sudija));*/
             if (isComplete())
                 throw new BusinessException("Sudijski odbor je vec kompletiran.");
 
