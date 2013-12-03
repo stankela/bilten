@@ -60,16 +60,18 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void setSupportedUloge(byte brojDSudija, byte brojESudija,
+        public virtual void setSupportedUloge(byte brojDSudija, bool has_d1_e1, bool has_d2_e2, byte brojESudija,
             byte brojMerVremena, byte brojLinSudija)
         {
             BrojDSudija = brojDSudija;
+            HasD1_E1 = has_d1_e1;
+            HasD2_E2 = has_d2_e2;
             BrojESudija = brojESudija;
             BrojMeracaVremena = brojMerVremena;
             BrojLinijskihSudija = brojLinSudija;
 
             List<SudijskaUloga> noveUloge = new List<SudijskaUloga>(
-                SudijskeUloge.getUloge(brojDSudija, brojESudija, brojMerVremena, 
+                SudijskeUloge.getUloge(brojDSudija, has_d1_e1, has_d2_e2, brojESudija, brojMerVremena, 
                 brojLinSudija));
 
             // ukloni sudije sa ulogama koje ne postoje u novim ulogama
@@ -196,6 +198,20 @@ namespace Bilten.Domain
             private set { brojDSudija = value; }
         }
 
+        private bool hasD1_E1 = false;
+        public virtual bool HasD1_E1
+        {
+            get { return hasD1_E1; }
+            private set { hasD1_E1 = value; }
+        }
+
+        private bool hasD2_E2 = false;
+        public virtual bool HasD2_E2
+        {
+            get { return hasD2_E2; }
+            private set { hasD2_E2 = value; }
+        }
+
         private byte brojESudija = 6;
         public virtual byte BrojESudija
         {
@@ -222,13 +238,9 @@ namespace Bilten.Domain
 
         }
 
-        public SudijskiOdborNaSpravi(Sprava sprava, byte brojESudija,
-            byte brojLinijskihSudija, byte brojMeracaVremena)
+        public SudijskiOdborNaSpravi(Sprava sprava)
         {
             this.sprava = sprava;
-            this.brojESudija = brojESudija;
-            this.brojLinijskihSudija = brojLinijskihSudija;
-            this.brojMeracaVremena = brojMeracaVremena;
         }
 
         private List<SudijskaUloga> _supportedUloge;
@@ -244,7 +256,7 @@ namespace Bilten.Domain
 
         private void createSupportedUloge()
         {
-            SudijskaUloga[] uloge = SudijskeUloge.getUloge(BrojDSudija, BrojESudija,
+            List<SudijskaUloga> uloge = SudijskeUloge.getUloge(BrojDSudija, HasD1_E1, HasD2_E2, BrojESudija,
                 BrojMeracaVremena, BrojLinijskihSudija);
             
             _supportedUloge = new List<SudijskaUloga>();

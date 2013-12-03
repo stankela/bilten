@@ -66,27 +66,6 @@ namespace Bilten.Domain
             set { brojEOcena = value; }
         }
 
-        private byte brojESudija = 6;
-        public virtual byte BrojESudija
-        {
-            get { return brojESudija; }
-            set { brojESudija = value; }
-        }
-
-        private byte brojLinijskihSudija = 0;
-        public virtual byte BrojLinijskihSudija
-        {
-            get { return brojLinijskihSudija; }
-            set { brojLinijskihSudija = value; }
-        }
-
-        private byte brojMeracaVremena = 0;
-        public virtual byte BrojMeracaVremena
-        {
-            get { return brojMeracaVremena; }
-            set { brojMeracaVremena = value; }
-        }
-
         private byte brojDecimalaD = 3;
         public virtual byte BrojDecimalaD
         {

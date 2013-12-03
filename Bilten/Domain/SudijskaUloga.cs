@@ -19,6 +19,8 @@ namespace Bilten.Domain
         GredaKontrolor,
         D1,	
         D2,
+        D1_E1,
+        D2_E2,
         E1,
         E2,
         E3,
@@ -64,52 +66,80 @@ namespace Bilten.Domain
 
     public static class SudijskeUloge
     {
-        public static SudijskaUloga[] getUloge(byte brojDSudija, byte brojESudija, 
+        public static List<SudijskaUloga> getUloge(byte brojDSudija, bool hasD1_E1, bool hasD2_E2, byte brojESudija, 
             byte brojMeracaVremena, byte brojLinijskihSudija)
         {
-            SudijskaUloga[] result = new SudijskaUloga[brojDSudija + brojESudija +
-                brojMeracaVremena + brojLinijskihSudija];
-       
-            if (brojDSudija > 0)
-                result[0] = SudijskaUloga.D1;
-            if (brojDSudija > 1)
-                result[1] = SudijskaUloga.D2;
+            List<SudijskaUloga> result = new List<SudijskaUloga>();
 
-            SudijskaUloga[] eSud = eSudije();
-            for (int i = 0; i < brojESudija; i++)
-                result[brojDSudija + i] = eSud[i];
+            bool added_d1_e1 = false;
+            bool added_d2_e2 = false;
+            if (brojDSudija > 0)
+            {
+                if (hasD1_E1)
+                {
+                    result.Add(SudijskaUloga.D1_E1);
+                    added_d1_e1 = true;
+                }
+                else
+                    result.Add(SudijskaUloga.D1);
+            }
+            if (brojDSudija > 1)
+            {
+                if (hasD2_E2)
+                {
+                    result.Add(SudijskaUloga.D2_E2);
+                    added_d2_e2 = true;
+                }
+                else
+                    result.Add(SudijskaUloga.D2);
+            }
+
+            if (brojESudija > 0)
+            {
+                if (!hasD1_E1)
+                    result.Add(SudijskaUloga.E1);
+                else if (!added_d1_e1)
+                    result.Add(SudijskaUloga.D1_E1);
+            }
+            if (brojESudija > 1)
+            {
+                if (!hasD2_E2)
+                    result.Add(SudijskaUloga.E2);
+                else if (!added_d2_e2)
+                    result.Add(SudijskaUloga.D2_E2);
+            }
+            if (brojESudija > 2)
+                result.Add(SudijskaUloga.E3);
+            if (brojESudija > 3)
+                result.Add(SudijskaUloga.E4);
+            if (brojESudija > 4)
+                result.Add(SudijskaUloga.E5);
+            if (brojESudija > 5)
+                result.Add(SudijskaUloga.E6);
 
             SudijskaUloga[] merVremena = meraciVremena();
-            int merVremenaOffset = brojDSudija + brojESudija;
             for (int i = 0; i < brojMeracaVremena; i++)
-                result[merVremenaOffset + i] = merVremena[i];
+                result.Add(merVremena[i]);
 
             SudijskaUloga[] linSudije = linijskeSudije();
-            int linSudijeOffset = brojDSudija + brojESudija + brojMeracaVremena;
             for (int i = 0; i < brojLinijskihSudija; i++)
-                result[linSudijeOffset + i] = linSudije[i];
+                result.Add(linSudije[i]);
 
             return result;
         }
 
-        public static SudijskaUloga[] dSudije()
+        public static SudijskaUloga[] getSveUloge()
         {
-            return new SudijskaUloga[]
-            {
-                SudijskaUloga.D1,
-                SudijskaUloga.D2
-            };
-        }
-
-        public static SudijskaUloga[] eSudije()
-        {
-            return new SudijskaUloga[]
-            {
-                SudijskaUloga.E1,
-                SudijskaUloga.E2,
-                SudijskaUloga.E3,
-                SudijskaUloga.E4,
-                SudijskaUloga.E5,
+            return new SudijskaUloga[] { 
+                SudijskaUloga.D1, 
+                SudijskaUloga.D2, 
+                SudijskaUloga.D1_E1, 
+                SudijskaUloga.D2_E2,
+                SudijskaUloga.E1, 
+                SudijskaUloga.E2, 
+                SudijskaUloga.E3, 
+                SudijskaUloga.E4, 
+                SudijskaUloga.E5, 
                 SudijskaUloga.E6
             };
         }
@@ -132,57 +162,6 @@ namespace Bilten.Domain
                 SudijskaUloga.LinijskiSudija3,
                 SudijskaUloga.LinijskiSudija4
             };
-        }
-
-        public static SudijskaUloga[] ulogeNaSpravi()
-        {
-            return new SudijskaUloga[]
-            {
-                SudijskaUloga.D1,	
-                SudijskaUloga.D2,
-                SudijskaUloga.E1,
-                SudijskaUloga.E2,
-                SudijskaUloga.E3,
-                SudijskaUloga.E4,
-                SudijskaUloga.E5,
-                SudijskaUloga.E6,
-                SudijskaUloga.MeracVremena1,
-                SudijskaUloga.MeracVremena2,
-                SudijskaUloga.LinijskiSudija1,
-                SudijskaUloga.LinijskiSudija2,
-                SudijskaUloga.LinijskiSudija3,
-                SudijskaUloga.LinijskiSudija4
-            };
-        }
-
-        public static bool isUlogaNaSpravi(SudijskaUloga uloga)
-        {
-            foreach (SudijskaUloga u in ulogeNaSpravi())
-            {
-                if (u == uloga)
-                    return true;
-            }
-            return false;
-        }
-
-        public static bool isDSudija(SudijskaUloga uloga)
-        {
-            foreach (SudijskaUloga u in dSudije())
-            {
-                if (u == uloga)
-                    return true;
-            }
-            return false;
-        }
-
-        public static bool isESudija(SudijskaUloga uloga)
-        {
-            foreach (SudijskaUloga u in eSudije())
-            {
-                if (u == uloga)
-                    return true;
-            }
-            return false;
         }
 
         public static bool isMeracVremena(SudijskaUloga uloga)
@@ -244,6 +223,12 @@ namespace Bilten.Domain
 
                 case SudijskaUloga.D2:
                     return "D2";
+
+                case SudijskaUloga.D1_E1:
+                    return "D1-E1";
+
+                case SudijskaUloga.D2_E2:
+                    return "D2-E2";
 
                 case SudijskaUloga.E1:
                     return "E1";

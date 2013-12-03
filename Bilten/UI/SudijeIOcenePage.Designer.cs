@@ -29,7 +29,6 @@ namespace Bilten.UI
         private void InitializeComponent()
         {
             this.lblBrojEOcena = new System.Windows.Forms.Label();
-            this.txtBrojESudija = new System.Windows.Forms.TextBox();
             this.txtBrojDecTotal = new System.Windows.Forms.TextBox();
             this.lblTotal = new System.Windows.Forms.Label();
             this.txtBrojDecPen = new System.Windows.Forms.TextBox();
@@ -43,7 +42,6 @@ namespace Bilten.UI
             this.lblBrojDecimala = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtBrojEOcena = new System.Windows.Forms.TextBox();
-            this.lblBrojESudija = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblBrojEOcena
@@ -54,14 +52,6 @@ namespace Bilten.UI
             this.lblBrojEOcena.Size = new System.Drawing.Size(68, 13);
             this.lblBrojEOcena.TabIndex = 0;
             this.lblBrojEOcena.Text = "Broj E ocena";
-            // 
-            // txtBrojESudija
-            // 
-            this.txtBrojESudija.Location = new System.Drawing.Point(82, 253);
-            this.txtBrojESudija.Name = "txtBrojESudija";
-            this.txtBrojESudija.Size = new System.Drawing.Size(37, 20);
-            this.txtBrojESudija.TabIndex = 1;
-            this.txtBrojESudija.TextChanged += new System.EventHandler(this.txtBrojESudija_TextChanged);
             // 
             // txtBrojDecTotal
             // 
@@ -174,20 +164,10 @@ namespace Bilten.UI
             this.txtBrojEOcena.TabIndex = 24;
             this.txtBrojEOcena.TextChanged += new System.EventHandler(this.txtBrojEOcena_TextChanged);
             // 
-            // lblBrojESudija
-            // 
-            this.lblBrojESudija.AutoSize = true;
-            this.lblBrojESudija.Location = new System.Drawing.Point(11, 256);
-            this.lblBrojESudija.Name = "lblBrojESudija";
-            this.lblBrojESudija.Size = new System.Drawing.Size(65, 13);
-            this.lblBrojESudija.TabIndex = 23;
-            this.lblBrojESudija.Text = "Broj E sudija";
-            // 
             // SudijeIOcenePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Controls.Add(this.txtBrojEOcena);
-            this.Controls.Add(this.lblBrojESudija);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtBrojDecTotal);
             this.Controls.Add(this.lblTotal);
@@ -200,10 +180,9 @@ namespace Bilten.UI
             this.Controls.Add(this.txtBrojDecD);
             this.Controls.Add(this.lblBrojDecD);
             this.Controls.Add(this.lblBrojDecimala);
-            this.Controls.Add(this.txtBrojESudija);
             this.Controls.Add(this.lblBrojEOcena);
             this.Name = "SudijeIOcenePage";
-            this.Size = new System.Drawing.Size(347, 287);
+            this.Size = new System.Drawing.Size(347, 238);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -212,7 +191,6 @@ namespace Bilten.UI
         #endregion
 
         private System.Windows.Forms.Label lblBrojEOcena;
-        private System.Windows.Forms.TextBox txtBrojESudija;
         private System.Windows.Forms.TextBox txtBrojDecTotal;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.TextBox txtBrojDecPen;
@@ -226,6 +204,5 @@ namespace Bilten.UI
         private System.Windows.Forms.Label lblBrojDecimala;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtBrojEOcena;
-        private System.Windows.Forms.Label lblBrojESudija;
     }
 }

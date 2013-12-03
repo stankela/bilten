@@ -65,17 +65,7 @@ namespace Bilten.Test
             takmicenje.Datum = DateTime.Parse("02.04.2009");
             takmicenje.Mesto = "Milano";
             takmicenje.Gimnastika = gimnastika;
-            takmicenje.BrojESudija = 6;
-            if (gimnastika == Gimnastika.MSG)
-            {
-                takmicenje.BrojMeracaVremena = 1;
-                takmicenje.BrojLinijskihSudija = 2;
-            }
-            else
-            {
-                takmicenje.BrojMeracaVremena = 2;
-                takmicenje.BrojLinijskihSudija = 4;
-            }
+
             takmicenje.BrojDecimalaD = 3;
             takmicenje.BrojDecimalaE1 = 2;
             takmicenje.BrojDecimalaE = 3;
@@ -365,7 +355,7 @@ namespace Bilten.Test
                             // podesi broj meraca vremena i linijskih sudija za prethodni
                             // odbor
                             odbor = raspored.getOdbor(prevSprava);
-                            odbor.setSupportedUloge(odbor.BrojDSudija, odbor.BrojESudija,
+                            odbor.setSupportedUloge(odbor.BrojDSudija, odbor.HasD1_E1, odbor.HasD2_E2, odbor.BrojESudija,
                                 (byte)brojMeracaVremena, (byte)brojLinijskihSudija);
                         }
                         prevSprava = sprava;
@@ -377,7 +367,7 @@ namespace Bilten.Test
                 }
                 // podesi broj meraca vremena i linijskih sudija za poslednji odbor
                 odbor = raspored.getOdbor(prevSprava);
-                odbor.setSupportedUloge(odbor.BrojDSudija, odbor.BrojESudija,
+                odbor.setSupportedUloge(odbor.BrojDSudija, odbor.HasD1_E1, odbor.HasD2_E2, odbor.BrojESudija,
                     (byte)brojMeracaVremena, (byte)brojLinijskihSudija);
 
                 /*dataContext.Evict(takmicenje);

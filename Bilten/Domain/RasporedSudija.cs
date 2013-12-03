@@ -67,8 +67,7 @@ namespace Bilten.Domain
 
             Sprava[] sprave = Sprave.getSprave(kategorije[0].Pol);
             foreach (Sprava s in sprave)
-                odbori.Add(new SudijskiOdborNaSpravi(s, takmicenje.BrojESudija,
-                    takmicenje.BrojLinijskihSudija, takmicenje.BrojMeracaVremena));
+                odbori.Add(new SudijskiOdborNaSpravi(s));
         }
 
         public virtual SudijskiOdborNaSpravi getOdbor(Sprava sprava)

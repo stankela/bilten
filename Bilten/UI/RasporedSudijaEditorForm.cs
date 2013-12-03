@@ -17,7 +17,7 @@ namespace Bilten.UI
     public partial class RasporedSudijaEditorForm : Form
     {
         private SudijskiOdborNaSpravi sudijskiOdbor;
-        private Takmicenje takmicenje;
+        private int takmicenjeId;
         private IDataContext dataContext;
 
         private RasporedSudija raspored;
@@ -30,6 +30,7 @@ namespace Bilten.UI
             int takmicenjeId)
         {
             InitializeComponent();
+            this.takmicenjeId = takmicenjeId;
             spravaGridUserControl1.init(sprava);
             GridColumnsInitializer.initRasporedSudija(spravaGridUserControl1.DataGridViewUserControl);
             try
@@ -37,11 +38,6 @@ namespace Bilten.UI
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
-
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                // mora ovo, jer inace dobijam gresku u SudijskeUlogeEditorForm
-                // konstruktoru (kaze da proksi nije inicijalizovan)
-                NHibernateUtil.Initialize(takmicenje.BrojESudija);
 
                 // TODO: Trebalo bi i NHibernateUtil.Initialize smestiti u 
                 // IDataContext klasu
@@ -101,7 +97,7 @@ namespace Bilten.UI
             SelectSudijaUcesnikForm form = null;
             try
             {
-                form = new SelectSudijaUcesnikForm(takmicenje.Id);
+                form = new SelectSudijaUcesnikForm(takmicenjeId);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -226,8 +222,7 @@ namespace Bilten.UI
 
         private void btnFunkcije_Click(object sender, EventArgs e)
         {
-            SudijskeUlogeEditorForm form = new SudijskeUlogeEditorForm(sudijskiOdbor,
-                takmicenje);
+            SudijskeUlogeEditorForm form = new SudijskeUlogeEditorForm(sudijskiOdbor);
             if (form.ShowDialog() == DialogResult.OK)
                 spravaGridUserControl1.setItems(sudijskiOdbor.Raspored);
         }

@@ -1179,10 +1179,7 @@ namespace Bilten.UI
             
             // TODO3: Ovaj metod bi trebalo updateovati svaki put kada se promene neka svojstva koja se kloniraju.
 
-            takmicenje.BrojESudija = from.BrojESudija;
             takmicenje.BrojEOcena = from.BrojEOcena;
-            takmicenje.BrojLinijskihSudija = from.BrojLinijskihSudija;
-            takmicenje.BrojMeracaVremena = from.BrojMeracaVremena;
             takmicenje.BrojDecimalaD = from.BrojDecimalaD;
             takmicenje.BrojDecimalaE1 = from.BrojDecimalaE1;
             takmicenje.BrojDecimalaE = from.BrojDecimalaE;

@@ -37,7 +37,7 @@ namespace Bilten.UI
         private void refreshUI()
         {
             clearUI();
-            txtBrojESudija.Text = takmicenje.BrojESudija.ToString();
+            
             txtBrojEOcena.Text = takmicenje.BrojEOcena.ToString();
             txtBrojDecD.Text = takmicenje.BrojDecimalaD.ToString();
             txtBrojDecE1.Text = takmicenje.BrojDecimalaE1.ToString();
@@ -48,7 +48,6 @@ namespace Bilten.UI
 
         private void clearUI()
         {
-            txtBrojESudija.Text = String.Empty;
             txtBrojEOcena.Text = String.Empty;
             txtBrojDecD.Text = String.Empty;
             txtBrojDecE1.Text = String.Empty;
@@ -110,17 +109,6 @@ namespace Bilten.UI
         private void requiredFieldsAndFormatValidation(Notification notification)
         {
             byte dummyByte;
-            if (txtBrojESudija.Text.Trim() == String.Empty)
-            {
-                notification.RegisterMessage(
-                    "BrojESudija", "Broj E sudija je obavezan.");
-            }
-            else if (!byte.TryParse(txtBrojESudija.Text, out dummyByte))
-            {
-                notification.RegisterMessage(
-                    "BrojESudija", "Neispravan format za broj E sudija.");
-            }
-            
             if (txtBrojEOcena.Text.Trim() == String.Empty)
             {
                 notification.RegisterMessage(
@@ -190,12 +178,6 @@ namespace Bilten.UI
 
         private void validate()
         {
-            byte brojESudija = byte.Parse(txtBrojESudija.Text);
-            if (brojESudija < 0 || brojESudija > 6)
-            {
-                throw new BusinessException("BrojESudija",
-                    "Neispravna vrednost za broj E sudija.");
-            }
             byte brojEOcena = byte.Parse(txtBrojEOcena.Text);
             if (brojEOcena < 0 || brojEOcena > 6)
             {
@@ -304,7 +286,6 @@ namespace Bilten.UI
 
         private void update()
         {
-            takmicenje.BrojESudija = byte.Parse(txtBrojESudija.Text);
             takmicenje.BrojEOcena = byte.Parse(txtBrojEOcena.Text);
             takmicenje.BrojDecimalaD = byte.Parse(txtBrojDecD.Text);
             takmicenje.BrojDecimalaE1 = byte.Parse(txtBrojDecE1.Text);

@@ -11,6 +11,16 @@ ALTER TABLE sudija_ucesnik ADD COLUMN klub_id int references klubovi_ucesnici(kl
 ALTER TABLE sudija_ucesnik ADD COLUMN nastupa_za_drzavu bit;
 UPDATE sudija_ucesnik SET nastupa_za_drzavu = 0;
 
+ALTER TABLE sud_odbor_na_spravi ADD COLUMN has_d1_e1 bit;
+UPDATE sud_odbor_na_spravi set has_d1_e1 = 0;
+
+ALTER TABLE sud_odbor_na_spravi ADD COLUMN has_d2_e2 bit;
+UPDATE sud_odbor_na_spravi set has_d2_e2 = 0;
+
+ALTER TABLE takmicenja DROP COLUMN broj_e_sudija;
+ALTER TABLE takmicenja DROP COLUMN broj_lin_sudija;
+ALTER TABLE takmicenja DROP COLUMN broj_meraca_vremena;
+
 
 10-Nov-2013
 
