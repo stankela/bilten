@@ -777,6 +777,7 @@ namespace Bilten.UI
             {
                 if (dataContext != null && dataContext.IsInTransaction)
                     dataContext.Rollback();
+                // TODO: Izgleda da se ovaj izuzetak nigde ne hendluje.
                 throw new InfrastructureException(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }

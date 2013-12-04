@@ -9,6 +9,8 @@ using Bilten.Data.QueryModel;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using System.Data.SqlServerCe;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -274,33 +276,29 @@ namespace Bilten.UI
 
         private bool sudiNaSpravi(SudijaUcesnik s)
         {
-            IDataContext dataContext = null;
+            // TODO: Probaj da uradis ovo u NHibernate.
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                // can throw InfrastructureException
+                string findSQL =
+                    "SELECT * FROM sudija_na_spravi " +
+                    "WHERE sudija_id = @sudija_id";
 
-                string query = @"select distinct n
-                    from NastupNaSpravi n
-                    where n.Gimnasticar = :gim";
-                IList<NastupNaSpravi> result = dataContext.
-                    ExecuteQuery<NastupNaSpravi>(QueryLanguageType.HQL, query,
-                            new string[] { "gim" }, new object[] { s });
-                return result.Count > 0;
+                SqlCeCommand cmd = new SqlCeCommand(findSQL);
+                cmd.Parameters.Add("@sudija_id", SqlDbType.Int).Value = s.Id;
+
+                SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+                bool result = false;
+                if (rdr.Read())
+                    result = true;
+                rdr.Close();
+                return result;
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                // TODO: Izgleda da se ovaj izuzetak nigde ne hendluje.
                 throw new InfrastructureException(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-            finally
-            {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
             }
         }
 
