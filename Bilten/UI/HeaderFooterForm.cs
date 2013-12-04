@@ -19,7 +19,8 @@ namespace Bilten.UI
         }
 
         public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible,
-            bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool brojEOcenaFormularVisible)
+            bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool stampajKategorijuVisible,
+            bool stampajKlubVisible, bool brojEOcenaFormularVisible)
         {
             InitializeComponent();
             this.Text = "Opcije za stampanje";
@@ -38,6 +39,12 @@ namespace Bilten.UI
             ckbStampajRedniBroj.Enabled = stampajRedniBrojVisible;
             if (stampajRedniBrojVisible)
                 ckbStampajRedniBroj.Location = new Point(ckbPenalSprave.Location.X, ckbStampajRedniBroj.Location.Y);
+
+            ckbStampajKategoriju.Visible = stampajKategorijuVisible;
+            ckbStampajKategoriju.Enabled = stampajKategorijuVisible;
+
+            ckbStampajKlub.Visible = stampajKlubVisible;
+            ckbStampajKlub.Enabled = stampajKlubVisible;
 
             label1.Visible = brojEOcenaFormularVisible;
             txtBrojEOcena.Visible = brojEOcenaFormularVisible;
@@ -361,6 +368,28 @@ namespace Bilten.UI
             }
         }
 
+        private bool _stampajKategoriju;
+        public bool StampajKategoriju
+        {
+            get { return _stampajKategoriju; }
+            set
+            {
+                _stampajKategoriju = value;
+                ckbStampajKategoriju.Checked = value;
+            }
+        }
+
+        private bool _stampajKlub;
+        public bool StampajKlub
+        {
+            get { return _stampajKlub; }
+            set
+            {
+                _stampajKlub = value;
+                ckbStampajKlub.Checked = value;
+            }
+        }
+
         private void selectFont(ComboBox cmb, string value)
         {
             List<string> fontNames = cmb.DataSource as List<string>;
@@ -461,6 +490,8 @@ namespace Bilten.UI
                 _brojSpravaPoStrani = Int32.Parse(txtBrojSprava.Text);
             _prikaziPenalSprave = ckbPenalSprave.Checked;
             _stampajRedniBrojNaStartListi = ckbStampajRedniBroj.Checked;
+            _stampajKategoriju = ckbStampajKategoriju.Checked;
+            _stampajKlub = ckbStampajKlub.Checked;
             _brojEOcenaFormular = Int32.Parse(txtBrojEOcena.Text);
         }
 
@@ -479,6 +510,5 @@ namespace Bilten.UI
             lblBrojSprava.Enabled = rbtSveSprave.Checked;
             txtBrojSprava.Enabled = rbtSveSprave.Checked;
         }
-
     }
 }

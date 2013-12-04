@@ -74,6 +74,13 @@ namespace Bilten.Report
             set { _drawItemRect = value; }
         }
 
+        private bool _visible = true;
+        public bool Visible
+        {
+            get { return _visible; }
+            set { _visible = value; }
+        }
+
         public ReportColumn()
 		{
 
@@ -151,6 +158,9 @@ namespace Bilten.Report
 
         public virtual void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
         {
+            if (!Visible)
+                return;
+
             if (this.Brush != null)
             {
                 g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,

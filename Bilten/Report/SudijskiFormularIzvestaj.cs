@@ -16,7 +16,7 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public SudijskiFormularIzvestaj(StartListaNaSpravi startLista, string documentName, int brojEOcena, 
-            bool stampajRedniBroj, DataGridView formGrid)
+            bool stampajRedniBroj, bool stampajKategoriju, bool stampajKlub, DataGridView formGrid)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -27,14 +27,14 @@ namespace Bilten.Report
             Margins = new Margins(30, 30, 75, 75);
 
             SudijskiFormularLista lista = new SudijskiFormularLista(this, 1, 0f, itemFont, itemsHeaderFont, startLista,
-                brojEOcena, stampajRedniBroj, formGrid);
+                brojEOcena, stampajRedniBroj, stampajKategoriju, stampajKlub, formGrid);
             lista.RelY = 0.0f + 0.03f;
             reportListe.Add(lista);
 		}
 
         public SudijskiFormularIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
             string documentName, int brojEOcena, int brojSpravaPoStrani, bool stampajRedniBroj,
-            SpravaGridGroupUserControl spravaGridGroupUserControl)
+            bool stampajKategoriju, bool stampajKlub, SpravaGridGroupUserControl spravaGridGroupUserControl)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -60,7 +60,7 @@ namespace Bilten.Report
                     relY = 0.0f + 0.03f;
                 }
                 SudijskiFormularLista lista = new SudijskiFormularLista(this, page, 0f, itemFont, itemsHeaderFont,
-                    startListe[i], brojEOcena, stampajRedniBroj,
+                    startListe[i], brojEOcena, stampajRedniBroj, stampajKategoriju, stampajKlub,
                     spravaGridGroupUserControl[sprava].DataGridViewUserControl.DataGridView);
                 lista.RelY = relY;
                 reportListe.Add(lista);
@@ -94,15 +94,19 @@ namespace Bilten.Report
         private Sprava sprava;
         private int brojEOcena;
         private bool stampajRedniBroj;
+        private bool stampajKategoriju;
+        private bool stampajKlub;
 
         public SudijskiFormularLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, int brojEOcena, bool stampajRedniBroj,
-            DataGridView formGrid)
+            bool stampajKategoriju, bool stampajKlub, DataGridView formGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = startLista.Sprava;
             this.brojEOcena = brojEOcena;
             this.stampajRedniBroj = stampajRedniBroj;
+            this.stampajKategoriju = stampajKategoriju;
+            this.stampajKlub = stampajKlub;
 
             fetchItems(startLista);
         }
@@ -125,61 +129,61 @@ namespace Bilten.Report
                 if (startLista.Sprava != Sprava.Preskok)
                 {
                     if (brojEOcena == 0)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava,
                             "", "", "", "" });
                     else if (brojEOcena == 1)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava,
                             "", "", "", "", "" });
                     else if (brojEOcena == 2)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava,
                             "", "", "", "", "", "" });
                     else if (brojEOcena == 3)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava,
                             "", "", "", "", "", "", "" });
                     else if (brojEOcena == 4)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava,
                             "", "", "", "", "", "", "", "" });
                     else if (brojEOcena == 5)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava,
                             "", "", "", "", "", "", "", "", "" });
                     else if (brojEOcena == 6)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava,
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava,
                             "", "", "", "", "", "", "", "", "", "" });
                 }
                 else
                 {
                     if (brojEOcena == 0)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava, "1", "2",
                             "", "", "", "", 
                             "", "", "", "", 
                             ""});
                     else if (brojEOcena == 1)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava, "1", "2",
                             "", "", "", "", "",
                             "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 2)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava, "1", "2",
                             "", "", "", "", "", "",
                             "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 3)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava, "1", "2",
                             "", "", "", "", "", "", "",
                             "", "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 4)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava, "1", "2",
                             "", "", "", "", "", "", "", "",
                             "", "", "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 5)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava, "1", "2",
                             "", "", "", "", "", "", "", "", "",
                             "", "", "", "", "", "", "", "", "",
                             "" });
                     else if (brojEOcena == 6)
-                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, "1", "2",
+                        result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.Kategorija, nastup.KlubDrzava, "1", "2",
                             "", "", "", "", "", "", "", "", "", "",
                             "", "", "", "", "", "", "", "", "", "",
                             "" });
@@ -217,13 +221,26 @@ namespace Bilten.Report
 
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+
+            float kategorijaWidth;
+            if (this.stampajKategoriju)
+                kategorijaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            else
+                kategorijaWidth = 0.0F;
+
+            float klubWidth;
+            if (this.stampajKlub)
+                klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            else
+                klubWidth = 0.0F;
+
             float skokWidth = Izvestaj.convCmToInch(skokWidthCm);
             float ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);
 
             float xRank = contentBounds.X;
             float xIme = xRank + Izvestaj.convCmToInch(rankWidthCm);
-            float xKlub = xIme + imeWidth;
+            float xKategorija = xIme + imeWidth;
+            float xKlub = xKategorija + kategorijaWidth;
             float xSkok = 0.0f;
             float xSprava;
             if (sprava == Sprava.Preskok)
@@ -246,6 +263,7 @@ namespace Bilten.Report
             xRank += delta;
             xIme += delta;
             xKlub += delta;
+            xKategorija += delta;
             if (sprava == Sprava.Preskok)
                 xSkok += delta;
             xSprava += delta;
@@ -278,6 +296,10 @@ namespace Bilten.Report
             klubFormat.Alignment = StringAlignment.Near;
             klubFormat.LineAlignment = StringAlignment.Center;
 
+            StringFormat kategorijaFormat = new StringFormat(StringFormatFlags.NoWrap);
+            kategorijaFormat.Alignment = StringAlignment.Near;
+            kategorijaFormat.LineAlignment = StringAlignment.Center;
+
             StringFormat skokFormat = new StringFormat(StringFormatFlags.NoWrap);
             skokFormat.Alignment = StringAlignment.Center;
             skokFormat.LineAlignment = StringAlignment.Center;
@@ -288,6 +310,7 @@ namespace Bilten.Report
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat kategorijaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat skokHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
@@ -295,6 +318,7 @@ namespace Bilten.Report
             String rankTitle = "RB";
             String imeTitle = "Ime";
             String klubTitle = "Klub";
+            String kategorijaTitle = "Kategorija";
             String skokTitle = ""; // TODO3: Neka bude uspravno.
             String totalTitle = "Total";
 
@@ -302,7 +326,10 @@ namespace Bilten.Report
 
             addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
-            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            ReportColumn column = addColumn(xKategorija, kategorijaWidth, kategorijaFormat, kategorijaTitle, kategorijaHeaderFormat);
+            column.Visible = stampajKategoriju;
+            column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            column.Visible = stampajKlub;
             if (sprava == Sprava.Preskok)
             {
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSkok, skokWidth, null, skokFormat,
@@ -385,6 +412,9 @@ namespace Bilten.Report
         {
             foreach (ReportColumn col in Columns)
             {
+                if (!col.Visible)
+                    continue;
+
                 RectangleF columnHeaderRect = new RectangleF(
                     col.X, groupHeaderRect.Y, col.Width, groupHeaderRect.Height);
 

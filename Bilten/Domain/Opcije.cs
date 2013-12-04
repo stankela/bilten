@@ -412,6 +412,20 @@ namespace Bilten.Domain
             set { _stampajRedniBrojNaStartListi = value; }
         }
 
+        private bool _stampajKategoriju = true;
+        public virtual bool StampajKategoriju
+        {
+            get { return _stampajKategoriju; }
+            set { _stampajKategoriju = value; }
+        }
+
+        private bool _stampajKlub = false;
+        public virtual bool StampajKlub
+        {
+            get { return _stampajKlub; }
+            set { _stampajKlub = value; }
+        }
+
         private int _brojEOcenaFormular;
         public virtual int BrojEOcenaFormular
         {
@@ -466,6 +480,8 @@ namespace Bilten.Domain
             }
             PrikaziPenalSprave = form.PrikaziPenalSprave;
             StampajRedniBrojNaStartListi = form.StampajRedniBrojNaStartListi;
+            StampajKategoriju = form.StampajKategoriju;
+            StampajKlub = form.StampajKlub;
             BrojEOcenaFormular = form.BrojEOcenaFormular;
         }
 
@@ -520,6 +536,8 @@ namespace Bilten.Domain
             }
             form.PrikaziPenalSprave = PrikaziPenalSprave;
             form.StampajRedniBrojNaStartListi = StampajRedniBrojNaStartListi;
+            form.StampajKategoriju = StampajKategoriju;
+            form.StampajKlub = StampajKlub;
             form.BrojEOcenaFormular = BrojEOcenaFormular;
         }
 

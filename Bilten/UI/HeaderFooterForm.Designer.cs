@@ -72,6 +72,8 @@ namespace Bilten.UI
             this.ckbStampajRedniBroj = new System.Windows.Forms.CheckBox();
             this.txtBrojEOcena = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.ckbStampajKategoriju = new System.Windows.Forms.CheckBox();
+            this.ckbStampajKlub = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -356,7 +358,7 @@ namespace Bilten.UI
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(511, 395);
+            this.btnOk.Location = new System.Drawing.Point(493, 484);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 40;
@@ -367,7 +369,7 @@ namespace Bilten.UI
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(608, 395);
+            this.btnCancel.Location = new System.Drawing.Point(590, 484);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 41;
@@ -456,7 +458,7 @@ namespace Bilten.UI
             // 
             // txtBrojEOcena
             // 
-            this.txtBrojEOcena.Location = new System.Drawing.Point(98, 471);
+            this.txtBrojEOcena.Location = new System.Drawing.Point(98, 506);
             this.txtBrojEOcena.Name = "txtBrojEOcena";
             this.txtBrojEOcena.Size = new System.Drawing.Size(46, 20);
             this.txtBrojEOcena.TabIndex = 52;
@@ -464,11 +466,31 @@ namespace Bilten.UI
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 474);
+            this.label1.Location = new System.Drawing.Point(14, 509);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 13);
             this.label1.TabIndex = 53;
             this.label1.Text = "Broj E ocena";
+            // 
+            // ckbStampajKategoriju
+            // 
+            this.ckbStampajKategoriju.AutoSize = true;
+            this.ckbStampajKategoriju.Location = new System.Drawing.Point(12, 456);
+            this.ckbStampajKategoriju.Name = "ckbStampajKategoriju";
+            this.ckbStampajKategoriju.Size = new System.Drawing.Size(113, 17);
+            this.ckbStampajKategoriju.TabIndex = 54;
+            this.ckbStampajKategoriju.Text = "Stampaj kategoriju";
+            this.ckbStampajKategoriju.UseVisualStyleBackColor = true;
+            // 
+            // ckbStampajKlub
+            // 
+            this.ckbStampajKlub.AutoSize = true;
+            this.ckbStampajKlub.Location = new System.Drawing.Point(12, 479);
+            this.ckbStampajKlub.Name = "ckbStampajKlub";
+            this.ckbStampajKlub.Size = new System.Drawing.Size(87, 17);
+            this.ckbStampajKlub.TabIndex = 55;
+            this.ckbStampajKlub.Text = "Stampaj klub";
+            this.ckbStampajKlub.UseVisualStyleBackColor = true;
             // 
             // HeaderFooterForm
             // 
@@ -476,7 +498,9 @@ namespace Bilten.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(695, 508);
+            this.ClientSize = new System.Drawing.Size(695, 538);
+            this.Controls.Add(this.ckbStampajKlub);
+            this.Controls.Add(this.ckbStampajKategoriju);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtBrojEOcena);
             this.Controls.Add(this.ckbStampajRedniBroj);
@@ -578,5 +602,7 @@ namespace Bilten.UI
         private System.Windows.Forms.CheckBox ckbStampajRedniBroj;
         private System.Windows.Forms.TextBox txtBrojEOcena;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox ckbStampajKategoriju;
+        private System.Windows.Forms.CheckBox ckbStampajKlub;
     }
 }

@@ -882,7 +882,7 @@ namespace Bilten.UI
             // TODO: Verovatno bi trebalo ukljuciti i turnus, ukoliko ima vise turnusa
             string kategorijaRotacija = getFirstKategorijaText(ActiveRaspored) + ", Rotacija " + ActiveRotacija.ToString();
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
@@ -1776,7 +1776,7 @@ namespace Bilten.UI
             }
             string kategorijaRotacija = getFirstKategorijaText(ActiveRaspored) + ", Rotacija " + ActiveRotacija.ToString();
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
@@ -1820,13 +1820,6 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
                 string documentName = nazivIzvestaja + kategorijaRotacija;
-
-                //bool stampajEOcene = true;
-                //bool stampajEOcene = form.StampajEOcene;
-                //int brojEOcena = 0;
-                //if (stampajEOcene)
-                    //brojEOcena = takmicenje.BrojESudija;
-                //    brojEOcena = 0;
                 int brojEOcena = form.BrojEOcenaFormular;
 
                 if (form.StampajSveSprave)
@@ -1840,13 +1833,14 @@ namespace Bilten.UI
                     }
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, takmicenje.Gimnastika, documentName,
                         brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
+                        form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl()));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena,
-                        form.StampajRedniBrojNaStartListi,
+                        form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
                 }
 

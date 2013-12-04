@@ -372,7 +372,8 @@ namespace Bilten.UI
         {
             string nazivIzvestaja = "I i II kolo - Rezultati po spravama";
 
-            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1, false, true, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
+                false, true, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);

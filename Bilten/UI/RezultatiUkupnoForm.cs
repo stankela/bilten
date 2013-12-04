@@ -343,7 +343,7 @@ namespace Bilten.UI
                     nazivIzvestaja = "Vi" + shMalo + "eboj";
             }
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);

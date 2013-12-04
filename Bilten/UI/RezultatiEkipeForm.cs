@@ -426,7 +426,8 @@ namespace Bilten.UI
                     nazivIzvestaja = "Rezultati ekipno";
             }
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, false, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod,
+                false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
