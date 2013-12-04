@@ -216,13 +216,6 @@ namespace Bilten.UI
                     new string[] { "id" }, new object[] { takmicenje.Id });
             foreach (RasporedNastupa r in rasporediNastupa)
             {
-                Query q2 = new Query();
-                q2.Criteria.Add(new Criterion("RasporedNastupa", CriteriaOperator.Equal, r));
-                IList<SablonRasporedaNastupaTakm1> sabloni =
-                    dataContext.GetByCriteria<SablonRasporedaNastupaTakm1>(q2);
-                foreach (SablonRasporedaNastupaTakm1 s in sabloni)
-                    dataContext.Delete(s);
-
                 dataContext.Delete(r);
             }
 

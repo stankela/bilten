@@ -343,21 +343,6 @@ create table nastup_na_spravi (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id)
 );
 
-create table sablon_rasporeda_nastupa_takm1 (
-    sablon_id int identity(1,1) primary key,
-    raspored_id int references raspored_nastupa(raspored_nastupa_id),
-    grupa tinyint
-);
-
-create table sablon_item (
-    sablon_item_id int identity(1,1) primary key,
-    sablon_id int references sablon_rasporeda_nastupa_takm1(sablon_id),
-    sprava tinyint,
-	ekipa_id int references ekipe(ekipa_id),
-	broj_ucesnika tinyint,
-	red_broj tinyint
-);
-
 create table opcije (
 	opcije_id int identity(1,1) primary key,
 	broj_decimala_d tinyint,

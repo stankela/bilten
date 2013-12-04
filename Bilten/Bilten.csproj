@@ -126,8 +126,6 @@
     <Compile Include="Domain\RezultatUkupno.cs" />
     <Compile Include="Domain\RezultatUkupnoExtended.cs" />
     <Compile Include="Domain\RezultatUkupnoFinaleKupa.cs" />
-    <Compile Include="Domain\SablonRasporedaNastupaTakm1.cs" />
-    <Compile Include="Domain\SablonRasporedaNastupaTakm1Item.cs" />
     <Compile Include="Domain\Sprava.cs" />
     <Compile Include="Domain\StartListaNaSpravi.cs">
       <SubType>Code</SubType>
@@ -478,18 +476,6 @@
     </Compile>
     <Compile Include="UI\RezultatskoTakmicenjeDescriptionForm.Designer.cs">
       <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SablonRasporedaNastupaTakm1Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SablonRasporedaNastupaTakm1Form.Designer.cs">
-      <DependentUpon>SablonRasporedaNastupaTakm1Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SablonRasporedaNastupaTakm1ItemForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SablonRasporedaNastupaTakm1ItemForm.Designer.cs">
-      <DependentUpon>SablonRasporedaNastupaTakm1ItemForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SelectEntityForm.cs">
       <SubType>Form</SubType>
@@ -848,14 +834,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>RezultatskoTakmicenjeDescriptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SablonRasporedaNastupaTakm1Form.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>SablonRasporedaNastupaTakm1Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SablonRasporedaNastupaTakm1ItemForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>SablonRasporedaNastupaTakm1ItemForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\SelectEntityForm.resx">
       <DependentUpon>SelectEntityForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -906,8 +884,6 @@
     <EmbeddedResource Include="Data\NHibernate\Mappings\RasporedSudija.hbm.xml" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\RasporedNastupa.hbm.xml" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\StartListaNaSpravi.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\SablonRasporedaNastupaTakm1.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\SablonRasporedaNastupaTakm1Item.hbm.xml" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\Opcije.hbm.xml" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatskoTakmicenjeDescription.hbm.xml" />
     <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatskoTakmicenje.hbm.xml" />

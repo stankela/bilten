@@ -26,6 +26,9 @@ UPDATE start_lista_sprava SET nacin_rotacije = 0;
 
 ALTER TABLE nastup_na_spravi DROP COLUMN nastupa_dva_puta;
 
+DROP TABLE sablon_item;
+DROP TABLE sablon_rasporeda_nastupa_takm1;
+
 
 10-Nov-2013
 

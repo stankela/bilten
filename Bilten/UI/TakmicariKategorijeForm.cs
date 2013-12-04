@@ -36,6 +36,9 @@ namespace Bilten.UI
         {
             InitializeComponent();
 
+            // TODO3: Probaj da nadjes nacin da obavestis korisnika da postoje gimnasticari koji su uneti u kategorije, a
+            // nisu uneti u takmicenja (pa nece biti prikazani u rezultatima)
+
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             try

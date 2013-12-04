@@ -131,9 +131,6 @@ namespace Bilten.UI
 
         private void initUI()
         {
-            btnSablon.Visible = false;
-            btnSablon.Enabled = false;
-
             Text = "Start liste - " +
                 DeoTakmicenjaKodovi.toString(deoTakKod);
             this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, 540);
@@ -728,68 +725,6 @@ namespace Bilten.UI
             return result;
         }
 
-        private void btnSablon_Click(object sender, EventArgs e)
-        {
-            if (ActiveRaspored == null)
-                return;
-
-            try
-            {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                SablonRasporedaNastupaTakm1 sablon = findSablon(
-                    ActiveRaspored, (byte)ActiveGrupa);
-                Nullable<int> sablonId = null;
-                if (sablon != null)
-                    sablonId = sablon.Id;
-                SablonRasporedaNastupaTakm1Form f = new SablonRasporedaNastupaTakm1Form(
-                    sablonId, ActiveRaspored, (byte)ActiveGrupa);
-                if (f.ShowDialog() != DialogResult.OK)
-                    return;
-
-                dataContext.Commit();
-            }
-            catch (Exception ex)
-            {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-            }
-            
-        }
-
-        private SablonRasporedaNastupaTakm1 findSablon(RasporedNastupa raspored,
-            byte grupa)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("RasporedNastupa", CriteriaOperator.Equal, raspored));
-            q.Criteria.Add(new Criterion("Grupa", CriteriaOperator.Equal, grupa));
-            q.Operator = QueryOperator.And;
-            IList<SablonRasporedaNastupaTakm1> result = 
-                dataContext.GetByCriteria<SablonRasporedaNastupaTakm1>(q);
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
-        }
-
-        private IList<SablonRasporedaNastupaTakm1> findSabloni(RasporedNastupa raspored)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("RasporedNastupa", CriteriaOperator.Equal, raspored));
-            return dataContext.GetByCriteria<SablonRasporedaNastupaTakm1>(q);
-        }
-
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (ActiveRaspored == null)
@@ -807,11 +742,6 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                IList<SablonRasporedaNastupaTakm1> sabloni = findSabloni(ActiveRaspored);
-                foreach (SablonRasporedaNastupaTakm1 s in sabloni)
-                {
-                    dataContext.Delete(s);
-                }
                 dataContext.Delete(ActiveRaspored);
 
                 dataContext.Commit();

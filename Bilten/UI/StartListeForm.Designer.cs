@@ -40,7 +40,6 @@ namespace Bilten.UI
             this.lblRotacija = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
-            this.btnSablon = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnUnesiOcenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,10 +53,10 @@ namespace Bilten.UI
             this.mnOznaciKaoEkipu = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOznaciKaoPojedinca = new System.Windows.Forms.ToolStripMenuItem();
             this.mnNacinRotacije = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnNeRotirajNista = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRotirajEkipeRotirajGim = new System.Windows.Forms.ToolStripMenuItem();
             this.mnNeRotirajEkipeRotirajGim = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRotirajSve = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnNeRotirajNista = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnOstaleRotacije = new System.Windows.Forms.Button();
             this.btnPrintUnosOcena = new System.Windows.Forms.Button();
@@ -175,16 +174,6 @@ namespace Bilten.UI
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
-            // btnSablon
-            // 
-            this.btnSablon.Location = new System.Drawing.Point(278, 53);
-            this.btnSablon.Name = "btnSablon";
-            this.btnSablon.Size = new System.Drawing.Size(107, 23);
-            this.btnSablon.TabIndex = 7;
-            this.btnSablon.Text = "Sablon start liste";
-            this.btnSablon.UseVisualStyleBackColor = true;
-            this.btnSablon.Click += new System.EventHandler(this.btnSablon_Click);
-            // 
             // btnDelete
             // 
             this.btnDelete.Location = new System.Drawing.Point(723, 24);
@@ -293,6 +282,13 @@ namespace Bilten.UI
             this.mnNacinRotacije.Size = new System.Drawing.Size(186, 22);
             this.mnNacinRotacije.Text = "Nacin rotacije";
             // 
+            // mnNeRotirajNista
+            // 
+            this.mnNeRotirajNista.Name = "mnNeRotirajNista";
+            this.mnNeRotirajNista.Size = new System.Drawing.Size(320, 22);
+            this.mnNeRotirajNista.Text = "Ne rotiraj nista";
+            this.mnNeRotirajNista.Click += new System.EventHandler(this.mnNeRotirajNista_Click);
+            // 
             // mnRotirajEkipeRotirajGim
             // 
             this.mnRotirajEkipeRotirajGim.Name = "mnRotirajEkipeRotirajGim";
@@ -313,13 +309,6 @@ namespace Bilten.UI
             this.mnRotirajSve.Size = new System.Drawing.Size(320, 22);
             this.mnRotirajSve.Text = "Rotiraj sve gimnasticare nezavisno od ekipe";
             this.mnRotirajSve.Click += new System.EventHandler(this.mnRotirajSve_Click);
-            // 
-            // mnNeRotirajNista
-            // 
-            this.mnNeRotirajNista.Name = "mnNeRotirajNista";
-            this.mnNeRotirajNista.Size = new System.Drawing.Size(320, 22);
-            this.mnNeRotirajNista.Text = "Ne rotiraj nista";
-            this.mnNeRotirajNista.Click += new System.EventHandler(this.mnNeRotirajNista_Click);
             // 
             // btnPrint
             // 
@@ -358,7 +347,6 @@ namespace Bilten.UI
             this.ClientSize = new System.Drawing.Size(1274, 382);
             this.Controls.Add(this.btnPrintUnosOcena);
             this.Controls.Add(this.btnOstaleRotacije);
-            this.Controls.Add(this.btnSablon);
             this.Controls.Add(this.lblRotacija);
             this.Controls.Add(this.lblGrupa);
             this.Controls.Add(this.btnDelete);
@@ -396,7 +384,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnClose;
         private SpravaGridGroupUserControl spravaGridGroupUserControl1;
         private System.Windows.Forms.Button btnNew;
-        private System.Windows.Forms.Button btnSablon;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem mnUnesiOcenu;

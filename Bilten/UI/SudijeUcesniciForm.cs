@@ -266,18 +266,42 @@ namespace Bilten.UI
             {
                 // TODO: Eventualno navedi na kojim spravama, delovima takmicenja
                 // i kategorijama sudi dati sudija
-                string msg = "Sudiju '{0}' nije moguce izbrisati zato sto je " +
-                    "odredjen da sudi na spravi. Ako zelite da izbrisete sudiju, morate " +
-                    "najpre da ga uklonite iz sudijskog odbora sprave. ";
-                MessageDialogs.showMessage(String.Format(msg, s), this.Text);
+                string msg = "Da biste izbrisali sudiju morate najpre da ga izbrisete iz rasporeda sudija na spravi.";
+                MessageDialogs.showMessage(msg, this.Text);
                 return false;
             }
         }
 
         private bool sudiNaSpravi(SudijaUcesnik s)
         {
-            // TODO
-            return false;    
+            IDataContext dataContext = null;
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                string query = @"select distinct n
+                    from NastupNaSpravi n
+                    where n.Gimnasticar = :gim";
+                IList<NastupNaSpravi> result = dataContext.
+                    ExecuteQuery<NastupNaSpravi>(QueryLanguageType.HQL, query,
+                            new string[] { "gim" }, new object[] { s });
+                return result.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                throw new InfrastructureException(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
         }
 
         protected override string deleteErrorMessage()
