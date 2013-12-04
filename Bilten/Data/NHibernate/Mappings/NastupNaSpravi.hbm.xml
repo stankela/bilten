@@ -7,7 +7,6 @@
     <id name="Id" column="nastup_id" type="Int32">
       <generator class="identity" />
     </id>
-    <property name="NastupaDvaPuta" column="nastupa_dva_puta" type="Boolean" />
     <property name="Ekipa" column="ekipa" type="Byte" />
     <many-to-one name="Gimnasticar" class="GimnasticarUcesnik" column="gimnasticar_id" />
   </class>

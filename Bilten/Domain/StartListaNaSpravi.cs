@@ -28,6 +28,13 @@ namespace Bilten.Domain
             set { rotacija = value; }
         }
 
+        private NacinRotacije nacinRotacije;
+        public virtual NacinRotacije NacinRotacije
+        {
+            get { return nacinRotacije; }
+            set { nacinRotacije = value; }
+        }
+
         private IList<NastupNaSpravi> nastupi = new List<NastupNaSpravi>();
         public virtual IList<NastupNaSpravi> Nastupi
         {
@@ -52,11 +59,12 @@ namespace Bilten.Domain
         }
 
         public StartListaNaSpravi(Sprava sprava,
-            byte grupa, byte rotacija)
+            byte grupa, byte rotacija, NacinRotacije nacinRotacije)
         {
             this.sprava = sprava;
             this.grupa = grupa;
             this.rotacija = rotacija;
+            this.nacinRotacije = nacinRotacije;
         }
 
         public virtual void addNastup(NastupNaSpravi nastup)
@@ -74,13 +82,13 @@ namespace Bilten.Domain
             return !gimnasticarExists(g);
         }
 
-        public virtual void addGimnasticar(GimnasticarUcesnik g, bool nastupaDvaPuta)
+        public virtual void addGimnasticar(GimnasticarUcesnik g)
         {
             if (gimnasticarExists(g))
                 throw new BusinessException(
                     String.Format("Gimnasticar {0} je vec na start listi.", g));
 
-            NastupNaSpravi nastup = new NastupNaSpravi(nastupaDvaPuta, g, 0);
+            NastupNaSpravi nastup = new NastupNaSpravi(g, 0);
             addNastup(nastup);
         }
 

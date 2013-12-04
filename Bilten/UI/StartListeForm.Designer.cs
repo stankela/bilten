@@ -35,6 +35,7 @@ namespace Bilten.UI
             this.btnNewGroup = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
             this.lblGrupa = new System.Windows.Forms.Label();
             this.lblRotacija = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
@@ -52,15 +53,14 @@ namespace Bilten.UI
             this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOznaciKaoEkipu = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOznaciKaoPojedinca = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnPrint = new System.Windows.Forms.Button();
-            this.btnOstaleRotacije = new System.Windows.Forms.Button();
-            this.btnPrintUnosOcena = new System.Windows.Forms.Button();
             this.mnNacinRotacije = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRotirajEkipeRotirajGim = new System.Windows.Forms.ToolStripMenuItem();
             this.mnNeRotirajEkipeRotirajGim = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRotirajSve = new System.Windows.Forms.ToolStripMenuItem();
             this.mnNeRotirajNista = new System.Windows.Forms.ToolStripMenuItem();
-            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
+            this.btnPrint = new System.Windows.Forms.Button();
+            this.btnOstaleRotacije = new System.Windows.Forms.Button();
+            this.btnPrintUnosOcena = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -129,6 +129,13 @@ namespace Bilten.UI
             this.tabPage1.Size = new System.Drawing.Size(1242, 278);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
+            // 
+            // spravaGridGroupUserControl1
+            // 
+            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(3, 6);
+            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
+            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(444, 206);
+            this.spravaGridGroupUserControl1.TabIndex = 0;
             // 
             // lblGrupa
             // 
@@ -203,7 +210,7 @@ namespace Bilten.UI
             this.mnOznaciKaoPojedinca,
             this.mnNacinRotacije});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(187, 268);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(187, 246);
             // 
             // mnUnesiOcenu
             // 
@@ -275,43 +282,13 @@ namespace Bilten.UI
             this.mnOznaciKaoPojedinca.Text = "Oznaci kao pojedinca";
             this.mnOznaciKaoPojedinca.Click += new System.EventHandler(this.mnOznaciKaoPojedinca_Click);
             // 
-            // btnPrint
-            // 
-            this.btnPrint.Location = new System.Drawing.Point(834, 24);
-            this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(75, 23);
-            this.btnPrint.TabIndex = 9;
-            this.btnPrint.Text = "Stampaj";
-            this.btnPrint.UseVisualStyleBackColor = true;
-            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
-            // 
-            // btnOstaleRotacije
-            // 
-            this.btnOstaleRotacije.Location = new System.Drawing.Point(444, 24);
-            this.btnOstaleRotacije.Name = "btnOstaleRotacije";
-            this.btnOstaleRotacije.Size = new System.Drawing.Size(170, 23);
-            this.btnOstaleRotacije.TabIndex = 10;
-            this.btnOstaleRotacije.Text = "Kreiraj preostale rotacije";
-            this.btnOstaleRotacije.UseVisualStyleBackColor = true;
-            this.btnOstaleRotacije.Click += new System.EventHandler(this.btnOstaleRotacije_Click);
-            // 
-            // btnPrintUnosOcena
-            // 
-            this.btnPrintUnosOcena.Location = new System.Drawing.Point(925, 24);
-            this.btnPrintUnosOcena.Name = "btnPrintUnosOcena";
-            this.btnPrintUnosOcena.Size = new System.Drawing.Size(176, 23);
-            this.btnPrintUnosOcena.TabIndex = 11;
-            this.btnPrintUnosOcena.Text = "Stampaj liste za unos ucena";
-            this.btnPrintUnosOcena.UseVisualStyleBackColor = true;
-            this.btnPrintUnosOcena.Click += new System.EventHandler(this.btnPrintUnosOcena_Click);
-            // 
             // mnNacinRotacije
             // 
             this.mnNacinRotacije.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnNeRotirajNista,
             this.mnRotirajEkipeRotirajGim,
             this.mnNeRotirajEkipeRotirajGim,
-            this.mnRotirajSve,
-            this.mnNeRotirajNista});
+            this.mnRotirajSve});
             this.mnNacinRotacije.Name = "mnNacinRotacije";
             this.mnNacinRotacije.Size = new System.Drawing.Size(186, 22);
             this.mnNacinRotacije.Text = "Nacin rotacije";
@@ -344,12 +321,35 @@ namespace Bilten.UI
             this.mnNeRotirajNista.Text = "Ne rotiraj nista";
             this.mnNeRotirajNista.Click += new System.EventHandler(this.mnNeRotirajNista_Click);
             // 
-            // spravaGridGroupUserControl1
+            // btnPrint
             // 
-            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(3, 6);
-            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
-            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(444, 206);
-            this.spravaGridGroupUserControl1.TabIndex = 0;
+            this.btnPrint.Location = new System.Drawing.Point(834, 24);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(75, 23);
+            this.btnPrint.TabIndex = 9;
+            this.btnPrint.Text = "Stampaj";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            // 
+            // btnOstaleRotacije
+            // 
+            this.btnOstaleRotacije.Location = new System.Drawing.Point(444, 24);
+            this.btnOstaleRotacije.Name = "btnOstaleRotacije";
+            this.btnOstaleRotacije.Size = new System.Drawing.Size(170, 23);
+            this.btnOstaleRotacije.TabIndex = 10;
+            this.btnOstaleRotacije.Text = "Kreiraj preostale rotacije";
+            this.btnOstaleRotacije.UseVisualStyleBackColor = true;
+            this.btnOstaleRotacije.Click += new System.EventHandler(this.btnOstaleRotacije_Click);
+            // 
+            // btnPrintUnosOcena
+            // 
+            this.btnPrintUnosOcena.Location = new System.Drawing.Point(925, 24);
+            this.btnPrintUnosOcena.Name = "btnPrintUnosOcena";
+            this.btnPrintUnosOcena.Size = new System.Drawing.Size(176, 23);
+            this.btnPrintUnosOcena.TabIndex = 11;
+            this.btnPrintUnosOcena.Text = "Stampaj liste za unos ucena";
+            this.btnPrintUnosOcena.UseVisualStyleBackColor = true;
+            this.btnPrintUnosOcena.Click += new System.EventHandler(this.btnPrintUnosOcena_Click);
             // 
             // StartListeForm
             // 

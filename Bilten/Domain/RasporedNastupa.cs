@@ -82,7 +82,7 @@ namespace Bilten.Domain
                 for (int i = 1; i <= brojRotacija; i++)
                 {
                     foreach (Sprava s in sprave)
-                        StartListe.Add(new StartListaNaSpravi(s, (byte)grupa, (byte)i));
+                        StartListe.Add(new StartListaNaSpravi(s, (byte)grupa, (byte)i, NacinRotacije.NeRotirajNista));
                 }
             }
         }

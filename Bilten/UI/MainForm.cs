@@ -1730,5 +1730,23 @@ namespace Bilten.UI
             }
         }
 
+        private void mnTakmicenje3RasporedSudija_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RasporedSudijaForm form = new RasporedSudijaForm(takmicenjeId.Value,
+                    DeoTakmicenjaKod.Takmicenje3);
+                form.ShowDialog();
+            }
+            catch (BusinessException ex)
+            {
+                MessageDialogs.showMessage(ex.Message, strProgName);
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
+        }
+
     }
 }

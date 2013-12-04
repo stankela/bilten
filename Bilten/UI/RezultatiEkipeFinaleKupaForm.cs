@@ -30,6 +30,9 @@ namespace Bilten.UI
         public RezultatiEkipeFinaleKupaForm(int takmicenjeId)
         {
             InitializeComponent();
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -83,6 +86,9 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 

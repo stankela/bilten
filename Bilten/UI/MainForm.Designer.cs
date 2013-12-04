@@ -54,11 +54,12 @@ namespace Bilten.UI
             this.mnSudijeNaTakmicenju = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1RasporedSudija = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnTakmicenje1StartListe = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnTakmicenje1Ocene = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrvoDrugoKoloViseboj = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrvoDrugoKoloSprave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrvoDrugoKoloEkipno = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnZrebZaFinaleKupa = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnTakmicenje1StartListe = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnTakmicenje1Ocene = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRezultatiUkupnoTak1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1RezultatiSprave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1RezultatiEkipe = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,7 +80,7 @@ namespace Bilten.UI
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcije = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcijeOpcije = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnZrebZaFinaleKupa = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnTakmicenje3RasporedSudija = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -304,20 +305,6 @@ namespace Bilten.UI
             this.mnTakmicenje1RasporedSudija.Text = "Raspored sudija";
             this.mnTakmicenje1RasporedSudija.Click += new System.EventHandler(this.mnTakmicenje1RasporedSudija_Click);
             // 
-            // mnTakmicenje1StartListe
-            // 
-            this.mnTakmicenje1StartListe.Name = "mnTakmicenje1StartListe";
-            this.mnTakmicenje1StartListe.Size = new System.Drawing.Size(218, 22);
-            this.mnTakmicenje1StartListe.Text = "Start liste";
-            this.mnTakmicenje1StartListe.Click += new System.EventHandler(this.mnTakmicenje1StartListe_Click);
-            // 
-            // mnTakmicenje1Ocene
-            // 
-            this.mnTakmicenje1Ocene.Name = "mnTakmicenje1Ocene";
-            this.mnTakmicenje1Ocene.Size = new System.Drawing.Size(218, 22);
-            this.mnTakmicenje1Ocene.Text = "Ocene";
-            this.mnTakmicenje1Ocene.Click += new System.EventHandler(this.mnTakmicenje1Ocene_Click);
-            // 
             // mnPrvoDrugoKoloViseboj
             // 
             this.mnPrvoDrugoKoloViseboj.Name = "mnPrvoDrugoKoloViseboj";
@@ -338,6 +325,27 @@ namespace Bilten.UI
             this.mnPrvoDrugoKoloEkipno.Size = new System.Drawing.Size(218, 22);
             this.mnPrvoDrugoKoloEkipno.Text = "I i II Kolo - ekipno";
             this.mnPrvoDrugoKoloEkipno.Click += new System.EventHandler(this.mnPrvoDrugoKoloEkipno_Click);
+            // 
+            // mnZrebZaFinaleKupa
+            // 
+            this.mnZrebZaFinaleKupa.Name = "mnZrebZaFinaleKupa";
+            this.mnZrebZaFinaleKupa.Size = new System.Drawing.Size(218, 22);
+            this.mnZrebZaFinaleKupa.Text = "Zreb za finale";
+            this.mnZrebZaFinaleKupa.Click += new System.EventHandler(this.mnZrebZaFinaleKupa_Click);
+            // 
+            // mnTakmicenje1StartListe
+            // 
+            this.mnTakmicenje1StartListe.Name = "mnTakmicenje1StartListe";
+            this.mnTakmicenje1StartListe.Size = new System.Drawing.Size(218, 22);
+            this.mnTakmicenje1StartListe.Text = "Start liste";
+            this.mnTakmicenje1StartListe.Click += new System.EventHandler(this.mnTakmicenje1StartListe_Click);
+            // 
+            // mnTakmicenje1Ocene
+            // 
+            this.mnTakmicenje1Ocene.Name = "mnTakmicenje1Ocene";
+            this.mnTakmicenje1Ocene.Size = new System.Drawing.Size(218, 22);
+            this.mnTakmicenje1Ocene.Text = "Ocene";
+            this.mnTakmicenje1Ocene.Click += new System.EventHandler(this.mnTakmicenje1Ocene_Click);
             // 
             // mnRezultatiUkupnoTak1
             // 
@@ -403,6 +411,7 @@ namespace Bilten.UI
             this.mnTakmicenje3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnKvalifikantiTak3,
             this.zrebZaFinalePoSpravamaToolStripMenuItem,
+            this.mnTakmicenje3RasporedSudija,
             this.mnTakmicenje3StartListe,
             this.mnTakmicenje3Ocene,
             this.mnTakmicenje3Rezultati});
@@ -413,35 +422,35 @@ namespace Bilten.UI
             // mnKvalifikantiTak3
             // 
             this.mnKvalifikantiTak3.Name = "mnKvalifikantiTak3";
-            this.mnKvalifikantiTak3.Size = new System.Drawing.Size(152, 22);
+            this.mnKvalifikantiTak3.Size = new System.Drawing.Size(162, 22);
             this.mnKvalifikantiTak3.Text = "Kvalifikanti";
             this.mnKvalifikantiTak3.Click += new System.EventHandler(this.mnKvalifikantiTak3_Click);
             // 
             // zrebZaFinalePoSpravamaToolStripMenuItem
             // 
             this.zrebZaFinalePoSpravamaToolStripMenuItem.Name = "zrebZaFinalePoSpravamaToolStripMenuItem";
-            this.zrebZaFinalePoSpravamaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.zrebZaFinalePoSpravamaToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.zrebZaFinalePoSpravamaToolStripMenuItem.Text = "Zreb za finale";
             this.zrebZaFinalePoSpravamaToolStripMenuItem.Click += new System.EventHandler(this.zrebZaFinalePoSpravamaToolStripMenuItem_Click);
             // 
             // mnTakmicenje3StartListe
             // 
             this.mnTakmicenje3StartListe.Name = "mnTakmicenje3StartListe";
-            this.mnTakmicenje3StartListe.Size = new System.Drawing.Size(152, 22);
+            this.mnTakmicenje3StartListe.Size = new System.Drawing.Size(162, 22);
             this.mnTakmicenje3StartListe.Text = "Start liste";
             this.mnTakmicenje3StartListe.Click += new System.EventHandler(this.mnTakmicenje3StartListe_Click);
             // 
             // mnTakmicenje3Ocene
             // 
             this.mnTakmicenje3Ocene.Name = "mnTakmicenje3Ocene";
-            this.mnTakmicenje3Ocene.Size = new System.Drawing.Size(152, 22);
+            this.mnTakmicenje3Ocene.Size = new System.Drawing.Size(162, 22);
             this.mnTakmicenje3Ocene.Text = "Ocene";
             this.mnTakmicenje3Ocene.Click += new System.EventHandler(this.mnTakmicenje3Ocene_Click);
             // 
             // mnTakmicenje3Rezultati
             // 
             this.mnTakmicenje3Rezultati.Name = "mnTakmicenje3Rezultati";
-            this.mnTakmicenje3Rezultati.Size = new System.Drawing.Size(152, 22);
+            this.mnTakmicenje3Rezultati.Size = new System.Drawing.Size(162, 22);
             this.mnTakmicenje3Rezultati.Text = "Rezultati";
             this.mnTakmicenje3Rezultati.Click += new System.EventHandler(this.mnTakmicenje3Rezultati_Click);
             // 
@@ -458,19 +467,19 @@ namespace Bilten.UI
             // mnKvalifikantiTak4
             // 
             this.mnKvalifikantiTak4.Name = "mnKvalifikantiTak4";
-            this.mnKvalifikantiTak4.Size = new System.Drawing.Size(136, 22);
+            this.mnKvalifikantiTak4.Size = new System.Drawing.Size(152, 22);
             this.mnKvalifikantiTak4.Text = "Kvalifikanti";
             // 
             // mnOceneTak4
             // 
             this.mnOceneTak4.Name = "mnOceneTak4";
-            this.mnOceneTak4.Size = new System.Drawing.Size(136, 22);
+            this.mnOceneTak4.Size = new System.Drawing.Size(152, 22);
             this.mnOceneTak4.Text = "Ocene";
             // 
             // mnRezultatiTak4
             // 
             this.mnRezultatiTak4.Name = "mnRezultatiTak4";
-            this.mnRezultatiTak4.Size = new System.Drawing.Size(136, 22);
+            this.mnRezultatiTak4.Size = new System.Drawing.Size(152, 22);
             this.mnRezultatiTak4.Text = "Rezultati";
             // 
             // mnOpcije
@@ -488,12 +497,12 @@ namespace Bilten.UI
             this.mnOpcijeOpcije.Text = "Opcije";
             this.mnOpcijeOpcije.Click += new System.EventHandler(this.mnOpcijeOpcije_Click);
             // 
-            // mnZrebZaFinaleKupa
+            // mnTakmicenje3RasporedSudija
             // 
-            this.mnZrebZaFinaleKupa.Name = "mnZrebZaFinaleKupa";
-            this.mnZrebZaFinaleKupa.Size = new System.Drawing.Size(218, 22);
-            this.mnZrebZaFinaleKupa.Text = "Zreb za finale";
-            this.mnZrebZaFinaleKupa.Click += new System.EventHandler(this.mnZrebZaFinaleKupa_Click);
+            this.mnTakmicenje3RasporedSudija.Name = "mnTakmicenje3RasporedSudija";
+            this.mnTakmicenje3RasporedSudija.Size = new System.Drawing.Size(162, 22);
+            this.mnTakmicenje3RasporedSudija.Text = "Raspored sudija";
+            this.mnTakmicenje3RasporedSudija.Click += new System.EventHandler(this.mnTakmicenje3RasporedSudija_Click);
             // 
             // MainForm
             // 
@@ -565,6 +574,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnPrvoDrugoKoloEkipno;
         private System.Windows.Forms.ToolStripMenuItem mnKopirajPrethodnoTakmicenje;
         private System.Windows.Forms.ToolStripMenuItem mnZrebZaFinaleKupa;
+        private System.Windows.Forms.ToolStripMenuItem mnTakmicenje3RasporedSudija;
     }
 }
 

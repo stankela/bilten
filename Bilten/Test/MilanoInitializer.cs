@@ -443,8 +443,7 @@ namespace Bilten.Test
                     GimnasticarUcesnik gimnasticar = gim_ucesnici[broj];
                     if (gimnasticar == null)
                         throw new Exception("Greska prilikom dodavanja rasporeda nastupa.");
-                    NastupNaSpravi nastup = new NastupNaSpravi(
-                        nastupaDvaPuta, gimnasticar, 0);
+                    NastupNaSpravi nastup = new NastupNaSpravi(gimnasticar, 0);
 
                     while (raspored.getStartLista(sprava, grupa, rot) == null)
                         raspored.addNewGrupa();

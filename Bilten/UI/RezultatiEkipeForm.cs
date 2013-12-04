@@ -34,6 +34,9 @@ namespace Bilten.UI
         {
             InitializeComponent();
             this.deoTakKod = deoTakKod;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -104,6 +107,9 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 
@@ -237,6 +243,7 @@ namespace Bilten.UI
         private void initUI()
         {
             Text = "Rezultati ekipno - " + DeoTakmicenjaKodovi.toString(deoTakKod);
+            this.ClientSize = new Size(800, 540);
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;

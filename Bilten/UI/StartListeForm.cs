@@ -32,16 +32,13 @@ namespace Bilten.UI
         private Sprava clickedSprava;
         private Point USER_CONTROL_LOCATION = new Point(10, 10);
 
-        bool[] rotirajEkipeRotirajGimnasticare = new bool[6] { true, true, true, true, true, true };
-        bool[] neRotirajEkipeRotirajGimnasticare = new bool[6] { false, false, false, false, false, false };
-        bool[] rotirajSveGimnasticare = new bool[6] { false, false, false, false, false, false };
-        bool[] neRotirajNista = new bool[6] { false, false, false, false, false, false };
-
         public StartListeForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {
             InitializeComponent();
             this.deoTakKod = deoTakKod;
 
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -110,6 +107,9 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
+            
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 
@@ -205,17 +205,22 @@ namespace Bilten.UI
                 mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = false;
             }
 
-            mnOznaciKaoEkipu.Enabled = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                                       && !takmicenje.FinaleKupa
-                                       && ActiveRotacija == 1;
-            mnOznaciKaoPojedinca.Enabled = mnOznaciKaoEkipu.Enabled;
-            mnNacinRotacije.Enabled = mnOznaciKaoEkipu.Enabled;
+            bool enableNacinRotacije = deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                                       && ActiveRotacija == 1
+                                       && !takmicenje.FinaleKupa;
+            mnOznaciKaoEkipu.Enabled = enableNacinRotacije;
+            mnOznaciKaoPojedinca.Enabled = enableNacinRotacije;
+            mnNacinRotacije.Enabled = enableNacinRotacije;
 
-            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
-            mnRotirajEkipeRotirajGim.Checked = rotirajEkipeRotirajGimnasticare[indexSprave];
-            mnNeRotirajEkipeRotirajGim.Checked = neRotirajEkipeRotirajGimnasticare[indexSprave];
-            mnRotirajSve.Checked = rotirajSveGimnasticare[indexSprave];
-            mnNeRotirajNista.Checked = neRotirajNista[indexSprave];
+            if (enableNacinRotacije)
+            {
+                StartListaNaSpravi startLista = ActiveRaspored.getStartLista(clickedSprava, ActiveGrupa, ActiveRotacija);
+
+                mnRotirajEkipeRotirajGim.Checked = startLista.NacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare;
+                mnNeRotirajEkipeRotirajGim.Checked = startLista.NacinRotacije == NacinRotacije.NeRotirajEkipeRotirajGimnasticare;
+                mnRotirajSve.Checked = startLista.NacinRotacije == NacinRotacije.RotirajSve;
+                mnNeRotirajNista.Checked = startLista.NacinRotacije == NacinRotacije.NeRotirajNista;
+            }
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -1150,29 +1155,26 @@ namespace Bilten.UI
                     currentStartLista = getStartListaPrethRot(ActiveRaspored, ActiveGrupa, currentRot--,
                         currentStartLista.Sprava, aktivneSprave);
                 }
-                int indexSprave = Sprave.indexOf(currentStartLista.Sprava, takmicenje.Gimnastika);
-                bool rotirajEkipeRotirajGim = rotirajEkipeRotirajGimnasticare[indexSprave];
-                bool neRotirajEkipeRotirajGim = neRotirajEkipeRotirajGimnasticare[indexSprave];
-                bool rotirajSveGim = rotirajSveGimnasticare[indexSprave];
-                bool neRotNista = neRotirajNista[indexSprave];
 
+                NacinRotacije nacinRotacije = currentStartLista.NacinRotacije;
                 if (startListaPrethRot.Nastupi.Count > 0)
                 {
-                    if (rotirajSveGim || neRotNista)
+                    if (nacinRotacije == NacinRotacije.RotirajSve || nacinRotacije == NacinRotacije.NeRotirajNista)
                     {
                         foreach (NastupNaSpravi n in startListaPrethRot.Nastupi)
                         {
-                            startLista.addNastup(new NastupNaSpravi(n.NastupaDvaPuta, n.Gimnasticar, n.Ekipa));
+                            startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
                         }
 
-                        if (rotirajSveGim)
+                        if (nacinRotacije == NacinRotacije.RotirajSve)
                         {
                             NastupNaSpravi n2 = startLista.Nastupi[0];
                             startLista.removeNastup(n2);
                             startLista.addNastup(n2);
                         }
                     }
-                    else if (rotirajEkipeRotirajGim || neRotirajEkipeRotirajGim)
+                    else if (nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare
+                             || nacinRotacije == NacinRotacije.NeRotirajEkipeRotirajGimnasticare)
                     {
                         // Najpre pronadji ekipe
                         List<List<NastupNaSpravi>> listaEkipa = new List<List<NastupNaSpravi>>();
@@ -1183,7 +1185,7 @@ namespace Bilten.UI
                             if (prethNastup.Ekipa == 0)
                             {
                                 List<NastupNaSpravi> pojedinac = new List<NastupNaSpravi>();
-                                pojedinac.Add(new NastupNaSpravi(prethNastup.NastupaDvaPuta, prethNastup.Gimnasticar, 0));
+                                pojedinac.Add(new NastupNaSpravi(prethNastup.Gimnasticar, 0));
                                 listaEkipa.Add(pojedinac);
                                 ++m;
                                 continue;
@@ -1194,8 +1196,7 @@ namespace Bilten.UI
                             while (m < startListaPrethRot.Nastupi.Count
                                    && prethNastup.Ekipa == ekipaId)
                             {
-                                novaEkipa.Add(new NastupNaSpravi(prethNastup.NastupaDvaPuta, prethNastup.Gimnasticar,
-                                                                 prethNastup.Ekipa));
+                                novaEkipa.Add(new NastupNaSpravi(prethNastup.Gimnasticar, prethNastup.Ekipa));
                                 ++m;
                                 if (m < startListaPrethRot.Nastupi.Count)
                                     prethNastup = startListaPrethRot.Nastupi[m];
@@ -1203,7 +1204,7 @@ namespace Bilten.UI
                             listaEkipa.Add(novaEkipa);
                         }
 
-                        if (rotirajEkipeRotirajGim)
+                        if (nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare)
                         {
                             // Rotiraj ekipe
                             List<NastupNaSpravi> prvaEkipa = listaEkipa[0];
@@ -1220,7 +1221,7 @@ namespace Bilten.UI
 
                             foreach (NastupNaSpravi n in ekipa)
                             {
-                                startLista.addNastup(new NastupNaSpravi(n.NastupaDvaPuta, n.Gimnasticar, n.Ekipa));
+                                startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
                             }
                         }
                     }
@@ -1295,13 +1296,13 @@ namespace Bilten.UI
                 while (k < zreb.Count)
                 {
                     if (zreb[k] <= kvalifikanti.Count)
-                        startLista.addNastup(new NastupNaSpravi(false, kvalifikanti[zreb[k] - 1].Gimnasticar, 0));
+                        startLista.addNastup(new NastupNaSpravi(kvalifikanti[zreb[k] - 1].Gimnasticar, 0));
                     k++;
                 }
                 k = startLista.Nastupi.Count;
                 while (k < kvalifikanti.Count)
                 {
-                    startLista.addNastup(new NastupNaSpravi(false, kvalifikanti[k].Gimnasticar, 0));
+                    startLista.addNastup(new NastupNaSpravi(kvalifikanti[k].Gimnasticar, 0));
                     k++;
                 }
             }
@@ -1487,13 +1488,13 @@ namespace Bilten.UI
                     while (k < zreb.Count)
                     {
                         if (zreb[k] <= rezultati.Count)
-                            startLista.addNastup(new NastupNaSpravi(false, rezultati[zreb[k] - 1].Gimnasticar, 0));
+                            startLista.addNastup(new NastupNaSpravi(rezultati[zreb[k] - 1].Gimnasticar, 0));
                         k++;
                     }
                     k = startLista.Nastupi.Count;
                     while (k < rezultati.Count)
                     {
-                        startLista.addNastup(new NastupNaSpravi(false, rezultati[k].Gimnasticar, 0));
+                        startLista.addNastup(new NastupNaSpravi(rezultati[k].Gimnasticar, 0));
                         k++;
                     }
                 }
@@ -2198,58 +2199,73 @@ namespace Bilten.UI
 
         private void mnRotirajEkipeRotirajGim_Click(object sender, EventArgs e)
         {
-            mnRotirajEkipeRotirajGim.Checked = true;
-            mnNeRotirajEkipeRotirajGim.Checked = false;
-            mnRotirajSve.Checked = false;
-            mnNeRotirajNista.Checked = false;
+            promeniNacinRotacije(NacinRotacije.RotirajEkipeRotirajGimnasticare, clickedSprava);
+        }
 
-            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
-            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
-            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
-            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
-            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
+        private void promeniNacinRotacije(NacinRotacije nacinRotacije, Sprava sprava)
+        {
+            if (ActiveRotacija != 1)
+                return;
+            StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
+            if (startLista.NacinRotacije == nacinRotacije)
+                return;
+
+            startLista.NacinRotacije = nacinRotacije;
+
+            bool close = false;
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                dataContext.Save(startLista);
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                close = true;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+            if (close)
+            {
+                Close();
+                return;
+            }
+
+            mnRotirajEkipeRotirajGim.Checked = nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare;
+            mnNeRotirajEkipeRotirajGim.Checked = nacinRotacije == NacinRotacije.NeRotirajEkipeRotirajGimnasticare;
+            mnRotirajSve.Checked = nacinRotacije == NacinRotacije.RotirajSve;
+            mnNeRotirajNista.Checked = nacinRotacije == NacinRotacije.NeRotirajNista;
         }
 
         private void mnNeRotirajEkipeRotirajGim_Click(object sender, EventArgs e)
         {
-            mnRotirajEkipeRotirajGim.Checked = false;
-            mnNeRotirajEkipeRotirajGim.Checked = true;
-            mnRotirajSve.Checked = false;
-            mnNeRotirajNista.Checked = false;
-
-            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
-            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
-            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
-            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
-            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
+            promeniNacinRotacije(NacinRotacije.NeRotirajEkipeRotirajGimnasticare, clickedSprava);
         }
 
         private void mnRotirajSve_Click(object sender, EventArgs e)
         {
-            mnRotirajEkipeRotirajGim.Checked = false;
-            mnNeRotirajEkipeRotirajGim.Checked = false;
-            mnRotirajSve.Checked = true;
-            mnNeRotirajNista.Checked = false;
-
-            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
-            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
-            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
-            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
-            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
+            promeniNacinRotacije(NacinRotacije.RotirajSve, clickedSprava);
         }
 
         private void mnNeRotirajNista_Click(object sender, EventArgs e)
         {
-            mnRotirajEkipeRotirajGim.Checked = false;
-            mnNeRotirajEkipeRotirajGim.Checked = false;
-            mnRotirajSve.Checked = false;
-            mnNeRotirajNista.Checked = true;
-
-            int indexSprave = Sprave.indexOf(clickedSprava, takmicenje.Gimnastika);
-            rotirajEkipeRotirajGimnasticare[indexSprave] = mnRotirajEkipeRotirajGim.Checked;
-            neRotirajEkipeRotirajGimnasticare[indexSprave] = mnNeRotirajEkipeRotirajGim.Checked;
-            rotirajSveGimnasticare[indexSprave] = mnRotirajSve.Checked;
-            neRotirajNista[indexSprave] = mnNeRotirajNista.Checked;
+            promeniNacinRotacije(NacinRotacije.NeRotirajNista, clickedSprava);
         }
 
     }

@@ -30,6 +30,8 @@ namespace Bilten.UI
             InitializeComponent();
             treeView1.HideSelection = false;
 
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -61,6 +63,9 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 

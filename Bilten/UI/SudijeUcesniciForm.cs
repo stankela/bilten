@@ -25,6 +25,8 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -52,6 +54,9 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 

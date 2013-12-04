@@ -67,6 +67,9 @@ namespace Bilten.UI
             InitializeComponent();
             this.deoTakKod = deoTakKod;
             this.selectMode = selectMode;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -151,6 +154,9 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 
@@ -248,7 +254,7 @@ namespace Bilten.UI
         private void initUI()
         {
             Text = "Rezultati - " + DeoTakmicenjaKodovi.toString(deoTakKod);
-            this.ClientSize = new Size(ClientSize.Width, 450);
+            this.ClientSize = new Size(ClientSize.Width, 540);
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;

@@ -24,6 +24,9 @@ namespace Bilten.UI
         public EkipeForm(int takmicenjeId)
         {
             InitializeComponent();
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -67,13 +70,16 @@ namespace Bilten.UI
                 if (dataContext != null)
                     dataContext.Dispose();
                 dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 
         private void initUI()
         {
             Text = "Ekipe";
-            ClientSize = new Size(ClientSize.Width, 500);
+            this.ClientSize = new Size(900, 540);
             StartPosition = FormStartPosition.CenterScreen;
             initTabs();
         }

@@ -6,13 +6,6 @@ namespace Bilten.Domain
 {
     public class NastupNaSpravi : DomainObject
     {
-        private bool nastupaDvaPuta;
-        public virtual bool NastupaDvaPuta
-        {
-            get { return nastupaDvaPuta; }
-            set { nastupaDvaPuta = value; }
-        }
-
         private GimnasticarUcesnik gimnasticar;
         public virtual GimnasticarUcesnik Gimnasticar
         {
@@ -34,9 +27,8 @@ namespace Bilten.Domain
         
         }
 
-        public NastupNaSpravi(bool nastupaDvaPuta, GimnasticarUcesnik gimnasticar, byte ekipa)
+        public NastupNaSpravi(GimnasticarUcesnik gimnasticar, byte ekipa)
         {
-            this.nastupaDvaPuta = nastupaDvaPuta;
             this.gimnasticar = gimnasticar;
             this.ekipa = ekipa;
 

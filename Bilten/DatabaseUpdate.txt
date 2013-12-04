@@ -21,6 +21,11 @@ ALTER TABLE takmicenja DROP COLUMN broj_e_sudija;
 ALTER TABLE takmicenja DROP COLUMN broj_lin_sudija;
 ALTER TABLE takmicenja DROP COLUMN broj_meraca_vremena;
 
+ALTER TABLE start_lista_sprava ADD COLUMN nacin_rotacije tinyint;
+UPDATE start_lista_sprava SET nacin_rotacije = 0;
+
+ALTER TABLE nastup_na_spravi DROP COLUMN nastupa_dva_puta;
+
 
 10-Nov-2013
 

@@ -170,7 +170,7 @@ namespace Bilten.UI
 
             foreach (GimnasticarUcesnik g in okGimnasticari)
             {
-                startLista.addGimnasticar(g, false);
+                startLista.addGimnasticar(g);
             }
 
             if (okGimnasticari.Count > 0)

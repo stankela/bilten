@@ -97,6 +97,7 @@
     <Compile Include="Domain\KategorijaGimnasticara.cs" />
     <Compile Include="Domain\Klub.cs" />
     <Compile Include="Domain\KlubUcesnik.cs" />
+    <Compile Include="Domain\NacinRotacije.cs" />
     <Compile Include="Domain\NastupNaSpravi.cs" />
     <Compile Include="Domain\Ocena.cs" />
     <Compile Include="Domain\OcenaBase.cs" />
