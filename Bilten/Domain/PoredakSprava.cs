@@ -105,8 +105,7 @@ namespace Bilten.Domain
             };
             rezultati.Sort(new SortComparer<RezultatSprava>(propDesc, sortDir));
 
-            float prevTotal = -1f;
-            float prevE = -1f;
+            RezultatSprava prevRezultat = null;
             short prevRank = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
@@ -119,17 +118,12 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    float eOcena = -1f;
-                    if (rezultati[i].E != null)
-                        eOcena = rezultati[i].E.Value;
-
-                    if (rezultati[i].Total != prevTotal || eOcena != prevE)
+                    if (!resultsAreEqual(rezultati[i], prevRezultat))
                         rezultati[i].Rank = (short)(i + 1);
                     else
                         rezultati[i].Rank = prevRank;
 
-                    prevTotal = rezultati[i].Total.Value;
-                    prevE = eOcena;
+                    prevRezultat = rezultati[i];
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
@@ -267,8 +261,7 @@ namespace Bilten.Domain
                             }
                         }
                     }
-                    else if (prevFinRezultat != null
-                        && rezultat.Total == prevFinRezultat.Total && rezultat.E == prevFinRezultat.E)
+                    else if (prevFinRezultat != null && resultsAreEqual(rezultat, prevFinRezultat))
                     {
                         // Dodali smo predvidjeni broj finalista, ali postoji rezultat koji je identican zadnjem dodatom
                         // finalisti.
@@ -283,7 +276,7 @@ namespace Bilten.Domain
                                 brojTakmicaraMap[id]++;
                                 rezultat.KvalStatus = KvalifikacioniStatus.Q;
                             }
-                            else if (nadjiIstiFinRezultat(rezultat, rezultati, porediDrzavu))
+                            else if (nadjiIstiFinRezultatIzKluba(rezultat, rezultati, porediDrzavu))
                             {
                                 // Dostignut je limit broja takmicara iz kluba, a medju finalistima se nalazi
                                 // i gimnasticar iz istog kluba koji ima istu ocenu. U tom slucaju moramo da dodamo i
@@ -362,12 +355,19 @@ namespace Bilten.Domain
             }
         }
 
-        private bool nadjiIstiFinRezultat(RezultatSprava rezultat, List<RezultatSprava> rezultati, List<bool> porediDrzavu)
+        private bool resultsAreEqual(RezultatSprava r1, RezultatSprava r2)
+        {
+            if (r1 == null || r2 == null)
+                return false;
+            return r1.Total == r2.Total && r1.E == r2.E;
+        }
+
+        private bool nadjiIstiFinRezultatIzKluba(RezultatSprava rezultat, List<RezultatSprava> rezultati, List<bool> porediDrzavu)
         {
             for (int i = 0; i < rezultati.Count; ++i)
             {
                 RezultatSprava r = rezultati[i];
-                if (r.Total != rezultat.Total || r.E != rezultat.E)
+                if (r.KvalStatus != KvalifikacioniStatus.Q || !resultsAreEqual(r, rezultat))
                     continue;
 
                 if (porediDrzavu[i])

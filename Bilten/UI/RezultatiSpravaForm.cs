@@ -1058,6 +1058,9 @@ namespace Bilten.UI
 
         private void btnIzracunaj_Click(object sender, EventArgs e)
         {
+            // TODO3: Analiziraj kada bi kod preskoka dugme trebalo da bude omoguceno (i zavisnosti od jednog ili oba
+            // preskoka)
+
             string msg;
             if (kvalColumnVisible())
                 msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";

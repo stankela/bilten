@@ -55,6 +55,19 @@ namespace Bilten.Domain
             private set { totalObeOcene = value; }
         }
 
+        public virtual float EObeOcene
+        {
+            get
+            {
+                float result = 0f;
+                if (E != null)
+                    result += E.Value;
+                if (E_2 != null)
+                    result += E_2.Value;
+                return result; 
+            }
+        }
+
         public override void setOcena(Ocena o)
         {
             base.setOcena(o);

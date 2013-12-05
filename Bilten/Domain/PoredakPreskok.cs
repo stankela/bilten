@@ -92,15 +92,17 @@ namespace Bilten.Domain
 
             PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
                 TypeDescriptor.GetProperties(typeof(RezultatPreskok))["Total"],
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["E"],
                 TypeDescriptor.GetProperties(typeof(RezultatPreskok))["PrezimeIme"]
             };
             ListSortDirection[] sortDir = new ListSortDirection[] {
+                ListSortDirection.Descending,
                 ListSortDirection.Descending,
                 ListSortDirection.Ascending
             };
             rezultati.Sort(new SortComparer<RezultatPreskok>(propDesc, sortDir));
 
-            float prevTotal = -1f;
+            RezultatPreskok prevRezultat = null;
             short prevRank = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
@@ -113,23 +115,24 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    if (rezultati[i].Total != prevTotal)
+                    if (!resultsAreEqual(rezultati[i], prevRezultat, false))
                         rezultati[i].Rank = (short)(i + 1);
                     else
                         rezultati[i].Rank = prevRank;
 
-                    prevTotal = rezultati[i].Total.Value;
+                    prevRezultat = rezultati[i];
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
 
             propDesc = new PropertyDescriptor[] {
                 TypeDescriptor.GetProperties(typeof(RezultatPreskok))["TotalObeOcene"],
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["EObeOcene"],
                 TypeDescriptor.GetProperties(typeof(RezultatPreskok))["PrezimeIme"]
             };
             rezultati.Sort(new SortComparer<RezultatPreskok>(propDesc, sortDir));
 
-            prevTotal = -1f;
+            prevRezultat = null;
             prevRank = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
@@ -140,12 +143,12 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    if (rezultati[i].TotalObeOcene != prevTotal)
+                    if (!resultsAreEqual(rezultati[i], prevRezultat, true))
                         rezultati[i].Rank2 = (short)(i + 1);
                     else
                         rezultati[i].Rank2 = prevRank;
 
-                    prevTotal = rezultati[i].TotalObeOcene.Value;
+                    prevRezultat = rezultati[i];
                     prevRank = rezultati[i].Rank2.Value;
                 }
             }
@@ -205,9 +208,14 @@ namespace Bilten.Domain
 
             int finCount = 0;
             int rezCount = 0;
+            RezultatPreskok prevFinRezultat = null;
+            List<bool> porediDrzavu = new List<bool>();
+
             for (int i = 0; i < rezultati.Count; i++)
             {
                 RezultatPreskok rezultat = rezultati[i];
+                porediDrzavu.Add(false);
+
                 if (!obaPreskoka && rezultat.Total == null
                 || obaPreskoka && rezultat.TotalObeOcene == null)
                 {
@@ -222,6 +230,7 @@ namespace Bilten.Domain
                 {
                     if (rezultat.Gimnasticar.DrzavaUcesnik != null)
                     {
+                        porediDrzavu[i] = true;
                         id = rezultat.Gimnasticar.DrzavaUcesnik.Id;
                         brojTakmicaraMap = brojTakmicaraDrzavaMap;
                     }
@@ -240,6 +249,7 @@ namespace Bilten.Domain
                     }
                     else
                     {
+                        porediDrzavu[i] = true;
                         id = rezultat.Gimnasticar.DrzavaUcesnik.Id;
                         brojTakmicaraMap = brojTakmicaraDrzavaMap;
                     }
@@ -256,6 +266,7 @@ namespace Bilten.Domain
                         {
                             finCount++;
                             rezultat.KvalStatus = KvalifikacioniStatus.Q;
+                            prevFinRezultat = rezultat;
                         }
                         else
                         {
@@ -263,6 +274,42 @@ namespace Bilten.Domain
                             {
                                 finCount++;
                                 brojTakmicaraMap[id]++;
+                                rezultat.KvalStatus = KvalifikacioniStatus.Q;
+                                prevFinRezultat = rezultat;
+                            }
+                            else
+                            {
+                                if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
+                                && rezCount < brojRezervi)
+                                {
+                                    rezCount++;
+                                    rezultat.KvalStatus = KvalifikacioniStatus.R;
+                                }
+                                else
+                                    rezultat.KvalStatus = KvalifikacioniStatus.None;
+                            }
+                        }
+                    }
+                    else if (prevFinRezultat != null && resultsAreEqual(rezultat, prevFinRezultat, obaPreskoka))
+                    {
+                        // Dodali smo predvidjeni broj finalista, ali postoji rezultat koji je identican zadnjem dodatom
+                        // finalisti.
+                        if (neogranicenBrojTakmicaraIzKluba)
+                        {
+                            rezultat.KvalStatus = KvalifikacioniStatus.Q;
+                        }
+                        else
+                        {
+                            if (brojTakmicaraMap[id] < maxBrojTakmicaraIzKluba)
+                            {
+                                brojTakmicaraMap[id]++;
+                                rezultat.KvalStatus = KvalifikacioniStatus.Q;
+                            }
+                            else if (nadjiIstiFinRezultatIzKluba(rezultat, rezultati, porediDrzavu, obaPreskoka))
+                            {
+                                // Dostignut je limit broja takmicara iz kluba, a medju finalistima se nalazi
+                                // i gimnasticar iz istog kluba koji ima istu ocenu. U tom slucaju moramo da dodamo i
+                                // ovog finalistu.
                                 rezultat.KvalStatus = KvalifikacioniStatus.Q;
                             }
                             else
@@ -307,6 +354,8 @@ namespace Bilten.Domain
                     }
                     else
                     {
+                        // TODO: Uradi i za rezerve razresavanje situacije kada postoji vise rezervi sa identicnim
+                        // rezultatom.
                         rezultat.KvalStatus = KvalifikacioniStatus.None;
                     }
                 }
@@ -332,6 +381,37 @@ namespace Bilten.Domain
                     }
                 }
             }
+        }
+
+        private bool resultsAreEqual(RezultatPreskok r1, RezultatPreskok r2, bool obaPreskoka)
+        {
+            if (r1 == null || r2 == null)
+                return false;
+            return (!obaPreskoka && r1.Total == r2.Total && r1.E == r2.E)
+                    || (obaPreskoka && r1.TotalObeOcene == r2.TotalObeOcene && r1.EObeOcene == r2.EObeOcene);
+        }
+
+        private bool nadjiIstiFinRezultatIzKluba(RezultatPreskok rezultat, List<RezultatPreskok> rezultati, List<bool> porediDrzavu,
+            bool obaPreskoka)
+        {
+            for (int i = 0; i < rezultati.Count; ++i)
+            {
+                RezultatPreskok r = rezultati[i];
+                if (r.KvalStatus != KvalifikacioniStatus.Q || !resultsAreEqual(r, rezultat, obaPreskoka))
+                    continue;
+
+                if (porediDrzavu[i])
+                {
+                    if (r.Gimnasticar.DrzavaUcesnik.Id == rezultat.Gimnasticar.DrzavaUcesnik.Id)
+                        return true;
+                }
+                else
+                {
+                    if (r.Gimnasticar.KlubUcesnik.Id == rezultat.Gimnasticar.KlubUcesnik.Id)
+                        return true;
+                }
+            }
+            return false;
         }
 
         public virtual List<RezultatPreskok> getRezultatiDvaPreskoka()
