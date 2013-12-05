@@ -92,6 +92,5 @@ namespace Bilten.Domain
                     return String.Empty;
             }
         }
-
     }
 }
