@@ -37,9 +37,10 @@ namespace Bilten.UI
             this.btnNew = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnPromeniRasporedSudija = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrikaziKlub = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrikaziDrzavu = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnPromeniRasporedSudija = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnStampaj = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -88,7 +89,7 @@ namespace Bilten.UI
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(324, 12);
+            this.btnClose.Location = new System.Drawing.Point(451, 12);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -123,7 +124,14 @@ namespace Bilten.UI
             this.mnPrikaziKlub,
             this.mnPrikaziDrzavu});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 70);
+            // 
+            // mnPromeniRasporedSudija
+            // 
+            this.mnPromeniRasporedSudija.Name = "mnPromeniRasporedSudija";
+            this.mnPromeniRasporedSudija.Size = new System.Drawing.Size(200, 22);
+            this.mnPromeniRasporedSudija.Text = "Promeni raspored sudija";
+            this.mnPromeniRasporedSudija.Click += new System.EventHandler(this.mnPromeniRasporedSudija_Click);
             // 
             // mnPrikaziKlub
             // 
@@ -139,23 +147,27 @@ namespace Bilten.UI
             this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
             this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
             // 
-            // mnPromeniRasporedSudija
+            // btnStampaj
             // 
-            this.mnPromeniRasporedSudija.Name = "mnPromeniRasporedSudija";
-            this.mnPromeniRasporedSudija.Size = new System.Drawing.Size(200, 22);
-            this.mnPromeniRasporedSudija.Text = "Promeni raspored sudija";
-            this.mnPromeniRasporedSudija.Click += new System.EventHandler(this.mnPromeniRasporedSudija_Click);
+            this.btnStampaj.Location = new System.Drawing.Point(329, 12);
+            this.btnStampaj.Name = "btnStampaj";
+            this.btnStampaj.Size = new System.Drawing.Size(75, 23);
+            this.btnStampaj.TabIndex = 5;
+            this.btnStampaj.Text = "Stampaj";
+            this.btnStampaj.UseVisualStyleBackColor = true;
+            this.btnStampaj.Click += new System.EventHandler(this.btnStampaj_Click);
             // 
             // RasporedSudijaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(844, 380);
+            this.Controls.Add(this.btnStampaj);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnNew);
-            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.btnClose);
             this.Name = "RasporedSudijaForm";
             this.Text = "RasporedSudijaForm";
             this.Load += new System.EventHandler(this.RasporedSudijaForm_Load);
@@ -179,5 +191,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnPrikaziKlub;
         private System.Windows.Forms.ToolStripMenuItem mnPrikaziDrzavu;
         private System.Windows.Forms.ToolStripMenuItem mnPromeniRasporedSudija;
+        private System.Windows.Forms.Button btnStampaj;
     }
 }

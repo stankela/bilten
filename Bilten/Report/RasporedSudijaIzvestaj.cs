@@ -9,27 +9,24 @@ using Bilten.UI;
 
 namespace Bilten.Report
 {
-    class StartListaIzvestaj : Izvestaj
+    class RasporedSudijaIzvestaj : Izvestaj
     {
-        private List<StartListaLista> reportListe = new List<StartListaLista>();
+        private List<RasporedSudijaLista> reportListe = new List<RasporedSudijaLista>();
         private float itemFontSize = 9;
         private bool svakaSpravaNaPosebnojStrani;
 
-        public StartListaIzvestaj(StartListaNaSpravi startLista, string documentName, bool stampajRedniBroj,
-            DataGridView formGrid)
-		{
+        public RasporedSudijaIzvestaj(SudijskiOdborNaSpravi odbor, string documentName, DataGridView formGrid)
+        {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
 
-            reportListe.Add(new StartListaLista(this, 1, 0f, itemFont, itemsHeaderFont, startLista, stampajRedniBroj, 
-                false, 1, formGrid));
-		}
+            reportListe.Add(new RasporedSudijaLista(this, 1, 0f, itemFont, itemsHeaderFont, odbor, false, 1, formGrid));
+        }
 
-        public StartListaIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
-            string documentName, int brojSpravaPoStrani, bool stampajRedniBroj,
-            SpravaGridGroupUserControl spravaGridGroupUserControl)
+        public RasporedSudijaIzvestaj(List<SudijskiOdborNaSpravi> odbori, Gimnastika gim,
+            string documentName, int brojSpravaPoStrani, SpravaGridGroupUserControl spravaGridGroupUserControl)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -39,7 +36,7 @@ namespace Bilten.Report
 
             if (sveSpraveNaJednojStrani)
                 Margins = new Margins(50, 50, 100, 100);
-            
+
             Sprava[] sprave = Sprave.getSprave(gim);
             for (int i = 0; i < sprave.Length; i++)
             {
@@ -63,8 +60,8 @@ namespace Bilten.Report
                     page = i + 1;
                     relY = 0.0f + 0.03f;
                 }
-                StartListaLista lista = new StartListaLista(this, page, 0f, itemFont, itemsHeaderFont,
-                    startListe[i], stampajRedniBroj, sveSpraveNaJednojStrani, columnNumber,
+                RasporedSudijaLista lista = new RasporedSudijaLista(this, page, 0f, itemFont, itemsHeaderFont,
+                    odbori[i], sveSpraveNaJednojStrani, columnNumber,
                     spravaGridGroupUserControl[sprava].DataGridViewUserControl.DataGridView);
                 lista.RelY = relY;
                 reportListe.Add(lista);
@@ -77,7 +74,7 @@ namespace Bilten.Report
             lastPageNum = 0;
             float maxImeWidth = 0.0f;
             float maxKlubWidth = 0.0f;
-            foreach (StartListaLista lista in reportListe)
+            foreach (RasporedSudijaLista lista in reportListe)
             {
                 if (svakaSpravaNaPosebnojStrani)
                     lista.FirstPageNum = lastPageNum + 1;
@@ -91,7 +88,7 @@ namespace Bilten.Report
             }
 
             lastPageNum = 0;
-            foreach (StartListaLista lista in reportListe)
+            foreach (RasporedSudijaLista lista in reportListe)
             {
                 if (svakaSpravaNaPosebnojStrani)
                     lista.FirstPageNum = lastPageNum + 1;
@@ -103,55 +100,46 @@ namespace Bilten.Report
 
         public override void drawContent(Graphics g, int pageNum)
         {
-            foreach (StartListaLista lista in reportListe)
+            foreach (RasporedSudijaLista lista in reportListe)
             {
                 lista.drawContent(g, contentBounds, pageNum);
             }
         }
     }
 
-    public class StartListaLista : ReportLista
+    public class RasporedSudijaLista : ReportLista
     {
         private Sprava sprava;
-        private bool stampajRedniBroj;
         bool sveSpraveNaJednojStrani;
         int columnNumber;
-        bool praznaLista;
 
-        public StartListaLista(Izvestaj izvestaj, int pageNum, float y,
-            Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, bool stampajRedniBroj,
+        public RasporedSudijaLista(Izvestaj izvestaj, int pageNum, float y,
+            Font itemFont, Font itemsHeaderFont, SudijskiOdborNaSpravi odbor,
             bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
-            this.sprava = startLista.Sprava;
-            this.stampajRedniBroj = stampajRedniBroj;
+            this.sprava = odbor.Sprava;
             this.sveSpraveNaJednojStrani = sveSpraveNaJednojStrani;
             this.columnNumber = columnNumber;
-            this.praznaLista = startLista.Nastupi.Count == 0;
 
-            fetchItems(startLista);
+            fetchItems(odbor);
         }
 
-        private void fetchItems(StartListaNaSpravi startLista)
+        private void fetchItems(SudijskiOdborNaSpravi odbor)
         {
-            items = getStartListaReportItems(startLista);
+            items = getSudijskiOdborReportItems(odbor);
 
             groups = new List<ReportGrupa>();
             groups.Add(new ReportGrupa(0, items.Count));
         }
 
-        private List<object[]> getStartListaReportItems(StartListaNaSpravi startLista)
+        private List<object[]> getSudijskiOdborReportItems(SudijskiOdborNaSpravi odbor)
         {
             List<object[]> result = new List<object[]>();
-            for (int i = 0; i < startLista.Nastupi.Count; i++)
+            foreach (SudijaNaSpravi sudija in odbor.Raspored)
             {
-                string redBroj = stampajRedniBroj ? (i+1).ToString() : String.Empty;
-                NastupNaSpravi nastup = startLista.Nastupi[i];
-                result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava });
+                result.Add(new object[] { SudijskeUloge.toString(sudija.Uloga), sudija.PrezimeIme, sudija.KlubDrzava });
             }
-            if (result.Count == 0)
-                // hack kojim se obezbedjuje da se stampaju hederi i za liste koje su prazne
-                result.Add(new object[] { "", "", "" });
             return result;
         }
 
@@ -186,37 +174,26 @@ namespace Bilten.Report
             float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            float rankWidthCm = 0.7f;
-
-            float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
+            float funkcijaWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            if (this.praznaLista)
-            {
-                // Kada je lista prazna, namerno biram male vrednosti da bih sprecio da velicina kolona prazne liste
-                // u Form-u utice na konacnu velicinu kolona. Npr. ako imam dve prazne i dve pune liste, i ako podesim dve
-                // pune liste tako da su kolone manje od kolona prazne liste, konacna velicina kolone ce ipak biti ona u 
-                // praznoj listi. Ovim se to sprecava.
-                rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-                imeWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
-                klubWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
-            }
 
-            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth);
+            doCreateColumns(g, contentBounds, funkcijaWidth, imeWidth, klubWidth);
         }
 
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
         {
-            float rankWidthCm = 0.7f;
-            float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
+            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth);
+            float funkcijaWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+            doCreateColumns(g, contentBounds, funkcijaWidth, imeWidth, klubWidth);
         }
 
-        private void doCreateColumns(Graphics g, RectangleF contentBounds, float rankWidth, float imeWidth, float klubWidth)
+        private void doCreateColumns(Graphics g, RectangleF contentBounds, float funkcijaWidth, float imeWidth, float klubWidth)
         {
-            float xRank = contentBounds.X + (columnNumber - 1) * contentBounds.Width / 2;
-            float xIme = xRank + rankWidth;
+            float xFunkcija = contentBounds.X + (columnNumber - 1) * contentBounds.Width / 2;
+            float xIme = xFunkcija + funkcijaWidth;
             float xKlub = xIme + imeWidth;
             float xRightEnd = xKlub + klubWidth;
 
@@ -234,7 +211,7 @@ namespace Bilten.Report
                 delta = contentBounds.X - (2 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moza da bude i negativno
                 if (delta > contentBounds.X)
                     delta = contentBounds.X;
-                xRank -= delta;
+                xFunkcija -= delta;
                 xIme -= delta;
                 xKlub -= delta;
                 xRightEnd -= delta;
@@ -244,13 +221,13 @@ namespace Bilten.Report
                 delta = (1 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moza da bude i negativno
                 if (delta < 0)
                     delta = 0.0f;
-                xRank += delta;
+                xFunkcija += delta;
                 xIme += delta;
                 xKlub += delta;
                 xRightEnd += delta;
             }
 
-            StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat funkcijaFormat = Izvestaj.centerCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
             imeFormat.Alignment = StringAlignment.Near;
@@ -260,17 +237,17 @@ namespace Bilten.Report
             klubFormat.Alignment = StringAlignment.Near;
             klubFormat.LineAlignment = StringAlignment.Center;
 
-            StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat funkcijaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String rankTitle = "RB";
+            String funkcijaTitle = "Funkcija";
             String imeTitle = "Ime";
             String klubTitle = "Klub";
 
             Columns.Clear();
 
-            ReportColumn column1 = addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            ReportColumn column1 = addColumn(xFunkcija, funkcijaWidth, funkcijaFormat, funkcijaTitle, funkcijaHeaderFormat);
             column1.Image = SlikeSprava.getImage(sprava);
             column1.Split = true;
             column1.Span = true;

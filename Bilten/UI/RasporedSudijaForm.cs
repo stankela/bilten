@@ -9,12 +9,14 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using Bilten.Report;
 
 namespace Bilten.UI
 {
     public partial class RasporedSudijaForm : Form
     {
-        private int takmicenjeId;
+        private Takmicenje takmicenje;
         private DeoTakmicenjaKod deoTakKod;
         private IList<RasporedSudija> rasporedi;
         private List<bool> tabOpened;
@@ -31,7 +33,6 @@ namespace Bilten.UI
             InitializeComponent();
             this.ClientSize = new System.Drawing.Size(1150, 540);
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.takmicenjeId = takmicenjeId;
             this.deoTakKod = deoTakKod;
 
             this.Text = "Raspored sudija - " +
@@ -49,6 +50,9 @@ namespace Bilten.UI
                 if (kategorijeCount == 0)
                     throw new Exception("Greska u programu.");
                 rasporedi = loadRasporedi(takmicenjeId, deoTakKod);
+
+                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
+                NHibernateUtil.Initialize(takmicenje);
 
                 // create tabs
                 for (int i = 0; i < rasporedi.Count; i++)
@@ -315,7 +319,7 @@ namespace Bilten.UI
             try
             {
                 RasporedSudijaEditorForm form = new RasporedSudijaEditorForm(
-                    ActiveRaspored.Id, sprava, takmicenjeId);
+                    ActiveRaspored.Id, sprava, takmicenje.Id);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     rasporedi[tabControl1.SelectedIndex] = form.RasporedSudija;
@@ -355,7 +359,7 @@ namespace Bilten.UI
             SelectKategorijaForm form = null;
             try
             {
-                form = new SelectKategorijaForm(takmicenjeId, dodeljeneKategorije, 
+                form = new SelectKategorijaForm(takmicenje.Id, dodeljeneKategorije, 
                     false, msg);
                 dlgResult = form.ShowDialog();
             }
@@ -376,9 +380,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                Takmicenje takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                newRaspored = new RasporedSudija(form.SelektovaneKategorije, deoTakKod,
-                    takmicenje);
+                newRaspored = new RasporedSudija(form.SelektovaneKategorije, deoTakKod, takmicenje);
                 dataContext.Add(newRaspored);
 
                 dataContext.Commit();
@@ -533,6 +535,125 @@ namespace Bilten.UI
                 return;
 
             promeniStartListuCommand(clickedSprava);
+        }
+
+        private void btnStampaj_Click(object sender, EventArgs e)
+        {
+            if (ActiveRaspored == null)
+                return;
+
+            string nazivIzvestaja;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                nazivIzvestaja = "Raspored sudija - kvalifikacije";
+            }
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
+            {
+                nazivIzvestaja = "Raspored sudija - finale viseboja";
+            }
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+            {
+                nazivIzvestaja = "Raspored sudija - finale po spravama";
+            }
+            else
+            {
+                nazivIzvestaja = "Raspored sudija - finale ekipno";
+            }
+            string kategorija = getFirstKategorijaText(ActiveRaspored);
+
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = takmicenje.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = nazivIzvestaja;
+                form.Header4Text = kategorija;
+                form.FooterText = mestoDatum;
+            }
+            else
+            {
+                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                form.Header3Text = nazivIzvestaja;
+                form.Header4Text = kategorija;
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            Opcije.Instance.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+
+            Sprava sprava = Sprava.Undefined;
+            if (!form.StampajSveSprave)
+            {
+                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Pol,
+                    getActiveSpravaGridGroupUserControl().SelectedSprava);
+                if (form2.ShowDialog() != DialogResult.OK)
+                    return;
+
+                sprava = form2.Sprava;
+                if (sprava == Sprava.Undefined)
+                    return;
+            }
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                PreviewDialog p = new PreviewDialog();
+                string documentName = nazivIzvestaja + kategorija;
+
+                if (form.StampajSveSprave)
+                {
+                    List<SudijskiOdborNaSpravi> odbori = new List<SudijskiOdborNaSpravi>();
+                    foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+                    {
+                        odbori.Add(ActiveRaspored.getOdbor(s));
+                    }
+                    p.setIzvestaj(new RasporedSudijaIzvestaj(odbori, takmicenje.Gimnastika, documentName,
+                        form.BrojSpravaPoStrani, getActiveSpravaGridGroupUserControl()));
+                }
+                else
+                {
+                    SudijskiOdborNaSpravi odbor = ActiveRaspored.getOdbor(sprava);
+                    p.setIzvestaj(new RasporedSudijaIzvestaj(odbor, documentName,
+                    getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
+                }
+
+                p.ShowDialog();
+
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+        }
+
+        private string getFirstKategorijaText(RasporedSudija rasporedSudija)
+        {
+            List<TakmicarskaKategorija> kategorije =
+                new List<TakmicarskaKategorija>(rasporedSudija.Kategorije);
+
+            if (kategorije.Count == 0)
+                return String.Empty;
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
+            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
+                propDesc, ListSortDirection.Ascending));
+
+            string retValue = kategorije[0].ToString();
+            //for (int i = 1; i < kategorije.Count; i++)
+            //  retValue = retValue + ", " + kategorije[i].ToString();
+            return retValue;
         }
 
     }

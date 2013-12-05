@@ -37,7 +37,7 @@ namespace Bilten.UI
         {
             dgw.DataGridView.Columns.Clear();
 
-            dgw.AddColumn("Funkcija", "Uloga", 100);
+            dgw.AddColumn("Funkcija", "Uloga", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 150);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
         }
