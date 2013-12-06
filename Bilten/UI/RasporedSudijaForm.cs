@@ -122,7 +122,10 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.init(rasporedi[0].Pol);
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
-                    GridColumnsInitializer.initRasporedSudija(c.DataGridViewUserControl);
+                    SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);
+                    int odborId = odbor != null ? odbor.Id : 0;
+                    GridColumnsInitializer.initRasporedSudija(odborId, c.DataGridViewUserControl);
+                    c.DataGridViewUserControl.DataGridView.ColumnWidthChanged += new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
                 }
                 tabPage1.AutoScroll = true;
                 tabPage1.AutoScrollMinSize = new Size(
@@ -194,7 +197,10 @@ namespace Bilten.UI
             spravaGridGroupUserControl.init(raspored.Pol); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
-                GridColumnsInitializer.initRasporedSudija(c.DataGridViewUserControl);
+                SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);
+                int odborId = odbor != null ? odbor.Id : 0;
+                GridColumnsInitializer.initRasporedSudija(odborId, c.DataGridViewUserControl);
+                c.DataGridViewUserControl.DataGridView.ColumnWidthChanged += new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
             }
             spravaGridGroupUserControl.TabIndex = this.spravaGridGroupUserControl1.TabIndex;
 
@@ -212,6 +218,26 @@ namespace Bilten.UI
             tabPage.Text = getTabText(raspored);
             //tabPage.UseVisualStyleBackColor = this.tabPage1.UseVisualStyleBackColor;
             tabPage.ResumeLayout(false);
+        }
+
+        void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        {
+            if (ActiveRaspored == null)
+                return;
+
+            DataGridView dgw = sender as DataGridView;
+            foreach (SpravaGridUserControl c in getActiveSpravaGridGroupUserControl().SpravaGridUserControls)
+            {
+                if (c.DataGridViewUserControl.DataGridView == dgw)
+                {
+                    SudijskiOdborNaSpravi odbor = ActiveRaspored.getOdbor(c.Sprava);
+                    if (odbor != null)
+                    {
+                        GridColumnsInitializer.updateRasporedSudija(odbor.Id, dgw);
+                        return;
+                    }
+                }
+            }
         }
 
         private void onSelectedIndexChanged()
@@ -324,6 +350,11 @@ namespace Bilten.UI
                 {
                     rasporedi[tabControl1.SelectedIndex] = form.RasporedSudija;
                     refresh(sprava);
+
+                    // za slucaj da su promenjene sirine kolona
+                    GridColumnsInitializer.initRasporedSudija(ActiveRaspored.getOdbor(sprava).Id, 
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl);
+
                     getActiveSpravaGridGroupUserControl()[sprava].clearSelection();
                 }
             }

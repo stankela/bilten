@@ -110,6 +110,7 @@ namespace Bilten.UI
             DataGridViewTextBoxColumn column = new DataGridViewTextBoxColumn();
             column.DataPropertyName = boundPropertyName;
             column.HeaderText = columnTitle;
+            column.Name = columnTitle;  // Name je potrebno da bi Columns kolekciju mogao da indeksiram po stringu.
             column.SortMode = DataGridViewColumnSortMode.Programmatic;
             return column;
         }

@@ -33,13 +33,42 @@ namespace Bilten.UI
             dgw.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 
-        public static void initRasporedSudija(DataGridViewUserControl dgw)
+        private static IDictionary<int, IDictionary<string, int>> rasporedSudijaMap
+            = new Dictionary<int, IDictionary<string, int>>();
+
+        private const string RASPORED_SUDIJA_FUNKCIJA = "Funkcija";
+        private const string RASPORED_SUDIJA_IME = "Ime";
+        private const string RASPORED_SUDIJA_KLUB = "Klub/Drzava";
+
+        public static void initRasporedSudija(int id, DataGridViewUserControl dgw)
         {
+            IDictionary<string, int> columnMap;
+            if (!rasporedSudijaMap.ContainsKey(id))
+            {
+                columnMap = new Dictionary<string, int>();
+                columnMap.Add(RASPORED_SUDIJA_FUNKCIJA, 50);
+                columnMap.Add(RASPORED_SUDIJA_IME, 150);
+                columnMap.Add(RASPORED_SUDIJA_KLUB, 130);
+
+                rasporedSudijaMap.Add(id, columnMap);
+            }
+            columnMap = rasporedSudijaMap[id];
+
             dgw.DataGridView.Columns.Clear();
 
-            dgw.AddColumn("Funkcija", "Uloga", 50);
-            dgw.AddColumn("Ime", "PrezimeIme", 150);
-            dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
+            dgw.AddColumn(RASPORED_SUDIJA_FUNKCIJA, "Uloga", columnMap[RASPORED_SUDIJA_FUNKCIJA]);
+            dgw.AddColumn(RASPORED_SUDIJA_IME, "PrezimeIme", columnMap[RASPORED_SUDIJA_IME]);
+            dgw.AddColumn(RASPORED_SUDIJA_KLUB, "KlubDrzava", columnMap[RASPORED_SUDIJA_KLUB]);
+        }
+
+        public static void updateRasporedSudija(int id, DataGridView dgw)
+        {
+            if (!rasporedSudijaMap.ContainsKey(id))
+                return;
+            IDictionary<string, int> columnMap = rasporedSudijaMap[id];
+            columnMap[RASPORED_SUDIJA_FUNKCIJA] = dgw.Columns[RASPORED_SUDIJA_FUNKCIJA].Width;
+            columnMap[RASPORED_SUDIJA_IME] = dgw.Columns[RASPORED_SUDIJA_IME].Width;
+            columnMap[RASPORED_SUDIJA_KLUB] = dgw.Columns[RASPORED_SUDIJA_KLUB].Width;
         }
 
         public static void initStartListaRotacija(DataGridViewUserControl dgw)

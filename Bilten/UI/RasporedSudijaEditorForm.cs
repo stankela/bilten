@@ -32,7 +32,6 @@ namespace Bilten.UI
             InitializeComponent();
             this.takmicenjeId = takmicenjeId;
             spravaGridUserControl1.init(sprava);
-            GridColumnsInitializer.initRasporedSudija(spravaGridUserControl1.DataGridViewUserControl);
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -69,6 +68,13 @@ namespace Bilten.UI
         {
             Text = "Raspored sudija - " +
                 DeoTakmicenjaKodovi.toString(raspored.DeoTakmicenjaKod);
+            GridColumnsInitializer.initRasporedSudija(sudijskiOdbor.Id, spravaGridUserControl1.DataGridViewUserControl);
+            spravaGridUserControl1.DataGridViewUserControl.DataGridView.ColumnWidthChanged += new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
+        }
+
+        void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        {
+            GridColumnsInitializer.updateRasporedSudija(sudijskiOdbor.Id, sender as DataGridView);
         }
 
         private RasporedSudija loadRaspored(int rasporedId)

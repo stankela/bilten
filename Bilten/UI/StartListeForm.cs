@@ -857,6 +857,8 @@ namespace Bilten.UI
                 return null;
         }
 
+        // TODO3: Dodaj natpis ispod start lista koji prikazuje trenutno selektovan nacin rotacije za start listu.
+
         private void btnPrint_Click(object sender, EventArgs e)
         {
             if (ActiveRaspored == null)
