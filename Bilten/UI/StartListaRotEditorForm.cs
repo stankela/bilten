@@ -36,7 +36,6 @@ namespace Bilten.UI
 
             spravaGridUserControl1.init(sprava);
             spravaGridUserControl1.DataGridViewUserControl.DataGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
-            GridColumnsInitializer.initStartListaRotacija(spravaGridUserControl1.DataGridViewUserControl);
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -123,6 +122,13 @@ namespace Bilten.UI
         {
             Text = "Start lista - " +
                 DeoTakmicenjaKodovi.toString(raspored.DeoTakmicenjaKod);
+            GridColumnsInitializer.initStartLista(startLista.Id, spravaGridUserControl1.DataGridViewUserControl);
+            spravaGridUserControl1.DataGridViewUserControl.DataGridView.ColumnWidthChanged += new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
+        }
+
+        void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        {
+            GridColumnsInitializer.updateStartLista(startLista.Id, sender as DataGridView);
         }
 
         private void StartListaRotEditorForm_Load(object sender, EventArgs e)

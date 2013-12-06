@@ -155,9 +155,10 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.init(rasporedi[0].Pol);
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
-                    GridColumnsInitializer.initStartListaRotacija(c.DataGridViewUserControl);
                     c.DataGridViewUserControl.DataGridView.CellFormatting +=
                         new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
+                    c.DataGridViewUserControl.DataGridView.ColumnWidthChanged +=
+                        new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
                 }
                 tabPage1.AutoScroll = true;
                 tabPage1.AutoScrollMinSize = new Size(
@@ -172,6 +173,26 @@ namespace Bilten.UI
                 TabPage newTab = new TabPage();
                 tabControl1.Controls.Add(newTab);
                 initTab(newTab, raspored);
+            }
+        }
+
+        void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        {
+            if (ActiveRaspored == null)
+                return;
+
+            DataGridView dgw = sender as DataGridView;
+            foreach (SpravaGridUserControl c in getActiveSpravaGridGroupUserControl().SpravaGridUserControls)
+            {
+                if (c.DataGridViewUserControl.DataGridView == dgw)
+                {
+                    StartListaNaSpravi startLista = ActiveRaspored.getStartLista(c.Sprava, ActiveGrupa, ActiveRotacija);
+                    if (startLista != null)
+                    {
+                        GridColumnsInitializer.updateStartLista(startLista.Id, dgw);
+                        return;
+                    }
+                }
             }
         }
 
@@ -294,9 +315,10 @@ namespace Bilten.UI
             spravaGridGroupUserControl.init(raspored.Pol); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
-                GridColumnsInitializer.initStartListaRotacija(c.DataGridViewUserControl);
                 c.DataGridViewUserControl.DataGridView.CellFormatting +=
                     new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
+                c.DataGridViewUserControl.DataGridView.ColumnWidthChanged +=
+                    new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
             }
             spravaGridGroupUserControl.TabIndex = this.spravaGridGroupUserControl1.TabIndex;
 
@@ -376,6 +398,8 @@ namespace Bilten.UI
             updateCombos(g, r);
 
             setStartListe(ActiveRaspored, g, r);
+
+            updateGridColumnWidths();
 
             // ponisti selekcije za prvo prikazivanje
             getActiveSpravaGridGroupUserControl().clearSelection();
@@ -524,8 +548,20 @@ namespace Bilten.UI
 
             setStartListe(ActiveRaspored, g, r);
 
+            updateGridColumnWidths();
+
             // ponisti selekcije za prvo prikazivanje
             getActiveSpravaGridGroupUserControl().clearSelection();
+        }
+
+        private void updateGridColumnWidths()
+        {
+            foreach (SpravaGridUserControl c in getActiveSpravaGridGroupUserControl().SpravaGridUserControls)
+            {
+                StartListaNaSpravi startLista = ActiveRaspored.getStartLista(c.Sprava, ActiveGrupa, ActiveRotacija);
+                int startListaId = startLista != null ? startLista.Id : 0;
+                GridColumnsInitializer.initStartLista(startListaId, c.DataGridViewUserControl);
+            }
         }
 
         private void StartListeForm_Load(object sender, EventArgs e)
@@ -562,6 +598,12 @@ namespace Bilten.UI
                 {
                     rasporedi[tabControl1.SelectedIndex] = form.RasporedNastupa;
                     refresh(sprava);
+
+                    // za slucaj da su promenjene sirine kolona
+                    GridColumnsInitializer.initStartLista(
+                        ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija).Id,
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl);
+
                     getActiveSpravaGridGroupUserControl()[sprava].clearSelection();
                 }
             }

@@ -71,14 +71,46 @@ namespace Bilten.UI
             columnMap[RASPORED_SUDIJA_KLUB] = dgw.Columns[RASPORED_SUDIJA_KLUB].Width;
         }
 
-        public static void initStartListaRotacija(DataGridViewUserControl dgw)
+        private static IDictionary<int, IDictionary<string, int>> startListeMap
+            = new Dictionary<int, IDictionary<string, int>>();
+
+        private const string START_LISTA_BROJ = "Broj";
+        private const string START_LISTA_IME = "Ime";
+        private const string START_LISTA_KLUB = "Klub/Drzava";
+        private const string START_LISTA_KATEGORIJA = "Kategorija";
+
+        public static void initStartLista(int id, DataGridViewUserControl dgw)
         {
+            IDictionary<string, int> columnMap;
+            if (!startListeMap.ContainsKey(id))
+            {
+                columnMap = new Dictionary<string, int>();
+                columnMap.Add(START_LISTA_BROJ, 50);
+                columnMap.Add(START_LISTA_IME, 150);
+                columnMap.Add(START_LISTA_KLUB, 130);
+                columnMap.Add(START_LISTA_KATEGORIJA, 100);
+
+                startListeMap.Add(id, columnMap);
+            }
+            columnMap = startListeMap[id];
+
             dgw.DataGridView.Columns.Clear();
 
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
-            dgw.AddColumn("Ime", "PrezimeIme", 150);
-            dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
-            dgw.AddColumn("Kategorija", "Kategorija", 100);
+            dgw.AddColumn(START_LISTA_BROJ, "TakmicarskiBroj", columnMap[START_LISTA_BROJ]);
+            dgw.AddColumn(START_LISTA_IME, "PrezimeIme", columnMap[START_LISTA_IME]);
+            dgw.AddColumn(START_LISTA_KLUB, "KlubDrzava", columnMap[START_LISTA_KLUB]);
+            dgw.AddColumn(START_LISTA_KATEGORIJA, "Kategorija", columnMap[START_LISTA_KATEGORIJA]);
+        }
+
+        public static void updateStartLista(int id, DataGridView dgw)
+        {
+            if (!startListeMap.ContainsKey(id))
+                return;
+            IDictionary<string, int> columnMap = startListeMap[id];
+            columnMap[START_LISTA_BROJ] = dgw.Columns[START_LISTA_BROJ].Width;
+            columnMap[START_LISTA_IME] = dgw.Columns[START_LISTA_IME].Width;
+            columnMap[START_LISTA_KLUB] = dgw.Columns[START_LISTA_KLUB].Width;
+            columnMap[START_LISTA_KATEGORIJA] = dgw.Columns[START_LISTA_KATEGORIJA].Width;
         }
 
         public static void initTakmicenje(DataGridViewUserControl dgw)

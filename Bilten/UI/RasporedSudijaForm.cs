@@ -139,7 +139,7 @@ namespace Bilten.UI
                 // init other tabs
                 TabPage newTab = new TabPage();
                 tabControl1.Controls.Add(newTab);
-                initTab(rasporedi.Count - 1, newTab, raspored);
+                initTab(newTab, raspored);
             }
         }
 
@@ -184,10 +184,10 @@ namespace Bilten.UI
                 return kategorije[0].ToString();
         }
 
-        private void initTab(int tabIndex, TabPage tabPage, RasporedSudija raspored)
+        private void initTab(TabPage tabPage, RasporedSudija raspored)
         {
             // TODO: Kod u ovom metodu je prekopiran iz Designer.cs fajla (plus ono
-            // sto sam dodao u initTabs metodu). Proveri da li je u Designer.cs fajlu
+            // sto sam dodao u createTab metodu). Proveri da li je u Designer.cs fajlu
             // nesto menjano, i ako jeste promeni ovde.
             SpravaGridGroupUserControl spravaGridGroupUserControl = new SpravaGridGroupUserControl();
             spravaGridGroupUserControl.Location = USER_CONTROL_LOCATION;
@@ -210,7 +210,8 @@ namespace Bilten.UI
             tabPage.Location = this.tabPage1.Location;
             tabPage.Padding = this.tabPage1.Padding;
             tabPage.Size = this.tabPage1.Size;
-            tabPage.TabIndex = tabIndex;
+            //tabPage.TabIndex = rasporedi.IndexOf(raspored); // This property is not 
+            //  meaningful for this control.
             tabPage.AutoScroll = true;
             tabPage.AutoScrollMinSize = new Size(
                 spravaGridGroupUserControl.Right, spravaGridGroupUserControl.Bottom);
