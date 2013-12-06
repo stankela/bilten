@@ -128,7 +128,7 @@ namespace Bilten.UI
 
         void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
-            GridColumnsInitializer.updateStartLista(startLista.Id, sender as DataGridView);
+            GridColumnsInitializer.startListaColumnWidthChanged(startLista.Id, sender as DataGridView);
         }
 
         private void StartListaRotEditorForm_Load(object sender, EventArgs e)

@@ -189,7 +189,7 @@ namespace Bilten.UI
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(c.Sprava, ActiveGrupa, ActiveRotacija);
                     if (startLista != null)
                     {
-                        GridColumnsInitializer.updateStartLista(startLista.Id, dgw);
+                        GridColumnsInitializer.startListaColumnWidthChanged(startLista.Id, dgw);
                         return;
                     }
                 }

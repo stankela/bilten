@@ -74,7 +74,7 @@ namespace Bilten.UI
 
         void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
-            GridColumnsInitializer.updateRasporedSudija(sudijskiOdbor.Id, sender as DataGridView);
+            GridColumnsInitializer.rasporedSudijaColumnWidthChanged(sudijskiOdbor.Id, sender as DataGridView);
         }
 
         private RasporedSudija loadRaspored(int rasporedId)

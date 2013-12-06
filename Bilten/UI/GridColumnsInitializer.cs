@@ -36,82 +36,83 @@ namespace Bilten.UI
         private static IDictionary<int, IDictionary<string, int>> rasporedSudijaMap
             = new Dictionary<int, IDictionary<string, int>>();
 
-        private const string RASPORED_SUDIJA_FUNKCIJA = "Funkcija";
-        private const string RASPORED_SUDIJA_IME = "Ime";
-        private const string RASPORED_SUDIJA_KLUB = "Klub/Drzava";
+        private static string[] RASPORED_SUDIJA_COLUMNS = new string[] { 
+            "Funkcija", "Ime", "Klub/Drzava" };
+        private static string[] RASPORED_SUDIJA_PROPERTIES = new string[] { 
+            "Uloga", "PrezimeIme", "KlubDrzava" };
+        private static int[] RASPORED_SUDIJA_WIDTHS = new int[] {        
+            50, 150, 130 };
 
         public static void initRasporedSudija(int id, DataGridViewUserControl dgw)
         {
+            initGrid(id, dgw, rasporedSudijaMap, RASPORED_SUDIJA_COLUMNS, RASPORED_SUDIJA_PROPERTIES, 
+                RASPORED_SUDIJA_WIDTHS);
+        }
+
+        private static void initGrid(int id, DataGridViewUserControl dgw, IDictionary<int, IDictionary<string, int>> map,
+            string[] columnNames, string[] propertyNames, int[] widths)
+        {
             IDictionary<string, int> columnMap;
-            if (!rasporedSudijaMap.ContainsKey(id))
+            if (!map.ContainsKey(id))
             {
                 columnMap = new Dictionary<string, int>();
-                columnMap.Add(RASPORED_SUDIJA_FUNKCIJA, 50);
-                columnMap.Add(RASPORED_SUDIJA_IME, 150);
-                columnMap.Add(RASPORED_SUDIJA_KLUB, 130);
-
-                rasporedSudijaMap.Add(id, columnMap);
+                for (int i = 0; i < columnNames.Length; ++i)
+                {
+                    columnMap.Add(columnNames[i], widths[i]);
+                }
+                map.Add(id, columnMap);
             }
-            columnMap = rasporedSudijaMap[id];
+            columnMap = map[id];
 
             dgw.DataGridView.Columns.Clear();
 
-            dgw.AddColumn(RASPORED_SUDIJA_FUNKCIJA, "Uloga", columnMap[RASPORED_SUDIJA_FUNKCIJA]);
-            dgw.AddColumn(RASPORED_SUDIJA_IME, "PrezimeIme", columnMap[RASPORED_SUDIJA_IME]);
-            dgw.AddColumn(RASPORED_SUDIJA_KLUB, "KlubDrzava", columnMap[RASPORED_SUDIJA_KLUB]);
+            for (int i = 0; i < columnNames.Length; ++i)
+            {
+                dgw.AddColumn(columnNames[i], propertyNames[i], columnMap[columnNames[i]]);
+            }
         }
 
-        public static void updateRasporedSudija(int id, DataGridView dgw)
+        public static void rasporedSudijaColumnWidthChanged(int id, DataGridView dgw)
         {
-            if (!rasporedSudijaMap.ContainsKey(id))
+            recordColumnWidths(id, dgw, rasporedSudijaMap, RASPORED_SUDIJA_COLUMNS);
+        }
+
+        private static void recordColumnWidths(int id, DataGridView dgw, IDictionary<int, IDictionary<string, int>> map,
+            string[] columnNames)
+        {
+            if (!map.ContainsKey(id))
                 return;
-            IDictionary<string, int> columnMap = rasporedSudijaMap[id];
-            columnMap[RASPORED_SUDIJA_FUNKCIJA] = dgw.Columns[RASPORED_SUDIJA_FUNKCIJA].Width;
-            columnMap[RASPORED_SUDIJA_IME] = dgw.Columns[RASPORED_SUDIJA_IME].Width;
-            columnMap[RASPORED_SUDIJA_KLUB] = dgw.Columns[RASPORED_SUDIJA_KLUB].Width;
+
+            IDictionary<string, int> columnMap = map[id];
+            foreach (string name in columnNames)
+            {
+                if (columnMap.ContainsKey(name))
+                    columnMap[name] = dgw.Columns[name].Width;
+            }
         }
 
         private static IDictionary<int, IDictionary<string, int>> startListeMap
             = new Dictionary<int, IDictionary<string, int>>();
 
-        private const string START_LISTA_BROJ = "Broj";
-        private const string START_LISTA_IME = "Ime";
-        private const string START_LISTA_KLUB = "Klub/Drzava";
-        private const string START_LISTA_KATEGORIJA = "Kategorija";
+        private static string[] START_LISTA_COLUMNS = new string[] {
+            "Broj", "Ime", "Klub/Drzava", "Kategorija" };
+        private static string[] START_LISTA_PROPERTIES = new string[] {
+             "TakmicarskiBroj", "PrezimeIme", "KlubDrzava", "Kategorija" };
+        private static int[] START_LISTA_WIDTHS = new int[] {
+             50, 150, 130, 100 };
 
         public static void initStartLista(int id, DataGridViewUserControl dgw)
         {
-            IDictionary<string, int> columnMap;
-            if (!startListeMap.ContainsKey(id))
-            {
-                columnMap = new Dictionary<string, int>();
-                columnMap.Add(START_LISTA_BROJ, 50);
-                columnMap.Add(START_LISTA_IME, 150);
-                columnMap.Add(START_LISTA_KLUB, 130);
-                columnMap.Add(START_LISTA_KATEGORIJA, 100);
-
-                startListeMap.Add(id, columnMap);
-            }
-            columnMap = startListeMap[id];
-
-            dgw.DataGridView.Columns.Clear();
-
-            dgw.AddColumn(START_LISTA_BROJ, "TakmicarskiBroj", columnMap[START_LISTA_BROJ]);
-            dgw.AddColumn(START_LISTA_IME, "PrezimeIme", columnMap[START_LISTA_IME]);
-            dgw.AddColumn(START_LISTA_KLUB, "KlubDrzava", columnMap[START_LISTA_KLUB]);
-            dgw.AddColumn(START_LISTA_KATEGORIJA, "Kategorija", columnMap[START_LISTA_KATEGORIJA]);
+            initGrid(id, dgw, startListeMap, START_LISTA_COLUMNS, START_LISTA_PROPERTIES,
+                START_LISTA_WIDTHS);
         }
 
-        public static void updateStartLista(int id, DataGridView dgw)
+        public static void startListaColumnWidthChanged(int id, DataGridView dgw)
         {
-            if (!startListeMap.ContainsKey(id))
-                return;
-            IDictionary<string, int> columnMap = startListeMap[id];
-            columnMap[START_LISTA_BROJ] = dgw.Columns[START_LISTA_BROJ].Width;
-            columnMap[START_LISTA_IME] = dgw.Columns[START_LISTA_IME].Width;
-            columnMap[START_LISTA_KLUB] = dgw.Columns[START_LISTA_KLUB].Width;
-            columnMap[START_LISTA_KATEGORIJA] = dgw.Columns[START_LISTA_KATEGORIJA].Width;
+            recordColumnWidths(id, dgw, startListeMap, START_LISTA_COLUMNS);
         }
+
+        // TODO3: Dodaj pamcenje sirine kolona i za ostale gridove (narocito one koji se stampaju)
 
         public static void initTakmicenje(DataGridViewUserControl dgw)
         {

@@ -234,7 +234,7 @@ namespace Bilten.UI
                     SudijskiOdborNaSpravi odbor = ActiveRaspored.getOdbor(c.Sprava);
                     if (odbor != null)
                     {
-                        GridColumnsInitializer.updateRasporedSudija(odbor.Id, dgw);
+                        GridColumnsInitializer.rasporedSudijaColumnWidthChanged(odbor.Id, dgw);
                         return;
                     }
                 }
