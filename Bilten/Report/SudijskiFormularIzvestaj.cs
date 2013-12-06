@@ -23,7 +23,7 @@ namespace Bilten.Report
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
 
-            Landscape = brojEOcena > 0;
+            Landscape = true;
             Margins = new Margins(30, 30, 75, 75);
 
             SudijskiFormularLista lista = new SudijskiFormularLista(this, 1, 0f, itemFont, itemsHeaderFont, startLista,
@@ -41,7 +41,7 @@ namespace Bilten.Report
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
 
-            Landscape = brojEOcena > 0;
+            Landscape = true;
             Margins = new Margins(30, 30, 75, 75);
             
             Sprava[] sprave = Sprave.getSprave(gim);

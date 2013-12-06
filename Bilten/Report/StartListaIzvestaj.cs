@@ -16,7 +16,7 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public StartListaIzvestaj(StartListaNaSpravi startLista, string documentName, bool stampajRedniBroj,
-            DataGridView formGrid)
+            bool stampajKlub, bool stampajKategoriju, DataGridView formGrid)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -24,12 +24,12 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             reportListe.Add(new StartListaLista(this, 1, 0f, itemFont, itemsHeaderFont, startLista, stampajRedniBroj, 
-                false, 1, formGrid));
+                stampajKlub, stampajKategoriju, false, 1, formGrid));
 		}
 
         public StartListaIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
             string documentName, int brojSpravaPoStrani, bool stampajRedniBroj,
-            SpravaGridGroupUserControl spravaGridGroupUserControl)
+            bool stampajKlub, bool stampajKategoriju, SpravaGridGroupUserControl spravaGridGroupUserControl)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -64,7 +64,7 @@ namespace Bilten.Report
                     relY = 0.0f + 0.03f;
                 }
                 StartListaLista lista = new StartListaLista(this, page, 0f, itemFont, itemsHeaderFont,
-                    startListe[i], stampajRedniBroj, sveSpraveNaJednojStrani, columnNumber,
+                    startListe[i], stampajRedniBroj, stampajKlub, stampajKategoriju, sveSpraveNaJednojStrani, columnNumber,
                     spravaGridGroupUserControl[sprava].DataGridViewUserControl.DataGridView);
                 lista.RelY = relY;
                 reportListe.Add(lista);
@@ -77,6 +77,7 @@ namespace Bilten.Report
             lastPageNum = 0;
             float maxImeWidth = 0.0f;
             float maxKlubWidth = 0.0f;
+            float maxKategorijaWidth = 0.0f;
             foreach (StartListaLista lista in reportListe)
             {
                 if (svakaSpravaNaPosebnojStrani)
@@ -87,6 +88,8 @@ namespace Bilten.Report
                     maxImeWidth = lista.Columns[1].Width;
                 if (lista.Columns[2].Width > maxKlubWidth)
                     maxKlubWidth = lista.Columns[2].Width;
+                if (lista.Columns[3].Width > maxKategorijaWidth)
+                    maxKategorijaWidth = lista.Columns[3].Width;
                 lastPageNum = lista.LastPageNum;
             }
 
@@ -96,7 +99,7 @@ namespace Bilten.Report
                 if (svakaSpravaNaPosebnojStrani)
                     lista.FirstPageNum = lastPageNum + 1;
                 lista.StartY = contentBounds.Y + lista.RelY * contentBounds.Height;
-                lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
+                lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth, maxKategorijaWidth);
                 lastPageNum = lista.LastPageNum;
             }
         }
@@ -114,17 +117,21 @@ namespace Bilten.Report
     {
         private Sprava sprava;
         private bool stampajRedniBroj;
-        bool sveSpraveNaJednojStrani;
-        int columnNumber;
-        bool praznaLista;
+        private bool stampajKlub;
+        private bool stampajKategoriju;
+        private bool sveSpraveNaJednojStrani;
+        private int columnNumber;
+        private bool praznaLista;
 
         public StartListaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, bool stampajRedniBroj,
-            bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid)
+            bool stampajKlub, bool stampajKategoriju, bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = startLista.Sprava;
             this.stampajRedniBroj = stampajRedniBroj;
+            this.stampajKlub = stampajKlub;
+            this.stampajKategoriju = stampajKategoriju;
             this.sveSpraveNaJednojStrani = sveSpraveNaJednojStrani;
             this.columnNumber = columnNumber;
             this.praznaLista = startLista.Nastupi.Count == 0;
@@ -147,11 +154,11 @@ namespace Bilten.Report
             {
                 string redBroj = stampajRedniBroj ? (i+1).ToString() : String.Empty;
                 NastupNaSpravi nastup = startLista.Nastupi[i];
-                result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava });
+                result.Add(new object[] { redBroj, nastup.PrezimeIme, nastup.KlubDrzava, nastup.Kategorija });
             }
             if (result.Count == 0)
                 // hack kojim se obezbedjuje da se stampaju hederi i za liste koje su prazne
-                result.Add(new object[] { "", "", "" });
+                result.Add(new object[] { "", "", "", "" });
             return result;
         }
 
@@ -168,9 +175,9 @@ namespace Bilten.Report
                 contentBounds);
         }
 
-        public void setupContent(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
+        public void setupContent(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth, float kategorijaWidth)
         {
-            createColumns(g, contentBounds, imeWidth, klubWidth);
+            createColumns(g, contentBounds, imeWidth, klubWidth, kategorijaWidth);
 
             itemHeight = itemFont.GetHeight(g) * 1.4f;
             itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
@@ -191,6 +198,8 @@ namespace Bilten.Report
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            float kategorijaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+
             if (this.praznaLista)
             {
                 // Kada je lista prazna, namerno biram male vrednosti da bih sprecio da velicina kolona prazne liste
@@ -200,25 +209,34 @@ namespace Bilten.Report
                 rankWidth = Izvestaj.convCmToInch(rankWidthCm);
                 imeWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
                 klubWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
+                kategorijaWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
             }
 
-            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth);
+            if (!this.stampajKlub)
+                klubWidth = 0f;
+            if (!this.stampajKategoriju)
+                kategorijaWidth = 0f;
+
+            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth, kategorijaWidth);
         }
 
-        private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
+        private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth,
+            float kategorijaWidth)
         {
             float rankWidthCm = 0.7f;
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
 
-            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth);
+            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth, kategorijaWidth);
         }
 
-        private void doCreateColumns(Graphics g, RectangleF contentBounds, float rankWidth, float imeWidth, float klubWidth)
+        private void doCreateColumns(Graphics g, RectangleF contentBounds, float rankWidth, float imeWidth, float klubWidth,
+            float kategorijaWidth)
         {
             float xRank = contentBounds.X + (columnNumber - 1) * contentBounds.Width / 2;
             float xIme = xRank + rankWidth;
             float xKlub = xIme + imeWidth;
-            float xRightEnd = xKlub + klubWidth;
+            float xKategorija = xKlub + klubWidth;
+            float xRightEnd = xKategorija + kategorijaWidth;
 
             float rightMargin;
             if (!sveSpraveNaJednojStrani)
@@ -237,6 +255,7 @@ namespace Bilten.Report
                 xRank -= delta;
                 xIme -= delta;
                 xKlub -= delta;
+                xKategorija -= delta;
                 xRightEnd -= delta;
             }
             else
@@ -247,6 +266,7 @@ namespace Bilten.Report
                 xRank += delta;
                 xIme += delta;
                 xKlub += delta;
+                xKategorija += delta;
                 xRightEnd += delta;
             }
 
@@ -260,13 +280,19 @@ namespace Bilten.Report
             klubFormat.Alignment = StringAlignment.Near;
             klubFormat.LineAlignment = StringAlignment.Center;
 
+            StringFormat kategorijaFormat = new StringFormat(StringFormatFlags.NoWrap);
+            kategorijaFormat.Alignment = StringAlignment.Near;
+            kategorijaFormat.LineAlignment = StringAlignment.Center;
+
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat kategorijaHeaderFormat = Izvestaj.centerCenterFormat;
 
             String rankTitle = "RB";
             String imeTitle = "Ime";
             String klubTitle = "Klub";
+            String kategorijaTitle = "Kategorija";
 
             Columns.Clear();
 
@@ -283,6 +309,12 @@ namespace Bilten.Report
             column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
+            column.Visible = stampajKlub;
+
+            column = addColumn(xKategorija, kategorijaWidth, kategorijaFormat, kategorijaTitle, kategorijaHeaderFormat);
+            column.Image = SlikeSprava.getImage(sprava);
+            column.Split = true;
+            column.Visible = stampajKategoriju;
 
             if (column1.Span)
                 column1.SpanEndColumn = column;
@@ -292,6 +324,9 @@ namespace Bilten.Report
         {
             foreach (ReportColumn col in Columns)
             {
+                if (!col.Visible)
+                    continue;
+
                 RectangleF columnHeaderRect = new RectangleF(
                     col.X, groupHeaderRect.Y, col.Width, groupHeaderRect.Height);
 

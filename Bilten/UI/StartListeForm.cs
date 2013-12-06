@@ -882,7 +882,7 @@ namespace Bilten.UI
             // TODO: Verovatno bi trebalo ukljuciti i turnus, ukoliko ima vise turnusa
             string kategorijaRotacija = getFirstKategorijaText(ActiveRaspored) + ", Rotacija " + ActiveRotacija.ToString();
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
@@ -898,6 +898,8 @@ namespace Bilten.UI
                     form.BrojSpravaPoStrani = 4;
                 else
                     form.BrojSpravaPoStrani = 6;
+                form.StampajKlub = true;
+                form.StampajKategoriju = true;
             }
             else
             {
@@ -934,26 +936,25 @@ namespace Bilten.UI
                 if (form.StampajSveSprave)
                 {
                     List<StartListaNaSpravi> startListe = new List<StartListaNaSpravi>();
-
-                    Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
-                    foreach (Sprava s in sprave)
+                    foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
                     {
                         startListe.Add(ActiveRaspored.getStartLista(s, ActiveGrupa, ActiveRotacija));
                     }
                     p.setIzvestaj(new StartListaIzvestaj(startListe, takmicenje.Gimnastika, documentName,
-                        form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
+                        form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi, form.StampajKlub, form.StampajKategoriju,
                         getActiveSpravaGridGroupUserControl()));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
                     p.setIzvestaj(new StartListaIzvestaj(startLista, documentName, form.StampajRedniBrojNaStartListi,
+                        form.StampajKlub, form.StampajKategoriju,
                         getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
                 }
 
                 p.ShowDialog();
 
-                // TODO2: Dodaj kategoriju i godiste u start liste.
+                // TODO2: Dodaj godiste u start liste.
 
             }
             catch (InfrastructureException ex)

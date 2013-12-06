@@ -243,7 +243,7 @@ namespace Bilten.Report
 
             String funkcijaTitle = "Funkcija";
             String imeTitle = "Ime";
-            String klubTitle = "Klub";
+            String klubTitle = "Klub/Drzava";
 
             Columns.Clear();
 
