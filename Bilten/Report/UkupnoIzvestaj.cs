@@ -63,8 +63,8 @@ namespace Bilten.Report
             this.kvalColumn = kvalColumn;
             this.gimnastika = gim;
 
-            totalBrush = Brushes.LightGray;
-            totalAllBrush = Brushes.Silver;
+            totalBrush = Brushes.White;
+            totalAllBrush = Brushes.White;
 
             fetchItems(rezultati, gim, extended);
         }

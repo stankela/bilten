@@ -93,8 +93,8 @@ namespace Bilten.Report
             this.kvalColumn = kvalColumn;
             this.sprava = sprava;
 
-            totalBrush = Brushes.LightGray;
-            totalAllBrush = Brushes.Silver;
+            totalBrush = Brushes.White;
+            totalAllBrush = Brushes.White;
 
             fetchItems(rezultati);
         }

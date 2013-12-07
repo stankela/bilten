@@ -124,8 +124,8 @@ namespace Bilten.Report
             this.sprava = sprava;
             this.prikaziPenal = prikaziPenal;
 
-            totalBrush = Brushes.LightGray;
-            totalAllBrush = Brushes.Silver;
+            totalBrush = Brushes.White;
+            totalAllBrush = Brushes.White;
 
             fetchItems(rezultati);
         }
@@ -140,8 +140,8 @@ namespace Bilten.Report
             this.obaPreskoka = obaPreskoka;
             this.prikaziPenal = prikaziPenal;
 
-            totalBrush = Brushes.LightGray;
-            totalAllBrush = Brushes.Silver;
+            totalBrush = Brushes.White;
+            totalAllBrush = Brushes.White;
 
             fetchItems(rezultati);
         }
