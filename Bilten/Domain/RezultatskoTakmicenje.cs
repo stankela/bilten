@@ -4,6 +4,7 @@ using System.Text;
 using Iesi.Collections.Generic;
 using Bilten.Exceptions;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Bilten.Domain
 {
@@ -233,5 +234,22 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual PoredakSprava getPoredakSprava(DeoTakmicenjaKod deoTakKod, Sprava sprava)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return Takmicenje1.getPoredakSprava(sprava);
+
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            return Takmicenje3.getPoredak(sprava);
+        }
+
+        public virtual PoredakPreskok getPoredakPreskok(DeoTakmicenjaKod deoTakKod)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return Takmicenje1.PoredakPreskok;
+
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            return Takmicenje3.PoredakPreskok;
+        }
     }
 }

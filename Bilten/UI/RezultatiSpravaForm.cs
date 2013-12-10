@@ -356,7 +356,7 @@ namespace Bilten.UI
             {
                 rezultatiOpened.Add(rezultatiKey);
             }
-            setItemsSortedByRedBroj();
+            setItems();
         }
 
         private bool updateBtnStampajKvalifikanteEnabled()
@@ -367,28 +367,17 @@ namespace Bilten.UI
                 && ActiveTakmicenje.Propozicije.OdvojenoTak3;
         }
 
-        private void setItemsSortedByRedBroj()
+        private void setItems()
         {
             if (ActiveSprava != Sprava.Preskok)
             {
                 spravaGridUserControl1.DataGridViewUserControl
-                    .setItems<RezultatSprava>(getRezultatiSprava(ActiveTakmicenje, ActiveSprava));
-                spravaGridUserControl1.DataGridViewUserControl
-                    .sort<RezultatSprava>("RedBroj", ListSortDirection.Ascending);
-            }
-            else if (!obaPreskoka)
-            {
-                spravaGridUserControl1.DataGridViewUserControl
-                    .setItems<RezultatPreskok>(getRezultatiPreskok1(ActiveTakmicenje));
-                spravaGridUserControl1.DataGridViewUserControl
-                    .sort<RezultatPreskok>("RedBroj", ListSortDirection.Ascending);
+                    .setItems<RezultatSprava>(ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getRezultati());
             }
             else
             {
                 spravaGridUserControl1.DataGridViewUserControl
-                    .setItems<RezultatPreskok>(getRezultatiPreskok2(ActiveTakmicenje));
-                spravaGridUserControl1.DataGridViewUserControl
-                    .sort<RezultatPreskok>("RedBroj2", ListSortDirection.Ascending);
+                    .setItems<RezultatPreskok>(ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka));
             }
         }
 
@@ -412,7 +401,7 @@ namespace Bilten.UI
                     {
                         if (s != Sprava.Preskok)
                         {
-                            foreach (RezultatSprava r in getRezultatiSprava(rt, s))
+                            foreach (RezultatSprava r in rt.getPoredakSprava(deoTakKod, s).getRezultati())
                             {
                                 imena.Add(r.Gimnasticar.PrezimeIme);
                                 klubovi.Add(r.Gimnasticar.KlubDrzava);
@@ -420,7 +409,7 @@ namespace Bilten.UI
                         }
                         else
                         {
-                            foreach (RezultatPreskok r in getRezultatiPreskok1(rt))
+                            foreach (RezultatPreskok r in rt.getPoredakPreskok(deoTakKod).getRezultati(false))
                             {
                                 imena.Add(r.Gimnasticar.PrezimeIme);
                                 klubovi.Add(r.Gimnasticar.KlubDrzava);
@@ -474,82 +463,6 @@ namespace Bilten.UI
         {
             int result = rezTakmicenja.IndexOf(tak) * ((int)Sprava.Max + 1) + (int)sprava;
             return result;
-        }
-
-        private IList<RezultatSprava> getRezultatiSprava(RezultatskoTakmicenje rezTakmicenje,
-            Sprava sprava)
-        {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.getPoredakSprava(sprava).Rezultati;
-            else
-                return rezTakmicenje.Takmicenje3.getPoredak(sprava).Rezultati;
-        }
-
-        private IList<RezultatPreskok> getRezultatiPreskok1(RezultatskoTakmicenje rezTakmicenje)
-        {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.PoredakPreskok.Rezultati;
-            else
-                return rezTakmicenje.Takmicenje3.PoredakPreskok.Rezultati;
-        }
-
-        private List<RezultatPreskok> getRezultatiPreskok2(RezultatskoTakmicenje rezTakmicenje)
-        {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.PoredakPreskok.getRezultatiDvaPreskoka();
-            else
-                return new List<RezultatPreskok>(rezTakmicenje.Takmicenje3.PoredakPreskok.Rezultati);
-        }
-
-        private List<RezultatSprava> getRezultatiSpravaSorted(RezultatskoTakmicenje rezTakmicenje, Sprava sprava,
-            string sortColumn)
-        {
-            List<RezultatSprava> result =
-                new List<RezultatSprava>(getRezultatiSprava(rezTakmicenje, sprava));
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatSprava))[sortColumn];
-            result.Sort(new SortComparer<RezultatSprava>(propDesc,
-                ListSortDirection.Ascending));
-            return result;
-        }
-
-        private List<RezultatPreskok> getRezultatiPreskok1Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
-        {
-            List<RezultatPreskok> result =
-                new List<RezultatPreskok>(getRezultatiPreskok1(rezTakmicenje));
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
-            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                ListSortDirection.Ascending));
-            return result;
-        }
-
-        private List<RezultatPreskok> getRezultatiPreskok2Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
-        {
-            List<RezultatPreskok> result =
-                new List<RezultatPreskok>(getRezultatiPreskok2(rezTakmicenje));
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
-            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                ListSortDirection.Ascending));
-            return result;
-        }
-
-        private PoredakSprava getPoredakSprava(RezultatskoTakmicenje rezTakmicenje,
-            Sprava sprava)
-        {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.getPoredakSprava(sprava);
-            else
-                return rezTakmicenje.Takmicenje3.getPoredak(sprava);
-        }
-
-        private PoredakPreskok getPoredakPreskok(RezultatskoTakmicenje rezTakmicenje)
-        {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.PoredakPreskok;
-            else
-                return rezTakmicenje.Takmicenje3.PoredakPreskok;
         }
 
         private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)
@@ -650,8 +563,6 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                bool kvalColumn;
-
                 string documentName;
                 if (form.StampajSveSprave)
                 {
@@ -664,31 +575,21 @@ namespace Bilten.UI
                 }
                 if (form.StampajSveSprave)
                 {
-                    kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                    bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                       && ActiveTakmicenje.Propozicije.PostojiTak3
                       && ActiveTakmicenje.Propozicije.OdvojenoTak3;
 
-                    // TODO3: Proveri da li ovo valja.
-                    bool obaPresk = ActiveTakmicenje.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                    bool obaPresk = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
 
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
                     List<RezultatPreskok> rezultatiPreskok = null;
 
-                    Sprava[] sprave = Sprave.getSprave(ActiveTakmicenje.Gimnastika);
-                    foreach (Sprava s in sprave)
+                    foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
                     {
                         if (s != Sprava.Preskok)
-                        {
-                            rezultatiSprave.Add(getRezultatiSpravaSorted(ActiveTakmicenje, s, "RedBroj"));
-                        }
-                        else if (!obaPresk)
-                        {
-                            rezultatiPreskok = getRezultatiPreskok1Sorted(ActiveTakmicenje, "RedBroj");
-                        }
+                            rezultatiSprave.Add(ActiveTakmicenje.getPoredakSprava(deoTakKod, s).getRezultati());
                         else
-                        {
-                            rezultatiPreskok = getRezultatiPreskok2Sorted(ActiveTakmicenje, "RedBroj2");
-                        }
+                            rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPresk);
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
                         obaPresk, ActiveTakmicenje.Gimnastika, kvalColumn, documentName, form.BrojSpravaPoStrani,
@@ -696,44 +597,20 @@ namespace Bilten.UI
                 }
                 else
                 {
-                    kvalColumn = kvalColumnVisible();
+                    bool kvalColumn = kvalColumnVisible();
                     if (ActiveSprava != Sprava.Preskok)
                     {
                         List<RezultatSprava> rezultati =
-                            new List<RezultatSprava>(getRezultatiSprava(ActiveTakmicenje, ActiveSprava));
-
-                        PropertyDescriptor propDesc =
-                            TypeDescriptor.GetProperties(typeof(RezultatSprava))["RedBroj"];
-                        rezultati.Sort(new SortComparer<RezultatSprava>(propDesc,
-                            ListSortDirection.Ascending));
-
+                            ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getRezultati();
                         p.setIzvestaj(new SpravaIzvestaj(ActiveSprava, rezultati,
-                            kvalColumn, documentName, form.PrikaziPenalSprave,
-                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
-
-                    }
-                    else if (!obaPreskoka)
-                    {
-                        List<RezultatPreskok> rezultati =
-                            new List<RezultatPreskok>(getRezultatiPreskok1(ActiveTakmicenje));
-                        PropertyDescriptor propDesc =
-                            TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj"];
-                        rezultati.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                            ListSortDirection.Ascending));
-
-                        p.setIzvestaj(new SpravaIzvestaj(false, rezultati,
                             kvalColumn, documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
                     else
                     {
-                        List<RezultatPreskok> rezultati = getRezultatiPreskok2(ActiveTakmicenje);
-                        PropertyDescriptor propDesc =
-                            TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj2"];
-                        rezultati.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                            ListSortDirection.Ascending));
-
-                        p.setIzvestaj(new SpravaIzvestaj(true, rezultati,
+                        List<RezultatPreskok> rezultati =
+                            ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka);
+                        p.setIzvestaj(new SpravaIzvestaj(obaPreskoka, rezultati,
                             kvalColumn, documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
@@ -814,8 +691,7 @@ namespace Bilten.UI
 
             if (ActiveSprava != Sprava.Preskok)
             {
-                List<RezultatSprava> rezultatiSprava = getRezultatiSpravaSorted(ActiveTakmicenje, ActiveSprava, "RedBroj");
-                foreach (RezultatSprava r in rezultatiSprava)
+                foreach (RezultatSprava r in ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getRezultati())
                 {
                     if (r.Total == rez.Total)
                         istiRezultati.Add(r);
@@ -823,8 +699,7 @@ namespace Bilten.UI
             }
             else if (!obaPreskoka)
             {
-                List<RezultatPreskok> rezultatiPreskok = getRezultatiPreskok1Sorted(ActiveTakmicenje, "RedBroj");
-                foreach (RezultatPreskok r in rezultatiPreskok)
+                foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka))
                 {
                     if (r.Total == rez.Total)
                         istiRezultati.Add(r);
@@ -832,8 +707,7 @@ namespace Bilten.UI
             }
             else
             {
-                List<RezultatPreskok> rezultatiPreskok = getRezultatiPreskok2Sorted(ActiveTakmicenje, "RedBroj2");
-                foreach (RezultatPreskok r in rezultatiPreskok)
+                foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka))
                 {
                     if (r.TotalObeOcene == (rez as RezultatPreskok).TotalObeOcene)
                         istiRezultati.Add(r);
@@ -894,9 +768,9 @@ namespace Bilten.UI
 
                 rez.KvalStatus = kvalStatus;
                 if (ActiveSprava != Sprava.Preskok)
-                    dataContext.Save(getPoredakSprava(ActiveTakmicenje, ActiveSprava));
+                    dataContext.Save(ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava));
                 else
-                    dataContext.Save(getPoredakPreskok(ActiveTakmicenje));
+                    dataContext.Save(ActiveTakmicenje.getPoredakPreskok(deoTakKod));
                 dataContext.Commit();
             }
             catch (Exception ex)
@@ -966,7 +840,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                dataContext.Save(getPoredakSprava(ActiveTakmicenje, ActiveSprava));
+                dataContext.Save(ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava));
                 dataContext.Commit();
             }
             catch (Exception ex)
@@ -1030,7 +904,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                dataContext.Save(getPoredakPreskok(ActiveTakmicenje));
+                dataContext.Save(ActiveTakmicenje.getPoredakPreskok(deoTakKod));
                 dataContext.Commit();
             }
             catch (Exception ex)
@@ -1081,13 +955,13 @@ namespace Bilten.UI
                 IList<Ocena> ocene = loadOcene(takmicenje.Id, deoTakKod);
                 if (ActiveSprava != Sprava.Preskok)
                 {
-                    PoredakSprava p = getPoredakSprava(ActiveTakmicenje, ActiveSprava);
+                    PoredakSprava p = ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava);
                     p.create(ActiveTakmicenje, ocene);
                     dataContext.Save(p);
                 }
                 else
                 {
-                    PoredakPreskok p = getPoredakPreskok(ActiveTakmicenje);
+                    PoredakPreskok p = ActiveTakmicenje.getPoredakPreskok(deoTakKod);
                     p.create(ActiveTakmicenje, ocene);
                     dataContext.Save(p);
                 }
@@ -1111,7 +985,7 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
             }
 
-            setItemsSortedByRedBroj();
+            setItems();
         }
 
         private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
@@ -1259,28 +1133,19 @@ namespace Bilten.UI
                     documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
                         + ActiveTakmicenje.Kategorija.Naziv;
                 }
+                bool obaPresk = ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+
                 if (form.StampajSveSprave)
                 {
-                    bool obaPresk = ActiveTakmicenje.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
                     List<RezultatPreskok> rezultatiPreskok = null;
 
-                    Sprava[] sprave = Sprave.getSprave(ActiveTakmicenje.Gimnastika);
-                    foreach (Sprava s in sprave)
+                    foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
                     {
                         if (s != Sprava.Preskok)
-                        {
-                            rezultatiSprave.Add(getKvalifikantiIRezerveSpravaSorted(ActiveTakmicenje, s, "RedBroj"));
-                        }
-                        else if (!obaPresk)
-                        {
-                            rezultatiPreskok = getKvalifikantiIRezervePreskok1Sorted(ActiveTakmicenje, "RedBroj");
-                        }
+                            rezultatiSprave.Add(ActiveTakmicenje.getPoredakSprava(deoTakKod, s).getKvalifikantiIRezerve());
                         else
-                        {
-                            rezultatiPreskok = getKvalifikantiIRezervePreskok2Sorted(ActiveTakmicenje, "RedBroj2");
-                        }
+                            rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getKvalifikantiIRezerve(obaPresk);
                     }
                     p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultatiSprave, rezultatiPreskok, obaPresk, 
                         takmicenje.Gimnastika, documentName, form.BrojSpravaPoStrani,
@@ -1291,22 +1156,15 @@ namespace Bilten.UI
                     if (ActiveSprava != Sprava.Preskok)
                     {
                         List<RezultatSprava> rezultati =
-                            getKvalifikantiIRezerveSpravaSorted(ActiveTakmicenje, ActiveSprava, "RedBroj");
+                            ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getKvalifikantiIRezerve();
                         p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, ActiveSprava, documentName,
-                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
-                    }
-                    else if (!obaPreskoka)
-                    {
-                        List<RezultatPreskok> rezultati =
-                            getKvalifikantiIRezervePreskok1Sorted(ActiveTakmicenje, "RedBroj");
-                        p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, false, documentName,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
                     else
                     {
                         List<RezultatPreskok> rezultati =
-                            getKvalifikantiIRezervePreskok2Sorted(ActiveTakmicenje, "RedBroj2");
-                        p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, true, documentName,
+                            ActiveTakmicenje.getPoredakPreskok(deoTakKod).getKvalifikantiIRezerve(obaPresk);
+                        p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, obaPresk, documentName,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
                 }
@@ -1323,52 +1181,5 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
             }
         }
-
-        private List<RezultatSprava> getKvalifikantiIRezerveSpravaSorted(RezultatskoTakmicenje rezTakmicenje, Sprava sprava,
-            string sortColumn)
-        {
-            List<RezultatSprava> result = new List<RezultatSprava>();
-            foreach (RezultatSprava r in getRezultatiSprava(rezTakmicenje, sprava))
-            {
-                if (r.KvalStatus == KvalifikacioniStatus.Q || r.KvalStatus == KvalifikacioniStatus.R)
-                    result.Add(r);
-            }
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatSprava))[sortColumn];
-            result.Sort(new SortComparer<RezultatSprava>(propDesc,
-                ListSortDirection.Ascending));
-            return result;
-        }
-
-        private List<RezultatPreskok> getKvalifikantiIRezervePreskok1Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
-        {
-            List<RezultatPreskok> result = new List<RezultatPreskok>();
-            foreach (RezultatPreskok r in getRezultatiPreskok1(rezTakmicenje))
-            {
-                if (r.KvalStatus == KvalifikacioniStatus.Q || r.KvalStatus == KvalifikacioniStatus.R)
-                    result.Add(r);
-            }
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
-            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                ListSortDirection.Ascending));
-            return result;
-        }
-
-        private List<RezultatPreskok> getKvalifikantiIRezervePreskok2Sorted(RezultatskoTakmicenje rezTakmicenje, string sortColumn)
-        {
-            List<RezultatPreskok> result = new List<RezultatPreskok>();
-            foreach (RezultatPreskok r in getRezultatiPreskok2(rezTakmicenje))
-            {
-                if (r.KvalStatus == KvalifikacioniStatus.Q || r.KvalStatus == KvalifikacioniStatus.R)
-                    result.Add(r);
-            }
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
-            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                ListSortDirection.Ascending));
-            return result;
-        }
-
     }
 }

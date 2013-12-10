@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
 
 namespace Bilten.Domain
 {
@@ -151,6 +152,23 @@ namespace Bilten.Domain
         {
             get { return jednoTak4ZaSveKategorije; }
             set { jednoTak4ZaSveKategorije = value; }
+        }
+
+        public virtual bool racunajObaPreskoka(DeoTakmicenjaKod deoTakKod)
+        {
+            if (!PostojiTak3)
+                return false;
+
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                if (!OdvojenoTak3)
+                    return PoredakTak3PreskokNaOsnovuObaPreskoka;
+                else
+                    return KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+            }
+
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            return PoredakTak3PreskokNaOsnovuObaPreskoka;
         }
 
         // Finale kupa
