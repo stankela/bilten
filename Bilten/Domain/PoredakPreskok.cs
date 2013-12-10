@@ -443,28 +443,16 @@ namespace Bilten.Domain
         public virtual List<RezultatPreskok> getKvalifikantiIRezerve(bool obaPreskoka)
         {
             List<RezultatPreskok> result = new List<RezultatPreskok>();
-            foreach (RezultatPreskok r in Rezultati)
+            foreach (RezultatPreskok r in getRezultati(obaPreskoka))
             {
                 if (r.KvalStatus == KvalifikacioniStatus.Q)
                     result.Add(r);
             }
-            string sortColumn = obaPreskoka ? "RedBroj2" : "RedBroj";
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
-            result.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                ListSortDirection.Ascending));
-
-            List<RezultatPreskok> rezerve = new List<RezultatPreskok>();
-            foreach (RezultatPreskok r in Rezultati)
+            foreach (RezultatPreskok r in getRezultati(obaPreskoka))
             {
                 if (r.KvalStatus == KvalifikacioniStatus.R)
-                    rezerve.Add(r);
+                    result.Add(r);
             }
-            rezerve.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                ListSortDirection.Ascending));
-
-            foreach (RezultatPreskok r in rezerve)
-                result.Add(r);
 
             return result;
         }

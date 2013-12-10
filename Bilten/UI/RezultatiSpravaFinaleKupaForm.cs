@@ -299,11 +299,8 @@ namespace Bilten.UI
                 rezultatiOpened.Add(rezultatiKey);
             }
 
-            spravaGridUserControl1.DataGridViewUserControl
-                .setItems<RezultatSpravaFinaleKupa>(getRezultatiSprava(ActiveTakmicenje, ActiveSprava));
-            spravaGridUserControl1.DataGridViewUserControl
-                .sort<RezultatSpravaFinaleKupa>("RedBroj", ListSortDirection.Ascending);
-
+            spravaGridUserControl1.DataGridViewUserControl.setItems<RezultatSpravaFinaleKupa>(
+                ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati());
         }
 
         private void initSpravaGridUserControl(Sprava sprava)
@@ -327,12 +324,6 @@ namespace Bilten.UI
             return result;
         }
 
-        private IList<RezultatSpravaFinaleKupa> getRezultatiSprava(RezultatskoTakmicenje rezTakmicenje,
-            Sprava sprava)
-        {
-            return rezTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(sprava).Rezultati;
-        }
-
         private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)
         {
             spravaGridUserControl1.DataGridViewUserControl.Focus();
@@ -354,18 +345,6 @@ namespace Bilten.UI
             // TODO2: Ako je u pitanju Takmicenje3, treba proveriti za aktivno 
             // takmicenje svojstvo PoredakTak3PreskokNaOsnovuObaPreskoka, i na osnovu 
             // toga u combu sprava prikazati ili 'preskok' ili 'preskok(oba)'
-        }
-
-        private List<RezultatSpravaFinaleKupa> getRezultatiSpravaSorted(RezultatskoTakmicenje rezTakmicenje, Sprava sprava,
-            string sortColumn)
-        {
-            List<RezultatSpravaFinaleKupa> result =
-                new List<RezultatSpravaFinaleKupa>(getRezultatiSprava(rezTakmicenje, sprava));
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))[sortColumn];
-            result.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc,
-                ListSortDirection.Ascending));
-            return result;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -423,10 +402,9 @@ namespace Bilten.UI
 
                     List<List<RezultatSpravaFinaleKupa>> rezultatiSprave = new List<List<RezultatSpravaFinaleKupa>>();
 
-                    Sprava[] sprave = Sprave.getSprave(ActiveTakmicenje.Gimnastika);
-                    foreach (Sprava s in sprave)
+                    foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
                     {
-                        rezultatiSprave.Add(getRezultatiSpravaSorted(ActiveTakmicenje, s, "RedBroj"));
+                        rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
                     }
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, ActiveTakmicenje.Gimnastika, kvalColumn,
                         documentName, form.BrojSpravaPoStrani,
@@ -436,7 +414,7 @@ namespace Bilten.UI
                 {
                     kvalColumn = kvalColumnVisible();
                     List<RezultatSpravaFinaleKupa> rezultati =
-                        new List<RezultatSpravaFinaleKupa>(getRezultatiSpravaSorted(ActiveTakmicenje, ActiveSprava, "RedBroj"));
+                        ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati();
 
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati,
                         kvalColumn, documentName, spravaGridUserControl1.DataGridViewUserControl.DataGridView));

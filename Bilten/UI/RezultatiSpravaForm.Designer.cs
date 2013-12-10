@@ -189,7 +189,7 @@ namespace Bilten.UI
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.spravaGridUserControl1.Location = new System.Drawing.Point(12, 56);
             this.spravaGridUserControl1.Name = "spravaGridUserControl1";
-            this.spravaGridUserControl1.Size = new System.Drawing.Size(869, 295);
+            this.spravaGridUserControl1.Size = new System.Drawing.Size(1002, 295);
             this.spravaGridUserControl1.TabIndex = 2;
             // 
             // RezultatiSpravaForm
@@ -198,7 +198,7 @@ namespace Bilten.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(893, 363);
+            this.ClientSize = new System.Drawing.Size(1026, 363);
             this.Controls.Add(this.btnStampajKvalifikante);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnPrint);

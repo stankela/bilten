@@ -1453,7 +1453,7 @@ namespace Bilten.UI
                     foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
                     {
                         PoredakSpravaFinaleKupa poredak = rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(sprave[j]);
-                        foreach (RezultatSpravaFinaleKupa rez in poredak.getRezultatiKvalifikanti())
+                        foreach (RezultatSpravaFinaleKupa rez in poredak.getKvalifikanti())
                         {
                             rezultati.Add(rez);
                         }

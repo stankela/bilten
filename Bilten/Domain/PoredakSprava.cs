@@ -399,27 +399,16 @@ namespace Bilten.Domain
         public virtual List<RezultatSprava> getKvalifikantiIRezerve()
         {
             List<RezultatSprava> result = new List<RezultatSprava>();
-            foreach (RezultatSprava r in Rezultati)
+            foreach (RezultatSprava r in getRezultati())
             {
                 if (r.KvalStatus == KvalifikacioniStatus.Q)
                     result.Add(r);
             }
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatSprava))["RedBroj"];
-            result.Sort(new SortComparer<RezultatSprava>(propDesc,
-                ListSortDirection.Ascending));
-
-            List<RezultatSprava> rezerve = new List<RezultatSprava>();
-            foreach (RezultatSprava r in Rezultati)
+            foreach (RezultatSprava r in getRezultati())
             {
                 if (r.KvalStatus == KvalifikacioniStatus.R)
-                    rezerve.Add(r);
+                    result.Add(r);
             }
-            rezerve.Sort(new SortComparer<RezultatSprava>(propDesc,
-                ListSortDirection.Ascending));
-
-            foreach (RezultatSprava r in rezerve)
-                result.Add(r);
 
             return result;
         }

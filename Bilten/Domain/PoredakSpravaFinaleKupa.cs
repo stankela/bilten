@@ -439,21 +439,24 @@ namespace Bilten.Domain
             }
         }
 
-        public List<RezultatSpravaFinaleKupa> getRezultatiKvalifikanti()
+        public List<RezultatSpravaFinaleKupa> getRezultati()
         {
-            List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(Rezultati);
+            List<RezultatSpravaFinaleKupa> result = new List<RezultatSpravaFinaleKupa>(Rezultati);
 
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["RedBroj"];
-            rezultati.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc, ListSortDirection.Ascending));
+            result.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc, ListSortDirection.Ascending));
 
+            return result;
+        }
+
+        public List<RezultatSpravaFinaleKupa> getKvalifikanti()
+        {
             List<RezultatSpravaFinaleKupa> result = new List<RezultatSpravaFinaleKupa>();
-            foreach (RezultatSpravaFinaleKupa rez in rezultati)
+            foreach (RezultatSpravaFinaleKupa rez in getRezultati())
             {
                 if (rez.KvalStatus == KvalifikacioniStatus.Q)
-                {
                     result.Add(rez);
-                }
             }
             return result;
         }
