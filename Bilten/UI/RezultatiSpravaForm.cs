@@ -23,9 +23,6 @@ namespace Bilten.UI
 
         // kljuc je rezTakmicenja.IndexOf(takmicenje) * (Sprava.Max + 1) + sprava
         private ISet<int> rezultatiOpened;
-        private bool obaPreskoka;
-        private const string OBA_PRESKOKA = "Preskok (oba)";
-
         private bool selectMode = false;
 
         private List<RezultatSprava> istiRezultati = new List<RezultatSprava>();
@@ -50,10 +47,7 @@ namespace Bilten.UI
         {
             get 
             {
-                if (cmbSprava.SelectedItem.ToString() == OBA_PRESKOKA)
-                    return Sprava.Preskok;
-                else
-                    return Sprave.parse(cmbSprava.SelectedItem.ToString()); 
+                return Sprave.parse(cmbSprava.SelectedItem.ToString());
             }
             set 
             {
@@ -121,8 +115,7 @@ namespace Bilten.UI
                 else
                 {
                     cmbTakmicenje.SelectedIndex = findRezTakIndex(startTakmicenje);
-                    cmbSprava.SelectedIndex = findSpravaIndex(startSprava, 
-                        startTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
+                    cmbSprava.SelectedIndex = findSpravaIndex(startSprava);
                 }
 
                 cmbTakmicenje.SelectedIndexChanged += new EventHandler(selectedRezultatiChanged);
@@ -160,21 +153,11 @@ namespace Bilten.UI
             }
         }
 
-        private int findSpravaIndex(Sprava sprava, bool obaPreskoka)
-        {
-            if (sprava != Sprava.Preskok)
-                return findSpravaIndex(Sprave.toString(sprava));
-            else if (!obaPreskoka)
-                return findSpravaIndex(Sprave.toString(Sprava.Preskok));
-            else
-                return findSpravaIndex(OBA_PRESKOKA);
-        }
-
-        private int findSpravaIndex(string sprava)
+        private int findSpravaIndex(Sprava sprava)
         {
             for (int i = 0; i < cmbSprava.Items.Count; i++)
             {
-                if (cmbSprava.Items[i].Equals(sprava))
+                if (cmbSprava.Items[i].Equals(Sprave.toString(sprava)))
                     return i;
             }
             return -1;
@@ -263,7 +246,6 @@ namespace Bilten.UI
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
             Pol pol = rezTakmicenja[0].Pol;
             List<string> sprave = new List<string>(Sprave.getSpraveNazivi(pol));
-            sprave.Insert(Sprave.indexOf(Sprava.Preskok, pol) + 1, OBA_PRESKOKA);
             cmbSprava.Items.AddRange(sprave.ToArray());
             
             spravaGridUserControl1.DataGridViewUserControl.GridColumnHeaderMouseClick += 
@@ -324,8 +306,6 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                obaPreskoka = ActiveSprava == Sprava.Preskok 
-                    && cmbSprava.SelectedItem.ToString() == OBA_PRESKOKA;
                 onSelectedRezultatiChanged();
             }
             catch (Exception ex)
@@ -349,7 +329,7 @@ namespace Bilten.UI
             btnStampajKvalifikante.Enabled = updateBtnStampajKvalifikanteEnabled(); 
             
             // TODO: Kada se promeni sprava trebalo bi da kolone zadrze postojecu sirinu.
-            initSpravaGridUserControl(ActiveSprava, obaPreskoka);
+            initSpravaGridUserControl(ActiveSprava);
 
             int rezultatiKey = getRezultatiKey(ActiveTakmicenje, ActiveSprava);
             if (!rezultatiOpened.Contains(rezultatiKey))
@@ -376,17 +356,22 @@ namespace Bilten.UI
             }
             else
             {
+                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
                 spravaGridUserControl1.DataGridViewUserControl
                     .setItems<RezultatPreskok>(ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka));
             }
         }
 
-        private void initSpravaGridUserControl(Sprava sprava, bool obaPreskoka)
+        private void initSpravaGridUserControl(Sprava sprava)
         {
             spravaGridUserControl1.init(sprava);
 
             DataGridView dgw = spravaGridUserControl1.DataGridViewUserControl.DataGridView;
             // TODO: Indexi kolona bi trebali da budu konstante
+
+            bool obaPreskoka = sprava == Sprava.Preskok
+                && ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
+
             if (dgw.Columns.Count == 0)
             {
                 GridColumnsInitializer.initRezultatiSprava(
@@ -449,7 +434,7 @@ namespace Bilten.UI
                 && ActiveTakmicenje.Propozicije.OdvojenoTak3;
             if (ActiveSprava == Sprava.Preskok)
             {
-                if (!obaPreskoka)
+                if (!ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod))
                     result = result
                         && !ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
                 else
@@ -573,13 +558,13 @@ namespace Bilten.UI
                     documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
                         + ActiveTakmicenje.Kategorija.Naziv;
                 }
+                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
+
                 if (form.StampajSveSprave)
                 {
                     bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                       && ActiveTakmicenje.Propozicije.PostojiTak3
                       && ActiveTakmicenje.Propozicije.OdvojenoTak3;
-
-                    bool obaPresk = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
 
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
                     List<RezultatPreskok> rezultatiPreskok = null;
@@ -589,10 +574,10 @@ namespace Bilten.UI
                         if (s != Sprava.Preskok)
                             rezultatiSprave.Add(ActiveTakmicenje.getPoredakSprava(deoTakKod, s).getRezultati());
                         else
-                            rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPresk);
+                            rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka);
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
-                        obaPresk, ActiveTakmicenje.Gimnastika, kvalColumn, documentName, form.BrojSpravaPoStrani,
+                        obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumn, documentName, form.BrojSpravaPoStrani,
                         form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                 }
                 else
@@ -684,6 +669,9 @@ namespace Bilten.UI
             }
             if (rez == null)
                 return;
+
+            bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
+
             if ((ActiveSprava != Sprava.Preskok || !obaPreskoka) && rez.Total == null)
                 return;
             if ((ActiveSprava == Sprava.Preskok && obaPreskoka) && (rez as RezultatPreskok).TotalObeOcene == null)
@@ -866,6 +854,7 @@ namespace Bilten.UI
 
         private void promeniPoredakPreskok()
         {
+            bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
             RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, obaPreskoka);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
