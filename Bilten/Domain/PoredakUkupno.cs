@@ -265,6 +265,46 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual List<RezultatUkupno> getRezultati()
+        {
+            List<RezultatUkupno> result = new List<RezultatUkupno>(Rezultati);
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatUkupno))["RedBroj"];
+            result.Sort(new SortComparer<RezultatUkupno>(propDesc,
+                ListSortDirection.Ascending));
+
+            return result;
+        }
+
+        public virtual List<RezultatUkupnoExtended> getRezultatiExtended(IList<Ocena> ocene)
+        {
+            IDictionary<int, RezultatUkupnoExtended> rezultatiMap = new Dictionary<int, RezultatUkupnoExtended>();
+            foreach (RezultatUkupno rez in Rezultati)
+            {
+                RezultatUkupnoExtended rezEx = new RezultatUkupnoExtended(rez);
+                rezultatiMap.Add(rezEx.Gimnasticar.Id, rezEx);
+            }
+
+            foreach (Ocena o in ocene)
+            {
+                if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
+                {
+                    rezultatiMap[o.Gimnasticar.Id].setDOcena(o.Sprava, o.D);
+                    rezultatiMap[o.Gimnasticar.Id].setEOcena(o.Sprava, o.E);
+                }
+            }
+
+            List<RezultatUkupnoExtended> result = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatUkupnoExtended))["RedBroj"];
+            result.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc,
+                ListSortDirection.Ascending));
+
+            return result;
+        }
+
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
             RezultatUkupno r = getRezultat(o.Gimnasticar);

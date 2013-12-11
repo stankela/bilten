@@ -21,8 +21,6 @@ namespace Bilten.UI
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
 
-        List<RezultatUkupnoExtended>[] rezultatiExtended;
-
         private List<RezultatUkupno> istiRezultati = new List<RezultatUkupno>();
 
         private RezultatskoTakmicenje ActiveTakmicenje
@@ -80,7 +78,6 @@ namespace Bilten.UI
                 
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
-                rezultatiExtended = new List<RezultatUkupnoExtended>[rezTakmicenja.Count];
                 cmbTakmicenje.SelectedIndex = 0;
 
                 cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
@@ -257,7 +254,7 @@ namespace Bilten.UI
                 List<string> klubovi = new List<string>();
                 foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                 {
-                    foreach (RezultatUkupno r in getRezultati(rt))
+                    foreach (RezultatUkupno r in rt.getPoredakUkupno(deoTakKod).getRezultati())
                     {
                         imena.Add(r.Gimnasticar.PrezimeIme);
                         klubovi.Add(r.Gimnasticar.KlubDrzava);
@@ -290,26 +287,12 @@ namespace Bilten.UI
                 takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
             }
 
-            setItemsSortedByRedBroj();
+            setItems();
         }
 
-        private void setItemsSortedByRedBroj()
+        private void setItems()
         {
-            dataGridViewUserControl1.setItems<RezultatUkupno>(getRezultati(ActiveTakmicenje));
-            dataGridViewUserControl1.sort<RezultatUkupno>("RedBroj", ListSortDirection.Ascending);
-        }
-
-        private PoredakUkupno getPoredak(RezultatskoTakmicenje rezTakmicenje)
-        {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.PoredakUkupno;
-            else
-                return rezTakmicenje.Takmicenje2.Poredak;
-        }
-
-        private IList<RezultatUkupno> getRezultati(RezultatskoTakmicenje rezTakmicenje)
-        {
-            return getPoredak(rezTakmicenje).Rezultati;
+            dataGridViewUserControl1.setItems<RezultatUkupno>(ActiveTakmicenje.getPoredakUkupno(deoTakKod).getRezultati());
         }
 
         private void cmbTakmicenja_DropDownClosed(object sender, EventArgs e)
@@ -385,20 +368,10 @@ namespace Bilten.UI
                 else
                 {
                     rezultati = new List<RezultatUkupnoExtended>();
-
-                    List<RezultatUkupno> rez =
-                        new List<RezultatUkupno>(getRezultati(ActiveTakmicenje));
-                    foreach (RezultatUkupno r in rez)
-                    {
+                    foreach (RezultatUkupno r in ActiveTakmicenje.getPoredakUkupno(deoTakKod).getRezultati())
                         rezultati.Add(new RezultatUkupnoExtended(r));
-                    }
                 }
                 
-                PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(RezultatUkupnoExtended))["RedBroj"];
-                rezultati.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc,
-                    ListSortDirection.Ascending));
-
                 p.setIzvestaj(new UkupnoIzvestaj(rezultati,
                     ActiveTakmicenje.Gimnastika, extended, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
                     nazivIzvestaja));
@@ -418,35 +391,14 @@ namespace Bilten.UI
         private List<RezultatUkupnoExtended> getRezultatiExtended(
             RezultatskoTakmicenje rezTakmicenje)
         {
-            if (rezultatiExtended[rezTakmicenja.IndexOf(rezTakmicenje)] == null)
-            {
-                IList<RezultatUkupno> rezultati = getRezultati(ActiveTakmicenje);
+            IList<Ocena> ocene;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1
+            || !rezTakmicenje.Propozicije.OdvojenoTak2)
+                ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
+            else
+                ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje2);
 
-                IList<Ocena> ocene;
-                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                || !rezTakmicenje.Propozicije.OdvojenoTak2)
-                    ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
-                else
-                    ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje2);
-
-                IDictionary<int, RezultatUkupnoExtended> rezultatiMap = new Dictionary<int, RezultatUkupnoExtended>();
-                foreach (RezultatUkupno rez in rezultati)
-                {
-                    RezultatUkupnoExtended rezEx = new RezultatUkupnoExtended(rez);
-                    rezultatiMap.Add(rezEx.Gimnasticar.Id, rezEx);
-                }
-
-                foreach (Ocena o in ocene)
-                {
-                    if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
-                    {
-                        rezultatiMap[o.Gimnasticar.Id].setDOcena(o.Sprava, o.D);
-                        rezultatiMap[o.Gimnasticar.Id].setEOcena(o.Sprava, o.E);
-                    }
-                }
-                rezultatiExtended[rezTakmicenja.IndexOf(rezTakmicenje)] = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
-            }
-            return rezultatiExtended[rezTakmicenja.IndexOf(rezTakmicenje)];
+            return ActiveTakmicenje.getPoredakUkupno(deoTakKod).getRezultatiExtended(ocene);
         }
 
         private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
@@ -543,21 +495,11 @@ namespace Bilten.UI
             if (rez.Total == null)
                 return;
 
-            List<RezultatUkupno> rezultati = getRezultatiSorted(ActiveTakmicenje, "RedBroj");
-            foreach (RezultatUkupno r in rezultati)
+            foreach (RezultatUkupno r in ActiveTakmicenje.getPoredakUkupno(deoTakKod).getRezultati())
             {
                 if (r.Total == rez.Total)
                     istiRezultati.Add(r);
             }
-        }
-
-        private List<RezultatUkupno> getRezultatiSorted(RezultatskoTakmicenje rezTakmicenje,
-            string sortColumn)
-        {
-            List<RezultatUkupno> result = new List<RezultatUkupno>(getRezultati(rezTakmicenje));
-            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatUkupno))[sortColumn];
-            result.Sort(new SortComparer<RezultatUkupno>(propDesc, ListSortDirection.Ascending));
-            return result;
         }
 
         private void mnQ_Click(object sender, EventArgs e)
@@ -602,7 +544,7 @@ namespace Bilten.UI
                 dataContext.BeginTransaction();
 
                 rez.KvalStatus = kvalStatus;
-                dataContext.Save(getPoredak(ActiveTakmicenje));
+                dataContext.Save(ActiveTakmicenje.getPoredakUkupno(deoTakKod));
                 dataContext.Commit();
             }
             catch (Exception ex)
@@ -644,7 +586,7 @@ namespace Bilten.UI
                 Cursor.Show();
 
                 IList<Ocena> ocene = loadOcene(takmicenje.Id, deoTakKod);
-                PoredakUkupno p = getPoredak(ActiveTakmicenje);
+                PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
                 p.create(ActiveTakmicenje, ocene);
                 dataContext.Save(p);
                 dataContext.Commit();
@@ -667,7 +609,7 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
             }
 
-            setItemsSortedByRedBroj();
+            setItems();
         }
 
         private void mnPromeniPoredakZaIsteOcene_Click(object sender, EventArgs e)
@@ -703,7 +645,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                dataContext.Save(getPoredak(ActiveTakmicenje));
+                dataContext.Save(ActiveTakmicenje.getPoredakUkupno(deoTakKod));
                 dataContext.Commit();
             }
             catch (Exception ex)

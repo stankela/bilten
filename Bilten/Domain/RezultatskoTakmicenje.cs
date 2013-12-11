@@ -234,6 +234,15 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual PoredakUkupno getPoredakUkupno(DeoTakmicenjaKod deoTakKod)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return Takmicenje1.PoredakUkupno;
+            
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje2);
+            return Takmicenje2.Poredak;
+        }
+
         public virtual PoredakSprava getPoredakSprava(DeoTakmicenjaKod deoTakKod, Sprava sprava)
         {
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
