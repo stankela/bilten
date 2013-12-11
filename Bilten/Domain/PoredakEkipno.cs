@@ -226,6 +226,18 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual List<RezultatEkipno> getRezultati()
+        {
+            List<RezultatEkipno> result = new List<RezultatEkipno>(Rezultati);
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatEkipno))["RedBroj"];
+            result.Sort(new SortComparer<RezultatEkipno>(propDesc,
+                ListSortDirection.Ascending));
+
+            return result;
+        }
+
         // TODO3: Proveri zasto sam zakomentarisao ovaj i sledece metode.
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {

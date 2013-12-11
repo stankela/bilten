@@ -382,19 +382,11 @@ namespace Bilten.UI
                 save = true;
             }
 
-            dataGridViewUserControl1.setItems<RezultatEkipno>(getRezultatiEkipno(ActiveTakmicenje));
-            dataGridViewUserControl1.sort<RezultatEkipno>("RedBroj", ListSortDirection.Ascending);
+            dataGridViewUserControl1.setItems<RezultatEkipno>(
+                ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
             onEkipeCellMouseClick();
 
             return save;
-        }
-
-        private IList<RezultatEkipno> getRezultatiEkipno(RezultatskoTakmicenje rezTakmicenje)
-        {
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                return rezTakmicenje.Takmicenje1.PoredakEkipno.Rezultati;
-            else
-                return rezTakmicenje.Takmicenje4.Poredak.Rezultati;
         }
 
         private void RezultatiEkipeForm_Shown(object sender, EventArgs e)
@@ -464,12 +456,7 @@ namespace Bilten.UI
                 string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
                 List<RezultatEkipno> rezultatiEkipno =
-                    new List<RezultatEkipno>(getRezultatiEkipno(ActiveTakmicenje));
-
-                PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(RezultatEkipno))["RedBroj"];
-                rezultatiEkipno.Sort(new SortComparer<RezultatEkipno>(propDesc,
-                    ListSortDirection.Ascending));
+                    ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati();
 
                 bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                 && ActiveTakmicenje.Propozicije.PostojiTak4

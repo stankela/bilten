@@ -227,13 +227,8 @@ namespace Bilten.UI
                 takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
             }
 
-            dataGridViewUserControl1.setItems<RezultatUkupnoFinaleKupa>(getRezultati(ActiveTakmicenje));
-            dataGridViewUserControl1.sort<RezultatUkupnoFinaleKupa>("RedBroj", ListSortDirection.Ascending);
-        }
-
-        private IList<RezultatUkupnoFinaleKupa> getRezultati(RezultatskoTakmicenje rezTakmicenje)
-        {
-            return rezTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa.Rezultati;
+            dataGridViewUserControl1.setItems<RezultatUkupnoFinaleKupa>(
+                ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa.getRezultati());
         }
 
         private void cmbTakmicenja_DropDownClosed(object sender, EventArgs e)
@@ -291,13 +286,8 @@ namespace Bilten.UI
 
                 bool extended = Opcije.Instance.PrikaziDEOcene;
                 List<RezultatUkupnoFinaleKupa> rezultati
-                    = new List<RezultatUkupnoFinaleKupa>(getRezultati(ActiveTakmicenje)); ;
+                    = ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa.getRezultati();
                 
-                PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(RezultatUkupnoFinaleKupa))["RedBroj"];
-                rezultati.Sort(new SortComparer<RezultatUkupnoFinaleKupa>(propDesc,
-                    ListSortDirection.Ascending));
-
                 bool kvalColumn = ActiveTakmicenje.Propozicije.PostojiTak2
                     && ActiveTakmicenje.Propozicije.OdvojenoTak2;
 
@@ -321,40 +311,6 @@ namespace Bilten.UI
         {
             throw new Exception("TODO3: The method or operation is not implemented.");
         }
-
-        /*private List<RezultatUkupnoExtended> getRezultatiExtended(
-            RezultatskoTakmicenje rezTakmicenje)
-        {
-            if (rezultatiExtended == null)
-            {
-                IList<RezultatUkupno> rezultati = getRezultati(ActiveTakmicenje);
-
-                IList<Ocena> ocene;
-                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                || rezTakmicenje.Propozicije.Tak2NaOsnovuTak1)
-                    ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
-                else
-                    ocene = loadOcene(takmicenje.Id, DeoTakmicenjaKod.Takmicenje2);
-
-                IDictionary<int, RezultatUkupnoExtended> rezultatiMap = new Dictionary<int, RezultatUkupnoExtended>();
-                foreach (RezultatUkupno rez in rezultati)
-                {
-                    RezultatUkupnoExtended rezEx = new RezultatUkupnoExtended(rez);
-                    rezultatiMap.Add(rezEx.Gimnasticar.Id, rezEx);
-                }
-
-                foreach (Ocena o in ocene)
-                {
-                    if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
-                    {
-                        rezultatiMap[o.Gimnasticar.Id].setDOcena(o.Sprava, o.D);
-                        rezultatiMap[o.Gimnasticar.Id].setEOcena(o.Sprava, o.E);
-                    }
-                }
-                rezultatiExtended = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
-            }
-            return rezultatiExtended;
-        }*/
 
         private void btnClose_Click(object sender, EventArgs e)
         {

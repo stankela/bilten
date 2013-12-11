@@ -260,5 +260,14 @@ namespace Bilten.Domain
             Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
             return Takmicenje3.PoredakPreskok;
         }
+
+        public virtual PoredakEkipno getPoredakEkipno(DeoTakmicenjaKod deoTakKod)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return Takmicenje1.PoredakEkipno;
+
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje4);
+            return Takmicenje4.Poredak;
+        }
     }
 }

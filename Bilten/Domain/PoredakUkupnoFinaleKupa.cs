@@ -264,5 +264,16 @@ namespace Bilten.Domain
                 }
             }
         }
+
+        public List<RezultatUkupnoFinaleKupa> getRezultati()
+        {
+            List<RezultatUkupnoFinaleKupa> result = new List<RezultatUkupnoFinaleKupa>(Rezultati);
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatUkupnoFinaleKupa))["RedBroj"];
+            result.Sort(new SortComparer<RezultatUkupnoFinaleKupa>(propDesc, ListSortDirection.Ascending));
+
+            return result;
+        }
     }
 }

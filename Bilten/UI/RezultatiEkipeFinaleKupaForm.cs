@@ -227,15 +227,10 @@ namespace Bilten.UI
                 //save = true;
             }
 
-            dataGridViewUserControl1.setItems<RezultatEkipnoFinaleKupa>(getRezultatiEkipno(ActiveTakmicenje));
-            dataGridViewUserControl1.sort<RezultatEkipnoFinaleKupa>("RedBroj", ListSortDirection.Ascending);
+            dataGridViewUserControl1.setItems<RezultatEkipnoFinaleKupa>(
+                ActiveTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.getRezultati());
 
             return save;
-        }
-
-        private IList<RezultatEkipnoFinaleKupa> getRezultatiEkipno(RezultatskoTakmicenje rezTakmicenje)
-        {
-            return rezTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.Rezultati;
         }
 
         private void RezultatiEkipeFinaleKupaForm_Shown(object sender, EventArgs e)
@@ -287,12 +282,7 @@ namespace Bilten.UI
                 PreviewDialog p = new PreviewDialog();
 
                 List<RezultatEkipnoFinaleKupa> rezultatiEkipno =
-                    new List<RezultatEkipnoFinaleKupa>(getRezultatiEkipno(ActiveTakmicenje));
-
-                PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(RezultatEkipnoFinaleKupa))["RedBroj"];
-                rezultatiEkipno.Sort(new SortComparer<RezultatEkipnoFinaleKupa>(propDesc,
-                    ListSortDirection.Ascending));
+                    ActiveTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.getRezultati();
 
                 bool kvalColumn = ActiveTakmicenje.Propozicije.PostojiTak4
                     && ActiveTakmicenje.Propozicije.OdvojenoTak4;
