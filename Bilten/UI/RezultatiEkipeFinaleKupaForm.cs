@@ -212,11 +212,15 @@ namespace Bilten.UI
             }
         }
 
+        private bool kvalColumnVisible()
+        {
+            return ActiveTakmicenje.postojeKvalifikacijeEkipno(DeoTakmicenjaKod.Takmicenje1);
+        }
+
         private bool onSelectedTakmicenjeChanged()
         {
-            bool kvalColumn = ActiveTakmicenje.Propozicije.OdvojenoTak4;
             GridColumnsInitializer.initRezultatiEkipnoFinaleKupa(dataGridViewUserControl1,
-                takmicenje, kvalColumn);
+                takmicenje, kvalColumnVisible());
             
             bool save = false;
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
@@ -284,11 +288,8 @@ namespace Bilten.UI
                 List<RezultatEkipnoFinaleKupa> rezultatiEkipno =
                     ActiveTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.getRezultati();
 
-                bool kvalColumn = ActiveTakmicenje.Propozicije.PostojiTak4
-                    && ActiveTakmicenje.Propozicije.OdvojenoTak4;
-
                 p.setIzvestaj(new EkipeFinaleKupaIzvestaj(rezultatiEkipno,
-                    ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl1.DataGridView,
+                    ActiveTakmicenje.Gimnastika, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
                     nazivIzvestaja));
                 p.ShowDialog();
             }

@@ -427,21 +427,10 @@ namespace Bilten.UI
         private bool kvalColumnVisible()
         {
             if (takmicenje.FinaleKupa)
+                // Za finale kupa se kvalifikanti prikazuju u RezultatiSpravaFinaleKupa
                 return false;
-
-            bool result = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak3
-                && ActiveTakmicenje.Propozicije.OdvojenoTak3;
-            if (ActiveSprava == Sprava.Preskok)
-            {
-                if (!ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod))
-                    result = result
-                        && !ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-                else
-                    result = result
-                        && ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-            }
-            return result;
+            else
+                return ActiveTakmicenje.postojeKvalifikacijeSprava(deoTakKod);            
         }
 
         private int getRezultatiKey(RezultatskoTakmicenje tak, Sprava sprava)
@@ -562,10 +551,6 @@ namespace Bilten.UI
 
                 if (form.StampajSveSprave)
                 {
-                    bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                      && ActiveTakmicenje.Propozicije.PostojiTak3
-                      && ActiveTakmicenje.Propozicije.OdvojenoTak3;
-
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
                     List<RezultatPreskok> rezultatiPreskok = null;
 
@@ -577,18 +562,17 @@ namespace Bilten.UI
                             rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka);
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
-                        obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumn, documentName, form.BrojSpravaPoStrani,
+                        obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
                         form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                 }
                 else
                 {
-                    bool kvalColumn = kvalColumnVisible();
                     if (ActiveSprava != Sprava.Preskok)
                     {
                         List<RezultatSprava> rezultati =
                             ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getRezultati();
                         p.setIzvestaj(new SpravaIzvestaj(ActiveSprava, rezultati,
-                            kvalColumn, documentName, form.PrikaziPenalSprave,
+                            kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
                     else
@@ -596,7 +580,7 @@ namespace Bilten.UI
                         List<RezultatPreskok> rezultati =
                             ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka);
                         p.setIzvestaj(new SpravaIzvestaj(obaPreskoka, rezultati,
-                            kvalColumn, documentName, form.PrikaziPenalSprave,
+                            kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                     }
                 }

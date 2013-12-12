@@ -199,9 +199,11 @@ namespace Bilten.UI
 
         private bool kvalColumnVisible()
         {
-            return deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak2
-                && ActiveTakmicenje.Propozicije.OdvojenoTak2;
+            if (takmicenje.FinaleKupa)
+                // Za finale kupa se kvalifikanti prikazuju u RezultatiUkupnoFinaleKupa
+                return false;
+            else
+                return ActiveTakmicenje.postojeKvalifikacijeViseboj(deoTakKod);
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -240,15 +242,11 @@ namespace Bilten.UI
 
         private void onSelectedTakmicenjeChanged()
         {
-            bool kvalColumn = kvalColumnVisible();
-            if (takmicenje.FinaleKupa)
-                kvalColumn = false;
-
             // TODO: Indexi kolona bi trebali da budu konstante
             if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
             {
                 GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
-                    takmicenje, kvalColumn);
+                    takmicenje, kvalColumnVisible());
 
                 List<string> imena = new List<string>();
                 List<string> klubovi = new List<string>();
@@ -277,7 +275,7 @@ namespace Bilten.UI
                 int oldImeWidth = dataGridViewUserControl1.DataGridView.Columns[2].Width;
                 int oldKlubWidth = dataGridViewUserControl1.DataGridView.Columns[3].Width;
                 GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
-                    takmicenje, kvalColumn);
+                    takmicenje, kvalColumnVisible());
                 dataGridViewUserControl1.DataGridView.Columns[2].Width = oldImeWidth;
                 dataGridViewUserControl1.DataGridView.Columns[3].Width = oldKlubWidth;
             }
@@ -372,9 +370,8 @@ namespace Bilten.UI
                         rezultati.Add(new RezultatUkupnoExtended(r));
                 }
                 
-                p.setIzvestaj(new UkupnoIzvestaj(rezultati,
-                    ActiveTakmicenje.Gimnastika, extended, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
-                    nazivIzvestaja));
+                p.setIzvestaj(new UkupnoIzvestaj(rezultati, ActiveTakmicenje.Gimnastika, extended,
+                    kvalColumnVisible(), dataGridViewUserControl1.DataGridView, nazivIzvestaja));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)

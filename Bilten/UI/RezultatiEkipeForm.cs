@@ -355,15 +355,19 @@ namespace Bilten.UI
             }
         }
 
+        private bool kvalColumnVisible()
+        {
+            if (takmicenje.FinaleKupa)
+                // Za finale kupa se kvalifikanti prikazuju u RezultatiEkipeFinaleKupa
+                return false;
+            else
+                return ActiveTakmicenje.postojeKvalifikacijeEkipno(deoTakKod);
+        }
+
         private bool onSelectedTakmicenjeChanged()
         {
-            bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak4
-                && ActiveTakmicenje.Propozicije.OdvojenoTak4;
-            if (takmicenje.FinaleKupa)
-                kvalColumn = false;
             GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1,
-                takmicenje, kvalColumn);
+                takmicenje, kvalColumnVisible());
             
             bool save = false;
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])

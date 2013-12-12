@@ -314,8 +314,7 @@ namespace Bilten.UI
 
         private bool kvalColumnVisible()
         {
-            bool result = ActiveTakmicenje.Propozicije.OdvojenoTak3;
-            return result;
+            return ActiveTakmicenje.postojeKvalifikacijeSprava(DeoTakmicenjaKod.Takmicenje1);
         }
 
         private int getRezultatiKey(RezultatskoTakmicenje tak, Sprava sprava)
@@ -384,8 +383,6 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                bool kvalColumn;
-
                 string documentName;
                 if (form.StampajSveSprave)
                 {
@@ -398,26 +395,23 @@ namespace Bilten.UI
                 }
                 if (form.StampajSveSprave)
                 {
-                    kvalColumn = kvalColumnVisible();
-
                     List<List<RezultatSpravaFinaleKupa>> rezultatiSprave = new List<List<RezultatSpravaFinaleKupa>>();
 
                     foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
                     {
                         rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
                     }
-                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, ActiveTakmicenje.Gimnastika, kvalColumn,
-                        documentName, form.BrojSpravaPoStrani,
+                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, ActiveTakmicenje.Gimnastika,
+                        kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
                         spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                 }
                 else
                 {
-                    kvalColumn = kvalColumnVisible();
                     List<RezultatSpravaFinaleKupa> rezultati =
                         ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati();
 
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati,
-                        kvalColumn, documentName, spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                        kvalColumnVisible(), documentName, spravaGridUserControl1.DataGridViewUserControl.DataGridView));
                 }
 
                 p.ShowDialog();

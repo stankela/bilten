@@ -269,5 +269,24 @@ namespace Bilten.Domain
             Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje4);
             return Takmicenje4.Poredak;
         }
+
+        public virtual bool postojeKvalifikacijeViseboj(DeoTakmicenjaKod deoTakKod)
+        {
+            return deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                && Propozicije.PostojiTak2 && Propozicije.OdvojenoTak2;
+        }
+
+        public virtual bool postojeKvalifikacijeSprava(DeoTakmicenjaKod deoTakKod)
+        {
+            return deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                && Propozicije.PostojiTak3 && Propozicije.OdvojenoTak3;
+        }
+
+        public virtual bool postojeKvalifikacijeEkipno(DeoTakmicenjaKod deoTakKod)
+        {
+            return deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                && Propozicije.PostojiTak4 && Propozicije.OdvojenoTak4;
+        }
+
     }
 }
