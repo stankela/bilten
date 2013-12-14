@@ -277,32 +277,42 @@ namespace Bilten.Domain
             return result;
         }
 
-        public virtual List<RezultatUkupnoExtended> getRezultatiExtended(IList<Ocena> ocene)
+        public virtual List<RezultatUkupnoExtended> getRezultatiExtended(IList<Ocena> ocene, bool prikaziDEOcene)
         {
-            IDictionary<int, RezultatUkupnoExtended> rezultatiMap = new Dictionary<int, RezultatUkupnoExtended>();
-            foreach (RezultatUkupno rez in Rezultati)
+            if (prikaziDEOcene)
             {
-                RezultatUkupnoExtended rezEx = new RezultatUkupnoExtended(rez);
-                rezultatiMap.Add(rezEx.Gimnasticar.Id, rezEx);
-            }
-
-            foreach (Ocena o in ocene)
-            {
-                if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
+                IDictionary<int, RezultatUkupnoExtended> rezultatiMap = new Dictionary<int, RezultatUkupnoExtended>();
+                foreach (RezultatUkupno rez in Rezultati)
                 {
-                    rezultatiMap[o.Gimnasticar.Id].setDOcena(o.Sprava, o.D);
-                    rezultatiMap[o.Gimnasticar.Id].setEOcena(o.Sprava, o.E);
+                    RezultatUkupnoExtended rezEx = new RezultatUkupnoExtended(rez);
+                    rezultatiMap.Add(rezEx.Gimnasticar.Id, rezEx);
                 }
+
+                foreach (Ocena o in ocene)
+                {
+                    if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
+                    {
+                        rezultatiMap[o.Gimnasticar.Id].setDOcena(o.Sprava, o.D);
+                        rezultatiMap[o.Gimnasticar.Id].setEOcena(o.Sprava, o.E);
+                    }
+                }
+
+                List<RezultatUkupnoExtended> result = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
+
+                PropertyDescriptor propDesc =
+                    TypeDescriptor.GetProperties(typeof(RezultatUkupnoExtended))["RedBroj"];
+                result.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc,
+                    ListSortDirection.Ascending));
+
+                return result;
             }
-
-            List<RezultatUkupnoExtended> result = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatUkupnoExtended))["RedBroj"];
-            result.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc,
-                ListSortDirection.Ascending));
-
-            return result;
+            else
+            {
+                List<RezultatUkupnoExtended> result = new List<RezultatUkupnoExtended>();
+                foreach (RezultatUkupno r in getRezultati())
+                    result.Add(new RezultatUkupnoExtended(r));
+                return result;
+            }
         }
 
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)

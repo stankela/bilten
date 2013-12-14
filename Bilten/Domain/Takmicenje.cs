@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Iesi.Collections.Generic;
+using System.Diagnostics;
 
 namespace Bilten.Domain
 {
@@ -328,6 +329,30 @@ namespace Bilten.Domain
                 result = 29 * result + Datum.GetHashCode();
                 return result;
             }
+        }
+
+        public virtual IList<RezultatskoTakmicenje> getRezTakmicenjaViseboj(IList<RezultatskoTakmicenje> svaRezTakmicenja,
+            DeoTakmicenjaKod deoTakKod, bool sumaObaKola)
+        {
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
+            IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
+            foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
+            {
+                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                {
+                    if (rt.Propozicije.PostojiTak2)
+                    {
+                        if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak2)
+                            result.Add(rt);
+                    }
+                }
+                else
+                {
+                    if (rt.Propozicije.PostojiTak2 && rt.Propozicije.OdvojenoTak2)
+                        result.Add(rt);
+                }
+            }
+            return result;
         }
     }
 }

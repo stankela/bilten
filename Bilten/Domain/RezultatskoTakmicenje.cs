@@ -288,5 +288,30 @@ namespace Bilten.Domain
                 && Propozicije.PostojiTak4 && Propozicije.OdvojenoTak4;
         }
 
+
+        public virtual string getNazivIzvestajaViseboj(DeoTakmicenjaKod deoTakKod)
+        {
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
+
+            //char shVeliko = '\u0160';
+            char shMalo = '\u0161';
+            string result;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                if (Propozicije.OdvojenoTak2)
+                    result = "Kvalifikacije za finale vi" + shMalo + "eboja";
+                else
+                    result = "Vi" + shMalo + "eboj";
+            }
+            else
+            {
+                if (Propozicije.OdvojenoTak2)
+                    result = "Finale vi" + shMalo + "eboja";
+                else
+                    result = "Vi" + shMalo + "eboj";
+            }
+            return result;
+        }
+
     }
 }

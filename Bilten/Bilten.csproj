@@ -430,12 +430,6 @@
     <Compile Include="UI\RasporedSudijaForm.Designer.cs">
       <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\RazresiIsteOceneForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\RazresiIsteOceneForm.Designer.cs">
-      <DependentUpon>RazresiIsteOceneForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\RezultatiEkipeFinaleKupaForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -802,10 +796,6 @@
     <EmbeddedResource Include="UI\RasporedSudijaForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RazresiIsteOceneForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>RazresiIsteOceneForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RezultatiEkipeFinaleKupaForm.resx">
       <SubType>Designer</SubType>
