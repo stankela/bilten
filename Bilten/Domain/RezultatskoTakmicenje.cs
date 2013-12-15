@@ -288,20 +288,29 @@ namespace Bilten.Domain
                 && Propozicije.PostojiTak4 && Propozicije.OdvojenoTak4;
         }
 
-
-        public virtual string getNazivIzvestajaViseboj(DeoTakmicenjaKod deoTakKod)
+        public virtual string getNazivIzvestajaViseboj(DeoTakmicenjaKod deoTakKod, bool finaleKupa, bool sumaObaKola)
         {
             Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
 
             //char shVeliko = '\u0160';
             char shMalo = '\u0161';
-            string result;
+            string result = String.Empty;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
-                if (Propozicije.OdvojenoTak2)
-                    result = "Kvalifikacije za finale vi" + shMalo + "eboja";
+                if (finaleKupa)
+                {
+                    if (sumaObaKola)
+                        result = "I i II kolo - Rezultati vi" + shMalo + "eboj";
+                    else
+                        result = "Vi" + shMalo + "eboj";
+                }
                 else
-                    result = "Vi" + shMalo + "eboj";
+                {
+                    if (Propozicije.OdvojenoTak2)
+                        result = "Kvalifikacije za finale vi" + shMalo + "eboja";
+                    else
+                        result = "Vi" + shMalo + "eboj";
+                }
             }
             else
             {
@@ -312,6 +321,5 @@ namespace Bilten.Domain
             }
             return result;
         }
-
     }
 }

@@ -354,5 +354,17 @@ namespace Bilten.Domain
             }
             return result;
         }
+
+        public virtual RezultatskoTakmicenje getRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
+            TakmicarskaKategorija kat)
+        {
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.Kategorija.Equals(kat))
+                    return rezTak;
+            }
+            return null;
+        }
+
     }
 }

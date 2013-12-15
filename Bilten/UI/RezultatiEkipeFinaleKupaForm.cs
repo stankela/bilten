@@ -41,7 +41,7 @@ namespace Bilten.UI
 
                 takmicenje = loadTakmicenje(takmicenjeId);
                 
-                IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
+                IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje);
                 if (svaRezTakmicenja.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
 
@@ -106,7 +106,7 @@ namespace Bilten.UI
                 return result[0];
         }
 
-        private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
+        private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
             IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
             IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
@@ -123,15 +123,17 @@ namespace Bilten.UI
             IList<RezultatskoTakmicenje> result = dataContext.
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
+                        new object[] { takmicenje.Id });
 
             foreach (RezultatskoTakmicenje tak in result)
             {
                 // potrebno u Poredak.create
                 NHibernateUtil.Initialize(tak.Propozicije);
 
-                PoredakEkipno poredak1 = findPoredakEkipnoTak1(rezTakmicenjaPrvoKolo, tak.Kategorija);
-                PoredakEkipno poredak2 = findPoredakEkipnoTak1(rezTakmicenjaDrugoKolo, tak.Kategorija);
+                PoredakEkipno poredak1 =
+                    takmicenje.getRezTakmicenje(rezTakmicenjaPrvoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
+                PoredakEkipno poredak2 =
+                    takmicenje.getRezTakmicenje(rezTakmicenjaDrugoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
                 tak.Takmicenje1.PoredakEkipnoFinaleKupa.create(tak, poredak1, poredak2);
             }
             return result;
@@ -153,16 +155,6 @@ namespace Bilten.UI
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
             return result;
-        }
-
-        private PoredakEkipno findPoredakEkipnoTak1(IList<RezultatskoTakmicenje> rezTakmicenja, TakmicarskaKategorija kat)
-        {
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-            {
-                if (rezTak.Kategorija.Equals(kat))
-                    return rezTak.Takmicenje1.PoredakEkipno;
-            }
-            return null;
         }
 
         private void initUI()

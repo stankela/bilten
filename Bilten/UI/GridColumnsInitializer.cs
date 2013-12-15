@@ -263,7 +263,6 @@ namespace Bilten.UI
                 dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
-
         public static void reinitRezultatiUkupnoKeepColumnWidths(DataGridViewUserControl dgw, Takmicenje takmicenje, 
             bool kvalColumn)
         {
@@ -275,6 +274,7 @@ namespace Bilten.UI
             dgw.DataGridView.Columns[2].Width = oldImeWidth;
             dgw.DataGridView.Columns[3].Width = oldKlubWidth;
         }
+
         public static void initRezultatiSprava(DataGridViewUserControl dgw,
             Takmicenje takmicenje, bool kvalColumn, bool obaPreskoka)
         {
@@ -417,6 +417,25 @@ namespace Bilten.UI
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             if (kvalColumn)
                 dgw.AddColumn("", "KvalStatus", 30);
+        }
+
+        public static void maximizeColumnsRezultatiUkupnoFinaleKupa(DataGridViewUserControl dgw,
+            IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            List<string> imena = new List<string>();
+            List<string> klubovi = new List<string>();
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (RezultatUkupnoFinaleKupa r in rt.Takmicenje1.PoredakUkupnoFinaleKupa.getRezultati())
+                {
+                    imena.Add(r.Gimnasticar.PrezimeIme);
+                    klubovi.Add(r.Gimnasticar.KlubDrzava);
+                }
+            }
+            if (imena.Count > 0)
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+            if (klubovi.Count > 0)
+                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
         public static void initRezultatiSpravaFinaleKupa(DataGridViewUserControl dgw,

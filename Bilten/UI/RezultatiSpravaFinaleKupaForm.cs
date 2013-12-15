@@ -49,7 +49,7 @@ namespace Bilten.UI
 
                 takmicenje = loadTakmicenje(takmicenjeId);
 
-                IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
+                IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje);
                 if (svaRezTakmicenja.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
 
@@ -117,7 +117,7 @@ namespace Bilten.UI
                 return result[0];
         }
 
-        private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
+        private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
             IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
             IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
@@ -136,7 +136,7 @@ namespace Bilten.UI
             IList<RezultatskoTakmicenje> result = dataContext.
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
+                        new object[] { takmicenje.Id });
 
             RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
 
@@ -145,8 +145,8 @@ namespace Bilten.UI
                 // potrebno u Poredak.create
                 NHibernateUtil.Initialize(rezTak.Propozicije);
 
-                RezultatskoTakmicenje rezTakPrvoKolo = findRezTakmicenje(rezTakmicenjaPrvoKolo, rezTak.Kategorija);
-                RezultatskoTakmicenje rezTakDrugoKolo = findRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
+                RezultatskoTakmicenje rezTakPrvoKolo = takmicenje.getRezTakmicenje(rezTakmicenjaPrvoKolo, rezTak.Kategorija);
+                RezultatskoTakmicenje rezTakDrugoKolo = takmicenje.getRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
 
                 rezTak.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
                 List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate = dao.findByRezTak(rezTak);
@@ -210,17 +210,6 @@ namespace Bilten.UI
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
             return result;
-        }
-
-        private RezultatskoTakmicenje findRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
-            TakmicarskaKategorija kat)
-        {
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-            {
-                if (rezTak.Kategorija.Equals(kat))
-                    return rezTak;
-            }
-            return null;
         }
 
         private void initUI()
