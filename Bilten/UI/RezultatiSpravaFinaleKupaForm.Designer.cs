@@ -60,7 +60,6 @@ namespace Bilten.UI
             this.cmbSprava.Size = new System.Drawing.Size(121, 21);
             this.cmbSprava.TabIndex = 1;
             this.cmbSprava.DropDownClosed += new System.EventHandler(this.cmbSprava_DropDownClosed);
-            this.cmbSprava.DropDown += new System.EventHandler(this.cmbSprava_DropDown);
             // 
             // btnOk
             // 

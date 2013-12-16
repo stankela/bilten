@@ -505,6 +505,28 @@ namespace Bilten.UI
                 dgw.AddColumn("", "KvalStatus", 30);
         }
 
+        public static void maximizeColumnsRezultatiSpravaFinaleKupa(DataGridViewUserControl dgw,
+            IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            List<string> imena = new List<string>();
+            List<string> klubovi = new List<string>();
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (Sprava s in Sprave.getSprave(rt.Gimnastika))
+                {
+                    foreach (RezultatSpravaFinaleKupa r in rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati())
+                    {
+                        imena.Add(r.Gimnasticar.PrezimeIme);
+                        klubovi.Add(r.Gimnasticar.KlubDrzava);
+                    }
+                }
+            }
+            if (imena.Count > 0)
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+            if (klubovi.Count > 0)
+                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+        }
+
         public static void initRezultatiEkipnoFinaleKupa(DataGridViewUserControl dgw, Takmicenje takmicenje, bool kvalColumn)
         {
             dgw.DataGridView.Columns.Clear();

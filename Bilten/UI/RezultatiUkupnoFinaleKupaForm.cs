@@ -115,19 +115,11 @@ namespace Bilten.UI
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenje.Id });
-            foreach (RezultatskoTakmicenje tak in result)
+            foreach (RezultatskoTakmicenje rt in result)
             {
                 // potrebno u Poredak.create
-                NHibernateUtil.Initialize(tak.Propozicije);
-
-                // TODO3: Ovo ce raditi samo ako su prvo i drugo kolo imali samo jedno takmicenje. (takodje i kod
-                // poretka ekipa i sprava)
-                PoredakUkupno poredak1 =
-                    takmicenje.getRezTakmicenje(rezTakmicenjaPrvoKolo, tak.Kategorija).Takmicenje1.PoredakUkupno;
-                PoredakUkupno poredak2 =
-                    takmicenje.getRezTakmicenje(rezTakmicenjaDrugoKolo, tak.Kategorija).Takmicenje1.PoredakUkupno;
-                tak.Takmicenje1.PoredakUkupnoFinaleKupa.create(tak, poredak1, poredak2);
-
+                NHibernateUtil.Initialize(rt.Propozicije);
+                takmicenje.createPoredakUkupnoFinaleKupa(rt, rezTakmicenjaPrvoKolo, rezTakmicenjaDrugoKolo);
             }
             return result;
         }
@@ -153,6 +145,7 @@ namespace Bilten.UI
         private void initUI()
         {
             Text = "I i II Kolo - rezultati viseboj";
+            this.ClientSize = new Size(ClientSize.Width, 540);
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;
@@ -162,8 +155,6 @@ namespace Bilten.UI
 
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-
-            this.ClientSize = new Size(ClientSize.Width, 450);
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -216,6 +207,7 @@ namespace Bilten.UI
             }
             else
             {
+                // TODO
                 // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
                 //GridColumnsInitializer.reinitRezultatiUkupnoKeepColumnWidths(dataGridViewUserControl1,
                   //  takmicenje, kvalColumnVisible());

@@ -273,9 +273,7 @@ namespace Bilten.UI
 
         private void onSelectedRezultatiChanged()
         {
-            btnStampajKvalifikante.Enabled = kvalColumnVisible();
-            
-            // TODO: Kada se promeni sprava trebalo bi da kolone zadrze postojecu sirinu.
+            btnStampajKvalifikante.Enabled = kvalColumnVisible();            
             initSpravaGridUserControl(ActiveSprava);
 
             int rezultatiKey = getRezultatiKey(ActiveTakmicenje, ActiveSprava);

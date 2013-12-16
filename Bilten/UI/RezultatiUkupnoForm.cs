@@ -141,6 +141,7 @@ namespace Bilten.UI
         private void initUI()
         {
             Text = "Rezultati - " + DeoTakmicenjaKodovi.toString(deoTakKod);
+            this.ClientSize = new Size(900, 540);
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;
@@ -151,8 +152,6 @@ namespace Bilten.UI
             dataGridViewUserControl1.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-
-            this.ClientSize = new Size(900, 540);
         }
 
         void DataGridView_MouseUp(object sender, MouseEventArgs e)
