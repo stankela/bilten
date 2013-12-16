@@ -252,8 +252,7 @@ namespace Bilten.UI
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(DeoTakmicenjaKod.Takmicenje1, 
-                takmicenje.FinaleKupa, true);
+            string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(DeoTakmicenjaKod.Takmicenje1, true, true);
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,

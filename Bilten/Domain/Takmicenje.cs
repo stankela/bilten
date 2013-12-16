@@ -355,6 +355,30 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual IList<RezultatskoTakmicenje> getRezTakmicenjaSprava(IList<RezultatskoTakmicenje> svaRezTakmicenja,
+            DeoTakmicenjaKod deoTakKod, bool sumaObaKola)
+        {
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
+            foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
+            {
+                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                {
+                    if (rt.Propozicije.PostojiTak3)
+                    {
+                        if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak3)
+                            result.Add(rt);
+                    }
+                }
+                else
+                {
+                    if (rt.Propozicije.PostojiTak3 && rt.Propozicije.OdvojenoTak3)
+                        result.Add(rt);
+                }
+            }
+            return result;
+        }
+
         public virtual RezultatskoTakmicenje getRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
             TakmicarskaKategorija kat)
         {

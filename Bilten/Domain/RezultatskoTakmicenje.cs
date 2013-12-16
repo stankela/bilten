@@ -234,6 +234,31 @@ namespace Bilten.Domain
             }
         }
 
+        public override bool Equals(object other)
+        {
+            if (object.ReferenceEquals(this, other)) return true;
+            if (!(other is RezultatskoTakmicenje)) return false;
+
+            RezultatskoTakmicenje that = (RezultatskoTakmicenje)other;
+            return (this.Gimnastika == that.Gimnastika
+                && this.Takmicenje.Equals(that.Takmicenje)
+                && this.Kategorija.Equals(that.Kategorija)
+                && this.TakmicenjeDescription.Equals(that.TakmicenjeDescription));
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = 14;
+                result = 29 * result + Gimnastika.GetHashCode();
+                result = 29 * result + Takmicenje.GetHashCode();
+                result = 29 * result + Kategorija.GetHashCode();
+                result = 29 * result + TakmicenjeDescription.GetHashCode();
+                return result;
+            }
+        }
+        
         public virtual PoredakUkupno getPoredakUkupno(DeoTakmicenjaKod deoTakKod)
         {
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -314,10 +339,36 @@ namespace Bilten.Domain
             }
             else
             {
-                if (Propozicije.OdvojenoTak2)
-                    result = "Finale vi" + shMalo + "eboja";
+                result = "Finale vi" + shMalo + "eboja";
+            }
+            return result;
+        }
+
+        public virtual string getNazivIzvestajaSprava(DeoTakmicenjaKod deoTakKod, bool finaleKupa, bool sumaObaKola)
+        {
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+
+            string result = String.Empty;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                if (finaleKupa)
+                {
+                    if (sumaObaKola)
+                        result = "I i II kolo - Rezultati po spravama";
+                    else
+                        result = "Finale po spravama";
+                }
                 else
-                    result = "Vi" + shMalo + "eboj";
+                {
+                    if (Propozicije.OdvojenoTak3)
+                        result = "Kvalifikacije za finale po spravama";
+                    else
+                        result = "Finale po spravama";
+                }
+            }
+            else
+            {
+                result = "Finale po spravama";
             }
             return result;
         }

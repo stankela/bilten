@@ -315,6 +315,51 @@ namespace Bilten.UI
                 dgw.AddColumn("", "KvalStatus", 30);
         }
 
+        public static void maximizeColumnsRezultatiSprava(DataGridViewUserControl dgw, 
+            DeoTakmicenjaKod deoTakKod, IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            List<string> imena = new List<string>();
+            List<string> klubovi = new List<string>();
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (Sprava s in Sprave.getSprave(rt.Gimnastika))
+                {
+                    if (s != Sprava.Preskok)
+                    {
+                        foreach (RezultatSprava r in rt.getPoredakSprava(deoTakKod, s).getRezultati())
+                        {
+                            imena.Add(r.Gimnasticar.PrezimeIme);
+                            klubovi.Add(r.Gimnasticar.KlubDrzava);
+                        }
+                    }
+                    else
+                    {
+                        foreach (RezultatPreskok r in rt.getPoredakPreskok(deoTakKod).getRezultati(
+                            rt.Propozicije.racunajObaPreskoka(deoTakKod)))
+                        {
+                            imena.Add(r.Gimnasticar.PrezimeIme);
+                            klubovi.Add(r.Gimnasticar.KlubDrzava);
+                        }
+                    }
+                }
+            }
+            if (imena.Count > 0)
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+            if (klubovi.Count > 0)
+                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+        }
+
+        public static void reinitRezultatiSpravaKeepColumnWidths(DataGridViewUserControl dataGridViewUserControl,
+            Takmicenje takmicenje, bool kvalColumnVisible, bool obaPreskoka)
+        {
+            DataGridView dgw = dataGridViewUserControl.DataGridView;
+            int oldImeWidth = dgw.Columns[2].Width;
+            int oldKlubWidth = dgw.Columns[3].Width;
+            GridColumnsInitializer.initRezultatiSprava(dataGridViewUserControl, takmicenje, kvalColumnVisible, obaPreskoka);
+            dgw.Columns[2].Width = oldImeWidth;
+            dgw.Columns[3].Width = oldKlubWidth;
+        }
+   
         public static void initKvalifikantiTak2(DataGridViewUserControl dgw, Takmicenje takmicenje)
         {
             dgw.DataGridView.Columns.Clear();
@@ -472,7 +517,6 @@ namespace Bilten.UI
             if (kvalColumn)
                 dgw.AddColumn("", "KvalStatus", 30);
         }
-
 
         public static int getMaxWidth(List<string> strings, DataGridView dataGridView)
         {

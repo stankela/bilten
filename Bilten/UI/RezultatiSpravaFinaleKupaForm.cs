@@ -337,7 +337,7 @@ namespace Bilten.UI
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            string nazivIzvestaja = "I i II kolo - Rezultati po spravama";
+            string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaSprava(DeoTakmicenjaKod.Takmicenje1, true, true);
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
                 false, true, false, false, false, false, false);
