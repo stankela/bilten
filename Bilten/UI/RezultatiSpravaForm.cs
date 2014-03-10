@@ -62,12 +62,12 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
+                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
+                NHibernateUtil.Initialize(takmicenje);
+
                 IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
                 if (svaRezTakmicenja.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
-
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                NHibernateUtil.Initialize(takmicenje);
 
                 rezTakmicenja = takmicenje.getRezTakmicenjaSprava(svaRezTakmicenja, deoTakKod, false);
                 if (rezTakmicenja.Count == 0)

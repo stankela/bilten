@@ -379,6 +379,30 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual IList<RezultatskoTakmicenje> getRezTakmicenjaEkipe(IList<RezultatskoTakmicenje> svaRezTakmicenja,
+            DeoTakmicenjaKod deoTakKod, bool sumaObaKola)
+        {
+            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje4);
+            IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
+            foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
+            {
+                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                {
+                    if (rt.Propozicije.PostojiTak4 && rt.ImaEkipnoTakmicenje)
+                    {
+                        if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak4)
+                            result.Add(rt);
+                    }
+                }
+                else
+                {
+                    if (rt.Propozicije.PostojiTak4 && rt.Propozicije.OdvojenoTak4 && rt.ImaEkipnoTakmicenje)
+                        result.Add(rt);
+                }
+            }
+            return result;
+        }
+
         public virtual RezultatskoTakmicenje getRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
             TakmicarskaKategorija kat)
         {
@@ -450,5 +474,46 @@ namespace Bilten.Domain
                 }
             }
         }
+
+        public virtual IList<RezultatUkupno> createRezultatiUkupnoZaSveEkipe(
+            IList<RezultatskoTakmicenje> rezTakmicenja, IList<Ocena> ocene, DeoTakmicenjaKod deoTakKod)
+        {
+            List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                IList<Ekipa> ekipe;
+                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                    ekipe = new List<Ekipa>(rt.Takmicenje1.Ekipe);
+                else
+                    ekipe = rt.Takmicenje4.getUcesnici();
+
+                foreach (Ekipa e in ekipe)
+                {
+                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
+                    {
+                        if (!gimnasticari.Contains(g))
+                            gimnasticari.Add(g);
+                    }
+                }
+            }
+
+            IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
+            foreach (GimnasticarUcesnik g in gimnasticari)
+            {
+                RezultatUkupno rezultat = new RezultatUkupno();
+                rezultat.Gimnasticar = g;
+                rezultatiMap.Add(g.Id, rezultat);
+            }
+
+            foreach (Ocena o in ocene)
+            {
+                if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
+                    rezultatiMap[o.Gimnasticar.Id].addOcena(o);
+            }
+
+            List<RezultatUkupno> result = new List<RezultatUkupno>(rezultatiMap.Values);
+            return result;
+        }
+
     }
 }

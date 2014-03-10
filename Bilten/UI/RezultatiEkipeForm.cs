@@ -21,7 +21,7 @@ namespace Bilten.UI
         private bool[] takmicenjeOpened;
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
-        private IList<RezultatUkupno> rezultatiUkupno;
+        private IList<RezultatUkupno> sviRezultatiUkupno;
         private IList<Ocena> ocene;
 
         private RezultatskoTakmicenje ActiveTakmicenje
@@ -43,45 +43,22 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
+                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
+                NHibernateUtil.Initialize(takmicenje);
+
                 IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
                 if (svaRezTakmicenja.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
 
-                rezTakmicenja = new List<RezultatskoTakmicenje>();
-                foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
-                {
-                    if (rt.Propozicije.PostojiTak4 && rt.ImaEkipnoTakmicenje)
-                        rezTakmicenja.Add(rt);
-                }
+                rezTakmicenja = takmicenje.getRezTakmicenjaEkipe(svaRezTakmicenja, deoTakKod, false);
                 if (rezTakmicenja.Count == 0)
                     throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
-
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                NHibernateUtil.Initialize(takmicenje);
-
-                if (takmicenje.FinaleKupa)
-                {
-                    List<RezultatskoTakmicenje> rezTakmicenja2 = new List<RezultatskoTakmicenje>(rezTakmicenja);
-                    rezTakmicenja.Clear();
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
-                    {
-                        if (rt.Propozicije.OdvojenoTak4)
-                            rezTakmicenja.Add(rt);
-                    }
-                    if (rezTakmicenja.Count == 0)
-                        throw new BusinessException("Ne postoji posebno takmicenje IV ni za jednu kategoriju.");
-                }
                 
                 ocene = loadOcene(takmicenjeId, deoTakKod);
-                rezultatiUkupno = createRezultatiUkupno(rezTakmicenja, ocene);
+                sviRezultatiUkupno = takmicenje.createRezultatiUkupnoZaSveEkipe(rezTakmicenja, ocene, deoTakKod);
                
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
-                cmbTakmicenje.SelectedIndex = 0;
-
-                cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
-
-                //onSelectedTakmicenjeChanged();
             }
             catch (BusinessException)
             {
@@ -200,46 +177,6 @@ namespace Bilten.UI
             }
         }
 
-        private IList<RezultatUkupno> createRezultatiUkupno(
-            IList<RezultatskoTakmicenje> rezTak, IList<Ocena> ocene)
-        {
-            List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
-            foreach (RezultatskoTakmicenje rt in rezTak)
-            {
-                IList<Ekipa> ekipe;
-                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                    ekipe = new List<Ekipa>(rt.Takmicenje1.Ekipe);
-                else
-                    ekipe = new List<Ekipa>(rt.Takmicenje4.getUcesnici());
-
-                foreach (Ekipa e in ekipe)
-                {
-                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
-                    {
-                        if (!gimnasticari.Contains(g))
-                            gimnasticari.Add(g);
-                    }
-                }
-            }
-            
-            IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
-            foreach (GimnasticarUcesnik g in gimnasticari)
-            {
-                RezultatUkupno rezultat = new RezultatUkupno();
-                rezultat.Gimnasticar = g;
-                rezultatiMap.Add(g.Id, rezultat);
-            }
-
-            foreach (Ocena o in ocene)
-            {
-                if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
-                    rezultatiMap[o.Gimnasticar.Id].addOcena(o);
-            }
-
-            List<RezultatUkupno> result = new List<RezultatUkupno>(rezultatiMap.Values);
-            return result;
-        }
-
         private void initUI()
         {
             Text = "Rezultati ekipno - " + DeoTakmicenjaKodovi.toString(deoTakKod);
@@ -248,33 +185,13 @@ namespace Bilten.UI
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "NazivEkipnog";
+            cmbTakmicenje.SelectedIndex = 0;
+            cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
 
             dataGridViewUserControl1.DataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(DataGridViewEkipe_CellMouseClick);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             
-            GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2,
-                takmicenje);
-            List<string> imena = new List<string>();
-            List<string> klubovi = new List<string>();
-            foreach (RezultatUkupno r in rezultatiUkupno)
-            {
-                imena.Add(r.Gimnasticar.PrezimeIme);
-                klubovi.Add(r.Gimnasticar.KlubDrzava);
-            }
-            // TODO: Indexi kolona bi trebali da budu konstante
-            if (imena.Count > 0)
-            {
-                dataGridViewUserControl2.DataGridView.Columns[0].Width =
-                    GridColumnsInitializer.getMaxWidth(imena, dataGridViewUserControl2.DataGridView);
-            }
-            if (klubovi.Count > 0)
-            {
-                dataGridViewUserControl2.DataGridView.Columns[1].Width =
-                    GridColumnsInitializer.getMaxWidth(klubovi, dataGridViewUserControl2.DataGridView);
-            }
-
-
             dataGridViewUserControl2.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
         }
 
@@ -301,23 +218,8 @@ namespace Bilten.UI
 
         private void setRezultatiUkupno(Ekipa e)
         {
-            IList<RezultatUkupno> rezultati = getRezultatiUkupno(e);
-            dataGridViewUserControl2.setItems<RezultatUkupno>(rezultati);
+            dataGridViewUserControl2.setItems<RezultatUkupno>(e.getRezultatiUkupno(sviRezultatiUkupno));
             dataGridViewUserControl2.sort<RezultatUkupno>("PrezimeIme", ListSortDirection.Ascending);
-        }
-
-        private IList<RezultatUkupno> getRezultatiUkupno(Ekipa e)
-        {
-            IList<RezultatUkupno> result = new List<RezultatUkupno>();
-            foreach (GimnasticarUcesnik g in e.Gimnasticari)
-            {
-                foreach (RezultatUkupno rez in rezultatiUkupno)
-                {
-                    if (g.Equals(rez.Gimnasticar))
-                        result.Add(rez);
-                }
-            }
-            return result;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -329,6 +231,11 @@ namespace Bilten.UI
         }
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cmdSelectedIndexChanged();
+        }
+
+        void cmdSelectedIndexChanged()
         {
             try
             {
@@ -366,8 +273,27 @@ namespace Bilten.UI
 
         private bool onSelectedTakmicenjeChanged()
         {
-            GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1,
-                takmicenje, kvalColumnVisible());
+            GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1, takmicenje, kvalColumnVisible());
+            GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2, takmicenje);
+            List<string> imena = new List<string>();
+            List<string> klubovi = new List<string>();
+            foreach (RezultatUkupno r in sviRezultatiUkupno)
+            {
+                imena.Add(r.Gimnasticar.PrezimeIme);
+                klubovi.Add(r.Gimnasticar.KlubDrzava);
+            }
+            // TODO: Indexi kolona bi trebali da budu konstante
+            if (imena.Count > 0)
+            {
+                dataGridViewUserControl2.DataGridView.Columns[0].Width =
+                    GridColumnsInitializer.getMaxWidth(imena, dataGridViewUserControl2.DataGridView);
+            }
+            if (klubovi.Count > 0)
+            {
+                dataGridViewUserControl2.DataGridView.Columns[1].Width =
+                    GridColumnsInitializer.getMaxWidth(klubovi, dataGridViewUserControl2.DataGridView);
+            }
+
             
             bool save = false;
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
@@ -396,7 +322,7 @@ namespace Bilten.UI
         private void RezultatiEkipeForm_Shown(object sender, EventArgs e)
         {
             dataGridViewUserControl1.Focus();
-            cmbTakmicenje_SelectedIndexChanged(null, EventArgs.Empty);
+            cmdSelectedIndexChanged();
         }
 
         private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)
@@ -466,7 +392,7 @@ namespace Bilten.UI
                 && ActiveTakmicenje.Propozicije.PostojiTak4
                 && ActiveTakmicenje.Propozicije.OdvojenoTak4;
 
-                p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, rezultatiUkupno,
+                p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, sviRezultatiUkupno,
                     ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName));
                 p.ShowDialog();
             }

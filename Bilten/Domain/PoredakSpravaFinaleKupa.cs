@@ -135,6 +135,9 @@ namespace Bilten.Domain
             }
         }
 
+        // TODO3: Za sve poretke (ukupno, sprava, ekipno, kako za finale kupa, tako i za obicna takmicenja) specifikuj
+        // pravila razresavanja istih ocena.
+
         public virtual void create(RezultatskoTakmicenje rezTak, PoredakPreskok poredakPrvoKolo,
             PoredakPreskok poredakDrugoKolo, bool poredak1NaOsnovuObaPreskoka, bool poredak2NaOsnovuObaPreskoka,
             List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)

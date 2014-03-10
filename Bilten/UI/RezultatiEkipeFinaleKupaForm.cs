@@ -45,12 +45,7 @@ namespace Bilten.UI
                 if (svaRezTakmicenja.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
 
-                rezTakmicenja = new List<RezultatskoTakmicenje>();
-                foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
-                {
-                    if (rt.Propozicije.PostojiTak4 && rt.ImaEkipnoTakmicenje)
-                        rezTakmicenja.Add(rt);
-                }
+                rezTakmicenja = takmicenje.getRezTakmicenjaEkipe(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
                 if (rezTakmicenja.Count == 0)
                     throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
 
