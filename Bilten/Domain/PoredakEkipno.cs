@@ -18,7 +18,7 @@ namespace Bilten.Domain
         public virtual IList<RezultatEkipno> Rezultati
         {
             get { return _rezultati; }
-            private set { _rezultati = value; }
+            protected set { _rezultati = value; }
         }
 
         protected PoredakEkipno()

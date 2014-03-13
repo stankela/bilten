@@ -67,28 +67,28 @@ namespace Bilten.Domain
         public virtual Takmicenje1 Takmicenje1
         {
             get { return _takmicenje1; }
-            private set { _takmicenje1 = value; }
+            protected set { _takmicenje1 = value; }
         }
 
         private Takmicenje2 _takmicenje2;
         public virtual Takmicenje2 Takmicenje2
         {
             get { return _takmicenje2; }
-            private set { _takmicenje2 = value; }
+            protected set { _takmicenje2 = value; }
         }
 
         private Takmicenje3 _takmicenje3;
         public virtual Takmicenje3 Takmicenje3
         {
             get { return _takmicenje3; }
-            private set { _takmicenje3 = value; }
+            protected set { _takmicenje3 = value; }
         }
 
         private Takmicenje4 _takmicenje4;
         public virtual Takmicenje4 Takmicenje4
         {
             get { return _takmicenje4; }
-            private set { _takmicenje4 = value; }
+            protected set { _takmicenje4 = value; }
         }
 
         public RezultatskoTakmicenje()

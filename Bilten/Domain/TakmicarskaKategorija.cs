@@ -42,7 +42,7 @@ namespace Bilten.Domain
         public virtual Takmicenje Takmicenje
         {
             get { return takmicenje; }
-            private set { takmicenje = value; }
+            protected set { takmicenje = value; }
         }
 
         // NOTE: Metod setTakmicenjeInternal nije za upotrebu vec se koristi samo kao 

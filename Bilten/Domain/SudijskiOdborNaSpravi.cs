@@ -20,7 +20,7 @@ namespace Bilten.Domain
         public virtual IDictionary<byte, SudijaUcesnik> Sudije
         {
             get { return sudije; }
-            private set { sudije = value; }
+            protected set { sudije = value; }
         }
 
         public virtual void addSudija(SudijaUcesnik sudija, SudijskaUloga uloga)
@@ -195,42 +195,42 @@ namespace Bilten.Domain
         public virtual byte BrojDSudija
         {
             get { return brojDSudija; }
-            private set { brojDSudija = value; }
+            protected set { brojDSudija = value; }
         }
 
         private bool hasD1_E1 = false;
         public virtual bool HasD1_E1
         {
             get { return hasD1_E1; }
-            private set { hasD1_E1 = value; }
+            protected set { hasD1_E1 = value; }
         }
 
         private bool hasD2_E2 = false;
         public virtual bool HasD2_E2
         {
             get { return hasD2_E2; }
-            private set { hasD2_E2 = value; }
+            protected set { hasD2_E2 = value; }
         }
 
         private byte brojESudija = 6;
         public virtual byte BrojESudija
         {
             get { return brojESudija; }
-            private set { brojESudija = value; }
+            protected set { brojESudija = value; }
         }
 
         private byte brojLinijskihSudija = 0;
         public virtual byte BrojLinijskihSudija
         {
             get { return brojLinijskihSudija; }
-            private set { brojLinijskihSudija = value; }
+            protected set { brojLinijskihSudija = value; }
         }
 
         private byte brojMeracaVremena = 0;
         public virtual byte BrojMeracaVremena
         {
             get { return brojMeracaVremena; }
-            private set { brojMeracaVremena = value; }
+            protected set { brojMeracaVremena = value; }
         }
 
         protected SudijskiOdborNaSpravi()

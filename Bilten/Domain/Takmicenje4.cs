@@ -13,7 +13,7 @@ namespace Bilten.Domain
         public virtual ISet<UcesnikTakmicenja4> Ucesnici
         {
             get { return _ucesnici; }
-            private set { _ucesnici = value; }
+            protected set { _ucesnici = value; }
         }
 
         public virtual void addUcesnik(UcesnikTakmicenja4 u)

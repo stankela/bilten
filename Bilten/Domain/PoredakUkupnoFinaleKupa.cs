@@ -11,7 +11,7 @@ namespace Bilten.Domain
         public virtual IList<RezultatUkupnoFinaleKupa> Rezultati
         {
             get { return _rezultati; }
-            private set { _rezultati = value; }
+            protected set { _rezultati = value; }
         }
 
         public PoredakUkupnoFinaleKupa()

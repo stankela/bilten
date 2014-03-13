@@ -121,7 +121,7 @@ namespace Bilten.Domain
         public virtual ISet<RezultatskoTakmicenjeDescription> TakmicenjeDescriptions
         {
             get { return takmicenjeDescriptions; }
-            private set { takmicenjeDescriptions = value; }
+            protected set { takmicenjeDescriptions = value; }
         }
 
         public virtual void addTakmicenjeDescription(RezultatskoTakmicenjeDescription desc)
@@ -190,7 +190,7 @@ namespace Bilten.Domain
         public virtual ISet<TakmicarskaKategorija> Kategorije
         {
             get { return kategorije; }
-            private set { kategorije = value; }
+            protected set { kategorije = value; }
         }
 
         // NOTE: Metodi addKategorija i removeKategorija upravljaju dvosmernom 

@@ -24,35 +24,35 @@ namespace Bilten.Domain
         public virtual Nullable<float> D_2
         {
             get { return d_2; }
-            private set { d_2 = value; }
+            protected set { d_2 = value; }
         }
 
         private Nullable<float> e_2;
         public virtual Nullable<float> E_2
         {
             get { return e_2; }
-            private set { e_2 = value; }
+            protected set { e_2 = value; }
         }
 
         private Nullable<float> penalty_2;
         public virtual Nullable<float> Penalty_2
         {
             get { return penalty_2; }
-            private set { penalty_2 = value; }
+            protected set { penalty_2 = value; }
         }
 
         private Nullable<float> total_2;
         public virtual Nullable<float> Total_2
         {
             get { return total_2; }
-            private set { total_2 = value; }
+            protected set { total_2 = value; }
         }
 
         private Nullable<float> totalObeOcene;
         public virtual Nullable<float> TotalObeOcene
         {
             get { return totalObeOcene; }
-            private set { totalObeOcene = value; }
+            protected set { totalObeOcene = value; }
         }
 
         public virtual float EObeOcene

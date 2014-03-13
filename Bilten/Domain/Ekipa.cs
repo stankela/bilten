@@ -52,7 +52,7 @@ namespace Bilten.Domain
         public virtual ISet<GimnasticarUcesnik> Gimnasticari
         {
             get { return gimnasticari; }
-            private set { gimnasticari = value; }
+            protected set { gimnasticari = value; }
         }
 
         public virtual void addGimnasticar(GimnasticarUcesnik gimnasticar)

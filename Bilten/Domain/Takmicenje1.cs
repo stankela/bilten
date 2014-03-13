@@ -13,7 +13,7 @@ namespace Bilten.Domain
         public virtual ISet<GimnasticarUcesnik> Gimnasticari
         {
             get { return _gimnasticari; }
-            private set { _gimnasticari = value; }
+            protected set { _gimnasticari = value; }
         }
 
         public virtual void addGimnasticar(GimnasticarUcesnik gimnasticar)
@@ -32,7 +32,7 @@ namespace Bilten.Domain
         public virtual ISet<Ekipa> Ekipe
         {
             get { return ekipe; }
-            private set { ekipe = value; }
+            protected set { ekipe = value; }
         }
 
         public virtual void addEkipa(Ekipa ekipa)

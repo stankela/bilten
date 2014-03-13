@@ -19,14 +19,14 @@ namespace Bilten.Domain
         public virtual IList<RezultatPreskok> Rezultati
         {
             get { return _rezultati; }
-            private set { _rezultati = value; }
+            protected set { _rezultati = value; }
         }
 
         private Sprava _sprava;
         public virtual Sprava Sprava
         {
             get { return _sprava; }
-            private set { _sprava = value; }
+            protected set { _sprava = value; }
         }
 
         protected PoredakPreskok()

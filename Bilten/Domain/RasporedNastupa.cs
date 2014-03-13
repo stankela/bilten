@@ -23,14 +23,14 @@ namespace Bilten.Domain
         public virtual DeoTakmicenjaKod DeoTakmicenjaKod
         {
             get { return deoTakKod; }
-            private set { deoTakKod = value; }
+            protected set { deoTakKod = value; }
         }
 
         private ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
         public virtual ISet<TakmicarskaKategorija> Kategorije
         {
             get { return kategorije; }
-            private set { kategorije = value; }
+            protected set { kategorije = value; }
         }
 
         public virtual void addKategorija(TakmicarskaKategorija kat)

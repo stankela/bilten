@@ -7,11 +7,11 @@
 
     
     <!-- Promeni takodje i u ConfigurationParameters.ConnectionString -->
-    <property name="connection.connection_string">Data Source=BiltenPodaci.sdf</property>       
-    
-    
+    <property name="connection.connection_string">Data Source=BiltenPodaci.sdf</property>
+
+
     <property name="proxyfactory.factory_class">
-      NHibernate.ByteCode.LinFu.ProxyFactoryFactory, NHibernate.ByteCode.LinFu
+      NHibernate.Bytecode.DefaultProxyFactoryFactory, NHibernate
     </property>
     <property name="current_session_context_class">thread_static</property>
 
