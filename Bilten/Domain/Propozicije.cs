@@ -154,7 +154,7 @@ namespace Bilten.Domain
             set { jednoTak4ZaSveKategorije = value; }
         }
 
-        public virtual bool racunajObaPreskoka(DeoTakmicenjaKod deoTakKod)
+        public virtual bool racunajObaPreskoka(DeoTakmicenjaKod deoTakKod, bool finaleKupa)
         {
             if (!PostojiTak3)
                 return false;
@@ -164,7 +164,13 @@ namespace Bilten.Domain
                 if (!OdvojenoTak3)
                     return PoredakTak3PreskokNaOsnovuObaPreskoka;
                 else
-                    return KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+                {
+                    if (!finaleKupa)
+                        return KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+                    else
+                        // Kada u finalu kupa postoji posebno finale po spravama.
+                        return PoredakTak3PreskokNaOsnovuObaPreskoka;
+                }
             }
 
             Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);

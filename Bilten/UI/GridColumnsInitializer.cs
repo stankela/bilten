@@ -316,7 +316,7 @@ namespace Bilten.UI
         }
 
         public static void maximizeColumnsRezultatiSprava(DataGridViewUserControl dgw, 
-            DeoTakmicenjaKod deoTakKod, IList<RezultatskoTakmicenje> rezTakmicenja)
+            DeoTakmicenjaKod deoTakKod, IList<RezultatskoTakmicenje> rezTakmicenja, bool finaleKupa)
         {
             List<string> imena = new List<string>();
             List<string> klubovi = new List<string>();
@@ -335,7 +335,7 @@ namespace Bilten.UI
                     else
                     {
                         foreach (RezultatPreskok r in rt.getPoredakPreskok(deoTakKod).getRezultati(
-                            rt.Propozicije.racunajObaPreskoka(deoTakKod)))
+                            rt.Propozicije.racunajObaPreskoka(deoTakKod, finaleKupa)))
                         {
                             imena.Add(r.Gimnasticar.PrezimeIme);
                             klubovi.Add(r.Gimnasticar.KlubDrzava);
