@@ -43,6 +43,7 @@ namespace Bilten.UI
             this.mnPrazno = new System.Windows.Forms.ToolStripMenuItem();
             this.btnIzracunaj = new System.Windows.Forms.Button();
             this.btnStampajKvalifikante = new System.Windows.Forms.Button();
+            this.mnPromeniPoredakZaIsteOcene = new System.Windows.Forms.ToolStripMenuItem();
             this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -113,42 +114,43 @@ namespace Bilten.UI
             this.prikaziDrzavuToolStripMenuItem,
             this.mnQ,
             this.mnR,
-            this.mnPrazno});
+            this.mnPrazno,
+            this.mnPromeniPoredakZaIsteOcene});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(152, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(236, 158);
             // 
             // prikaziKlubToolStripMenuItem
             // 
             this.prikaziKlubToolStripMenuItem.Name = "prikaziKlubToolStripMenuItem";
-            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.prikaziKlubToolStripMenuItem.Text = "Prikazi klub";
             this.prikaziKlubToolStripMenuItem.Click += new System.EventHandler(this.prikaziKlubToolStripMenuItem_Click);
             // 
             // prikaziDrzavuToolStripMenuItem
             // 
             this.prikaziDrzavuToolStripMenuItem.Name = "prikaziDrzavuToolStripMenuItem";
-            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.prikaziDrzavuToolStripMenuItem.Text = "Prikazi drzavu";
             this.prikaziDrzavuToolStripMenuItem.Click += new System.EventHandler(this.prikaziDrzavuToolStripMenuItem_Click);
             // 
             // mnQ
             // 
             this.mnQ.Name = "mnQ";
-            this.mnQ.Size = new System.Drawing.Size(151, 22);
+            this.mnQ.Size = new System.Drawing.Size(235, 22);
             this.mnQ.Text = "Q";
             this.mnQ.Click += new System.EventHandler(this.mnQ_Click);
             // 
             // mnR
             // 
             this.mnR.Name = "mnR";
-            this.mnR.Size = new System.Drawing.Size(151, 22);
+            this.mnR.Size = new System.Drawing.Size(235, 22);
             this.mnR.Text = "R";
             this.mnR.Click += new System.EventHandler(this.mnR_Click);
             // 
             // mnPrazno
             // 
             this.mnPrazno.Name = "mnPrazno";
-            this.mnPrazno.Size = new System.Drawing.Size(151, 22);
+            this.mnPrazno.Size = new System.Drawing.Size(235, 22);
             this.mnPrazno.Text = "Prazno";
             this.mnPrazno.Click += new System.EventHandler(this.mnPrazno_Click);
             // 
@@ -171,6 +173,13 @@ namespace Bilten.UI
             this.btnStampajKvalifikante.Text = "Stampaj kvalifikante";
             this.btnStampajKvalifikante.UseVisualStyleBackColor = true;
             this.btnStampajKvalifikante.Click += new System.EventHandler(this.btnStampajKvalifikante_Click);
+            // 
+            // mnPromeniPoredakZaIsteOcene
+            // 
+            this.mnPromeniPoredakZaIsteOcene.Name = "mnPromeniPoredakZaIsteOcene";
+            this.mnPromeniPoredakZaIsteOcene.Size = new System.Drawing.Size(235, 22);
+            this.mnPromeniPoredakZaIsteOcene.Text = "Promeni poredak za iste ocene";
+            this.mnPromeniPoredakZaIsteOcene.Click += new System.EventHandler(this.mnPromeniPoredakZaIsteOcene_Click);
             // 
             // spravaGridUserControl1
             // 
@@ -224,5 +233,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem prikaziKlubToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem prikaziDrzavuToolStripMenuItem;
         private System.Windows.Forms.Button btnStampajKvalifikante;
+        private System.Windows.Forms.ToolStripMenuItem mnPromeniPoredakZaIsteOcene;
     }
 }

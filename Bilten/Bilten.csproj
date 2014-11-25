@@ -5,7 +5,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -453,6 +453,12 @@
     <Compile Include="UI\RasporedSudijaForm.Designer.cs">
       <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\RazresiIsteOceneForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RazresiIsteOceneForm.Designer.cs">
+      <DependentUpon>RazresiIsteOceneForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\RezultatiEkipeFinaleKupaForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -819,6 +825,10 @@
     <EmbeddedResource Include="UI\RasporedSudijaForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>RasporedSudijaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RazresiIsteOceneForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RazresiIsteOceneForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RezultatiEkipeFinaleKupaForm.resx">
       <SubType>Designer</SubType>

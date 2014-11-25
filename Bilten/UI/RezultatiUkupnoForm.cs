@@ -21,6 +21,8 @@ namespace Bilten.UI
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
 
+        private List<RezultatUkupno> istiRezultati = new List<RezultatUkupno>();
+
         private RezultatskoTakmicenje ActiveTakmicenje
         {
             get { return cmbTakmicenje.SelectedItem as RezultatskoTakmicenje; }
@@ -162,6 +164,8 @@ namespace Bilten.UI
                 mnQ.Enabled = /*mnQ.Visible =*/ kvalColumnVisible();
                 mnR.Enabled = /*mnR.Visible =*/ kvalColumnVisible();
                 mnPrazno.Enabled = /*mnPrazno.Visible =*/ kvalColumnVisible();
+                findIstiRezultati();
+                mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
                 contextMenuStrip1.Show(grid, new Point(e.X, e.Y));
             }
         }
@@ -394,6 +398,28 @@ namespace Bilten.UI
             dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(rez);
         }
 
+        private void findIstiRezultati()
+        {
+            istiRezultati.Clear();
+            RezultatUkupno rez = dataGridViewUserControl1.getSelectedItem<RezultatUkupno>();
+            if (rez == null)
+                return;
+            if (rez.Total == null)
+                return;
+
+            bool addedPrviSledeci = false;
+            foreach (RezultatUkupno r in ActiveTakmicenje.getPoredakUkupno(deoTakKod).getRezultati())
+            {
+                if (r.Total == rez.Total)
+                    istiRezultati.Add(r);
+                else if (istiRezultati.Count > 1 && !addedPrviSledeci)
+                {
+                    istiRezultati.Add(r);
+                    addedPrviSledeci = true;
+                }
+            }
+        }
+
         private void mnQ_Click(object sender, EventArgs e)
         {
             promeniKvalStatus(KvalifikacioniStatus.Q);
@@ -502,5 +528,62 @@ namespace Bilten.UI
 
             setItems();
         }
+
+        private void mnPromeniPoredakZaIsteOcene_Click(object sender, EventArgs e)
+        {
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            for (int i = 0; i < istiRezultati.Count; ++i)
+            {
+                istiRezultati[i].Rank = (short)form.Poredak[i];
+            }
+
+            PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                TypeDescriptor.GetProperties(typeof(RezultatUkupno))["Rank"],
+                TypeDescriptor.GetProperties(typeof(RezultatUkupno))["PrezimeIme"]
+            };
+            ListSortDirection[] sortDir = new ListSortDirection[] {
+                ListSortDirection.Ascending,
+                ListSortDirection.Ascending
+            };
+
+            short redBroj = istiRezultati[0].RedBroj;
+            istiRezultati.Sort(new SortComparer<RezultatUkupno>(propDesc, sortDir));
+            foreach (RezultatUkupno r in istiRezultati)
+            {
+                r.RedBroj = redBroj++;
+            }
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                dataContext.Save(ActiveTakmicenje.getPoredakUkupno(deoTakKod));
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            dataGridViewUserControl1.sort<RezultatUkupno>("RedBroj", ListSortDirection.Ascending);
+            //dataGridViewUserControl1.refreshItems();
+            dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(istiRezultati[0]);
+        }
+
     }
 }
