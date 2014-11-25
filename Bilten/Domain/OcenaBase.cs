@@ -181,8 +181,8 @@ namespace Bilten.Domain
                 }
                 else if (E != null && Penalty > E)
                 {
-                    notification.RegisterMessage(
-                        prefix + "Penalty", "Penalizacija ne sme da bude veca od E ocene.");
+                    //notification.RegisterMessage(
+                      //  prefix + "Penalty", "Penalizacija ne sme da bude veca od E ocene.");
                 }
             }
 
@@ -267,6 +267,8 @@ namespace Bilten.Domain
             Penalty = izracunajPenalty(brojDecimalaPen);
             Total = (float)RounderToZero.round((decimal)D.Value + (decimal)E.Value -
                 (decimal)((Penalty != null) ? Penalty.Value : 0), brojDecimalaTotal);
+            if (Total < 0)
+                Total = 0;
         }
 
         private Nullable<float> izracunajPenalty(int brojDecimala)
