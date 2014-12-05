@@ -185,7 +185,7 @@ namespace Bilten.Report
                 g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,
                     itemRect.Width, itemRect.Height);
             }
-            if (Lista.markFirstRows && this.IncludeInMarking
+            if (Lista != null && Lista.markFirstRows && this.IncludeInMarking
                 && currentRow > 0 && currentRow <= Lista.numRowsToMark)
             {
                 g.FillRectangle(this.Lista.markFirstRowsBrush, itemRect.X, itemRect.Y,

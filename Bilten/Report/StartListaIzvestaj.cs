@@ -289,10 +289,10 @@ namespace Bilten.Report
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat kategorijaHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String rankTitle = "RB";
-            String imeTitle = "Ime";
-            String klubTitle = "Klub";
-            String kategorijaTitle = "Kategorija";
+            String rankTitle = Opcije.Instance.RedBrojString;
+            String imeTitle = Opcije.Instance.ImeString;
+            String klubTitle = Opcije.Instance.KlubDrzavaString;
+            String kategorijaTitle = Opcije.Instance.KategorijaString;
 
             Columns.Clear();
 

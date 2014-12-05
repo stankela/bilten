@@ -233,9 +233,9 @@ namespace Bilten.Report
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String imeTitle = "Ime";
-            String klubTitle = "Klub";
-            totalTitle = "Total";
+            String imeTitle = Opcije.Instance.ImeString;
+            String klubTitle = Opcije.Instance.KlubDrzavaString;
+            totalTitle = Opcije.Instance.TotalString;
             String kvalTitle = String.Empty;
 
             Columns.Clear();

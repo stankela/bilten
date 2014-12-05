@@ -208,7 +208,7 @@ namespace Bilten.Report
                     ++r;
                     if (r == 1)
                     {
-                        result.Add(new object[] { "", "Rezerve", "", ""});
+                        result.Add(new object[] { "", Opcije.Instance.RezerveString, "", "" });
                     }
                     redBroj = "R" + r.ToString();
                 }
@@ -240,7 +240,7 @@ namespace Bilten.Report
                     ++r;
                     if (r == 1)
                     {
-                        result.Add(new object[] { "", "Rezerve", "", "" });
+                        result.Add(new object[] { "", Opcije.Instance.RezerveString, "", "" });
                     }
                     redBroj = "R" + r.ToString();
                 }
@@ -375,10 +375,10 @@ namespace Bilten.Report
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat ocenaHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String rankTitle = "RB";
-            String imeTitle = "Ime";
-            String klubTitle = "Klub";
-            String ocenaTitle = "Ocena";
+            String rankTitle = Opcije.Instance.RedBrojString;
+            String imeTitle = Opcije.Instance.ImeString;
+            String klubTitle = Opcije.Instance.KlubDrzavaString;
+            String ocenaTitle = Opcije.Instance.OcenaString;
 
             Columns.Clear();
 

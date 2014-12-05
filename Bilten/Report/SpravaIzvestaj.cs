@@ -337,11 +337,11 @@ namespace Bilten.Report
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String rankTitle = "Rank";
-            String imeTitle = "Ime";
-            String klubTitle = "Klub";
+            String rankTitle = Opcije.Instance.RankString;
+            String imeTitle = Opcije.Instance.ImeString;
+            String klubTitle = Opcije.Instance.KlubDrzavaString;
             String skokTitle = ""; // TODO3: Neka bude uspravno.
-            String totalTitle = "Total";
+            String totalTitle = Opcije.Instance.TotalString;
             String kvalTitle = String.Empty;
 
             Columns.Clear();
@@ -395,7 +395,7 @@ namespace Bilten.Report
                 column.Split = true;
             }
 
-            string title = "Total";
+            string title = Opcije.Instance.TotalString;
             if (obaPreskoka)
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, spravaTotWidth, fmtTot, spravaFormat,
                     title, spravaHeaderFormat);
@@ -518,7 +518,7 @@ namespace Bilten.Report
                 g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,
                     itemRect.Width, itemRect.Height);
             }
-            if (Lista.markFirstRows && this.IncludeInMarking
+            if (Lista != null && Lista.markFirstRows && this.IncludeInMarking
                 && currentRow > 0 && currentRow <= Lista.numRowsToMark)
             {
                 g.FillRectangle(this.Lista.markFirstRowsBrush, itemRect.X, itemRect.Y,

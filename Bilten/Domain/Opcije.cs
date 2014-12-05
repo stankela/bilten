@@ -560,6 +560,99 @@ namespace Bilten.Domain
             set { _printerName = value; }
         }
 
+        private bool _srpski = false;
+        public virtual bool Srpski
+        {
+            get { return _srpski; }
+            set { _srpski = value; }
+        }
 
+        public virtual string RedBrojString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "RB";
+                else
+                    return "No.";
+            }
+        }
+
+        public virtual string RankString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "Rank";
+                else
+                    return "Rank";
+            }
+        }
+
+        public virtual string ImeString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "Ime";
+                else
+                    return "Name";
+            }
+        }
+
+        public virtual string KlubDrzavaString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "Klub";
+                else
+                    return "Club / NT";
+            }
+        }
+
+        public virtual string KategorijaString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "Kategorija";
+                else
+                    return "Category";
+            }
+        }
+
+        public virtual string TotalString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "Ukupno";
+                else
+                    return "Total";
+            }
+        }
+
+        public virtual string OcenaString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "Ocena";
+                else
+                    return "Score";
+            }
+        }
+
+        public virtual string RezerveString
+        {
+            get
+            {
+                if (this.Srpski)
+                    return "REZERVE";
+                else
+                    return "RESERVES";
+            }
+        }
     }
 }

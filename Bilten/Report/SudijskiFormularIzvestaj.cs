@@ -214,7 +214,7 @@ namespace Bilten.Report
             float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            float rankWidthCm = 0.7f;
+            float rankWidthCm = 0.75f;
             float skokWidthCm = 0.5f;
             float ocenaWidthCm = 2.0f;
             if (brojEOcena > 0)
@@ -316,12 +316,12 @@ namespace Bilten.Report
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String rankTitle = "RB";
-            String imeTitle = "Ime";
-            String klubTitle = "Klub";
-            String kategorijaTitle = "Kategorija";
+            String rankTitle = Opcije.Instance.RedBrojString;
+            String imeTitle = Opcije.Instance.ImeString;
+            String klubTitle = Opcije.Instance.KlubDrzavaString;
+            String kategorijaTitle = Opcije.Instance.KategorijaString;
             String skokTitle = ""; // TODO3: Neka bude uspravno.
-            String totalTitle = "Total";
+            String totalTitle = Opcije.Instance.TotalString;
 
             Columns.Clear();
 
@@ -393,9 +393,9 @@ namespace Bilten.Report
 
             if (sprava == Sprava.Preskok)
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, ocenaWidth, fmtTot, spravaFormat, 
-                    "Total", spravaHeaderFormat, true);
+                    Opcije.Instance.TotalString, spravaHeaderFormat, true);
             else
-                column = addColumn(xTot, ocenaWidth, fmtTot, spravaFormat, "Total", spravaHeaderFormat);
+                column = addColumn(xTot, ocenaWidth, fmtTot, spravaFormat, Opcije.Instance.TotalString, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 
