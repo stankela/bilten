@@ -12,8 +12,9 @@ namespace Bilten.Report
         private List<SpravaLista> liste = new List<SpravaLista>();
         private bool svakaSpravaNaPosebnojStrani;
 
-        public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati, 
-            bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid)
+        public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati,
+            bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
+            int numRowsToMark)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -21,11 +22,12 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, sprava, prikaziPenal, formGrid));
+                kvalColumn, sprava, prikaziPenal, formGrid, markFirstRows, numRowsToMark));
 		}
 
         public SpravaIzvestaj(bool obaPreskoka, IList<RezultatPreskok> rezultati,
-            bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid)
+            bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
+            int numRowsToMark)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -33,12 +35,13 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, obaPreskoka, prikaziPenal, formGrid));
+                kvalColumn, obaPreskoka, prikaziPenal, formGrid, markFirstRows, numRowsToMark));
         }
 
         public SpravaIzvestaj(List<List<RezultatSprava>> rezultatiSprave,
             List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, Gimnastika gim,
-            bool kvalColumn, string documentName, int brojSpravaPoStrani, bool prikaziPenal, DataGridView formGrid)
+            bool kvalColumn, string documentName, int brojSpravaPoStrani, bool prikaziPenal,
+            DataGridView formGrid, bool markFirstRows, int numRowsToMark)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -68,14 +71,16 @@ namespace Bilten.Report
                         spravaIndex--;
 
                     SpravaLista lista = new SpravaLista(this, page, 0f, itemFont, itemsHeaderFont,
-                        rezultatiSprave[spravaIndex], kvalColumn, sprava, prikaziPenal, formGrid);
+                        rezultatiSprave[spravaIndex], kvalColumn, sprava, prikaziPenal, formGrid, markFirstRows,
+                        numRowsToMark);
                     lista.RelY = relY;
                     liste.Add(lista);
                 }
                 else
                 {
                     SpravaLista lista = new SpravaLista(this, page, 0f, itemFont, itemsHeaderFont,
-                        rezultatiPreskok, kvalColumn, obaPreskoka, prikaziPenal, formGrid);
+                        rezultatiPreskok, kvalColumn, obaPreskoka, prikaziPenal, formGrid, markFirstRows,
+                        numRowsToMark);
                     lista.RelY = relY;
                     liste.Add(lista);
                 }
@@ -116,13 +121,16 @@ namespace Bilten.Report
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatSprava> rezultati,
-            bool kvalColumn, Sprava sprava, bool prikaziPenal, DataGridView formGrid)
+            bool kvalColumn, Sprava sprava, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
+            int numRowsToMark)
             : base(izvestaj, pageNum, y, itemFont,
             itemsHeaderFont, formGrid)
         {
             this.kvalColumn = kvalColumn;
             this.sprava = sprava;
             this.prikaziPenal = prikaziPenal;
+            this.markFirstRows = markFirstRows;
+            this.numRowsToMark = numRowsToMark;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -132,13 +140,16 @@ namespace Bilten.Report
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatPreskok> rezultati,
-            bool kvalColumn, bool obaPreskoka, bool prikaziPenal, DataGridView formGrid)
+            bool kvalColumn, bool obaPreskoka, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
+            int numRowsToMark)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.kvalColumn = kvalColumn;
             this.sprava = Sprava.Preskok;
             this.obaPreskoka = obaPreskoka;
             this.prikaziPenal = prikaziPenal;
+            this.markFirstRows = markFirstRows;
+            this.numRowsToMark = numRowsToMark;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -165,14 +176,17 @@ namespace Bilten.Report
         private List<object[]> getSpravaReportItems(IList<RezultatSprava> rezultati)
         {
             List<object[]> result = new List<object[]>();
+            int rowNum = 0;
             foreach (RezultatSprava rez in rezultati)
             {
+                ++rowNum;
                 if (prikaziPenal)
                     result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.D, rez.E, rez.Penalty, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                            rez.D, rez.E, rez.Penalty, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus),
+                            rowNum.ToString() });
                 else
                     result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.D, rez.E, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                            rez.D, rez.E, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() });
             }
             return result;
         }
@@ -180,27 +194,30 @@ namespace Bilten.Report
         private List<object[]> getPreskokReportItems(IList<RezultatPreskok> rezultati)
         {
             List<object[]> result = new List<object[]>();
+            int rowNum = 0;
             foreach (RezultatPreskok rez in rezultati)
             {
+                ++rowNum;
                 if (obaPreskoka)
                 {
                     if (prikaziPenal)
                         result.Add(new object[] { rez.Rank2, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
                             rez.D, rez.D_2, rez.E, rez.E_2, rez.Penalty, rez.Penalty_2, rez.Total, rez.Total_2,
-                            rez.TotalObeOcene, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                            rez.TotalObeOcene, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() });
                     else
                         result.Add(new object[] { rez.Rank2, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
                             rez.D, rez.D_2, rez.E, rez.E_2, rez.Total, rez.Total_2, 
-                            rez.TotalObeOcene, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                            rez.TotalObeOcene, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() });
                 }
                 else
                 {
                     if (prikaziPenal)
                         result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.D, rez.E, rez.Penalty, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                            rez.D, rez.E, rez.Penalty, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus),
+                            rowNum.ToString() });
                     else
                         result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.D, rez.E, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                            rez.D, rez.E, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() });
                 }
             }
             return result;
@@ -329,9 +346,15 @@ namespace Bilten.Report
 
             Columns.Clear();
 
-            addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
-            addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
-            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            ReportColumn column = addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            column.IncludeInMarking = true;
+
+            column = addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
+            column.IncludeInMarking = true;
+
+            column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            column.IncludeInMarking = true;
+
             if (obaPreskoka)
             {
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSkok, skokWidth, null, skokFormat,
@@ -410,6 +433,7 @@ namespace Bilten.Report
             result.ItemRectFormat = itemRectFormat;
             result.HeaderFormat = headerFormat;
             Columns.Add(result);
+            result.Lista = this;
             return result;
         }
 
@@ -481,9 +505,23 @@ namespace Bilten.Report
 
         public override void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
         {
+            string rowNum = this.getFormattedString(itemsRow, itemsRow.Length - 1);
+            int currentRow = 0;
+            if (!Int32.TryParse(rowNum, out currentRow))
+                currentRow = 0;
+
+            if (!Visible)
+                return;
+
             if (this.Brush != null)
             {
                 g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+            if (Lista.markFirstRows && this.IncludeInMarking
+                && currentRow > 0 && currentRow <= Lista.numRowsToMark)
+            {
+                g.FillRectangle(this.Lista.markFirstRowsBrush, itemRect.X, itemRect.Y,
                     itemRect.Width, itemRect.Height);
             }
             if (this.DrawItemRect)

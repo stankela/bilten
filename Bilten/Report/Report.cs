@@ -9,6 +9,20 @@ namespace Bilten.Report
 {
 	public class ReportColumn
 	{
+        private ReportLista _lista;
+        public ReportLista Lista
+        {
+            get { return _lista; }
+            set { _lista = value; }
+        }
+
+        private bool _includeInMarking = false;
+        public bool IncludeInMarking
+        {
+            get { return _includeInMarking; }
+            set { _includeInMarking = value; }
+        }
+
 		private float x;
 		private float width;
 		
@@ -158,12 +172,23 @@ namespace Bilten.Report
 
         public virtual void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
         {
+            string rowNum = this.getFormattedString(itemsRow, itemsRow.Length - 1);
+            int currentRow = 0;
+            if (!Int32.TryParse(rowNum, out currentRow))
+                currentRow = 0;
+
             if (!Visible)
                 return;
 
             if (this.Brush != null)
             {
                 g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+            if (Lista.markFirstRows && this.IncludeInMarking
+                && currentRow > 0 && currentRow <= Lista.numRowsToMark)
+            {
+                g.FillRectangle(this.Lista.markFirstRowsBrush, itemRect.X, itemRect.Y,
                     itemRect.Width, itemRect.Height);
             }
             if (this.DrawItemRect)
@@ -325,7 +350,11 @@ namespace Bilten.Report
 		protected Brush blackBrush;
         protected Pen pen;
 
-		protected float itemHeight;
+        public bool markFirstRows = false;
+        public int numRowsToMark = 0;
+        public Brush markFirstRowsBrush = Brushes.Gainsboro;
+    
+        protected float itemHeight;
 		protected float groupHeaderHeight;
 		protected float itemsHeaderHeight;
         protected float groupFooterHeight;
@@ -371,6 +400,7 @@ namespace Bilten.Report
 		{
 			ReportColumn result = new ReportColumn(columns.Count, x, width, String.Empty);
 			columns.Add(result);
+            result.Lista = this;
 			return result;
 		}
 
@@ -380,7 +410,8 @@ namespace Bilten.Report
 			ReportColumn result = new ReportColumn(columns.Count, x, width, headerTitle);
 			result.HeaderFormat = headerFormat;
 			columns.Add(result);
-			return result;
+            result.Lista = this;
+            return result;
 		}
 
 		protected ReportColumn addColumn(float x, float width,
@@ -391,7 +422,8 @@ namespace Bilten.Report
 			result.ItemRectFormat = itemRectFormat;
 			result.HeaderFormat = headerFormat;
 			columns.Add(result);
-			return result;
+            result.Lista = this;
+            return result;
 		}
 
 		protected ReportColumn addColumn(float x, float width, string format,
@@ -403,7 +435,8 @@ namespace Bilten.Report
 			result.ItemRectFormat = itemRectFormat;
 			result.HeaderFormat = headerFormat;
 			columns.Add(result);
-			return result;
+            result.Lista = this;
+            return result;
 		}
 
         protected ReportColumn addColumn(int itemsIndex, float x, float width, string format,
@@ -415,6 +448,7 @@ namespace Bilten.Report
             result.ItemRectFormat = itemRectFormat;
             result.HeaderFormat = headerFormat;
             columns.Add(result);
+            result.Lista = this;
             return result;
         }
 
@@ -425,7 +459,8 @@ namespace Bilten.Report
 			result.Format = format;
 			result.ItemRectFormat = itemRectFormat;
 			columns.Add(result);
-			return result;
+            result.Lista = this;
+            return result;
 		}
 
         protected ReportColumn addColumn(int itemsIndex, float x, float width,
@@ -435,6 +470,7 @@ namespace Bilten.Report
             result.Format = format;
             result.ItemRectFormat = itemRectFormat;
             columns.Add(result);
+            result.Lista = this;
             return result;
         }
 

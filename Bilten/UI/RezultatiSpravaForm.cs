@@ -439,17 +439,21 @@ namespace Bilten.UI
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
                         obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
-                        form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                        form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
+                        /*markFirstRows*/false, /*numRowsToMark*/0));
                 }
                 else
                 {
                     if (ActiveSprava != Sprava.Preskok)
                     {
+                        // TODO3: Implementiraj oznacavanje osvajaca medalja i za ostale izvestaje (gde treba).
+                        // Takodje, uvedi odgovarajucu opciju u dijalogu za stampanje.
                         List<RezultatSprava> rezultati =
                             ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getRezultati();
                         p.setIzvestaj(new SpravaIzvestaj(ActiveSprava, rezultati,
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
-                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView,
+                            /*markFirstRows*/!kvalColumnVisible(), /*numRowsToMark*/getNumMedalists(rezultati)));
                     }
                     else
                     {
@@ -457,7 +461,9 @@ namespace Bilten.UI
                             ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka);
                         p.setIzvestaj(new SpravaIzvestaj(obaPreskoka, rezultati,
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
-                            spravaGridUserControl1.DataGridViewUserControl.DataGridView));
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView,
+                            /*markFirstRows*/!kvalColumnVisible(),
+                            /*numRowsToMark*/getNumMedalists(rezultati, obaPreskoka)));
                     }
                 }
 
@@ -490,6 +496,36 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
+        }
+
+        private int getNumMedalists(List<RezultatSprava> rezultati)
+        {
+            int result = 0;
+            foreach (RezultatSprava r in rezultati)
+            {
+                if (r.Rank >= 1 && r.Rank <= 3)
+                    ++result;
+            }
+            return result;
+        }
+
+        private int getNumMedalists(List<RezultatPreskok> rezultati, bool obaPreskoka)
+        {
+            int result = 0;
+            foreach (RezultatPreskok r in rezultati)
+            {
+                if (obaPreskoka)
+                {
+                    if (r.Rank2 >= 1 && r.Rank2 <= 3)
+                        ++result;
+                }
+                else
+                {
+                    if (r.Rank >= 1 && r.Rank <= 3)
+                        ++result;
+                }
+            }
+            return result;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
