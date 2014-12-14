@@ -102,29 +102,49 @@ namespace Bilten.Report
             
         }
 
-        private List<object[]> getEkipeReportItems(List<RezultatEkipno> rezultati,
+        private List<object[]> getEkipeReportItems(List<RezultatEkipno> rezultatiEkipe,
             IList<RezultatUkupno> rezultatiUkupno, Gimnastika gim)
         {
             IList<RezultatUkupno> rezUkupnoSorted = getRezultatiUkupnoSorted(
-                rezultati, rezultatiUkupno);
+                rezultatiEkipe, rezultatiUkupno);
 
             List<object[]> result = new List<object[]>();
-            foreach (RezultatUkupno rez in rezUkupnoSorted)
+            for (int i = 0; i < rezUkupnoSorted.Count; ++i)
             {
+                RezultatUkupno rez = rezUkupnoSorted[i];
+                RezultatEkipno rezEkipa = getRezEkipa(i, rezultatiEkipe);
+                string ekipaNaziv = rez.KlubDrzava;
+                if (rezEkipa != null && rezEkipa.Ekipa.DrzavaUcesnik != null)
+                {
+                    ekipaNaziv = rezEkipa.Ekipa.Naziv;
+                }
                 if (gim == Gimnastika.MSG)
                 {
-                    result.Add(new object[] { rez.PrezimeIme, rez.KlubDrzava,
+                    result.Add(new object[] { rez.PrezimeIme, /*rez.KlubDrzava*/ekipaNaziv,
                             rez.Parter, rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, 
                             rez.Vratilo, rez.Total });
                 }
                 else
                 {
-                    result.Add(new object[] { rez.PrezimeIme, rez.KlubDrzava,
+                    result.Add(new object[] { rez.PrezimeIme, /*rez.KlubDrzava*/ekipaNaziv,
                             rez.Preskok, rez.DvovisinskiRazboj, rez.Greda, rez.Parter, 
                             rez.Total });
                 }
             }
             return result;
+        }
+
+        private RezultatEkipno getRezEkipa(int redBrojRezUkupno, List<RezultatEkipno> rezultati)
+        {
+            int current = 0;
+            for (int i = 0; i < rezultati.Count; ++i)
+            {
+                RezultatEkipno e = rezultati[i];
+                current += e.Ekipa.Gimnasticari.Count;
+                if (redBrojRezUkupno < current)
+                  return e;
+            }
+            return null;
         }
 
         private IList<RezultatUkupno> getRezultatiUkupnoSorted(

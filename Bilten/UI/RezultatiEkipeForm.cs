@@ -348,6 +348,11 @@ namespace Bilten.UI
                     nazivIzvestaja = "Rezultati ekipno";
             }
 
+            // TODO3: Dodaj opciju da li da se prikaze kolona za klub.
+            // Razmisli da li u opcijama treba uvesti vise polja StampajKlub,
+            // za svaki izvestaj po jedno. Sada postoji samo jedno polje koje
+            // vazi za sve izvestaje. Razmisli da li to treba uvesti i za
+            // ostala polja.
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod,
                 false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
