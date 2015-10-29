@@ -22,7 +22,7 @@ namespace Bilten
             // For usage information, just run "ExportSqlCe.exe" without any arguments.            
             //string schemaFile = "BiltenPodaciScript.sql";
             //ProcessStartInfo startInfo = new ProcessStartInfo();
-            //startInfo.FileName = @"C:\Users\sale\Documents\Visual Studio 2008\Projects\Bilten\Libs\ExportSqlCe.exe";
+            //startInfo.FileName = @"..\..\..\..\Bilten\Libs\ExportSqlCe.exe";
             //startInfo.Arguments = String.Format("\"Data Source=BiltenPodaci.sdf\" {0} schemaonly", schemaFile);
             //var process = Process.Start(startInfo);
             //process.WaitForExit();

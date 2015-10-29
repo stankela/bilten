@@ -172,7 +172,7 @@ namespace BiltenTest
             // Export schema from BiltenPodaci.sdf using the ExportSqlCe.exe tool.
             string schemaFile = "BiltenPodaciScript.sql";
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = "ExportSqlCe.exe";
+            startInfo.FileName = @"..\..\..\..\Bilten\Libs\ExportSqlCe.exe";
             startInfo.Arguments =
                 String.Format("\"Data Source=..\\..\\..\\Bilten\\bin\\Debug\\BiltenPodaci.sdf\" {0} schemaonly",
                 schemaFile);
