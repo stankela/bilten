@@ -6,6 +6,7 @@ using System.Threading;
 using System.Globalization;
 using Bilten.Test;
 using Bilten.Domain;
+using System.Diagnostics;
 
 namespace Bilten
 {
@@ -17,6 +18,20 @@ namespace Bilten
         [STAThread]
         static void Main(string[] args)
         {
+            // Export schema from BiltenPodaci.sdf using the ExportSqlCe.exe tool.
+            // For usage information, just run "ExportSqlCe.exe" without any arguments.            
+            //string schemaFile = "BiltenPodaciScript.sql";
+            //ProcessStartInfo startInfo = new ProcessStartInfo();
+            //startInfo.FileName = @"C:\Users\sale\Documents\Visual Studio 2008\Projects\Bilten\Libs\ExportSqlCe.exe";
+            //startInfo.Arguments = String.Format("\"Data Source=BiltenPodaci.sdf\" {0} schemaonly", schemaFile);
+            //var process = Process.Start(startInfo);
+            //process.WaitForExit();
+
+            //Bilten.Util.DFS dfs = new Bilten.Util.DFS();
+            //dfs.createGraphFromExportSqlCeStript(schemaFile);
+            //dfs.doDFS();
+
+
             Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Latn-CS");
             // ili

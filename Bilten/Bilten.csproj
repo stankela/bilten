@@ -693,6 +693,7 @@
     <Compile Include="Util\ColumnAdder.cs" />
     <Compile Include="Util\Database.cs" />
     <Compile Include="Util\DatabaseUpdater.cs" />
+    <Compile Include="Util\DFS.cs" />
     <Compile Include="Util\RounderToZero.cs" />
     <Compile Include="Util\SortComparer.cs" />
     <Compile Include="Util\SqlCeUtilities.cs" />

@@ -1,3 +1,13 @@
+13-Dec-2014
+ALTER TABLE ekipe DROP COLUMN rez_takmicenje_id;
+ALTER TABLE poredak_sprava DROP COLUMN rez_takmicenje_id;
+
+ALTER TABLE [gimnasticari] ADD CONSTRAINT [FK_gimnasticari_01] FOREIGN KEY ([kat_id]) REFERENCES [kategorije_gimnasticara]([kategorija_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [gimnasticari] ADD CONSTRAINT [FK_gimnasticari_02] FOREIGN KEY ([klub_id]) REFERENCES [klubovi]([klub_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [gimnasticari] ADD CONSTRAINT [FK_gimnasticari_03] FOREIGN KEY ([drzava_id]) REFERENCES [drzave]([drzava_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [takmicarske_kategorije] ADD CONSTRAINT [FK_takmicarske_kategorije_01] FOREIGN KEY ([takmicenje_id]) REFERENCES [takmicenja]([takmicenje_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
 30-Nov-2013
 ALTER TABLE takmicenja ADD COLUMN broj_e_ocena tinyint;
 UPDATE takmicenja SET broj_e_ocena = broj_e_sudija;
