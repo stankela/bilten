@@ -1,3 +1,10 @@
+01-Nov-2015
+
+ALTER TABLE takmicenja ADD COLUMN tip_takmicenja tinyint;
+UPDATE takmicenja SET tip_takmicenja = 0;
+UPDATE takmicenja SET tip_takmicenja = 1 WHERE finale_kupa = 1;
+ALTER TABLE takmicenja DROP COLUMN finale_kupa;
+
 13-Dec-2014
 ALTER TABLE ekipe DROP COLUMN rez_takmicenje_id;
 ALTER TABLE poredak_sprava DROP COLUMN rez_takmicenje_id;

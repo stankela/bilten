@@ -84,7 +84,7 @@ create table takmicenja (
 	gimnastika tinyint,
 	datum datetime,
 	mesto nvarchar(32),
-	finale_kupa bit,
+	tip_takmicenja tinyint,
 	broj_e_ocena tinyint,
 	broj_decimala_d tinyint,
     broj_decimala_e1 tinyint,

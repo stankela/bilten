@@ -92,7 +92,7 @@ namespace BiltenTest
             {
                 source.TransferFunds(destination, 300m);
             }
-            catch (InsufficientFundsException expected)
+            catch (InsufficientFundsException)
             {
             }
 
@@ -216,7 +216,7 @@ namespace BiltenTest
             takmicenje.Naziv = "Test takmicenje";
             takmicenje.Datum = DateTime.Parse("2014-12-20");
             takmicenje.Mesto = "Novi Sad";
-            takmicenje.FinaleKupa = false;
+            takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
             takmicenje.PrvoKolo = null;
             takmicenje.DrugoKolo = null;
             takmicenje.Gimnastika = Gimnastika.MSG;

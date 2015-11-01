@@ -164,6 +164,7 @@
     <Compile Include="Domain\Takmicenje2.cs" />
     <Compile Include="Domain\Takmicenje3.cs" />
     <Compile Include="Domain\Takmicenje4.cs" />
+    <Compile Include="Domain\TipTakmicenja.cs" />
     <Compile Include="Domain\UcesnikFinala.cs" />
     <Compile Include="Domain\UcesnikTakmicenja2.cs" />
     <Compile Include="Domain\UcesnikTakmicenja3.cs" />

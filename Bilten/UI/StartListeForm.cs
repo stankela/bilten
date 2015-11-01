@@ -225,7 +225,7 @@ namespace Bilten.UI
 
             bool enableNacinRotacije = deoTakKod == DeoTakmicenjaKod.Takmicenje1
                                        && ActiveRotacija == 1
-                                       && !takmicenje.FinaleKupa;
+                                       && takmicenje.TipTakmicenja == TipTakmicenja.StandardnoTakmicenje;
             mnOznaciKaoEkipu.Enabled = enableNacinRotacije;
             mnOznaciKaoPojedinca.Enabled = enableNacinRotacije;
             mnNacinRotacije.Enabled = enableNacinRotacije;

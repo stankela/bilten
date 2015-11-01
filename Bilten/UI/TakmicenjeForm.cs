@@ -140,8 +140,11 @@ namespace Bilten.UI
             takmicenje.Naziv = txtNaziv.Text.Trim();
             takmicenje.Datum = Datum.Parse(txtDatum.Text).ToDateTime();
             takmicenje.Mesto = txtMesto.Text.Trim();
-            takmicenje.FinaleKupa = ckbFinaleKupa.Checked;
-            if (takmicenje.FinaleKupa)
+            if (ckbFinaleKupa.Checked)
+                takmicenje.TipTakmicenja = TipTakmicenja.FinaleKupa;
+            else
+                takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
+            if (takmicenje.TipTakmicenja == TipTakmicenja.FinaleKupa)
             {
                 takmicenje.PrvoKolo = prvoKolo;
                 takmicenje.DrugoKolo = drugoKolo;

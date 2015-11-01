@@ -39,11 +39,17 @@ namespace Bilten.Domain
             set { mesto = value; }
         }
 
-        private bool finaleKupa;
+        private TipTakmicenja tipTakmicenja;
+        public virtual TipTakmicenja TipTakmicenja
+        {
+            get { return tipTakmicenja; }
+            set { tipTakmicenja = value; }
+        }
+
         public virtual bool FinaleKupa
         {
-            get { return finaleKupa; }
-            set { finaleKupa = value; }
+            get { return TipTakmicenja == TipTakmicenja.FinaleKupa; }
+            set { throw new Exception("Not supported"); }
         }
 
         private Takmicenje prvoKolo;
