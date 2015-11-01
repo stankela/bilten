@@ -12,6 +12,8 @@ namespace Bilten
 {
     static class Program
     {
+        static int VERZIJA_PROGRAMA = 1;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -31,6 +33,15 @@ namespace Bilten
             //dfs.createGraphFromExportSqlCeStript(schemaFile);
             //dfs.doDFS();
 
+            int verzijaBaze = DatabaseUpdater.getDatabaseVersionNumber();
+            if (verzijaBaze != VERZIJA_PROGRAMA)
+            {
+                string msg = String.Format(
+                    "Verzije programa i baze se ne poklapaju.\n\nVerzija programa: {0}\nVerzija baze: {1}",
+                    VERZIJA_PROGRAMA, verzijaBaze);
+                MessageBox.Show(msg, "Bilten");
+                return;
+            }
 
             Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Latn-CS");

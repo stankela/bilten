@@ -1,9 +1,17 @@
-01-Nov-2015
+01-Nov-2015 (VERZIJA = 1)
 
 ALTER TABLE takmicenja ADD COLUMN tip_takmicenja tinyint;
 UPDATE takmicenja SET tip_takmicenja = 0;
 UPDATE takmicenja SET tip_takmicenja = 1 WHERE finale_kupa = 1;
 ALTER TABLE takmicenja DROP COLUMN finale_kupa;
+
+create table verzija_baze (
+	verzija_id int primary key,
+	broj_verzije int
+);
+INSERT INTO verzija_baze (verzija_id, broj_verzije) VALUES (1, 0);
+UPDATE verzija_baze SET broj_verzije = broj_verzije + 1 WHERE verzija_id = 1;
+
 
 13-Dec-2014
 ALTER TABLE ekipe DROP COLUMN rez_takmicenje_id;
