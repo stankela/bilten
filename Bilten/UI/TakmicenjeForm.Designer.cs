@@ -38,16 +38,17 @@ namespace Bilten.UI
             this.cmbGimnastika = new System.Windows.Forms.ComboBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.btnIzaberiPrvaDvaKola = new System.Windows.Forms.Button();
-            this.ckbFinaleKupa = new System.Windows.Forms.CheckBox();
+            this.lblTipTakmicenja = new System.Windows.Forms.Label();
+            this.cmbTipTakmicenja = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(219, 371);
+            this.btnOk.Location = new System.Drawing.Point(219, 415);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(311, 371);
+            this.btnCancel.Location = new System.Drawing.Point(311, 415);
             // 
             // lblNaziv
             // 
@@ -117,14 +118,14 @@ namespace Bilten.UI
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(24, 275);
+            this.listBox1.Location = new System.Drawing.Point(24, 304);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(325, 43);
+            this.listBox1.Size = new System.Drawing.Size(325, 69);
             this.listBox1.TabIndex = 11;
             // 
             // btnIzaberiPrvaDvaKola
             // 
-            this.btnIzaberiPrvaDvaKola.Location = new System.Drawing.Point(24, 324);
+            this.btnIzaberiPrvaDvaKola.Location = new System.Drawing.Point(24, 379);
             this.btnIzaberiPrvaDvaKola.Name = "btnIzaberiPrvaDvaKola";
             this.btnIzaberiPrvaDvaKola.Size = new System.Drawing.Size(130, 23);
             this.btnIzaberiPrvaDvaKola.TabIndex = 12;
@@ -132,25 +133,33 @@ namespace Bilten.UI
             this.btnIzaberiPrvaDvaKola.UseVisualStyleBackColor = true;
             this.btnIzaberiPrvaDvaKola.Click += new System.EventHandler(this.btnIzaberiPrvaDvaKola_Click);
             // 
-            // ckbFinaleKupa
+            // lblTipTakmicenja
             // 
-            this.ckbFinaleKupa.AutoSize = true;
-            this.ckbFinaleKupa.Location = new System.Drawing.Point(24, 252);
-            this.ckbFinaleKupa.Name = "ckbFinaleKupa";
-            this.ckbFinaleKupa.Size = new System.Drawing.Size(81, 17);
-            this.ckbFinaleKupa.TabIndex = 10;
-            this.ckbFinaleKupa.Text = "Finale kupa";
-            this.ckbFinaleKupa.UseVisualStyleBackColor = true;
+            this.lblTipTakmicenja.AutoSize = true;
+            this.lblTipTakmicenja.Location = new System.Drawing.Point(21, 242);
+            this.lblTipTakmicenja.Name = "lblTipTakmicenja";
+            this.lblTipTakmicenja.Size = new System.Drawing.Size(76, 13);
+            this.lblTipTakmicenja.TabIndex = 14;
+            this.lblTipTakmicenja.Text = "Tip takmicenja";
+            // 
+            // cmbTipTakmicenja
+            // 
+            this.cmbTipTakmicenja.FormattingEnabled = true;
+            this.cmbTipTakmicenja.Location = new System.Drawing.Point(24, 258);
+            this.cmbTipTakmicenja.Name = "cmbTipTakmicenja";
+            this.cmbTipTakmicenja.Size = new System.Drawing.Size(183, 21);
+            this.cmbTipTakmicenja.TabIndex = 15;
             // 
             // TakmicenjeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 408);
-            this.Controls.Add(this.ckbFinaleKupa);
-            this.Controls.Add(this.btnIzaberiPrvaDvaKola);
-            this.Controls.Add(this.listBox1);
+            this.ClientSize = new System.Drawing.Size(398, 450);
             this.Controls.Add(this.cmbGimnastika);
+            this.Controls.Add(this.btnIzaberiPrvaDvaKola);
+            this.Controls.Add(this.cmbTipTakmicenja);
+            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.lblTipTakmicenja);
             this.Controls.Add(this.lblGimnastika);
             this.Controls.Add(this.lblNaziv);
             this.Controls.Add(this.txtNaziv);
@@ -165,15 +174,16 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.txtMesto, 0);
             this.Controls.SetChildIndex(this.txtDatum, 0);
             this.Controls.SetChildIndex(this.lblDatum, 0);
-            this.Controls.SetChildIndex(this.btnOk, 0);
             this.Controls.SetChildIndex(this.txtNaziv, 0);
-            this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.lblNaziv, 0);
             this.Controls.SetChildIndex(this.lblGimnastika, 0);
-            this.Controls.SetChildIndex(this.cmbGimnastika, 0);
+            this.Controls.SetChildIndex(this.lblTipTakmicenja, 0);
             this.Controls.SetChildIndex(this.listBox1, 0);
+            this.Controls.SetChildIndex(this.cmbTipTakmicenja, 0);
+            this.Controls.SetChildIndex(this.btnOk, 0);
             this.Controls.SetChildIndex(this.btnIzaberiPrvaDvaKola, 0);
-            this.Controls.SetChildIndex(this.ckbFinaleKupa, 0);
+            this.Controls.SetChildIndex(this.btnCancel, 0);
+            this.Controls.SetChildIndex(this.cmbGimnastika, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -191,6 +201,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ComboBox cmbGimnastika;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button btnIzaberiPrvaDvaKola;
-        private System.Windows.Forms.CheckBox ckbFinaleKupa;
+        private System.Windows.Forms.Label lblTipTakmicenja;
+        private System.Windows.Forms.ComboBox cmbTipTakmicenja;
     }
 }

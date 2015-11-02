@@ -346,7 +346,7 @@ namespace Bilten.UI
                 return;
             try
             {
-                OtvoriTakmicenjeForm form = new OtvoriTakmicenjeForm(takmicenjeId, false, 0);
+                OtvoriTakmicenjeForm form = new OtvoriTakmicenjeForm(takmicenjeId, false, 0, false);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     loadTakmicenje(form.Takmicenje);

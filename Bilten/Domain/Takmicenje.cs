@@ -52,6 +52,8 @@ namespace Bilten.Domain
             set { throw new Exception("Not supported"); }
         }
 
+        // TODO3: Zameni PrvoKolo, DrugoKolo, TreceKolo i CetvrtoKolo sa kolekcijom PrethodnaKola
+
         private Takmicenje prvoKolo;
         public virtual Takmicenje PrvoKolo
         {
@@ -64,6 +66,20 @@ namespace Bilten.Domain
         {
             get { return drugoKolo; }
             set { drugoKolo = value; }
+        }
+
+        private Takmicenje treceKolo;
+        public virtual Takmicenje TreceKolo
+        {
+            get { return treceKolo; }
+            set { treceKolo = value; }
+        }
+
+        private Takmicenje cetvrtoKolo;
+        public virtual Takmicenje CetvrtoKolo
+        {
+            get { return cetvrtoKolo; }
+            set { cetvrtoKolo = value; }
         }
 
         private byte brojEOcena = 6;

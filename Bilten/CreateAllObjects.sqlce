@@ -99,7 +99,9 @@ create table takmicenja (
 	zavrseno_tak1 bit,
 	zreb_za_finale_tak3 nvarchar(128),
 	prvo_kolo_id int references takmicenja(takmicenje_id),
-	drugo_kolo_id int references takmicenja(takmicenje_id)
+	drugo_kolo_id int references takmicenja(takmicenje_id),
+	trece_kolo_id int references takmicenja(takmicenje_id),
+	cetvrto_kolo_id int references takmicenja(takmicenje_id)
 );
 
 create table takmicarske_kategorije (

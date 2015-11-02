@@ -14,9 +14,15 @@ namespace Bilten.UI
 {
     public partial class TakmicenjeForm : EntityDetailForm
     {
-        private Takmicenje prvoKolo;
-        private Takmicenje drugoKolo;
-        
+        private static readonly string STANDARDNO_TAKMICENJE = "Standardno takmicenje";
+        private static readonly string FINALE_KUPA = "Finale kupa";
+        private static readonly string ZBIR_VISE_KOLA = "Zbir vise kola, viseboj i ekipno";
+        private static readonly string IZABERI_PRVO_I_DRUGO_KOLO = "Izaberi I kolo i II kolo";
+        private static readonly string IZABERI_PRETHODNA_KOLA = "Izaberi prethodna kola";
+        private static readonly int MAX_KOLA = 4;
+
+        List<Takmicenje> prethodnaKola = new List<Takmicenje>();
+
         public TakmicenjeForm()
         {
             InitializeComponent();
@@ -32,19 +38,47 @@ namespace Bilten.UI
             txtDatum.Text = String.Empty;
             txtMesto.Text = String.Empty;
 
-            prvoKolo = null;
-            drugoKolo = null;
-            listBox1.Items.Clear();
+            prethodnaKola.Clear();
 
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbGimnastika.Items.AddRange(new string[] { "MSG", "ZSG" });
             cmbGimnastika.SelectedIndex = -1;
 
-            ckbFinaleKupa.Checked = false;
-            listBox1.Enabled = false;
-            btnIzaberiPrvaDvaKola.Enabled = false;
+            cmbTipTakmicenja.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTipTakmicenja.Items.AddRange(new string[] { STANDARDNO_TAKMICENJE, FINALE_KUPA, ZBIR_VISE_KOLA });
+            cmbTipTakmicenja.SelectedIndex = 0;
 
-            this.ckbFinaleKupa.CheckedChanged += new System.EventHandler(this.ckbFinaleKupa_CheckedChanged);
+            listBox1.Enabled = false;
+            listBox1.Items.Clear();
+            btnIzaberiPrvaDvaKola.Enabled = false;
+            btnIzaberiPrvaDvaKola.Text = IZABERI_PRVO_I_DRUGO_KOLO;
+
+            cmbTipTakmicenja.SelectedIndexChanged += new EventHandler(cmbTipTakmicenja_SelectedIndexChanged);
+        }
+
+        private bool finaleKupa()
+        {
+            return cmbTipTakmicenja.SelectedIndex == cmbTipTakmicenja.Items.IndexOf(FINALE_KUPA);
+        }
+
+        private bool zbirViseKola()
+        {
+            return cmbTipTakmicenja.SelectedIndex == cmbTipTakmicenja.Items.IndexOf(ZBIR_VISE_KOLA);
+        }
+
+        private void cmbTipTakmicenja_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            listBox1.Enabled = finaleKupa() || zbirViseKola();
+            btnIzaberiPrvaDvaKola.Enabled = finaleKupa() || zbirViseKola();
+            if (finaleKupa())
+                btnIzaberiPrvaDvaKola.Text = IZABERI_PRVO_I_DRUGO_KOLO;
+            else if (zbirViseKola())
+                btnIzaberiPrvaDvaKola.Text = IZABERI_PRETHODNA_KOLA;
+            else
+            {
+                prethodnaKola.Clear();
+                listBox1.Items.Clear();
+            }
         }
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
@@ -82,10 +116,22 @@ namespace Bilten.UI
                     "Mesto", "Mesto odrzavanja je obavezno.");
             }
 
-            if (ckbFinaleKupa.Checked && (prvoKolo == null || drugoKolo == null))
+            if (finaleKupa() && (prethodnaKola.Count != 2))
             {
                 notification.RegisterMessage(
                     "FinaleKupa", "Izaberite I i II kolo kupa.");
+            }
+            if (zbirViseKola())
+            {
+                if (prethodnaKola.Count == 0)
+                {
+                    notification.RegisterMessage("FinaleKupa", "Izaberite prethodna kola.");
+                }
+                else if (prethodnaKola.Count > MAX_KOLA)
+                {
+                    string msg = String.Format("Maksimalno dozvoljen broj kola je {0}.", MAX_KOLA);
+                    notification.RegisterMessage("FinaleKupa", msg);
+                }
             }
         }
 
@@ -140,19 +186,32 @@ namespace Bilten.UI
             takmicenje.Naziv = txtNaziv.Text.Trim();
             takmicenje.Datum = Datum.Parse(txtDatum.Text).ToDateTime();
             takmicenje.Mesto = txtMesto.Text.Trim();
-            if (ckbFinaleKupa.Checked)
-                takmicenje.TipTakmicenja = TipTakmicenja.FinaleKupa;
-            else
-                takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
-            if (takmicenje.TipTakmicenja == TipTakmicenja.FinaleKupa)
+
+            takmicenje.PrvoKolo = null;
+            takmicenje.DrugoKolo = null;
+            takmicenje.TreceKolo = null;
+            takmicenje.CetvrtoKolo = null;
+            if (finaleKupa())
             {
-                takmicenje.PrvoKolo = prvoKolo;
-                takmicenje.DrugoKolo = drugoKolo;
+                takmicenje.TipTakmicenja = TipTakmicenja.FinaleKupa;
+                takmicenje.PrvoKolo = prethodnaKola[0];
+                takmicenje.DrugoKolo = prethodnaKola[1];
+            }
+            else if (zbirViseKola())
+            {
+                takmicenje.TipTakmicenja = TipTakmicenja.ZbirViseKola;
+                if (prethodnaKola.Count > 0)
+                    takmicenje.PrvoKolo = prethodnaKola[0];
+                if (prethodnaKola.Count > 1)
+                    takmicenje.DrugoKolo = prethodnaKola[1];
+                if (prethodnaKola.Count > 2)
+                    takmicenje.TreceKolo = prethodnaKola[2];
+                if (prethodnaKola.Count > 3)
+                    takmicenje.CetvrtoKolo = prethodnaKola[3];
             }
             else
             {
-                takmicenje.PrvoKolo = null;
-                takmicenje.DrugoKolo = null;
+                takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
             }
 
             if (cmbGimnastika.SelectedIndex == 0)
@@ -184,19 +243,16 @@ namespace Bilten.UI
             return dataContext.GetCount<Takmicenje>(q) > 0;
         }
 
-        private void ckbFinaleKupa_CheckedChanged(object sender, EventArgs e)
-        {
-            listBox1.Enabled = ckbFinaleKupa.Checked;
-            btnIzaberiPrvaDvaKola.Enabled = ckbFinaleKupa.Checked;
-        }
-
         private void btnIzaberiPrvaDvaKola_Click(object sender, EventArgs e)
         {
-            OtvoriTakmicenjeForm form;
+            OtvoriTakmicenjeForm form = null;
             DialogResult result;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 2);
+                if (finaleKupa())
+                    form = new OtvoriTakmicenjeForm(null, true, 2, false);
+                else if (zbirViseKola())
+                    form = new OtvoriTakmicenjeForm(null, true, MAX_KOLA, true);
                 result = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -207,23 +263,24 @@ namespace Bilten.UI
 
             if (result != DialogResult.OK)
                 return;
-            if (ckbFinaleKupa.Checked && form.SelTakmicenja.Count != 2)
-                return;
 
-            if (ckbFinaleKupa.Checked)
+            if (finaleKupa() || zbirViseKola())
             {
-                prvoKolo = form.SelTakmicenja[0];
-                drugoKolo = form.SelTakmicenja[1];
-                if (prvoKolo.Datum > drugoKolo.Datum)
-                {
-                    Takmicenje temp = prvoKolo;
-                    prvoKolo = drugoKolo;
-                    drugoKolo = temp;
-                }
+                prethodnaKola.Clear();
+                for (int i = 0; i < form.SelTakmicenja.Count; ++i)
+                    prethodnaKola.Add(form.SelTakmicenja[i]);
+
+                PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                    TypeDescriptor.GetProperties(typeof(Takmicenje))["Datum"]
+                };
+                ListSortDirection[] sortDir = new ListSortDirection[] {
+                    ListSortDirection.Ascending
+                };
+                prethodnaKola.Sort(new SortComparer<Takmicenje>(propDesc, sortDir));
 
                 listBox1.Items.Clear();
-                listBox1.Items.Add(prvoKolo.Naziv);
-                listBox1.Items.Add(drugoKolo.Naziv);
+                for (int i = 0; i < prethodnaKola.Count; ++i)
+                    listBox1.Items.Add(prethodnaKola[i].Naziv);
             }
         }
 

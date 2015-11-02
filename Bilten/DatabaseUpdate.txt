@@ -1,5 +1,4 @@
 01-Nov-2015 (VERZIJA = 1)
-
 ALTER TABLE takmicenja ADD COLUMN tip_takmicenja tinyint;
 UPDATE takmicenja SET tip_takmicenja = 0;
 UPDATE takmicenja SET tip_takmicenja = 1 WHERE finale_kupa = 1;
@@ -11,6 +10,9 @@ create table verzija_baze (
 );
 INSERT INTO verzija_baze (verzija_id, broj_verzije) VALUES (1, 0);
 UPDATE verzija_baze SET broj_verzije = broj_verzije + 1 WHERE verzija_id = 1;
+
+ALTER TABLE takmicenja ADD COLUMN trece_kolo_id int references takmicenja(takmicenje_id);
+ALTER TABLE takmicenja ADD COLUMN cetvrto_kolo_id int references takmicenja(takmicenje_id);
 
 
 13-Dec-2014

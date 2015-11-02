@@ -31,6 +31,8 @@
     </set>
     <many-to-one name="PrvoKolo" class="Takmicenje" column="prvo_kolo_id" />
     <many-to-one name="DrugoKolo" class="Takmicenje" column="drugo_kolo_id" />
+    <many-to-one name="TreceKolo" class="Takmicenje" column="trece_kolo_id" />
+    <many-to-one name="CetvrtoKolo" class="Takmicenje" column="cetvrto_kolo_id" />
   </class>
 
 </hibernate-mapping>

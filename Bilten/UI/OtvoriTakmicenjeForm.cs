@@ -19,6 +19,7 @@ namespace Bilten.UI
         private IDataContext dataContext;
         bool selectMode;
         int broj;
+        bool gornjaGranica;
 
         private Takmicenje takmicenje;
         public Takmicenje Takmicenje
@@ -32,12 +33,14 @@ namespace Bilten.UI
             get { return selTakmicenja; }
         }
 
-        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId, bool selectMode, int broj)
+        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId, bool selectMode, int broj, bool gornjaGranica)
         {
             InitializeComponent();
             this.currTakmicenjeId = currTakmicenjeId;
             this.selectMode = selectMode;
             this.broj = broj;
+            this.gornjaGranica = gornjaGranica;
+
             try
             {
                 DataAccessProviderFactory factory = new DataAccessProviderFactory();
@@ -125,15 +128,18 @@ namespace Bilten.UI
             else
             {
                 IList<Takmicenje> selItems = dataGridViewUserControl1.getSelectedItems<Takmicenje>();
-                if (selItems.Count == broj)
+                if ((!gornjaGranica && selItems.Count == broj) ||
+                    (gornjaGranica && selItems.Count > 0 && selItems.Count <= broj))
                     selTakmicenja = selItems;
                 else
                 {
                     string msg;
                     if (broj == 1)
                         msg = "Izaberite jedno takmicenje.";
-                    else
+                    else if (!gornjaGranica)
                         msg = String.Format("Izaberite {0} takmicenja.", broj);
+                    else
+                        msg = String.Format("Izaberite do {0} takmicenja.", broj);
                     MessageDialogs.showMessage(msg, this.Text);
                     DialogResult = DialogResult.None;
                 }
