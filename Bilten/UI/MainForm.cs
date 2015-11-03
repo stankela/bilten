@@ -25,7 +25,6 @@ namespace Bilten.UI
         // TODO: Zameni ove tri promenljive sa promenljivom tipa Takmicenje (problem moze da bude to sto je takmicenjeId
         // tipa Nullable<int>, a takmicenje.Id je tipa int. Proveri sva mesta gde se koristi takmicenjeId)
         private string nazivTakmicenja;
-        private bool finaleKupa;
         private Gimnastika gimnastika;
         private Nullable<int> takmicenjeId;
         Takmicenje takmicenje;
@@ -273,9 +272,18 @@ namespace Bilten.UI
 
         private void mnNew_Click(object sender, EventArgs e)
         {
+            /*clear UI
+            txtbox.Clear();
+            txtbox.ClearUndo();
+            txtbox.Modified = false;
+
+            strFileName = null;
+            MakeCaption();*/
+
             if (!OkToTrash())
                 return;
 
+            bool ok = false;
             try
             {
                 TakmicenjeForm form = new TakmicenjeForm();
@@ -285,6 +293,7 @@ namespace Bilten.UI
                     newTakmicenje(t);
                     loadBrojDecimalaUOpcije(t);
                     Opcije.Instance.HeaderFooterInitialized = false;
+                    ok = true;
                 }
             }
             catch (InfrastructureException ex)
@@ -292,14 +301,42 @@ namespace Bilten.UI
                 MessageDialogs.showError(ex.Message, strProgName);
             }
 
+            if (!ok)
+                return;
+            if (!takmicenje.ZbirViseKola)
+                return;
 
-            // clear UI
-            //txtbox.Clear();
-            //txtbox.ClearUndo();
-            //txtbox.Modified = false;
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
 
-            //strFileName = null;
-            //MakeCaption();
+                if (takmicenje.ZbirViseKola)
+                {
+                    if (kreirajZbirViseKola(takmicenje))
+                        dataContext.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showMessage(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
         }
 
         private void loadBrojDecimalaUOpcije(Takmicenje t)
@@ -317,7 +354,12 @@ namespace Bilten.UI
             takmicenjeId = takmicenje.Id;
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
-            finaleKupa = takmicenje.FinaleKupa;
+
+            refreshUI(takmicenje, true);
+        }
+
+        private void refreshUI(Takmicenje takmicenje, bool newTakmicenje)
+        {
             mnKategorijeITakmicenja.Enabled = true;
             mnPropozicije.Enabled = true;
             mnTakmicariKategorije.Enabled = true;
@@ -325,23 +367,51 @@ namespace Bilten.UI
             mnEkipe.Enabled = true;
             mnSudijeNaTakmicenju.Enabled = true;
             mnTakmicenje1.Visible = true;
-            mnTakmicenje2.Visible = false;
-            mnTakmicenje3.Visible = false;
-            mnTakmicenje4.Visible = false;
 
-            mnKopirajPrethodnoTakmicenje.Enabled = true;
+            if (newTakmicenje)
+            {
+                mnTakmicenje2.Visible = false;
+                mnTakmicenje3.Visible = false;
+                mnTakmicenje4.Visible = false;
+                mnKopirajPrethodnoTakmicenje.Enabled = true;
+            }
+            else
+            {
+
+                mnTakmicenje2.Visible = takmicenje.ZavrsenoTak1;
+                mnTakmicenje3.Visible = takmicenje.ZavrsenoTak1;
+                mnTakmicenje4.Visible = takmicenje.ZavrsenoTak1;
+                mnKopirajPrethodnoTakmicenje.Enabled = false;
+            }
 
             mnPrvoDrugoKoloViseboj.Visible = takmicenje.FinaleKupa;
             mnPrvoDrugoKoloSprave.Visible = takmicenje.FinaleKupa;
             mnPrvoDrugoKoloEkipno.Visible = takmicenje.FinaleKupa;
-            mnKreirajTakmicenja234.Visible = !takmicenje.FinaleKupa;
+            mnKreirajTakmicenja234.Visible = !takmicenje.FinaleKupa && !takmicenje.ZbirViseKola;
             mnZrebZaFinaleKupa.Visible = takmicenje.FinaleKupa;
+
+            mnTakmicenje1RasporedSudija.Visible = !takmicenje.ZbirViseKola;
+            mnTakmicenje1StartListe.Visible = !takmicenje.ZbirViseKola;
+            mnTakmicenje1Ocene.Visible = !takmicenje.ZbirViseKola;
+            mnTakmicenje1RezultatiSprave.Visible = !takmicenje.ZbirViseKola;
 
             MakeCaption();
         }
 
         private void mnOpen_Click(object sender, EventArgs e)
         {
+            /*     
+            if (!OkToTrash())
+                 return;
+
+             OpenFileDialog ofd = new OpenFileDialog();
+             ofd.Filter = strFilter;
+             ofd.FileName = "*.txt";
+
+             if (ofd.ShowDialog() == DialogResult.OK)
+                 LoadFile(ofd.FileName);
+             */
+
             if (!OkToTrash())
                 return;
             try
@@ -358,18 +428,6 @@ namespace Bilten.UI
             {
                 MessageDialogs.showError(ex.Message, strProgName);
             }
-
-            /*     
-            if (!OkToTrash())
-                 return;
-
-             OpenFileDialog ofd = new OpenFileDialog();
-             ofd.Filter = strFilter;
-             ofd.FileName = "*.txt";
-
-             if (ofd.ShowDialog() == DialogResult.OK)
-                 LoadFile(ofd.FileName);
-             */
         }
 
         private void mnSave_Click(object sender, EventArgs e)
@@ -414,31 +472,12 @@ namespace Bilten.UI
 
         private void loadTakmicenje(Takmicenje takmicenje)
         {
-            takmicenjeId = takmicenje.Id;
             this.takmicenje = takmicenje;
+            takmicenjeId = takmicenje.Id;
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
-            finaleKupa = takmicenje.FinaleKupa;
-            mnKategorijeITakmicenja.Enabled = true;
-            mnPropozicije.Enabled = true;
-            mnTakmicariKategorije.Enabled = true;
-            mnTakmicariTakmicenja.Enabled = true;
-            mnEkipe.Enabled = true;
-            mnSudijeNaTakmicenju.Enabled = true;
-            mnTakmicenje1.Visible = true;
-            mnTakmicenje2.Visible = takmicenje.ZavrsenoTak1;
-            mnTakmicenje3.Visible = takmicenje.ZavrsenoTak1;
-            mnTakmicenje4.Visible = takmicenje.ZavrsenoTak1;
 
-            mnKopirajPrethodnoTakmicenje.Enabled = false;
-            
-            mnPrvoDrugoKoloViseboj.Visible = takmicenje.FinaleKupa;
-            mnPrvoDrugoKoloSprave.Visible = takmicenje.FinaleKupa;
-            mnPrvoDrugoKoloEkipno.Visible = takmicenje.FinaleKupa;
-            mnKreirajTakmicenja234.Visible = !takmicenje.FinaleKupa;
-            mnZrebZaFinaleKupa.Visible = takmicenje.FinaleKupa;
-
-            MakeCaption();
+            refreshUI(takmicenje, false);
         }
 
         void SaveFile()
@@ -737,9 +776,17 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenjeId.Value,
-                    DeoTakmicenjaKod.Takmicenje1);
-                form.ShowDialog();
+                if (takmicenje.ZbirViseKola)
+                {
+                    RezultatiUkupnoZbirViseKolaForm form = new RezultatiUkupnoZbirViseKolaForm(takmicenjeId.Value);
+                    form.ShowDialog();
+                }
+                else
+                {
+                    RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenjeId.Value,
+                       DeoTakmicenjaKod.Takmicenje1);
+                    form.ShowDialog();
+                }
             }
             catch (BusinessException ex)
             {
@@ -1165,6 +1212,139 @@ namespace Bilten.UI
             }
 
             mnKopirajPrethodnoTakmicenje.Enabled = false;
+        }
+
+        private bool kreirajZbirViseKola(Takmicenje takmicenje)
+        {
+            dataContext.Attach(takmicenje, false);
+            List<List<TakmicarskaKategorija>> listaKategorija = new List<List<TakmicarskaKategorija>>();
+            if (takmicenje.PrvoKolo != null)
+            {
+                dataContext.Attach(takmicenje.PrvoKolo, false);
+                listaKategorija.Add(new List<TakmicarskaKategorija>(takmicenje.PrvoKolo.Kategorije));
+            }
+            if (takmicenje.DrugoKolo != null)
+            {
+                dataContext.Attach(takmicenje.DrugoKolo, false);
+                listaKategorija.Add(new List<TakmicarskaKategorija>(takmicenje.DrugoKolo.Kategorije));
+            }
+            if (takmicenje.TreceKolo != null)
+            {
+                dataContext.Attach(takmicenje.TreceKolo, false);
+                listaKategorija.Add(new List<TakmicarskaKategorija>(takmicenje.TreceKolo.Kategorije));
+            }
+            if (takmicenje.CetvrtoKolo != null)
+            {
+                dataContext.Attach(takmicenje.CetvrtoKolo, false);
+                listaKategorija.Add(new List<TakmicarskaKategorija>(takmicenje.CetvrtoKolo.Kategorije));
+            }
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
+            for (int i = 0; i < listaKategorija.Count; ++i)
+            {
+                listaKategorija[i].Sort(new SortComparer<TakmicarskaKategorija>(
+                    propDesc, ListSortDirection.Ascending));
+            }
+
+            for (int i = 0; i < listaKategorija[0].Count; ++i)
+            {
+                TakmicarskaKategorija kat1 = listaKategorija[0][i];
+                for (int j = 0; j < listaKategorija.Count; ++j)
+                {
+                    TakmicarskaKategorija kat2 = listaKategorija[j][i];
+                    if (!kat1.Equals(kat2))
+                    {
+                        // TODO3: Ovde bi ustvari trebalo proveravati da li se rezultatska takmicenja iz
+                        // prethodna cetiri kola poklapaju, i ako se ne poklapaju da se otvori prozor
+                        // gde ce korisnik moci da upari odgovarajuca rezultatska takmicenja (i da izabere
+                        // koja rez. takmicenja zeli da ukljuci u novo takmicenje). Slicno i za finale kupa.
+                        MessageBox.Show("Kategorije iz prethodnih kola se ne poklapaju", "Bilten");
+                        return false;
+                    }
+                }
+            }
+            foreach (TakmicarskaKategorija k in listaKategorija[0])
+            {
+                takmicenje.addKategorija(new TakmicarskaKategorija(k.Naziv, takmicenje.Gimnastika));
+            }
+
+            // prvi description je uvek kao naziv takmicenja.
+            RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
+            desc.Naziv = takmicenje.Naziv;
+            desc.Propozicije = new Propozicije();
+            takmicenje.addTakmicenjeDescription(desc);
+
+            IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
+            foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
+            {
+                foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
+                {
+                    RezultatskoTakmicenje rt = new RezultatskoTakmicenje(takmicenje,
+                        k, d, new Propozicije());
+                    rt.Propozicije.PostojiTak2 = true;  // hack
+                    rezTakmicenja.Add(rt);
+                }
+            }
+
+            IDictionary<GimnasticarUcesnik, GimnasticarUcesnik> gimnasticariMap =
+                new Dictionary<GimnasticarUcesnik, GimnasticarUcesnik>();
+            List<Takmicenje> prethodnaKola = new List<Takmicenje>();
+            if (takmicenje.PrvoKolo != null)
+                prethodnaKola.Add(takmicenje.PrvoKolo);
+            if (takmicenje.DrugoKolo != null)
+                prethodnaKola.Add(takmicenje.DrugoKolo);
+            if (takmicenje.TreceKolo != null)
+                prethodnaKola.Add(takmicenje.TreceKolo);
+            if (takmicenje.CetvrtoKolo != null)
+                prethodnaKola.Add(takmicenje.CetvrtoKolo);
+            foreach (TakmicarskaKategorija kat in takmicenje.Kategorije)
+            {
+                foreach (Takmicenje prethKolo in prethodnaKola)
+                {
+                    foreach (GimnasticarUcesnik g in loadGimnasticari(prethKolo, kat.Naziv))
+                    {
+                        if (!gimnasticariMap.ContainsKey(g))
+                        {
+                            GimnasticarUcesnik g2 = createGimnasticarUcesnik(g, kat);
+                            gimnasticariMap.Add(g2, g2);
+                        }
+                    }
+                }
+            }
+
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (Takmicenje prethKolo in prethodnaKola)
+                {
+                    IList<RezultatskoTakmicenje> rezTakmicenjaprethKolo = loadRezTakmicenja(prethKolo.Id);
+                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaprethKolo, 
+                        rt.TakmicenjeDescription.Naziv, rt.Kategorija);
+                    foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
+                    {
+                        //if (gimnasticariMap.ContainsKey(g))
+                        //{
+                            GimnasticarUcesnik g2 = gimnasticariMap[g];
+                            rt.Takmicenje1.addGimnasticar(g2);
+                            //rt.Takmicenje1.gimnasticarAdded(g2, new List<Ocena>(), rt);
+                        //}
+                    }
+                }
+            }
+
+            dataContext.Add(takmicenje);
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                dataContext.Add(rt);
+                //foreach (Ekipa e in rt.Takmicenje1.Ekipe)
+                    //dataContext.Add(e);
+            }
+            foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
+            {
+                dataContext.Add(g);
+            }
+            
+            return true;
         }
 
         void cloneTakmicenje(Takmicenje takmicenje, Takmicenje from, List<RezultatskoTakmicenjeDescription> descriptionsFrom,

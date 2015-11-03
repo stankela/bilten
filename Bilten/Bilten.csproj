@@ -132,6 +132,7 @@
     <Compile Include="Domain\PoredakSpravaFinaleKupa.cs" />
     <Compile Include="Domain\PoredakUkupno.cs" />
     <Compile Include="Domain\PoredakUkupnoFinaleKupa.cs" />
+    <Compile Include="Domain\PoredakUkupnoZbirViseKola.cs" />
     <Compile Include="Domain\Propozicije.cs" />
     <Compile Include="Domain\RasporedNastupa.cs" />
     <Compile Include="Domain\RasporedSudija.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Domain\RezultatUkupno.cs" />
     <Compile Include="Domain\RezultatUkupnoExtended.cs" />
     <Compile Include="Domain\RezultatUkupnoFinaleKupa.cs" />
+    <Compile Include="Domain\RezultatUkupnoZbirViseKola.cs" />
     <Compile Include="Domain\Sprava.cs" />
     <Compile Include="Domain\StartListaNaSpravi.cs">
       <SubType>Code</SubType>
@@ -215,6 +217,7 @@
     <Compile Include="Report\TakmicariIzvestaj.cs" />
     <Compile Include="Report\UkupnoFinaleKupaIzvestaj.cs" />
     <Compile Include="Report\UkupnoIzvestaj.cs" />
+    <Compile Include="Report\UkupnoZbirViseKolaIzvestaj.cs" />
     <Compile Include="SingleInstanceApplication.cs" />
     <Compile Include="SlikeSprava.cs" />
     <Compile Include="Strings.cs" />
@@ -495,6 +498,12 @@
     </Compile>
     <Compile Include="UI\RezultatiUkupnoForm.designer.cs">
       <DependentUpon>RezultatiUkupnoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatiUkupnoZbirViseKolaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiUkupnoZbirViseKolaForm.Designer.cs">
+      <DependentUpon>RezultatiUkupnoZbirViseKolaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RezultatskoTakmicenjeDescriptionForm.cs">
       <SubType>Form</SubType>
@@ -855,6 +864,9 @@
     <EmbeddedResource Include="UI\RezultatiUkupnoForm.resx">
       <DependentUpon>RezultatiUkupnoForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiUkupnoZbirViseKolaForm.resx">
+      <DependentUpon>RezultatiUkupnoZbirViseKolaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RezultatskoTakmicenjeDescriptionForm.resx">
       <SubType>Designer</SubType>

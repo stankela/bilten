@@ -132,6 +132,13 @@ namespace Bilten.Domain
             set { _poredakUkupnoFinaleKupa = value; }
         }
 
+        private PoredakUkupnoZbirViseKola _poredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
+        public virtual PoredakUkupnoZbirViseKola PoredakUkupnoZbirViseKola
+        {
+            get { return _poredakUkupnoZbirViseKola; }
+            set { _poredakUkupnoZbirViseKola = value; }
+        }
+
         private ISet<PoredakSpravaFinaleKupa> _poredakSpravaFinaleKupa = new HashedSet<PoredakSpravaFinaleKupa>();
         public virtual ISet<PoredakSpravaFinaleKupa> PoredakSpravaFinaleKupa
         {

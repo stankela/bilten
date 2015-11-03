@@ -483,6 +483,43 @@ namespace Bilten.UI
                 dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
+        public static void initRezultatiUkupnoZbirViseKola(DataGridViewUserControl dgw,
+            Takmicenje takmicenje, bool kvalColumn)
+        {
+            dgw.DataGridView.Columns.Clear();
+
+            dgw.AddColumn("Rank", "Rank", 40);
+            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
+            dgw.AddColumn("Ime", "PrezimeIme", 170);
+            dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
+            dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("II Kolo", "TotalDrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("III Kolo", "TotalTreceKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("IV Kolo", "TotalCetvrtoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (kvalColumn)
+                dgw.AddColumn("", "KvalStatus", 30);
+        }
+
+        public static void maximizeColumnsRezultatiUkupnoZbirViseKola(DataGridViewUserControl dgw,
+            IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            List<string> imena = new List<string>();
+            List<string> klubovi = new List<string>();
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (RezultatUkupnoZbirViseKola r in rt.Takmicenje1.PoredakUkupnoZbirViseKola.getRezultati())
+                {
+                    imena.Add(r.Gimnasticar.PrezimeIme);
+                    klubovi.Add(r.Gimnasticar.KlubDrzava);
+                }
+            }
+            if (imena.Count > 0)
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+            if (klubovi.Count > 0)
+                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+        }
+
         public static void initRezultatiSpravaFinaleKupa(DataGridViewUserControl dgw,
             Takmicenje takmicenje, bool kvalColumn)
         {
