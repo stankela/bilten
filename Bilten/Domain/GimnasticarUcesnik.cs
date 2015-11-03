@@ -209,6 +209,10 @@ namespace Bilten.Domain
                     && !string.IsNullOrEmpty(that.SrednjeIme)
                     && this.SrednjeIme.ToUpper() == that.SrednjeIme.ToUpper());
             }
+            if (result)
+            {
+                result = this.datumRodjenja == that.datumRodjenja;
+            }
             return result;
         }
 
