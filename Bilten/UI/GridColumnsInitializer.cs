@@ -577,6 +577,21 @@ namespace Bilten.UI
                 dgw.AddColumn("", "KvalStatus", 30);
         }
 
+        public static void initRezultatiEkipnoZbirViseKola(DataGridViewUserControl dgw, Takmicenje takmicenje, bool kvalColumn)
+        {
+            dgw.DataGridView.Columns.Clear();
+
+            dgw.AddColumn("Rank", "Rank", 40);
+            dgw.AddColumn("Ekipa", "NazivEkipe", 170);
+            dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("II Kolo", "TotalDrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("III Kolo", "TotalTreceKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("IV Kolo", "TotalCetvrtoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (kvalColumn)
+                dgw.AddColumn("", "KvalStatus", 30);
+        }
+
         public static int getMaxWidth(List<string> strings, DataGridView dataGridView)
         {
             Graphics g = dataGridView.CreateGraphics();

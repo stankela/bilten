@@ -9,11 +9,12 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using NHibernate;
+using Iesi.Collections.Generic;
 using Bilten.Report;
 
 namespace Bilten.UI
 {
-    public partial class RezultatiUkupnoZbirViseKolaForm : Form
+    public partial class RezultatiEkipeZbirViseKolaForm : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private IDataContext dataContext;
@@ -26,7 +27,7 @@ namespace Bilten.UI
             set { cmbTakmicenje.SelectedItem = value; }
         }
 
-        public RezultatiUkupnoZbirViseKolaForm(int takmicenjeId)
+        public RezultatiEkipeZbirViseKolaForm(int takmicenjeId)
         {
             InitializeComponent();
 
@@ -39,17 +40,22 @@ namespace Bilten.UI
                 dataContext.BeginTransaction();
 
                 takmicenje = loadTakmicenje(takmicenjeId);
-
+                
                 IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje);
                 if (svaRezTakmicenja.Count == 0)
                     throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
 
-                rezTakmicenja = takmicenje.getRezTakmicenjaViseboj(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
+                rezTakmicenja = takmicenje.getRezTakmicenjaEkipe(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
                 if (rezTakmicenja.Count == 0)
-                    throw new BusinessException("Ne postoji takmicenje II ni za jednu kategoriju.");
+                    throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
 
                 initUI();
                 takmicenjeOpened = new bool[rezTakmicenja.Count];
+                cmbTakmicenje.SelectedIndex = 0;
+
+                cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
+
+                //onSelectedTakmicenjeChanged();
             }
             catch (BusinessException)
             {
@@ -84,7 +90,7 @@ namespace Bilten.UI
         private Takmicenje loadTakmicenje(int takmicenjeId)
         {
             string query = @"from Takmicenje t
-                    where t.Id = :takmicenjeId";
+                             where t.Id = :takmicenjeId";
             IList<Takmicenje> result = dataContext.
                 ExecuteQuery<Takmicenje>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
@@ -116,9 +122,7 @@ namespace Bilten.UI
                     left join fetch r.Kategorija kat
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
-                    left join fetch t.Gimnasticari g
-                    left join fetch g.DrzavaUcesnik dr
-                    left join fetch g.KlubUcesnik kl
+                    left join fetch t.Ekipe e
                     where r.Takmicenje.Id = :takmicenjeId
                     order by r.RedBroj";
 
@@ -126,12 +130,26 @@ namespace Bilten.UI
                 ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenje.Id });
-            foreach (RezultatskoTakmicenje rt in result)
+
+            foreach (RezultatskoTakmicenje tak in result)
             {
                 // potrebno u Poredak.create
-                NHibernateUtil.Initialize(rt.Propozicije);
-                takmicenje.createPoredakUkupnoZbirViseKola(rt, rezTakmicenjaPrvoKolo, rezTakmicenjaDrugoKolo,
-                    rezTakmicenjaTreceKolo, rezTakmicenjaCetvrtoKolo);
+                NHibernateUtil.Initialize(tak.Propozicije);
+
+                PoredakEkipno poredak1 = null;
+                PoredakEkipno poredak2 = null;
+                PoredakEkipno poredak3 = null;
+                PoredakEkipno poredak4 = null;
+
+                if (rezTakmicenjaPrvoKolo != null)
+                    poredak1 = takmicenje.getRezTakmicenje(rezTakmicenjaPrvoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
+                if (rezTakmicenjaDrugoKolo != null)
+                    poredak2 = takmicenje.getRezTakmicenje(rezTakmicenjaDrugoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
+                if (rezTakmicenjaTreceKolo != null)
+                    poredak3 = takmicenje.getRezTakmicenje(rezTakmicenjaTreceKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
+                if (rezTakmicenjaCetvrtoKolo != null)
+                    poredak4 = takmicenje.getRezTakmicenje(rezTakmicenjaCetvrtoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
+                tak.Takmicenje1.PoredakEkipnoZbirViseKola.create(tak, poredak1, poredak2, poredak3, poredak4);
             }
             return result;
         }
@@ -140,11 +158,11 @@ namespace Bilten.UI
         {
             string query = @"select distinct r
                     from RezultatskoTakmicenje r
-                    left join fetch r.Kategorija kat
                     left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Kategorija kat
                     left join fetch r.Takmicenje1 t
-                    left join fetch t.PoredakUkupno
-                    left join fetch t.Gimnasticari g
+                    left join fetch t.PoredakEkipno
+                    left join fetch t.Ekipe e
                     where r.Takmicenje.Id = :takmicenjeId";
 
             IList<RezultatskoTakmicenje> result = dataContext.
@@ -156,16 +174,13 @@ namespace Bilten.UI
 
         private void initUI()
         {
-            Text = "Rezultati viseboj";
-            this.ClientSize = new Size(ClientSize.Width, 540);
+            Text = "Rezultati ekipno";
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;
-            cmbTakmicenje.DisplayMember = "Naziv";
-            cmbTakmicenje.SelectedIndex = 0;
-            cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
+            cmbTakmicenje.DisplayMember = "NazivEkipnog";
 
-            dataGridViewUserControl1.GridColumnHeaderMouseClick += 
+            dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
         }
 
@@ -174,15 +189,10 @@ namespace Bilten.UI
         {
             DataGridViewUserControl dgwuc = sender as DataGridViewUserControl;
             if (dgwuc != null)
-                dgwuc.onColumnHeaderMouseClick<RezultatUkupnoZbirViseKola>(e.DataGridViewCellMouseEventArgs);
+                dgwuc.onColumnHeaderMouseClick<RezultatEkipnoZbirViseKola>(e.DataGridViewCellMouseEventArgs);
         }
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            cmdSelectedTakmicenjeChanged();
-        }
-
-        void cmdSelectedTakmicenjeChanged()
         {
             try
             {
@@ -190,7 +200,8 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
-                onSelectedTakmicenjeChanged();
+                if (onSelectedTakmicenjeChanged())
+                    dataContext.Commit();
             }
             catch (Exception ex)
             {
@@ -208,79 +219,68 @@ namespace Bilten.UI
             }
         }
 
-        private void onSelectedTakmicenjeChanged()
-        {
-            if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
-            {
-                GridColumnsInitializer.initRezultatiUkupnoZbirViseKola(dataGridViewUserControl1,
-                    takmicenje, kvalColumnVisible());
-                GridColumnsInitializer.maximizeColumnsRezultatiUkupnoZbirViseKola(dataGridViewUserControl1,
-                    rezTakmicenja);
-            }
-            else
-            {
-                // TODO
-                // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
-                //GridColumnsInitializer.reinitRezultatiUkupnoKeepColumnWidths(dataGridViewUserControl1,
-                  //  takmicenje, kvalColumnVisible());
-            }
-            
-            if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
-                takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
-
-            setItems();
-        }
-
-        private void setItems()
-        {
-            dataGridViewUserControl1.setItems<RezultatUkupnoZbirViseKola>(
-                ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.getRezultati());
-            dataGridViewUserControl1.clearSelection();
-        }
-
         private bool kvalColumnVisible()
         {
-            return ActiveTakmicenje.postojeKvalifikacijeViseboj(DeoTakmicenjaKod.Takmicenje1);
+            return ActiveTakmicenje.postojeKvalifikacijeEkipno(DeoTakmicenjaKod.Takmicenje1);
         }
 
-        private void cmbTakmicenja_DropDownClosed(object sender, EventArgs e)
+        private bool onSelectedTakmicenjeChanged()
         {
-            dataGridViewUserControl1.Focus();
+            GridColumnsInitializer.initRezultatiEkipnoZbirViseKola(dataGridViewUserControl1,
+                takmicenje, kvalColumnVisible());
+            
+            bool save = false;
+            if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
+            {
+                takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
+                //ActiveTakmicenje.Takmicenje1.PoredakEkipno.create(ActiveTakmicenje, ocene);
+                //dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
+                //save = true;
+            }
+
+            dataGridViewUserControl1.setItems<RezultatEkipnoZbirViseKola>(
+                ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola.getRezultati());
+
+            return save;
         }
 
-        private void RezultatiUkupnoZbirViseKolaForm_Shown(object sender, EventArgs e)
+        private void RezultatiEkipeZbirViseKolaForm_Shown(object sender, EventArgs e)
         {
             dataGridViewUserControl1.Focus();
-            cmdSelectedTakmicenjeChanged();
+            cmbTakmicenje_SelectedIndexChanged(null, EventArgs.Empty);
+        }
+
+        private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)
+        {
+            dataGridViewUserControl1.Focus();
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(DeoTakmicenjaKod.Takmicenje1, false, true);
-            string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
+            string nazivIzvestaja;
+            nazivIzvestaja = "Rezultati ekipno";
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
-                true, false, false, false, false, false, false);
+                false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
 
-                string mestoDatum = takmicenje.Mesto + "  " 
+                string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
-                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header1Text = takmicenje.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
+                form.Header3Text = ActiveTakmicenje.Naziv;
                 form.Header4Text = nazivIzvestaja;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 Opcije.Instance.initHeaderFooterFormFromOpcije(form);
-                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
+                form.Header3Text = ActiveTakmicenje.Naziv;
                 form.Header4Text = nazivIzvestaja;
             }
-            
+
             if (form.ShowDialog() != DialogResult.OK)
                 return;
             Opcije.Instance.initHeaderFooterFromForm(form);
@@ -292,12 +292,12 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                List<RezultatUkupnoZbirViseKola> rezultati
-                    = ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.getRezultati();
+                List<RezultatEkipnoZbirViseKola> rezultatiEkipno =
+                    ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola.getRezultati();
 
-                p.setIzvestaj(new UkupnoZbirViseKolaIzvestaj(rezultati, ActiveTakmicenje.Gimnastika,
-                    Opcije.Instance.PrikaziDEOcene, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
-                    documentName));
+                p.setIzvestaj(new EkipeZbirViseKolaIzvestaj(rezultatiEkipno,
+                    ActiveTakmicenje.Gimnastika, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
+                    nazivIzvestaja));
                 p.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -311,7 +311,7 @@ namespace Bilten.UI
             }
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
+        private void btnZatvori_Click(object sender, EventArgs e)
         {
             Close();
         }

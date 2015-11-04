@@ -360,8 +360,8 @@ namespace Bilten.UI
 
         private void refreshUI(Takmicenje takmicenje, bool newTakmicenje)
         {
-            mnKategorijeITakmicenja.Enabled = true;
-            mnPropozicije.Enabled = true;
+            mnKategorijeITakmicenja.Enabled = !takmicenje.ZbirViseKola;
+            mnPropozicije.Enabled = !takmicenje.ZbirViseKola;
             mnTakmicariKategorije.Enabled = true;
             mnTakmicariTakmicenja.Enabled = true;
             mnEkipe.Enabled = true;
@@ -1097,9 +1097,17 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiEkipeForm form = new RezultatiEkipeForm(takmicenjeId.Value,
-                    DeoTakmicenjaKod.Takmicenje1);
-                form.ShowDialog();
+                if (takmicenje.ZbirViseKola)
+                {
+                    RezultatiEkipeZbirViseKolaForm form = new RezultatiEkipeZbirViseKolaForm(takmicenjeId.Value);
+                    form.ShowDialog();
+                }
+                else
+                {
+                    RezultatiEkipeForm form = new RezultatiEkipeForm(takmicenjeId.Value,
+                        DeoTakmicenjaKod.Takmicenje1);
+                    form.ShowDialog();
+                }
             }
             catch (BusinessException ex)
             {
@@ -1283,6 +1291,9 @@ namespace Bilten.UI
                     RezultatskoTakmicenje rt = new RezultatskoTakmicenje(takmicenje,
                         k, d, new Propozicije());
                     rt.Propozicije.PostojiTak2 = true;  // hack
+                    rt.Propozicije.PostojiTak4 = true;  // hack
+                    rt.ImaEkipnoTakmicenje = true;  // hack
+                    rt.KombinovanoEkipnoTak = false;  // hack
                     rezTakmicenja.Add(rt);
                 }
             }
@@ -1313,21 +1324,72 @@ namespace Bilten.UI
                 }
             }
 
+            List<List<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<List<RezultatskoTakmicenje>>();
+            foreach (Takmicenje prethKolo in prethodnaKola)
+            {
+                rezTakmicenjaPrethodnaKola.Add(new List<RezultatskoTakmicenje>(loadRezTakmicenja(prethKolo.Id)));
+            }
+
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                foreach (Takmicenje prethKolo in prethodnaKola)
+                foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
                 {
-                    IList<RezultatskoTakmicenje> rezTakmicenjaprethKolo = loadRezTakmicenja(prethKolo.Id);
-                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaprethKolo, 
+                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaPrethKolo, 
                         rt.TakmicenjeDescription.Naziv, rt.Kategorija);
                     foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
                     {
-                        //if (gimnasticariMap.ContainsKey(g))
-                        //{
-                            GimnasticarUcesnik g2 = gimnasticariMap[g];
-                            rt.Takmicenje1.addGimnasticar(g2);
-                            //rt.Takmicenje1.gimnasticarAdded(g2, new List<Ocena>(), rt);
-                        //}
+                        GimnasticarUcesnik g2 = gimnasticariMap[g];
+                        rt.Takmicenje1.addGimnasticar(g2);
+                    }
+                }
+            }
+
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
+                {
+                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaPrethKolo,
+                        rt.TakmicenjeDescription.Naziv, rt.Kategorija);
+                    foreach (Ekipa e in rtFrom.Takmicenje1.Ekipe)
+                    {
+                        if (rt.Takmicenje1.Ekipe.Contains(e))
+                            continue;
+
+                        Ekipa ekipa = new Ekipa();
+                        ekipa.Naziv = e.Naziv;
+                        ekipa.Kod = e.Kod;
+                        if (e.DrzavaUcesnik == null)
+                            ekipa.DrzavaUcesnik = null;
+                        else
+                        {
+                            DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(takmicenje, e.DrzavaUcesnik.Naziv);
+                            if (drzavaUcesnik == null)
+                            {
+                                drzavaUcesnik = new DrzavaUcesnik();
+                                drzavaUcesnik.Naziv = e.DrzavaUcesnik.Naziv;
+                                drzavaUcesnik.Kod = e.DrzavaUcesnik.Kod;
+                                drzavaUcesnik.Takmicenje = takmicenje;
+                                dataContext.Add(drzavaUcesnik);
+                            }
+                            ekipa.DrzavaUcesnik = drzavaUcesnik;
+                        }
+                        if (e.KlubUcesnik == null)
+                            ekipa.KlubUcesnik = null;
+                        else
+                        {
+                            KlubUcesnik klubUcesnik = findKlubUcesnik(takmicenje, e.KlubUcesnik.Naziv);
+                            if (klubUcesnik == null)
+                            {
+                                klubUcesnik = new KlubUcesnik();
+                                klubUcesnik.Naziv = e.KlubUcesnik.Naziv;
+                                klubUcesnik.Kod = e.KlubUcesnik.Kod;
+                                klubUcesnik.Takmicenje = takmicenje;
+                                dataContext.Add(klubUcesnik);
+                            }
+                            ekipa.KlubUcesnik = klubUcesnik;
+                        }
+
+                        rt.Takmicenje1.addEkipa(ekipa);
                     }
                 }
             }
@@ -1336,8 +1398,8 @@ namespace Bilten.UI
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 dataContext.Add(rt);
-                //foreach (Ekipa e in rt.Takmicenje1.Ekipe)
-                    //dataContext.Add(e);
+                foreach (Ekipa e in rt.Takmicenje1.Ekipe)
+                    dataContext.Add(e);
             }
             foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
             {

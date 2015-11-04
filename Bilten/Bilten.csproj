@@ -127,6 +127,7 @@
     <Compile Include="Domain\Pol.cs" />
     <Compile Include="Domain\PoredakEkipno.cs" />
     <Compile Include="Domain\PoredakEkipnoFinaleKupa.cs" />
+    <Compile Include="Domain\PoredakEkipnoZbirViseKola.cs" />
     <Compile Include="Domain\PoredakPreskok.cs" />
     <Compile Include="Domain\PoredakSprava.cs" />
     <Compile Include="Domain\PoredakSpravaFinaleKupa.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Domain\Rezultat.cs" />
     <Compile Include="Domain\RezultatEkipno.cs" />
     <Compile Include="Domain\RezultatEkipnoFinaleKupa.cs" />
+    <Compile Include="Domain\RezultatEkipnoZbirViseKola.cs" />
     <Compile Include="Domain\RezultatPreskok.cs" />
     <Compile Include="Domain\RezultatskoTakmicenje.cs" />
     <Compile Include="Domain\RezultatskoTakmicenjeDescription.cs" />
@@ -206,6 +208,7 @@
     </Compile>
     <Compile Include="Report\EkipeFinaleKupaIzvestaj.cs" />
     <Compile Include="Report\EkipeIzvestaj.cs" />
+    <Compile Include="Report\EkipeZbirViseKolaIzvestaj.cs" />
     <Compile Include="Report\Izvestaj.cs" />
     <Compile Include="Report\KvalifikantiTak3Izvestaj.cs" />
     <Compile Include="Report\RasporedSudijaIzvestaj.cs" />
@@ -474,6 +477,12 @@
     </Compile>
     <Compile Include="UI\RezultatiEkipeForm.designer.cs">
       <DependentUpon>RezultatiEkipeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RezultatiEkipeZbirViseKolaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RezultatiEkipeZbirViseKolaForm.designer.cs">
+      <DependentUpon>RezultatiEkipeZbirViseKolaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RezultatiSpravaFinaleKupaForm.cs">
       <SubType>Form</SubType>
@@ -848,6 +857,9 @@
     <EmbeddedResource Include="UI\RezultatiEkipeForm.resx">
       <DependentUpon>RezultatiEkipeForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RezultatiEkipeZbirViseKolaForm.resx">
+      <DependentUpon>RezultatiEkipeZbirViseKolaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RezultatiSpravaFinaleKupaForm.resx">
       <SubType>Designer</SubType>

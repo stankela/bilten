@@ -163,6 +163,13 @@ namespace Bilten.Domain
             set { _poredakEkipnoFinaleKupa = value; }
         }
 
+        private PoredakEkipnoZbirViseKola _poredakEkipnoZbirViseKola = new PoredakEkipnoZbirViseKola();
+        public virtual PoredakEkipnoZbirViseKola PoredakEkipnoZbirViseKola
+        {
+            get { return _poredakEkipnoZbirViseKola; }
+            set { _poredakEkipnoZbirViseKola = value; }
+        }
+
         protected Takmicenje1()
         { 
         
