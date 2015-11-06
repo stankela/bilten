@@ -517,5 +517,26 @@ namespace Bilten.UI
             return false;
         }
 
+        private void btnEditKategorija_Click(object sender, EventArgs e)
+        {
+            if (SelectedKategorija == null)
+                return;
+            try
+            {
+                TakmicarskaKategorijaForm form =
+                    new TakmicarskaKategorijaForm(SelectedKategorija, takmicenje);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    // refresh
+                    setKategorije(takmicenje.Kategorije);
+                    SelectedKategorija = (TakmicarskaKategorija)form.Entity;
+                }
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+        }
+
     }
 }

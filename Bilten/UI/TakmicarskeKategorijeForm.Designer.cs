@@ -44,6 +44,7 @@ namespace Bilten.UI
             this.btnMoveUpTakmicenje = new System.Windows.Forms.Button();
             this.btnMoveDownTakmicenje = new System.Windows.Forms.Button();
             this.btnEditTakmicenje = new System.Windows.Forms.Button();
+            this.btnEditKategorija = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lstKategorije
@@ -66,7 +67,7 @@ namespace Bilten.UI
             // 
             // btnDeleteKategorija
             // 
-            this.btnDeleteKategorija.Location = new System.Drawing.Point(138, 52);
+            this.btnDeleteKategorija.Location = new System.Drawing.Point(138, 83);
             this.btnDeleteKategorija.Name = "btnDeleteKategorija";
             this.btnDeleteKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteKategorija.TabIndex = 2;
@@ -76,7 +77,7 @@ namespace Bilten.UI
             // 
             // btnMoveUpKategorija
             // 
-            this.btnMoveUpKategorija.Location = new System.Drawing.Point(138, 81);
+            this.btnMoveUpKategorija.Location = new System.Drawing.Point(138, 112);
             this.btnMoveUpKategorija.Name = "btnMoveUpKategorija";
             this.btnMoveUpKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnMoveUpKategorija.TabIndex = 3;
@@ -86,7 +87,7 @@ namespace Bilten.UI
             // 
             // btnMoveDownKategorija
             // 
-            this.btnMoveDownKategorija.Location = new System.Drawing.Point(138, 110);
+            this.btnMoveDownKategorija.Location = new System.Drawing.Point(138, 141);
             this.btnMoveDownKategorija.Name = "btnMoveDownKategorija";
             this.btnMoveDownKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnMoveDownKategorija.TabIndex = 4;
@@ -97,7 +98,7 @@ namespace Bilten.UI
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(343, 339);
+            this.btnOK.Location = new System.Drawing.Point(343, 373);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 5;
@@ -107,7 +108,7 @@ namespace Bilten.UI
             // 
             // lblNapomena
             // 
-            this.lblNapomena.Location = new System.Drawing.Point(12, 292);
+            this.lblNapomena.Location = new System.Drawing.Point(12, 326);
             this.lblNapomena.Name = "lblNapomena";
             this.lblNapomena.Size = new System.Drawing.Size(282, 44);
             this.lblNapomena.TabIndex = 6;
@@ -117,7 +118,7 @@ namespace Bilten.UI
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(426, 339);
+            this.btnCancel.Location = new System.Drawing.Point(426, 373);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 7;
@@ -136,7 +137,7 @@ namespace Bilten.UI
             // lblTakmicenja
             // 
             this.lblTakmicenja.AutoSize = true;
-            this.lblTakmicenja.Location = new System.Drawing.Point(12, 154);
+            this.lblTakmicenja.Location = new System.Drawing.Point(12, 188);
             this.lblTakmicenja.Name = "lblTakmicenja";
             this.lblTakmicenja.Size = new System.Drawing.Size(62, 13);
             this.lblTakmicenja.TabIndex = 9;
@@ -145,14 +146,14 @@ namespace Bilten.UI
             // lstTakmicenja
             // 
             this.lstTakmicenja.FormattingEnabled = true;
-            this.lstTakmicenja.Location = new System.Drawing.Point(12, 170);
+            this.lstTakmicenja.Location = new System.Drawing.Point(12, 204);
             this.lstTakmicenja.Name = "lstTakmicenja";
             this.lstTakmicenja.Size = new System.Drawing.Size(324, 108);
             this.lstTakmicenja.TabIndex = 10;
             // 
             // btnAddTakmicenje
             // 
-            this.btnAddTakmicenje.Location = new System.Drawing.Point(343, 170);
+            this.btnAddTakmicenje.Location = new System.Drawing.Point(343, 204);
             this.btnAddTakmicenje.Name = "btnAddTakmicenje";
             this.btnAddTakmicenje.Size = new System.Drawing.Size(75, 23);
             this.btnAddTakmicenje.TabIndex = 11;
@@ -162,7 +163,7 @@ namespace Bilten.UI
             // 
             // btnDeleteTakmicenje
             // 
-            this.btnDeleteTakmicenje.Location = new System.Drawing.Point(343, 228);
+            this.btnDeleteTakmicenje.Location = new System.Drawing.Point(343, 262);
             this.btnDeleteTakmicenje.Name = "btnDeleteTakmicenje";
             this.btnDeleteTakmicenje.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteTakmicenje.TabIndex = 12;
@@ -172,7 +173,7 @@ namespace Bilten.UI
             // 
             // btnMoveUpTakmicenje
             // 
-            this.btnMoveUpTakmicenje.Location = new System.Drawing.Point(343, 257);
+            this.btnMoveUpTakmicenje.Location = new System.Drawing.Point(343, 291);
             this.btnMoveUpTakmicenje.Name = "btnMoveUpTakmicenje";
             this.btnMoveUpTakmicenje.Size = new System.Drawing.Size(75, 23);
             this.btnMoveUpTakmicenje.TabIndex = 13;
@@ -182,7 +183,7 @@ namespace Bilten.UI
             // 
             // btnMoveDownTakmicenje
             // 
-            this.btnMoveDownTakmicenje.Location = new System.Drawing.Point(343, 287);
+            this.btnMoveDownTakmicenje.Location = new System.Drawing.Point(343, 321);
             this.btnMoveDownTakmicenje.Name = "btnMoveDownTakmicenje";
             this.btnMoveDownTakmicenje.Size = new System.Drawing.Size(75, 23);
             this.btnMoveDownTakmicenje.TabIndex = 14;
@@ -192,7 +193,7 @@ namespace Bilten.UI
             // 
             // btnEditTakmicenje
             // 
-            this.btnEditTakmicenje.Location = new System.Drawing.Point(343, 199);
+            this.btnEditTakmicenje.Location = new System.Drawing.Point(343, 233);
             this.btnEditTakmicenje.Name = "btnEditTakmicenje";
             this.btnEditTakmicenje.Size = new System.Drawing.Size(75, 23);
             this.btnEditTakmicenje.TabIndex = 15;
@@ -200,11 +201,22 @@ namespace Bilten.UI
             this.btnEditTakmicenje.UseVisualStyleBackColor = true;
             this.btnEditTakmicenje.Click += new System.EventHandler(this.btnEditTakmicenje_Click);
             // 
+            // btnEditKategorija
+            // 
+            this.btnEditKategorija.Location = new System.Drawing.Point(138, 52);
+            this.btnEditKategorija.Name = "btnEditKategorija";
+            this.btnEditKategorija.Size = new System.Drawing.Size(75, 23);
+            this.btnEditKategorija.TabIndex = 16;
+            this.btnEditKategorija.Text = "Promeni";
+            this.btnEditKategorija.UseVisualStyleBackColor = true;
+            this.btnEditKategorija.Click += new System.EventHandler(this.btnEditKategorija_Click);
+            // 
             // TakmicarskeKategorijeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(516, 374);
+            this.ClientSize = new System.Drawing.Size(516, 414);
+            this.Controls.Add(this.btnEditKategorija);
             this.Controls.Add(this.btnEditTakmicenje);
             this.Controls.Add(this.btnMoveDownTakmicenje);
             this.Controls.Add(this.btnMoveUpTakmicenje);
@@ -251,5 +263,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnMoveUpTakmicenje;
         private System.Windows.Forms.Button btnMoveDownTakmicenje;
         private System.Windows.Forms.Button btnEditTakmicenje;
+        private System.Windows.Forms.Button btnEditKategorija;
     }
 }
