@@ -130,7 +130,6 @@ namespace Bilten.UI
             // 
             this.txtDatumRodj.Location = new System.Drawing.Point(97, 122);
             this.txtDatumRodj.Name = "txtDatumRodj";
-            this.txtDatumRodj.ReadOnly = true;
             this.txtDatumRodj.Size = new System.Drawing.Size(100, 20);
             this.txtDatumRodj.TabIndex = 17;
             this.txtDatumRodj.TabStop = false;

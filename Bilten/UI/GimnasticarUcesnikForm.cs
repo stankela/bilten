@@ -224,7 +224,14 @@ namespace Bilten.UI
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
         {
+            Datum dummyDatum;
             int dummyInt;
+            if (txtDatumRodj.Text.Trim() != String.Empty
+            && !Datum.TryParse(txtDatumRodj.Text, out dummyDatum))
+            {
+                notification.RegisterMessage(
+                    "DatumRodjenja", "Neispravan format za datum ili godinu rodjenja.");
+            }
             if (txtTakBroj.Text.Trim() != String.Empty &&
                 !int.TryParse(txtTakBroj.Text, out dummyInt))
             {
@@ -247,6 +254,10 @@ namespace Bilten.UI
         {
             switch (propertyName)
             {
+                case "DatumRodjenja":
+                    txtDatumRodj.Focus();
+                    break;
+
                 case "TakmicarskiBroj":
                     txtTakBroj.Focus();
                     break;
@@ -267,6 +278,11 @@ namespace Bilten.UI
         protected override void updateEntityFromUI(DomainObject entity)
         {
             GimnasticarUcesnik gimnasticar = (GimnasticarUcesnik)entity;
+            if (txtDatumRodj.Text.Trim() == String.Empty)
+                gimnasticar.DatumRodjenja = null;
+            else
+                gimnasticar.DatumRodjenja = Datum.Parse(txtDatumRodj.Text);
+
             if (txtTakBroj.Text.Trim() == String.Empty)
                 gimnasticar.TakmicarskiBroj = null;
             else

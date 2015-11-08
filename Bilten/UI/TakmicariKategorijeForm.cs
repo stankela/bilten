@@ -549,6 +549,7 @@ namespace Bilten.UI
                 return;
 
             GimnasticarUcesnik selectedItem = selItems[0];
+            int selIndex = getActiveDataGridViewUserControl().getSelectedItemIndex();
             try
             {
                 GimnasticarUcesnikForm form =
@@ -558,8 +559,7 @@ namespace Bilten.UI
                     GimnasticarUcesnik editedItem = (GimnasticarUcesnik)form.Entity;
 
                     List<GimnasticarUcesnik> activeGimnasticari = gimnasticari[tabControl1.SelectedIndex];
-                    activeGimnasticari[activeGimnasticari.IndexOf(editedItem)] 
-                        = editedItem;
+                    activeGimnasticari[selIndex] = editedItem;
 
                     setGimnasticari(activeGimnasticari);
                     if (!getActiveDataGridViewUserControl().isSorted())
