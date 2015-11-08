@@ -211,7 +211,7 @@ namespace Bilten.Domain
             }
             if (result)
             {
-                result = this.datumRodjenja == that.datumRodjenja;
+                result = this.DatumRodjenja == that.DatumRodjenja;
             }
             return result;
         }
