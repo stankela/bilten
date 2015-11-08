@@ -237,11 +237,16 @@ namespace Bilten.UI
                 //dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
                 //save = true;
             }
-
-            dataGridViewUserControl1.setItems<RezultatEkipnoZbirViseKola>(
-                ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola.getRezultati());
+            setItems();
 
             return save;
+        }
+
+        private void setItems()
+        {
+            dataGridViewUserControl1.setItems<RezultatEkipnoZbirViseKola>(
+                ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola.getRezultati());
+            dataGridViewUserControl1.clearSelection();
         }
 
         private void RezultatiEkipeZbirViseKolaForm_Shown(object sender, EventArgs e)
