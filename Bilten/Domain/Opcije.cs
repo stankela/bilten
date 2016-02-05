@@ -560,6 +560,7 @@ namespace Bilten.Domain
             set { _printerName = value; }
         }
 
+        // TODO3: Omoguci da moze da se bira
         private bool _srpski = false;
         public virtual bool Srpski
         {
