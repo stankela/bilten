@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

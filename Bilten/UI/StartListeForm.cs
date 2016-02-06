@@ -929,7 +929,7 @@ namespace Bilten.UI
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -947,14 +947,14 @@ namespace Bilten.UI
             }
             else
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header3Text = nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            Opcije.Instance.initHeaderFooterFromForm(form);
+            FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Sprava sprava = Sprava.Undefined;
@@ -1824,7 +1824,7 @@ namespace Bilten.UI
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -1836,14 +1836,14 @@ namespace Bilten.UI
             }
             else
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header3Text = nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            Opcije.Instance.initHeaderFooterFromForm(form);
+            FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Sprava sprava = Sprava.Undefined;

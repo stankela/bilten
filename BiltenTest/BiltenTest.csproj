@@ -85,6 +85,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bilten.Domain\Bilten.Domain.csproj">
+      <Project>{0d313f04-d569-4793-bbc4-de321577d8f8}</Project>
+      <Name>Bilten.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bilten\Bilten.csproj">
       <Project>{205A8BBE-E310-4F80-8C55-E02747642E0C}</Project>
       <Name>Bilten</Name>

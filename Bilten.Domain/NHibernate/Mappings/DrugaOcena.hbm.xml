@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="DrugaOcena" table="druga_ocena" >
+    <id name="Id" column="ocena2_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <property name="D" column="d" />
+    <property name="E1" column="e1" />
+    <property name="E2" column="e2" />
+    <property name="E3" column="e3" />
+    <property name="E4" column="e4" />
+    <property name="E5" column="e5" />
+    <property name="E6" column="e6" />
+    <property name="E" column="e" />
+    <property name="Penalty" column="penalty" />
+    <property name="LinePenalty" column="line_penalty" />
+    <property name="OtherPenalty" column="other_penalty" />
+    <property name="Total" column="total" />
+    <property name="BrojEOcena" column="broj_e_ocena" type="Byte" />
+    <property name="RucnoUnetaOcena" column="rucno_uneta_ocena" type="Boolean" />
+  </class>
+
+</hibernate-mapping>

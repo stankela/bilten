@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bilten", "Bilten\Bilten.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiltenTest", "BiltenTest\BiltenTest.csproj", "{694C087C-CE8C-43D7-A636-68799A015B1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bilten.Domain", "Bilten.Domain\Bilten.Domain.csproj", "{0D313F04-D569-4793-BBC4-DE321577D8F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bilten.Util", "Bilten.Util\Bilten.Util.csproj", "{5CE2FAF1-8235-461A-89E9-20A68142260C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{694C087C-CE8C-43D7-A636-68799A015B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{694C087C-CE8C-43D7-A636-68799A015B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{694C087C-CE8C-43D7-A636-68799A015B1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D313F04-D569-4793-BBC4-DE321577D8F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D313F04-D569-4793-BBC4-DE321577D8F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D313F04-D569-4793-BBC4-DE321577D8F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D313F04-D569-4793-BBC4-DE321577D8F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CE2FAF1-8235-461A-89E9-20A68142260C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CE2FAF1-8235-461A-89E9-20A68142260C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CE2FAF1-8235-461A-89E9-20A68142260C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CE2FAF1-8235-461A-89E9-20A68142260C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

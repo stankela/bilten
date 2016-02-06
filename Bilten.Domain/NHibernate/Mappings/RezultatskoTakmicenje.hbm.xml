@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="RezultatskoTakmicenje" table="rezultatsko_takmicenje" >
+    <id name="Id" column="rez_takmicenje_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <property name="RedBroj" column="red_broj" type="Byte" />
+    <property name="Gimnastika" column="gimnastika" type="Byte" />
+    <many-to-one name="Takmicenje" class="Takmicenje" column="takmicenje_id" />
+    <many-to-one name="Kategorija" class="TakmicarskaKategorija" column="kategorija_id" />
+    <many-to-one name="TakmicenjeDescription" class="RezultatskoTakmicenjeDescription" column="description_id" />
+    <many-to-one name="Propozicije" class="Propozicije" column="propozicije_id" cascade="all" />
+    <many-to-one name="Takmicenje1" class="Takmicenje1" column="takmicenje1_id" 
+      cascade="all" />
+    <many-to-one name="Takmicenje2" class="Takmicenje2" column="takmicenje2_id" 
+      cascade="all" />
+    <many-to-one name="Takmicenje3" class="Takmicenje3" column="takmicenje3_id" 
+      cascade="all" />
+    <many-to-one name="Takmicenje4" class="Takmicenje4" column="takmicenje4_id" 
+      cascade="all" />
+    <property name="ImaEkipnoTakmicenje" column="ima_ekipno_tak" type="Boolean" />
+    <property name="KombinovanoEkipnoTak" column="komb_ekipno_tak" type="Boolean" />
+  </class>
+
+  <query name="FindRezTakmicenja">
+    <!-- NOTE: Kada umesto d stavim desc za TakmicenjeDescription dobijam
+         gresku. Verovatno je desc neka interna promenljiva koju NHibernate
+         koristi
+    -->
+    <![CDATA[
+      select distinct r
+      from RezultatskoTakmicenje r
+      left join fetch r.Kategorija kat
+      left join fetch r.TakmicenjeDescription d
+      left join fetch r.Takmicenje1 t
+      left join fetch t.Gimnasticari g
+      left join fetch g.DrzavaUcesnik dr
+      left join fetch g.KlubUcesnik kl
+      where r.Takmicenje.Id = :takmicenjeId
+      order by r.RedBroj    
+    ]]>
+  </query>
+
+  <query name="FindRezTakmicenjaForGimnasticar">
+    <![CDATA[
+      select distinct r
+      from RezultatskoTakmicenje r
+      left join fetch r.Kategorija kat
+      left join fetch r.TakmicenjeDescription d
+      join r.Takmicenje1 t
+      join t.Gimnasticari g
+      where g = :gimnasticar
+      order by r.RedBroj    
+    ]]>
+  </query>
+
+</hibernate-mapping>

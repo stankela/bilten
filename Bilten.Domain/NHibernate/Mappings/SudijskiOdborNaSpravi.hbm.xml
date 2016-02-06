@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="SudijskiOdborNaSpravi" table="sud_odbor_na_spravi" lazy="true">
+    <id name="Id" column="sud_odbor_id">
+      <generator class="identity" />
+    </id>
+    <property name="Sprava" column="sprava" type="Byte" />
+    <property name="BrojDSudija" column="broj_d_sudija" type="Byte" />
+    <property name="HasD1_E1" column="has_d1_e1" type="Boolean" />
+    <property name="HasD2_E2" column="has_d2_e2" type="Boolean" />
+    <property name="BrojESudija" column="broj_e_sudija" type="Byte" />
+    <property name="BrojLinijskihSudija" column="broj_lin_sudija" type="Byte" />
+    <property name="BrojMeracaVremena" column="broj_meraca_vremena" type="Byte" />
+    <map name="Sudije" table="sudija_na_spravi" lazy="true" >
+      <key column="sud_odbor_id"/>
+      <index type="Byte" column="uloga"/>
+      <many-to-many class="SudijaUcesnik" column="sudija_id" />
+    </map>
+  </class>
+
+</hibernate-mapping>

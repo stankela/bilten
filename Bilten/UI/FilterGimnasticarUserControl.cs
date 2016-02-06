@@ -9,6 +9,7 @@ using Bilten.Data;
 using Bilten.Data.QueryModel;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

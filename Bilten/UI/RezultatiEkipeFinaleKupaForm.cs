@@ -249,7 +249,7 @@ namespace Bilten.UI
                 false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -261,14 +261,14 @@ namespace Bilten.UI
             }
             else
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header3Text = ActiveTakmicenje.Naziv;
                 form.Header4Text = nazivIzvestaja;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            Opcije.Instance.initHeaderFooterFromForm(form);
+            FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;

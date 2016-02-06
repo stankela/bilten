@@ -384,7 +384,7 @@ namespace Bilten.UI
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, true, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -396,7 +396,7 @@ namespace Bilten.UI
             }
             else
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
@@ -404,7 +404,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            Opcije.Instance.initHeaderFooterFromForm(form);
+            FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
     
             Cursor.Current = Cursors.WaitCursor;
@@ -988,7 +988,7 @@ namespace Bilten.UI
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -1004,7 +1004,7 @@ namespace Bilten.UI
             }
             else
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
@@ -1012,7 +1012,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            Opcije.Instance.initHeaderFooterFromForm(form);
+            FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;

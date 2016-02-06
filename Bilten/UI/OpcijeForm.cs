@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
+using Bilten.Util;
 
 namespace Bilten.UI
 {
@@ -217,7 +218,7 @@ namespace Bilten.UI
                 throw new BusinessException(notification);
 
             updateEntityFromUI(opcije);
-            opcije.save();
+            SingleInstanceApplication.saveOptions(opcije, false);
         }
 
         private void validate(Notification notification)

@@ -161,33 +161,40 @@ namespace Bilten.Report
 			//e.Cancel = true;
 		}
 
-		private void createFonts()
+        protected virtual FontStyle getFontStyle(bool bold, bool italic)
+        {
+            if (!bold && !italic)
+                return FontStyle.Regular;
+            else if (bold && !italic)
+                return FontStyle.Bold;
+            else if (!bold && italic)
+                return FontStyle.Italic;
+            else
+                return FontStyle.Bold | FontStyle.Italic;
+        }
+
+        private void createFonts()
 		{
             header1Font = new Font(
                 Opcije.Instance.Header1Font, 
                 Opcije.Instance.Header1FontSize, 
-                Opcije.Instance.getFontStyle(
-                    Opcije.Instance.Header1FontBold, Opcije.Instance.Header1FontItalic));
+                getFontStyle(Opcije.Instance.Header1FontBold, Opcije.Instance.Header1FontItalic));
             header2Font = new Font(
                 Opcije.Instance.Header2Font,
                 Opcije.Instance.Header2FontSize,
-                Opcije.Instance.getFontStyle(
-                Opcije.Instance.Header2FontBold, Opcije.Instance.Header2FontItalic));
+                getFontStyle(Opcije.Instance.Header2FontBold, Opcije.Instance.Header2FontItalic));
             header3Font = new Font(
                 Opcije.Instance.Header3Font,
                 Opcije.Instance.Header3FontSize,
-                Opcije.Instance.getFontStyle(
-                Opcije.Instance.Header3FontBold, Opcije.Instance.Header3FontItalic));
+                getFontStyle(Opcije.Instance.Header3FontBold, Opcije.Instance.Header3FontItalic));
             header4Font = new Font(
                 Opcije.Instance.Header4Font,
                 Opcije.Instance.Header4FontSize,
-                Opcije.Instance.getFontStyle(
-                Opcije.Instance.Header4FontBold, Opcije.Instance.Header4FontItalic));
+                getFontStyle(Opcije.Instance.Header4FontBold, Opcije.Instance.Header4FontItalic));
             footerFont = new Font(
                 Opcije.Instance.FooterFont,
                 Opcije.Instance.FooterFontSize,
-                Opcije.Instance.getFontStyle(
-                Opcije.Instance.FooterFontBold, Opcije.Instance.FooterFontItalic));
+                getFontStyle(Opcije.Instance.FooterFontBold, Opcije.Instance.FooterFontItalic));
        
             pageNumFont = new Font("Arial", 8);
 			blackBrush = Brushes.Black;

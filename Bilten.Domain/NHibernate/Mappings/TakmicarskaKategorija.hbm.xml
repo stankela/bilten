@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="TakmicarskaKategorija" table="takmicarske_kategorije" lazy="true">
+    <id name="Id" column="kategorija_id">
+      <generator class="identity" />
+    </id>
+    <property name="Naziv" column="naziv" type="String" not-null="false" length="32"/>
+    <property name="Gimnastika" column="gimnastika" type="Byte" />
+    <property name="RedBroj" column="redBroj" type="Byte" />
+    <many-to-one name="Takmicenje" class="Takmicenje" column="takmicenje_id" />
+  </class>
+  
+</hibernate-mapping>

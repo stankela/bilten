@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0D313F04-D569-4793-BBC4-DE321577D8F8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bilten.Domain</RootNamespace>
+    <AssemblyName>Bilten.Domain</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\Libs\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\Libs\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Datum.cs" />
+    <Compile Include="DeoTakmicenjaKod.cs" />
+    <Compile Include="DomainObject.cs" />
+    <Compile Include="DrugaOcena.cs" />
+    <Compile Include="Drzava.cs" />
+    <Compile Include="DrzavaUcesnik.cs" />
+    <Compile Include="Ekipa.cs" />
+    <Compile Include="Gimnasticar.cs" />
+    <Compile Include="GimnasticarUcesnik.cs" />
+    <Compile Include="Gimnastika.cs" />
+    <Compile Include="KategorijaGimnasticara.cs" />
+    <Compile Include="Klub.cs" />
+    <Compile Include="KlubUcesnik.cs" />
+    <Compile Include="KvalifikacioniStatus.cs" />
+    <Compile Include="Mesto.cs" />
+    <Compile Include="NacinRotacije.cs" />
+    <Compile Include="NastupNaSpravi.cs" />
+    <Compile Include="Ocena.cs" />
+    <Compile Include="OcenaBase.cs" />
+    <Compile Include="Opcije.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Pol.cs" />
+    <Compile Include="PoredakEkipno.cs" />
+    <Compile Include="PoredakEkipnoFinaleKupa.cs" />
+    <Compile Include="PoredakEkipnoZbirViseKola.cs" />
+    <Compile Include="PoredakPreskok.cs" />
+    <Compile Include="PoredakSprava.cs" />
+    <Compile Include="PoredakSpravaFinaleKupa.cs" />
+    <Compile Include="PoredakUkupno.cs" />
+    <Compile Include="PoredakUkupnoFinaleKupa.cs" />
+    <Compile Include="PoredakUkupnoZbirViseKola.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Propozicije.cs" />
+    <Compile Include="RasporedNastupa.cs" />
+    <Compile Include="RasporedSudija.cs" />
+    <Compile Include="RegistarskiBroj.cs" />
+    <Compile Include="Rezultat.cs" />
+    <Compile Include="RezultatEkipno.cs" />
+    <Compile Include="RezultatEkipnoFinaleKupa.cs" />
+    <Compile Include="RezultatEkipnoZbirViseKola.cs" />
+    <Compile Include="RezultatPreskok.cs" />
+    <Compile Include="RezultatskoTakmicenje.cs" />
+    <Compile Include="RezultatskoTakmicenjeDescription.cs" />
+    <Compile Include="RezultatSprava.cs" />
+    <Compile Include="RezultatSpravaFinaleKupa.cs" />
+    <Compile Include="RezultatSpravaFinaleKupaUpdate.cs" />
+    <Compile Include="RezultatUkupno.cs" />
+    <Compile Include="RezultatUkupnoExtended.cs" />
+    <Compile Include="RezultatUkupnoFinaleKupa.cs" />
+    <Compile Include="RezultatUkupnoZbirViseKola.cs" />
+    <Compile Include="Sprava.cs" />
+    <Compile Include="StartListaNaSpravi.cs" />
+    <Compile Include="Sudija.cs" />
+    <Compile Include="SudijaNaSpravi.cs" />
+    <Compile Include="SudijaUcesnik.cs" />
+    <Compile Include="SudijskaUloga.cs" />
+    <Compile Include="SudijskiOdborNaSpravi.cs" />
+    <Compile Include="TakmicarskaKategorija.cs" />
+    <Compile Include="Takmicenje.cs" />
+    <Compile Include="Takmicenje1.cs" />
+    <Compile Include="Takmicenje2.cs" />
+    <Compile Include="Takmicenje3.cs" />
+    <Compile Include="Takmicenje4.cs" />
+    <Compile Include="TipTakmicenja.cs" />
+    <Compile Include="UcesnikFinala.cs" />
+    <Compile Include="UcesnikTakmicenja2.cs" />
+    <Compile Include="UcesnikTakmicenja3.cs" />
+    <Compile Include="UcesnikTakmicenja4.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bilten.Util\Bilten.Util.csproj">
+      <Project>{5ce2faf1-8235-461a-89e9-20a68142260c}</Project>
+      <Name>Bilten.Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NHibernate\Mappings\DrugaOcena.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Drzava.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\DrzavaUcesnik.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Ekipa.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Gimnasticar.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\GimnasticarUcesnik.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\KategorijaGimnasticara.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Klub.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\KlubUcesnik.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Mesto.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\NastupNaSpravi.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Ocena.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\PoredakEkipno.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\PoredakPreskok.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\PoredakSprava.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\PoredakUkupno.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Propozicije.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RasporedNastupa.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RasporedSudija.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatEkipno.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatPreskok.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatskoTakmicenje.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatskoTakmicenjeDescription.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatSprava.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatUkupno.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\StartListaNaSpravi.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Sudija.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\SudijaUcesnik.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\SudijskiOdborNaSpravi.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\TakmicarskaKategorija.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje1.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje2.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje3.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje4.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\UcesnikTakmicenja2.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\UcesnikTakmicenja3.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\UcesnikTakmicenja4.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NHibernate\Mappings\Opcije.hbm.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

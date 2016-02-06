@@ -596,7 +596,7 @@ namespace Bilten.UI
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
 
                 string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
@@ -608,14 +608,14 @@ namespace Bilten.UI
             }
             else
             {
-                Opcije.Instance.initHeaderFooterFormFromOpcije(form);
+                FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header3Text = nazivIzvestaja;
                 form.Header4Text = kategorija;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            Opcije.Instance.initHeaderFooterFromForm(form);
+            FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Sprava sprava = Sprava.Undefined;

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="RezultatskoTakmicenjeDescription" table="rezultatsko_takmicenje_description" >
+    <id name="Id" column="description_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <property name="Naziv" column="naziv" type="String" />
+    <property name="RedBroj" column="red_broj" type="Byte" />
+    <many-to-one name="Propozicije" class="Propozicije" column="propozicije_id" cascade="all" />
+  </class>
+
+</hibernate-mapping>

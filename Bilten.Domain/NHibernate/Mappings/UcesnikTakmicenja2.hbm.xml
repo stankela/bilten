@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="UcesnikTakmicenja2" table="ucesnici_tak2" >
+    <id name="Id" column="ucesnik_tak2_id" type="Int32">
+      <generator class="identity" />
+    </id>
+    <property name="QualOrder" column="qual_order" type="Int16" />
+    <property name="QualScore" column="qual_score" />
+    <property name="QualRank" column="qual_rank" type="Int16" />
+    <property name="KvalStatus" column="kval_status" type="Byte" />
+    <many-to-one name="Gimnasticar" class="GimnasticarUcesnik" column="gimnasticar_id" />
+  </class>
+
+</hibernate-mapping>

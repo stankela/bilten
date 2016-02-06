@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -108,80 +108,7 @@
     <Compile Include="Data\QueryModel\StringMatchMode.cs" />
     <Compile Include="Data\RezultatSpravaFinaleKupaDAO.cs" />
     <Compile Include="Data\TransactionException.cs" />
-    <Compile Include="Domain\Datum.cs" />
-    <Compile Include="Domain\DeoTakmicenjaKod.cs" />
-    <Compile Include="Domain\DomainObject.cs" />
-    <Compile Include="Domain\DrugaOcena.cs" />
-    <Compile Include="Domain\Drzava.cs" />
-    <Compile Include="Domain\Ekipa.cs" />
-    <Compile Include="Domain\Gimnasticar.cs" />
-    <Compile Include="Domain\GimnasticarUcesnik.cs" />
-    <Compile Include="Domain\Gimnastika.cs" />
-    <Compile Include="Domain\KvalifikacioniStatus.cs" />
-    <Compile Include="Domain\Mesto.cs" />
-    <Compile Include="Domain\KategorijaGimnasticara.cs" />
-    <Compile Include="Domain\Klub.cs" />
-    <Compile Include="Domain\KlubUcesnik.cs" />
-    <Compile Include="Domain\NacinRotacije.cs" />
-    <Compile Include="Domain\NastupNaSpravi.cs" />
-    <Compile Include="Domain\Ocena.cs" />
-    <Compile Include="Domain\OcenaBase.cs" />
-    <Compile Include="Domain\Opcije.cs" />
-    <Compile Include="Domain\Pol.cs" />
-    <Compile Include="Domain\PoredakEkipno.cs" />
-    <Compile Include="Domain\PoredakEkipnoFinaleKupa.cs" />
-    <Compile Include="Domain\PoredakEkipnoZbirViseKola.cs" />
-    <Compile Include="Domain\PoredakPreskok.cs" />
-    <Compile Include="Domain\PoredakSprava.cs" />
-    <Compile Include="Domain\PoredakSpravaFinaleKupa.cs" />
-    <Compile Include="Domain\PoredakUkupno.cs" />
-    <Compile Include="Domain\PoredakUkupnoFinaleKupa.cs" />
-    <Compile Include="Domain\PoredakUkupnoZbirViseKola.cs" />
-    <Compile Include="Domain\Propozicije.cs" />
-    <Compile Include="Domain\RasporedNastupa.cs" />
-    <Compile Include="Domain\RasporedSudija.cs" />
-    <Compile Include="Domain\RegistarskiBroj.cs" />
-    <Compile Include="Domain\Rezultat.cs" />
-    <Compile Include="Domain\RezultatEkipno.cs" />
-    <Compile Include="Domain\RezultatEkipnoFinaleKupa.cs" />
-    <Compile Include="Domain\RezultatEkipnoZbirViseKola.cs" />
-    <Compile Include="Domain\RezultatPreskok.cs" />
-    <Compile Include="Domain\RezultatskoTakmicenje.cs" />
-    <Compile Include="Domain\RezultatskoTakmicenjeDescription.cs" />
-    <Compile Include="Domain\RezultatSprava.cs" />
-    <Compile Include="Domain\RezultatSpravaFinaleKupa.cs" />
-    <Compile Include="Domain\RezultatSpravaFinaleKupaUpdate.cs" />
-    <Compile Include="Domain\RezultatUkupno.cs" />
-    <Compile Include="Domain\RezultatUkupnoExtended.cs" />
-    <Compile Include="Domain\RezultatUkupnoFinaleKupa.cs" />
-    <Compile Include="Domain\RezultatUkupnoZbirViseKola.cs" />
-    <Compile Include="Domain\Sprava.cs" />
-    <Compile Include="Domain\StartListaNaSpravi.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Domain\Sudija.cs" />
-    <Compile Include="Domain\SudijaNaSpravi.cs" />
-    <Compile Include="Domain\SudijaUcesnik.cs" />
-    <Compile Include="Domain\SudijskaUloga.cs" />
-    <Compile Include="Domain\SudijskiOdborNaSpravi.cs" />
-    <Compile Include="Domain\TakmicarskaKategorija.cs" />
-    <Compile Include="Domain\Takmicenje.cs" />
-    <Compile Include="Domain\DrzavaUcesnik.cs" />
-    <Compile Include="Domain\Takmicenje1.cs" />
-    <Compile Include="Domain\Takmicenje2.cs" />
-    <Compile Include="Domain\Takmicenje3.cs" />
-    <Compile Include="Domain\Takmicenje4.cs" />
-    <Compile Include="Domain\TipTakmicenja.cs" />
-    <Compile Include="Domain\UcesnikFinala.cs" />
-    <Compile Include="Domain\UcesnikTakmicenja2.cs" />
-    <Compile Include="Domain\UcesnikTakmicenja3.cs" />
-    <Compile Include="Domain\UcesnikTakmicenja4.cs" />
-    <Compile Include="Exceptions\BusinessException.cs" />
-    <Compile Include="Exceptions\InfrastructureException.cs" />
-    <Compile Include="Exceptions\SmallPageSizeException.cs" />
     <Compile Include="Language.cs" />
-    <Compile Include="Notification.cs" />
-    <Compile Include="NotificationMessage.cs" />
     <Compile Include="Data\NHibernate\PersistentConfigurationBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -198,7 +125,6 @@
     <Content Include="BiltenPodaci.sdf">
     </Content>
     <None Include="App.config" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja2.hbm.xml" />
     <None Include="CreateAllObjects.sqlce" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -314,6 +240,7 @@
     <Compile Include="UI\FilterForm.Designer.cs">
       <DependentUpon>FilterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\FormUtil.cs" />
     <Compile Include="UI\GimnasticarFilter.cs" />
     <Compile Include="UI\FilterGimnasticarForm.cs">
       <SubType>Form</SubType>
@@ -722,8 +649,6 @@
     <Compile Include="Util\Database.cs" />
     <Compile Include="Util\DatabaseUpdater.cs" />
     <Compile Include="Util\DFS.cs" />
-    <Compile Include="Util\RounderToZero.cs" />
-    <Compile Include="Util\SortComparer.cs" />
     <Compile Include="Util\SqlCeUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -925,43 +850,6 @@
       <DependentUpon>SingleEntityListForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Gimnasticar.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Klub.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Drzava.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\KategorijaGimnasticara.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\TakmicarskaKategorija.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\GimnasticarUcesnik.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\DrzavaUcesnik.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\KlubUcesnik.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Sudija.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Mesto.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Ekipa.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\NastupNaSpravi.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Ocena.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\SudijaUcesnik.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\SudijskiOdborNaSpravi.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RasporedSudija.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RasporedNastupa.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\StartListaNaSpravi.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Opcije.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatskoTakmicenjeDescription.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatskoTakmicenje.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Propozicije.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\DrugaOcena.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatUkupno.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakUkupno.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatSprava.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakSprava.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakEkipno.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatEkipno.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje1.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje2.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje3.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje4.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja3.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\UcesnikTakmicenja4.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\PoredakPreskok.hbm.xml" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\RezultatPreskok.hbm.xml" />
     <Content Include="DatabaseUpdate.txt" />
     <Content Include="Doc\DesignChoices.txt" />
     <Content Include="Doc\pitanja.txt" />
@@ -969,6 +857,7 @@
     <Content Include="Doc\todo.txt" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <EmbeddedResource Include="Images\Soko.jpg" />
     <Content Include="Test\Data\DrzaveEng.txt" />
@@ -1004,7 +893,6 @@
     <EmbeddedResource Include="Images\Preskok.bmp" />
     <EmbeddedResource Include="Images\Razboj.bmp" />
     <EmbeddedResource Include="Images\Vratilo.bmp" />
-    <EmbeddedResource Include="Data\NHibernate\Mappings\Takmicenje.hbm.xml" />
     <EmbeddedResource Include="UI\SplashScreenForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SplashScreenForm.cs</DependentUpon>
@@ -1119,6 +1007,21 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bilten.Domain\Bilten.Domain.csproj">
+      <Project>{0d313f04-d569-4793-bbc4-de321577d8f8}</Project>
+      <Name>Bilten.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bilten.Util\Bilten.Util.csproj">
+      <Project>{5ce2faf1-8235-461a-89e9-20a68142260c}</Project>
+      <Name>Bilten.Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\NHibernate\Mappings\" />
+    <Folder Include="Domain\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

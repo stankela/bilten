@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
+using Bilten.Util;
 
 namespace Bilten.UI
 {
