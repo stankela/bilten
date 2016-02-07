@@ -95,7 +95,7 @@ namespace Bilten.UI
             SelectedTakmicenje = null;
         }
 
-        private void setKategorije(ISet<TakmicarskaKategorija> kategorije)
+        private void setKategorije(Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije)
         {
             List<TakmicarskaKategorija> katList = new List<TakmicarskaKategorija>(kategorije);
 
@@ -113,7 +113,7 @@ namespace Bilten.UI
             set { lstKategorije.SelectedItem = value; }
         }
 
-        private void setTakmicenja(ISet<RezultatskoTakmicenjeDescription> takmicenja)
+        private void setTakmicenja(Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenja)
         {
             List<RezultatskoTakmicenjeDescription> takList = new List<RezultatskoTakmicenjeDescription>(takmicenja);
 

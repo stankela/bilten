@@ -9,8 +9,8 @@ namespace Bilten.Domain
 {
     public class Takmicenje4 : DomainObject
     {
-        private ISet<UcesnikTakmicenja4> _ucesnici = new HashedSet<UcesnikTakmicenja4>();
-        public virtual ISet<UcesnikTakmicenja4> Ucesnici
+        private Iesi.Collections.Generic.ISet<UcesnikTakmicenja4> _ucesnici = new HashedSet<UcesnikTakmicenja4>();
+        public virtual Iesi.Collections.Generic.ISet<UcesnikTakmicenja4> Ucesnici
         {
             get { return _ucesnici; }
             protected set { _ucesnici = value; }

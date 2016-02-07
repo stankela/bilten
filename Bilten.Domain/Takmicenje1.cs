@@ -9,8 +9,8 @@ namespace Bilten.Domain
 {
     public class Takmicenje1 : DomainObject
     {
-        private ISet<GimnasticarUcesnik> _gimnasticari = new HashedSet<GimnasticarUcesnik>();
-        public virtual ISet<GimnasticarUcesnik> Gimnasticari
+        private Iesi.Collections.Generic.ISet<GimnasticarUcesnik> _gimnasticari = new HashedSet<GimnasticarUcesnik>();
+        public virtual Iesi.Collections.Generic.ISet<GimnasticarUcesnik> Gimnasticari
         {
             get { return _gimnasticari; }
             protected set { _gimnasticari = value; }
@@ -28,8 +28,8 @@ namespace Bilten.Domain
 
         // TODO: Za sve klasa koje se cuvaju u setovima trebalo bi implementirati
         // Equals i GetHashCode
-        private ISet<Ekipa> ekipe = new HashedSet<Ekipa>();
-        public virtual ISet<Ekipa> Ekipe
+        private Iesi.Collections.Generic.ISet<Ekipa> ekipe = new HashedSet<Ekipa>();
+        public virtual Iesi.Collections.Generic.ISet<Ekipa> Ekipe
         {
             get { return ekipe; }
             protected set { ekipe = value; }
@@ -94,8 +94,8 @@ namespace Bilten.Domain
             set { _poredakUkupno = value; }
         }
 
-        private ISet<PoredakSprava> _poredakSprava = new HashedSet<PoredakSprava>();
-        public virtual ISet<PoredakSprava> PoredakSprava
+        private Iesi.Collections.Generic.ISet<PoredakSprava> _poredakSprava = new HashedSet<PoredakSprava>();
+        public virtual Iesi.Collections.Generic.ISet<PoredakSprava> PoredakSprava
         {
             get { return _poredakSprava; }
             set { _poredakSprava = value; }
@@ -139,8 +139,8 @@ namespace Bilten.Domain
             set { _poredakUkupnoZbirViseKola = value; }
         }
 
-        private ISet<PoredakSpravaFinaleKupa> _poredakSpravaFinaleKupa = new HashedSet<PoredakSpravaFinaleKupa>();
-        public virtual ISet<PoredakSpravaFinaleKupa> PoredakSpravaFinaleKupa
+        private Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> _poredakSpravaFinaleKupa = new HashedSet<PoredakSpravaFinaleKupa>();
+        public virtual Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> PoredakSpravaFinaleKupa
         {
             get { return _poredakSpravaFinaleKupa; }
             set { _poredakSpravaFinaleKupa = value; }

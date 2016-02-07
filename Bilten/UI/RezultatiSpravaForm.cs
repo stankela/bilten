@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Data;
-using Iesi.Collections.Generic;
 using Bilten.Exceptions;
 using NHibernate;
 using Bilten.Report;
@@ -76,7 +75,7 @@ namespace Bilten.UI
                     throw new BusinessException("Ne postoji takmicenje III ni za jednu kategoriju.");
 
                 initUI(startTakmicenje, startSprava);
-                rezultatiOpened = new HashedSet<int>();
+                rezultatiOpened = new HashSet<int>();
             }
             catch (BusinessException)
             {

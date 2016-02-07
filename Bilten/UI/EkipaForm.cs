@@ -194,7 +194,7 @@ namespace Bilten.UI
             setClanovi(ekipa.Gimnasticari);
         }
 
-        private void setClanovi(ISet<GimnasticarUcesnik> gimnasticari)
+        private void setClanovi(Iesi.Collections.Generic.ISet<GimnasticarUcesnik> gimnasticari)
         {
             dgwUserControlClanovi.setItems<GimnasticarUcesnik>(gimnasticari);
             if (!clanoviSorted)

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
-using Iesi.Collections.Generic;
 
 namespace Bilten.Domain
 {
@@ -157,7 +156,7 @@ namespace Bilten.Domain
         private IList<GimnasticarUcesnik> getGimnasticari(IList<Ocena> ocene,
             RezultatskoTakmicenje rezTak)
         {
-            ISet<int> idSet = new HashedSet<int>();
+            ISet<int> idSet = new HashSet<int>();
             foreach (Ocena o in ocene)
             {
                 if (o.Sprava == Sprava.Preskok)

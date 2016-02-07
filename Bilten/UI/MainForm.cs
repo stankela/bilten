@@ -11,7 +11,6 @@ using Bilten.Domain;
 using Bilten.Data;
 using NHibernate;
 using Bilten.Data.QueryModel;
-using Iesi.Collections.Generic;
 
 namespace Bilten.UI
 {
@@ -1484,9 +1483,9 @@ namespace Bilten.UI
             foreach (RezultatskoTakmicenje rt in loadRezTakmicenja(from.Id))
             {
                 // filtriraj rez. takmicenja.
-                ISet<TakmicarskaKategorija> katFromSet = new HashedSet<TakmicarskaKategorija>(kategorijeFrom);
+                ISet<TakmicarskaKategorija> katFromSet = new HashSet<TakmicarskaKategorija>(kategorijeFrom);
                 ISet<RezultatskoTakmicenjeDescription> descFromSet
-                    = new HashedSet<RezultatskoTakmicenjeDescription>(descriptionsFrom);
+                    = new HashSet<RezultatskoTakmicenjeDescription>(descriptionsFrom);
                 if (katFromSet.Contains(rt.Kategorija) && descFromSet.Contains(rt.TakmicenjeDescription))
                 {
                     rezTakmicenjaFrom.Add(rt);

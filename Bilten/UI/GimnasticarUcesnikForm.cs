@@ -9,7 +9,6 @@ using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Data;
-using Iesi.Collections.Generic;
 using Bilten.Util;
 
 namespace Bilten.UI
@@ -75,7 +74,7 @@ namespace Bilten.UI
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
 
-            ISet<KlubUcesnik> kluboviSet = new HashedSet<KlubUcesnik>(result);
+            ISet<KlubUcesnik> kluboviSet = new HashSet<KlubUcesnik>(result);
 
             string query2 = @"from Klub k
                     order by k.Naziv";
@@ -113,7 +112,7 @@ namespace Bilten.UI
                         new string[] { "takmicenjeId" },
                         new object[] { takmicenjeId });
             
-            ISet<DrzavaUcesnik> drzaveSet = new HashedSet<DrzavaUcesnik>(result);
+            ISet<DrzavaUcesnik> drzaveSet = new HashSet<DrzavaUcesnik>(result);
 
             string query2 = @"from Drzava d
                     order by d.Naziv";

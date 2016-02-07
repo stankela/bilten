@@ -26,8 +26,12 @@ namespace Bilten.Domain
             protected set { deoTakKod = value; }
         }
 
-        private ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
-        public virtual ISet<TakmicarskaKategorija> Kategorije
+        // TODO4: U 4.5 je u System.Collections.Generic uveden ISet, tako da sam morao eksplicitno da kvalifikujem
+        // ISet sa Iesi.Collections.Generic.ISet posto NHibernate trenutno ne radi sa System.Collections.Generic.ISet.
+        // Proveri da li se nesto promenilo, tj. da li je NHibernate poceo da podrzava Iesi.Collections.Generic.ISet.
+
+        private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
+        public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
         {
             get { return kategorije; }
             protected set { kategorije = value; }
@@ -43,8 +47,8 @@ namespace Bilten.Domain
             Kategorije.Remove(kat);
         }
 
-        private ISet<StartListaNaSpravi> startListe = new HashedSet<StartListaNaSpravi>();
-        public virtual ISet<StartListaNaSpravi> StartListe
+        private Iesi.Collections.Generic.ISet<StartListaNaSpravi> startListe = new HashedSet<StartListaNaSpravi>();
+        public virtual Iesi.Collections.Generic.ISet<StartListaNaSpravi> StartListe
         {
             get { return startListe; }
             set { startListe = value; }

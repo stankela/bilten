@@ -49,8 +49,8 @@ namespace Bilten.Domain
             return Naziv;
         }
 
-        private ISet<GimnasticarUcesnik> gimnasticari = new HashedSet<GimnasticarUcesnik>();
-        public virtual ISet<GimnasticarUcesnik> Gimnasticari
+        private Iesi.Collections.Generic.ISet<GimnasticarUcesnik> gimnasticari = new HashedSet<GimnasticarUcesnik>();
+        public virtual Iesi.Collections.Generic.ISet<GimnasticarUcesnik> Gimnasticari
         {
             get { return gimnasticari; }
             protected set { gimnasticari = value; }

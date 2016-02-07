@@ -194,7 +194,7 @@ namespace Bilten.UI
                 setClanovi(selEkipa.Gimnasticari);
         }
 
-        private void setClanovi(ISet<GimnasticarUcesnik> gimnasticari)
+        private void setClanovi(Iesi.Collections.Generic.ISet<GimnasticarUcesnik> gimnasticari)
         {
             getActiveClanoviDataGridViewUserControl()
                 .setItems<GimnasticarUcesnik>(gimnasticari);
@@ -226,7 +226,7 @@ namespace Bilten.UI
             }
         }
 
-        private void setEkipe(ISet<Ekipa> ekipe)
+        private void setEkipe(Iesi.Collections.Generic.ISet<Ekipa> ekipe)
         {
             getActiveEkipeDataGridViewUserControl().setItems<Ekipa>(ekipe);
         }

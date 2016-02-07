@@ -5,7 +5,6 @@ using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
-using Iesi.Collections.Generic;
 
 namespace Bilten.Test
 {
@@ -177,7 +176,7 @@ namespace Bilten.Test
         private void insertSudije()
         {
             IList<Drzava> drzave = dataContext.GetAll<Drzava>();
-            ISet<Sudija> sudije = new HashedSet<Sudija>();
+            ISet<Sudija> sudije = new HashSet<Sudija>();
 
             string[] fileNames = new string[]
                 {

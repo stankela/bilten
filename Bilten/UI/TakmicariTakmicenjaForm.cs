@@ -192,7 +192,7 @@ namespace Bilten.UI
                 statusBar.Panels[0].Text = count.ToString() + " gimnasticara";
         }
 
-        private void setGimnasticari(ISet<GimnasticarUcesnik> gimnasticari)
+        private void setGimnasticari(Iesi.Collections.Generic.ISet<GimnasticarUcesnik> gimnasticari)
         {
             getActiveDataGridViewUserControl().setItems<GimnasticarUcesnik>(gimnasticari);
         }

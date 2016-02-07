@@ -5,7 +5,6 @@ using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
-using Iesi.Collections.Generic;
 
 namespace Bilten.Test
 {
@@ -227,7 +226,7 @@ namespace Bilten.Test
             q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
             IList<DrzavaUcesnik> drzave = dataContext.GetByCriteria<DrzavaUcesnik>(q);
 
-            ISet<SudijaUcesnik> sudije = new HashedSet<SudijaUcesnik>();
+            ISet<SudijaUcesnik> sudije = new HashSet<SudijaUcesnik>();
 
             string[] fileNames;
             if (gimnastika == Gimnastika.MSG)

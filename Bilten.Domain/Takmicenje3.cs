@@ -8,8 +8,8 @@ namespace Bilten.Domain
 {
     public class Takmicenje3 : DomainObject
     {
-        private ISet<UcesnikTakmicenja3> _ucesnici = new HashedSet<UcesnikTakmicenja3>();
-        public virtual ISet<UcesnikTakmicenja3> Ucesnici
+        private Iesi.Collections.Generic.ISet<UcesnikTakmicenja3> _ucesnici = new HashedSet<UcesnikTakmicenja3>();
+        public virtual Iesi.Collections.Generic.ISet<UcesnikTakmicenja3> Ucesnici
         {
             get { return _ucesnici; }
             protected set { _ucesnici = value; }
@@ -148,9 +148,9 @@ namespace Bilten.Domain
             }
 
         }
-        
-        private ISet<PoredakSprava> _poredak = new HashedSet<PoredakSprava>();
-        public virtual ISet<PoredakSprava> Poredak
+
+        private Iesi.Collections.Generic.ISet<PoredakSprava> _poredak = new HashedSet<PoredakSprava>();
+        public virtual Iesi.Collections.Generic.ISet<PoredakSprava> Poredak
         {
             get { return _poredak; }
             set { _poredak = value; }

@@ -4,7 +4,6 @@ using Bilten.Data;
 using Bilten.Data.QueryModel;
 using NHibernate;
 using NHibernate.Criterion;
-using Iesi.Collections.Generic;
 using System.Collections;
 
 namespace Bilten.Data.NHibernate
@@ -249,7 +248,7 @@ namespace Bilten.Data.NHibernate
             IList<T> result = GetByCriteria<T>(query);
 
             List<T> distinctResult = new List<T>();
-            ISet<T> set = new HashedSet<T>();
+            ISet<T> set = new HashSet<T>();
             foreach (T obj in result)
             {
                 if (set.Add(obj))

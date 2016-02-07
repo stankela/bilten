@@ -192,7 +192,7 @@ namespace Bilten.UI
                 sort<T>(sortProperties, sortDirections);
         }
 
-        public void setItems<T>(ISet<T> items)
+        public void setItems<T>(Iesi.Collections.Generic.ISet<T> items)
         {
             DataGridView.DataSource = new List<T>(items);
             resort<T>();

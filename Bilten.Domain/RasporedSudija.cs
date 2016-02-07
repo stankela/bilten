@@ -26,8 +26,8 @@ namespace Bilten.Domain
             protected set { deoTakKod = value; }
         }
 
-        private ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
-        public virtual ISet<TakmicarskaKategorija> Kategorije
+        private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
+        public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
         {
             get { return kategorije; }
             protected set { kategorije = value; }
@@ -43,8 +43,8 @@ namespace Bilten.Domain
             Kategorije.Remove(kat);
         }
 
-        private ISet<SudijskiOdborNaSpravi> odbori = new HashedSet<SudijskiOdborNaSpravi>();
-        public virtual ISet<SudijskiOdborNaSpravi> Odbori
+        private Iesi.Collections.Generic.ISet<SudijskiOdborNaSpravi> odbori = new HashedSet<SudijskiOdborNaSpravi>();
+        public virtual Iesi.Collections.Generic.ISet<SudijskiOdborNaSpravi> Odbori
         {
             get { return odbori; }
             set { odbori = value; }

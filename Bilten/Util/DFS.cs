@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Iesi.Collections.Generic;
 using System.IO;
 
 namespace Bilten.Util
@@ -52,7 +51,7 @@ namespace Bilten.Util
             set;
         }
 
-        public ISet<Node> AdjNodes = new HashedSet<Node>();
+        public ISet<Node> AdjNodes = new HashSet<Node>();
     }
 
     public class Edge

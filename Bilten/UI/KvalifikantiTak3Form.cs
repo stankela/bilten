@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Data;
-using Iesi.Collections.Generic;
 using Bilten.Exceptions;
 using NHibernate;
 using System.Collections;
@@ -62,7 +61,7 @@ namespace Bilten.UI
                 NHibernateUtil.Initialize(takmicenje);
 
                 initUI();
-                rezultatiOpened = new HashedSet<int>();
+                rezultatiOpened = new HashSet<int>();
                 cmbTakmicenje.SelectedIndex = 0;
                 cmbSprava.SelectedIndex = 0;
 

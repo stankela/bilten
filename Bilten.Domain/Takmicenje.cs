@@ -145,9 +145,9 @@ namespace Bilten.Domain
             set { zrebZaFinalePoSpravama = value; }
         }
 
-        private ISet<RezultatskoTakmicenjeDescription> takmicenjeDescriptions = 
+        private Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenjeDescriptions = 
             new HashedSet<RezultatskoTakmicenjeDescription>();
-        public virtual ISet<RezultatskoTakmicenjeDescription> TakmicenjeDescriptions
+        public virtual Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> TakmicenjeDescriptions
         {
             get { return takmicenjeDescriptions; }
             protected set { takmicenjeDescriptions = value; }
@@ -214,9 +214,9 @@ namespace Bilten.Domain
             return true;
         }
 
-        private ISet<TakmicarskaKategorija> kategorije =
+        private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije =
             new HashedSet<TakmicarskaKategorija>();
-        public virtual ISet<TakmicarskaKategorija> Kategorije
+        public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
         {
             get { return kategorije; }
             protected set { kategorije = value; }
