@@ -11,17 +11,29 @@ namespace Bilten.Data
 {
     public class NHibernateHelper
     {
-        public static readonly ISessionFactory SessionFactory;
+        public readonly ISessionFactory SessionFactory;
 
-        static NHibernateHelper()
+        protected NHibernateHelper()
+        {
+            SessionFactory = createSessionFactory();
+        }
+
+        private ISessionFactory createSessionFactory()
         {
             try
             {
-      //          Configuration cfg = new Configuration();
-        //        cfg.Configure();
-          //      cfg.AddAssembly(typeof(Klub).Assembly);
-                Configuration cfg = new PersistentConfigurationBuilder().GetConfiguration();
-                SessionFactory = cfg.BuildSessionFactory();
+                 Configuration cfg = new PersistentConfigurationBuilder().GetConfiguration();
+
+                // Configuration cfg = new Configuration();
+                // cfg.Configure();
+                // cfg.AddAssembly(typeof(Klub).Assembly);
+
+                /*string configurationPath = HttpContext.Current.Server.MapPath(@"~\Models\Nhibernate\hibernate.cfg.xml");
+                cfg.Configure(configurationPath);
+                string employeeConfigurationFile = HttpContext.Current.Server.MapPath(@"~\Models\Nhibernate\Gimnasticar.hbm.xml");
+                cfg.AddFile(employeeConfigurationFile);*/
+
+                return cfg.BuildSessionFactory();
             }
             catch (Exception ex)
             {
@@ -31,12 +43,23 @@ namespace Bilten.Data
             }
         }
 
-        public static ISession OpenSession()
+        private static NHibernateHelper instance;
+        public static NHibernateHelper Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new NHibernateHelper();
+                return instance;
+            }
+        }
+
+        public ISession OpenSession()
         {
             return SessionFactory.OpenSession();
         }
 
-        public static ISession GetCurrentSession()
+        public ISession GetCurrentSession()
         {
             return SessionFactory.GetCurrentSession();
         }

@@ -29,7 +29,7 @@ namespace Bilten.Dao.NHibernate
             get
             {
                 if (session == null)
-                    session = NHibernateHelper.GetCurrentSession();
+                    session = NHibernateHelper.Instance.GetCurrentSession();
                 return session;
             }
             set { session = value; }
