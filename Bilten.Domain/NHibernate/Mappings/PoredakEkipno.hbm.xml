@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="PoredakEkipno" table="poredak_ekipno" >
-    <id name="Id" column="poredak_id" type="Int32">
+    <id name="Id" column="poredak_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="DeoTakmicenjaKod" column="deo_takmicenja_kod" type="Byte" />

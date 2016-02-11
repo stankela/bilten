@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="RezultatskoTakmicenjeDescription" table="rezultatsko_takmicenje_description" >
-    <id name="Id" column="description_id" type="Int32">
+    <id name="Id" column="description_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="Naziv" column="naziv" type="String" />

@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="Takmicenje2" table="takmicenje2" >
-    <id name="Id" column="takmicenje2_id" type="Int32">
+    <id name="Id" column="takmicenje2_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <set name="Ucesnici" lazy="true" cascade="all-delete-orphan" >

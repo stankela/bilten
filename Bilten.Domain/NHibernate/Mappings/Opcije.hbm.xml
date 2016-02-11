@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="Opcije" table="opcije" >
-    <id name="Id" column="opcije_id" type="Int32">
+    <id name="Id" column="opcije_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="BrojDecimalaD" column="broj_decimala_d" type="Byte" />

@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="UcesnikTakmicenja4" table="ucesnici_tak4" >
-    <id name="Id" column="ucesnik_tak4_id" type="Int32">
+    <id name="Id" column="ucesnik_tak4_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="QualOrder" column="qual_order" type="Int16" />

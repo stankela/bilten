@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="RasporedSudija" table="raspored_sudija" lazy="true">
-    <id name="Id" column="raspored_sud_id">
+    <id name="Id" column="raspored_sud_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="DeoTakmicenjaKod" column="deo_takmicenja_kod" type="Byte" />

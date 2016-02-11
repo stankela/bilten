@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="Propozicije" table="propozicije" >
-    <id name="Id" column="propozicije_id" type="Int32">
+    <id name="Id" column="propozicije_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="MaxBrojTakmicaraIzKlubaTak1" column="max_tak_tak1" type="Byte" />

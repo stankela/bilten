@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="Mesto" table="mesta" lazy="true">
-    <id name="Id" column="mesto_id">
+    <id name="Id" column="mesto_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="Naziv" column="naziv" />

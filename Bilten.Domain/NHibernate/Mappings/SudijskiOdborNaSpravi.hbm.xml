@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="SudijskiOdborNaSpravi" table="sud_odbor_na_spravi" lazy="true">
-    <id name="Id" column="sud_odbor_id">
+    <id name="Id" column="sud_odbor_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="Sprava" column="sprava" type="Byte" />

@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="RezultatPreskok" table="rezultati_preskok" >
-    <id name="Id" column="rezultat_id" type="Int32">
+    <id name="Id" column="rezultat_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="RedBroj" column="red_broj" type="Int16" />

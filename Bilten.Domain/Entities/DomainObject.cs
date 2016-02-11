@@ -12,7 +12,6 @@ namespace Bilten.Domain
         public virtual int Id
         {
             get { return id; }
-            set { id = value; }
         }
 
         public virtual void validate(Notification notification)

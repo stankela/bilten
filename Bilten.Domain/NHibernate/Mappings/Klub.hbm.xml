@@ -4,7 +4,7 @@
                    namespace="Bilten.Domain">
 
   <class name="Klub" table="klubovi" lazy="true">
-    <id name="Id" column="klub_id">
+    <id name="Id" column="klub_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
     <property name="Naziv" column="naziv" type="String" not-null="false" length="128"/>
