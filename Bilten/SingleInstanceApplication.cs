@@ -42,6 +42,9 @@ namespace Bilten
         {
             // Do your initialization here
 
+            // This creates singleton instance of NHibernateHelper and builds session factory
+            NHibernateHelper nh = NHibernateHelper.Instance;
+
             // TODO: Can throw InfrastructureException, kako od loadOptions()
             // tako i od saveOptions(). Verovatno bi trebalo prekinuti program.
             Opcije opcije = loadOptions();

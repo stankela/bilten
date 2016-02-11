@@ -63,17 +63,5 @@ namespace Bilten.Data
         {
             return SessionFactory.GetCurrentSession();
         }
-
-        // Calling this method instead of directly calling NHibernateHelper.Instance.SessionFactory.Close()
-        // better handles the situation when closing the factory that is not opened. (Otherwise, calling
-        // NHibernateHelper.Instance.SessionFactory.Close() when factory is not opened, it must be first
-        // opened and that immediately closed.)
-        public static void CloseSessionFactory()
-        {
-            if (instance != null)
-            {
-                instance.SessionFactory.Close();
-            }
-        }
     }
 }
