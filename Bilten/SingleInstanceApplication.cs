@@ -41,7 +41,6 @@ namespace Bilten
         protected override void OnCreateMainForm()
         {
             // Do your initialization here
-            new DataAccessProviderFactory().GetDataContext();
 
             // TODO: Can throw InfrastructureException, kako od loadOptions()
             // tako i od saveOptions(). Verovatno bi trebalo prekinuti program.
