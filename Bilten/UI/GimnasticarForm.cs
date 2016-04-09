@@ -398,6 +398,26 @@ namespace Bilten.UI
             gimnasticar.Kategorija = SelectedKategorija;
         }
 
+        protected override void updateEntity(DomainObject entity)
+        {
+            // NOTE: Desava mi se greska kada menjam datum rodjenja:
+            // Error: a different object with the same identifier value was already associated with the session.
+
+            // Moguce je da greska ima veze sa time sto je DatumRodjenja (koji se koristi u Equals za poredjenje)
+            // u .hbm fajlu mapiran kao component. Kada menjam ime ili prezime (koji se takodje koriste u Equals)
+            // greska se ne pojavljuje.
+                        
+            // Ovo je objasnjenje koje sam nasao za workaround koji resava problem:
+            // This error is raised from nHibernate when you are updating an instance of an Entity that is saved on the
+            // Cache. Basically nHibernate stores your objects on the cache once you loaded it, so next calls would get
+            // it from the cache. If you update an instance that is present on the cache nHibernate throws this error
+            // otherwise it could cause dirty reads and conflicts regarding loading the old copy of the object. To get
+            // around this, you need to remove the object from the cache using the Evict method like:
+            dataContext.Evict(entity);
+
+            dataContext.Save(entity);
+        }
+
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
             Gimnasticar gimnasticar = (Gimnasticar)entity;
