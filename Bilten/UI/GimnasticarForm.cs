@@ -22,6 +22,7 @@ namespace Bilten.UI
         private string oldIme;
         private string oldPrezime;
         private string oldSrednjeIme;
+        private Datum oldDatumRodjenja;
         private RegistarskiBroj oldRegBroj;
         private readonly string PRAZNO_ITEM = "<<Prazno>>";
         private List<Gimnasticar> gimnasticari;
@@ -206,6 +207,7 @@ namespace Bilten.UI
             oldIme = gimnasticar.Ime;
             oldSrednjeIme = gimnasticar.SrednjeIme;
             oldPrezime = gimnasticar.Prezime;
+            oldDatumRodjenja = gimnasticar.DatumRodjenja;
             oldRegBroj = gimnasticar.RegistarskiBroj;
         }
 
@@ -401,10 +403,10 @@ namespace Bilten.UI
             Gimnasticar gimnasticar = (Gimnasticar)entity;
             Notification notification = new Notification();
 
-            if (existsGimnasticarImeSrednjeImePrezime(gimnasticar))
+            if (existsGimnasticarImeSrednjeImePrezimeDatumRodjenja(gimnasticar))
             {
                 notification.RegisterMessage("Ime", 
-                    "Gimnasticar sa datim imenom i prezimenom vec postoji.");
+                    "Gimnasticar sa datim imenom, prezimenom i datumom rodjenja vec postoji.");
                 throw new BusinessException(notification);
             }
 
@@ -417,7 +419,7 @@ namespace Bilten.UI
             }
         }
 
-        private bool existsGimnasticarImeSrednjeImePrezime(Gimnasticar g)
+        private bool existsGimnasticarImeSrednjeImePrezimeDatumRodjenja(Gimnasticar g)
         {
             Query q = new Query();
             q.Criteria.Add(new Criterion("Ime", CriteriaOperator.Equal, g.Ime));
@@ -427,7 +429,14 @@ namespace Bilten.UI
             else
                 q.Criteria.Add(new Criterion("SrednjeIme", CriteriaOperator.Equal, g.SrednjeIme));
             q.Operator = QueryOperator.And;
-            return dataContext.GetCount<Gimnasticar>(q) > 0;
+            IList<Gimnasticar> result = dataContext.GetByCriteria<Gimnasticar>(q);
+            foreach (Gimnasticar g2 in result)
+            {
+                // Equals dodatno proverava datum rodjenja
+                if (g2.Equals(g))
+                    return true;
+            }
+            return false;
         }
 
         private bool existsGimnasticarRegBroj(RegistarskiBroj regBroj)
@@ -442,16 +451,12 @@ namespace Bilten.UI
             Gimnasticar gimnasticar = (Gimnasticar)entity;
             Notification notification = new Notification();
 
-            if (hasImeSrednjeImePrezimeChanged(gimnasticar)
-            && existsGimnasticarImeSrednjeImePrezime(gimnasticar))
+            if (hasImeSrednjeImePrezimeDatumRodjenjaChanged(gimnasticar)
+            && existsGimnasticarImeSrednjeImePrezimeDatumRodjenja(gimnasticar))
             {
-                if (string.IsNullOrEmpty(gimnasticar.SrednjeIme))
-                    notification.RegisterMessage("Ime",
-                        "Gimnasticar sa datim imenom i prezimenom vec postoji.");
-                else
-                    notification.RegisterMessage("Ime",
-                        "Gimnasticar sa datim imenom, srednjim imenom i prezimenom vec postoji.");
-            throw new BusinessException(notification);
+                notification.RegisterMessage("Ime",
+                    "Gimnasticar sa datim imenom, prezimenom i datumom rodjenja vec postoji.");
+                throw new BusinessException(notification);
             }
 
             bool regBrojChanged = (gimnasticar.RegistarskiBroj != oldRegBroj) ? true : false;            
@@ -464,7 +469,7 @@ namespace Bilten.UI
             }
         }
 
-        private bool hasImeSrednjeImePrezimeChanged(Gimnasticar g)
+        private bool hasImeSrednjeImePrezimeDatumRodjenjaChanged(Gimnasticar g)
         {
             bool equals = g.Ime.ToUpper() == oldIme.ToUpper()
                 && g.Prezime.ToUpper() == oldPrezime.ToUpper();
@@ -475,6 +480,10 @@ namespace Bilten.UI
                 || (!string.IsNullOrEmpty(g.SrednjeIme)
                     && !string.IsNullOrEmpty(oldSrednjeIme)
                     && g.SrednjeIme.ToUpper() == oldSrednjeIme.ToUpper());
+            }
+            if (equals)
+            {
+                equals = g.DatumRodjenja == oldDatumRodjenja;
             }
             return !equals;
         }

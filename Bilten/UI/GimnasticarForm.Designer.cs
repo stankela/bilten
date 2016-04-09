@@ -93,8 +93,8 @@ namespace Bilten.UI
             this.txtPrezime.Name = "txtPrezime";
             this.txtPrezime.Size = new System.Drawing.Size(167, 20);
             this.txtPrezime.TabIndex = 5;
-            this.txtPrezime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtPrezime_KeyUp);
             this.txtPrezime.Enter += new System.EventHandler(this.txtPrezime_Enter);
+            this.txtPrezime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtPrezime_KeyUp);
             // 
             // lblDatRodj
             // 

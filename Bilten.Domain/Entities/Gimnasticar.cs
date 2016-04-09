@@ -198,6 +198,7 @@ namespace Bilten.Domain
                 result = 29 * result + Prezime.GetHashCode();
                 if (!string.IsNullOrEmpty(SrednjeIme))
                     result = 29 * result + SrednjeIme.GetHashCode();
+                result = 29 * result + DatumRodjenja.GetHashCode();
                 return result;
             }
         }
