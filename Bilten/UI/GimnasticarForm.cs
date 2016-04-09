@@ -405,7 +405,7 @@ namespace Bilten.UI
 
             // Moguce je da greska ima veze sa time sto je DatumRodjenja (koji se koristi u Equals za poredjenje)
             // u .hbm fajlu mapiran kao component. Kada menjam ime ili prezime (koji se takodje koriste u Equals)
-            // greska se ne pojavljuje.
+            // greska se ne pojavljuje. Mada, interesantno je da u GimnasticarUcesnikForm ne postoji taj problem.
                         
             // Ovo je objasnjenje koje sam nasao za workaround koji resava problem:
             // This error is raised from nHibernate when you are updating an instance of an Entity that is saved on the
