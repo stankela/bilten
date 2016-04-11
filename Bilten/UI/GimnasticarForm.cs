@@ -412,8 +412,16 @@ namespace Bilten.UI
             // Cache. Basically nHibernate stores your objects on the cache once you loaded it, so next calls would get
             // it from the cache. If you update an instance that is present on the cache nHibernate throws this error
             // otherwise it could cause dirty reads and conflicts regarding loading the old copy of the object. To get
-            // around this, you need to remove the object from the cache using the Evict method like:
-            dataContext.Evict(entity);
+            // around this, you need to remove the object from the cache using the Evict method.
+
+            try
+            {
+                // Evict sam okruzio sa try/catch zato sto kada promenim srednje ime dobijam izuzetak "The given key was
+                // not present in the dictionary". Proveri u NHibernate in Action zasto se ovo desava.
+                dataContext.Evict(entity);
+            }
+            catch (Exception)
+            { }
 
             dataContext.Save(entity);
         }
