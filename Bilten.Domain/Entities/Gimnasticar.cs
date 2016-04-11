@@ -105,6 +105,19 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual string ImeSrednjeImePrezimeDatumRodjenja
+        {
+            get
+            {
+                string result = ImeSrednjeImePrezime;
+                if (DatumRodjenja != null)
+                {
+                    result += ", " + DatumRodjenja.ToString("dd.MM.yyyy");
+                }
+                return result;
+            }
+        }
+
         public override string ToString()
         {
             return ImeSrednjeImePrezime;

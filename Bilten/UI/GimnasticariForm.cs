@@ -302,6 +302,38 @@ namespace Bilten.UI
             }
         }
 
+        public override void Edit()
+        {
+            if (SelectedItem == null)
+                return;
+            int index = dataGridViewUserControl1.getSelectedItemIndex();
+
+            try
+            {
+                GimnasticarForm form = (GimnasticarForm)createEntityDetailForm(SelectedItem.Id);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    if (form.GimnasticarToEdit == null)
+                    {
+                        Gimnasticar entity = (Gimnasticar)form.Entity;
+                        List<Gimnasticar> items = dataGridViewUserControl1.getItems<Gimnasticar>();
+                        items[index] = entity;
+                        dataGridViewUserControl1.setItems<Gimnasticar>(items);  // ovo ponovo sortira items
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(entity);
+                    }
+                    else
+                    {
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(form.GimnasticarToEdit);
+                        Edit();
+                    }                                                                                
+                }
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+        }
+
         protected override void updateEntityCount()
         {
             updateGimnasticariCount();

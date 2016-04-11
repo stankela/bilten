@@ -51,7 +51,6 @@ namespace Bilten.UI
             this.btnAddKategorija = new System.Windows.Forms.Button();
             this.lblSrednjeIme = new System.Windows.Forms.Label();
             this.txtSrednjeIme = new System.Windows.Forms.TextBox();
-            this.btnPromeni = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnOk
@@ -94,7 +93,7 @@ namespace Bilten.UI
             this.txtPrezime.Size = new System.Drawing.Size(167, 20);
             this.txtPrezime.TabIndex = 5;
             this.txtPrezime.Enter += new System.EventHandler(this.txtPrezime_Enter);
-            this.txtPrezime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtPrezime_KeyUp);
+            this.txtPrezime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPrezime_KeyDown);
             // 
             // lblDatRodj
             // 
@@ -260,25 +259,14 @@ namespace Bilten.UI
             this.txtSrednjeIme.Size = new System.Drawing.Size(59, 20);
             this.txtSrednjeIme.TabIndex = 27;
             // 
-            // btnPromeni
-            // 
-            this.btnPromeni.Location = new System.Drawing.Point(516, 34);
-            this.btnPromeni.Name = "btnPromeni";
-            this.btnPromeni.Size = new System.Drawing.Size(74, 23);
-            this.btnPromeni.TabIndex = 28;
-            this.btnPromeni.Text = "Promeni";
-            this.btnPromeni.UseVisualStyleBackColor = true;
-            this.btnPromeni.Click += new System.EventHandler(this.btnPromeni_Click);
-            // 
             // GimnasticarForm
             // 
             this.AcceptButton = null;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 368);
+            this.ClientSize = new System.Drawing.Size(577, 368);
             this.Controls.Add(this.btnAddKategorija);
             this.Controls.Add(this.btnAddKlub);
-            this.Controls.Add(this.btnPromeni);
             this.Controls.Add(this.txtSrednjeIme);
             this.Controls.Add(this.lblSrednjeIme);
             this.Controls.Add(this.btnAddDrzava);
@@ -324,7 +312,6 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.btnAddDrzava, 0);
             this.Controls.SetChildIndex(this.lblSrednjeIme, 0);
             this.Controls.SetChildIndex(this.txtSrednjeIme, 0);
-            this.Controls.SetChildIndex(this.btnPromeni, 0);
             this.Controls.SetChildIndex(this.btnAddKlub, 0);
             this.Controls.SetChildIndex(this.btnAddKategorija, 0);
             this.Controls.SetChildIndex(this.btnOk, 0);
@@ -359,6 +346,5 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnAddKategorija;
         private System.Windows.Forms.Label lblSrednjeIme;
         private System.Windows.Forms.TextBox txtSrednjeIme;
-        private System.Windows.Forms.Button btnPromeni;
     }
 }

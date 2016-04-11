@@ -105,8 +105,6 @@ namespace Bilten.UI
             SelectedDrzava = getSrbija();
             cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
-
-            btnPromeni.Enabled = !editMode;
         }
 
         private Drzava getSrbija()
@@ -416,8 +414,8 @@ namespace Bilten.UI
 
             try
             {
-                // Evict sam okruzio sa try/catch zato sto kada promenim srednje ime dobijam izuzetak "The given key was
-                // not present in the dictionary". Proveri u NHibernate in Action zasto se ovo desava.
+                // TODO3: Evict sam okruzio sa try/catch zato sto kada promenim srednje ime dobijam izuzetak "The given
+                // key was not present in the dictionary". Proveri u NHibernate in Action zasto se ovo desava.
                 dataContext.Evict(entity);
             }
             catch (Exception)
@@ -662,70 +660,85 @@ namespace Bilten.UI
             {
                 if (g.Ime.ToUpper() == ime.ToUpper())
                 {
+                    string s = g.Prezime;
+                    if (g.DatumRodjenja != null)
+                    {
+                        s += ", " + g.DatumRodjenja.ToString("dd.MM.yyyy");
+                    }
                     if (g.SrednjeIme == null || g.SrednjeIme == string.Empty)
-                        col.Add(g.Prezime);
+                    {
+                        col.Add(s);
+                    }
                     else
-                        col.Add(g.Prezime + "   (" + g.ImeSrednjeImePrezime + ")");
+                        col.Add(s + "   (" + g.ImeSrednjeImePrezimeDatumRodjenja + ")");
                 }
             }
 
             txtPrezime.AutoCompleteCustomSource = col;
         }
 
-        private void txtPrezime_KeyUp(object sender, KeyEventArgs e)
+        private void txtPrezime_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Enter)
                 return;
 
+            Gimnasticar g;
             if (txtPrezime.Text.IndexOf('(') != -1 && txtPrezime.Text.IndexOf(')') != -1)
             {
-                string prezime = txtPrezime.Text.Substring(0, txtPrezime.Text.IndexOf('(')).Trim();
-                string imeSrednjeImePrezime = txtPrezime.Text.Substring(txtPrezime.Text.IndexOf('(')).Trim();
+                string imeSrednjeImePrezimeDatumRodjenja = txtPrezime.Text.Substring(txtPrezime.Text.IndexOf('(')).Trim();
 
                 // Ukloni zagrade
-                imeSrednjeImePrezime = imeSrednjeImePrezime.Substring(1, imeSrednjeImePrezime.Length - 2).Trim();
+                imeSrednjeImePrezimeDatumRodjenja = 
+                    imeSrednjeImePrezimeDatumRodjenja.Substring(1, imeSrednjeImePrezimeDatumRodjenja.Length - 2).Trim();
 
-                txtPrezime.Text = prezime.Trim();
-                Gimnasticar g = findGimnasticar(imeSrednjeImePrezime.Trim());
-                if (g != null)
-                    txtSrednjeIme.Text = g.SrednjeIme;
-                else
-                    txtSrednjeIme.Text = string.Empty;
+                g = findGimnasticar(imeSrednjeImePrezimeDatumRodjenja.Trim());
             }
             else
-                txtSrednjeIme.Text = String.Empty;
+            {
+                string prezime = String.Empty;
+                Datum datumRodjenja = null;
+                int index = txtPrezime.Text.IndexOf(',');
+                if (index != -1)
+                {
+                    prezime = txtPrezime.Text.Substring(0, index).Trim();
+                    datumRodjenja = Datum.Parse(txtPrezime.Text.Substring(index + 1).Trim());
+                }
+                else
+                {
+                    prezime = txtPrezime.Text.Trim();
+                }
+                g = findGimnasticar(txtIme.Text.Trim(), String.Empty, prezime, datumRodjenja);
+            }
+
+            if (g != null)
+            {
+                gimnasticarToEdit = g;
+                closedByOK = true;
+                DialogResult = DialogResult.OK;
+                //Close();
+                return;
+            }
         }
 
-        private Gimnasticar findGimnasticar(string imeSrednjeImePrezime)
+        private Gimnasticar findGimnasticar(string imeSrednjeImePrezimeDatumRodjenja)
         {
             foreach (Gimnasticar g in gimnasticari)
             {
-                if (g.ImeSrednjeImePrezime.ToUpper() == imeSrednjeImePrezime.ToUpper())
+                if (g.ImeSrednjeImePrezimeDatumRodjenja.ToUpper() == imeSrednjeImePrezimeDatumRodjenja.ToUpper())
                     return g;
             }
             return null;
         }
 
-        private void btnPromeni_Click(object sender, EventArgs e)
-        {
-            Gimnasticar g = findGimnasticar(txtIme.Text.Trim(), txtPrezime.Text.Trim(), txtSrednjeIme.Text.Trim());
-            if (g == null)
-            {
-                MessageDialogs.showMessage("Gimnasticar sa datim imenom i prezimenom ne postoji u bazi.", this.Text);
-                return;
-            }
-            gimnasticarToEdit = g;
-            closedByOK = true;
-            DialogResult = DialogResult.OK;
-        }
-
-        private Gimnasticar findGimnasticar(string ime, string prezime, string srednjeIme)
+        private Gimnasticar findGimnasticar(string ime, string srednjeIme, string prezime, Datum datumRodjenja)
         {
             foreach (Gimnasticar g in gimnasticari)
             {
                 string srednjeImeGim = g.SrednjeIme == null ? String.Empty : g.SrednjeIme.ToUpper();
+                bool datumRodjenjaEquals = (datumRodjenja == null && g.DatumRodjenja == null)
+                    || (datumRodjenja != null && g.DatumRodjenja != null && datumRodjenja.Equals(g.DatumRodjenja));
                 if (g.Ime.ToUpper() == ime.Trim().ToUpper() && g.Prezime.ToUpper() == prezime.Trim().ToUpper()
-                        && srednjeImeGim == srednjeIme.Trim().ToUpper())
+                        && srednjeImeGim == srednjeIme.Trim().ToUpper() && datumRodjenjaEquals)
                     return g;
             }
             return null;
