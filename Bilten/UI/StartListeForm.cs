@@ -159,6 +159,7 @@ namespace Bilten.UI
                         new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
                     c.DataGridViewUserControl.DataGridView.ColumnWidthChanged +=
                         new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
+                    c.DataGridViewUserControl.DataGridView.KeyDown += DataGridView_KeyDown;
                 }
                 tabPage1.AutoScroll = true;
                 tabPage1.AutoScrollMinSize = new Size(
@@ -173,6 +174,22 @@ namespace Bilten.UI
                 TabPage newTab = new TabPage();
                 tabControl1.Controls.Add(newTab);
                 initTab(newTab, raspored);
+            }
+        }
+
+        void DataGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter)
+                return;
+
+            DataGridView dgw = sender as DataGridView;
+            foreach (SpravaGridUserControl c in getActiveSpravaGridGroupUserControl().SpravaGridUserControls)
+            {
+                if (c.DataGridViewUserControl.DataGridView == dgw)
+                {
+                    unesiOcenu(c, true);
+                    return;
+                }
             }
         }
 
@@ -214,7 +231,8 @@ namespace Bilten.UI
                 mnUnesiOcenu.Enabled = selCount == 1;
                 mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = true;
                 mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = true;
-
+                getActiveSpravaGridGroupUserControl()[clickedSprava]
+                    .DataGridViewUserControl.setSelectedItemIndex(clickedRow);
             }
             else
             {
@@ -319,6 +337,7 @@ namespace Bilten.UI
                     new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
                 c.DataGridViewUserControl.DataGridView.ColumnWidthChanged +=
                     new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
+                c.DataGridViewUserControl.DataGridView.KeyDown += DataGridView_KeyDown;
             }
             spravaGridGroupUserControl.TabIndex = this.spravaGridGroupUserControl1.TabIndex;
 
@@ -838,12 +857,16 @@ namespace Bilten.UI
 
         private void mnUnesiOcenu_Click(object sender, EventArgs e)
         {
-            SpravaGridUserControl c = 
-                getActiveSpravaGridGroupUserControl()[clickedSprava];
-            NastupNaSpravi nastup = c.getSelectedItem<NastupNaSpravi>();
-            if (nastup == null)
+            unesiOcenu(getActiveSpravaGridGroupUserControl()[clickedSprava], false);
+        }
+
+        private void unesiOcenu(SpravaGridUserControl c, bool openedWithEnter)
+        {
+            DataGridViewSelectedRowCollection selRows = c.DataGridViewUserControl.DataGridView.SelectedRows;
+            if (selRows.Count != 1)
                 return;
 
+            NastupNaSpravi nastup = selRows[0].DataBoundItem as NastupNaSpravi;
             Ocena ocena = null;
             GimnasticarUcesnik g = null;
             bool ok = false;
@@ -854,8 +877,8 @@ namespace Bilten.UI
                 dataContext.BeginTransaction();
 
                 g = nastup.Gimnasticar;
-                ocena = findOcena(g, deoTakKod, clickedSprava);
-                
+                ocena = findOcena(g, deoTakKod, c.Sprava);
+
                 ok = true;
             }
             catch (Exception ex)
@@ -881,9 +904,35 @@ namespace Bilten.UI
             Nullable<int> ocenaId = null;
             if (ocena != null)
                 ocenaId = ocena.Id;
-            OcenaForm f = new OcenaForm(ocenaId, g, clickedSprava, deoTakKod, 
+            OcenaForm f = new OcenaForm(ocenaId, g, c.Sprava, deoTakKod,
                 takmicenje.Id);
-            f.ShowDialog();
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                int index = c.DataGridViewUserControl.getSelectedItemIndex();
+                if (openedWithEnter)
+                {
+                    // Enter ce automatski selektovati novu vrstu. Potrebno je samo proveriti da li je ovo poslednja vrsta.
+                    if (index == c.DataGridViewUserControl.DataGridView.Rows.Count - 1)
+                    {
+                        // uneta je zadnja ocena
+                        c.clearSelection();
+                    }
+                }
+                else
+                {
+                    ++index;
+                    if (index < c.DataGridViewUserControl.DataGridView.Rows.Count)
+                    {
+                        // selektuj sledecu ocenu
+                        c.DataGridViewUserControl.setSelectedItemIndex(index);
+                    }
+                    else
+                    {
+                        // uneta je zadnja ocena
+                        c.clearSelection();
+                    }
+                }
+            }
         }
 
         private Ocena findOcena(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod, 
