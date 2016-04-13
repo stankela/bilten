@@ -95,16 +95,22 @@ namespace Bilten.UI
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbGimnastika.Items.AddRange(new string[] { SVI, MSG, ZSG });
 
-            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDown;
             cmbDrzava.Items.Add(SVE_DRZAVE);
             cmbDrzava.Items.AddRange(drzave.ToArray());
+            cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
 
-            cmbKategorija.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKategorija.DropDownStyle = ComboBoxStyle.DropDown;
             setKategorije();
+            cmbKategorija.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbKategorija.AutoCompleteSource = AutoCompleteSource.ListItems;
 
-            cmbKlub.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
             cmbKlub.Items.Add(SVI_KLUBOVI);
             cmbKlub.Items.AddRange(klubovi.ToArray());
+            cmbKlub.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbKlub.AutoCompleteSource = AutoCompleteSource.ListItems;
 
             resetFilter();
         }

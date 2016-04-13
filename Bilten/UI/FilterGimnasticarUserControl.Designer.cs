@@ -129,7 +129,7 @@ namespace Bilten.UI
             this.cmbKategorija.FormattingEnabled = true;
             this.cmbKategorija.Location = new System.Drawing.Point(349, 57);
             this.cmbKategorija.Name = "cmbKategorija";
-            this.cmbKategorija.Size = new System.Drawing.Size(100, 21);
+            this.cmbKategorija.Size = new System.Drawing.Size(200, 21);
             this.cmbKategorija.TabIndex = 9;
             // 
             // lblKategorija
@@ -200,7 +200,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblIme);
             this.Controls.Add(this.lblRegBroj);
             this.Name = "FilterGimnasticarUserControl";
-            this.Size = new System.Drawing.Size(456, 127);
+            this.Size = new System.Drawing.Size(555, 127);
             this.ResumeLayout(false);
             this.PerformLayout();
 

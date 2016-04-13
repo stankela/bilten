@@ -175,7 +175,7 @@ namespace Bilten.UI
             this.cmbKategorija.FormattingEnabled = true;
             this.cmbKategorija.Location = new System.Drawing.Point(24, 295);
             this.cmbKategorija.Name = "cmbKategorija";
-            this.cmbKategorija.Size = new System.Drawing.Size(121, 21);
+            this.cmbKategorija.Size = new System.Drawing.Size(207, 21);
             this.cmbKategorija.TabIndex = 21;
             this.cmbKategorija.DropDown += new System.EventHandler(this.cmbKategorija_DropDown);
             // 
@@ -235,7 +235,7 @@ namespace Bilten.UI
             // 
             // btnAddKategorija
             // 
-            this.btnAddKategorija.Location = new System.Drawing.Point(151, 294);
+            this.btnAddKategorija.Location = new System.Drawing.Point(237, 294);
             this.btnAddKategorija.Name = "btnAddKategorija";
             this.btnAddKategorija.Size = new System.Drawing.Size(25, 23);
             this.btnAddKategorija.TabIndex = 25;

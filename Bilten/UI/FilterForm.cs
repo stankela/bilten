@@ -22,6 +22,7 @@ namespace Bilten.UI
         {
             InitializeComponent();
             this.TopMost = true;
+            this.Text = "Filtriraj";
         }
 
         private void btnFilter_Click(object sender, EventArgs e)

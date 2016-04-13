@@ -106,7 +106,7 @@ namespace Bilten.UI
             this.cmbKategorija.FormattingEnabled = true;
             this.cmbKategorija.Location = new System.Drawing.Point(312, 22);
             this.cmbKategorija.Name = "cmbKategorija";
-            this.cmbKategorija.Size = new System.Drawing.Size(121, 21);
+            this.cmbKategorija.Size = new System.Drawing.Size(202, 21);
             this.cmbKategorija.TabIndex = 7;
             // 
             // lblKlub
@@ -179,7 +179,7 @@ namespace Bilten.UI
             this.Controls.Add(this.txtIme);
             this.Controls.Add(this.lblIme);
             this.Name = "FilterGimnasticarUcesnikUserControl";
-            this.Size = new System.Drawing.Size(438, 88);
+            this.Size = new System.Drawing.Size(521, 88);
             this.ResumeLayout(false);
             this.PerformLayout();
 

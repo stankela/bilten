@@ -33,28 +33,28 @@ namespace Bilten.UI
             // 
             // btnFilter
             // 
-            this.btnFilter.Location = new System.Drawing.Point(191, 132);
+            this.btnFilter.Location = new System.Drawing.Point(270, 132);
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(373, 132);
+            this.btnClose.Location = new System.Drawing.Point(452, 132);
             // 
             // btnResetFilter
             // 
-            this.btnResetFilter.Location = new System.Drawing.Point(283, 132);
+            this.btnResetFilter.Location = new System.Drawing.Point(362, 132);
             // 
             // filterGimnasticarUcesnikUserControl1
             // 
             this.filterGimnasticarUcesnikUserControl1.Location = new System.Drawing.Point(19, 12);
             this.filterGimnasticarUcesnikUserControl1.Name = "filterGimnasticarUcesnikUserControl1";
-            this.filterGimnasticarUcesnikUserControl1.Size = new System.Drawing.Size(438, 88);
+            this.filterGimnasticarUcesnikUserControl1.Size = new System.Drawing.Size(529, 88);
             this.filterGimnasticarUcesnikUserControl1.TabIndex = 4;
             // 
             // FilterGimnasticarUcesnikForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(477, 171);
+            this.ClientSize = new System.Drawing.Size(560, 171);
             this.Controls.Add(this.filterGimnasticarUcesnikUserControl1);
             this.Name = "FilterGimnasticarUcesnikForm";
             this.Text = "FilterGimnasticarUcesnikForm";

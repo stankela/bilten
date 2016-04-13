@@ -31,17 +31,29 @@ namespace Bilten.UI
             this.filterGimnasticarUserControl1 = new Bilten.UI.FilterGimnasticarUserControl();
             this.SuspendLayout();
             // 
+            // btnFilter
+            // 
+            this.btnFilter.Location = new System.Drawing.Point(302, 177);
+            // 
+            // btnClose
+            // 
+            this.btnClose.Location = new System.Drawing.Point(484, 177);
+            // 
+            // btnResetFilter
+            // 
+            this.btnResetFilter.Location = new System.Drawing.Point(394, 177);
+            // 
             // filterGimnasticarUserControl1
             // 
             this.filterGimnasticarUserControl1.Location = new System.Drawing.Point(12, 21);
             this.filterGimnasticarUserControl1.Name = "filterGimnasticarUserControl1";
-            this.filterGimnasticarUserControl1.Size = new System.Drawing.Size(456, 127);
+            this.filterGimnasticarUserControl1.Size = new System.Drawing.Size(561, 127);
             this.filterGimnasticarUserControl1.TabIndex = 3;
             // 
             // FilterGimnasticarForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.ClientSize = new System.Drawing.Size(489, 212);
+            this.ClientSize = new System.Drawing.Size(586, 212);
             this.Controls.Add(this.filterGimnasticarUserControl1);
             this.Name = "FilterGimnasticarForm";
             this.Controls.SetChildIndex(this.btnResetFilter, 0);
