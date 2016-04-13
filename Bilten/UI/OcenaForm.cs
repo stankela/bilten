@@ -109,7 +109,7 @@ namespace Bilten.UI
 
             ponistiOcena1();
 
-            ckbUnosOcene.Checked = false;
+            ckbUnosOcene.Checked = Opcije.Instance.UnosOcenaBezIzrZaCeloTak;
             updateUIRucniUnos();
 
             int brojEOcena = takmicenje.BrojEOcena;
@@ -774,6 +774,17 @@ namespace Bilten.UI
 
         private void ckbUnosOcene_CheckedChanged(object sender, EventArgs e)
         {
+            if (ckbUnosOcene.Checked)
+            {
+                string msg = "Izabrali ste da se ocena unosi bez izracunavanja. Da li zelite da ovaj izbor vazi " +
+                    "za celo takmicenje ili samo za ovu ocenu?\n\nDa - celo takmicenje\nNe - samo ova ocena";
+                Opcije.Instance.UnosOcenaBezIzrZaCeloTak = MessageDialogs.queryConfirmation(msg, this.Text);
+            }
+            else
+            {
+                Opcije.Instance.UnosOcenaBezIzrZaCeloTak = false;
+            }
+            
             updateUIRucniUnos();
             clearColors1();
             izracunato = false;
@@ -916,6 +927,7 @@ namespace Bilten.UI
 
         private void OcenaForm_Load(object sender, EventArgs e)
         {
+            this.ckbUnosOcene.CheckedChanged += new System.EventHandler(this.ckbUnosOcene_CheckedChanged);
             addTextBoxHandlers();
         }
 
@@ -1285,6 +1297,8 @@ namespace Bilten.UI
             updateAcceptButton();
             if (!editMode)
                 txtD.Focus();
+            else
+                btnCancel.Focus();
         }
 
         private void updateAcceptButton()

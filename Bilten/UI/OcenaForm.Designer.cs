@@ -279,7 +279,6 @@ namespace Bilten.UI
             this.ckbUnosOcene.TabStop = false;
             this.ckbUnosOcene.Text = "Unos ocene bez izracunavanja";
             this.ckbUnosOcene.UseVisualStyleBackColor = true;
-            this.ckbUnosOcene.CheckedChanged += new System.EventHandler(this.ckbUnosOcene_CheckedChanged);
             // 
             // pictureBoxSprava
             // 

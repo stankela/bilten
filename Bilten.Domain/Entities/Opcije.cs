@@ -356,6 +356,13 @@ namespace Bilten.Domain
             set { _srpski = value; }
         }
 
+        private bool _unosOcenaBezIzrZaCeloTak = false;
+        public virtual bool UnosOcenaBezIzrZaCeloTak
+        {
+            get { return _unosOcenaBezIzrZaCeloTak; }
+            set { _unosOcenaBezIzrZaCeloTak = value; }
+        }
+
         public virtual string RedBrojString
         {
             get
