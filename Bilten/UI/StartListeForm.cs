@@ -160,6 +160,7 @@ namespace Bilten.UI
                     c.DataGridViewUserControl.DataGridView.ColumnWidthChanged +=
                         new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
                     c.DataGridViewUserControl.DataGridView.KeyDown += DataGridView_KeyDown;
+                    c.DataGridViewUserControl.DataGridView.MouseDoubleClick += DataGridView_MouseDoubleClick;
                 }
                 tabPage1.AutoScroll = true;
                 tabPage1.AutoScrollMinSize = new Size(
@@ -174,6 +175,19 @@ namespace Bilten.UI
                 TabPage newTab = new TabPage();
                 tabControl1.Controls.Add(newTab);
                 initTab(newTab, raspored);
+            }
+        }
+
+        void DataGridView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            DataGridView dgw = sender as DataGridView;
+            foreach (SpravaGridUserControl c in getActiveSpravaGridGroupUserControl().SpravaGridUserControls)
+            {
+                if (c.DataGridViewUserControl.DataGridView == dgw)
+                {
+                    unesiOcenu(c, false);
+                    return;
+                }
             }
         }
 
@@ -338,6 +352,7 @@ namespace Bilten.UI
                 c.DataGridViewUserControl.DataGridView.ColumnWidthChanged +=
                     new DataGridViewColumnEventHandler(DataGridView_ColumnWidthChanged);
                 c.DataGridViewUserControl.DataGridView.KeyDown += DataGridView_KeyDown;
+                c.DataGridViewUserControl.DataGridView.MouseDoubleClick += DataGridView_MouseDoubleClick;
             }
             spravaGridGroupUserControl.TabIndex = this.spravaGridGroupUserControl1.TabIndex;
 
