@@ -144,7 +144,11 @@ namespace Bilten.Report
             nearCenterFormat.Alignment = StringAlignment.Near;
             nearCenterFormat.LineAlignment = StringAlignment.Center;
 
-            header1Format = centerCenterFormat;
+            StringFormat centerNearFormat = new StringFormat();
+            centerNearFormat.Alignment = StringAlignment.Center;
+            centerNearFormat.LineAlignment = StringAlignment.Near;
+
+            header1Format = centerNearFormat;
             header2Format = centerCenterFormat;
             header3Format = centerCenterFormat;
             header4Format = centerCenterFormat;
@@ -220,7 +224,7 @@ namespace Bilten.Report
 
 		public virtual void drawHeader(Graphics g, int pageNum)
 		{
-     /*       g.DrawRectangle(pen, headerBounds.X, headerBounds.Y,
+            /*g.DrawRectangle(pen, headerBounds.X, headerBounds.Y,
                 headerBounds.Width, headerBounds.Height);
 
             g.DrawRectangle(pen, header1Bounds.X, header1Bounds.Y,
@@ -230,8 +234,8 @@ namespace Bilten.Report
             g.DrawRectangle(pen, header3Bounds.X, header3Bounds.Y,
                 header3Bounds.Width, header3Bounds.Height);
             g.DrawRectangle(pen, header4Bounds.X, header4Bounds.Y,
-                header4Bounds.Width, header4Bounds.Height);
-*/
+                header4Bounds.Width, header4Bounds.Height);*/
+
 			g.DrawString(Header1Text, header1Font, blackBrush, header1Bounds, header1Format); 
 			g.DrawString(Header2Text, header2Font, blackBrush, header2Bounds, header2Format);
             g.DrawString(Header3Text, header3Font, blackBrush, header3Bounds, header3Format);
@@ -269,7 +273,7 @@ namespace Bilten.Report
 
 		private void calculateHeaderBounds(Graphics g, RectangleF marginBounds)
 		{
-	        float headerSection1RelHeight = 1.0f / 5;
+	        //float headerSection1RelHeight = 1.0f / 5;
             float headerSection2RelHeight = 1.0f / 5;
             float headerSection3RelHeight = 1.0f / 5;
             float headerSection4RelHeight = 1.0f / 5;
@@ -277,22 +281,21 @@ namespace Bilten.Report
             headerBounds = new RectangleF(marginBounds.Location, 
 				new SizeF(marginBounds.Width, getHeaderHeight(g, marginBounds)));
 
-            float headerSec1Height = headerSection1RelHeight * headerBounds.Height;
+            // Header 1 moze da se prostire u dva reda
+            float headerSec1Height = g.MeasureString(Header1Text, header1Font, headerBounds.Size).Height;
+            //float headerSec1Height = headerSection1RelHeight * headerBounds.Height;
             float headerSec2Height = headerSection2RelHeight * headerBounds.Height;
             float headerSec3Height = headerSection3RelHeight * headerBounds.Height;
             float headerSec4Height = headerSection4RelHeight * headerBounds.Height;
-            float headerSpaceHeight = headerBounds.Height - 
-                (headerSec1Height + headerSec2Height + headerSec3Height + headerSec4Height);
 
             header1Bounds = new RectangleF(headerBounds.Location,
                 new SizeF(headerBounds.Width, headerSec1Height));
             header2Bounds = new RectangleF(headerBounds.X, header1Bounds.Bottom,
                 headerBounds.Width, headerSec2Height);
-            headerSpaceBounds = new RectangleF(headerBounds.X,
-                header2Bounds.Bottom, headerBounds.Width, headerSpaceHeight);
-            header3Bounds = new RectangleF(headerBounds.X, headerSpaceBounds.Bottom,
+
+            header3Bounds = new RectangleF(headerBounds.X, headerBounds.Bottom - (headerSec3Height + headerSec4Height),
                 headerBounds.Width, headerSec3Height);
-            header4Bounds = new RectangleF(headerBounds.X, header3Bounds.Bottom,
+            header4Bounds = new RectangleF(headerBounds.X, headerBounds.Bottom - headerSec4Height,
                 headerBounds.Width, headerSec4Height);
         }
 
