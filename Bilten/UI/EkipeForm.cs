@@ -423,7 +423,20 @@ namespace Bilten.UI
                     selEkipa.Gimnasticari);
                 
                 List<Ekipa> ekipe = new List<Ekipa>(ActiveRezTakmicenje.Takmicenje1.Ekipe);
-                Ekipa ekipa = ekipe[ekipe.IndexOf(selEkipa)];
+                Ekipa ekipa = null;
+                foreach (Ekipa e in ekipe)
+                {
+                    if (e.Id == selEkipa.Id)
+                    {
+                        ekipa = e;
+                        break;
+                    }
+                }
+                if (ekipa == null)
+                {
+                    throw new Exception("Greska u programu.");
+                }
+
                 List<GimnasticarUcesnik> curr = new List<GimnasticarUcesnik>(
                     ekipa.Gimnasticari);
                 
