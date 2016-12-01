@@ -39,6 +39,13 @@ namespace Bilten.Domain
             set { drzavaUcesnik = value; }
         }
 
+        private Nullable<float> penalty;
+        public virtual Nullable<float> Penalty
+        {
+            get { return penalty; }
+            set { penalty = value; }
+        }
+
         public Ekipa()
         { 
         

@@ -191,8 +191,18 @@ namespace Bilten.UI
             dataGridViewUserControl1.DataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(DataGridViewEkipe_CellMouseClick);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-            
+
+            dataGridViewUserControl1.DataGridView.MouseUp += new MouseEventHandler(DataGridViewEkipe_MouseUp);
             dataGridViewUserControl2.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
+        }
+
+        void DataGridViewEkipe_MouseUp(object sender, MouseEventArgs e)
+        {
+            DataGridView grid = dataGridViewUserControl1.DataGridView;
+            if (e.Button == MouseButtons.Right && grid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
+            {
+                contextMenuStrip2.Show(grid, new Point(e.X, e.Y));
+            }
         }
 
         void DataGridView_MouseUp(object sender, MouseEventArgs e)
@@ -273,7 +283,7 @@ namespace Bilten.UI
 
         private bool onSelectedTakmicenjeChanged()
         {
-            GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1, takmicenje, kvalColumnVisible());
+            GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1, takmicenje, kvalColumnVisible(), true);
             GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2, takmicenje);
             List<string> imena = new List<string>();
             List<string> klubovi = new List<string>();
@@ -466,6 +476,16 @@ namespace Bilten.UI
             RezultatUkupno rez = dataGridViewUserControl2.getSelectedItem<RezultatUkupno>();
             dataGridViewUserControl2.refreshItems();
             dataGridViewUserControl2.setSelectedItem<RezultatUkupno>(rez);
+        }
+
+        private void dodajPenalizacijuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IList<RezultatEkipno> rezultatiEkipe = dataGridViewUserControl1.getSelectedItems<RezultatEkipno>();
+            if (rezultatiEkipe.Count != 1)
+                return;
+
+            RezultatEkipno rezultat = rezultatiEkipe[0];
+            rezultat.addPenalty(0.1f);
         }
 
     }

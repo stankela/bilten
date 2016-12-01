@@ -37,7 +37,10 @@ namespace Bilten.UI
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.prikaziKlubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.prikaziDrzavuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.dodajPenalizacijuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbTakmicenje
@@ -71,8 +74,8 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl2
             // 
-            this.dataGridViewUserControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewUserControl2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl2.ColumnHeaderSorting = true;
             this.dataGridViewUserControl2.Location = new System.Drawing.Point(12, 218);
             this.dataGridViewUserControl2.Name = "dataGridViewUserControl2";
@@ -81,9 +84,9 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl1
             // 
-            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(12, 53);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
@@ -96,21 +99,35 @@ namespace Bilten.UI
             this.prikaziKlubToolStripMenuItem,
             this.prikaziDrzavuToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(147, 48);
             // 
             // prikaziKlubToolStripMenuItem
             // 
             this.prikaziKlubToolStripMenuItem.Name = "prikaziKlubToolStripMenuItem";
-            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.prikaziKlubToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.prikaziKlubToolStripMenuItem.Text = "Prikazi klub";
             this.prikaziKlubToolStripMenuItem.Click += new System.EventHandler(this.prikaziKlubToolStripMenuItem_Click);
             // 
             // prikaziDrzavuToolStripMenuItem
             // 
             this.prikaziDrzavuToolStripMenuItem.Name = "prikaziDrzavuToolStripMenuItem";
-            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.prikaziDrzavuToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.prikaziDrzavuToolStripMenuItem.Text = "Prikazi drzavu";
             this.prikaziDrzavuToolStripMenuItem.Click += new System.EventHandler(this.prikaziDrzavuToolStripMenuItem_Click);
+            // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dodajPenalizacijuToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(171, 48);
+            // 
+            // dodajPenalizacijuToolStripMenuItem
+            // 
+            this.dodajPenalizacijuToolStripMenuItem.Name = "dodajPenalizacijuToolStripMenuItem";
+            this.dodajPenalizacijuToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.dodajPenalizacijuToolStripMenuItem.Text = "Dodaj penalizaciju";
+            this.dodajPenalizacijuToolStripMenuItem.Click += new System.EventHandler(this.dodajPenalizacijuToolStripMenuItem_Click);
             // 
             // RezultatiEkipeForm
             // 
@@ -127,6 +144,7 @@ namespace Bilten.UI
             this.Text = "RezultatiEkipeForm";
             this.Shown += new System.EventHandler(this.RezultatiEkipeForm_Shown);
             this.contextMenuStrip1.ResumeLayout(false);
+            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -141,5 +159,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem prikaziKlubToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem prikaziDrzavuToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem dodajPenalizacijuToolStripMenuItem;
     }
 }

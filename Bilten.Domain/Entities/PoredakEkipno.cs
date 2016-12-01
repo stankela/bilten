@@ -86,6 +86,8 @@ namespace Bilten.Domain
                     }
                 }
 
+                if (e.Penalty != null)
+                    rezultatEkipno.addPenalty(e.Penalty);
                 Rezultati.Add(rezultatEkipno);
             }
 

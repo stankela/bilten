@@ -386,7 +386,8 @@ namespace Bilten.UI
             dgw.AddColumn("Kval. rank", "QualRank", 40);
         }
 
-        public static void initRezultatiEkipno(DataGridViewUserControl dgw, Takmicenje takmicenje, bool kvalColumn)
+        public static void initRezultatiEkipno(DataGridViewUserControl dgw, Takmicenje takmicenje, bool kvalColumn,
+            bool penalty)
         {
             dgw.DataGridView.Columns.Clear();
 
@@ -413,6 +414,9 @@ namespace Bilten.UI
                 dgw.AddColumn(columnName, propName, width, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             }
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+
+            if (penalty)
+                dgw.AddColumn("Pen.", "Penalty", 50, "{0:F" + takmicenje.BrojDecimalaPen + "}");
 
             if (kvalColumn)
                 dgw.AddColumn("", "KvalStatus", 30);
