@@ -18,6 +18,7 @@
     <property name="Vratilo" column="vratilo" />
     <property name="Greda" column="greda" />
     <property name="DvovisinskiRazboj" column="dvo_razboj" />
+    <property name="Penalty" column="penalty" />
     <property name="Total" column="total" />
     <many-to-one name="Ekipa" class="Ekipa" column="ekipa_id" />
   </class>
