@@ -88,13 +88,13 @@ namespace Bilten.Report
                 {
                     data = new object[] { rez.Rank, rez.Ekipa.Naziv, rez.Parter,
                         rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, rez.Vratilo, 
-                        rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) };
+                        rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus), rez.Penalty };
                 }
                 else
                 {
                     data = new object[] { rez.Rank, rez.Ekipa.Naziv, rez.Preskok,
                         rez.DvovisinskiRazboj, rez.Greda, rez.Parter, rez.Total,
-                        KvalifikacioniStatusi.toString(rez.KvalStatus) };
+                        KvalifikacioniStatusi.toString(rez.KvalStatus), rez.Penalty };
                 }
                 groups.Add(new ReportGrupa(data, start, count));
                 start += count;
@@ -363,6 +363,19 @@ namespace Bilten.Report
                     string text = getFormattedString(gr.Data, totalIndex, fmtTot);
                     g.DrawString(text, itemFont, blackBrush,
                         columnFooterRect, Izvestaj.centerCenterFormat);
+
+                    string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
+                    string penalty = getFormattedString(gr.Data, totalIndex + 2, fmtPen);
+                    if (penalty != String.Empty)
+                    {
+                        StringFormat format = new StringFormat();
+                        format.Alignment = StringAlignment.Near;
+                        format.LineAlignment = StringAlignment.Center;
+                        RectangleF penaltyRect = columnFooterRect;
+                        penaltyRect.Offset(columnFooterRect.Width, 0);
+                        g.DrawString("Pen. " + penalty, itemFont, blackBrush,
+                            penaltyRect, format);
+                    }
                 }
             }
         }
