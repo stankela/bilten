@@ -1,3 +1,5 @@
+Verzije vece od 1 se nalaze u posebnim fajlovima DatabaseUpdate_version{BROJ_VERZIJE}.sql
+
 01-Nov-2015 (VERZIJA = 1)
 ALTER TABLE takmicenja ADD COLUMN tip_takmicenja tinyint;
 UPDATE takmicenja SET tip_takmicenja = 0;

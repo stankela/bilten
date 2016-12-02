@@ -483,9 +483,57 @@ namespace Bilten.UI
             IList<RezultatEkipno> rezultatiEkipe = dataGridViewUserControl1.getSelectedItems<RezultatEkipno>();
             if (rezultatiEkipe.Count != 1)
                 return;
-
             RezultatEkipno rezultat = rezultatiEkipe[0];
-            rezultat.addPenalty(0.1f);
+
+            PenalizacijaForm form = new PenalizacijaForm(rezultat, takmicenje);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            if (form.Penalizacija.Trim() == String.Empty)
+                rezultat.addPenalty(null);
+            else
+                rezultat.addPenalty(float.Parse(form.Penalizacija));
+            // Posto se ekipni poredak svaki put nanovo kreira iz ocena, moram
+            // da zapamtim penalizaciju u ekipi (metod Poredak.create koristi Ekipa.Penalty)
+            rezultat.Ekipa.Penalty = rezultat.Penalty;
+
+            try
+            {
+                DataAccessProviderFactory factory = new DataAccessProviderFactory();
+                dataContext = factory.GetDataContext();
+                dataContext.BeginTransaction();
+
+                dataContext.Save(rezultat.Ekipa);
+                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                {
+                    ActiveTakmicenje.Takmicenje1.PoredakEkipno.calculatePoredak(ActiveTakmicenje);
+                    dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
+                }
+                else
+                {
+                    ActiveTakmicenje.Takmicenje4.Poredak.calculatePoredak(ActiveTakmicenje);
+                    dataContext.Save(ActiveTakmicenje.Takmicenje4.Poredak);
+                }
+                dataContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (dataContext != null && dataContext.IsInTransaction)
+                    dataContext.Rollback();
+                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                if (dataContext != null)
+                    dataContext.Dispose();
+                dataContext = null;
+            }
+
+            dataGridViewUserControl1.setItems<RezultatEkipno>(
+                ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
+            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(rezultat);
         }
 
     }

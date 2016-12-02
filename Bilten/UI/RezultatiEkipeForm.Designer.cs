@@ -120,13 +120,13 @@ namespace Bilten.UI
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dodajPenalizacijuToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(171, 48);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(153, 48);
             // 
             // dodajPenalizacijuToolStripMenuItem
             // 
             this.dodajPenalizacijuToolStripMenuItem.Name = "dodajPenalizacijuToolStripMenuItem";
-            this.dodajPenalizacijuToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.dodajPenalizacijuToolStripMenuItem.Text = "Dodaj penalizaciju";
+            this.dodajPenalizacijuToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dodajPenalizacijuToolStripMenuItem.Text = "Penalizacija";
             this.dodajPenalizacijuToolStripMenuItem.Click += new System.EventHandler(this.dodajPenalizacijuToolStripMenuItem_Click);
             // 
             // RezultatiEkipeForm

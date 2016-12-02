@@ -363,6 +363,12 @@
     <Compile Include="UI\OtvoriTakmicenjeForm.Designer.cs">
       <DependentUpon>OtvoriTakmicenjeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\PenalizacijaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\PenalizacijaForm.Designer.cs">
+      <DependentUpon>PenalizacijaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\PreviewDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -767,6 +773,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>OtvoriTakmicenjeForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\PenalizacijaForm.resx">
+      <DependentUpon>PenalizacijaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\PreviewDialog.resx">
       <DependentUpon>PreviewDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -854,6 +863,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="DatabaseUpdate.txt" />
+    <Content Include="DatabaseUpdate_version2.sql" />
     <Content Include="Doc\DesignChoices.txt" />
     <Content Include="Doc\pitanja.txt" />
     <Content Include="Doc\Promene.txt" />

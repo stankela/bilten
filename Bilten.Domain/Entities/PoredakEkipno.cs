@@ -240,6 +240,12 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual void calculatePoredak(RezultatskoTakmicenje rezTak)
+        {
+            rankRezultati();
+            updateKvalStatus(rezTak.Propozicije);
+        }
+
         // TODO3: Proveri zasto sam zakomentarisao ovaj i sledece metode.
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {

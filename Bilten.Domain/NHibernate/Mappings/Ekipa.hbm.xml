@@ -9,7 +9,8 @@
     </id>
     <property name="Naziv" column="naziv" type="String" not-null="false" length="32"/>
     <property name="Kod" />
-    
+    <property name="Penalty" column="penalty" />
+
     <many-to-one name="KlubUcesnik" class="KlubUcesnik" column="klub_id" />
     <many-to-one name="DrzavaUcesnik" class="DrzavaUcesnik" column="drzava_id" />
     <set name="Gimnasticari" table="ekipa_gimnasticar" lazy="true">
