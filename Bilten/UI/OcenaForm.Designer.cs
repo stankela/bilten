@@ -53,7 +53,6 @@ namespace Bilten.UI
             this.btnIzracunaj = new System.Windows.Forms.Button();
             this.ckbUnosOcene = new System.Windows.Forms.CheckBox();
             this.pictureBoxSprava = new System.Windows.Forms.PictureBox();
-            this.ckbDrugaOcena = new System.Windows.Forms.CheckBox();
             this.txtTotal_2 = new System.Windows.Forms.TextBox();
             this.txtPenal_2 = new System.Windows.Forms.TextBox();
             this.txtE_2 = new System.Windows.Forms.TextBox();
@@ -290,18 +289,6 @@ namespace Bilten.UI
             this.pictureBoxSprava.TabIndex = 30;
             this.pictureBoxSprava.TabStop = false;
             // 
-            // ckbDrugaOcena
-            // 
-            this.ckbDrugaOcena.AutoSize = true;
-            this.ckbDrugaOcena.Location = new System.Drawing.Point(20, 155);
-            this.ckbDrugaOcena.Name = "ckbDrugaOcena";
-            this.ckbDrugaOcena.Size = new System.Drawing.Size(88, 17);
-            this.ckbDrugaOcena.TabIndex = 31;
-            this.ckbDrugaOcena.TabStop = false;
-            this.ckbDrugaOcena.Text = "Druga ocena";
-            this.ckbDrugaOcena.UseVisualStyleBackColor = true;
-            this.ckbDrugaOcena.CheckedChanged += new System.EventHandler(this.ckbDrugaOcena_CheckedChanged);
-            // 
             // txtTotal_2
             // 
             this.txtTotal_2.Location = new System.Drawing.Point(579, 185);
@@ -409,7 +396,6 @@ namespace Bilten.UI
             this.Controls.Add(this.txtE2_2);
             this.Controls.Add(this.txtE1_2);
             this.Controls.Add(this.txtD_2);
-            this.Controls.Add(this.ckbDrugaOcena);
             this.Controls.Add(this.pictureBoxSprava);
             this.Controls.Add(this.ckbUnosOcene);
             this.Controls.Add(this.txtTotal);
@@ -464,7 +450,6 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.txtTotal, 0);
             this.Controls.SetChildIndex(this.ckbUnosOcene, 0);
             this.Controls.SetChildIndex(this.pictureBoxSprava, 0);
-            this.Controls.SetChildIndex(this.ckbDrugaOcena, 0);
             this.Controls.SetChildIndex(this.txtD_2, 0);
             this.Controls.SetChildIndex(this.txtE1_2, 0);
             this.Controls.SetChildIndex(this.txtE2_2, 0);
@@ -512,7 +497,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnIzracunaj;
         private System.Windows.Forms.CheckBox ckbUnosOcene;
         private System.Windows.Forms.PictureBox pictureBoxSprava;
-        private System.Windows.Forms.CheckBox ckbDrugaOcena;
         private System.Windows.Forms.TextBox txtTotal_2;
         private System.Windows.Forms.TextBox txtPenal_2;
         private System.Windows.Forms.TextBox txtE_2;

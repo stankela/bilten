@@ -122,14 +122,13 @@ namespace Bilten.UI
             txtE.TabStop = brojEOcena == 0 || ckbUnosOcene.Checked;
             txtTotal.TabStop = ckbUnosOcene.Checked;
 
-            ckbDrugaOcena.Enabled = ckbDrugaOcena.Visible = obeOcene;
             txtD_2.Enabled = txtD_2.Visible = obeOcene;
-            txtE1_2.Enabled = txtE1_2.Visible = obeOcene;
-            txtE2_2.Enabled = txtE2_2.Visible = obeOcene;
-            txtE3_2.Enabled = txtE3_2.Visible = obeOcene;
-            txtE4_2.Enabled = txtE4_2.Visible = obeOcene;
-            txtE5_2.Enabled = txtE5_2.Visible = obeOcene;
-            txtE6_2.Enabled = txtE6_2.Visible = obeOcene;
+            txtE1_2.Enabled = txtE1_2.Visible = obeOcene && brojEOcena >= 1;
+            txtE2_2.Enabled = txtE2_2.Visible = obeOcene && brojEOcena >= 2;
+            txtE3_2.Enabled = txtE3_2.Visible = obeOcene && brojEOcena >= 3;
+            txtE4_2.Enabled = txtE4_2.Visible = obeOcene && brojEOcena >= 4;
+            txtE5_2.Enabled = txtE5_2.Visible = obeOcene && brojEOcena >= 5;
+            txtE6_2.Enabled = txtE6_2.Visible = obeOcene && brojEOcena >= 6;
             txtE_2.Enabled = txtE_2.Visible = obeOcene;
             txtPenal_2.Enabled = txtPenal_2.Visible = obeOcene;
             txtTotal_2.Enabled = txtTotal_2.Visible = obeOcene;
@@ -141,16 +140,6 @@ namespace Bilten.UI
             if (obeOcene)
             {
                 ponistiOcena2();
-
-                txtE1_2.Enabled = txtE1_2.Visible = brojEOcena >= 1;
-                txtE2_2.Enabled = txtE2_2.Visible = brojEOcena >= 2;
-                txtE3_2.Enabled = txtE3_2.Visible = brojEOcena >= 3;
-                txtE4_2.Enabled = txtE4_2.Visible = brojEOcena >= 4;
-                txtE5_2.Enabled = txtE5_2.Visible = brojEOcena >= 5;
-                txtE6_2.Enabled = txtE6_2.Visible = brojEOcena >= 6;
-
-                ckbDrugaOcena.Checked = false;
-                setEnabledDrugaOcena();
             }
             else
             {
@@ -206,20 +195,19 @@ namespace Bilten.UI
             enableTextBoxHandlers();
         }
 
-        private void setEnabledDrugaOcena()
+        private bool isDrugaOcenaEmpty()
         {
-            bool drugaOcena = ckbDrugaOcena.Checked;
-            txtD_2.Enabled = drugaOcena;
-            txtE1_2.Enabled = drugaOcena;
-            txtE2_2.Enabled = drugaOcena;
-            txtE3_2.Enabled = drugaOcena;
-            txtE4_2.Enabled = drugaOcena;
-            txtE5_2.Enabled = drugaOcena;
-            txtE6_2.Enabled = drugaOcena;
-            txtE_2.Enabled = drugaOcena;
-            txtPenal_2.Enabled = drugaOcena;
-            txtTotal_2.Enabled = drugaOcena;
-            txtTotalObeOcene.Enabled = drugaOcena;
+            return txtD_2.Text.Trim() == String.Empty &&
+                txtE1_2.Text.Trim() == String.Empty &&
+                txtE2_2.Text.Trim() == String.Empty &&
+                txtE3_2.Text.Trim() == String.Empty &&
+                txtE4_2.Text.Trim() == String.Empty &&
+                txtE5_2.Text.Trim() == String.Empty &&
+                txtE6_2.Text.Trim() == String.Empty &&
+                txtE_2.Text.Trim() == String.Empty &&
+                txtPenal_2.Text.Trim() == String.Empty &&
+                txtTotal_2.Text.Trim() == String.Empty &&
+                txtTotalObeOcene.Text.Trim() == String.Empty;        
         }
 
         protected override void updateUIFromEntity(DomainObject entity)
@@ -276,8 +264,7 @@ namespace Bilten.UI
             ckbUnosOcene.Checked = ocena.RucnoUnetaOcena;
 
             DrugaOcena ocena2 = ocena.Ocena2;
-            ckbDrugaOcena.Checked = ocena2 != null;
-            if (ckbDrugaOcena.Checked)
+            if (ocena2 != null)
             {
                 txtD_2.Text = String.Empty;
                 if (ocena2.D != null)
@@ -335,7 +322,7 @@ namespace Bilten.UI
                 txtE2, txtE3, txtE4, txtE5, txtE6, txtPenal, String.Empty);
             requiredFieldsAndFormatValidationRucnoUnetaOcena(notification, txtE, txtTotal, String.Empty);
 
-            if (ckbDrugaOcena.Checked)
+            if (!isDrugaOcenaEmpty())
             {
                 requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2,
                     txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtPenal_2, "DrugaOcena.");
@@ -684,7 +671,7 @@ namespace Bilten.UI
 
 
             deletedDrugaOcena = null;
-            if (!ckbDrugaOcena.Checked)
+            if (isDrugaOcenaEmpty())
             {
                 if (ocena.Ocena2 != null)
                     deletedDrugaOcena = ocena.Ocena2;
@@ -789,10 +776,7 @@ namespace Bilten.UI
             clearColors1();
             izracunato = false;
             updateAcceptButton();
-            if (!ckbDrugaOcena.Checked)
-                clearColors2(disabledColor);
-            else
-                clearColors2(SystemColors.Window);
+            clearColors2();
 
             txtE.TabStop = takmicenje.BrojEOcena == 0 || ckbUnosOcene.Checked;
             txtTotal.TabStop = ckbUnosOcene.Checked;
@@ -828,7 +812,7 @@ namespace Bilten.UI
                 Notification notification = new Notification();
                 requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD, txtE1,
                     txtE2, txtE3, txtE4, txtE5, txtE6, txtPenal, String.Empty);
-                if (ckbDrugaOcena.Checked)
+                if (!isDrugaOcenaEmpty())
                 {
                     requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2,
                         txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtPenal_2, "DrugaOcena.");
@@ -898,7 +882,7 @@ namespace Bilten.UI
 
             Ocena o = (Ocena)entity;
             selectEOcene1(o.getMinEOcenaBroj(), o.getMaxEOcenaBroj());
-            if (obeOcene && ckbDrugaOcena.Checked)
+            if (obeOcene && !isDrugaOcenaEmpty())
                 selectEOcene2(o.Ocena2.getMinEOcenaBroj(), o.Ocena2.getMaxEOcenaBroj());
         }
 
@@ -1066,17 +1050,17 @@ namespace Bilten.UI
                 {
                     txtE_2.Text = String.Empty;
                 }
-                clearColors2(SystemColors.Window);
+                clearColors2();
                 izracunato = false;
                 updateAcceptButton();
             }
         }
 
-        private void clearColors2(Color color)
+        private void clearColors2()
         {
             TextBox[] txtBoxes = { txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2 };
             foreach (TextBox txtBox in txtBoxes)
-                txtBox.BackColor = color;
+                txtBox.BackColor = SystemColors.Window;
         }
 
         private bool isTxtEOcena1(TextBox txt)
@@ -1097,22 +1081,6 @@ namespace Bilten.UI
             || object.ReferenceEquals(txt, txtE4_2)
             || object.ReferenceEquals(txt, txtE5_2)
             || object.ReferenceEquals(txt, txtE6_2);
-        }
-
-        private void ckbDrugaOcena_CheckedChanged(object sender, EventArgs e)
-        {
-            setEnabledDrugaOcena();
-            if (!ckbDrugaOcena.Checked)
-            {
-                ponistiOcena2();
-                clearColors2(disabledColor);
-            }
-            else
-            {
-                clearColors2(SystemColors.Window);
-                izracunato = false;
-                updateAcceptButton();
-            }
         }
 
         private void btnPonisti_Click(object sender, EventArgs e)
