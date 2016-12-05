@@ -13,6 +13,19 @@ namespace Bilten
 {
     static class Program
     {
+        // TODO4: (sa Memorijala 2016)
+        // - Dodati u propozicijama nacin razresavanja kada dva takmicara imaju istu konacnu ocenu
+        //   (razresavanje za vezbe na spravi neka bude u propozicijama za takmicenje III itd.)
+        // - Mislim da u programu postoji na nekoliko mesta obaveza da se kod menja ako se u neku
+        //   klasu doda novo svojstvo (cini mi se da je prozor za propozicije jedno od tih mesta). Probaj da
+        //   napises unit testove koji bi ovo proveravali sa refleksijom. Npr. test bi sadrzao listu svojstva koja
+        //   su postojala u klasi u trenutku kada je test napisan, i onda bi refleksijom ocitao svojstva klase i
+        //   proverio da li se liste poklapaju. Kada test pukne, odgovarajuci kod u programu treba apdejtovati, a test
+        //   treba promeniti da u proveru ukljucuje i novododato svojstvo. Ima kod Petzolda u poglavlju 4 primer
+        //   reflekcije (SysInfoReflection).
+        // - Kada se otvaraju rezultati iz prozora za start liste, treba otvoriti onu kategoriju i onu spravu
+        //   koja je trenutno aktivna.
+
         static int VERZIJA_PROGRAMA = 2;
 
         /// <summary>
