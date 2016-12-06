@@ -14,6 +14,7 @@ namespace Bilten
     static class Program
     {
         // TODO4: (sa Memorijala 2016)
+        // - Prebaci DatabaseUpdate_version2.sql da bude embedded resource
         // - Dodati u propozicijama nacin razresavanja kada dva takmicara imaju istu konacnu ocenu
         //   (razresavanje za vezbe na spravi neka bude u propozicijama za takmicenje III itd.)
         // - Mislim da u programu postoji na nekoliko mesta obaveza da se kod menja ako se u neku
@@ -25,6 +26,8 @@ namespace Bilten
         //   reflekcije (SysInfoReflection).
         // - Kada se otvaraju rezultati iz prozora za start liste, treba otvoriti onu kategoriju i onu spravu
         //   koja je trenutno aktivna.
+        // - Kad oznacavas grupe za rotiranje u start listama, oznaci ih i u ostalim rotacijama a ne samo prvoj.
+        // - Drag and drop za menjanje start lista
 
         static int VERZIJA_PROGRAMA = 2;
 
@@ -69,7 +72,6 @@ namespace Bilten
                     if (verzijaBaze == 1 && VERZIJA_PROGRAMA > 1)
                     {
                         string databaseFile = "BiltenPodaci.sdf";
-                        // TODO4: Prebaci DatabaseUpdate_version2.sql da bude embedded resource
                         SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(@"DatabaseUpdate_version2.sql"));
 
                         verzijaBaze = DatabaseUpdater.getDatabaseVersionNumber();
