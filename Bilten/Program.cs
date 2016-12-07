@@ -14,6 +14,8 @@ namespace Bilten
     static class Program
     {
         // TODO4: (sa Memorijala 2016)
+        // - Proveri OcenaForm (polje za E ocenu se ne ponasa ocekivano u sledece 3 situacije: kada se ostavi prazno,
+        //   kada se ocena unese sa tackom umesto zareza, i kada se unese neki proizvoljan tekst)
         // - Prebaci DatabaseUpdate_version2.sql da bude embedded resource
         // - Dodati u propozicijama nacin razresavanja kada dva takmicara imaju istu konacnu ocenu
         //   (razresavanje za vezbe na spravi neka bude u propozicijama za takmicenje III itd.)
