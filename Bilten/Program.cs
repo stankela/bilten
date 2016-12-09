@@ -30,6 +30,12 @@ namespace Bilten
         //   koja je trenutno aktivna.
         // - Kad oznacavas grupe za rotiranje u start listama, oznaci ih i u ostalim rotacijama a ne samo prvoj.
         // - Drag and drop za menjanje start lista
+        // - Penalizacija za viseboj
+        // - Ekipni poredak za Memorijal da se automatski izracuna.
+        // - Ekipni poredak za Memorijal da se izracuna za sve ekipe, bez obzira na to da li ekipa ima gimnasticare
+        //   u svim kategorijama.
+        // - Stampanje gimnasticara iz Registra.
+        // - Uvoz takmicenja.
 
         static int VERZIJA_PROGRAMA = 2;
 
