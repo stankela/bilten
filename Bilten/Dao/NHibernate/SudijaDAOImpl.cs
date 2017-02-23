@@ -38,6 +38,21 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<Sudija> FindAll()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Sudija s
+                    left join fetch s.Drzava
+                    left join fetch s.Klub");
+                return q.List<Sudija>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

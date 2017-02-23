@@ -9,6 +9,9 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -22,53 +25,35 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                IList<Sudija> sudije = loadAll();
-                SetItems(sudije);
-                dataGridViewUserControl1.sort<Sudija>(
-                    new string[] { "Prezime", "Ime" },
-                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
-                updateSudijeCount();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<Sudija> sudije = DAOFactoryFactory.DAOFactory.GetSudijaDAO().FindAll();
+                    SetItems(sudije);
+                    dataGridViewUserControl1.sort<Sudija>(
+                        new string[] { "Prezime", "Ime" },
+                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                    updateEntityCount();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
         // TODO: Dodaj i druge stvari koje postoje u GimnasticariForm, kao npr. filtriranje, provera prilikom unosa da li
         // sudija vec postoji i ako postoji otvaranje dijaloga za edit.
-
-        private void updateSudijeCount()
-        {
-            int count = dataGridViewUserControl1.getItems<Sudija>().Count;
-            StatusPanel.Panels[0].Text = count.ToString() + " sudija";
-        }
-
-        private IList<Sudija> loadAll()
-        {
-            string query = @"from Sudija s
-                left join fetch s.Drzava
-                left join fetch s.Klub";
-            IList<Sudija> result = dataContext.
-                ExecuteQuery<Sudija>(QueryLanguageType.HQL, query,
-                        new string[] { }, new object[] { });
-            return result;
-        }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
             GridColumnHeaderMouseClickEventArgs e)
@@ -102,9 +87,15 @@ namespace Bilten.UI
             return "Neuspesno brisanje sudije.";
         }
 
+        protected override void delete(Sudija s)
+        {
+            DAOFactoryFactory.DAOFactory.GetSudijaDAO().MakeTransient(s);
+        }
+
         protected override void updateEntityCount()
         {
-            updateSudijeCount();
+            int count = dataGridViewUserControl1.getItems<Sudija>().Count;
+            StatusPanel.Panels[0].Text = count.ToString() + " sudija";
         }
     }
 }
