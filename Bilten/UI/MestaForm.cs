@@ -9,6 +9,9 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -21,40 +24,31 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                IList<Mesto> mesta = loadAll();
-                SetItems(mesta);
-                dataGridViewUserControl1.sort<Mesto>(
-                    new string[] { "Naziv" },
-                    new ListSortDirection[] { ListSortDirection.Ascending });
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<Mesto> mesta = DAOFactoryFactory.DAOFactory.GetMestoDAO().FindAll();
+                    SetItems(mesta);
+                    dataGridViewUserControl1.sort<Mesto>(
+                        new string[] { "Naziv" },
+                        new ListSortDirection[] { ListSortDirection.Ascending });
+                    updateEntityCount();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private IList<Mesto> loadAll()
-        {
-            string query = @"from Mesto";
-            IList<Mesto> result = dataContext.
-                ExecuteQuery<Mesto>(QueryLanguageType.HQL, query,
-                        new string[] { }, new object[] { });
-            return result;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -82,7 +76,7 @@ namespace Bilten.UI
 
         protected override bool refIntegrityDeleteDlg(Mesto m)
         {
-            if (!existsKlub(m))
+            if (!DAOFactoryFactory.DAOFactory.GetKlubDAO().existsKlub(m))
                 return true;
             else
             {
@@ -94,16 +88,20 @@ namespace Bilten.UI
             }
         }
 
-        private bool existsKlub(Mesto m)
+        protected override void delete(Mesto m)
         {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Mesto", CriteriaOperator.Equal, m));
-            return dataContext.GetCount<Klub>(q) > 0;
+            DAOFactoryFactory.DAOFactory.GetMestoDAO().MakeTransient(m);
         }
 
         protected override string deleteErrorMessage()
         {
             return "Neuspesno brisanje mesta.";
+        }
+
+        protected override void updateEntityCount()
+        {
+            int count = dataGridViewUserControl1.getItems<Mesto>().Count;
+            StatusPanel.Panels[0].Text = count.ToString() + " mesta";
         }
     }
 }

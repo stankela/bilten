@@ -93,11 +93,13 @@
     <Compile Include="Dao\GimnasticarDAO.cs" />
     <Compile Include="Dao\KategorijaGimnasticaraDAO.cs" />
     <Compile Include="Dao\KlubDAO.cs" />
+    <Compile Include="Dao\MestoDAO.cs" />
     <Compile Include="Dao\NHibernate\DrzavaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\GenericNHibernateDAO.cs" />
     <Compile Include="Dao\NHibernate\GimnasticarDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KategorijaGimnasticaraDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KlubDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\MestoDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\NHibernateDAOFactory.cs" />
     <Compile Include="Dao\NHibernate\SudijaDAOImpl.cs" />
     <Compile Include="Dao\SudijaDAO.cs" />

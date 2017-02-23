@@ -23,6 +23,20 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public bool existsKlub(Mesto mesto)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Klub k where k.Mesto = :mesto");
+                q.SetEntity("mesto", mesto);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }
