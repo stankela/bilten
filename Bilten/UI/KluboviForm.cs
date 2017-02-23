@@ -24,33 +24,31 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
-            IList<Klub> klubovi = null;
+            ISession session = null;
             try
             {
-                using (ISession session = NHibernateHelper.Instance.OpenSession())
+                using (session = NHibernateHelper.Instance.OpenSession())
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    klubovi = DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll();
+                    IList<Klub> klubovi = DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll();
+                    SetItems(klubovi);
+                    dataGridViewUserControl1.sort<Klub>(
+                        new string[] { "Naziv" },
+                        new ListSortDirection[] { ListSortDirection.Ascending });
+                    updateKluboviCount();
                 }
             }
-            catch (HibernateException ex)
+            catch (Exception ex)
             {
-                // This catches exceptions thrown when rolling back the transaction or closing the session.
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-
-            SetItems(klubovi);
-            dataGridViewUserControl1.sort<Klub>(
-                new string[] { "Naziv" },
-                new ListSortDirection[] { ListSortDirection.Ascending });
-            updateKluboviCount();
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,

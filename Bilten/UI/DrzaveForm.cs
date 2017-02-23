@@ -9,6 +9,9 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -21,48 +24,31 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                IList<Drzava> drzave = loadAll();
-                SetItems(drzave);
-                dataGridViewUserControl1.sort<Drzava>(
-                    new string[] { "Naziv" },
-                    new ListSortDirection[] { ListSortDirection.Ascending });
-
-                // NOTE: Iako pozivam Commit a ne pozivam Clear, ne generise se
-                // UPDATE za svaku drzavu (isto vazi i za form koji prikazuje
-                // klubove i kategorija). Izgleda da se UPDATE generise samo kada
-                // entiteti koji se nalaze u sessionu imaju asocijacije prema drugim
-                // entitetima (proveriti ovo; takodje proveriti da li ima nekakve veza
-                // da li je asicijacija lazy ili ne)
-        //        dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<Drzava> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll();
+                    SetItems(drzave);
+                    dataGridViewUserControl1.sort<Drzava>(
+                        new string[] { "Naziv" },
+                        new ListSortDirection[] { ListSortDirection.Ascending });
+                    updateDrzaveCount();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private IList<Drzava> loadAll()
-        {
-            string query = @"from Drzava";
-            IList<Drzava> result = dataContext.
-                ExecuteQuery<Drzava>(QueryLanguageType.HQL, query,
-                        new string[] { }, new object[] { });
-            return result;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -91,8 +77,8 @@ namespace Bilten.UI
 
         protected override bool refIntegrityDeleteDlg(Drzava drzava)
         {
-            bool existsGimnasticari = existsGimnasticar(drzava);
-            bool existsSudije = existsSudija(drzava);
+            bool existsGimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().existsGimnasticar(drzava);
+            bool existsSudije = DAOFactoryFactory.DAOFactory.GetSudijaDAO().existsSudija(drzava);
             if (!existsGimnasticari && !existsSudije)
                 return true;
             else
@@ -113,49 +99,23 @@ namespace Bilten.UI
             }
         }
 
-        private bool existsGimnasticar(Drzava drzava)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Drzava", CriteriaOperator.Equal, drzava));
-            return dataContext.GetCount<Gimnasticar>(q) > 0;
-        }
-
-        private bool existsSudija(Drzava drzava)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Drzava", CriteriaOperator.Equal, drzava));
-            return dataContext.GetCount<Sudija>(q) > 0;
-        }
-
         protected override void delete(Drzava drzava)
         {
-            IList<Gimnasticar> gimnasticari = getGimnasticariByDrzava(drzava);
-            IList<Sudija> sudije = getSudijeByDrzava(drzava);
+            GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
+            IList<Gimnasticar> gimnasticari = gimnasticarDAO.FindGimnasticariByDrzava(drzava);
+            SudijaDAO sudijaDAO = DAOFactoryFactory.DAOFactory.GetSudijaDAO();
+            IList<Sudija> sudije = sudijaDAO.FindSudijeByDrzava(drzava);
             foreach (Gimnasticar g in gimnasticari)
             {
                 g.Drzava = null;
-                dataContext.Save(g);
+                gimnasticarDAO.MakePersistent(g);
             }
             foreach (Sudija s in sudije)
             {
                 s.Drzava = null;
-                dataContext.Save(s);
+                sudijaDAO.MakePersistent(s);
             }
-            dataContext.Delete(drzava);
-        }
-
-        private IList<Gimnasticar> getGimnasticariByDrzava(Drzava drzava)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Drzava", CriteriaOperator.Equal, drzava));
-            return dataContext.GetByCriteria<Gimnasticar>(q);
-        }
-
-        private IList<Sudija> getSudijeByDrzava(Drzava drzava)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Drzava", CriteriaOperator.Equal, drzava));
-            return dataContext.GetByCriteria<Sudija>(q);
+            DAOFactoryFactory.DAOFactory.GetDrzavaDAO().MakeTransient(drzava);
         }
 
         protected override string deleteErrorMessage()
@@ -163,5 +123,15 @@ namespace Bilten.UI
             return "Neuspesno brisanje drzave.";
         }
 
+        private void updateDrzaveCount()
+        {
+            int count = dataGridViewUserControl1.getItems<Drzava>().Count;
+            StatusPanel.Panels[0].Text = count.ToString() + " drzava";
+        }
+
+        protected override void updateEntityCount()
+        {
+            updateDrzaveCount();
+        }
     }
 }

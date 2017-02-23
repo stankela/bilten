@@ -18,5 +18,16 @@ namespace Bilten.Dao.NHibernate
         {
             return new GimnasticarDAOImpl();
         }
+
+        public override DrzavaDAO GetDrzavaDAO()
+        {
+            return new DrzavaDAOImpl();
+        }
+
+        public override SudijaDAO GetSudijaDAO()
+        {
+            return new SudijaDAOImpl();
+        }
+
     }
 }

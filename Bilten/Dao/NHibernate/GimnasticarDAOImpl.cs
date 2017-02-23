@@ -20,9 +20,21 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<Gimnasticar> FindGimnasticariByDrzava(Drzava drzava)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Gimnasticar g where g.Drzava = :drzava");
+                q.SetEntity("drzava", drzava);
+                return q.List<Gimnasticar>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 
@@ -36,9 +48,21 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsGimnasticar(Drzava drzava)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g where g.Drzava = :drzava");
+                q.SetEntity("drzava", drzava);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 

@@ -88,13 +88,17 @@
     <Compile Include="ConfigurationParameters.cs" />
     <Compile Include="Dao\DAOFactory.cs" />
     <Compile Include="Dao\DAOFactoryFactory.cs" />
+    <Compile Include="Dao\DrzavaDAO.cs" />
     <Compile Include="Dao\GenericDAO.cs" />
     <Compile Include="Dao\GimnasticarDAO.cs" />
     <Compile Include="Dao\KlubDAO.cs" />
+    <Compile Include="Dao\NHibernate\DrzavaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\GenericNHibernateDAO.cs" />
     <Compile Include="Dao\NHibernate\GimnasticarDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KlubDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\NHibernateDAOFactory.cs" />
+    <Compile Include="Dao\NHibernate\SudijaDAOImpl.cs" />
+    <Compile Include="Dao\SudijaDAO.cs" />
     <Compile Include="Data\DataAccessProviderFactory.cs" />
     <Compile Include="Data\IDataContext.cs" />
     <Compile Include="Data\IDataProviderFactory.cs" />

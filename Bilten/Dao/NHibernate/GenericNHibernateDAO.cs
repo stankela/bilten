@@ -65,11 +65,6 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public virtual IList<T> FindAll()
-        {
-            return FindByCriteria();
-        }
-
         public IList<T> FindByExample(T exampleInstance, params string[] excludeProperty)
         {
             try
@@ -147,25 +142,5 @@ namespace Bilten.Dao.NHibernate
         }
 
         #endregion
-
-        /// <summary>
-        /// Use this inside subclasses as a convenience method.
-        /// </summary>
-        protected IList<T> FindByCriteria(params ICriterion[] criterion)
-        {
-            try
-            {
-                ICriteria crit = Session.CreateCriteria(typeof(T));
-                foreach (ICriterion c in criterion)
-                    crit.Add(c);
-                return crit.List<T>();
-            }
-            catch (HibernateException ex)
-            {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
-            }
-        }
     }
 }

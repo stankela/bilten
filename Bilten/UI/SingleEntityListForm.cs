@@ -16,7 +16,6 @@ namespace Bilten.UI
 {
     public partial class SingleEntityListForm<T> : BaseEntityListForm where T : DomainObject, new()
     {
-        private ISession session;
         protected IDataContext dataContext;
         protected FilterForm filterForm;
 
@@ -165,7 +164,7 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(deleteConfirmationMessage(SelectedItem), this.Text))
                 return;
 
-            session = null;
+            ISession session = null;
             bool ok = false;
             try
             {

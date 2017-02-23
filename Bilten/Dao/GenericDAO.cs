@@ -18,8 +18,6 @@ namespace Bilten.Dao
 
         T FindByIdAndLock(ID id);
 
-        IList<T> FindAll();
-
         IList<T> FindByExample(T exampleInstance, params string[] excludeProperties);
 
         T MakePersistent(T entity);

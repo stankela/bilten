@@ -6,5 +6,7 @@ namespace Bilten.Dao
     {
         public abstract KlubDAO GetKlubDAO();
         public abstract GimnasticarDAO GetGimnasticarDAO();
+        public abstract DrzavaDAO GetDrzavaDAO();
+        public abstract SudijaDAO GetSudijaDAO();
     }
 }
