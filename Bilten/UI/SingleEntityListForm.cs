@@ -9,11 +9,14 @@ using Bilten.Data;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
 using Bilten.Domain;
+using NHibernate;
+using NHibernate.Context;
 
 namespace Bilten.UI
 {
     public partial class SingleEntityListForm<T> : BaseEntityListForm where T : DomainObject, new()
     {
+        private ISession session;
         protected IDataContext dataContext;
         protected FilterForm filterForm;
 
@@ -162,42 +165,43 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(deleteConfirmationMessage(SelectedItem), this.Text))
                 return;
 
+            session = null;
+            bool ok = false;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                if (refIntegrityDeleteDlg(SelectedItem))
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    delete(SelectedItem);
-                    dataContext.Commit();
-
-                    List<T> items = dataGridViewUserControl1.getItems<T>();
-                    items.Remove(SelectedItem);
-                    CurrencyManager currencyManager =
-                        (CurrencyManager)this.BindingContext[dataGridViewUserControl1.DataGridView.DataSource];
-                    currencyManager.Refresh();
-                    updateEntityCount();
-                }
-                else
-                {
-                    dataContext.Rollback();
+                    CurrentSessionContext.Bind(session);
+                    if (refIntegrityDeleteDlg(SelectedItem))
+                    {
+                        delete(SelectedItem);
+                        session.Transaction.Commit();
+                        ok = true;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(
                     String.Format("{0} \n\n{1}", deleteErrorMessage(), ex.Message),
                     this.Text);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            if (ok)
+            {
+                List<T> items = dataGridViewUserControl1.getItems<T>();
+                items.Remove(SelectedItem);
+                CurrencyManager currencyManager =
+                    (CurrencyManager)this.BindingContext[dataGridViewUserControl1.DataGridView.DataSource];
+                currencyManager.Refresh();
+                updateEntityCount();
             }
         }
 
@@ -227,7 +231,7 @@ namespace Bilten.UI
 
         protected virtual void delete(T item)
         {
-            dataContext.Delete(item);
+            throw new Exception("Derived classes should override this method.");
         }
 
         protected virtual string deleteErrorMessage()

@@ -65,7 +65,7 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public IList<T> FindAll()
+        public virtual IList<T> FindAll()
         {
             return FindByCriteria();
         }

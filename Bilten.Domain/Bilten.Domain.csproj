@@ -131,7 +131,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mappings\GimnasticarUcesnik.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\KategorijaGimnasticara.hbm.xml" />
-    <EmbeddedResource Include="NHibernate\Mappings\Klub.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Klub.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mappings\KlubUcesnik.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\Mesto.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\NastupNaSpravi.hbm.xml" />

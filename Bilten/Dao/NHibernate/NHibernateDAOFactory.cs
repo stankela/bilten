@@ -13,5 +13,10 @@ namespace Bilten.Dao.NHibernate
         {
             return new KlubDAOImpl();
         }
+
+        public override GimnasticarDAO GetGimnasticarDAO()
+        {
+            return new GimnasticarDAOImpl();
+        }
     }
 }

@@ -12,15 +12,4 @@
     <many-to-one name="Mesto" class="Mesto" column="mesto_id" />
   </class>
 
-  <query name="FindKlubsByNaziv">
-    <![CDATA[
-	    from Klub k where k.Naziv like :naziv
-    ]]>
-  </query>
-  <query name="FindKlubsByKod">
-    <![CDATA[
-	    from Klub k where k.Kod like :kod
-    ]]>
-  </query>
-
 </hibernate-mapping>
