@@ -9,7 +9,9 @@ namespace Bilten.Dao
     {
         IList<Gimnasticar> FindGimnasticariByKlub(Klub klub);
         IList<Gimnasticar> FindGimnasticariByDrzava(Drzava drzava);
+        IList<Gimnasticar> FindGimnasticariByKategorija(KategorijaGimnasticara kategorija);
         bool existsGimnasticar(Klub klub);
         bool existsGimnasticar(Drzava drzava);
+        bool existsGimnasticar(KategorijaGimnasticara kategorija);
     }
 }

@@ -38,6 +38,20 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<Gimnasticar> FindGimnasticariByKategorija(KategorijaGimnasticara kategorija)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Gimnasticar g where g.Kategorija = :kategorija");
+                q.SetEntity("kategorija", kategorija);
+                return q.List<Gimnasticar>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public bool existsGimnasticar(Klub klub)
         {
             try
@@ -58,6 +72,20 @@ namespace Bilten.Dao.NHibernate
             {
                 IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g where g.Drzava = :drzava");
                 q.SetEntity("drzava", drzava);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsGimnasticar(KategorijaGimnasticara kategorija)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g where g.Kategorija = :kategorija");
+                q.SetEntity("kategorija", kategorija);
                 return (long)q.UniqueResult() > 0;
             }
             catch (HibernateException ex)

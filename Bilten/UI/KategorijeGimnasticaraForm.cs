@@ -9,6 +9,9 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -27,40 +30,32 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                IList<KategorijaGimnasticara> kategorije = loadAll();
-                SetItems(kategorije);
-                dataGridViewUserControl1.sort<KategorijaGimnasticara>(
-                    new string[] { "Naziv" },
-                    new ListSortDirection[] { ListSortDirection.Ascending });
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<KategorijaGimnasticara> kategorije
+                        = DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindAll();
+                    SetItems(kategorije);
+                    dataGridViewUserControl1.sort<KategorijaGimnasticara>(
+                        new string[] { "Naziv" },
+                        new ListSortDirection[] { ListSortDirection.Ascending });
+                    updateEntityCount();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private IList<KategorijaGimnasticara> loadAll()
-        {
-            string query = @"from KategorijaGimnasticara";
-            IList<KategorijaGimnasticara> result = dataContext.
-                ExecuteQuery<KategorijaGimnasticara>(QueryLanguageType.HQL, query,
-                        new string[] { }, new object[] { });
-            return result;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -89,7 +84,7 @@ namespace Bilten.UI
 
         protected override bool refIntegrityDeleteDlg(KategorijaGimnasticara kategorija)
         {
-            if (!existsGimnasticar(kategorija))
+            if (!DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().existsGimnasticar(kategorija))
                 return true;
             else
             {
@@ -100,29 +95,16 @@ namespace Bilten.UI
             }
         }
 
-        private bool existsGimnasticar(KategorijaGimnasticara kategorija)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kategorija", CriteriaOperator.Equal, kategorija));
-            return dataContext.GetCount<Gimnasticar>(q) > 0;
-        }
-
         protected override void delete(KategorijaGimnasticara kategorija)
         {
-            IList<Gimnasticar> gimnasticari = getGimnasticariByKategorija(kategorija);
+            GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
+            IList<Gimnasticar> gimnasticari = gimnasticarDAO.FindGimnasticariByKategorija(kategorija);
             foreach (Gimnasticar g in gimnasticari)
             {
                 g.Kategorija = null;
-                dataContext.Save(g);
+                gimnasticarDAO.MakePersistent(g);
             }
-            dataContext.Delete(kategorija);
-        }
-
-        private IList<Gimnasticar> getGimnasticariByKategorija(KategorijaGimnasticara kategorija)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kategorija", CriteriaOperator.Equal, kategorija));
-            return dataContext.GetByCriteria<Gimnasticar>(q);
+            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().MakeTransient(kategorija);
         }
 
         protected override string deleteErrorMessage()
@@ -130,5 +112,10 @@ namespace Bilten.UI
             return "Neuspesno brisanje kategorije.";
         }
 
+        protected override void updateEntityCount()
+        {
+            int count = dataGridViewUserControl1.getItems<KategorijaGimnasticara>().Count;
+            StatusPanel.Panels[0].Text = count.ToString() + " kategorija";
+        }
     }
 }

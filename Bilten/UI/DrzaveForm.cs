@@ -36,7 +36,7 @@ namespace Bilten.UI
                     dataGridViewUserControl1.sort<Drzava>(
                         new string[] { "Naziv" },
                         new ListSortDirection[] { ListSortDirection.Ascending });
-                    updateDrzaveCount();
+                    updateEntityCount();
                 }
             }
             catch (Exception ex)
@@ -83,6 +83,8 @@ namespace Bilten.UI
                 return true;
             else
             {
+                // Posto je drzava obavezna i za gimnasticare i za sudije, nije moguce brisanje drzave za koju postoje
+                // gimnasticari i/ili sudije.
                 String s = String.Empty;
                 if (existsGimnasticari)
                     s = "gimnasticari";
@@ -92,10 +94,10 @@ namespace Bilten.UI
                         s += " i ";
                     s += "sudije";
                 }
-                string msg = "Postoje {1} iz drzave '{0}'. Ako " +
-                    "je izbrisete, ovi {1} nece imati navedenu drzavu. " +
-                    "Da li zelite da izbrisete drzavu?";
-                return MessageDialogs.queryConfirmation(String.Format(msg, drzava, s), this.Text);
+                string msg = "Nije moguce izbrisati drzavu zato sto postoje {1} iz drzave '{0}'. Ako " +
+                    "zelite da izbrisete drzavu, morate najpre da izbrisete sve gimnasticare i sudije iz te drzave.";
+                MessageDialogs.showMessage(String.Format(msg, drzava, s), this.Text);
+                return false;
             }
         }
 
@@ -123,15 +125,10 @@ namespace Bilten.UI
             return "Neuspesno brisanje drzave.";
         }
 
-        private void updateDrzaveCount()
+        protected override void updateEntityCount()
         {
             int count = dataGridViewUserControl1.getItems<Drzava>().Count;
             StatusPanel.Panels[0].Text = count.ToString() + " drzava";
-        }
-
-        protected override void updateEntityCount()
-        {
-            updateDrzaveCount();
         }
     }
 }

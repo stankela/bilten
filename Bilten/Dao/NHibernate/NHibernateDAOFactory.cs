@@ -29,5 +29,9 @@ namespace Bilten.Dao.NHibernate
             return new SudijaDAOImpl();
         }
 
+        public override KategorijaGimnasticaraDAO GetKategorijaGimnasticaraDAO()
+        {
+            return new KategorijaGimnasticaraDAOImpl();
+        }
     }
 }

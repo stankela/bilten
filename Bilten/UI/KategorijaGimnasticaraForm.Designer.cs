@@ -63,9 +63,9 @@ namespace Bilten.UI
             this.lblGimnastika.AutoSize = true;
             this.lblGimnastika.Location = new System.Drawing.Point(17, 66);
             this.lblGimnastika.Name = "lblGimnastika";
-            this.lblGimnastika.Size = new System.Drawing.Size(59, 13);
+            this.lblGimnastika.Size = new System.Drawing.Size(69, 13);
             this.lblGimnastika.TabIndex = 4;
-            this.lblGimnastika.Text = "Gimnastika";
+            this.lblGimnastika.Text = "Gimnastika  *";
             // 
             // cmbGimnastika
             // 

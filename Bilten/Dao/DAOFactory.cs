@@ -8,5 +8,6 @@ namespace Bilten.Dao
         public abstract GimnasticarDAO GetGimnasticarDAO();
         public abstract DrzavaDAO GetDrzavaDAO();
         public abstract SudijaDAO GetSudijaDAO();
+        public abstract KategorijaGimnasticaraDAO GetKategorijaGimnasticaraDAO();
     }
 }

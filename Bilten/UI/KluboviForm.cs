@@ -36,7 +36,7 @@ namespace Bilten.UI
                     dataGridViewUserControl1.sort<Klub>(
                         new string[] { "Naziv" },
                         new ListSortDirection[] { ListSortDirection.Ascending });
-                    updateKluboviCount();
+                    updateEntityCount();
                 }
             }
             catch (Exception ex)
@@ -106,15 +106,10 @@ namespace Bilten.UI
             return "Neuspesno brisanje kluba.";
         }
 
-        private void updateKluboviCount()
+        protected override void updateEntityCount()
         {
             int count = dataGridViewUserControl1.getItems<Klub>().Count;
             StatusPanel.Panels[0].Text = count.ToString() + " klub";
-        }
-
-        protected override void updateEntityCount()
-        {
-            updateKluboviCount();
         }
     }
 }
