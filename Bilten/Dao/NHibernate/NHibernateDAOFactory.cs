@@ -38,5 +38,25 @@ namespace Bilten.Dao.NHibernate
         {
             return new MestoDAOImpl();
         }
+
+        public override TakmicenjeDAO GetTakmicenjeDAO()
+        {
+            return new TakmicenjeDAOImpl();
+        }
+
+        public override SudijaUcesnikDAO GetSudijaUcesnikDAO()
+        {
+            return new SudijaUcesnikDAOImpl();
+        }
+
+        public override DrzavaUcesnikDAO GetDrzavaUcesnikDAO()
+        {
+            return new DrzavaUcesnikDAOImpl();
+        }
+
+        public override KlubUcesnikDAO GetKlubUcesnikDAO()
+        {
+            return new KlubUcesnikDAOImpl();
+        }
     }
 }

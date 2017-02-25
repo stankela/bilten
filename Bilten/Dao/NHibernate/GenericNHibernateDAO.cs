@@ -45,9 +45,7 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 
@@ -59,9 +57,7 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 
@@ -78,9 +74,7 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
     }
 
@@ -93,9 +87,7 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 
@@ -107,9 +99,7 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 
@@ -121,9 +111,7 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 
@@ -135,9 +123,7 @@ namespace Bilten.Dao.NHibernate
             }
             catch (HibernateException ex)
             {
-                string message = String.Format(
-                    "{0} \n\n{1}", Strings.DatabaseAccessExceptionMessage, ex.Message);
-                throw new InfrastructureException(message, ex);
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
 

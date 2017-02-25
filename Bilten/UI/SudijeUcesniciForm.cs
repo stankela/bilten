@@ -11,6 +11,8 @@ using Bilten.Domain;
 using Bilten.Exceptions;
 using System.Data.SqlServerCe;
 using Bilten.Dao;
+using NHibernate;
+using NHibernate.Context;
 
 namespace Bilten.UI
 {
@@ -29,49 +31,36 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
 
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-
-                IList<SudijaUcesnik> sudije = loadAll(takmicenjeId);
-                SetItems(sudije);
-                dataGridViewUserControl1.sort<SudijaUcesnik>(
-                    new string[] { "Prezime", "Ime" },
-                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
-                updateSudijeCount();
+                    IList<SudijaUcesnik> sudije
+                        = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindForTakmicenje(takmicenjeId);
+                    SetItems(sudije);
+                    dataGridViewUserControl1.sort<SudijaUcesnik>(
+                        new string[] { "Prezime", "Ime" },
+                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                    updateEntityCount();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
-        }
-
-        private IList<SudijaUcesnik> loadAll(int takmicenjeId)
-        {
-            string query = @"from SudijaUcesnik s
-                left join fetch s.DrzavaUcesnik
-                left join fetch s.KlubUcesnik
-                where s.Takmicenje.Id = :takmicenjeId";
-            IList<SudijaUcesnik> result = dataContext.
-                ExecuteQuery<SudijaUcesnik>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" }, new object[] { takmicenjeId });
-            return result;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -109,81 +98,71 @@ namespace Bilten.UI
             if (dlgResult != DialogResult.OK || form.SelectedEntities.Count == 0)
                 return;
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                List<SudijaUcesnik> okSudije = new List<SudijaUcesnik>();
-                List<Sudija> illegalSudije = new List<Sudija>();
-                foreach (Sudija s in form.SelectedEntities)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    if (canAddSudija(s, takmicenje))
+                    CurrentSessionContext.Bind(session);
+                    List<SudijaUcesnik> okSudije = new List<SudijaUcesnik>();
+                    List<Sudija> illegalSudije = new List<Sudija>();
+                    foreach (Sudija s in form.SelectedEntities)
                     {
-                        SudijaUcesnik sudija = createSudijaUcesnik(s, takmicenje);
-                        dataContext.Add(sudija);
-                        okSudije.Add(sudija);
+                        if (canAddSudija(s, takmicenje))
+                        {
+                            SudijaUcesnik sudija = createSudijaUcesnik(s, takmicenje);
+                            DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().MakePersistent(sudija);
+                            okSudije.Add(sudija);
+                        }
+                        else
+                        {
+                            illegalSudije.Add(s);
+                        }
+
                     }
-                    else
+                    session.Transaction.Commit();
+
+                    if (okSudije.Count > 0)
                     {
-                        illegalSudije.Add(s);
+                        IList<SudijaUcesnik> sudije =
+                             dataGridViewUserControl1.DataGridView.DataSource as IList<SudijaUcesnik>;
+                        foreach (SudijaUcesnik s in okSudije)
+                        {
+                            sudije.Add(s);
+                        }
+
+                        CurrencyManager currencyManager =
+                            (CurrencyManager)this.BindingContext[dataGridViewUserControl1.DataGridView.DataSource];
+                        currencyManager.Position = sudije.Count - 1;
+                        currencyManager.Refresh();
                     }
+                    updateEntityCount();
 
-                }
-                dataContext.Commit();
-
-                if (okSudije.Count > 0)
-                {
-                    IList<SudijaUcesnik> sudije =
-                         dataGridViewUserControl1.DataGridView.DataSource as IList<SudijaUcesnik>;
-                    foreach (SudijaUcesnik s in okSudije)
+                    if (illegalSudije.Count > 0)
                     {
-                        sudije.Add(s);
+                        string msg = "Sledece sudije vec postoje na listi: \n\n";
+                        msg += StringUtil.getListString(illegalSudije.ToArray());
+                        MessageDialogs.showMessage(msg, this.Text);
                     }
-
-                    CurrencyManager currencyManager =
-                        (CurrencyManager)this.BindingContext[dataGridViewUserControl1.DataGridView.DataSource];
-                    currencyManager.Position = sudije.Count - 1;
-                    currencyManager.Refresh();
-                }
-                updateSudijeCount();
-
-                if (illegalSudije.Count > 0)
-                {
-                    string msg = "Sledece sudije vec postoje na listi: \n\n";
-                    msg += StringUtil.getListString(illegalSudije.ToArray());
-                    MessageDialogs.showMessage(msg, this.Text);
                 }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
         private bool canAddSudija(Sudija s, Takmicenje takmicenje)
         {
             // TODO: Add business rules
-            return !existsSudijaUcesnik(s, takmicenje);
-        }
-
-        private bool existsSudijaUcesnik(Sudija s, Takmicenje takmicenje)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Ime", CriteriaOperator.Equal, s.Ime));
-            q.Criteria.Add(new Criterion("Prezime", CriteriaOperator.Equal, s.Prezime));
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            return dataContext.GetCount<SudijaUcesnik>(q) > 0;
+            return !DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().existsSudijaUcesnik(s, takmicenje);
         }
 
         private SudijaUcesnik createSudijaUcesnik(Sudija s, Takmicenje takmicenje)
@@ -198,7 +177,8 @@ namespace Bilten.UI
                 result.DrzavaUcesnik = null;
             else
             {
-                DrzavaUcesnik drzavaUcesnik = findDrzavaUcesnik(
+                DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
+                DrzavaUcesnik drzavaUcesnik = drzavaUcesnikDAO.FindDrzavaUcesnik(
                     takmicenje.Id, s.Drzava.Naziv);
                 if (drzavaUcesnik == null)
                 {
@@ -206,7 +186,7 @@ namespace Bilten.UI
                     drzavaUcesnik.Naziv = s.Drzava.Naziv;
                     drzavaUcesnik.Kod = s.Drzava.Kod;
                     drzavaUcesnik.Takmicenje = takmicenje;
-                    dataContext.Add(drzavaUcesnik);
+                    drzavaUcesnikDAO.MakePersistent(drzavaUcesnik);
                 }
                 result.DrzavaUcesnik = drzavaUcesnik;
             }
@@ -214,7 +194,8 @@ namespace Bilten.UI
                 result.KlubUcesnik = null;
             else
             {
-                KlubUcesnik klubUcesnik = findKlubUcesnik(
+                KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
+                KlubUcesnik klubUcesnik = klubUcesnikDAO.FindKlubUcesnik(
                     takmicenje.Id, s.Klub.Naziv);
                 if (klubUcesnik == null)
                 {
@@ -222,37 +203,11 @@ namespace Bilten.UI
                     klubUcesnik.Naziv = s.Klub.Naziv;
                     klubUcesnik.Kod = s.Klub.Kod;
                     klubUcesnik.Takmicenje = takmicenje;
-                    dataContext.Add(klubUcesnik);
+                    klubUcesnikDAO.MakePersistent(klubUcesnik);
                 }
                 result.KlubUcesnik = klubUcesnik;
             }
             return result;
-        }
-
-        private DrzavaUcesnik findDrzavaUcesnik(int takmicenjeId, string naziv)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
-            q.Operator = QueryOperator.And;
-            IList<DrzavaUcesnik> result = dataContext.GetByCriteria<DrzavaUcesnik>(q);
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
-        }
-
-        private KlubUcesnik findKlubUcesnik(int takmicenjeId, string naziv)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
-            q.Operator = QueryOperator.And;
-            IList<KlubUcesnik> result = dataContext.GetByCriteria<KlubUcesnik>(q);
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
         }
 
         protected override string deleteConfirmationMessage(SudijaUcesnik sudija)
@@ -272,6 +227,11 @@ namespace Bilten.UI
                 MessageDialogs.showMessage(msg, this.Text);
                 return false;
             }
+        }
+
+        protected override void delete(SudijaUcesnik s)
+        {
+            DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().MakeTransient(s);
         }
 
         private bool sudiNaSpravi(SudijaUcesnik s)
@@ -309,14 +269,8 @@ namespace Bilten.UI
 
         protected override void updateEntityCount()
         {
-            updateSudijeCount();
-        }
-
-        private void updateSudijeCount()
-        {
             int count = dataGridViewUserControl1.getItems<SudijaUcesnik>().Count;
             StatusPanel.Panels[0].Text = count.ToString() + " sudija";
         }
-
     }
 }
