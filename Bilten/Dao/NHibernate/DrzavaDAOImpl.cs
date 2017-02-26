@@ -23,6 +23,34 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public bool existsDrzavaNaziv(string naziv)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Drzava d where d.Naziv like :naziv");
+                q.SetString("naziv", naziv);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsDrzavaKod(string kod)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Drzava d where d.Kod like :kod");
+                q.SetString("kod", kod);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

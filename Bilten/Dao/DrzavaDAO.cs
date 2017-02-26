@@ -8,5 +8,7 @@ namespace Bilten.Dao
     public interface DrzavaDAO : GenericDAO<Drzava, int>
     {
         IList<Drzava> FindAll();
+        bool existsDrzavaNaziv(string naziv);
+        bool existsDrzavaKod(string kod);
     }
 }

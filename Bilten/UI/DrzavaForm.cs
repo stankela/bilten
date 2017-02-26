@@ -9,6 +9,7 @@ using Bilten.Domain;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -34,7 +35,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            return dataContext.GetById<Drzava>(id);
+            return DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -94,52 +95,50 @@ namespace Bilten.UI
             drzava.Kod = txtKod.Text.Trim().ToUpper();
         }
 
+        protected override void updateEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetDrzavaDAO().MakePersistent((Drzava)entity);
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetDrzavaDAO().MakePersistent((Drzava)entity);
+        }
+
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
             Drzava drzava = (Drzava)entity;
             Notification notification = new Notification();
+            DrzavaDAO drzavaDAO = DAOFactoryFactory.DAOFactory.GetDrzavaDAO();
 
-            if (existsDrzavaNaziv(drzava.Naziv))
+            if (drzavaDAO.existsDrzavaNaziv(drzava.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Drzava sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
 
-            if (existsDrzavaKod(drzava.Kod))
+            if (drzavaDAO.existsDrzavaKod(drzava.Kod))
             {
                 notification.RegisterMessage("Kod", "Drzava sa datim kodom vec postoji.");
                 throw new BusinessException(notification);
             }
         }
 
-        private bool existsDrzavaNaziv(string naziv)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
-            return dataContext.GetCount<Drzava>(q) > 0;
-        }
-
-        private bool existsDrzavaKod(string kod)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kod", CriteriaOperator.Equal, kod));
-            return dataContext.GetCount<Drzava>(q) > 0;
-        }
-
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
         {
             Drzava drzava = (Drzava)entity;
             Notification notification = new Notification();
+            DrzavaDAO drzavaDAO = DAOFactoryFactory.DAOFactory.GetDrzavaDAO();
 
             bool nazivChanged = (drzava.Naziv.ToUpper() != oldNaziv.ToUpper()) ? true : false;
-            if (nazivChanged && existsDrzavaNaziv(drzava.Naziv))
+            if (nazivChanged && drzavaDAO.existsDrzavaNaziv(drzava.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Drzava sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
 
             bool kodChanged = (drzava.Kod.ToUpper() != oldKod.ToUpper()) ? true : false;
-            if (kodChanged && existsDrzavaKod(drzava.Kod))
+            if (kodChanged && drzavaDAO.existsDrzavaKod(drzava.Kod))
             {
                 notification.RegisterMessage("Kod", "Drzava sa datim kodom vec postoji.");
                 throw new BusinessException(notification);
