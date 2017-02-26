@@ -22,6 +22,23 @@ namespace Bilten.Dao.NHibernate
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
+
+        public bool existsKategorijaGimnasticara(string naziv, Gimnastika gimnastika)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from KategorijaGimnasticara k
+                    where k.Naziv = :naziv
+                    and k.Gimnastika = :gimnastika");
+                q.SetString("naziv", naziv);
+                q.SetByte("gimnastika", (byte)gimnastika);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
         
         #endregion
     }

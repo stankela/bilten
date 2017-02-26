@@ -9,6 +9,7 @@ using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -64,7 +65,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            return dataContext.GetById<KategorijaGimnasticara>(id);
+            return DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -126,28 +127,28 @@ namespace Bilten.UI
             kat.Gimnastika = SelectedGimnastika;
         }
 
+        protected override void updateEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().MakePersistent((KategorijaGimnasticara)entity);
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().MakePersistent((KategorijaGimnasticara)entity);
+        }
+
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
             KategorijaGimnasticara kat = (KategorijaGimnasticara)entity;
             Notification notification = new Notification();
 
-            if (existsKategorijaGimnasticara(kat))
+            if (DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().existsKategorijaGimnasticara(
+                kat.Naziv, kat.Gimnastika))
             {
                 notification.RegisterMessage("Naziv", 
                     "Kategorija sa datim nazivom i gimnastikom vec postoji.");
                 throw new BusinessException(notification);
             }
-        }
-
-        // TODO: Probaj da sve slicne exists metode generalizujes u jedan metod u
-        // klasi IDataContext
-        private bool existsKategorijaGimnasticara(KategorijaGimnasticara kat)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, kat.Naziv));
-            q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)kat.Gimnastika));
-            q.Operator = QueryOperator.And;
-            return dataContext.GetCount<KategorijaGimnasticara>(q) > 0;
         }
 
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
@@ -157,7 +158,8 @@ namespace Bilten.UI
 
             bool changed = (kat.Naziv.ToUpper() != oldNaziv.ToUpper() 
                 || kat.Gimnastika != oldGimnastika) ? true : false;
-            if (changed && existsKategorijaGimnasticara(kat))
+            if (changed && DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().existsKategorijaGimnasticara(
+                kat.Naziv, kat.Gimnastika))
             {
                 notification.RegisterMessage("Naziv",
                     "Kategorija sa datim nazivom i gimnastikom vec postoji.");
