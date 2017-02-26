@@ -10,11 +10,15 @@ namespace Bilten.Dao.NHibernate
     {
         #region MestoDAO Members
 
-        public IList<Mesto> FindAll()
+        public IList<Mesto> FindAll(bool sorted = false)
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Mesto");
+                IQuery q;
+                if (sorted)
+                    q = Session.CreateQuery(@"from Mesto m order by m.Naziv asc");
+                else
+                    q = Session.CreateQuery(@"from Mesto m");
                 return q.List<Mesto>();
             }
             catch (HibernateException ex)

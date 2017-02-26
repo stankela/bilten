@@ -9,6 +9,7 @@ using Bilten.Domain;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -26,10 +27,7 @@ namespace Bilten.UI
 
         protected override void loadData()
         {
-            Query q = new Query();
-            string sortingPropertyName = "Naziv";
-            q.OrderClauses.Add(new OrderClause(sortingPropertyName, OrderClause.OrderClauseCriteria.Ascending));
-            mesta = new List<Mesto>(dataContext.GetByCriteria<Mesto>(q));
+            mesta = new List<Mesto>(DAOFactoryFactory.DAOFactory.GetMestoDAO().FindAll(true));
         }
 
         protected override void initUI()
@@ -65,7 +63,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            return dataContext.GetById<Klub>(id);
+            return DAOFactoryFactory.DAOFactory.GetKlubDAO().FindById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -139,52 +137,50 @@ namespace Bilten.UI
             klub.Mesto = SelectedMesto;
         }
 
+        protected override void updateEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetKlubDAO().MakePersistent((Klub)entity);
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetKlubDAO().MakePersistent((Klub)entity);
+        }
+
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
             Klub klub = (Klub)entity;
             Notification notification = new Notification();
 
-            if (existsKlubNaziv(klub.Naziv))
+            KlubDAO klubDAO = DAOFactoryFactory.DAOFactory.GetKlubDAO();
+            if (klubDAO.existsKlubNaziv(klub.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Klub sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
 
-            if (existsKlubKod(klub.Kod))
+            if (klubDAO.existsKlubKod(klub.Kod))
             {
                 notification.RegisterMessage("Kod", "Klub sa datim kodom vec postoji.");
                 throw new BusinessException(notification);
             }
         }
 
-        private bool existsKlubNaziv(string naziv)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
-            return dataContext.GetCount<Klub>(q) > 0;
-        }
-
-        private bool existsKlubKod(string kod)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kod", CriteriaOperator.Equal, kod));
-            return dataContext.GetCount<Klub>(q) > 0;
-        }
-
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
         {
             Klub klub = (Klub)entity;
             Notification notification = new Notification();
+            KlubDAO klubDAO = DAOFactoryFactory.DAOFactory.GetKlubDAO();
 
             bool nazivChanged = (klub.Naziv.ToUpper() != oldNaziv.ToUpper()) ? true : false;
-            if (nazivChanged && existsKlubNaziv(klub.Naziv))
+            if (nazivChanged && klubDAO.existsKlubNaziv(klub.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Klub sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
 
             bool kodChanged = (klub.Kod.ToUpper() != oldKod.ToUpper()) ? true : false;
-            if (kodChanged && existsKlubKod(klub.Kod))
+            if (kodChanged && klubDAO.existsKlubKod(klub.Kod))
             {
                 notification.RegisterMessage("Kod", "Klub sa datim kodom vec postoji.");
                 throw new BusinessException(notification);

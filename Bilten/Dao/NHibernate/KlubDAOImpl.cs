@@ -37,6 +37,34 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public bool existsKlubNaziv(string naziv)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Klub k where k.Naziv like :naziv");
+                q.SetString("naziv", naziv);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsKlubKod(string kod)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Klub k where k.Kod like :kod");
+                q.SetString("kod", kod);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

@@ -9,5 +9,7 @@ namespace Bilten.Dao
     {
         IList<Klub> FindAll();
         bool existsKlub(Mesto m);
+        bool existsKlubNaziv(string naziv);
+        bool existsKlubKod(string kod);
     }
 }

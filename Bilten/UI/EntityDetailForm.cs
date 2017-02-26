@@ -10,6 +10,8 @@ using Bilten.Exceptions;
 using Bilten.Data;
 using Bilten.Data.QueryModel;
 using Bilten.Util;
+using NHibernate;
+using NHibernate.Context;
 
 namespace Bilten.UI
 {
@@ -38,39 +40,36 @@ namespace Bilten.UI
         {
             initializing = true;
             this.persistEntity = persistEntity;
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                if (entityId != null)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    editMode = true;
-                    initUpdateMode(entityId.Value);
+                    CurrentSessionContext.Bind(session);
+                    if (entityId != null)
+                    {
+                        editMode = true;
+                        initUpdateMode(entityId.Value);
+                    }
+                    else
+                    {
+                        editMode = false;
+                        initAddMode();
+                    }
+                    initializing = false;
                 }
-                else
-                {
-                    editMode = false;
-                    initAddMode();
-                }
-
-           //     dataContext.Commit();
-
-                initializing = false;
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -79,31 +78,28 @@ namespace Bilten.UI
         {
             initializing = true;
             this.persistEntity = persistEntity;
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                editMode = true;
-                initUpdateMode(entity);
-
-                //     dataContext.Commit();
-
-                initializing = false;
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    editMode = true;
+                    initUpdateMode(entity);
+                    initializing = false;
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -178,30 +174,33 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.WaitCursor;
                 Cursor.Show();
             }
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    Notification notification = new Notification();
+                    requiredFieldsAndFormatValidation(notification);
+                    if (!notification.IsValid())
+                        throw new BusinessException(notification);
 
-                Notification notification = new Notification();
-                requiredFieldsAndFormatValidation(notification);
-                if (!notification.IsValid())
-                    throw new BusinessException(notification);
+                    if (editMode)
+                        update();
+                    else
+                        add();
 
-                if (editMode)
-                    update();
-                else
-                    add();
-
-                if (persistEntity)
-                    dataContext.Commit();
-                closedByOK = true;
+                    if (persistEntity)
+                        session.Transaction.Commit();
+                    closedByOK = true;
+                }
             }
             catch (BusinessException ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 if (ex.Notification != null)
                 {
                     NotificationMessage msg = ex.Notification.FirstMessage;
@@ -233,8 +232,8 @@ namespace Bilten.UI
             }*/
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
                 this.DialogResult = DialogResult.Cancel;
@@ -243,10 +242,7 @@ namespace Bilten.UI
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 if (showWaitCursor)
                 {
                     Cursor.Hide();
@@ -294,7 +290,7 @@ namespace Bilten.UI
 
         protected virtual void addEntity(DomainObject entity)
         {
-            dataContext.Add(entity);
+            throw new Exception("Derived class should implement this method.");
         }
 
         private void update()
@@ -308,7 +304,7 @@ namespace Bilten.UI
 
         protected virtual void updateEntity(DomainObject entity)
         {
-            dataContext.Save(entity);
+            throw new Exception("Derived class should implement this method.");
         }
 
         protected virtual void checkBusinessRulesOnUpdate(DomainObject entity)
