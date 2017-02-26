@@ -10,6 +10,22 @@ namespace Bilten.Dao.NHibernate
     {
         #region GimnasticarDAO Members
 
+        public IList<Gimnasticar> FindAll()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Gimnasticar g
+                    left join fetch g.Kategorija
+                    left join fetch g.Klub
+                    left join fetch g.Drzava");
+                return q.List<Gimnasticar>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public IList<Gimnasticar> FindGimnasticariByKlub(Klub klub)
         {
             try
@@ -50,6 +66,104 @@ namespace Bilten.Dao.NHibernate
             {
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
+        }
+
+        public IList<Gimnasticar> FindGimnasticariByRegBroj(RegistarskiBroj regBroj)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Gimnasticar g
+                    left join fetch g.Kategorija
+                    left join fetch g.Klub
+                    left join fetch g.Drzava
+                    where g.RegistarskiBroj.Broj = :broj
+                    and g.RegistarskiBroj.GodinaRegistracije = :godina");
+                q.SetInt32("broj", regBroj.Broj);
+                q.SetInt16("godina", regBroj.GodinaRegistracije);
+                return q.List<Gimnasticar>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<Gimnasticar> FindGimnasticari(string ime, string prezime,
+            Nullable<int> godRodj, Nullable<Gimnastika> gimnastika, Drzava drzava,
+            KategorijaGimnasticara kategorija, Klub klub)
+        {
+            string query = @"from Gimnasticar g
+                    left join fetch g.Kategorija
+                    left join fetch g.Klub
+                    left join fetch g.Drzava";
+            string WHERE = " where ";
+            bool addIme = false;
+            bool addPrezime = false;
+            bool addGodRodj = false;
+            bool addGimnastika = false;
+            bool addDrzava = false;
+            bool addKategorija = false;
+            bool addKlub = false;
+            if (!String.IsNullOrEmpty(ime))
+            {
+                query += WHERE + "lower(g.Ime) like :ime";
+                WHERE = " and ";
+                addIme = true;
+            }
+            if (!String.IsNullOrEmpty(prezime))
+            {
+                query += WHERE + "lower(g.Prezime) like :prezime";
+                WHERE = " and ";
+                addPrezime = true;
+            }
+            if (godRodj != null)
+            {
+                query += WHERE + "g.DatumRodjenja.Godina = :godRodj";
+                WHERE = " and ";
+                addGodRodj = true;
+            }
+            if (gimnastika != null)
+            {
+                query += WHERE + "g.Gimnastika = :gimnastika";
+                WHERE = " and ";
+                addGimnastika = true;
+            }
+            if (drzava != null)
+            {
+                query += WHERE + "g.Drzava = :drzava";
+                WHERE = " and ";
+                addDrzava = true;
+            }
+            if (kategorija != null)
+            {
+                query += WHERE + "g.Kategorija = :kategorija";
+                WHERE = " and ";
+                addKategorija = true;
+            }
+            if (klub != null)
+            {
+                query += WHERE + "g.Klub = :klub";
+                WHERE = " and ";
+                addKlub = true;
+            }
+            query += " order by g.Prezime asc, g.Ime asc";
+
+            IQuery q = Session.CreateQuery(query);
+            if (addIme)
+                q.SetString("ime", ime.ToLower() + '%');
+            if (addPrezime)
+                q.SetString("prezime", prezime.ToLower() + '%');
+            if (addGodRodj)
+                q.SetInt16("godRodj", (short)godRodj.Value);
+            if (addGimnastika)
+                q.SetByte("gimnastika", (byte)gimnastika.Value);
+            if (addDrzava)
+                q.SetEntity("drzava", drzava);
+            if (addKategorija)
+                q.SetEntity("kategorija", kategorija);
+            if (addKlub)
+                q.SetEntity("klub", klub);
+            return q.List<Gimnasticar>();
         }
 
         public bool existsGimnasticar(Klub klub)

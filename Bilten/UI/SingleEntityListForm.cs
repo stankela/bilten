@@ -16,14 +16,7 @@ namespace Bilten.UI
 {
     public partial class SingleEntityListForm<T> : BaseEntityListForm where T : DomainObject, new()
     {
-        protected IDataContext dataContext;
         protected FilterForm filterForm;
-
-        private IList<AssociationFetch> fetchModes = new List<AssociationFetch>();
-        protected IList<AssociationFetch> FetchModes
-        {
-            get { return fetchModes; }
-        }
 
         private StatusBar statusBar;
         public StatusBar StatusPanel
