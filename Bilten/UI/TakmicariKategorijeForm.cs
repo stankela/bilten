@@ -549,7 +549,10 @@ namespace Bilten.UI
                 return;
 
             GimnasticarUcesnik selectedItem = selItems[0];
-            int selIndex = getActiveDataGridViewUserControl().getSelectedItemIndex();
+            List<GimnasticarUcesnik> activeGimnasticari = gimnasticari[tabControl1.SelectedIndex];
+
+            int index = activeGimnasticari.IndexOf(selectedItem);
+
             try
             {
                 GimnasticarUcesnikForm form =
@@ -557,9 +560,7 @@ namespace Bilten.UI
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     GimnasticarUcesnik editedItem = (GimnasticarUcesnik)form.Entity;
-
-                    List<GimnasticarUcesnik> activeGimnasticari = gimnasticari[tabControl1.SelectedIndex];
-                    activeGimnasticari[selIndex] = editedItem;
+                    activeGimnasticari[index] = editedItem;
 
                     setGimnasticari(activeGimnasticari);
                     if (!getActiveDataGridViewUserControl().isSorted())

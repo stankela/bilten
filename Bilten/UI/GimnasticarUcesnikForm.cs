@@ -10,6 +10,7 @@ using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Data;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -61,29 +62,16 @@ namespace Bilten.UI
         {
             loadKlubovi(kategorija.Takmicenje.Id);
             loadDrzave(kategorija.Takmicenje.Id);
-            rezTakmicenja = loadRezTakmicenja((GimnasticarUcesnik)entity);
+            rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                                            .FindRezTakmicenjaForGimnasticar((GimnasticarUcesnik)entity);
         }
 
         private void loadKlubovi(int takmicenjeId)
         {
-            string query = @"from KlubUcesnik k
-                    where k.Takmicenje.Id = :takmicenjeId
-                    order by k.Naziv";
-            IList<KlubUcesnik> result = dataContext.
-                ExecuteQuery<KlubUcesnik>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
+            ISet<KlubUcesnik> kluboviSet = new HashSet<KlubUcesnik>(
+                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindKluboviUcesnici(takmicenjeId));
 
-            ISet<KlubUcesnik> kluboviSet = new HashSet<KlubUcesnik>(result);
-
-            string query2 = @"from Klub k
-                    order by k.Naziv";
-            IList<Klub> result2 = dataContext.
-                ExecuteQuery<Klub>(QueryLanguageType.HQL, query2,
-                        new string[] { },
-                        new object[] { });
-
-            foreach (Klub k in result2)
+            foreach (Klub k in DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll())
             { 
                 KlubUcesnik ku = new KlubUcesnik();
                 ku.Naziv = k.Naziv;
@@ -104,24 +92,10 @@ namespace Bilten.UI
 
         private void loadDrzave(int takmicenjeId)
         {
-            string query = @"from DrzavaUcesnik d
-                    where d.Takmicenje.Id = :takmicenjeId
-                    order by d.Naziv";
-            IList<DrzavaUcesnik> result = dataContext.
-                ExecuteQuery<DrzavaUcesnik>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
-            
-            ISet<DrzavaUcesnik> drzaveSet = new HashSet<DrzavaUcesnik>(result);
+            ISet<DrzavaUcesnik> drzaveSet = new HashSet<DrzavaUcesnik>(
+                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindDrzaveUcesnici(takmicenjeId));
 
-            string query2 = @"from Drzava d
-                    order by d.Naziv";
-            IList<Drzava> result2 = dataContext.
-                ExecuteQuery<Drzava>(QueryLanguageType.HQL, query2,
-                        new string[] { },
-                        new object[] { });
-
-            foreach (Drzava d in result2)
+            foreach (Drzava d in DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll())
             {
                 DrzavaUcesnik du = new DrzavaUcesnik();
                 du.Naziv = d.Naziv;
@@ -138,14 +112,6 @@ namespace Bilten.UI
             drzave.Sort(new SortComparer<DrzavaUcesnik>(propDesc, ListSortDirection.Ascending));
 
             drzave.Insert(0, emptyDrzava);
-        }
-
-        private IList<RezultatskoTakmicenje> loadRezTakmicenja(GimnasticarUcesnik g)
-        {
-            return dataContext.ExecuteNamedQuery<RezultatskoTakmicenje>(
-                "FindRezTakmicenjaForGimnasticar",
-                new string[] { "gimnasticar" },
-                new object[] { g });
         }
 
         protected override void initUI()
@@ -183,7 +149,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            return dataContext.GetById<GimnasticarUcesnik>(id);
+            return DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -307,21 +273,13 @@ namespace Bilten.UI
             bool takBrojChanged =
                 (gimnasticar.TakmicarskiBroj != oldTakBroj) ? true : false;
             if (takBrojChanged && gimnasticar.TakmicarskiBroj != null
-            && existsGimnasticarTakBroj(gimnasticar.TakmicarskiBroj.Value))
+            && DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().existsGimnasticarTakBroj(
+                gimnasticar.TakmicarskiBroj.Value, kategorija.Takmicenje))
             {
                 notification.RegisterMessage("TakmicarskiBroj",
                     "Gimnasticar sa datim takmicarskim brojem vec postoji.");
                 throw new BusinessException(notification);
             }
-        }
-
-        private bool existsGimnasticarTakBroj(int takBroj)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("TakmicarskiBroj", CriteriaOperator.Equal, takBroj));
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, kategorija.Takmicenje));
-            q.Operator = QueryOperator.And;
-            return dataContext.GetCount<GimnasticarUcesnik>(q) > 0;
         }
 
         protected override void updateEntity(DomainObject entity)
@@ -330,14 +288,14 @@ namespace Bilten.UI
             if (g.KlubUcesnik != null && g.KlubUcesnik.Id == 0)
             {
                 g.KlubUcesnik.Takmicenje = kategorija.Takmicenje;
-                dataContext.Add(g.KlubUcesnik);
+                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().Add(g.KlubUcesnik);
             }
             if (g.DrzavaUcesnik != null && g.DrzavaUcesnik.Id == 0)
             {
                 g.DrzavaUcesnik.Takmicenje = kategorija.Takmicenje;
-                dataContext.Add(g.DrzavaUcesnik);
+                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().Add(g.DrzavaUcesnik);
             }
-            dataContext.Save(g);
+            DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Update(g);
         }
 
     }

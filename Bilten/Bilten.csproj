@@ -93,6 +93,7 @@
     <Compile Include="Dao\EkipaDAO.cs" />
     <Compile Include="Dao\GenericDAO.cs" />
     <Compile Include="Dao\GimnasticarDAO.cs" />
+    <Compile Include="Dao\GimnasticarUcesnikDAO.cs" />
     <Compile Include="Dao\KategorijaGimnasticaraDAO.cs" />
     <Compile Include="Dao\KlubDAO.cs" />
     <Compile Include="Dao\KlubUcesnikDAO.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Dao\NHibernate\EkipaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\GenericNHibernateDAO.cs" />
     <Compile Include="Dao\NHibernate\GimnasticarDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\GimnasticarUcesnikDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KategorijaGimnasticaraDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KlubDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KlubUcesnikDAOImpl.cs" />

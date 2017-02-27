@@ -73,5 +73,10 @@ namespace Bilten.Dao.NHibernate
         {
             return new Takmicenje1DAOImpl();
         }
+
+        public override GimnasticarUcesnikDAO GetGimnasticarUcesnikDAO()
+        {
+            return new GimnasticarUcesnikDAOImpl();
+        }
     }
 }
