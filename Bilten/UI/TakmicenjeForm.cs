@@ -10,6 +10,7 @@ using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
 using Bilten.Data;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -221,27 +222,23 @@ namespace Bilten.UI
                 takmicenje.Gimnastika = Gimnastika.ZSG;
         }
 
+        protected override void addEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().MakePersistent((Takmicenje)entity);
+        }
+
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
             Takmicenje takmicenje = (Takmicenje)entity;
             Notification notification = new Notification();
 
-            if (existsTakmicenje(takmicenje))
+            if (DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(
+                takmicenje.Naziv, takmicenje.Gimnastika, takmicenje.Datum))
             {
                 notification.RegisterMessage("Naziv",
                     "Takmicenje sa datim nazivom, gimnastikom i datumom vec postoji.");
                 throw new BusinessException(notification);
             }
-        }
-
-        private bool existsTakmicenje(Takmicenje tak)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, tak.Naziv));
-            q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)tak.Gimnastika));
-            q.Criteria.Add(new Criterion("Datum", CriteriaOperator.Equal, tak.Datum));
-            q.Operator = QueryOperator.And;
-            return dataContext.GetCount<Takmicenje>(q) > 0;
         }
 
         private void btnIzaberiPrvaDvaKola_Click(object sender, EventArgs e)

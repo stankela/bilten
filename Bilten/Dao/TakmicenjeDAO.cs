@@ -7,6 +7,6 @@ namespace Bilten.Dao
 {
     public interface TakmicenjeDAO : GenericDAO<Takmicenje, int>
     {
-
+        bool existsTakmicenje(string naziv, Gimnastika gim, DateTime datum);
     }
 }
