@@ -9,6 +9,7 @@ using Bilten.Domain;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -37,7 +38,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            return dataContext.GetById<Mesto>(id);
+            return DAOFactoryFactory.DAOFactory.GetMestoDAO().FindById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -80,23 +81,26 @@ namespace Bilten.UI
             m.Naziv = txtNaziv.Text.Trim();
         }
 
+        protected override void updateEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetMestoDAO().MakePersistent((Mesto)entity);
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetMestoDAO().MakePersistent((Mesto)entity);
+        }
+
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
             Mesto m = (Mesto)entity;
             Notification notification = new Notification();
 
-            if (existsMestoNaziv(m.Naziv))
+            if (DAOFactoryFactory.DAOFactory.GetMestoDAO().existsMestoNaziv(m.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Mesto sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
-        }
-
-        private bool existsMestoNaziv(string naziv)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, naziv));
-            return dataContext.GetCount<Mesto>(q) > 0;
         }
 
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
@@ -105,7 +109,7 @@ namespace Bilten.UI
             Notification notification = new Notification();
 
             bool nazivChanged = (m.Naziv.ToUpper() != oldNaziv.ToUpper()) ? true : false;
-            if (nazivChanged && existsMestoNaziv(m.Naziv))
+            if (nazivChanged && DAOFactoryFactory.DAOFactory.GetMestoDAO().existsMestoNaziv(m.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Mesto sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);

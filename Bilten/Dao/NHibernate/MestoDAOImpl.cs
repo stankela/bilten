@@ -27,6 +27,20 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public bool existsMestoNaziv(string naziv)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Mesto m where m.Naziv like :naziv");
+                q.SetString("naziv", naziv);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }
