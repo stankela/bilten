@@ -8,5 +8,6 @@ namespace Bilten.Dao
     public interface KlubUcesnikDAO : GenericDAO<KlubUcesnik, int>
     {
         KlubUcesnik FindKlubUcesnik(int takmicenjeId, string naziv);
+        IList<KlubUcesnik> FindKluboviUcesnici(int takmicenjeId);
     }
 }

@@ -78,12 +78,11 @@ namespace Bilten.Dao.NHibernate
             }
     }
 
-        public T MakePersistent(T entity)
+        public void Add(T entity)
         {
             try
             {
-                Session.SaveOrUpdate(entity);
-                return entity;
+                Session.Save(entity);
             }
             catch (HibernateException ex)
             {
@@ -91,7 +90,19 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public void MakeTransient(T entity)
+        public void Update(T entity)
+        {
+            try
+            {
+                Session.Update(entity);
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public void Delete(T entity)
         {
             try
             {

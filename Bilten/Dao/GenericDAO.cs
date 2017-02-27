@@ -20,9 +20,9 @@ namespace Bilten.Dao
 
         IList<T> FindByExample(T exampleInstance, params string[] excludeProperties);
 
-        T MakePersistent(T entity);
-
-        void MakeTransient(T entity);
+        void Add(T entity);
+        void Update(T entity);
+        void Delete(T entity);
 
         /// <summary>
         /// Affects every managed instance in the current persistence context!

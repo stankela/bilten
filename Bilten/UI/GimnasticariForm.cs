@@ -120,7 +120,7 @@ namespace Bilten.UI
 
         protected override void delete(Gimnasticar g)
         {
-            DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().MakeTransient(g);
+            DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().Delete(g);
         }
 
         protected override void onApplyFilter()

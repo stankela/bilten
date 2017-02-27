@@ -90,6 +90,7 @@
     <Compile Include="Dao\DAOFactoryFactory.cs" />
     <Compile Include="Dao\DrzavaDAO.cs" />
     <Compile Include="Dao\DrzavaUcesnikDAO.cs" />
+    <Compile Include="Dao\EkipaDAO.cs" />
     <Compile Include="Dao\GenericDAO.cs" />
     <Compile Include="Dao\GimnasticarDAO.cs" />
     <Compile Include="Dao\KategorijaGimnasticaraDAO.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Dao\MestoDAO.cs" />
     <Compile Include="Dao\NHibernate\DrzavaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\DrzavaUcesnikDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\EkipaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\GenericNHibernateDAO.cs" />
     <Compile Include="Dao\NHibernate\GimnasticarDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KategorijaGimnasticaraDAOImpl.cs" />
@@ -105,11 +107,15 @@
     <Compile Include="Dao\NHibernate\KlubUcesnikDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\MestoDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\NHibernateDAOFactory.cs" />
+    <Compile Include="Dao\NHibernate\RezultatskoTakmicenjeDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\SudijaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\SudijaUcesnikDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\Takmicenje1DAOImpl.cs" />
     <Compile Include="Dao\NHibernate\TakmicenjeDAOImpl.cs" />
+    <Compile Include="Dao\RezultatskoTakmicenjeDAO.cs" />
     <Compile Include="Dao\SudijaDAO.cs" />
     <Compile Include="Dao\SudijaUcesnikDAO.cs" />
+    <Compile Include="Dao\Takmicenje1DAO.cs" />
     <Compile Include="Dao\TakmicenjeDAO.cs" />
     <Compile Include="Data\DataAccessProviderFactory.cs" />
     <Compile Include="Data\IDataContext.cs" />

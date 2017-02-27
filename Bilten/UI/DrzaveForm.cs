@@ -110,14 +110,14 @@ namespace Bilten.UI
             foreach (Gimnasticar g in gimnasticari)
             {
                 g.Drzava = null;
-                gimnasticarDAO.MakePersistent(g);
+                gimnasticarDAO.Update(g);
             }
             foreach (Sudija s in sudije)
             {
                 s.Drzava = null;
-                sudijaDAO.MakePersistent(s);
+                sudijaDAO.Update(s);
             }
-            DAOFactoryFactory.DAOFactory.GetDrzavaDAO().MakeTransient(drzava);
+            DAOFactoryFactory.DAOFactory.GetDrzavaDAO().Delete(drzava);
         }
 
         protected override string deleteErrorMessage()

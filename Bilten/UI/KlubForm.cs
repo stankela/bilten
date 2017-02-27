@@ -139,12 +139,12 @@ namespace Bilten.UI
 
         protected override void updateEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetKlubDAO().MakePersistent((Klub)entity);
+            DAOFactoryFactory.DAOFactory.GetKlubDAO().Update((Klub)entity);
         }
 
         protected override void addEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetKlubDAO().MakePersistent((Klub)entity);
+            DAOFactoryFactory.DAOFactory.GetKlubDAO().Add((Klub)entity);
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)

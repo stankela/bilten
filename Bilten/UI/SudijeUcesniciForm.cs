@@ -112,7 +112,7 @@ namespace Bilten.UI
                         if (canAddSudija(s, takmicenje))
                         {
                             SudijaUcesnik sudija = createSudijaUcesnik(s, takmicenje);
-                            DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().MakePersistent(sudija);
+                            DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().Add(sudija);
                             okSudije.Add(sudija);
                         }
                         else
@@ -186,7 +186,7 @@ namespace Bilten.UI
                     drzavaUcesnik.Naziv = s.Drzava.Naziv;
                     drzavaUcesnik.Kod = s.Drzava.Kod;
                     drzavaUcesnik.Takmicenje = takmicenje;
-                    drzavaUcesnikDAO.MakePersistent(drzavaUcesnik);
+                    drzavaUcesnikDAO.Add(drzavaUcesnik);
                 }
                 result.DrzavaUcesnik = drzavaUcesnik;
             }
@@ -203,7 +203,7 @@ namespace Bilten.UI
                     klubUcesnik.Naziv = s.Klub.Naziv;
                     klubUcesnik.Kod = s.Klub.Kod;
                     klubUcesnik.Takmicenje = takmicenje;
-                    klubUcesnikDAO.MakePersistent(klubUcesnik);
+                    klubUcesnikDAO.Add(klubUcesnik);
                 }
                 result.KlubUcesnik = klubUcesnik;
             }
@@ -231,7 +231,7 @@ namespace Bilten.UI
 
         protected override void delete(SudijaUcesnik s)
         {
-            DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().MakeTransient(s);
+            DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().Delete(s);
         }
 
         private bool sudiNaSpravi(SudijaUcesnik s)

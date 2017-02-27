@@ -83,12 +83,12 @@ namespace Bilten.UI
 
         protected override void updateEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetMestoDAO().MakePersistent((Mesto)entity);
+            DAOFactoryFactory.DAOFactory.GetMestoDAO().Update((Mesto)entity);
         }
 
         protected override void addEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetMestoDAO().MakePersistent((Mesto)entity);
+            DAOFactoryFactory.DAOFactory.GetMestoDAO().Add((Mesto)entity);
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)

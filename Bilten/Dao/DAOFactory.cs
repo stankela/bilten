@@ -14,5 +14,8 @@ namespace Bilten.Dao
         public abstract SudijaUcesnikDAO GetSudijaUcesnikDAO();
         public abstract DrzavaUcesnikDAO GetDrzavaUcesnikDAO();
         public abstract KlubUcesnikDAO GetKlubUcesnikDAO();
+        public abstract RezultatskoTakmicenjeDAO GetRezultatskoTakmicenjeDAO();
+        public abstract EkipaDAO GetEkipaDAO();
+        public abstract Takmicenje1DAO GetTakmicenje1DAO();
     }
 }

@@ -224,7 +224,7 @@ namespace Bilten.UI
 
         protected override void addEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().MakePersistent((Takmicenje)entity);
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Add((Takmicenje)entity);
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)

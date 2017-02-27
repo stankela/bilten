@@ -102,9 +102,9 @@ namespace Bilten.UI
             foreach (Gimnasticar g in gimnasticari)
             {
                 g.Kategorija = null;
-                gimnasticarDAO.MakePersistent(g);
+                gimnasticarDAO.Update(g);
             }
-            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().MakeTransient(kategorija);
+            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().Delete(kategorija);
         }
 
         protected override string deleteErrorMessage()

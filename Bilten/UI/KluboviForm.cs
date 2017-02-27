@@ -96,9 +96,9 @@ namespace Bilten.UI
             foreach (Gimnasticar g in gimnasticari)
             {
                 g.Klub = null;
-                gimnasticarDAO.MakePersistent(g);
+                gimnasticarDAO.Update(g);
             }
-            DAOFactoryFactory.DAOFactory.GetKlubDAO().MakeTransient(klub);
+            DAOFactoryFactory.DAOFactory.GetKlubDAO().Delete(klub);
         }
 
         protected override string deleteErrorMessage()

@@ -206,12 +206,12 @@ namespace Bilten.UI
 
         protected override void updateEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetSudijaDAO().MakePersistent((Sudija)entity);
+            DAOFactoryFactory.DAOFactory.GetSudijaDAO().Update((Sudija)entity);
         }
 
         protected override void addEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetSudijaDAO().MakePersistent((Sudija)entity);
+            DAOFactoryFactory.DAOFactory.GetSudijaDAO().Add((Sudija)entity);
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)

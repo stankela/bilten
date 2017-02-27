@@ -12,6 +12,7 @@ using Bilten.Data;
 using Iesi.Collections.Generic;
 using System.Collections;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -64,47 +65,11 @@ namespace Bilten.UI
             // objekat ekipe se nalazi unutar kolekcije Takmicenje1.Ekipe objekta 
             // rezTakmicenje jer se sve obavlja unutar iste sesije. To znaci da u edit 
             // modu rezTakmicenje "vidi" sve promene na ekipi.
-            rezTakmicenje = loadRezTakmicenje(rezTakmicenjeId);
-
-            IList<KlubUcesnik> kluboviList = findKluboviUcesnici(rezTakmicenje.Takmicenje.Id);
-            klubovi = new List<KlubUcesnik>(kluboviList);
-
-            IList<DrzavaUcesnik> drzaveList = findDrzaveUcesnici(rezTakmicenje.Takmicenje.Id);
-            drzave = new List<DrzavaUcesnik>(drzaveList);
-        }
-
-        private RezultatskoTakmicenje loadRezTakmicenje(int rezTakmicenjeId)
-        {
-            string query = @"select distinct r
-                from RezultatskoTakmicenje r
-                left join fetch r.Kategorija kat
-                left join fetch r.TakmicenjeDescription d
-                left join fetch r.Takmicenje1 t
-                left join fetch t.Ekipe e
-                where r.Id = :id";
-            IList<RezultatskoTakmicenje> result = dataContext.
-                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "id" }, new object[] { rezTakmicenjeId });
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
-        }
-
-        private IList<DrzavaUcesnik> findDrzaveUcesnici(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            return dataContext.GetByCriteria<DrzavaUcesnik>(q);
-        }
-
-        private IList<KlubUcesnik> findKluboviUcesnici(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            return dataContext.GetByCriteria<KlubUcesnik>(q);
+            rezTakmicenje = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().loadRezTakmicenje(rezTakmicenjeId);
+            klubovi = new List<KlubUcesnik>(
+                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindKluboviUcesnici(rezTakmicenje.Takmicenje.Id));
+            drzave = new List<DrzavaUcesnik>(
+                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindDrzaveUcesnici(rezTakmicenje.Takmicenje.Id));
         }
 
         protected override void initUI()
@@ -144,19 +109,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            string query = @"select distinct e
-                from Ekipa e
-                left join fetch e.Gimnasticari g
-                left join fetch g.DrzavaUcesnik dr
-                left join fetch g.KlubUcesnik kl
-                where e.Id = :id";
-            IList<Ekipa> result = dataContext.
-                ExecuteQuery<Ekipa>(QueryLanguageType.HQL, query,
-                        new string[] { "id" }, new object[] { id });
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
+            return DAOFactoryFactory.DAOFactory.GetEkipaDAO().FindEkipaById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -280,72 +233,49 @@ namespace Bilten.UI
         {
             Ekipa ekipa = (Ekipa)entity;
             Notification notification = new Notification();
+            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
 
-            if (existsEkipaNaziv(ekipa.Naziv))
+            if (ekipaDAO.existsEkipaNaziv(rezTakmicenje.Id, ekipa.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Ekipa sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
 
-            if (existsEkipaKod(ekipa.Kod))
+            if (ekipaDAO.existsEkipaKod(rezTakmicenje.Id, ekipa.Kod))
             {
                 notification.RegisterMessage("Kod", "Ekipa sa datim kodom vec postoji.");
                 throw new BusinessException(notification);
             }
         }
 
-        private bool existsEkipaNaziv(string naziv)
-        {
-            string query = @"select count(*)
-                from RezultatskoTakmicenje r
-                join r.Takmicenje1 t
-                join t.Ekipe e
-                where r.Id = :rezTakmicenjeId
-                and e.Naziv = :naziv";
-            IList result = dataContext.
-                ExecuteQuery(QueryLanguageType.HQL, query,
-                        new string[] { "rezTakmicenjeId", "naziv" }, 
-                        new object[] { rezTakmicenje.Id, naziv });
-            return (long)result[0] > 0;
-        }
-
-        private bool existsEkipaKod(string kod)
-        {
-            string query = @"select count(*)
-                from RezultatskoTakmicenje r
-                join r.Takmicenje1 t
-                join t.Ekipe e
-                where r.Id = :rezTakmicenjeId
-                and e.Kod = :kod";
-            IList result = dataContext.
-                ExecuteQuery(QueryLanguageType.HQL, query,
-                        new string[] { "rezTakmicenjeId", "kod" },
-                        new object[] { rezTakmicenje.Id, kod });
-            return (long)result[0] > 0;
-        }
-
         protected override void addEntity(DomainObject entity)
         {
             Ekipa ekipa = (Ekipa)entity;
             rezTakmicenje.Takmicenje1.addEkipa(ekipa);
-            dataContext.Add(ekipa);
-            dataContext.Save(rezTakmicenje.Takmicenje1);
+            DAOFactoryFactory.DAOFactory.GetEkipaDAO().Add(ekipa);
+            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTakmicenje.Takmicenje1);
+        }
+
+        protected override void updateEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update((Ekipa)entity);
         }
 
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
         {
             Ekipa ekipa = (Ekipa)entity;
             Notification notification = new Notification();
+            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
 
             bool nazivChanged = (ekipa.Naziv.ToUpper() != oldNaziv.ToUpper()) ? true : false;
-            if (nazivChanged && existsEkipaNaziv(ekipa.Naziv))
+            if (nazivChanged && ekipaDAO.existsEkipaNaziv(rezTakmicenje.Id, ekipa.Naziv))
             {
                 notification.RegisterMessage("Naziv", "Ekipa sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
 
             bool kodChanged = (ekipa.Kod.ToUpper() != oldKod.ToUpper()) ? true : false;
-            if (kodChanged && existsEkipaKod(ekipa.Kod))
+            if (kodChanged && ekipaDAO.existsEkipaKod(rezTakmicenje.Id, ekipa.Kod))
             {
                 notification.RegisterMessage("Kod", "Ekipa sa datim kodom vec postoji.");
                 throw new BusinessException(notification);
@@ -396,7 +326,7 @@ namespace Bilten.UI
 
             if (illegalGimnasticari.Count > 0)
             {
-                string msg = "Sledec gimnasticari nisu dodati: \n\n";
+                string msg = "Sledeci gimnasticari nisu dodati: \n\n";
                 msg += StringUtil.getListString(illegalGimnasticari.ToArray());
                 //       MessageDialogs.showMessage(msg, this.Text);
             }

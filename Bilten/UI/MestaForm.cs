@@ -90,7 +90,7 @@ namespace Bilten.UI
 
         protected override void delete(Mesto m)
         {
-            DAOFactoryFactory.DAOFactory.GetMestoDAO().MakeTransient(m);
+            DAOFactoryFactory.DAOFactory.GetMestoDAO().Delete(m);
         }
 
         protected override string deleteErrorMessage()

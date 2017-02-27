@@ -89,7 +89,7 @@ namespace Bilten.UI
 
         protected override void delete(Sudija s)
         {
-            DAOFactoryFactory.DAOFactory.GetSudijaDAO().MakeTransient(s);
+            DAOFactoryFactory.DAOFactory.GetSudijaDAO().Delete(s);
         }
 
         protected override void updateEntityCount()

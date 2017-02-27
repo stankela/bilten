@@ -129,12 +129,12 @@ namespace Bilten.UI
 
         protected override void updateEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().MakePersistent((KategorijaGimnasticara)entity);
+            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().Update((KategorijaGimnasticara)entity);
         }
 
         protected override void addEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().MakePersistent((KategorijaGimnasticara)entity);
+            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().Add((KategorijaGimnasticara)entity);
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
