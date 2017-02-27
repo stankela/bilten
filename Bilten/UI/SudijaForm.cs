@@ -9,6 +9,7 @@ using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -28,14 +29,8 @@ namespace Bilten.UI
 
         protected override void loadData()
         {
-            Query q = new Query();
-            string sortingPropertyName = "Naziv";
-            q.OrderClauses.Add(new OrderClause(sortingPropertyName, OrderClause.OrderClauseCriteria.Ascending));
-            drzave = new List<Drzava>(dataContext.GetByCriteria<Drzava>(q));
-
-            q = new Query();
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            klubovi = new List<Klub>(dataContext.GetByCriteria<Klub>(q));
+            drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
+            klubovi = new List<Klub>(DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll());
         }
 
         protected override void initUI()
@@ -95,7 +90,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            return dataContext.GetById<Sudija>(id);
+            return DAOFactoryFactory.DAOFactory.GetSudijaDAO().FindById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -209,26 +204,27 @@ namespace Bilten.UI
             sudija.Klub = SelectedKlub;
         }
 
+        protected override void updateEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetSudijaDAO().MakePersistent((Sudija)entity);
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetSudijaDAO().MakePersistent((Sudija)entity);
+        }
+
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
             Sudija sudija = (Sudija)entity;
             Notification notification = new Notification();
 
-            if (existsSudijaImePrezime(sudija.Ime, sudija.Prezime))
+            if (DAOFactoryFactory.DAOFactory.GetSudijaDAO().existsSudija(sudija.Ime, sudija.Prezime))
             {
                 notification.RegisterMessage("Ime",
                     "Sudija sa datim imenom i prezimenom vec postoji.");
                 throw new BusinessException(notification);
             }
-        }
-
-        private bool existsSudijaImePrezime(string ime, string prezime)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Ime", CriteriaOperator.Equal, ime));
-            q.Criteria.Add(new Criterion("Prezime", CriteriaOperator.Equal, prezime));
-            q.Operator = QueryOperator.And;
-            return dataContext.GetCount<Sudija>(q) > 0;
         }
 
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
@@ -239,7 +235,7 @@ namespace Bilten.UI
             bool imePrezimeChanged = (sudija.Ime.ToUpper() != oldIme.ToUpper()
                 || sudija.Prezime.ToUpper() != oldPrezime.ToUpper()) ? true : false;
             if (imePrezimeChanged
-            && existsSudijaImePrezime(sudija.Ime, sudija.Prezime))
+            && DAOFactoryFactory.DAOFactory.GetSudijaDAO().existsSudija(sudija.Ime, sudija.Prezime))
             {
                 notification.RegisterMessage("Ime",
                     "Sudija sa datim imenom i prezimenom vec postoji.");

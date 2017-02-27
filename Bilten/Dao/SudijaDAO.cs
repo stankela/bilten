@@ -7,8 +7,9 @@ namespace Bilten.Dao
 {
     public interface SudijaDAO : GenericDAO<Sudija, int>
     {
-        bool existsSudija(Drzava drzava);
         IList<Sudija> FindSudijeByDrzava(Drzava drzava);
         IList<Sudija> FindAll();
+        bool existsSudija(Drzava drzava);
+        bool existsSudija(string ime, string prezime);
     }
 }

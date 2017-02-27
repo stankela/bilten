@@ -10,20 +10,6 @@ namespace Bilten.Dao.NHibernate
     {
         #region SudijaDAO Members
 
-        public bool existsSudija(Drzava drzava)
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"select count(*) from Sudija s where s.Drzava = :drzava");
-                q.SetEntity("drzava", drzava);
-                return (long)q.UniqueResult() > 0;
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
         public IList<Sudija> FindSudijeByDrzava(Drzava drzava)
         {
             try
@@ -46,6 +32,37 @@ namespace Bilten.Dao.NHibernate
                     left join fetch s.Drzava
                     left join fetch s.Klub");
                 return q.List<Sudija>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsSudija(Drzava drzava)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Sudija s where s.Drzava = :drzava");
+                q.SetEntity("drzava", drzava);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsSudija(string ime, string prezime)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Sudija s
+                    where s.Ime like :ime
+                    and s.Prezime like :prezime");
+                q.SetString("ime", ime);
+                q.SetString("prezime", prezime);
+                return (long)q.UniqueResult() > 0;
             }
             catch (HibernateException ex)
             {

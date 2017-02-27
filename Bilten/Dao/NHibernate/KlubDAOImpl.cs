@@ -10,11 +10,24 @@ namespace Bilten.Dao.NHibernate
     {
         #region KlubDAO Members
 
-        public IList<Klub> FindAll()
+        public IList<Klub> FindAllFetchMesto()
         {
             try
             {
                 IQuery q = Session.CreateQuery(@"from Klub k left join fetch k.Mesto");
+                return q.List<Klub>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<Klub> FindAll()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Klub k order by k.Naziv asc");
                 return q.List<Klub>();
             }
             catch (HibernateException ex)

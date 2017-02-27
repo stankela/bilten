@@ -31,7 +31,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    IList<Klub> klubovi = DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll();
+                    IList<Klub> klubovi = DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAllFetchMesto();
                     SetItems(klubovi);
                     dataGridViewUserControl1.sort<Klub>(
                         new string[] { "Naziv" },
