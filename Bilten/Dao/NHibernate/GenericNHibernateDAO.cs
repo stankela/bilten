@@ -114,6 +114,18 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public void Evict(T entity)
+        {
+            try
+            {
+                Session.Evict(entity);
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public void Flush()
         {
             try

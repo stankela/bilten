@@ -26,6 +26,20 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<Gimnasticar> FindAllNoFetch()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Gimnasticar g
+                    order by g.Prezime asc, g.Ime asc");
+                return q.List<Gimnasticar>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public IList<Gimnasticar> FindGimnasticariByKlub(Klub klub)
         {
             try
@@ -200,6 +214,67 @@ namespace Bilten.Dao.NHibernate
             {
                 IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g where g.Kategorija = :kategorija");
                 q.SetEntity("kategorija", kategorija);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsGimnasticarImePrezimeSrednjeImeDatumRodjenja(string ime, string prezime, string srednjeIme,
+            Datum datumRodj)
+        {
+            try
+            {
+                string query = @"select count(*) from Gimnasticar g
+                    where g.Ime like :ime
+                    and g.Prezime like :prezime";
+                if (!string.IsNullOrEmpty(srednjeIme))
+                    query += " and g.SrednjeIme like :srednjeIme";
+                else
+                    query += " and g.SrednjeIme is null";
+                if (datumRodj != null && datumRodj.Dan != null)
+                    query += " and g.DatumRodjenja.Dan = :dan";
+                else
+                    query += " and g.DatumRodjenja.Dan is null";
+                if (datumRodj != null && datumRodj.Mesec != null)
+                    query += " and g.DatumRodjenja.Mesec = :mesec";
+                else
+                    query += " and g.DatumRodjenja.Mesec is null";
+                if (datumRodj != null && datumRodj.Godina != null)
+                    query += " and g.DatumRodjenja.Godina = :godina";
+                else
+                    query += " and g.DatumRodjenja.Godina is null";
+                                                           
+                IQuery q = Session.CreateQuery(query);
+                q.SetString("ime", ime);
+                q.SetString("prezime", prezime);
+                if (!string.IsNullOrEmpty(srednjeIme))
+                    q.SetString("srednjeIme", srednjeIme);
+                if (datumRodj != null && datumRodj.Dan != null)
+                    q.SetByte("dan", datumRodj.Dan.Value);
+                if (datumRodj != null && datumRodj.Mesec != null)
+                    q.SetByte("mesec", datumRodj.Mesec.Value);
+                if (datumRodj != null && datumRodj.Godina != null)
+                    q.SetInt16("godina", datumRodj.Godina.Value);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsGimnasticarRegBroj(RegistarskiBroj regBroj)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g
+                    where g.RegistarskiBroj.Broj = :broj
+                    and g.RegistarskiBroj.GodinaRegistracije = :godina");
+                q.SetInt32("broj", regBroj.Broj);
+                q.SetInt16("godina", regBroj.GodinaRegistracije);
                 return (long)q.UniqueResult() > 0;
             }
             catch (HibernateException ex)

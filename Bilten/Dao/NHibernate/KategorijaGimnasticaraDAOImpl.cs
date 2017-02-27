@@ -23,6 +23,22 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<KategorijaGimnasticara> FindByGimnastika(Gimnastika gimnastika)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from KategorijaGimnasticara k
+                    where k.Gimnastika = :gimnastika
+                    order by k.Naziv asc");
+                q.SetByte("gimnastika", (byte)gimnastika);
+                return q.List<KategorijaGimnasticara>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }        
+        
         public bool existsKategorijaGimnasticara(string naziv, Gimnastika gimnastika)
         {
             try

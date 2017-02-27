@@ -11,6 +11,10 @@ using Bilten.Exceptions;
 using Bilten.Data;
 using System.Collections.Specialized;
 using Bilten.Util;
+using Bilten.Dao;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao.NHibernate;
 
 namespace Bilten.UI
 {
@@ -42,30 +46,15 @@ namespace Bilten.UI
         protected override void loadData()
         {
             if (editMode)
-                kategorije = loadKategorije(((Gimnasticar)entity).Gimnastika);
+                kategorije = new List<KategorijaGimnasticara>(
+                    DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO()
+                    .FindByGimnastika(((Gimnasticar)entity).Gimnastika));
             else
                 kategorije = new List<KategorijaGimnasticara>();
 
-            Query q = new Query();
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            klubovi = new List<Klub>(dataContext.GetByCriteria<Klub>(q));
-
-            q = new Query();
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            drzave = new List<Drzava>(dataContext.GetByCriteria<Drzava>(q));
-
-            q = new Query();
-            q.OrderClauses.Add(new OrderClause("Prezime", OrderClause.OrderClauseCriteria.Ascending));
-            gimnasticari = new List<Gimnasticar>(dataContext.GetByCriteria<Gimnasticar>(q));
-        }
-
-        private List<KategorijaGimnasticara> loadKategorije(Gimnastika gimnastika)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)gimnastika));
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            return new List<KategorijaGimnasticara>(
-                dataContext.GetByCriteria<KategorijaGimnasticara>(q));
+            klubovi = new List<Klub>(DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll());
+            drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
+            gimnasticari = new List<Gimnasticar>(DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindAllNoFetch());
         }
 
         protected override void initUI()
@@ -196,7 +185,7 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            return dataContext.GetById<Gimnasticar>(id);
+            return DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindById(id);
         }
 
         protected override void saveOriginalData(DomainObject entity)
@@ -416,28 +405,35 @@ namespace Bilten.UI
             {
                 // TODO3: Evict sam okruzio sa try/catch zato sto kada promenim srednje ime dobijam izuzetak "The given
                 // key was not present in the dictionary". Proveri u NHibernate in Action zasto se ovo desava.
-                dataContext.Evict(entity);
+                (DAOFactoryFactory.DAOFactory.GetGimnasticarDAO() as GenericNHibernateDAO<Gimnasticar, int>)
+                    .Evict((Gimnasticar)entity);
             }
             catch (Exception)
             { }
 
-            dataContext.Save(entity);
+            DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().Update((Gimnasticar)entity);
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().Add((Gimnasticar)entity);
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
         {
-            Gimnasticar gimnasticar = (Gimnasticar)entity;
+            Gimnasticar g = (Gimnasticar)entity;
             Notification notification = new Notification();
+            GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
 
-            if (existsGimnasticarImeSrednjeImePrezimeDatumRodjenja(gimnasticar))
+            if (gimnasticarDAO.existsGimnasticarImePrezimeSrednjeImeDatumRodjenja(g.Ime, g.Prezime, g.SrednjeIme,
+                g.DatumRodjenja))
             {
                 notification.RegisterMessage("Ime", 
                     "Gimnasticar sa datim imenom, prezimenom i datumom rodjenja vec postoji.");
                 throw new BusinessException(notification);
             }
 
-            if (gimnasticar.RegistarskiBroj != null
-            && existsGimnasticarRegBroj(gimnasticar.RegistarskiBroj))
+            if (g.RegistarskiBroj != null && gimnasticarDAO.existsGimnasticarRegBroj(g.RegistarskiBroj))
             {
                 notification.RegisterMessage("RegistarskiBroj", 
                     "Gimnasticar sa datim registarskim brojem vec postoji.");
@@ -445,49 +441,23 @@ namespace Bilten.UI
             }
         }
 
-        private bool existsGimnasticarImeSrednjeImePrezimeDatumRodjenja(Gimnasticar g)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Ime", CriteriaOperator.Equal, g.Ime));
-            q.Criteria.Add(new Criterion("Prezime", CriteriaOperator.Equal, g.Prezime));
-            if (string.IsNullOrEmpty(g.SrednjeIme))
-                q.Criteria.Add(new Criterion("SrednjeIme", CriteriaOperator.IsNull, null));
-            else
-                q.Criteria.Add(new Criterion("SrednjeIme", CriteriaOperator.Equal, g.SrednjeIme));
-            q.Operator = QueryOperator.And;
-            IList<Gimnasticar> result = dataContext.GetByCriteria<Gimnasticar>(q);
-            foreach (Gimnasticar g2 in result)
-            {
-                // Equals dodatno proverava datum rodjenja
-                if (g2.Equals(g))
-                    return true;
-            }
-            return false;
-        }
-
-        private bool existsGimnasticarRegBroj(RegistarskiBroj regBroj)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("RegistarskiBroj.Broj", CriteriaOperator.Equal, regBroj.Broj));
-            return dataContext.GetCount<Gimnasticar>(q) > 0;
-        }
-
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
         {
-            Gimnasticar gimnasticar = (Gimnasticar)entity;
+            Gimnasticar g = (Gimnasticar)entity;
             Notification notification = new Notification();
+            GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
 
-            if (hasImeSrednjeImePrezimeDatumRodjenjaChanged(gimnasticar)
-            && existsGimnasticarImeSrednjeImePrezimeDatumRodjenja(gimnasticar))
+            if (hasImeSrednjeImePrezimeDatumRodjenjaChanged(g)
+            && gimnasticarDAO.existsGimnasticarImePrezimeSrednjeImeDatumRodjenja(g.Ime, g.Prezime, g.SrednjeIme,
+                g.DatumRodjenja))
             {
                 notification.RegisterMessage("Ime",
                     "Gimnasticar sa datim imenom, prezimenom i datumom rodjenja vec postoji.");
                 throw new BusinessException(notification);
             }
 
-            bool regBrojChanged = (gimnasticar.RegistarskiBroj != oldRegBroj) ? true : false;            
-            if (regBrojChanged && gimnasticar.RegistarskiBroj != null
-            && existsGimnasticarRegBroj(gimnasticar.RegistarskiBroj))
+            bool regBrojChanged = (g.RegistarskiBroj != oldRegBroj) ? true : false;            
+            if (regBrojChanged && g.RegistarskiBroj != null && gimnasticarDAO.existsGimnasticarRegBroj(g.RegistarskiBroj))
             {
                 notification.RegisterMessage("RegistarskiBroj",
                     "Gimnasticar sa datim registarskim brojem vec postoji.");
@@ -609,20 +579,21 @@ namespace Bilten.UI
         {
             if (gimnastika != Gimnastika.Undefined)
             {
+                ISession session = null;
                 try
                 {
-                    DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                    dataContext = factory.GetDataContext();
-                    dataContext.BeginTransaction();
-
-                    kategorije = loadKategorije(gimnastika);
-
-                    //     dataContext.Commit();
+                    using (session = NHibernateHelper.Instance.OpenSession())
+                    using (session.BeginTransaction())
+                    {
+                        CurrentSessionContext.Bind(session);
+                        kategorije = new List<KategorijaGimnasticara>(
+                            DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindByGimnastika(gimnastika));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    if (dataContext != null && dataContext.IsInTransaction)
-                        dataContext.Rollback();
+                    if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                        session.Transaction.Rollback();
                     MessageDialogs.showMessage(
                         Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
                     Close();
@@ -630,9 +601,7 @@ namespace Bilten.UI
                 }
                 finally
                 {
-                    if (dataContext != null)
-                        dataContext.Dispose();
-                    dataContext = null;
+                    CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 }
             }
             else
