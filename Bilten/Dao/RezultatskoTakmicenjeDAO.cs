@@ -9,5 +9,7 @@ namespace Bilten.Dao
     {
         RezultatskoTakmicenje loadRezTakmicenje(int rezTakmicenjeId);
         IList<RezultatskoTakmicenje> FindRezTakmicenjaForGimnasticar(GimnasticarUcesnik g);
+        IList<RezultatskoTakmicenje> FindByTakmicenje(int takmicenjeId);
+        RezultatskoTakmicenje FindByKatDesc(TakmicarskaKategorija kat, RezultatskoTakmicenjeDescription desc);
     }
 }

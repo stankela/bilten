@@ -733,8 +733,7 @@ namespace Bilten.UI
             SelectKategorijaForm form = null;
             try
             {
-                form = new SelectKategorijaForm(takmicenje.Id, dodeljeneKategorije, 
-                    false, msg);
+                form = new SelectKategorijaForm(takmicenje.Id, takmicenje.Gimnastika, dodeljeneKategorije, msg);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)

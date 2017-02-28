@@ -56,6 +56,43 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<RezultatskoTakmicenje> FindByTakmicenje(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from RezultatskoTakmicenje r
+                    where r.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public RezultatskoTakmicenje FindByKatDesc(TakmicarskaKategorija kat, RezultatskoTakmicenjeDescription desc)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from RezultatskoTakmicenje r
+                    where r.Kategorija = :kat
+                    and r.TakmicenjeDescription = :desc");
+                q.SetEntity("kat", kat);
+                q.SetEntity("desc", desc);
+                IList<RezultatskoTakmicenje> result = q.List<RezultatskoTakmicenje>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

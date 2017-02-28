@@ -25,5 +25,7 @@ namespace Bilten.Dao
         public abstract DrugaOcenaDAO GetDrugaOcenaDAO();
         public abstract UcesnikTakmicenja2DAO GetUcesnikTakmicenja2DAO();
         public abstract UcesnikTakmicenja3DAO GetUcesnikTakmicenja3DAO();
+        public abstract RezultatskoTakmicenjeDescriptionDAO GetRezultatskoTakmicenjeDescriptionDAO();
+        public abstract TakmicarskaKategorijaDAO GetTakmicarskaKategorijaDAO();
     }
 }

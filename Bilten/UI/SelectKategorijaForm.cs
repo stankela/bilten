@@ -9,72 +9,65 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
     public partial class SelectKategorijaForm : Form
     {
-        private List<TakmicarskaKategorija> sveKategorije;
-
         private IList<TakmicarskaKategorija> selektovaneKategorije;
         public IList<TakmicarskaKategorija> SelektovaneKategorije
         {
             get { return selektovaneKategorije; }
         }
 
-        private IList<TakmicarskaKategorija> nedozvoljeneKategorije;
-        private IDataContext dataContext;
-        private string labelText;
-        private bool kategorijeGimnasticara;
-
-        public SelectKategorijaForm(int takmicenjeId,
-            IList<TakmicarskaKategorija> nedozvoljeneKategorije, 
-            bool kategorijeGimnasticara,
-            string labelText)
+        public SelectKategorijaForm(int takmicenjeId, Gimnastika gimnastika,
+            IList<TakmicarskaKategorija> nedozvoljeneKategorije, string labelText)
         {
             InitializeComponent();
-            this.kategorijeGimnasticara = kategorijeGimnasticara;
-            this.labelText = labelText;
-            this.nedozvoljeneKategorije = nedozvoljeneKategorije;
             selektovaneKategorije = new List<TakmicarskaKategorija>();
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-
-                IList<TakmicarskaKategorija> kategorije;
-                if (kategorijeGimnasticara)
-                    kategorije = loadKategorijeGimnasticara(takmicenjeId);
-                else
-                    kategorije = loadTakKategorije(takmicenjeId);
-                sveKategorije = new List<TakmicarskaKategorija>(kategorije);
-                createUI();
-
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<TakmicarskaKategorija> kategorije;
+                    bool sveKategorije;
+                    if (takmicenjeId == -1)
+                    {
+                        kategorije = loadKategorijeGimnasticara(gimnastika);
+                        sveKategorije = true;
+                    }
+                    else
+                    {
+                        kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
+                        sveKategorije = false;
+                    }
+                    createUI(new List<TakmicarskaKategorija>(kategorije), nedozvoljeneKategorije,
+                        sveKategorije, labelText);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
-        private IList<TakmicarskaKategorija> loadKategorijeGimnasticara(int takmicenjeId)
+        private IList<TakmicarskaKategorija> loadKategorijeGimnasticara(Gimnastika gimnastika)
         {
-            Query q = new Query();
-            Gimnastika gimnastika = dataContext.GetById<Takmicenje>(takmicenjeId).Gimnastika;
-            
-            q = new Query();
-            q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)gimnastika));
-            IList<KategorijaGimnasticara> kategorije =
-                dataContext.GetByCriteria<KategorijaGimnasticara>(q);
+            IList<KategorijaGimnasticara> kategorije 
+                = DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindByGimnastika(gimnastika);
 
             IList<TakmicarskaKategorija> result = new List<TakmicarskaKategorija>();
             foreach (KategorijaGimnasticara kat in kategorije)
@@ -84,14 +77,8 @@ namespace Bilten.UI
             return result;
         }
 
-        private IList<TakmicarskaKategorija> loadTakKategorije(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            return dataContext.GetByCriteria<TakmicarskaKategorija>(q);
-        }
-
-        private void createUI()
+        private void createUI(List<TakmicarskaKategorija> kategorije, IList<TakmicarskaKategorija> nedozvoljeneKategorije,
+            bool sveKategorije, string labelText)
         {
             Text = "Izaberite kategorije";
             label1.Text = labelText;
@@ -103,17 +90,15 @@ namespace Bilten.UI
             this.panel1.SuspendLayout();
             this.SuspendLayout();
 
-            string sortProperty = "RedBroj";
-            if (kategorijeGimnasticara)
-                sortProperty = "Naziv";
+            string sortProperty = sveKategorije ? "Naziv" : "RedBroj";
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))[sortProperty];
-            sveKategorije.Sort(new SortComparer<TakmicarskaKategorija>(
+            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
                 propDesc, ListSortDirection.Ascending));
 
-            foreach (TakmicarskaKategorija k in sveKategorije)
+            foreach (TakmicarskaKategorija k in kategorije)
             {
-                CheckBox c = createCheckBox(k, new Point(x, y), tabIndex);
+                CheckBox c = createCheckBox(k, new Point(x, y), tabIndex, !nedozvoljeneKategorije.Contains(k));
                 this.panel1.Controls.Add(c);
                 y += 23;
                 tabIndex++;
@@ -149,7 +134,7 @@ namespace Bilten.UI
             this.PerformLayout();
         }
 
-        private CheckBox createCheckBox(TakmicarskaKategorija k, Point location, int tabIndex)
+        private CheckBox createCheckBox(TakmicarskaKategorija k, Point location, int tabIndex, bool enabled)
         {
             CheckBox result = new CheckBox();
             result.AutoSize = true;
@@ -159,7 +144,7 @@ namespace Bilten.UI
             result.UseVisualStyleBackColor = true;
             result.Tag = k;
             result.Checked = false;
-            result.Enabled = !nedozvoljeneKategorije.Contains(k);
+            result.Enabled = enabled;
             return result;
         }
 

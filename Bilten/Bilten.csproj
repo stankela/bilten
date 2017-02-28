@@ -113,8 +113,10 @@
     <Compile Include="Dao\NHibernate\NHibernateDAOFactory.cs" />
     <Compile Include="Dao\NHibernate\OcenaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\RezultatskoTakmicenjeDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\RezultatskoTakmicenjeDescriptionDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\SudijaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\SudijaUcesnikDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\TakmicarskaKategorijaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\Takmicenje1DAOImpl.cs" />
     <Compile Include="Dao\NHibernate\Takmicenje2DAOImpl.cs" />
     <Compile Include="Dao\NHibernate\Takmicenje3DAOImpl.cs" />
@@ -124,8 +126,10 @@
     <Compile Include="Dao\NHibernate\UcesnikTakmicenja3DAOImpl.cs" />
     <Compile Include="Dao\OcenaDAO.cs" />
     <Compile Include="Dao\RezultatskoTakmicenjeDAO.cs" />
+    <Compile Include="Dao\RezultatskoTakmicenjeDescriptionDAO.cs" />
     <Compile Include="Dao\SudijaDAO.cs" />
     <Compile Include="Dao\SudijaUcesnikDAO.cs" />
+    <Compile Include="Dao\TakmicarskaKategorijaDAO.cs" />
     <Compile Include="Dao\Takmicenje1DAO.cs" />
     <Compile Include="Dao\Takmicenje2DAO.cs" />
     <Compile Include="Dao\Takmicenje3DAO.cs" />

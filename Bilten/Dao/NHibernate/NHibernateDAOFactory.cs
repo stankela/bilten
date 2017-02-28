@@ -113,5 +113,15 @@ namespace Bilten.Dao.NHibernate
         {
             return new UcesnikTakmicenja3DAOImpl();
         }
+
+        public override RezultatskoTakmicenjeDescriptionDAO GetRezultatskoTakmicenjeDescriptionDAO()
+        {
+            return new  RezultatskoTakmicenjeDescriptionDAOImpl();
+        }
+
+        public override TakmicarskaKategorijaDAO GetTakmicarskaKategorijaDAO()
+        {
+            return new TakmicarskaKategorijaDAOImpl();
+        }
     }
 }
