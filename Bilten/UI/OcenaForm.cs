@@ -98,7 +98,10 @@ namespace Bilten.UI
 
             ponistiOcena1();
 
-            ckbUnosOcene.Checked = Opcije.Instance.UnosOcenaBezIzrZaCeloTak;
+            if (editMode)
+                ckbUnosOcene.Checked = ((Ocena)entity).RucnoUnetaOcena;
+            else
+                ckbUnosOcene.Checked = Opcije.Instance.UnosOcenaBezIzrZaCeloTak;
             updateUIRucniUnos();
 
             int brojEOcena = takmicenje.BrojEOcena;
