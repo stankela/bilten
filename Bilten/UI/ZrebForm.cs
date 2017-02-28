@@ -9,50 +9,41 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
     public partial class ZrebForm : Form
     {
         private Takmicenje takmicenje;
-        private IDataContext dataContext;
 
         public ZrebForm(int takmicenjeId)
         {
             InitializeComponent();
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                takmicenje = loadTakmicenje(takmicenjeId);
-
-                initUI();
-
-                //dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    initUI();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private Takmicenje loadTakmicenje(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Id", CriteriaOperator.Equal, takmicenjeId));
-            IList<Takmicenje> result = dataContext.GetByCriteria<Takmicenje>(q);
-            return result[0];
         }
 
         private void initUI()
@@ -64,29 +55,29 @@ namespace Bilten.UI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                takmicenje.ZrebZaFinalePoSpravama = textBox1.Text.Trim();
-                dataContext.Save(takmicenje);
-                dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    takmicenje.ZrebZaFinalePoSpravama = textBox1.Text.Trim();
+                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+                    session.Transaction.Commit();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
                 this.DialogResult = DialogResult.Cancel;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
