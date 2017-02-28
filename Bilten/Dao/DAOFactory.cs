@@ -17,6 +17,13 @@ namespace Bilten.Dao
         public abstract RezultatskoTakmicenjeDAO GetRezultatskoTakmicenjeDAO();
         public abstract EkipaDAO GetEkipaDAO();
         public abstract Takmicenje1DAO GetTakmicenje1DAO();
+        public abstract Takmicenje2DAO GetTakmicenje2DAO();
+        public abstract Takmicenje3DAO GetTakmicenje3DAO();
+        public abstract Takmicenje4DAO GetTakmicenje4DAO();
         public abstract GimnasticarUcesnikDAO GetGimnasticarUcesnikDAO();
+        public abstract OcenaDAO GetOcenaDAO();
+        public abstract DrugaOcenaDAO GetDrugaOcenaDAO();
+        public abstract UcesnikTakmicenja2DAO GetUcesnikTakmicenja2DAO();
+        public abstract UcesnikTakmicenja3DAO GetUcesnikTakmicenja3DAO();
     }
 }

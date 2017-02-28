@@ -20,7 +20,6 @@ namespace Bilten.UI
         protected DomainObject entity;
         protected bool editMode;
         protected bool initializing;
-        protected IDataContext dataContext;
         private bool persistEntity;
         protected bool closedByOK;
         private bool closedByCancel;

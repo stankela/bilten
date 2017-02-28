@@ -126,6 +126,19 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public bool Contains(T entity)
+        {
+            try
+            {
+                return Session.Contains(entity);
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+
         public void Flush()
         {
             try

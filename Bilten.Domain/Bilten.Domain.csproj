@@ -147,7 +147,9 @@
     <EmbeddedResource Include="NHibernate\Mappings\RasporedSudija.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\RezultatEkipno.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\RezultatPreskok.hbm.xml" />
-    <EmbeddedResource Include="NHibernate\Mappings\RezultatskoTakmicenje.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatskoTakmicenje.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mappings\RezultatskoTakmicenjeDescription.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\RezultatSprava.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\RezultatUkupno.hbm.xml" />

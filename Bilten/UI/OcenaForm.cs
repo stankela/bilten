@@ -10,6 +10,10 @@ using Bilten.Exceptions;
 using System.Globalization;
 using Bilten.Data;
 using Bilten.Util;
+using Bilten.Dao;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao.NHibernate;
 
 namespace Bilten.UI
 {
@@ -26,6 +30,7 @@ namespace Bilten.UI
         private bool izracunato;
         private bool textBoxHandlersDisabled;
         private Ocena original;
+        private int takmicenjeId;
 
         public OcenaForm(Nullable<int> ocenaId, GimnasticarUcesnik g, 
             Sprava sprava, DeoTakmicenjaKod deoTakKod,
@@ -37,8 +42,8 @@ namespace Bilten.UI
             this.deoTakKod = deoTakKod;
             this.obeOcene = sprava == Sprava.Preskok;
             this.showWaitCursor = true;
+            this.takmicenjeId = takmicenjeId;
 
-            takmicenje = loadTakmicenje(takmicenjeId);
             initialize(ocenaId, true);
 
             izracunato = editMode && !ckbUnosOcene.Checked;
@@ -46,7 +51,10 @@ namespace Bilten.UI
 
         protected override DomainObject getEntityById(int id)
         {
-            Ocena result = dataContext.GetById<Ocena>(id);
+            // Vidi komentar u createNewEntity zasto ucitavam takmicenje u ovom metodu.
+            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+
+            Ocena result = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindById(id);
 
             original = (Ocena)result.shallowCopy();
             if (result.Ocena2 != null)
@@ -57,44 +65,24 @@ namespace Bilten.UI
 
         protected override DomainObject createNewEntity()
         {
+            // TODO: Nisam mogao da smestim ucitavanje takmicenja u loadData zato sto
+            // mi takmicenje treba u createNewEntity, a u EntityDetailForm je 
+            // createNewEntity pre loadData. Ne mogu da u EntityDetailForm promenim
+            // redosled - da smestim loadData pre createNewEntity - zato sto neznam 
+            // da li cu time nesto pokvariti na drugim mestima. Zato, umesto da
+            // ucitavam takmicenje u loadData, ucitavam ga u createNewEntity i
+            // getEntityById.
+
+            // Ne bi bilo lose da izbacim EntityDetailForm i da svaki novi form 
+            // kreiram od pocetka, da bih izbegao ovakve zavisnosti
+            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+
             Ocena result = new Ocena();
             result.Sprava = sprava;
             result.DeoTakmicenjaKod = deoTakKod;
             result.Gimnasticar = gimnasticar;
             result.BrojEOcena = takmicenje.BrojEOcena;
             return result;
-        }
-
-        private Takmicenje loadTakmicenje(int takmicenjeId)
-        {
-            // TODO: Nisam mogao da smestim ucitavanje takmicenja u loadData zato sto
-            // mi takmicenje treba u createNewEntity, a u EntityDetailForm je 
-            // createNewEntity pre loadData. Ne mogu da u EntityDetailForm promenim
-            // redosled - da smestim loadData pre createNewEntity - zato sto neznam 
-            // da li cu time nesto pokvariti na drugim mestima.
-            // Ne bi bilo lose da izbacim EntityDetailForm i da svaki novi form 
-            // kreiram od pocetka, da bih izbegao ovakve zavisnosti
-            try
-            {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                IDataContext dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                return dataContext.GetById<Takmicenje>(takmicenjeId);
-            }
-            catch (Exception ex)
-            {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-            finally
-            {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-            }
         }
 
         protected override void initUI()
@@ -1112,22 +1100,23 @@ namespace Bilten.UI
         protected override void addEntity(DomainObject entity)
         {
             Ocena o = (Ocena)entity;
-            dataContext.Add(o);
+            DAOFactoryFactory.DAOFactory.GetOcenaDAO().Add(o);
 
-            IList<RezultatskoTakmicenje> rezTakmicenja = loadRezTakmicenja(o.Gimnasticar);
+            IList<RezultatskoTakmicenje> rezTakmicenja
+                = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
                     rezTak.Takmicenje1.ocenaAdded(o, rezTak);
-                    dataContext.Save(rezTak.Takmicenje1);
+                    DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                 {
                     if (rezTak.Propozicije.OdvojenoTak2)
                     {
                         rezTak.Takmicenje2.ocenaAdded(o, rezTak);
-                        dataContext.Save(rezTak.Takmicenje2);
+                        DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rezTak.Takmicenje2);
                     }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
@@ -1135,7 +1124,7 @@ namespace Bilten.UI
                     if (rezTak.Propozicije.OdvojenoTak3)
                     {
                         rezTak.Takmicenje3.ocenaAdded(o, rezTak);
-                        dataContext.Save(rezTak.Takmicenje3);
+                        DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rezTak.Takmicenje3);
                     }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
@@ -1143,68 +1132,68 @@ namespace Bilten.UI
                     if (rezTak.Propozicije.OdvojenoTak4)
                     {
                         rezTak.Takmicenje4.ocenaAdded(o, rezTak);
-                        dataContext.Save(rezTak.Takmicenje4);
+                        DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rezTak.Takmicenje4);
                     }
                 }
             }
 
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
+                GenericNHibernateDAO<GimnasticarUcesnik, int> gimUcesnikDAO
+                    = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO() as GenericNHibernateDAO<GimnasticarUcesnik, int>;
+                GenericNHibernateDAO<UcesnikTakmicenja2, int> ucesnikTak2DAO
+                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO() as GenericNHibernateDAO<UcesnikTakmicenja2, int>;
+                GenericNHibernateDAO<UcesnikTakmicenja3, int> ucesnikTak3DAO
+                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO() as GenericNHibernateDAO<UcesnikTakmicenja3, int>;
+
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
                     foreach (GimnasticarUcesnik g in rezTak.Takmicenje1.Gimnasticari)
-                        dataContext.Evict(g);
+                        gimUcesnikDAO.Evict(g);
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                 {
                     foreach (UcesnikTakmicenja2 u in rezTak.Takmicenje2.Ucesnici)
                     {
-                        if (dataContext.Contains(u.Gimnasticar))
-                            dataContext.Evict(u.Gimnasticar);
-                        dataContext.Evict(u);
+                        if (gimUcesnikDAO.Contains(u.Gimnasticar))
+                            gimUcesnikDAO.Evict(u.Gimnasticar);
+                        ucesnikTak2DAO.Evict(u);
                     }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
                 {
                     foreach (UcesnikTakmicenja3 u in rezTak.Takmicenje3.Ucesnici)
                     {
-                        if (dataContext.Contains(u.Gimnasticar))
-                            dataContext.Evict(u.Gimnasticar);
-                        dataContext.Evict(u);
+                        if (gimUcesnikDAO.Contains(u.Gimnasticar))
+                            gimUcesnikDAO.Evict(u.Gimnasticar);
+                        ucesnikTak3DAO.Evict(u);
                     }
                 }
             }
-        }
-
-        private IList<RezultatskoTakmicenje> loadRezTakmicenja(GimnasticarUcesnik g)
-        {
-            return dataContext.ExecuteNamedQuery<RezultatskoTakmicenje>(
-                "FindRezTakmicenjaForGimnasticar",
-                new string[] { "gimnasticar" },
-                new object[] { g });
         }
 
         protected override void updateEntity(DomainObject entity)
         {
             Ocena o = (Ocena)entity;
             if (deletedDrugaOcena != null)
-                dataContext.Delete(deletedDrugaOcena);
-            dataContext.Save(o);
+                DAOFactoryFactory.DAOFactory.GetDrugaOcenaDAO().Delete(deletedDrugaOcena);
+            DAOFactoryFactory.DAOFactory.GetOcenaDAO().Update(o);
 
-            IList<RezultatskoTakmicenje> rezTakmicenja = loadRezTakmicenja(o.Gimnasticar);
+            IList<RezultatskoTakmicenje> rezTakmicenja
+                = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
                     rezTak.Takmicenje1.ocenaEdited(o, original, rezTak);
-                    dataContext.Save(rezTak.Takmicenje1);
+                    DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                 {
                     if (rezTak.Propozicije.OdvojenoTak2)
                     {
                         rezTak.Takmicenje2.ocenaEdited(o, original, rezTak);
-                        dataContext.Save(rezTak.Takmicenje2);
+                        DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rezTak.Takmicenje2);
                     }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
@@ -1212,7 +1201,7 @@ namespace Bilten.UI
                     if (rezTak.Propozicije.OdvojenoTak3)
                     {
                         rezTak.Takmicenje3.ocenaEdited(o, rezTak);
-                        dataContext.Save(rezTak.Takmicenje3);
+                        DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rezTak.Takmicenje3);
                     }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
@@ -1220,13 +1209,20 @@ namespace Bilten.UI
                     if (rezTak.Propozicije.OdvojenoTak4)
                     {
                         rezTak.Takmicenje4.ocenaEdited(o, original, rezTak);
-                        dataContext.Save(rezTak.Takmicenje4);
+                        DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rezTak.Takmicenje4);
                     }
                 }
             }
 
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
+                GenericNHibernateDAO<GimnasticarUcesnik, int> gimUcesnikDAO
+                    = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO() as GenericNHibernateDAO<GimnasticarUcesnik, int>;
+                GenericNHibernateDAO<UcesnikTakmicenja2, int> ucesnikTak2DAO
+                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO() as GenericNHibernateDAO<UcesnikTakmicenja2, int>;
+                GenericNHibernateDAO<UcesnikTakmicenja3, int> ucesnikTak3DAO
+                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO() as GenericNHibernateDAO<UcesnikTakmicenja3, int>;
+                
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
                     foreach (GimnasticarUcesnik g in rezTak.Takmicenje1.Gimnasticari)
@@ -1235,26 +1231,26 @@ namespace Bilten.UI
                         // izbacim (Evict) iz prvog takmicenja, prijavljuje mi gresku
                         // kada pokusam da ga izbacim i iz ostalih takmicenja. Zato
                         // sam dodao ovu proveru
-                        if (dataContext.Contains(g))
-                            dataContext.Evict(g);
+                        if (gimUcesnikDAO.Contains(g))
+                            gimUcesnikDAO.Evict(g);
                     }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                 {
                     foreach (UcesnikTakmicenja2 u in rezTak.Takmicenje2.Ucesnici)
                     {
-                        if (dataContext.Contains(u.Gimnasticar))
-                            dataContext.Evict(u.Gimnasticar);
-                        dataContext.Evict(u);
+                        if (gimUcesnikDAO.Contains(u.Gimnasticar))
+                            gimUcesnikDAO.Evict(u.Gimnasticar);
+                        ucesnikTak2DAO.Evict(u);
                     }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
                 {
                     foreach (UcesnikTakmicenja3 u in rezTak.Takmicenje3.Ucesnici)
                     {
-                        if (dataContext.Contains(u.Gimnasticar))
-                            dataContext.Evict(u.Gimnasticar);
-                        dataContext.Evict(u);
+                        if (gimUcesnikDAO.Contains(u.Gimnasticar))
+                            gimUcesnikDAO.Evict(u.Gimnasticar);
+                        ucesnikTak3DAO.Evict(u);
                     }
                 }
             }
