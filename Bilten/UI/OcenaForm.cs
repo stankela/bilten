@@ -26,7 +26,7 @@ namespace Bilten.UI
         private bool obeOcene;
         private Color selectionColor = Color.Aqua;
         private Color disabledColor = SystemColors.Control;
-        private DrugaOcena deletedDrugaOcena;
+        private DrugaOcena origOcena2;
         private bool izracunato;
         private bool textBoxHandlersDisabled;
         private Ocena original;
@@ -55,6 +55,7 @@ namespace Bilten.UI
             takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
 
             Ocena result = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindById(id);
+            origOcena2 = result.Ocena2;
 
             original = (Ocena)result.shallowCopy();
             if (result.Ocena2 != null)
@@ -136,8 +137,6 @@ namespace Bilten.UI
                     new Point(ckbUnosOcene.Location.X, ckbUnosOcene.Location.Y - offset);
                 btnIzracunaj.Location =
                     new Point(btnIzracunaj.Location.X, btnIzracunaj.Location.Y - offset);
-                btnPonisti.Location =
-                    new Point(btnPonisti.Location.X, btnPonisti.Location.Y - offset);
                 btnOk.Location =
                     new Point(btnOk.Location.X, btnOk.Location.Y - offset);
                 btnCancel.Location =
@@ -658,11 +657,8 @@ namespace Bilten.UI
                 ocena.Penalty = float.Parse(txtPenal.Text);
 
 
-            deletedDrugaOcena = null;
             if (isDrugaOcenaEmpty())
             {
-                if (ocena.Ocena2 != null)
-                    deletedDrugaOcena = ocena.Ocena2;
                 ocena.Ocena2 = null;
             }
             else
@@ -1071,19 +1067,6 @@ namespace Bilten.UI
             || object.ReferenceEquals(txt, txtE6_2);
         }
 
-        private void btnPonisti_Click(object sender, EventArgs e)
-        {
-            ponistiOcena1();
-            ponistiOcena2();
-            izracunato = false;
-            updateAcceptButton();
-            btnIzracunaj.Focus();  // mora i ova naredba, zato sto naredba this.AcceptButton = btnIzracunaj koja
-                    // se izvrsava u updateAcceptButton nema efekta ako je btnPonisti_Click pozvan kao rezultat
-            // klika misem (tada ce fokus ostati na btnPonisti). Ako je btnPonisti_Click pozvan kao rezultat
-            // pritiska na Enter (pri cemu je btnPonisti bilo u fokusu), tada ce se fokus prebaciti na 
-            // btnIzracunaj i bez ove naredbe.
-        }
-
         protected override void handleOkClick()
         {
             if (!ckbUnosOcene.Checked && !izracunato)
@@ -1175,8 +1158,8 @@ namespace Bilten.UI
         protected override void updateEntity(DomainObject entity)
         {
             Ocena o = (Ocena)entity;
-            if (deletedDrugaOcena != null)
-                DAOFactoryFactory.DAOFactory.GetDrugaOcenaDAO().Delete(deletedDrugaOcena);
+            if (origOcena2 != null && o.Ocena2 == null)
+                DAOFactoryFactory.DAOFactory.GetDrugaOcenaDAO().Delete(origOcena2);
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Update(o);
 
             IList<RezultatskoTakmicenje> rezTakmicenja

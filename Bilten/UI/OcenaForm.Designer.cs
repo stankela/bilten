@@ -64,7 +64,6 @@ namespace Bilten.UI
             this.txtE1_2 = new System.Windows.Forms.TextBox();
             this.txtD_2 = new System.Windows.Forms.TextBox();
             this.txtTotalObeOcene = new System.Windows.Forms.TextBox();
-            this.btnPonisti = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSprava)).BeginInit();
             this.SuspendLayout();
             // 
@@ -260,7 +259,7 @@ namespace Bilten.UI
             // 
             // btnIzracunaj
             // 
-            this.btnIzracunaj.Location = new System.Drawing.Point(303, 280);
+            this.btnIzracunaj.Location = new System.Drawing.Point(397, 280);
             this.btnIzracunaj.Name = "btnIzracunaj";
             this.btnIzracunaj.Size = new System.Drawing.Size(75, 23);
             this.btnIzracunaj.TabIndex = 55;
@@ -369,22 +368,11 @@ namespace Bilten.UI
             this.txtTotalObeOcene.TabIndex = 53;
             this.txtTotalObeOcene.TabStop = false;
             // 
-            // btnPonisti
-            // 
-            this.btnPonisti.Location = new System.Drawing.Point(397, 280);
-            this.btnPonisti.Name = "btnPonisti";
-            this.btnPonisti.Size = new System.Drawing.Size(75, 23);
-            this.btnPonisti.TabIndex = 56;
-            this.btnPonisti.Text = "Ponisti";
-            this.btnPonisti.UseVisualStyleBackColor = true;
-            this.btnPonisti.Click += new System.EventHandler(this.btnPonisti_Click);
-            // 
             // OcenaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(675, 321);
-            this.Controls.Add(this.btnPonisti);
             this.Controls.Add(this.txtTotal_2);
             this.Controls.Add(this.txtTotalObeOcene);
             this.Controls.Add(this.txtPenal_2);
@@ -463,7 +451,6 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.txtTotalObeOcene, 0);
             this.Controls.SetChildIndex(this.txtTotal_2, 0);
-            this.Controls.SetChildIndex(this.btnPonisti, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSprava)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -508,6 +495,5 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtE1_2;
         private System.Windows.Forms.TextBox txtD_2;
         private System.Windows.Forms.TextBox txtTotalObeOcene;
-        private System.Windows.Forms.Button btnPonisti;
     }
 }
