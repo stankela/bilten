@@ -8,12 +8,15 @@ using System.Windows.Forms;
 using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
+using Bilten.Dao.NHibernate;
 
 namespace Bilten.UI
 {
     public partial class KopirajTakmicenjeForm : Form
     {
-        IDataContext dataContext;
         private IList<RezultatskoTakmicenjeDescription> takmicenja = new List<RezultatskoTakmicenjeDescription>();
         private IList<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>();
         Gimnastika gimnastika;
@@ -61,44 +64,47 @@ namespace Bilten.UI
             if (dlgResult != DialogResult.OK || form.SelTakmicenje == null)
                 return;
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                takmicenje = form.SelTakmicenje;
-                txtTakmicenje.Text = takmicenje.Naziv;
-                dataContext.Attach(takmicenje, false);
-
-                lstTakmicenja.Items.Clear();
-                takmicenja.Clear();
-                foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    lstTakmicenja.Items.Add(d, true);
-                    takmicenja.Add(d);
-                }
-                lstKategorije.Items.Clear();
-                kategorije.Clear();
-                foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
-                {
-                    lstKategorije.Items.Add(k, true);
-                    kategorije.Add(k);
+                    CurrentSessionContext.Bind(session);
+                    takmicenje = form.SelTakmicenje;
+                    txtTakmicenje.Text = takmicenje.Naziv;
+
+                    GenericNHibernateDAO<Takmicenje, int> takmicenjeDAO
+                        = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO() as GenericNHibernateDAO<Takmicenje, int>;
+                    takmicenjeDAO.Attach(takmicenje, false);
+
+                    lstTakmicenja.Items.Clear();
+                    takmicenja.Clear();
+                    foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
+                    {
+                        lstTakmicenja.Items.Add(d, true);
+                        takmicenja.Add(d);
+                    }
+                    lstKategorije.Items.Clear();
+                    kategorije.Clear();
+                    foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
+                    {
+                        lstKategorije.Items.Add(k, true);
+                        kategorije.Add(k);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showMessage(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 

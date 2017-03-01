@@ -76,7 +76,7 @@ namespace Bilten.Dao.NHibernate
             {
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
-    }
+        }
 
         public void Add(T entity)
         {
@@ -138,6 +138,20 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public void Attach(object item, bool update)
+        {
+            try
+            {
+                if (update)
+                    Session.Update(item);
+                else
+                    Session.Lock(item, LockMode.None);
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
 
         public void Flush()
         {

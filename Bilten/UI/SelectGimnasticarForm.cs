@@ -27,15 +27,8 @@ namespace Bilten.UI
             this.gimnastika = gimnastika;
             initializeGridColumns();
 
-            DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-            
-            FetchModes.Add(new AssociationFetch(
-                "Kategorija", AssociationFetchMode.Eager));
-            FetchModes.Add(new AssociationFetch(
-                "Klub", AssociationFetchMode.Eager));
-            FetchModes.Add(new AssociationFetch(
-                "Drzava", AssociationFetchMode.Eager));
-
+            DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
+                DataGridViewUserControl_GridColumnHeaderMouseClick);            
             showAll();
         }
 
