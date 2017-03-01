@@ -10,6 +10,9 @@ using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
 using Bilten.Util;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -21,7 +24,6 @@ namespace Bilten.UI
 
         private List<KlubUcesnik> klubovi;
         private List<DrzavaUcesnik> drzave;
-        private IDataContext dataContext;
         private IList<TakmicarskaKategorija> sveKategorije;
         private List<TakmicarskaKategorija> mKategorije = new List<TakmicarskaKategorija>();
         private List<TakmicarskaKategorija> zKategorije = new List<TakmicarskaKategorija>();
@@ -44,37 +46,33 @@ namespace Bilten.UI
             this.takmicenjeId = takmicenjeId;
             this.gimnastika = gimnastika;
             this.startKategorija = startKategorija;
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                loadData();
-                initUI();
-
-                //dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    loadData();
+                    initUI();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
         private void loadData()
         {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            sveKategorije = dataContext.GetByCriteria<TakmicarskaKategorija>(q);
+            sveKategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
 
             foreach (TakmicarskaKategorija k in sveKategorije)
             {
@@ -84,27 +82,10 @@ namespace Bilten.UI
                     zKategorije.Add(k);
             }
 
-            IList<KlubUcesnik> kluboviList = findKluboviUcesnici(takmicenjeId);
-            klubovi = new List<KlubUcesnik>(kluboviList);
-
-            IList<DrzavaUcesnik> drzaveList = findDrzaveUcesnici(takmicenjeId);
-            drzave = new List<DrzavaUcesnik>(drzaveList);
-        }
-
-        private IList<DrzavaUcesnik> findDrzaveUcesnici(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            return dataContext.GetByCriteria<DrzavaUcesnik>(q);
-        }
-
-        private IList<KlubUcesnik> findKluboviUcesnici(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            return dataContext.GetByCriteria<KlubUcesnik>(q);
+            klubovi = new List<KlubUcesnik>(
+                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(takmicenjeId));
+            drzave = new List<DrzavaUcesnik>(
+                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenjeId));
         }
 
         private void initUI()

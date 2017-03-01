@@ -31,7 +31,7 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public IList<KlubUcesnik> FindKluboviUcesnici(int takmicenjeId)
+        public IList<KlubUcesnik> FindByTakmicenje(int takmicenjeId)
         {
             try
             {

@@ -114,6 +114,8 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        #endregion
+
         public void Evict(T entity)
         {
             try
@@ -176,7 +178,5 @@ namespace Bilten.Dao.NHibernate
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
-
-        #endregion
     }
 }

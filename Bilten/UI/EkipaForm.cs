@@ -67,9 +67,9 @@ namespace Bilten.UI
             // modu rezTakmicenje "vidi" sve promene na ekipi.
             rezTakmicenje = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().loadRezTakmicenje(rezTakmicenjeId);
             klubovi = new List<KlubUcesnik>(
-                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindKluboviUcesnici(rezTakmicenje.Takmicenje.Id));
+                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(rezTakmicenje.Takmicenje.Id));
             drzave = new List<DrzavaUcesnik>(
-                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindDrzaveUcesnici(rezTakmicenje.Takmicenje.Id));
+                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(rezTakmicenje.Takmicenje.Id));
         }
 
         protected override void initUI()

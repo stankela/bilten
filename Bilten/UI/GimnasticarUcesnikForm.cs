@@ -69,7 +69,7 @@ namespace Bilten.UI
         private void loadKlubovi(int takmicenjeId)
         {
             ISet<KlubUcesnik> kluboviSet = new HashSet<KlubUcesnik>(
-                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindKluboviUcesnici(takmicenjeId));
+                DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(takmicenjeId));
 
             foreach (Klub k in DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll())
             { 
@@ -93,7 +93,7 @@ namespace Bilten.UI
         private void loadDrzave(int takmicenjeId)
         {
             ISet<DrzavaUcesnik> drzaveSet = new HashSet<DrzavaUcesnik>(
-                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindDrzaveUcesnici(takmicenjeId));
+                DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenjeId));
 
             foreach (Drzava d in DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll())
             {
