@@ -17,7 +17,6 @@ namespace Bilten.UI
     public partial class KvalifikantiTak2Form : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
-        private IDataContext dataContext;
         private bool[] takmicenjeOpened;
         private Takmicenje takmicenje;
 
@@ -52,12 +51,15 @@ namespace Bilten.UI
                         throw new BusinessException("Ne postoji odvojeno takmicenje II ni za jednu kategoriju.");
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    NHibernateUtil.Initialize(takmicenje);
 
                     initUI();
                     takmicenjeOpened = new bool[rezTakmicenja.Count];
                     cmbTakmicenje.SelectedIndex = 0;
 
                     cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
+
+                    //onSelectedTakmicenjeChanged();
                 }
             }
             catch (BusinessException)
@@ -91,6 +93,7 @@ namespace Bilten.UI
             foreach (RezultatskoTakmicenje tak in result)
             {
                 NHibernateUtil.Initialize(tak.Propozicije);
+                NHibernateUtil.Initialize(tak.Takmicenje);
                 if (tak.Propozicije.PostojiTak2)
                     NHibernateUtil.Initialize(tak.Takmicenje2.Poredak.Rezultati);
             }

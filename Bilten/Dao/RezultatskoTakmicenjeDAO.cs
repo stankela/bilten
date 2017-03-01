@@ -11,6 +11,8 @@ namespace Bilten.Dao
         IList<RezultatskoTakmicenje> FindRezTakmicenjaForGimnasticar(GimnasticarUcesnik g);
         IList<RezultatskoTakmicenje> FindByTakmicenje(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetchTakmicenje2(int takmicenjeId);
+        IList<RezultatskoTakmicenje> FindByTakmicenjeFetchTakmicenje3(int takmicenjeId);
+        RezultatskoTakmicenje FindByIdFetchTakmicenje3(int rezTakmicenjeId);
         RezultatskoTakmicenje FindByKatDesc(TakmicarskaKategorija kat, RezultatskoTakmicenjeDescription desc);
     }
 }
