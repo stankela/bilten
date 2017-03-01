@@ -10,6 +10,9 @@ using Bilten.Exceptions;
 using Bilten.Data;
 using System.Globalization;
 using Bilten.Util;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -257,31 +260,25 @@ namespace Bilten.UI
 
         private bool postojeUneteOcene(int takmicenjeId)
         {
-            IDataContext dataContext = null;
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                string query = @"from Ocena o
-	                       where o.Gimnasticar.Takmicenje.Id = :id";
-                IList<Ocena> ocene = dataContext.ExecuteQuery<Ocena>(QueryLanguageType.HQL, query,
-                        new string[] { "id" }, new object[] { takmicenjeId });
-                return ocene.Count > 0;
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    return DAOFactoryFactory.DAOFactory.GetOcenaDAO().existsOcene(takmicenjeId);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 

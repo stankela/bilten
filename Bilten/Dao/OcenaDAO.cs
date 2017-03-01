@@ -7,6 +7,6 @@ namespace Bilten.Dao
 {
     public interface OcenaDAO : GenericDAO<Ocena, int>
     {
-
+        bool existsOcene(int takmicenjeId);
     }
 }

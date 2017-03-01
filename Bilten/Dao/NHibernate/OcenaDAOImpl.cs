@@ -10,6 +10,21 @@ namespace Bilten.Dao.NHibernate
     {
         #region OcenaDAO Members
 
+        public bool existsOcene(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from Ocena o
+	                       where o.Gimnasticar.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }
