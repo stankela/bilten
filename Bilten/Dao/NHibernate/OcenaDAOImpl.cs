@@ -10,6 +10,25 @@ namespace Bilten.Dao.NHibernate
     {
         #region OcenaDAO Members
 
+        public IList<Ocena> FindOceneForGimnasticar(GimnasticarUcesnik gim, DeoTakmicenjaKod deoTakKod)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select o from Ocena o
+                    left join fetch o.Ocena2
+                    join o.Gimnasticar g
+                    where g = :gim
+                    and o.DeoTakmicenjaKod = :deoTakKod");
+                q.SetEntity("gim", gim);
+                q.SetByte("deoTakKod", (byte)deoTakKod);
+                return q.List<Ocena>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public bool existsOcene(int takmicenjeId)
         {
             try

@@ -9,13 +9,15 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
+using Bilten.Dao.NHibernate;
 
 namespace Bilten.UI
 {
     public partial class KvalifikantiTak3EditorForm : Form
     {
         private RezultatskoTakmicenje rezTakmicenje;
-        private IDataContext dataContext;
         private Takmicenje takmicenje;
         private Sprava sprava;
     
@@ -23,77 +25,58 @@ namespace Bilten.UI
         {
             InitializeComponent();
             this.sprava = sprava;
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    rezTakmicenje = loadRezTakmicenje(rezTakmicenjeId);
+                    if (rezTakmicenje == null)
+                        throw new BusinessException("Greska u programu.");
 
-                rezTakmicenje = loadRezTakmicenje(rezTakmicenjeId);
-                if (rezTakmicenje == null)
-                    throw new BusinessException("Greska u programu.");
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    NHibernateUtil.Initialize(takmicenje);
 
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                NHibernateUtil.Initialize(takmicenje);
-
-                initUI();
+                    initUI();
+                }
             }
             catch (BusinessException)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 throw;
             }
             catch (InfrastructureException)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 throw;
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
         private RezultatskoTakmicenje loadRezTakmicenje(int rezTakmicenjeId)
         {
-            string query = @"select distinct r
-                    from RezultatskoTakmicenje r
-                    left join fetch r.Kategorija kat
-                    left join fetch r.TakmicenjeDescription d
-                    left join fetch r.Takmicenje3 t
-                    left join fetch t.Poredak
-                    left join fetch t.Ucesnici u
-                    left join fetch u.Gimnasticar g
-                    left join fetch g.DrzavaUcesnik dr
-                    left join fetch g.KlubUcesnik kl
-                    where r.Id = :rezTakmicenjeId";
+            RezultatskoTakmicenje result
+                = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByIdFetchTakmicenje3(rezTakmicenjeId);
 
-            IList<RezultatskoTakmicenje> result = dataContext.
-                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "rezTakmicenjeId" },
-                        new object[] { rezTakmicenjeId });
-            foreach (RezultatskoTakmicenje tak in result)
-            {
-                NHibernateUtil.Initialize(tak.Propozicije);
-                foreach (PoredakSprava p in tak.Takmicenje3.Poredak)
-                    NHibernateUtil.Initialize(p.Rezultati);
-                NHibernateUtil.Initialize(tak.Takmicenje3.PoredakPreskok.Rezultati);
-            }
-            if (result.Count > 0)
-                return result[0];
-            else
-                return null;
+            NHibernateUtil.Initialize(result.Propozicije);
+            foreach (PoredakSprava p in result.Takmicenje3.Poredak)
+                NHibernateUtil.Initialize(p.Rezultati);
+            NHibernateUtil.Initialize(result.Takmicenje3.PoredakPreskok.Rezultati);
+            return result;
         }
 
         private void initUI()
@@ -238,69 +221,68 @@ namespace Bilten.UI
         {
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                RezultatskoTakmicenje origTakmicenje = loadRezTakmicenje(rezTakmicenje.Id);
-                
-                List<UcesnikTakmicenja3> orig = new List<UcesnikTakmicenja3>(origTakmicenje.Takmicenje3.getUcesniciKvalifikanti(sprava));
-                List<UcesnikTakmicenja3> curr = new List<UcesnikTakmicenja3>(rezTakmicenje.Takmicenje3.getUcesniciKvalifikanti(sprava));
-                List<UcesnikTakmicenja3> added = new List<UcesnikTakmicenja3>();
-                List<UcesnikTakmicenja3> updated = new List<UcesnikTakmicenja3>();
-                List<UcesnikTakmicenja3> deleted = new List<UcesnikTakmicenja3>();
-                diff(curr, orig, added, updated, deleted);
-
-                foreach (UcesnikTakmicenja3 u in updated)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    UcesnikTakmicenja3 origUcesnik = origTakmicenje.Takmicenje3.getUcesnikKvalifikant(u.Gimnasticar, sprava);
-                    if (origUcesnik == null)
-                        throw new Exception("Greska u programu.");
-                    origUcesnik.QualOrder = u.QualOrder;
-                }
+                    CurrentSessionContext.Bind(session);
+                    RezultatskoTakmicenje origTakmicenje = loadRezTakmicenje(rezTakmicenje.Id);
 
-                foreach (UcesnikTakmicenja3 u in added)
-                {
-                    origTakmicenje.Takmicenje3.addUcesnik(u);
-                    Ocena o = loadOcena(u.Gimnasticar, DeoTakmicenjaKod.Takmicenje3, sprava);
-                    if (sprava != Sprava.Preskok)
-                        origTakmicenje.Takmicenje3.getPoredak(sprava).addGimnasticar(u.Gimnasticar, o, origTakmicenje);
-                    else
-                        origTakmicenje.Takmicenje3.PoredakPreskok.addGimnasticar(u.Gimnasticar, o, origTakmicenje);
-                }
+                    List<UcesnikTakmicenja3> orig = new List<UcesnikTakmicenja3>(origTakmicenje.Takmicenje3.getUcesniciKvalifikanti(sprava));
+                    List<UcesnikTakmicenja3> curr = new List<UcesnikTakmicenja3>(rezTakmicenje.Takmicenje3.getUcesniciKvalifikanti(sprava));
+                    List<UcesnikTakmicenja3> added = new List<UcesnikTakmicenja3>();
+                    List<UcesnikTakmicenja3> updated = new List<UcesnikTakmicenja3>();
+                    List<UcesnikTakmicenja3> deleted = new List<UcesnikTakmicenja3>();
+                    diff(curr, orig, added, updated, deleted);
 
-                foreach (UcesnikTakmicenja3 u in deleted)
-                {
-                    origTakmicenje.Takmicenje3.removeUcesnik(u);
-                    if (sprava == Sprava.Preskok)
-                        origTakmicenje.Takmicenje3.PoredakPreskok.deleteGimnasticar(u.Gimnasticar, origTakmicenje);
-                    else
-                        origTakmicenje.Takmicenje3.getPoredak(sprava).deleteGimnasticar(u.Gimnasticar, origTakmicenje);
-                }
+                    foreach (UcesnikTakmicenja3 u in updated)
+                    {
+                        UcesnikTakmicenja3 origUcesnik = origTakmicenje.Takmicenje3.getUcesnikKvalifikant(u.Gimnasticar, sprava);
+                        if (origUcesnik == null)
+                            throw new Exception("Greska u programu.");
+                        origUcesnik.QualOrder = u.QualOrder;
+                    }
 
-                dataContext.Save(origTakmicenje.Takmicenje3);
-                dataContext.Commit();
+                    foreach (UcesnikTakmicenja3 u in added)
+                    {
+                        origTakmicenje.Takmicenje3.addUcesnik(u);
+                        Ocena o = loadOcena(u.Gimnasticar, DeoTakmicenjaKod.Takmicenje3, sprava);
+                        if (sprava != Sprava.Preskok)
+                            origTakmicenje.Takmicenje3.getPoredak(sprava).addGimnasticar(u.Gimnasticar, o, origTakmicenje);
+                        else
+                            origTakmicenje.Takmicenje3.PoredakPreskok.addGimnasticar(u.Gimnasticar, o, origTakmicenje);
+                    }
+
+                    foreach (UcesnikTakmicenja3 u in deleted)
+                    {
+                        origTakmicenje.Takmicenje3.removeUcesnik(u);
+                        if (sprava == Sprava.Preskok)
+                            origTakmicenje.Takmicenje3.PoredakPreskok.deleteGimnasticar(u.Gimnasticar, origTakmicenje);
+                        else
+                            origTakmicenje.Takmicenje3.getPoredak(sprava).deleteGimnasticar(u.Gimnasticar, origTakmicenje);
+                    }
+
+                    DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(origTakmicenje.Takmicenje3);
+                    session.Transaction.Commit();
+                }
             }
             catch (InfrastructureException ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(ex.Message, this.Text);
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(ex.Message, this.Text);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
@@ -346,32 +328,27 @@ namespace Bilten.UI
 
         private IList<Ocena> loadOcene(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod)
         {
-            IDataContext dataContext = null;
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                return dataContext.ExecuteNamedQuery<Ocena>(
-                    "FindOceneForGimnasticar",
-                    new string[] { "gim", "deoTakKod" },
-                    new object[] { g, deoTakKod });
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    (ocenaDAO as GenericNHibernateDAO<Ocena, int>).Session = session;
+                    return ocenaDAO.FindOceneForGimnasticar(g, deoTakKod);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+
             }
         }
-
     }
 }
