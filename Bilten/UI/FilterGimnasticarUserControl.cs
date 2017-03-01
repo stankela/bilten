@@ -10,12 +10,14 @@ using Bilten.Data.QueryModel;
 using Bilten.Domain;
 using Bilten.Exceptions;
 using Bilten.Util;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
     public partial class FilterGimnasticarUserControl : UserControl
     {
-        private IDataContext dataContext;
         private List<KategorijaGimnasticara> kategorije;
         private List<Klub> klubovi;
         private List<Drzava> drzave;
@@ -38,56 +40,44 @@ namespace Bilten.UI
         {
             initializing = true;
             this.gimnastika = gimnastika;
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-                loadData();
-                initUI();
-
-                //dataContext.Commit();
-
-                initializing = false;
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    loadData();
+                    initUI();
+                    initializing = false;
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
         private void loadData()
         {
-            kategorije = loadKategorije(gimnastika);
-
-            Query q = new Query();
-            string sortingPropertyName = "Naziv";
-            q.OrderClauses.Add(new OrderClause(sortingPropertyName, OrderClause.OrderClauseCriteria.Ascending));
-            klubovi = new List<Klub>(dataContext.GetByCriteria<Klub>(q));
-
-            q = new Query();
-            sortingPropertyName = "Naziv";
-            q.OrderClauses.Add(new OrderClause(sortingPropertyName, OrderClause.OrderClauseCriteria.Ascending));
-            drzave = new List<Drzava>(dataContext.GetByCriteria<Drzava>(q));
+            kategorije = new List<KategorijaGimnasticara>(loadKategorije(gimnastika));
+            klubovi = new List<Klub>(DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll());
+            drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
         }
 
-        private List<KategorijaGimnasticara> loadKategorije(Nullable<Gimnastika> gimnastika)
+        private IList<KategorijaGimnasticara> loadKategorije(Nullable<Gimnastika> gimnastika)
         {
-            Query q = new Query();
             if (gimnastika != null)
-                q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)gimnastika));
-            q.OrderClauses.Add(new OrderClause("Naziv", OrderClause.OrderClauseCriteria.Ascending));
-            return new List<KategorijaGimnasticara>(
-                dataContext.GetByCriteria<KategorijaGimnasticara>(q));
+                return DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindByGimnastika(gimnastika.Value);
+            else
+                return DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindAll();
         }
 
         private void initUI()
@@ -266,21 +256,22 @@ namespace Bilten.UI
                 gim = Gimnastika.MSG;
             else if (cmbGimnastika.SelectedIndex == cmbGimnastika.Items.IndexOf(ZSG))
                 gim = Gimnastika.ZSG;
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                kategorije = loadKategorije(gim);
-                setKategorije();
-
-                //     dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    kategorije = new List<KategorijaGimnasticara>(loadKategorije(gim));
+                    setKategorije();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showMessage(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
 
@@ -289,9 +280,7 @@ namespace Bilten.UI
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
     }

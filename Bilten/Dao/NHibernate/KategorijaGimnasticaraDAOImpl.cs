@@ -14,7 +14,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from KategorijaGimnasticara");
+                IQuery q = Session.CreateQuery(@"from KategorijaGimnasticara k
+                    order by k.Naziv asc");
                 return q.List<KategorijaGimnasticara>();
             }
             catch (HibernateException ex)
