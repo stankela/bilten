@@ -9,6 +9,7 @@ namespace Bilten.Dao
     {
         IList<Gimnasticar> FindAll();
         IList<Gimnasticar> FindAllNoFetch();
+        IList<Gimnasticar> FindByGimnastika(Gimnastika gim);
         IList<Gimnasticar> FindGimnasticariByKlub(Klub klub);
         IList<Gimnasticar> FindGimnasticariByDrzava(Drzava drzava);
         IList<Gimnasticar> FindGimnasticariByKategorija(KategorijaGimnasticara kategorija);

@@ -167,6 +167,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
+
                     // biranje gimnasticara sa prethodnog takmicenja
                     //Takmicenje takmicenje = dataContext.GetById<Takmicenje>(5);
                     //gimnasticari = dataContext.ExecuteNamedQuery<Gimnasticar>(
@@ -198,7 +199,8 @@ namespace Bilten.UI
             {
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
+                MessageDialogs.showError(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
             }
             finally
             {

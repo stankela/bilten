@@ -9,14 +9,17 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
     public partial class SelectGimnasticarForm : SelectEntityForm
     {
-        private Nullable<Gimnastika> gimnastika;
+        private Gimnastika gimnastika;
 
-        public SelectGimnasticarForm(Nullable<Gimnastika> gimnastika)
+        public SelectGimnasticarForm(Gimnastika gimnastika)
         {
             InitializeComponent();
             Text = "Izaberi gimnasticara";
@@ -59,42 +62,31 @@ namespace Bilten.UI
 
         private void showAll()
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-
-                IList<Gimnasticar> gimnasticari = loadAll();
-                setEntities(gimnasticari);
-                DataGridViewUserControl.sort<Gimnasticar>(
-                    new string[] { "Prezime", "Ime" },
-                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<Gimnasticar> gimnasticari
+                        = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindByGimnastika(gimnastika);
+                    setEntities(gimnasticari);
+                    DataGridViewUserControl.sort<Gimnasticar>(
+                        new string[] { "Prezime", "Ime" },
+                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private IList<Gimnasticar> loadAll()
-        {
-            Query q = new Query();
-            if (gimnastika != null)
-                q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)gimnastika.Value));
-            q.OrderClauses.Add(new OrderClause("Prezime", OrderClause.OrderClauseCriteria.Ascending));
-            q.OrderClauses.Add(new OrderClause("Ime", OrderClause.OrderClauseCriteria.Ascending));
-            foreach (AssociationFetch f in this.FetchModes)
-                q.FetchModes.Add(f);
-            return dataContext.GetByCriteria<Gimnasticar>(q);
         }
 
         protected override void filter(object filterObject)
@@ -103,95 +95,52 @@ namespace Bilten.UI
             if (flt == null)
                 return;
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-
-                // biranje gimnasticara sa prethodnog takmicenja
-                //Takmicenje takmicenje = dataContext.GetById<Takmicenje>(5);
-                //gimnasticari = dataContext.ExecuteNamedQuery<Gimnasticar>(
-                //    "FindGimnasticariByTakmicenje",
-                //    new string[] { "takmicenje" }, new object[] { takmicenje });
-
-                IList<Gimnasticar> gimnasticari;
-                string failureMsg = "";
-                if (flt.RegBroj != null)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    gimnasticari = findGimnasticari(flt.RegBroj);
+                    CurrentSessionContext.Bind(session);
+
+                    // biranje gimnasticara sa prethodnog takmicenja
+                    //Takmicenje takmicenje = dataContext.GetById<Takmicenje>(5);
+                    //gimnasticari = dataContext.ExecuteNamedQuery<Gimnasticar>(
+                    //    "FindGimnasticariByTakmicenje",
+                    //    new string[] { "takmicenje" }, new object[] { takmicenje });
+
+                    IList<Gimnasticar> gimnasticari;
+                    string failureMsg = "";
+                    if (flt.RegBroj != null)
+                    {
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticariByRegBroj(flt.RegBroj);
+                        if (gimnasticari.Count == 0)
+                            failureMsg = "Ne postoji gimnasticar sa datim registarskim brojem.";
+                    }
+                    else
+                    {
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(flt.Ime,
+                            flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
+                        if (gimnasticari.Count == 0)
+                            failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
+                    }
+                    setEntities(gimnasticari);
                     if (gimnasticari.Count == 0)
-                        failureMsg = "Ne postoji gimnasticar sa datim registarskim brojem.";
+                        MessageDialogs.showMessage(failureMsg, this.Text);
+                    dataGridViewUserControl1.clearSelection();
                 }
-                else
-                {
-                    gimnasticari = findGimnasticari(flt.Ime, flt.Prezime,
-                        flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija,
-                        flt.Klub);
-                    if (gimnasticari.Count == 0)
-                        failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
-                }
-                setEntities(gimnasticari);
-                if (gimnasticari.Count == 0)
-                    MessageDialogs.showMessage(failureMsg, this.Text);
-                dataGridViewUserControl1.clearSelection();
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private IList<Gimnasticar> findGimnasticari(RegistarskiBroj regBroj)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("RegistarskiBroj", CriteriaOperator.Equal, regBroj));
-            foreach (AssociationFetch f in this.FetchModes)
-            {
-                q.FetchModes.Add(f);
-            }
-            return dataContext.GetByCriteria<Gimnasticar>(q);
-        }
-
-        private IList<Gimnasticar> findGimnasticari(string ime, string prezime,
-            Nullable<int> godRodj, Nullable<Gimnastika> gimnastika, Drzava drzava,
-            KategorijaGimnasticara kategorija, Klub klub)
-        {
-            Query q = new Query();
-            if (!String.IsNullOrEmpty(ime))
-                q.Criteria.Add(new Criterion("Ime", CriteriaOperator.Like, ime, StringMatchMode.Start, true));
-            if (!String.IsNullOrEmpty(prezime))
-                q.Criteria.Add(new Criterion("Prezime", CriteriaOperator.Like, prezime, StringMatchMode.Start, true));
-            if (godRodj != null)
-            {
-                q.Criteria.Add(new Criterion("DatumRodjenja.Godina",
-                    CriteriaOperator.Equal, (short)godRodj.Value));
-            }
-            if (gimnastika != null)
-                q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)gimnastika.Value));
-            if (drzava != null)
-                q.Criteria.Add(new Criterion("Drzava", CriteriaOperator.Equal, drzava));
-            if (kategorija != null)
-                q.Criteria.Add(new Criterion("Kategorija", CriteriaOperator.Equal, kategorija));
-            if (klub != null)
-                q.Criteria.Add(new Criterion("Klub", CriteriaOperator.Equal, klub));
-
-            q.Operator = QueryOperator.And;
-            q.OrderClauses.Add(new OrderClause("Prezime", OrderClause.OrderClauseCriteria.Ascending));
-            q.OrderClauses.Add(new OrderClause("Ime", OrderClause.OrderClauseCriteria.Ascending));
-            foreach (AssociationFetch f in this.FetchModes)
-            {
-                q.FetchModes.Add(f);
-            }
-            return dataContext.GetByCriteria<Gimnasticar>(q);
         }
 
         protected override FilterForm createFilterForm()
