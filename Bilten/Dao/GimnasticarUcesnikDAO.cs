@@ -7,6 +7,7 @@ namespace Bilten.Dao
 {
     public interface GimnasticarUcesnikDAO : GenericDAO<GimnasticarUcesnik, int>
     {
+        IList<GimnasticarUcesnik> FindByTakmicenje(int takmicenjeId);
         bool existsGimnasticarTakBroj(int takBroj, Takmicenje takmicenje);
     }
 }

@@ -29,6 +29,20 @@ namespace Bilten.Dao.NHibernate
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
+
+        public IList<Takmicenje> FindAll()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Takmicenje t
+                    order by t.Datum desc");
+                return q.List<Takmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
         
         public bool existsTakmicenje(string naziv, Gimnastika gim, DateTime datum)
         {

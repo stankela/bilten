@@ -9,6 +9,10 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
+using Bilten.Dao.NHibernate;
 
 namespace Bilten.UI
 {
@@ -16,7 +20,6 @@ namespace Bilten.UI
     {
         private Nullable<int> currTakmicenjeId;
         private List<Takmicenje> takmicenja;
-        private IDataContext dataContext;
         bool selectMode;
         int broj;
         bool gornjaGranica;
@@ -41,30 +44,27 @@ namespace Bilten.UI
             this.broj = broj;
             this.gornjaGranica = gornjaGranica;
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                initUI();
-                takmicenja = loadTakmicenja();
-                setTakmicenja(takmicenja);
-
-                //          dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    initUI();
+                    takmicenja = new List<Takmicenje>(DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAll());
+                    setTakmicenja(takmicenja);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -95,14 +95,6 @@ namespace Bilten.UI
                 otvoriTakmicenje();
                 DialogResult = DialogResult.OK;
             }
-        }
-
-        private List<Takmicenje> loadTakmicenja()
-        {
-            Query q = new Query();
-            q.OrderClauses.Add(new OrderClause("Datum", OrderClause.OrderClauseCriteria.Descending));
-            return new List<Takmicenje>(
-                dataContext.GetByCriteria<Takmicenje>(q));
         }
 
         private void setTakmicenja(List<Takmicenje> takmicenja)
@@ -166,32 +158,29 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
-            
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                deleteTakmicenje(selTakmicenje);
-    
-                dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    deleteTakmicenje(selTakmicenje);
+                    session.Transaction.Commit();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showError(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-            
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
@@ -205,92 +194,77 @@ namespace Bilten.UI
         private void deleteTakmicenje(Takmicenje takmicenje)
         {
             // brisi ocene
-            string query = @"from Ocena o
-	                       where o.Gimnasticar.Takmicenje.Id = :id";
-            IList<Ocena> ocene = dataContext.ExecuteQuery<Ocena>(QueryLanguageType.HQL, query,
-                    new string[] { "id" }, new object[] { takmicenje.Id });
+            OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+            IList<Ocena> ocene = ocenaDAO.FindByTakmicenje(takmicenje.Id);
             foreach (Ocena o in ocene)
-                dataContext.Delete(o);
+                ocenaDAO.Delete(o);
 
             // brisi rasporede nastupa
-            query = @"select distinct r
-                        from RasporedNastupa r
-                        join r.Kategorije k
-                        where k.Takmicenje.Id = :id";
-            IList<RasporedNastupa> rasporediNastupa =
-                dataContext.ExecuteQuery<RasporedNastupa>(QueryLanguageType.HQL, query,
-                    new string[] { "id" }, new object[] { takmicenje.Id });
+            RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
+            IList<RasporedNastupa> rasporediNastupa = rasporedNastupaDAO.FindByTakmicenje(takmicenje.Id);
             foreach (RasporedNastupa r in rasporediNastupa)
             {
-                dataContext.Delete(r);
+                rasporedNastupaDAO.Delete(r);
             }
 
             // brisi rasporede sudija
-            query = @"select distinct r
-                        from RasporedSudija r
-                        join r.Kategorije k
-                        where k.Takmicenje.Id = :id";
-            IList<RasporedSudija> rasporediSudija =
-                dataContext.ExecuteQuery<RasporedSudija>(QueryLanguageType.HQL, query,
-                    new string[] { "id" }, new object[] { takmicenje.Id });
+            RasporedSudijaDAO rasporedSudijaDAO = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO();
+            IList<RasporedSudija> rasporediSudija = rasporedSudijaDAO.FindByTakmicenje(takmicenje.Id);
             foreach (RasporedSudija r in rasporediSudija)
-                dataContext.Delete(r);
+                rasporedSudijaDAO.Delete(r);
 
             // brisi sudije ucesnike
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<SudijaUcesnik> sudije = dataContext.GetByCriteria<SudijaUcesnik>(q);
+            SudijaUcesnikDAO sudijaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO();
+            IList<SudijaUcesnik> sudije = sudijaUcesnikDAO.FindByTakmicenje(takmicenje.Id);
             foreach (SudijaUcesnik s in sudije)
-                dataContext.Delete(s);
+                sudijaUcesnikDAO.Delete(s);
 
             // brisi rezultatska takmicenja i ekipe
-            q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<RezultatskoTakmicenje> rezTakmicenja =
-                dataContext.GetByCriteria<RezultatskoTakmicenje>(q);
+            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
+            IList<RezultatskoTakmicenje> rezTakmicenja = rezultatskoTakmicenjeDAO.FindByTakmicenje(takmicenje.Id);
             foreach (RezultatskoTakmicenje r in rezTakmicenja)
             {
                 Takmicenje1 t1 = r.Takmicenje1;
                 foreach (Ekipa ek in t1.Ekipe)
-                    dataContext.Delete(ek);
-                dataContext.Delete(r);
+                    ekipaDAO.Delete(ek);
+                rezultatskoTakmicenjeDAO.Delete(r);
             }
 
             // brisi gimnasticare ucesnike
-            q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<GimnasticarUcesnik> gimnasticari =
-                dataContext.GetByCriteria<GimnasticarUcesnik>(q);
+            GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
+            IList<GimnasticarUcesnik> gimnasticari = gimnasticarUcesnikDAO.FindByTakmicenje(takmicenje.Id);
             foreach (GimnasticarUcesnik g in gimnasticari)
-                dataContext.Delete(g);
+                gimnasticarUcesnikDAO.Delete(g);
 
             // brisi klubove ucesnike
-            q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<KlubUcesnik> klubovi =
-                dataContext.GetByCriteria<KlubUcesnik>(q);
+            KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
+            IList<KlubUcesnik> klubovi = klubUcesnikDAO.FindByTakmicenje(takmicenje.Id);
             foreach (KlubUcesnik k in klubovi)
-                dataContext.Delete(k);
+                klubUcesnikDAO.Delete(k);
 
             // brisi drzave ucesnike
-            q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<DrzavaUcesnik> drzave =
-                dataContext.GetByCriteria<DrzavaUcesnik>(q);
+            DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
+            IList<DrzavaUcesnik> drzave = drzavaUcesnikDAO.FindByTakmicenje(takmicenje.Id);
             foreach (DrzavaUcesnik d in drzave)
-                dataContext.Delete(d);
+                drzavaUcesnikDAO.Delete(d);
+
+            GenericNHibernateDAO<Takmicenje, int> takmicenjeDAO
+                = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO() as GenericNHibernateDAO<Takmicenje, int>;
+            TakmicarskaKategorijaDAO takmicarskaKategorijaDAO = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO();
+            RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO();
 
             // brisi kategorije
-            dataContext.Attach(takmicenje, false);
+            takmicenjeDAO.Attach(takmicenje, false);
             foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
-                dataContext.Delete(k);
+                takmicarskaKategorijaDAO.Delete(k);
 
             // brisi descriptions
             foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
-                dataContext.Delete(d);
+                rezTakDescDAO.Delete(d);
 
             // brisi takmicenje
-            dataContext.Delete(takmicenje);
+            takmicenjeDAO.Delete(takmicenje);
         }
 
     }

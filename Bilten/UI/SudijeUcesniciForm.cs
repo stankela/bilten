@@ -41,7 +41,7 @@ namespace Bilten.UI
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
 
                     IList<SudijaUcesnik> sudije
-                        = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindForTakmicenje(takmicenjeId);
+                        = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindByTakmicenjeFetchKlubDrzava(takmicenjeId);
                     SetItems(sudije);
                     dataGridViewUserControl1.sort<SudijaUcesnik>(
                         new string[] { "Prezime", "Ime" },

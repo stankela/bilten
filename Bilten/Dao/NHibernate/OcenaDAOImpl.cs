@@ -29,6 +29,21 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<Ocena> FindByTakmicenje(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Ocena o
+	                       where o.Gimnasticar.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<Ocena>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public bool existsOcene(int takmicenjeId)
         {
             try

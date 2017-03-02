@@ -128,5 +128,15 @@ namespace Bilten.Dao.NHibernate
         {
             return new OpcijeDAOImpl();
         }
+
+        public override RasporedNastupaDAO GetRasporedNastupaDAO()
+        {
+            return new RasporedNastupaDAOImpl();
+        }
+
+        public override RasporedSudijaDAO GetRasporedSudijaDAO()
+        {
+            return new RasporedSudijaDAOImpl();
+        }
     }
 }

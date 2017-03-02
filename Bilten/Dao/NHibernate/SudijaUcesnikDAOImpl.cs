@@ -10,7 +10,22 @@ namespace Bilten.Dao.NHibernate
     {
         #region SudijaUcesnikDAO Members
 
-        public IList<SudijaUcesnik> FindForTakmicenje(int takmicenjeId)
+        public IList<SudijaUcesnik> FindByTakmicenje(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from SudijaUcesnik s
+                    where s.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<SudijaUcesnik>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<SudijaUcesnik> FindByTakmicenjeFetchKlubDrzava(int takmicenjeId)
         {
             try
             {
