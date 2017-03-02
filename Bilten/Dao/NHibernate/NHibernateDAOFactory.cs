@@ -138,5 +138,10 @@ namespace Bilten.Dao.NHibernate
         {
             return new RasporedSudijaDAOImpl();
         }
+
+        public override PropozicijeDAO GetPropozicijeDAO()
+        {
+            return new PropozicijeDAOImpl();
+        }
     }
 }

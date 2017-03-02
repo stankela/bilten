@@ -30,6 +30,27 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public Takmicenje FindByIdFetch_Prop_Kat_Desc(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Takmicenje t
+                    left join fetch t.TakmicenjeDescriptions d
+                    left join fetch d.Propozicije
+                    left join fetch t.Kategorije
+	                where t.Id = :id");
+                q.SetInt32("id", takmicenjeId);
+                IList<Takmicenje> result = q.List<Takmicenje>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public IList<Takmicenje> FindAll()
         {
             try

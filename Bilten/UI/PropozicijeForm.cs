@@ -10,6 +10,9 @@ using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
 using Bilten.Util;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -17,7 +20,6 @@ namespace Bilten.UI
     {
         private Takmicenje takmicenje;
         private IList<RezultatskoTakmicenje> rezTakmicenja;
-        private IDataContext dataContext;
         private PropertyPage _activePage;
 
         private List<PropertyPage> _pages = new List<PropertyPage>();
@@ -33,75 +35,40 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindByIdFetch_Prop_Kat_Desc(takmicenjeId);
+                    if (takmicenje.Kategorije.Count == 0)
+                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                    rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                        .FindByTakmicenjeFetchTak_2_3_4(takmicenjeId);
 
-                takmicenje = loadTakmicenje(takmicenjeId);
-                if (takmicenje.Kategorije.Count == 0)
-                    throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
-                rezTakmicenja = loadRezTakmicenja(takmicenjeId);
-                
-                addPages();
+                    addPages();
+                }
             }
             catch (BusinessException)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 throw;
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
-        }
-
-        private Takmicenje loadTakmicenje(int takmicenjeId)
-        {
-            string query = @"from Takmicenje t
-                        left join fetch t.TakmicenjeDescriptions d
-                        left join fetch d.Propozicije
-                        left join fetch t.Kategorije
-	                    where t.Id = :id";
-            IList<Takmicenje> result = dataContext.ExecuteQuery<Takmicenje>(QueryLanguageType.HQL, query,
-                    new string[] { "id" }, new object[] { takmicenjeId });
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
-        }
-
-        private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
-        {
-            string query = @"select distinct r
-                from RezultatskoTakmicenje r
-                left join fetch r.Propozicije
-                left join fetch r.Kategorija kat
-                left join fetch r.TakmicenjeDescription d
-                left join fetch r.Takmicenje2
-                left join fetch r.Takmicenje3
-                left join fetch r.Takmicenje4
-                where r.Takmicenje.Id = :takmicenjeId
-                order by r.RedBroj";
-            IList<RezultatskoTakmicenje> result = dataContext.
-                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
-            return result;
         }
 
         private void addPages()
@@ -202,6 +169,7 @@ namespace Bilten.UI
                 page.OnApply();
             }*/
 
+            ISession session = null;
             try
             {
                 if (_activePage != null && !applyPage(_activePage))
@@ -210,104 +178,102 @@ namespace Bilten.UI
                     return;
                 }
 
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                dataContext.Save(takmicenje);
-
-                IDictionary<int, List<RezultatskoTakmicenje>> rezTakMap = new Dictionary<int, List<RezultatskoTakmicenje>>();
-                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    if (rezTakMap.ContainsKey(rt.TakmicenjeDescription.Id))
+                    CurrentSessionContext.Bind(session);
+
+                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+
+                    IDictionary<int, List<RezultatskoTakmicenje>> rezTakMap = new Dictionary<int, List<RezultatskoTakmicenje>>();
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        rezTakMap[rt.TakmicenjeDescription.Id].Add(rt);
-                    }
-                    else
-                    {
-                        List<RezultatskoTakmicenje> rezTakList = new List<RezultatskoTakmicenje>();
-                        rezTakList.Add(rt);
-                        rezTakMap.Add(rt.TakmicenjeDescription.Id, rezTakList);
-                    }
-                }
-                foreach (List<RezultatskoTakmicenje> rezTakList in rezTakMap.Values)
-                {
-                    bool kombAdded = false;
-                    foreach (RezultatskoTakmicenje rt in rezTakList)
-                    {
-                        if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
+                        if (rezTakMap.ContainsKey(rt.TakmicenjeDescription.Id))
                         {
-                            rt.ImaEkipnoTakmicenje = true;
-                            rt.KombinovanoEkipnoTak = false;
+                            rezTakMap[rt.TakmicenjeDescription.Id].Add(rt);
                         }
                         else
                         {
-                            if (!kombAdded)
+                            List<RezultatskoTakmicenje> rezTakList = new List<RezultatskoTakmicenje>();
+                            rezTakList.Add(rt);
+                            rezTakMap.Add(rt.TakmicenjeDescription.Id, rezTakList);
+                        }
+                    }
+                    foreach (List<RezultatskoTakmicenje> rezTakList in rezTakMap.Values)
+                    {
+                        bool kombAdded = false;
+                        foreach (RezultatskoTakmicenje rt in rezTakList)
+                        {
+                            if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
                             {
                                 rt.ImaEkipnoTakmicenje = true;
-                                rt.KombinovanoEkipnoTak = true;
-                                kombAdded = true;
+                                rt.KombinovanoEkipnoTak = false;
                             }
                             else
                             {
-                                rt.ImaEkipnoTakmicenje = false;
-                                rt.KombinovanoEkipnoTak = false;
+                                if (!kombAdded)
+                                {
+                                    rt.ImaEkipnoTakmicenje = true;
+                                    rt.KombinovanoEkipnoTak = true;
+                                    kombAdded = true;
+                                }
+                                else
+                                {
+                                    rt.ImaEkipnoTakmicenje = false;
+                                    rt.KombinovanoEkipnoTak = false;
+                                }
                             }
                         }
                     }
+
+
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        DAOFactoryFactory.DAOFactory.GetPropozicijeDAO().Update(rt.Propozicije);
+
+                        bool deletedTak2, deletedTak3, deletedTak4;
+
+                        rt.updateTakmicenjaFromChangedPropozicije(
+                            out deletedTak2, out deletedTak3, out deletedTak4);
+
+                        // TODO: Sledece tri Delete naredbe najverovatnije nemaju efekta zato sto ako je npr. deletedTak2 == true,
+                        // tada je rt.Takmicenje2 == null
+                        if (deletedTak2)
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Delete(rt.Takmicenje2);
+                        if (deletedTak3)
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Delete(rt.Takmicenje3);
+                        if (deletedTak4)
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Delete(rt.Takmicenje4);
+
+                        // TODO: Potrebno je ponovo izracunati poretke i ucesnike zato
+                        // sto su se mozda promenili brojevi finalista, rezervi, nacin
+                        // racunanja preskoka itd.
+
+
+                        DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Update(rt);
+                    }
+
+                    session.Transaction.Commit();
                 }
-
-
-                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                {
-                    dataContext.Save(rt.Propozicije);
-
-                    bool deletedTak2, deletedTak3, deletedTak4;
-
-                    rt.updateTakmicenjaFromChangedPropozicije(
-                        out deletedTak2, out deletedTak3, out deletedTak4);
-                 
-                    // TODO: Sledece tri Delete naredbe najverovatnije nemaju efekta zato sto ako je npr. deletedTak2 == true,
-                    // tada je rt.Takmicenje2 == null
-                    if (deletedTak2)
-                        dataContext.Delete(rt.Takmicenje2);
-                    if (deletedTak3)
-                        dataContext.Delete(rt.Takmicenje3);
-                    if (deletedTak4)
-                        dataContext.Delete(rt.Takmicenje4);
-
-                    // TODO: Potrebno je ponovo izracunati poretke i ucesnike zato
-                    // sto su se mozda promenili brojevi finalista, rezervi, nacin
-                    // racunanja preskoka itd.
-
-
-                    dataContext.Save(rt);
-                }
-
-                dataContext.Commit();
             }
             catch (InfrastructureException ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(ex.Message, this.Text);
                 DialogResult = DialogResult.Cancel;
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showError(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
                 DialogResult = DialogResult.Cancel;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-
         }
 
         private void PropozicijeForm_Load(object sender, System.EventArgs e)

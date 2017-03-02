@@ -124,6 +124,30 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetchTak_2_3_4(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Propozicije
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje2
+                    left join fetch r.Takmicenje3
+                    left join fetch r.Takmicenje4
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public RezultatskoTakmicenje FindByIdFetchTakmicenje3(int rezTakmicenjeId)
         {
             try
