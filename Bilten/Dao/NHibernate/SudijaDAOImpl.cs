@@ -30,7 +30,8 @@ namespace Bilten.Dao.NHibernate
             {
                 IQuery q = Session.CreateQuery(@"from Sudija s
                     left join fetch s.Drzava
-                    left join fetch s.Klub");
+                    left join fetch s.Klub
+                    order by s.Prezime asc, s.Ime asc");
                 return q.List<Sudija>();
             }
             catch (HibernateException ex)

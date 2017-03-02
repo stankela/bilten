@@ -9,6 +9,9 @@ using Bilten.Data.QueryModel;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -23,41 +26,36 @@ namespace Bilten.UI
             btnFilter.Enabled = false;
             initializeGridColumns();
 
-            DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-
-            FetchModes.Add(new AssociationFetch(
-                "Drzava", AssociationFetchMode.Eager));
-            FetchModes.Add(new AssociationFetch(
-                "Klub", AssociationFetchMode.Eager));
-
+            DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
+                DataGridViewUserControl_GridColumnHeaderMouseClick);
             showAll();
         }
 
         private void showAll()
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-
-                IList<Sudija> sudije = loadSudije();
-                setEntities(sudije);
-                DataGridViewUserControl.sort<Sudija>(
-                    new string[] { "Prezime", "Ime" },
-                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<Sudija> sudije = DAOFactoryFactory.DAOFactory.GetSudijaDAO().FindAll();
+                    setEntities(sudije);
+                    DataGridViewUserControl.sort<Sudija>(
+                        new string[] { "Prezime", "Ime" },
+                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -77,16 +75,5 @@ namespace Bilten.UI
             dataGridViewUserControl1.AddColumn("Klub", "Klub", 150);
             dataGridViewUserControl1.AddColumn("Drzava", "Drzava", 100);
         }
-
-        private IList<Sudija> loadSudije()
-        {
-            Query q = new Query();
-            foreach (AssociationFetch f in this.FetchModes)
-                q.FetchModes.Add(f);
-            q.OrderClauses.Add(new OrderClause("Prezime", OrderClause.OrderClauseCriteria.Ascending));
-            q.OrderClauses.Add(new OrderClause("Ime", OrderClause.OrderClauseCriteria.Ascending));
-            return dataContext.GetByCriteria<Sudija>(q);
-        }
-
     }
 }
