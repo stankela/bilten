@@ -143,5 +143,10 @@ namespace Bilten.Dao.NHibernate
         {
             return new PropozicijeDAOImpl();
         }
+
+        public override SudijskiOdborNaSpraviDAO GetSudijskiOdborNaSpraviDAO()
+        {
+            return new SudijskiOdborNaSpraviDAOImpl();
+        }
     }
 }

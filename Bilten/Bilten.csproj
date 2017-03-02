@@ -120,6 +120,7 @@
     <Compile Include="Dao\NHibernate\RezultatskoTakmicenjeDescriptionDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\SudijaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\SudijaUcesnikDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\SudijskiOdborNaSpraviDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\TakmicarskaKategorijaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\Takmicenje1DAOImpl.cs" />
     <Compile Include="Dao\NHibernate\Takmicenje2DAOImpl.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Dao\RezultatskoTakmicenjeDescriptionDAO.cs" />
     <Compile Include="Dao\SudijaDAO.cs" />
     <Compile Include="Dao\SudijaUcesnikDAO.cs" />
+    <Compile Include="Dao\SudijskiOdborNaSpraviDAO.cs" />
     <Compile Include="Dao\TakmicarskaKategorijaDAO.cs" />
     <Compile Include="Dao\Takmicenje1DAO.cs" />
     <Compile Include="Dao\Takmicenje2DAO.cs" />

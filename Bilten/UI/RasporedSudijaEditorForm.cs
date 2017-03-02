@@ -11,6 +11,8 @@ using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
 using Iesi.Collections;
 using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -18,7 +20,6 @@ namespace Bilten.UI
     {
         private SudijskiOdborNaSpravi sudijskiOdbor;
         private int takmicenjeId;
-        private IDataContext dataContext;
 
         private RasporedSudija raspored;
         public RasporedSudija RasporedSudija
@@ -32,35 +33,34 @@ namespace Bilten.UI
             InitializeComponent();
             this.takmicenjeId = takmicenjeId;
             spravaGridUserControl1.init(sprava);
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
 
-                // TODO: Trebalo bi i NHibernateUtil.Initialize smestiti u 
-                // IDataContext klasu
+                    // TODO: Trebalo bi i NHibernateUtil.Initialize smestiti u 
+                    // DAO klasu
 
-                raspored = loadRaspored(rasporedId);
-                sudijskiOdbor = raspored.getOdbor(sprava);
-                
-                initUI();
-                spravaGridUserControl1.setItems(sudijskiOdbor.Raspored);
+                    raspored = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO().FindByIdFetch(rasporedId);
+                    sudijskiOdbor = raspored.getOdbor(sprava);
 
-              //  dataContext.Commit();
+                    initUI();
+                    spravaGridUserControl1.setItems(sudijskiOdbor.Raspored);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -75,18 +75,6 @@ namespace Bilten.UI
         void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             GridColumnsInitializer.rasporedSudijaColumnWidthChanged(sudijskiOdbor.Id, sender as DataGridView);
-        }
-
-        private RasporedSudija loadRaspored(int rasporedId)
-        {
-            IList<RasporedSudija> result = dataContext.
-                ExecuteNamedQuery<RasporedSudija>("FindRaspSudById",
-                new string[] { "id" },
-                new object[] { rasporedId });
-            if (result.Count > 0)
-                return result[0];
-            else
-                return null;
         }
 
         private void RasporedSudijaEditorForm_Load(object sender, EventArgs e)
@@ -199,30 +187,29 @@ namespace Bilten.UI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
 
-                // TODO: Prvo proveri da li je nesto menjano
-                dataContext.Save(sudijskiOdbor);
-
-                dataContext.Commit();
+                    // TODO: Prvo proveri da li je nesto menjano
+                    DAOFactoryFactory.DAOFactory.GetSudijskiOdborNaSpraviDAO().Update(sudijskiOdbor);
+                    session.Transaction.Commit();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showMessage(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
                 this.DialogResult = DialogResult.Cancel;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 

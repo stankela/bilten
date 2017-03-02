@@ -31,5 +31,6 @@ namespace Bilten.Dao
         public abstract RasporedNastupaDAO GetRasporedNastupaDAO();
         public abstract RasporedSudijaDAO GetRasporedSudijaDAO();
         public abstract PropozicijeDAO GetPropozicijeDAO();
+        public abstract SudijskiOdborNaSpraviDAO GetSudijskiOdborNaSpraviDAO();
     }
 }

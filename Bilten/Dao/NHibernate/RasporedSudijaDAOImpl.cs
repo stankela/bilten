@@ -27,6 +27,31 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public RasporedSudija FindByIdFetch(int id)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RasporedSudija r
+                    left join fetch r.Kategorije k
+                    left join fetch r.Odbori o
+                    left join fetch o.Sudije s
+                    left join fetch s.DrzavaUcesnik dr
+                    left join fetch s.KlubUcesnik kl
+                    where r.Id = :id");
+                q.SetInt32("id", id);
+                IList<RasporedSudija> result = q.List<RasporedSudija>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }
