@@ -152,7 +152,7 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.Location = USER_CONTROL_LOCATION;
                 spravaGridGroupUserControl1.SpravaGridRightClick += 
                     new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
-                spravaGridGroupUserControl1.init(rasporedi[0].Pol);
+                spravaGridGroupUserControl1.init(rasporedi[0].Gimnastika);
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
                     c.DataGridViewUserControl.DataGridView.CellFormatting +=
@@ -344,7 +344,7 @@ namespace Bilten.UI
             spravaGridGroupUserControl.SpravaGridRightClick +=
                 new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
             //spravaGridGroupUserControl.Size = this.rasporedSudijaUserControl1.Size;
-            spravaGridGroupUserControl.init(raspored.Pol); // odredjuje i Size
+            spravaGridGroupUserControl.init(raspored.Gimnastika); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
                 c.DataGridViewUserControl.DataGridView.CellFormatting +=
@@ -412,7 +412,7 @@ namespace Bilten.UI
             if (brojGrupa == 0)
                 brojGrupa = 1;
             int brojRotacija = 4;
-            if (ActiveRaspored.Pol == Pol.Muski)
+            if (ActiveRaspored.Gimnastika == Gimnastika.MSG)
                 brojRotacija = 6;
             initCombos(brojGrupa, brojRotacija);
 
@@ -610,7 +610,7 @@ namespace Bilten.UI
         {
             if (ActiveRaspored == null)
                 return;
-            SelectSpravaForm form = new SelectSpravaForm(ActiveRaspored.Pol,
+            SelectSpravaForm form = new SelectSpravaForm(ActiveRaspored.Gimnastika,
                 getActiveSpravaGridGroupUserControl().SelectedSprava);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
@@ -1023,7 +1023,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Pol,
+                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Gimnastika,
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;
@@ -1912,7 +1912,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Pol,
+                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Gimnastika,
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;

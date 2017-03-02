@@ -22,16 +22,6 @@ namespace Bilten.Domain
 
     public static class Sprave
     {
-        public static Sprava[] getSprave(Pol pol)
-        {
-            if (pol == Pol.Muski)
-                return MuskeSprave;
-            else if (pol == Pol.Zenski)
-                return ZenskeSprave;
-            else
-                return null;
-        }
-
         public static Sprava[] getSprave(Gimnastika gimnastika)
         {
             if (gimnastika == Gimnastika.MSG)
@@ -58,16 +48,6 @@ namespace Bilten.Domain
                 return new Sprava[] { Sprava.Preskok, Sprava.DvovisinskiRazboj,
                     Sprava.Greda, Sprava.Parter };
             }
-        }
-
-        public static string[] getSpraveNazivi(Pol pol)
-        {
-            if (pol == Pol.Muski)
-                return MuskeSpraveNazivi;
-            else if (pol == Pol.Zenski)
-                return ZenskeSpraveNazivi;
-            else
-                return null;
         }
 
         public static string[] getSpraveNazivi(Gimnastika gimnastika)
@@ -163,14 +143,6 @@ namespace Bilten.Domain
         {
             List<Sprava> sprave = new List<Sprava>(MuskeSprave);
             if (gim == Gimnastika.ZSG)
-                sprave = new List<Sprava>(ZenskeSprave);
-            return sprave.IndexOf(sprava);
-        }
-
-        public static int indexOf(Sprava sprava, Pol pol)
-        {
-            List<Sprava> sprave = new List<Sprava>(MuskeSprave);
-            if (pol == Pol.Zenski)
                 sprave = new List<Sprava>(ZenskeSprave);
             return sprave.IndexOf(sprava);
         }

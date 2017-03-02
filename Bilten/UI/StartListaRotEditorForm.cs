@@ -142,7 +142,7 @@ namespace Bilten.UI
             SelectGimnasticarUcesnikForm form = null;
             try
             {
-                form = new SelectGimnasticarUcesnikForm(takmicenjeId, raspored.Pol, null);
+                form = new SelectGimnasticarUcesnikForm(takmicenjeId, raspored.Gimnastika, null);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)

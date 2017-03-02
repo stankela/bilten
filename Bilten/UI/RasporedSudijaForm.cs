@@ -119,7 +119,7 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.Location = USER_CONTROL_LOCATION;
                 spravaGridGroupUserControl1.SpravaGridRightClick +=
                   new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
-                spravaGridGroupUserControl1.init(rasporedi[0].Pol);
+                spravaGridGroupUserControl1.init(rasporedi[0].Gimnastika);
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
                     SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);
@@ -194,7 +194,7 @@ namespace Bilten.UI
             spravaGridGroupUserControl.SpravaGridRightClick +=
               new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
             //spravaGridGroupUserControl.Size = this.rasporedSudijaUserControl1.Size;
-            spravaGridGroupUserControl.init(raspored.Pol); // odredjuje i Size
+            spravaGridGroupUserControl.init(raspored.Gimnastika); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
                 SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);
@@ -329,7 +329,7 @@ namespace Bilten.UI
         {
             if (ActiveRaspored == null)
                 return;
-            SelectSpravaForm form = new SelectSpravaForm(ActiveRaspored.Pol,
+            SelectSpravaForm form = new SelectSpravaForm(ActiveRaspored.Gimnastika,
                 getActiveSpravaGridGroupUserControl().SelectedSprava);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
@@ -620,7 +620,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Pol,
+                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Gimnastika,
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;

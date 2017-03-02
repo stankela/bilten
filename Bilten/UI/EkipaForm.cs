@@ -289,7 +289,7 @@ namespace Bilten.UI
             try
             {
                 form = new SelectGimnasticarUcesnikForm(rezTakmicenje.Takmicenje.Id, 
-                    rezTakmicenje.Pol, null);
+                    rezTakmicenje.Gimnastika, null);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)

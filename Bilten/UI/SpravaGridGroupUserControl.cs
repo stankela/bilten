@@ -46,7 +46,7 @@ namespace Bilten.UI
             }
         }
 
-        public void init(Pol pol)
+        public void init(Gimnastika gimnastika)
         {
             // Najpre izbaci sve kontrole koje su dodate u prethodnom pozivu funkcije init, osim prve.
             List<Control> controls = new List<Control>();
@@ -61,7 +61,7 @@ namespace Bilten.UI
                     this.Controls.Remove(c2);
             }
 
-            Sprava[] sprave = Sprave.getSprave(pol);
+            Sprava[] sprave = Sprave.getSprave(gimnastika);
 
             int width = spravaGridUserControl1.Width;
             int height = spravaGridUserControl1.Height;

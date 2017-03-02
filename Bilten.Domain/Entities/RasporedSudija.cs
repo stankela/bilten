@@ -7,15 +7,15 @@ namespace Bilten.Domain
 {
     public class RasporedSudija : DomainObject
     {
-        public virtual Pol Pol
+        public virtual Gimnastika Gimnastika
         {
             get
             {
                 foreach (TakmicarskaKategorija k in Kategorije)
                 {
-                    return k.Pol;
+                    return k.Gimnastika;
                 }
-                return Pol.Undefined;
+                return Gimnastika.Undefined;
             }
         }
 
@@ -65,7 +65,7 @@ namespace Bilten.Domain
                 addKategorija(kat);
             this.deoTakKod = deoTakKod;
 
-            Sprava[] sprave = Sprave.getSprave(kategorije[0].Pol);
+            Sprava[] sprave = Sprave.getSprave(kategorije[0].Gimnastika);
             foreach (Sprava s in sprave)
                 odbori.Add(new SudijskiOdborNaSpravi(s));
         }

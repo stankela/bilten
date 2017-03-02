@@ -7,15 +7,15 @@ namespace Bilten.Domain
 {
     public class RasporedNastupa : DomainObject
     {
-        public virtual Pol Pol
+        public virtual Gimnastika Gimnastika
         {
             get
             {
                 foreach (TakmicarskaKategorija k in Kategorije)
                 {
-                    return k.Pol;
+                    return k.Gimnastika;
                 }
-                return Pol.Undefined;
+                return Gimnastika.Undefined;
             }
         }
 
@@ -77,11 +77,11 @@ namespace Bilten.Domain
             if (canAddNewGrupa())
             {
                 int brojRotacija = 4;
-                if (Pol == Pol.Muski)
+                if (Gimnastika == Gimnastika.MSG)
                     brojRotacija = 6;
                 int grupa = getBrojGrupa() + 1;
 
-                Sprava[] sprave = Sprave.getSprave(Pol);
+                Sprava[] sprave = Sprave.getSprave(Gimnastika);
 
                 for (int i = 1; i <= brojRotacija; i++)
                 {

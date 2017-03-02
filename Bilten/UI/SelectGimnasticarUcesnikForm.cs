@@ -21,14 +21,14 @@ namespace Bilten.UI
         private Gimnastika gimnastika;
         private TakmicarskaKategorija kategorija;
 
-        public SelectGimnasticarUcesnikForm(int takmicenjeId, Pol pol,
+        public SelectGimnasticarUcesnikForm(int takmicenjeId, Gimnastika gimnastika,
             TakmicarskaKategorija kategorija)
         {
             InitializeComponent();
             Text = "Izaberi gimnasticara";
 
             this.takmicenjeId = takmicenjeId;
-            this.gimnastika = (pol == Pol.Muski) ? Gimnastika.MSG : Gimnastika.ZSG;
+            this.gimnastika = gimnastika;
             this.kategorija = kategorija;
             initializeGridColumns();
 

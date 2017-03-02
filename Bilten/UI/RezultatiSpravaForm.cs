@@ -179,8 +179,7 @@ namespace Bilten.UI
             cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
 
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
-            Pol pol = rezTakmicenja[0].Pol;
-            List<string> sprave = new List<string>(Sprave.getSpraveNazivi(pol));
+            List<string> sprave = new List<string>(Sprave.getSpraveNazivi(rezTakmicenja[0].Gimnastika));
             cmbSprava.Items.AddRange(sprave.ToArray());
             cmbSprava.SelectedIndex = 0;
             if (selectMode)

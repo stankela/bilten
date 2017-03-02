@@ -21,17 +21,6 @@ namespace Bilten.Domain
             set { gimnastika = value; }
         }
 
-        public virtual Pol Pol
-        {
-            get
-            {
-                if (Gimnastika == Gimnastika.MSG)
-                    return Pol.Muski;
-                else
-                    return Pol.Zenski;
-            }
-        }
-
         private byte redBroj;
         public virtual byte RedBroj
         {

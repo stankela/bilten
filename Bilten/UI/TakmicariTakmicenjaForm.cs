@@ -223,7 +223,7 @@ namespace Bilten.UI
             try
             {
                 form = new SelectGimnasticarUcesnikForm(
-                    ActiveRezTakmicenje.Takmicenje.Id, ActiveRezTakmicenje.Pol,
+                    ActiveRezTakmicenje.Takmicenje.Id, ActiveRezTakmicenje.Gimnastika,
                     ActiveRezTakmicenje.Kategorija);
                 dlgResult = form.ShowDialog();
             }
