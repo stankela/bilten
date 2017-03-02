@@ -10,6 +10,8 @@ namespace Bilten.Domain
 {
     public class RezultatskoTakmicenje : DomainObject
     {
+        // TODO4: Proveri zasto imam i Pol i Gimnastiku. Proveri da li isto postoji i na drugim mestima.
+
         public virtual Pol Pol
         {
             get

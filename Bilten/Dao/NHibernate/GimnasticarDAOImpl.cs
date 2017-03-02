@@ -130,71 +130,57 @@ namespace Bilten.Dao.NHibernate
                     left join fetch g.Klub
                     left join fetch g.Drzava";
             string WHERE = " where ";
-            bool addIme = false;
-            bool addPrezime = false;
-            bool addGodRodj = false;
-            bool addGimnastika = false;
-            bool addDrzava = false;
-            bool addKategorija = false;
-            bool addKlub = false;
             if (!String.IsNullOrEmpty(ime))
             {
                 query += WHERE + "lower(g.Ime) like :ime";
                 WHERE = " and ";
-                addIme = true;
             }
             if (!String.IsNullOrEmpty(prezime))
             {
                 query += WHERE + "lower(g.Prezime) like :prezime";
                 WHERE = " and ";
-                addPrezime = true;
             }
             if (godRodj != null)
             {
                 query += WHERE + "g.DatumRodjenja.Godina = :godRodj";
                 WHERE = " and ";
-                addGodRodj = true;
             }
             if (gimnastika != null)
             {
                 query += WHERE + "g.Gimnastika = :gimnastika";
                 WHERE = " and ";
-                addGimnastika = true;
             }
             if (drzava != null)
             {
                 query += WHERE + "g.Drzava = :drzava";
                 WHERE = " and ";
-                addDrzava = true;
             }
             if (kategorija != null)
             {
                 query += WHERE + "g.Kategorija = :kategorija";
                 WHERE = " and ";
-                addKategorija = true;
             }
             if (klub != null)
             {
                 query += WHERE + "g.Klub = :klub";
                 WHERE = " and ";
-                addKlub = true;
             }
             query += " order by g.Prezime asc, g.Ime asc";
 
             IQuery q = Session.CreateQuery(query);
-            if (addIme)
+            if (!String.IsNullOrEmpty(ime))
                 q.SetString("ime", ime.ToLower() + '%');
-            if (addPrezime)
+            if (!String.IsNullOrEmpty(prezime))
                 q.SetString("prezime", prezime.ToLower() + '%');
-            if (addGodRodj)
+            if (godRodj != null)
                 q.SetInt16("godRodj", (short)godRodj.Value);
-            if (addGimnastika)
+            if (gimnastika != null)
                 q.SetByte("gimnastika", (byte)gimnastika.Value);
-            if (addDrzava)
+            if (drzava != null)
                 q.SetEntity("drzava", drzava);
-            if (addKategorija)
+            if (kategorija != null)
                 q.SetEntity("kategorija", kategorija);
-            if (addKlub)
+            if (klub != null)
                 q.SetEntity("klub", klub);
             return q.List<Gimnasticar>();
         }
