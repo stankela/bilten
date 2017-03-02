@@ -9,13 +9,15 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Util;
+using Bilten.Dao;
+using NHibernate;
+using NHibernate.Context;
 
 namespace Bilten.UI
 {
     public partial class OpcijeForm : Form
     {
         private Opcije opcije;
-        private IDataContext dataContext;
         private bool closedByOK;
         private bool closedByCancel;
         private Nullable<int> takmicenjeId;
@@ -57,26 +59,28 @@ namespace Bilten.UI
 
         private void btnOk_Click(object sender, EventArgs e)
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    Notification notification = new Notification();
+                    requiredFieldsAndFormatValidation(notification);
+                    if (!notification.IsValid())
+                        throw new BusinessException(notification);
 
-                Notification notification = new Notification();
-                requiredFieldsAndFormatValidation(notification);
-                if (!notification.IsValid())
-                    throw new BusinessException(notification);
+                    update();
 
-                update();
-
-                dataContext.Commit();
-                closedByOK = true;
+                    session.Transaction.Commit();
+                    closedByOK = true;
+                }
             }
             catch (BusinessException ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 if (ex.Notification != null)
                 {
                     NotificationMessage msg = ex.Notification.FirstMessage;
@@ -96,8 +100,8 @@ namespace Bilten.UI
             }
             catch (InfrastructureException ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 //discardChanges();
                 MessageDialogs.showError(ex.Message, this.Text);
                 this.DialogResult = DialogResult.Cancel;
@@ -105,8 +109,8 @@ namespace Bilten.UI
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 //discardChanges();
                 MessageDialogs.showError(
                     Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
@@ -115,9 +119,7 @@ namespace Bilten.UI
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -218,7 +220,7 @@ namespace Bilten.UI
                 throw new BusinessException(notification);
 
             updateEntityFromUI(opcije);
-            SingleInstanceApplication.saveOptions(opcije, false);
+            DAOFactoryFactory.DAOFactory.GetOpcijeDAO().Update(opcije);
         }
 
         private void validate(Notification notification)

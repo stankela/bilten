@@ -112,6 +112,7 @@
     <Compile Include="Dao\NHibernate\MestoDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\NHibernateDAOFactory.cs" />
     <Compile Include="Dao\NHibernate\OcenaDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\OpcijeDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\RezultatskoTakmicenjeDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\RezultatskoTakmicenjeDescriptionDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\SudijaDAOImpl.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Dao\NHibernate\UcesnikTakmicenja2DAOImpl.cs" />
     <Compile Include="Dao\NHibernate\UcesnikTakmicenja3DAOImpl.cs" />
     <Compile Include="Dao\OcenaDAO.cs" />
+    <Compile Include="Dao\OpcijeDAO.cs" />
     <Compile Include="Dao\RezultatskoTakmicenjeDAO.cs" />
     <Compile Include="Dao\RezultatskoTakmicenjeDescriptionDAO.cs" />
     <Compile Include="Dao\SudijaDAO.cs" />
