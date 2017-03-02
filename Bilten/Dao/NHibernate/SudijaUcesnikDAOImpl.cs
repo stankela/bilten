@@ -32,7 +32,8 @@ namespace Bilten.Dao.NHibernate
                 IQuery q = Session.CreateQuery(@"from SudijaUcesnik s
                     left join fetch s.DrzavaUcesnik
                     left join fetch s.KlubUcesnik
-                    where s.Takmicenje.Id = :takmicenjeId");
+                    where s.Takmicenje.Id = :takmicenjeId
+                    order by s.Prezime asc, s.Ime asc");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<SudijaUcesnik>();
             }
