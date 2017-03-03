@@ -90,11 +90,11 @@ namespace Bilten.UI
         {
             RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
             IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo
-                = rezultatskoTakmicenjeDAO.loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
+                = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.PrvoKolo.Id);
             IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo
-                = rezultatskoTakmicenjeDAO.loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
+                = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.DrugoKolo.Id);
 
-            IList<RezultatskoTakmicenje> result = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetchTakmicenje1(takmicenje.Id);
+            IList<RezultatskoTakmicenje> result = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Ekipe(takmicenje.Id);
 
             foreach (RezultatskoTakmicenje tak in result)
             {

@@ -72,7 +72,7 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetchTakmicenje1(int takmicenjeId)
+        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Ekipe(int takmicenjeId)
         {
             try
             {
@@ -85,6 +85,74 @@ namespace Bilten.Dao.NHibernate
                     left join fetch t.Ekipe e
                     where r.Takmicenje.Id = :takmicenjeId
                     order by r.RedBroj");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Gimnasticari(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.Gimnasticari g
+                    left join fetch g.DrzavaUcesnik dr
+                    left join fetch g.KlubUcesnik kl
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakUkupno(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakUkupno
+                    left join fetch t.Gimnasticari g
+                    where r.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakEkipno(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Kategorija kat
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakEkipno
+                    left join fetch t.Ekipe e
+                    where r.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<RezultatskoTakmicenje>();
             }
@@ -212,28 +280,6 @@ namespace Bilten.Dao.NHibernate
                 if (result.Count > 0)
                     return result[0];
                 return null;
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
-        public IList<RezultatskoTakmicenje> loadRezTakmicenjaPrethKolo(int takmicenjeId)
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"
-                    select distinct r
-                    from RezultatskoTakmicenje r
-                    left join fetch r.TakmicenjeDescription d
-                    left join fetch r.Kategorija kat
-                    left join fetch r.Takmicenje1 t
-                    left join fetch t.PoredakEkipno
-                    left join fetch t.Ekipe e
-                    where r.Takmicenje.Id = :takmicenjeId");
-                q.SetInt32("takmicenjeId", takmicenjeId);
-                return q.List<RezultatskoTakmicenje>();
             }
             catch (HibernateException ex)
             {

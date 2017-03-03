@@ -95,15 +95,15 @@ namespace Bilten.UI
 
             RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
             if (takmicenje.PrvoKolo != null)
-                rezTakmicenjaPrvoKolo = rezultatskoTakmicenjeDAO.loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
+                rezTakmicenjaPrvoKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.PrvoKolo.Id);
             if (takmicenje.DrugoKolo != null)
-                rezTakmicenjaDrugoKolo = rezultatskoTakmicenjeDAO.loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
+                rezTakmicenjaDrugoKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.DrugoKolo.Id);
             if (takmicenje.TreceKolo != null)
-                rezTakmicenjaTreceKolo = rezultatskoTakmicenjeDAO.loadRezTakmicenjaPrethKolo(takmicenje.TreceKolo.Id);
+                rezTakmicenjaTreceKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.TreceKolo.Id);
             if (takmicenje.CetvrtoKolo != null)
-                rezTakmicenjaCetvrtoKolo = rezultatskoTakmicenjeDAO.loadRezTakmicenjaPrethKolo(takmicenje.CetvrtoKolo.Id);
+                rezTakmicenjaCetvrtoKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.CetvrtoKolo.Id);
 
-            IList<RezultatskoTakmicenje> result = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetchTakmicenje1(takmicenje.Id);
+            IList<RezultatskoTakmicenje> result = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Ekipe(takmicenje.Id);
 
             foreach (RezultatskoTakmicenje tak in result)
             {
