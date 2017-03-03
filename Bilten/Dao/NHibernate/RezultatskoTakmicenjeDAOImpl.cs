@@ -72,6 +72,28 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetchTakmicenje1(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.Ekipe e
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public IList<RezultatskoTakmicenje> FindByTakmicenjeFetchTakmicenje2(int takmicenjeId)
         {
             try
@@ -190,6 +212,28 @@ namespace Bilten.Dao.NHibernate
                 if (result.Count > 0)
                     return result[0];
                 return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RezultatskoTakmicenje> loadRezTakmicenjaPrethKolo(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Kategorija kat
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakEkipno
+                    left join fetch t.Ekipe e
+                    where r.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
             }
             catch (HibernateException ex)
             {
