@@ -10,13 +10,14 @@ using Bilten.Data;
 using Bilten.Exceptions;
 using NHibernate;
 using Bilten.Report;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
     public partial class RezultatiSpravaFinaleKupaForm : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
-        private IDataContext dataContext;
         private Takmicenje takmicenje;
 
         // kljuc je rezTakmicenja.IndexOf(takmicenje) * (Sprava.Max + 1) + sprava
@@ -40,89 +41,62 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
 
-                takmicenje = loadTakmicenje(takmicenjeId);
+                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje);
+                    if (svaRezTakmicenja.Count == 0)
+                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
 
-                IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje);
-                if (svaRezTakmicenja.Count == 0)
-                    throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                    rezTakmicenja = takmicenje.getRezTakmicenjaSprava(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
+                    if (rezTakmicenja.Count == 0)
+                        throw new BusinessException("Ne postoji takmicenje III ni za jednu kategoriju.");
 
-                rezTakmicenja = takmicenje.getRezTakmicenjaSprava(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
-                if (rezTakmicenja.Count == 0)
-                    throw new BusinessException("Ne postoji takmicenje III ni za jednu kategoriju.");
-
-                initUI();
-                rezultatiOpened = new HashSet<int>();
+                    initUI();
+                    rezultatiOpened = new HashSet<int>();
+                }
             }
             catch (BusinessException)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 throw;
             }
             catch (InfrastructureException)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 throw;
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
         }
 
-        private Takmicenje loadTakmicenje(int takmicenjeId)
-        {
-            string query = @"from Takmicenje t
-                    where t.Id = :takmicenjeId";
-            IList<Takmicenje> result = dataContext.
-                ExecuteQuery<Takmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
-        }
-
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = loadRezTakmicenjaPrethKolo(takmicenje.PrvoKolo.Id);
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = loadRezTakmicenjaPrethKolo(takmicenje.DrugoKolo.Id);
+            RezultatskoTakmicenjeDAO rezTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo
+                = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenje.PrvoKolo.Id);
+            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo
+                = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenje.DrugoKolo.Id);
 
-            string query = @"select distinct r
-                    from RezultatskoTakmicenje r
-                    left join fetch r.Kategorija kat
-                    left join fetch r.TakmicenjeDescription d
-                    left join fetch r.Takmicenje1 t
-                    left join fetch t.Gimnasticari g
-                    left join fetch g.DrzavaUcesnik dr
-                    left join fetch g.KlubUcesnik kl
-                    where r.Takmicenje.Id = :takmicenjeId
-                    order by r.RedBroj";
-
-            IList<RezultatskoTakmicenje> result = dataContext.
-                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" },
-                        new object[] { takmicenje.Id });
+            IList<RezultatskoTakmicenje> result = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.Id);
 
             RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
 
@@ -134,27 +108,6 @@ namespace Bilten.UI
                 takmicenje.createPoredakSpravaFinaleKupa(rezTak, rezTakmicenjaPrvoKolo, rezTakmicenjaDrugoKolo,
                     rezultatiUpdate);
             }
-            return result;
-        }
-
-        private IList<RezultatskoTakmicenje> loadRezTakmicenjaPrethKolo(int takmicenjeId)
-        {
-            string query = @"select distinct r
-                    from RezultatskoTakmicenje r
-                    left join fetch r.Kategorija kat
-                    left join fetch r.TakmicenjeDescription d
-                    left join fetch r.Takmicenje1 t
-                    left join fetch t.PoredakSprava
-                    left join fetch t.PoredakPreskok
-                    left join fetch t.Gimnasticari g
-                    left join fetch g.DrzavaUcesnik dr
-                    left join fetch g.KlubUcesnik kl
-                    where r.Takmicenje.Id = :takmicenjeId";
-
-            IList<RezultatskoTakmicenje> result = dataContext.
-                ExecuteQuery<RezultatskoTakmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "takmicenjeId" },
-                        new object[] { takmicenjeId });
             return result;
         }
 
@@ -212,27 +165,27 @@ namespace Bilten.UI
 
         void cmdSelectedRezultatiChanged()
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                onSelectedRezultatiChanged();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    onSelectedRezultatiChanged();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -444,29 +397,29 @@ namespace Bilten.UI
             // svakog sledeceg otvaranja prozora vec bi se ucitavao iz baze. U tom slucaju ne bih mogao da postignem da se
             // npr. promeni neki rezultat iz prvog i drugog kola i da ta promena automatski bude vidljiva kada se ponovo
             // otvori prozor za finale kupa.
-            
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                insertRezultatSpravaFinaleKupaUpdate(rez.Gimnasticar, ActiveTakmicenje, ActiveSprava, kvalStatus);
-                rez.KvalStatus = kvalStatus;
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    insertRezultatSpravaFinaleKupaUpdate(rez.Gimnasticar, ActiveTakmicenje, ActiveSprava, kvalStatus);
+                    rez.KvalStatus = kvalStatus;
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
             spravaGridUserControl1.DataGridViewUserControl.refreshItems();
