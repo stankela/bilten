@@ -9,13 +9,15 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Iesi.Collections.Generic;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
     public partial class SelectGimnasticariPrethTakmForm : Form
     {
         private List<Takmicenje> takmicenja;
-        private IDataContext dataContext;
         Gimnastika gim;
         private Dictionary<int, List<GimnasticarUcesnik>> gimMap;
         bool izborTakmicenja;
@@ -37,29 +39,29 @@ namespace Bilten.UI
             InitializeComponent();
             this.gim = gim;
             this.izborTakmicenja = izborTakmicenja;
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                initUI();
-                gimMap = new Dictionary<int, List<GimnasticarUcesnik>>();
-                takmicenja = loadTakmicenja(gim);
-                setTakmicenja(takmicenja);
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    initUI();
+                    gimMap = new Dictionary<int, List<GimnasticarUcesnik>>();
+                    takmicenja = new List<Takmicenje>(DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindByGimnastika(gim));
+                    setTakmicenja(takmicenja);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -93,21 +95,6 @@ namespace Bilten.UI
             dataGridViewUserControl2.setItems<GimnasticarUcesnik>(selGimnasticari);
         }
 
-        private List<Takmicenje> loadTakmicenja(Gimnastika gim)
-        {
-            string query = @"select distinct t
-                    from Takmicenje t
-                    left join fetch t.Kategorije
-                    where t.Gimnastika = :gim
-                    order by t.Datum desc";
-
-            IList<Takmicenje> result = dataContext.
-                ExecuteQuery<Takmicenje>(QueryLanguageType.HQL, query,
-                        new string[] { "gim" },
-                        new object[] { gim });
-            return new List<Takmicenje>(result);
-        }
-
         private void setTakmicenja(List<Takmicenje> takmicenja)
         {
             foreach (Takmicenje t in takmicenja)
@@ -123,23 +110,6 @@ namespace Bilten.UI
             }
         }
 
-        private List<GimnasticarUcesnik> loadGimnasticari(Takmicenje tak)
-        {
-            string query = @"select distinct g
-                    from GimnasticarUcesnik g
-                    left join fetch g.TakmicarskaKategorija
-                    left join fetch g.KlubUcesnik
-                    left join fetch g.DrzavaUcesnik
-                    where g.Takmicenje = :tak
-                    order by g.Prezime asc, g.Ime asc";
-
-            IList<GimnasticarUcesnik> result = dataContext.
-                ExecuteQuery<GimnasticarUcesnik>(QueryLanguageType.HQL, query,
-                        new string[] { "tak" },
-                        new object[] { tak });
-            return new List<GimnasticarUcesnik>(result);
-        }
-
         private void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
             TreeNode selectedNode = e.Node;
@@ -147,26 +117,26 @@ namespace Bilten.UI
             if (tak == null || gimMap.ContainsKey(tak.Id))
                 return;
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                gimMap.Add(tak.Id, loadGimnasticari(tak));
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    gimMap.Add(tak.Id, new List<GimnasticarUcesnik>(
+                        DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindByTakmicenjeFetch_Kat_Klub_Drzava(tak.Id)));
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
