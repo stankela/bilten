@@ -114,6 +114,27 @@ namespace Bilten.Dao.NHibernate
             return q.List<GimnasticarUcesnik>();
         }
 
+        public GimnasticarUcesnik FindByTakmicenjeTakBroj(Takmicenje takmicenje, int takBroj)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from GimnasticarUcesnik g
+                    where g.TakmicarskiBroj = :takBroj
+                    and g.Takmicenje = :takmicenje");
+                q.SetInt32("takBroj", takBroj);
+                q.SetEntity("takmicenje", takmicenje);
+                IList<GimnasticarUcesnik> result = q.List<GimnasticarUcesnik>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+
+        }
+
         public bool existsGimnasticarTakBroj(int takBroj, Takmicenje takmicenje)
         {
             try

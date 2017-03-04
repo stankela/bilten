@@ -82,6 +82,28 @@ namespace Bilten.Dao.NHibernate
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
+
+        // Ovaj metod mi je trebao u MilanoInitalizer, inace nema neku upotrebnu vrednost.
+        public Takmicenje FindByMestoGimnastika(string mesto, Gimnastika gim)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select distinct t
+                    from Takmicenje t
+                    where t.Mesto = :mesto
+                    and t.Gimnastika = :gim");
+                q.SetString("mesto", mesto);
+                q.SetByte("gim", (byte)gim);
+                IList<Takmicenje> result = q.List<Takmicenje>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
         
         public bool existsTakmicenje(string naziv, Gimnastika gim, DateTime datum)
         {

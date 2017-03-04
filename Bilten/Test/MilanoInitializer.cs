@@ -5,12 +5,14 @@ using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.Test
 {
     public class MilanoInitializer
     {
-        private IDataContext dataContext;
         private Gimnastika gimnastika;
 
         public MilanoInitializer(Gimnastika gimnastika)
@@ -20,40 +22,39 @@ namespace Bilten.Test
 
         public void insert()
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    insertTakmicenje();
+                    insertGimnasticariAndDrzaveUcesniciAndAddRezTakmicenjaUcesnici();
+                    insertSudijeUcesnici();
 
-                insertTakmicenje();
-                insertGimnasticariAndDrzaveUcesniciAndAddRezTakmicenjaUcesnici();
-                insertSudijeUcesnici();
+                    insertRasporedSudija();
+                    insertStartListe();
+                    insertOcene();
 
-                insertRasporedSudija();
-                insertStartListe();
-                insertOcene();
+                    insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje1);
+                    insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje2);
 
-                insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje1);
-                insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje2);
+                    insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje1);
+                    insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje3);
 
-                insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje1);
-                insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje3);
-
-                dataContext.Commit();
+                    session.Transaction.Commit();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -83,11 +84,11 @@ namespace Bilten.Test
 
             takmicenje.addKategorija(takKategorija);
             takmicenje.addTakmicenjeDescription(desc);
-            dataContext.Add(takmicenje);
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Add(takmicenje);
 
             RezultatskoTakmicenje rezTak = new RezultatskoTakmicenje(takmicenje,
                 takKategorija, desc, createPropozicije());
-            dataContext.Add(rezTak);
+            DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Add(rezTak);
         }
 
         private Propozicije createPropozicije()
@@ -123,12 +124,12 @@ namespace Bilten.Test
 
         private void insertGimnasticariAndDrzaveUcesniciAndAddRezTakmicenjaUcesnici()
         {
-            Takmicenje takmicenje = loadTakmicenje("Milano");
-            TakmicarskaKategorija seniori = loadKategorija(takmicenje);
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByMestoGimnastika("Milano", gimnastika);
+            TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenje.Id)[0];
 
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kategorija", CriteriaOperator.Equal, seniori));
-            RezultatskoTakmicenje rezTak = dataContext.GetByCriteria<RezultatskoTakmicenje>(q)[0];
+            RezultatskoTakmicenjeDAO rezTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            RezultatskoTakmicenje rezTak = rezTakmicenjeDAO.FindByKategorija(seniori)[0];
 
             string fileName;
             if (gimnastika == Gimnastika.MSG)
@@ -136,7 +137,7 @@ namespace Bilten.Test
             else
                 fileName = @"..\..\test\Data\KvalifikantiZene.txt";
 
-            List<Drzava> drzave = new List<Drzava>(dataContext.GetAll<Drzava>());
+            List<Drzava> drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
             List<DrzavaUcesnik> drzaveUcesnici = new List<DrzavaUcesnik>();
 
             GimnasticariParser parser = new GimnasticariParser();
@@ -165,7 +166,7 @@ namespace Bilten.Test
                     drzavaUcesnik.Takmicenje = takmicenje;
                     drzaveUcesnici.Add(drzavaUcesnik);
 
-                    dataContext.Add(drzavaUcesnik);
+                    DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().Add(drzavaUcesnik);
                 }
                 gimnasticarUcesnik.DrzavaUcesnik = drzavaUcesnik;
 
@@ -175,27 +176,12 @@ namespace Bilten.Test
                 gimnasticarUcesnik.TakmicarskaKategorija = seniori;
                 gimnasticarUcesnik.NastupaZaDrzavu = true;
 
-                dataContext.Add(gimnasticarUcesnik);
+                DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Add(gimnasticarUcesnik);
 
                 rezTak.Takmicenje1.addGimnasticar(gimnasticarUcesnik);
             }
 
-            dataContext.Save(rezTak);
-        }
-
-        private Takmicenje loadTakmicenje(string naziv)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Mesto", CriteriaOperator.Equal, naziv));
-            q.Criteria.Add(new Criterion("Gimnastika", CriteriaOperator.Equal, (byte)gimnastika));
-            return dataContext.GetByCriteria<Takmicenje>(q)[0];
-        }
-
-        private TakmicarskaKategorija loadKategorija(Takmicenje takmicenje)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            return dataContext.GetByCriteria<TakmicarskaKategorija>(q)[0];
+            rezTakmicenjeDAO.Update(rezTak);
         }
 
         private Drzava findDrzava(string kod, IList<Drzava> drzave)
@@ -220,11 +206,9 @@ namespace Bilten.Test
 
         private void insertSudijeUcesnici()
         {
-            Takmicenje takmicenje = loadTakmicenje("Milano");
-
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<DrzavaUcesnik> drzave = dataContext.GetByCriteria<DrzavaUcesnik>(q);
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByMestoGimnastika("Milano", gimnastika);
+            IList<DrzavaUcesnik> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenje.Id);
 
             ISet<SudijaUcesnik> sudije = new HashSet<SudijaUcesnik>();
 
@@ -275,7 +259,7 @@ namespace Bilten.Test
                     sudija.Takmicenje = takmicenje;
 
                     if (sudije.Add(sudija))
-                        dataContext.Add(sudija);
+                        DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().Add(sudija);
                 }
             }
             /*foreach (DrzavaUcesnik d in drzave)
@@ -284,12 +268,11 @@ namespace Bilten.Test
 
         private void insertRasporedSudija()
         {
-            Takmicenje takmicenje = loadTakmicenje("Milano");
-            TakmicarskaKategorija seniori = loadKategorija(takmicenje);
-
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<SudijaUcesnik> sudije_ucesnici = dataContext.GetByCriteria<SudijaUcesnik>(q);
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByMestoGimnastika("Milano", gimnastika);
+            TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                .FindByTakmicenje(takmicenje.Id)[0];
+            IList<SudijaUcesnik> sudije_ucesnici = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindByTakmicenje(takmicenje.Id);
 
             DeoTakmicenjaKod[] deoTakmicenja = { 
                 DeoTakmicenjaKod.Takmicenje1, 
@@ -375,7 +358,7 @@ namespace Bilten.Test
                 dataContext.Evict(seniori);
                 */
 
-                dataContext.Add(raspored);
+                DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO().Add(raspored);
             }
         }
 
@@ -391,12 +374,13 @@ namespace Bilten.Test
 
         private void insertStartListe()
         {
-            Takmicenje takmicenje = loadTakmicenje("Milano");
-            TakmicarskaKategorija seniori = loadKategorija(takmicenje);
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByMestoGimnastika("Milano", gimnastika);
+            TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                .FindByTakmicenje(takmicenje.Id)[0];
 
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            IList<GimnasticarUcesnik> gim_uces = dataContext.GetByCriteria<GimnasticarUcesnik>(q);
+            IList<GimnasticarUcesnik> gim_uces = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
+                .FindByTakmicenje(takmicenje.Id);
             Dictionary<int, GimnasticarUcesnik> gim_ucesnici = new Dictionary<int, GimnasticarUcesnik>();
             foreach (GimnasticarUcesnik g in gim_uces)
                 gim_ucesnici.Add(g.TakmicarskiBroj.Value, g);
@@ -455,21 +439,18 @@ namespace Bilten.Test
                      dataContext.Evict(seniori);
                      */
 
-                dataContext.Add(raspored);
+                DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Add(raspored);
             }
         }
 
         private void insertOcene()
         {
-            Takmicenje takmicenje = loadTakmicenje("Milano");
-            TakmicarskaKategorija seniori = loadKategorija(takmicenje);
-
-            Query q = new Query();
-            q.Criteria.Add(
-                new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-            q.FetchModes.Add(new AssociationFetch(
-                "DrzavaUcesnik", AssociationFetchMode.Eager));
-            IList<GimnasticarUcesnik> gimnasticari = dataContext.GetByCriteria<GimnasticarUcesnik>(q);
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByMestoGimnastika("Milano", gimnastika);
+            TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                .FindByTakmicenje(takmicenje.Id)[0];
+            IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
+                .FindByTakmicenje(takmicenje.Id);
 
             Dictionary<int, GimnasticarUcesnik> gimnasticariMap = new Dictionary<int, GimnasticarUcesnik>();
             foreach (GimnasticarUcesnik g in gimnasticari)
@@ -628,7 +609,7 @@ namespace Bilten.Test
 
                 foreach (Ocena o in ocene)
                 {
-                    dataContext.Add(o);
+                    DAOFactoryFactory.DAOFactory.GetOcenaDAO().Add(o);
                 }
             }
         }
@@ -647,33 +628,23 @@ namespace Bilten.Test
 
         private void insertRezultatiUkupno(DeoTakmicenjaKod deoTakKod)
         {
-            Takmicenje takmicenje = loadTakmicenje("Milano");
-            TakmicarskaKategorija seniori = loadKategorija(takmicenje);
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByMestoGimnastika("Milano", gimnastika);
+            TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                .FindByTakmicenje(takmicenje.Id)[0];
+            RezultatskoTakmicenje rezTak = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByKategorija(seniori)[0];
+            IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindOceneByDeoTakmicenja(takmicenje.Id, deoTakKod);
 
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kategorija", CriteriaOperator.Equal, seniori));
-            RezultatskoTakmicenje rezTak = dataContext.GetByCriteria<RezultatskoTakmicenje>(q)[0];
-
-            IList<Ocena> ocene = dataContext.ExecuteNamedQuery<Ocena>(
-                "FindOceneByDeoTakmicenja",
-                    new string[] { "takId", "deoTakKod" },
-                    new object[] { takmicenje.Id, deoTakKod });
-
+            GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 rezTak.Takmicenje1.PoredakUkupno.create(rezTak, ocene);
                 rezTak.Takmicenje2.createUcesnici(rezTak.Takmicenje1);
                 if (gimnastika == Gimnastika.ZSG)
                 {
-                    q = new Query();
-                    q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-                    q.Criteria.Add(new Criterion("TakmicarskiBroj", CriteriaOperator.Equal, 172));
-                    GimnasticarUcesnik GORYUNOVAKristina = dataContext.GetByCriteria<GimnasticarUcesnik>(q)[0];
-
-                    q = new Query();
-                    q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-                    q.Criteria.Add(new Criterion("TakmicarskiBroj", CriteriaOperator.Equal, 170));
-                    GimnasticarUcesnik AFANASEVAKsenia = dataContext.GetByCriteria<GimnasticarUcesnik>(q)[0];
+                    GimnasticarUcesnik GORYUNOVAKristina = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 172);
+                    GimnasticarUcesnik AFANASEVAKsenia = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 170);
 
                     UcesnikTakmicenja2 ucesnikGORYUNOVAKristina =
                         rezTak.Takmicenje2.getUcesnikKvalifikant(GORYUNOVAKristina);
@@ -691,7 +662,7 @@ namespace Bilten.Test
                     // se brisu stari ucesnici, tj. bice automatski izbrisani. 
                     // Ispitati zasto se desava razlicito ponasanje
 
-                    dataContext.Delete(ucesnikGORYUNOVAKristina);
+                    DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO().Delete(ucesnikGORYUNOVAKristina);
                 }
             }
             else
@@ -701,27 +672,23 @@ namespace Bilten.Test
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
-                dataContext.Save(rezTak.Takmicenje1);
-                dataContext.Save(rezTak.Takmicenje2);
+                DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
+                DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rezTak.Takmicenje2);
             }
             else
-                dataContext.Save(rezTak.Takmicenje2);
-
+                DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rezTak.Takmicenje2);
         }
 
         private void insertRezultatiSprava(DeoTakmicenjaKod deoTakKod)
         {
-            Takmicenje takmicenje = loadTakmicenje("Milano");
-            TakmicarskaKategorija seniori = loadKategorija(takmicenje);
-
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kategorija", CriteriaOperator.Equal, seniori));
-            RezultatskoTakmicenje rezTak = dataContext.GetByCriteria<RezultatskoTakmicenje>(q)[0];
-
-            IList<Ocena> ocene = dataContext.ExecuteNamedQuery<Ocena>(
-                "FindOceneByDeoTakmicenja",
-                    new string[] { "takId", "deoTakKod" },
-                    new object[] { takmicenje.Id, deoTakKod });
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByMestoGimnastika("Milano", gimnastika);
+            TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                .FindByTakmicenje(takmicenje.Id)[0];
+            RezultatskoTakmicenje rezTak = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByKategorija(seniori)[0];
+            IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
+                .FindOceneByDeoTakmicenja(takmicenje.Id, deoTakKod);
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
@@ -730,18 +697,12 @@ namespace Bilten.Test
                 rezTak.Takmicenje1.PoredakPreskok.create(rezTak, ocene);
                 rezTak.Takmicenje3.createUcesnici(rezTak.Takmicenje1, 
                     rezTak.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
-                
+
+                GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                 if (gimnastika == Gimnastika.MSG)
                 {
-                    q = new Query();
-                    q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-                    q.Criteria.Add(new Criterion("TakmicarskiBroj", CriteriaOperator.Equal, 628));
-                    GimnasticarUcesnik KHOROKHORDINSergei = dataContext.GetByCriteria<GimnasticarUcesnik>(q)[0];
-
-                    q = new Query();
-                    q.Criteria.Add(new Criterion("Takmicenje", CriteriaOperator.Equal, takmicenje));
-                    q.Criteria.Add(new Criterion("TakmicarskiBroj", CriteriaOperator.Equal, 600));
-                    GimnasticarUcesnik WAMMESJeffrey = dataContext.GetByCriteria<GimnasticarUcesnik>(q)[0];
+                    GimnasticarUcesnik KHOROKHORDINSergei = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 628);
+                    GimnasticarUcesnik WAMMESJeffrey = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 600);
 
                     UcesnikTakmicenja3 ucesnikKHOROKHORDINSergei =
                         rezTak.Takmicenje3.getUcesnikKvalifikant(KHOROKHORDINSergei, Sprava.Vratilo);
@@ -751,7 +712,7 @@ namespace Bilten.Test
                         new UcesnikTakmicenja3(WAMMESJeffrey, Sprava.Vratilo, 8, 14.600f, 8,
                             KvalifikacioniStatus.Q));
 
-                    dataContext.Delete(ucesnikKHOROKHORDINSergei);
+                    DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO().Delete(ucesnikKHOROKHORDINSergei);
                 }
             }
             else
@@ -763,13 +724,11 @@ namespace Bilten.Test
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
-                dataContext.Save(rezTak.Takmicenje1);
-                dataContext.Save(rezTak.Takmicenje3);
+                DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
+                DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rezTak.Takmicenje3);
             }
             else
-                dataContext.Save(rezTak.Takmicenje3);
-
+                DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rezTak.Takmicenje3);
         }
-
     }
 }

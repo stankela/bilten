@@ -312,6 +312,22 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<RezultatskoTakmicenje> FindByKategorija(TakmicarskaKategorija kat)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from RezultatskoTakmicenje r
+                    where r.Kategorija = :kat");
+                q.SetEntity("kat", kat);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }
