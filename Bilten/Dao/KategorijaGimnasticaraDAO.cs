@@ -9,6 +9,7 @@ namespace Bilten.Dao
     {
         IList<KategorijaGimnasticara> FindAll();
         IList<KategorijaGimnasticara> FindByGimnastika(Gimnastika gimnastika);
+        KategorijaGimnasticara FindByNaziv(string naziv);
         bool existsKategorijaGimnasticara(string naziv, Gimnastika gimnastika);
     }
 }

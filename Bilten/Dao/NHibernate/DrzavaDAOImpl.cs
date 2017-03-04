@@ -23,6 +23,23 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public Drzava FindByKod(string kod)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Drzava d where d.Kod like :kod");
+                q.SetString("kod", kod);
+                IList<Drzava> result = q.List<Drzava>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public bool existsDrzavaNaziv(string naziv)
         {
             try

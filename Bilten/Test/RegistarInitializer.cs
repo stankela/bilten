@@ -5,13 +5,14 @@ using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Domain;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.Test
 {
     public class RegistarInitializer
     {
-        private IDataContext dataContext;
-
         public RegistarInitializer()
         { 
         
@@ -19,33 +20,32 @@ namespace Bilten.Test
 
         public void insert()
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    insertKategorijeGimnasticara();
+                    insertKluboviIMesta();
+                    insertDrzave();
+                    insertGimnasticari();
+                    insertRegistrovaniGimnasticari();
+                    insertSudije();
 
-                insertKategorijeGimnasticara();
-                insertKluboviIMesta();
-                insertDrzave();
-                insertGimnasticari();
-                insertRegistrovaniGimnasticari();
-                insertSudije();
-
-                dataContext.Commit();
+                    session.Transaction.Commit();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Bilten.Test
                 KategorijaGimnasticara kat = new KategorijaGimnasticara();
                 kat.Naziv = kategorije[i];
                 kat.Gimnastika = gimnastike[i];
-                dataContext.Add(kat);
+                DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().Add(kat);
             }
         }
 
@@ -87,11 +87,11 @@ namespace Bilten.Test
                 {
                     m = new Mesto();
                     m.Naziv = mesto;
-                    dataContext.Add(m);
+                    DAOFactoryFactory.DAOFactory.GetMestoDAO().Add(m);
                     mesta.Add(m);
                 }
                 k.Mesto = m;
-                dataContext.Add(k);
+                DAOFactoryFactory.DAOFactory.GetKlubDAO().Add(k);
             }
         }
 
@@ -115,18 +115,14 @@ namespace Bilten.Test
                 Drzava drzava = new Drzava();
                 drzava.Kod = (string)o[0];
                 drzava.Naziv = (string)o[1];
-
-                dataContext.Add(drzava);
+                DAOFactoryFactory.DAOFactory.GetDrzavaDAO().Add(drzava);
             }
         }
 
         private void insertGimnasticari()
         {
-            IList<Drzava> drzave = dataContext.GetAll<Drzava>();
-
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Naziv", CriteriaOperator.Equal, "Seniori"));
-            KategorijaGimnasticara seniori = dataContext.GetByCriteria<KategorijaGimnasticara>(q)[0];
+            IList<Drzava> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll();
+            KategorijaGimnasticara seniori = DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindByNaziv("Seniori");
 
             string[] fileNames = new string[]
                 {
@@ -158,7 +154,7 @@ namespace Bilten.Test
                         gimnasticar.Gimnastika = Gimnastika.ZSG;
                     gimnasticar.Kategorija = seniori;
 
-                    dataContext.Add(gimnasticar);
+                    DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().Add(gimnasticar);
                 }
             }
         }
@@ -175,7 +171,7 @@ namespace Bilten.Test
 
         private void insertSudije()
         {
-            IList<Drzava> drzave = dataContext.GetAll<Drzava>();
+            IList<Drzava> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll();
             ISet<Sudija> sudije = new HashSet<Sudija>();
 
             string[] fileNames = new string[]
@@ -210,7 +206,7 @@ namespace Bilten.Test
             }
 
             foreach (Sudija s in sudije)
-                dataContext.Add(s);
+                DAOFactoryFactory.DAOFactory.GetSudijaDAO().Add(s);
         }
 
         private void insertRegistrovaniGimnasticari()
@@ -219,12 +215,10 @@ namespace Bilten.Test
             string fileName = @"..\..\test\Data\RegistracijaTakmicara2009.txt";
             parser.parse(fileName);
 
-            IList<Gimnasticar> gimnasticari = dataContext.GetAll<Gimnasticar>();
-            IList<Klub> klubovi = dataContext.GetAll<Klub>();
-
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Kod", CriteriaOperator.Equal, "SRB"));
-            Drzava srbija = dataContext.GetByCriteria<Drzava>(q)[0];
+            GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
+            IList<Gimnasticar> gimnasticari = gimnasticarDAO.FindAll();
+            IList<Klub> klubovi = DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll();
+            Drzava srbija = DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindByKod("SRB");
 
             foreach (object[] o in parser.Gimnasticari)
             {
@@ -250,7 +244,7 @@ namespace Bilten.Test
                         gimnasticar.DatumPoslednjeRegistracije = Datum.Parse(datumReg);
                     gimnasticar.Klub = findKlub(klubMesto, klubovi);
 
-                    dataContext.Save(gimnasticar);
+                    gimnasticarDAO.Update(gimnasticar);
                 }
                 else
                 {
@@ -279,7 +273,7 @@ namespace Bilten.Test
                     gimnasticar.Klub = findKlub(klubMesto, klubovi);
                     gimnasticar.Drzava = srbija;
 
-                    dataContext.Add(gimnasticar);
+                    gimnasticarDAO.Add(gimnasticar);
                 }
             }
         }
@@ -307,52 +301,56 @@ namespace Bilten.Test
 
         public void delete()
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
+                    IList<Gimnasticar> gimnasticari = gimnasticarDAO.FindAll();
+                    foreach (Gimnasticar g in gimnasticari)
+                        gimnasticarDAO.Delete(g);
 
-                IList<Gimnasticar> gimnasticari = dataContext.GetAll<Gimnasticar>();
-                foreach (Gimnasticar g in gimnasticari)
-                    dataContext.Delete(g);
+                    KategorijaGimnasticaraDAO kategorijaGimnasticaraDAO = DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO();
+                    IList<KategorijaGimnasticara> kategorije = kategorijaGimnasticaraDAO.FindAll();
+                    foreach (KategorijaGimnasticara k in kategorije)
+                        kategorijaGimnasticaraDAO.Delete(k);
 
-                IList<KategorijaGimnasticara> kategorije = dataContext.GetAll<KategorijaGimnasticara>();
-                foreach (KategorijaGimnasticara k in kategorije)
-                    dataContext.Delete(k);
+                    KlubDAO klubDAO = DAOFactoryFactory.DAOFactory.GetKlubDAO();
+                    IList<Klub> klubovi = klubDAO.FindAll();
+                    foreach (Klub k in klubovi)
+                        klubDAO.Delete(k);
 
-                IList<Klub> klubovi = dataContext.GetAll<Klub>();
-                foreach (Klub k in klubovi)
-                    dataContext.Delete(k);
+                    MestoDAO mestoDAO = DAOFactoryFactory.DAOFactory.GetMestoDAO();
+                    IList<Mesto> mesta = mestoDAO.FindAll();
+                    foreach (Mesto m in mesta)
+                        mestoDAO.Delete(m);
 
-                IList<Mesto> mesta = dataContext.GetAll<Mesto>();
-                foreach (Mesto m in mesta)
-                    dataContext.Delete(m);
+                    SudijaDAO sudijaDAO = DAOFactoryFactory.DAOFactory.GetSudijaDAO();
+                    IList<Sudija> sudije = sudijaDAO.FindAll();
+                    foreach (Sudija s in sudije)
+                        sudijaDAO.Delete(s);
 
-                IList<Sudija> sudije = dataContext.GetAll<Sudija>();
-                foreach (Sudija s in sudije)
-                    dataContext.Delete(s);
+                    DrzavaDAO drzavaDAO = DAOFactoryFactory.DAOFactory.GetDrzavaDAO();
+                    IList<Drzava> drzave = drzavaDAO.FindAll();
+                    foreach (Drzava d in drzave)
+                        drzavaDAO.Delete(d);
 
-                IList<Drzava> drzave = dataContext.GetAll<Drzava>();
-                foreach (Drzava d in drzave)
-                    dataContext.Delete(d);
-
-                dataContext.Commit();
+                    session.Transaction.Commit();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
-
     }
 }
