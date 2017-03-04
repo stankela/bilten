@@ -9,13 +9,14 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
     public partial class StartListaRotEditorForm : Form
     {
         private StartListaNaSpravi startLista;
-        private IDataContext dataContext;
         private int takmicenjeId;
         private int rotacija;
         private Color[] bojeZaEkipe;
@@ -36,38 +37,36 @@ namespace Bilten.UI
 
             spravaGridUserControl1.init(sprava);
             spravaGridUserControl1.DataGridViewUserControl.DataGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
+
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                raspored = loadRaspored(rasporedId);
-                startLista = raspored.getStartLista(sprava, grupa, rotacija);
-                foreach (NastupNaSpravi n in startLista.Nastupi)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
-                    // za koje start lista vazi.
-                    NHibernateUtil.Initialize(n.Gimnasticar.TakmicarskaKategorija);   
-                }
-                
-                initUI();
-                spravaGridUserControl1.setItems(startLista.Nastupi);
+                    CurrentSessionContext.Bind(session);
+                    raspored = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().FindByIdFetch(rasporedId);
+                    startLista = raspored.getStartLista(sprava, grupa, rotacija);
+                    foreach (NastupNaSpravi n in startLista.Nastupi)
+                    {
+                        //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
+                        // za koje start lista vazi.
+                        NHibernateUtil.Initialize(n.Gimnasticar.TakmicarskaKategorija);
+                    }
 
-            //    dataContext.Commit();
+                    initUI();
+                    spravaGridUserControl1.setItems(startLista.Nastupi);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -104,18 +103,6 @@ namespace Bilten.UI
                 }
             }
             return result;
-        }
-
-        private RasporedNastupa loadRaspored(int rasporedId)
-        {
-            IList<RasporedNastupa> result = dataContext.
-                ExecuteNamedQuery<RasporedNastupa>("FindRaspNastById",
-                new string[] { "id" },
-                new object[] { rasporedId });
-            if (result.Count > 0)
-                return result[0];
-            else
-                return null;
         }
 
         private void initUI()
@@ -254,42 +241,41 @@ namespace Bilten.UI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                // TODO: Prvo proveri da li je nesto menjano
-
-                // Proveri da li se sve ekipe sastoje od uzastopnih gimnsticara. Ako ne, sve gimnasticare koji se nalaze
-                // izmedju dva clana neke ekipe proglasi za clanove te iste ekipe.
-                if (rotacija == 1)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    byte ekipa = findFragmentedEkipa(startLista);
-                    while (ekipa > 0)
-                    {
-                        kompaktujEkipu(ekipa, startLista);
-                        ekipa = findFragmentedEkipa(startLista);
-                    }
-                }
+                    CurrentSessionContext.Bind(session);
+                    // TODO: Prvo proveri da li je nesto menjano
 
-                dataContext.Save(startLista);
-                dataContext.Commit();
+                    // Proveri da li se sve ekipe sastoje od uzastopnih gimnsticara. Ako ne, sve gimnasticare koji se nalaze
+                    // izmedju dva clana neke ekipe proglasi za clanove te iste ekipe.
+                    if (rotacija == 1)
+                    {
+                        byte ekipa = findFragmentedEkipa(startLista);
+                        while (ekipa > 0)
+                        {
+                            kompaktujEkipu(ekipa, startLista);
+                            ekipa = findFragmentedEkipa(startLista);
+                        }
+                    }
+
+                    DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
+                    session.Transaction.Commit();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showMessage(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
                 this.DialogResult = DialogResult.Cancel;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
