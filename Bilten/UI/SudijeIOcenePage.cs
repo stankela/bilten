@@ -13,6 +13,7 @@ using Bilten.Util;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
+using Bilten.Dao.NHibernate;
 
 namespace Bilten.UI
 {
@@ -266,8 +267,9 @@ namespace Bilten.UI
                 using (session = NHibernateHelper.Instance.OpenSession())
                 using (session.BeginTransaction())
                 {
-                    CurrentSessionContext.Bind(session);
-                    return DAOFactoryFactory.DAOFactory.GetOcenaDAO().existsOcene(takmicenjeId);
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    (ocenaDAO as GenericNHibernateDAO<Ocena, int>).Session = session;
+                    return ocenaDAO.existsOcene(takmicenjeId);
                 }
             }
             catch (Exception ex)
@@ -278,7 +280,7 @@ namespace Bilten.UI
             }
             finally
             {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+
             }
         }
 
