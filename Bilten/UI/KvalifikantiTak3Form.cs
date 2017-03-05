@@ -299,11 +299,14 @@ namespace Bilten.UI
             RezultatskoTakmicenje result
                 = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByIdFetchTakmicenje3(rezTakmicenjeId);
 
-            NHibernateUtil.Initialize(result.Propozicije);
-            NHibernateUtil.Initialize(result.Takmicenje);
-            foreach (PoredakSprava p in result.Takmicenje3.Poredak)
-                NHibernateUtil.Initialize(p.Rezultati);
-            NHibernateUtil.Initialize(result.Takmicenje3.PoredakPreskok.Rezultati);
+            if (result != null)
+            {
+                NHibernateUtil.Initialize(result.Propozicije);
+                NHibernateUtil.Initialize(result.Takmicenje);
+                foreach (PoredakSprava p in result.Takmicenje3.Poredak)
+                    NHibernateUtil.Initialize(p.Rezultati);
+                NHibernateUtil.Initialize(result.Takmicenje3.PoredakPreskok.Rezultati);
+            }
             return result;
         }
     }
