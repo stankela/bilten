@@ -1280,7 +1280,7 @@ namespace Bilten.UI
             {
                 foreach (Takmicenje prethKolo in prethodnaKola)
                 {
-                    foreach (GimnasticarUcesnik g in loadGimnasticari(prethKolo, kat))
+                    foreach (GimnasticarUcesnik g in loadGimnasticari(prethKolo, kat.Naziv))
                     {
                         if (!gimnasticariMap.ContainsKey(g))
                         {
@@ -1522,7 +1522,7 @@ namespace Bilten.UI
             List<GimnasticarUcesnik> dupliGimnasticari = new List<GimnasticarUcesnik>();
             foreach (TakmicarskaKategorija kat in takmicenje.Kategorije)
             {
-                foreach (GimnasticarUcesnik g in loadGimnasticari(from, kat))
+                foreach (GimnasticarUcesnik g in loadGimnasticari(from, kat.Naziv))
                 {
                     if (!gimnasticariMap.ContainsKey(g))
                     {
@@ -1762,7 +1762,7 @@ namespace Bilten.UI
 
         }
 
-        private IList<GimnasticarUcesnik> loadGimnasticari(Takmicenje tak, TakmicarskaKategorija kategorija)
+        private IList<GimnasticarUcesnik> loadGimnasticari(Takmicenje tak, string kategorija)
         {
             ISession session = null;
             try

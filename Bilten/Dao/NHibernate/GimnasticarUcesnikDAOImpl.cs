@@ -73,8 +73,7 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public IList<GimnasticarUcesnik> FindByTakmicenjeKatFetch_Klub_Drzava(Takmicenje tak,
-            TakmicarskaKategorija kategorija)
+        public IList<GimnasticarUcesnik> FindByTakmicenjeKatFetch_Klub_Drzava(Takmicenje tak, string kategorija)
         {
             try
             {
@@ -83,10 +82,10 @@ namespace Bilten.Dao.NHibernate
                     left join fetch g.KlubUcesnik
                     left join fetch g.DrzavaUcesnik
                     where g.Takmicenje = :tak
-                    and g.TakmicarskaKategorija = :kategorija
+                    and g.TakmicarskaKategorija.Naziv = :kategorija
                     order by g.Prezime, g.Ime");
                 q.SetEntity("tak", tak);
-                q.SetEntity("kategorija", kategorija);
+                q.SetString("kategorija", kategorija);
                 return q.List<GimnasticarUcesnik>();
             }
             catch (HibernateException ex)

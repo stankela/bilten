@@ -10,7 +10,7 @@ namespace Bilten.Dao
         IList<GimnasticarUcesnik> FindByTakmicenje(int takmicenjeId);
         IList<GimnasticarUcesnik> FindByTakmicenjeFetch_Kat_Klub_Drzava(int takmicenjeId);
         IList<GimnasticarUcesnik> FindByTakmicenjeKat(int takmicenjeId, TakmicarskaKategorija kategorija);
-        IList<GimnasticarUcesnik> FindByTakmicenjeKatFetch_Klub_Drzava(Takmicenje tak, TakmicarskaKategorija kategorija);
+        IList<GimnasticarUcesnik> FindByTakmicenjeKatFetch_Klub_Drzava(Takmicenje tak, string kategorija);
         IList<GimnasticarUcesnik> FindGimnasticariUcesnici(string ime,
             string prezime, Nullable<int> godRodj, DrzavaUcesnik drzava, TakmicarskaKategorija kategorija,
             KlubUcesnik klub, int takmicenjeId);
