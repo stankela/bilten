@@ -15,7 +15,8 @@ namespace Bilten.Dao.NHibernate
             try
             {
                 IQuery q = Session.CreateQuery(@"from TakmicarskaKategorija k
-                where k.Takmicenje.Id = :takmicenjeId");
+                    where k.Takmicenje.Id = :takmicenjeId
+                    order by k.RedBroj asc");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<TakmicarskaKategorija>();
             }

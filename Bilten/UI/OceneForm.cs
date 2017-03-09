@@ -9,6 +9,10 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
+using NHibernate;
+using NHibernate.Context;
+using Bilten.Dao;
+using Bilten.Dao.NHibernate;
 
 namespace Bilten.UI
 {
@@ -16,7 +20,6 @@ namespace Bilten.UI
     {
         private IList<TakmicarskaKategorija> kategorije;
         private DeoTakmicenjaKod deoTakKod;
-        private IDataContext dataContext;
         private Takmicenje takmicenje;
 
         // kljuc je kategorije.IndexOf(kategorija) * (Sprava.Max + 1) + sprava
@@ -42,60 +45,49 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                        .FindByTakmicenje(takmicenjeId);
+                    if (kategorije.Count == 0)
+                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
 
-                kategorije = loadKategorije(takmicenjeId);
-                if (kategorije.Count == 0)
-                    throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    ocene = new Dictionary<int, List<Ocena>>();
 
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                ocene = new Dictionary<int, List<Ocena>>();
+                    initUI();
+                    cmbKategorija.SelectedIndex = 0;
+                    cmbSprava.SelectedIndex = 0;
 
-                initUI();
-                cmbKategorija.SelectedIndex = 0;
-                cmbSprava.SelectedIndex = 0;
+                    cmbKategorija.SelectedIndexChanged += new EventHandler(selectedOceneChanged);
+                    cmbSprava.SelectedIndexChanged += new EventHandler(selectedOceneChanged);
 
-                cmbKategorija.SelectedIndexChanged += new EventHandler(selectedOceneChanged);
-                cmbSprava.SelectedIndexChanged += new EventHandler(selectedOceneChanged);
-
-                onSelectedOceneChanged();
-
-      //          dataContext.Commit();
+                    onSelectedOceneChanged();
+                }
             }
             catch (BusinessException)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
                 throw;
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
-        }
-
-        private IList<TakmicarskaKategorija> loadKategorije(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            q.OrderClauses.Add(new OrderClause("RedBroj", OrderClause.OrderClauseCriteria.Ascending));
-            return dataContext.GetByCriteria<TakmicarskaKategorija>(q);
         }
 
         private void initUI()
@@ -123,29 +115,27 @@ namespace Bilten.UI
 
         private void selectedOceneChanged(object sender, EventArgs e)
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-                
-                onSelectedOceneChanged();
-
-                //dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    onSelectedOceneChanged();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -160,8 +150,8 @@ namespace Bilten.UI
             }
             else
             {
-                oceneList = loadOcene(ActiveKategorija,
-                    ActiveSprava, deoTakKod);
+                oceneList = new List<Ocena>(DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindByKatSpravaDeoTak(
+                    ActiveKategorija, ActiveSprava, deoTakKod));
                 ocene[calculateOceneKey(ActiveKategorija, ActiveSprava)] = oceneList;
             }
             setOcene(oceneList);
@@ -209,44 +199,6 @@ namespace Bilten.UI
             return kategorije.IndexOf(kat) * ((int)Sprava.Max + 1) + (int)sprava;
         }
 
-        private List<Ocena> loadOcene(TakmicarskaKategorija kategorija, Sprava sprava, 
-            DeoTakmicenjaKod deoTakKod)
-        {
-            string query = @"select o
-                            from Ocena o
-                            left join fetch o.Ocena2
-                            join fetch o.Gimnasticar g
-                            join fetch g.TakmicarskaKategorija kat
-                            left join fetch g.DrzavaUcesnik dr
-                            left join fetch g.KlubUcesnik kl
-	                        where kat = :kat
-                            and o.Sprava = :sprava
-                            and o.DeoTakmicenjaKod = :deoTakKod";
-            IList<Ocena> result = dataContext.ExecuteQuery<Ocena>(QueryLanguageType.HQL, query,
-                    new string[] { "kat", "sprava", "deoTakKod" }, 
-                    new object[] { kategorija, sprava, deoTakKod });
-            return new List<Ocena>(result);
-        }
-
-        private Ocena loadOcena(int id)
-        {
-            string query = @"select o
-                            from Ocena o
-                            left join fetch o.Ocena2
-                            join fetch o.Gimnasticar g
-                            join fetch g.TakmicarskaKategorija kat
-                            left join fetch g.DrzavaUcesnik dr
-                            left join fetch g.KlubUcesnik kl
-	                        where o.Id = :id";
-            IList<Ocena> result = dataContext.ExecuteQuery<Ocena>(QueryLanguageType.HQL, query,
-                    new string[] { "id" },
-                    new object[] { id });
-            if (result.Count == 0)
-                return null;
-            else
-                return result[0];
-        }
-
         private void setOcene(List<Ocena> oceneList)
         {
             getDataGridViewUserControl().setItems(oceneList);
@@ -280,31 +232,29 @@ namespace Bilten.UI
                 MessageDialogs.showMessage(msg, this.Text);
                 return;
             }
-
             
             Ocena ocena = null;
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                ocena = findOcena(g, deoTakKod, ActiveSprava);
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    ocena = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindOcena(g, deoTakKod, ActiveSprava);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showMessage(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
             bool edit;
@@ -333,54 +283,48 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ocena = null;
+            session = null;
             try
             {
-                ocena = null;
-                try
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                    dataContext = factory.GetDataContext();
-                    dataContext.BeginTransaction();
-
-                    ocena = loadOcena(f.Entity.Id);
+                    CurrentSessionContext.Bind(session);
+                    ocena = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindByIdFetch(f.Entity.Id);
                 }
-                catch (Exception ex)
-                {
-                    if (dataContext != null && dataContext.IsInTransaction)
-                        dataContext.Rollback();
-                    MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                    Close();
-                    return;
-                }
-                finally
-                {
-                    if (dataContext != null)
-                        dataContext.Dispose();
-                    dataContext = null;
-                }
-
-                bool opened = gridOpened(g.TakmicarskaKategorija, ActiveSprava);
-                showGridOcene(g.TakmicarskaKategorija, ActiveSprava);
-                List<Ocena> activeOcene = ocene[calculateOceneKey(g.TakmicarskaKategorija, ActiveSprava)];
-                if (!edit)
-                {
-                    // nova ocena se dodaje u listu activeOcene samo ako je grid vec bio 
-                    // prikazivan; ako se grid prvi put prikazuje, ocene se ucitavaju i
-                    // medju njima se nalazi i ona koja je upravo dodata.
-                    if (opened)
-                        activeOcene.Add(ocena);
-                }
-                else
-                    activeOcene[activeOcene.IndexOf(ocena)] = ocena;
-
-                setOcene(activeOcene);
-                selectOcena(ocena);
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                Close();
+                return;
             }
             finally
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+
+            bool opened = gridOpened(g.TakmicarskaKategorija, ActiveSprava);
+            showGridOcene(g.TakmicarskaKategorija, ActiveSprava);
+            List<Ocena> activeOcene = ocene[calculateOceneKey(g.TakmicarskaKategorija, ActiveSprava)];
+            if (!edit)
+            {
+                // nova ocena se dodaje u listu activeOcene samo ako je grid vec bio 
+                // prikazivan; ako se grid prvi put prikazuje, ocene se ucitavaju i
+                // medju njima se nalazi i ona koja je upravo dodata.
+                if (opened)
+                    activeOcene.Add(ocena);
+            }
+            else
+                activeOcene[activeOcene.IndexOf(ocena)] = ocena;
+
+            setOcene(activeOcene);
+            selectOcena(ocena);
         }
 
         private bool ucestvuje(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod)
@@ -398,19 +342,6 @@ namespace Bilten.UI
         {
             ActiveKategorija = kategorija;
             ActiveSprava = sprava;
-        }
-
-        private Ocena findOcena(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod,
-            Sprava sprava)
-        {
-            IList<Ocena> result = dataContext.
-                ExecuteNamedQuery<Ocena>("FindOcena",
-                new string[] { "gimnasticarId", "deoTakKod", "sprava" },
-                new object[] { g.Id, deoTakKod, sprava });
-            if (result.Count > 0)
-                return result[0];
-            else
-                return null;
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -436,50 +367,42 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            Ocena editedItem = null;
+            ISession session = null;
             try
             {
-                Ocena editedItem = null;
-                try
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                    dataContext = factory.GetDataContext();
-                    dataContext.BeginTransaction();
-
+                    CurrentSessionContext.Bind(session);
                     // NOTE: Ne koristi se form.Entity nego se ponovo ucitava ocena 
                     // da bi se izbegla zavisnost od toga na koji nacin OcenaForm 
                     // ucitava ocenu, tj. da bi bio siguran da su inicijalizovane sve
                     // asocijacije kao i prilikom ucitavanja ocena u loadOcene.
 
-                    editedItem = loadOcena(selectedItem.Id);
-
-                    //dataContext.Commit();
+                    editedItem = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindByIdFetch(selectedItem.Id);
                 }
-                catch (Exception ex)
-                {
-                    if (dataContext != null && dataContext.IsInTransaction)
-                        dataContext.Rollback();
-                    MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                    Close();
-                    return;
-                }
-                finally
-                {
-                    if (dataContext != null)
-                        dataContext.Dispose();
-                    dataContext = null;
-                }
-
-                List<Ocena> activeOcene = ocene[calculateOceneKey(ActiveKategorija, ActiveSprava)];
-                activeOcene[activeOcene.IndexOf(editedItem)] = editedItem;
-
-                setOcene(activeOcene);
-                selectOcena(editedItem);
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                Close();
+                return;
             }
             finally
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+
+            List<Ocena> activeOcene = ocene[calculateOceneKey(ActiveKategorija, ActiveSprava)];
+            activeOcene[activeOcene.IndexOf(editedItem)] = editedItem;
+
+            setOcene(activeOcene);
+            selectOcena(editedItem);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -498,30 +421,32 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ISession session = null;
             try
             {
-                try
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                    dataContext = factory.GetDataContext();
-                    dataContext.BeginTransaction();
+                    CurrentSessionContext.Bind(session);
 
-                    dataContext.Delete(ocena);
+                    DAOFactoryFactory.DAOFactory.GetOcenaDAO().Delete(ocena);
 
-                    IList<RezultatskoTakmicenje> rezTakmicenja = loadRezTakmicenja(ocena.Gimnasticar);
+                    IList<RezultatskoTakmicenje> rezTakmicenja
+                        = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                            .FindRezTakmicenjaForGimnasticar(ocena.Gimnasticar);
                     foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
                     {
                         if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                         {
                             rezTak.Takmicenje1.ocenaDeleted(ocena, rezTak);
-                            dataContext.Save(rezTak.Takmicenje1);
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                         }
                         else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                         {
                             if (rezTak.Propozicije.OdvojenoTak2)
                             {
                                 rezTak.Takmicenje2.ocenaDeleted(ocena, rezTak);
-                                dataContext.Save(rezTak.Takmicenje2);
+                                DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rezTak.Takmicenje2);
                             }
                         }
                         else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
@@ -529,7 +454,7 @@ namespace Bilten.UI
                             if (rezTak.Propozicije.OdvojenoTak3)
                             {
                                 rezTak.Takmicenje3.ocenaDeleted(ocena, rezTak);
-                                dataContext.Save(rezTak.Takmicenje3);
+                                DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rezTak.Takmicenje3);
                             }
                         }
                         else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
@@ -537,73 +462,67 @@ namespace Bilten.UI
                             if (rezTak.Propozicije.OdvojenoTak4)
                             {
                                 rezTak.Takmicenje4.ocenaDeleted(ocena, rezTak);
-                                dataContext.Save(rezTak.Takmicenje4);
+                                DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rezTak.Takmicenje4);
                             }
                         }
                     }
+
+                    GenericNHibernateDAO<GimnasticarUcesnik, int> gimUcesnikDAO
+                        = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO() as GenericNHibernateDAO<GimnasticarUcesnik, int>;
+                    GenericNHibernateDAO<UcesnikTakmicenja2, int> ucTak2DAO
+                        = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO() as GenericNHibernateDAO<UcesnikTakmicenja2, int>;
+                    GenericNHibernateDAO<UcesnikTakmicenja3, int> ucTak3DAO
+                        = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO() as GenericNHibernateDAO<UcesnikTakmicenja3, int>;
 
                     foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
                     {
                         if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                         {
                             foreach (GimnasticarUcesnik g in rezTak.Takmicenje1.Gimnasticari)
-                                dataContext.Evict(g);
+                                gimUcesnikDAO.Evict(g);
                         }
                         else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                         {
                             foreach (UcesnikTakmicenja2 u in rezTak.Takmicenje2.Ucesnici)
                             {
-                                if (dataContext.Contains(u.Gimnasticar))
-                                    dataContext.Evict(u.Gimnasticar);
-                                dataContext.Evict(u);
+                                if (gimUcesnikDAO.Contains(u.Gimnasticar))
+                                    gimUcesnikDAO.Evict(u.Gimnasticar);
+                                ucTak2DAO.Evict(u);
                             }
                         }
                         else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
                         {
                             foreach (UcesnikTakmicenja3 u in rezTak.Takmicenje3.Ucesnici)
                             {
-                                if (dataContext.Contains(u.Gimnasticar))
-                                    dataContext.Evict(u.Gimnasticar);
-                                dataContext.Evict(u);
+                                if (gimUcesnikDAO.Contains(u.Gimnasticar))
+                                    gimUcesnikDAO.Evict(u.Gimnasticar);
+                                ucTak3DAO.Evict(u);
                             }
                         }
                     }
 
-                    dataContext.Commit();
+                    session.Transaction.Commit();
                 }
-                catch (Exception ex)
-                {
-                    if (dataContext != null && dataContext.IsInTransaction)
-                        dataContext.Rollback();
-                    MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                    Close();
-                    return;
-                }
-                finally
-                {
-                    if (dataContext != null)
-                        dataContext.Dispose();
-                    dataContext = null;
-                }
-
-                List<Ocena> activeOcene = ocene[calculateOceneKey(ActiveKategorija, ActiveSprava)];
-                activeOcene.Remove(ocena);
-
-                setOcene(activeOcene);
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                Close();
+                return;
             }
             finally
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
 
-        private IList<RezultatskoTakmicenje> loadRezTakmicenja(GimnasticarUcesnik g)
-        {
-            return dataContext.ExecuteNamedQuery<RezultatskoTakmicenje>(
-                "FindRezTakmicenjaForGimnasticar",
-                new string[] { "gimnasticar" },
-                new object[] { g });
+            List<Ocena> activeOcene = ocene[calculateOceneKey(ActiveKategorija, ActiveSprava)];
+            activeOcene.Remove(ocena);
+
+            setOcene(activeOcene);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
