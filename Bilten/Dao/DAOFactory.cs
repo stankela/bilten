@@ -36,5 +36,6 @@ namespace Bilten.Dao
         public abstract PoredakEkipnoDAO GetPoredakEkipnoDAO();
         public abstract PoredakSpravaDAO GetPoredakSpravaDAO();
         public abstract PoredakPreskokDAO GetPoredakPreskokDAO();
+        public abstract PoredakUkupnoDAO GetPoredakUkupnoDAO();
     }
 }

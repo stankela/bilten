@@ -41,17 +41,6 @@
     ]]>
     </query>
 
-    <query name="FindOceneByDeoTakmicenja">
-      <![CDATA[
-      select o
-      from Ocena o
-      left join fetch o.Ocena2
-      join o.Gimnasticar g
-      where g.Takmicenje.Id = :takId
-      and o.DeoTakmicenjaKod = :deoTakKod
-    ]]>
-  </query>
-
   <query name="FindOceneForGimnasticar">
     <![CDATA[
       select o

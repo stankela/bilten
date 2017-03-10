@@ -116,6 +116,7 @@
     <Compile Include="Dao\NHibernate\PoredakEkipnoDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakPreskokDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakSpravaDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\PoredakUkupnoDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PropozicijeDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\RasporedNastupaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\RasporedSudijaDAOImpl.cs" />
@@ -136,8 +137,9 @@
     <Compile Include="Dao\OcenaDAO.cs" />
     <Compile Include="Dao\OpcijeDAO.cs" />
     <Compile Include="Dao\PoredakEkipnoDAO.cs" />
-    <Compile Include="Dao\PoredakPreskok.cs" />
+    <Compile Include="Dao\PoredakPreskokDAO.cs" />
     <Compile Include="Dao\PoredakSpravaDAO.cs" />
+    <Compile Include="Dao\PoredakUkupnoDAO.cs" />
     <Compile Include="Dao\PropozicijeDAO.cs" />
     <Compile Include="Dao\RasporedNastupaDAO.cs" />
     <Compile Include="Dao\RasporedSudijaDAO.cs" />
