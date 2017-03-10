@@ -52,6 +52,30 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<RasporedSudija> FindByTakmicenjeDeoTak(int takmicenjeId, DeoTakmicenjaKod deoTak)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RasporedSudija r
+                    left join fetch r.Kategorije k
+                    left join fetch r.Odbori o
+                    left join fetch o.Sudije s
+                    left join fetch s.DrzavaUcesnik dr
+                    left join fetch s.KlubUcesnik kl
+                    where r.DeoTakmicenjaKod = :deoTak
+                    and k.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                q.SetByte("deoTak", (byte)deoTak);
+                return q.List<RasporedSudija>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

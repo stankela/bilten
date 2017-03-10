@@ -11,6 +11,8 @@ using Bilten.Exceptions;
 using Bilten.Data.QueryModel;
 using NHibernate;
 using Bilten.Report;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -20,7 +22,6 @@ namespace Bilten.UI
         private DeoTakmicenjaKod deoTakKod;
         private IList<RasporedSudija> rasporedi;
         private List<bool> tabOpened;
-        private IDataContext dataContext;
         private int kategorijeCount;
 
         private int clickedRow;
@@ -40,73 +41,55 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                kategorijeCount = getKategorijeCount(takmicenjeId);
-                if (kategorijeCount == 0)
-                    throw new Exception("Greska u programu.");
-                rasporedi = loadRasporedi(takmicenjeId, deoTakKod);
-
-                takmicenje = dataContext.GetById<Takmicenje>(takmicenjeId);
-                NHibernateUtil.Initialize(takmicenje);
-
-                // create tabs
-                for (int i = 0; i < rasporedi.Count; i++)
-                    createTab(rasporedi[i]);
-
-                tabOpened = new List<bool>();
-                for (int i = 0; i < rasporedi.Count; i++)
-                    tabOpened.Add(false);
-
-                // show first tab
-                if (rasporedi.Count > 0)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    if (tabControl1.SelectedIndex != 0)
-                        tabControl1.SelectedIndex = 0;
-                    else
-                        onSelectedIndexChanged();
-                }
-                else
-                    tabControl1.TabPages.Remove(tabPage1);
+                    CurrentSessionContext.Bind(session);
+                    kategorijeCount = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                        .GetCountForTakmicenje(takmicenjeId);
+                    if (kategorijeCount == 0)
+                        throw new Exception("Greska u programu.");
+                    rasporedi = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO()
+                        .FindByTakmicenjeDeoTak(takmicenjeId, deoTakKod);
 
-            //    dataContext.Commit();
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    NHibernateUtil.Initialize(takmicenje);
+
+                    // create tabs
+                    for (int i = 0; i < rasporedi.Count; i++)
+                        createTab(rasporedi[i]);
+
+                    tabOpened = new List<bool>();
+                    for (int i = 0; i < rasporedi.Count; i++)
+                        tabOpened.Add(false);
+
+                    // show first tab
+                    if (rasporedi.Count > 0)
+                    {
+                        if (tabControl1.SelectedIndex != 0)
+                            tabControl1.SelectedIndex = 0;
+                        else
+                            onSelectedIndexChanged();
+                    }
+                    else
+                        tabControl1.TabPages.Remove(tabPage1);
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                throw new InfrastructureException(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
-
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private IList<RasporedSudija> loadRasporedi(int takmicenjeId,
-            DeoTakmicenjaKod kod)
-        {
-            return dataContext.ExecuteNamedQuery<RasporedSudija>(
-                "FindRaspSudByTakDeoTakmFetch",
-                new string[] { "takmicenje", "deoTak" },
-                new object[] { takmicenjeId, (byte)kod });
-        }
-
-        private int getKategorijeCount(int takmicenjeId)
-        {
-            Query q = new Query();
-            q.Criteria.Add(new Criterion("Takmicenje.Id", CriteriaOperator.Equal, takmicenjeId));
-            return dataContext.GetCount<TakmicarskaKategorija>(q);
         }
 
         private void createTab(RasporedSudija raspored)
@@ -292,28 +275,27 @@ namespace Bilten.UI
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-                onSelectedIndexChanged();
-
-                //dataContext.Commit();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    onSelectedIndexChanged();
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -405,30 +387,29 @@ namespace Bilten.UI
 
             RasporedSudija newRaspored = null;
             bool added = false;
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    newRaspored = new RasporedSudija(form.SelektovaneKategorije, deoTakKod, takmicenje);
+                    DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO().Add(newRaspored);
 
-                newRaspored = new RasporedSudija(form.SelektovaneKategorije, deoTakKod, takmicenje);
-                dataContext.Add(newRaspored);
-
-                dataContext.Commit();
-                added = true;
+                    session.Transaction.Commit();
+                    added = true;
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showMessage(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
             if (!added)
@@ -466,31 +447,30 @@ namespace Bilten.UI
                 return;
 
             bool deleted = false;
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO().Delete(ActiveRaspored);
 
-                dataContext.Delete(ActiveRaspored);
-
-                dataContext.Commit();
-                deleted = true;
+                    session.Transaction.Commit();
+                    deleted = true;
+                }
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showError(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
             if (!deleted)
@@ -525,32 +505,33 @@ namespace Bilten.UI
             if (sudije.Count == 0)
                 return;
 
+            ISession session = null;
             try
             {
-                DataAccessProviderFactory factory = new DataAccessProviderFactory();
-                dataContext = factory.GetDataContext();
-                dataContext.BeginTransaction();
-
-                foreach (SudijaUcesnik s in sudije)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    s.NastupaZaDrzavu = !prikaziKlub;
-                    dataContext.Save(s);
+                    CurrentSessionContext.Bind(session);
+                    SudijaUcesnikDAO sudijaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO();
+                    foreach (SudijaUcesnik s in sudije)
+                    {
+                        s.NastupaZaDrzavu = !prikaziKlub;
+                        sudijaUcesnikDAO.Update(s);
+                    }
+                    session.Transaction.Commit();
                 }
-                dataContext.Commit();
             }
             catch (Exception ex)
             {
-                if (dataContext != null && dataContext.IsInTransaction)
-                    dataContext.Rollback();
-                MessageDialogs.showMessage(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
                 Close();
                 return;
             }
             finally
             {
-                if (dataContext != null)
-                    dataContext.Dispose();
-                dataContext = null;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
             SudijaNaSpravi s2 = dgw.getSelectedItem<SudijaNaSpravi>();

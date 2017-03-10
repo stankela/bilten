@@ -8,5 +8,6 @@ namespace Bilten.Dao
     public interface TakmicarskaKategorijaDAO : GenericDAO<TakmicarskaKategorija, int>
     {
         IList<TakmicarskaKategorija> FindByTakmicenje(int takmicenjeId);
+        int GetCountForTakmicenje(int takmicenjeId);
     }
 }

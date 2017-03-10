@@ -26,6 +26,22 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public int GetCountForTakmicenje(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select count(*) from TakmicarskaKategorija k
+                    where k.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return (int)(long)q.UniqueResult();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

@@ -241,12 +241,12 @@ namespace Bilten.UI
             }
             finally
             {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 if (showWaitCursor)
                 {
                     Cursor.Hide();
                     Cursor.Current = Cursors.Arrow;
                 }
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
