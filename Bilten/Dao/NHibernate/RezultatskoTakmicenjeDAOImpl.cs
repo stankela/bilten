@@ -177,7 +177,8 @@ namespace Bilten.Dao.NHibernate
                     left join fetch t.Gimnasticari g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
-                    where r.Takmicenje.Id = :takmicenjeId");
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<RezultatskoTakmicenje>();
             }
@@ -251,6 +252,33 @@ namespace Bilten.Dao.NHibernate
                     left join fetch e.Gimnasticari
                     left join fetch e.DrzavaUcesnik
                     left join fetch e.KlubUcesnik
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak3_Poredak(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje3 t
+                    left join fetch t.Poredak
+                    left join fetch t.PoredakPreskok
+                    left join fetch t.Ucesnici u
+                    left join fetch u.Gimnasticar g
+                    left join fetch g.DrzavaUcesnik dr
+                    left join fetch g.KlubUcesnik kl
                     where r.Takmicenje.Id = :takmicenjeId
                     order by r.RedBroj");
                 q.SetInt32("takmicenjeId", takmicenjeId);

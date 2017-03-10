@@ -158,5 +158,15 @@ namespace Bilten.Dao.NHibernate
         {
             return new PoredakEkipnoDAOImpl();
         }
+
+        public override PoredakSpravaDAO GetPoredakSpravaDAO()
+        {
+            return new PoredakSpravaDAOImpl();
+        }
+
+        public override PoredakPreskokDAO GetPoredakPreskokDAO()
+        {
+            return new PoredakPreskokDAOImpl();
+        }
     }
 }
