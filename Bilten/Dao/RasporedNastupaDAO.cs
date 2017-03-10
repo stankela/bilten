@@ -9,5 +9,6 @@ namespace Bilten.Dao
     {
         IList<RasporedNastupa> FindByTakmicenje(int takmicenjeId);
         RasporedNastupa FindByIdFetch(int rasporedId);
+        IList<RasporedNastupa> FindByTakmicenjeDeoTak(int takmicenjeId, DeoTakmicenjaKod deoTak);
     }
 }

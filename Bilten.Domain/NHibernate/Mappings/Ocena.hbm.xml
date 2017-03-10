@@ -30,17 +30,6 @@
     <many-to-one name="Ocena2" class="DrugaOcena" column="ocena2_id" cascade="all" outer-join="true" />
   </class>
 
-  <query name="FindOcena">
-    <![CDATA[
-      select o
-      from Ocena o
-      join o.Gimnasticar g
-      where g.Id = :gimnasticarId
-      and o.DeoTakmicenjaKod = :deoTakKod
-      and o.Sprava = :sprava
-    ]]>
-    </query>
-
   <query name="FindOceneForGimnasticar">
     <![CDATA[
       select o
