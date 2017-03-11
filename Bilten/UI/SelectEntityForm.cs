@@ -13,14 +13,7 @@ namespace Bilten.UI
 {
     public partial class SelectEntityForm : Form
     {
-        protected IDataContext dataContext;
         protected FilterForm filterForm;
-
-        private IList<AssociationFetch> fetchModes = new List<AssociationFetch>();
-        protected IList<AssociationFetch> FetchModes
-        {
-            get { return fetchModes; }
-        }
 
         protected IList<object> selectedEntities = new List<object>();
         public IList<object> SelectedEntities

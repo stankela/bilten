@@ -159,11 +159,6 @@
     <Compile Include="Dao\TakmicenjeDAO.cs" />
     <Compile Include="Dao\UcesnikTakmicenja2DAO.cs" />
     <Compile Include="Dao\UcesnikTakmicenja3DAO.cs" />
-    <Compile Include="Data\DataAccessProviderFactory.cs" />
-    <Compile Include="Data\IDataContext.cs" />
-    <Compile Include="Data\IDataProviderFactory.cs" />
-    <Compile Include="Data\NHibernate\DataProviderFactory.cs" />
-    <Compile Include="Data\NHibernate\NHibernateDataContext.cs" />
     <Compile Include="Data\NHibernate\NHibernateHelper.cs" />
     <Compile Include="Data\NHibernate\QueryTranslator.cs" />
     <Compile Include="Data\QueryLanguageType.cs" />
