@@ -96,6 +96,9 @@ namespace Bilten.Dao.NHibernate
 
         public IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Gimnasticari(int takmicenjeId)
         {
+            // NOTE: Kada umesto d stavim desc za TakmicenjeDescription dobijam
+            // gresku. Verovatno je desc neka interna promenljiva koju NHibernate
+            // koristi.
             try
             {
                 IQuery q = Session.CreateQuery(@"

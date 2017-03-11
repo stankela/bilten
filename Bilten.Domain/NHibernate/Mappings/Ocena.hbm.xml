@@ -41,14 +41,4 @@
     ]]>
   </query>
 
-  <query name="FindVezbaneSpraveForGimnasticar">
-    <![CDATA[
-      select o.Sprava
-      from Ocena o
-      join o.Gimnasticar g
-      where g = :gim
-      and o.DeoTakmicenjaKod = :deoTakKod
-    ]]>
-  </query>
-
 </hibernate-mapping>

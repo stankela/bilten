@@ -180,7 +180,9 @@ namespace Bilten.UI
             {
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                Close();
+                return;
             }
             finally
             {
