@@ -528,33 +528,7 @@ namespace Bilten.UI
             if (ActiveRaspored == null)
                 return;
 
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    handleRotacijaChanged();
-
-                    // TODO3: Proveri da li ovo ima smisla - da prvo uradim Clear() a posle pozovem Commit().
-                    // Takodje proveri da li je potrebno da otvaram sesiju.
-                    DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Clear();
-                    session.Transaction.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            handleRotacijaChanged();
         }
 
         private void handleRotacijaChanged()
