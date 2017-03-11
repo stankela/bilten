@@ -616,6 +616,9 @@ namespace Bilten.UI
             Close();
         }
 
+        // TODO4: Kod izbora nacina rotacije za prvu spravu, pitaj da li takav nacin treba da bude i za ostale
+        // sprave.
+
         private void btnNewGroup_Click(object sender, EventArgs e)
         {
             // TODO: Dodaj brisanje grupa (razmisli da li samo poslednje ili bilo koje)

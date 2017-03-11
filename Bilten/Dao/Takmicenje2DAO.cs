@@ -7,6 +7,6 @@ namespace Bilten.Dao
 {
     public interface Takmicenje2DAO : GenericDAO<Takmicenje2, int>
     {
-
+        bool isGimnasticarUcesnik(int gimnasticarId);
     }
 }

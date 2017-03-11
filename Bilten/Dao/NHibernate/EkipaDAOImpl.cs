@@ -20,10 +20,9 @@ namespace Bilten.Dao.NHibernate
                 where e.Id = :id");
             q.SetInt32("id", id);
             IList<Ekipa> result = q.List<Ekipa>();
-            if (result.Count == 0)
-                return null;
-            else
+            if (result.Count > 0)
                 return result[0];
+            return null;
         }
 
         public bool existsEkipaNaziv(int rezTakmicenjeId, string naziv)
@@ -49,6 +48,17 @@ namespace Bilten.Dao.NHibernate
                 and e.Kod = :kod");
             q.SetInt32("rezTakmicenjeId", rezTakmicenjeId);
             q.SetString("kod", kod);
+            return (long)q.UniqueResult() > 0;
+        }
+
+        public bool existsEkipaForGimnasticar(int gimnasticarId)
+        {
+            IQuery q = Session.CreateQuery(@"
+                select count(*)
+                from Ekipa e
+                join e.Gimnasticari g
+                where g.Id = :gimnasticarId");
+            q.SetInt32("gimnasticarId", gimnasticarId);
             return (long)q.UniqueResult() > 0;
         }
 

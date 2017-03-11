@@ -155,6 +155,16 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public bool existsOcenaForGimnasticar(int gimnasticarId)
+        {
+            IQuery q = Session.CreateQuery(@"
+                select count(*)
+                from Ocena o
+                where o.Gimnasticar.Id = :gimnasticarId");
+            q.SetInt32("gimnasticarId", gimnasticarId);
+            return (long)q.UniqueResult() > 0;
+        }
+
         #endregion
     }
 }

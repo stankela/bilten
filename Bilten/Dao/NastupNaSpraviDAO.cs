@@ -5,8 +5,8 @@ using Bilten.Domain;
 
 namespace Bilten.Dao
 {
-    public interface Takmicenje3DAO : GenericDAO<Takmicenje3, int>
+    public interface NastupNaSpraviDAO : GenericDAO<NastupNaSpravi, int>
     {
-        bool isGimnasticarUcesnik(int gimnasticarId);
+        bool existsNastupForGimnasticar(int gimnasticarId);
     }
 }

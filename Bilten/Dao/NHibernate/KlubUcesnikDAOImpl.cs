@@ -20,10 +20,9 @@ namespace Bilten.Dao.NHibernate
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 q.SetString("naziv", naziv);
                 IList<KlubUcesnik> result = q.List<KlubUcesnik>();
-                if (result.Count == 0)
-                    return null;
-                else
+                if (result.Count > 0)
                     return result[0];
+                return null;
             }
             catch (HibernateException ex)
             {

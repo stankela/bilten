@@ -44,17 +44,4 @@
     ]]>
   </query>
 
-  <query name="FindRezTakmicenjaForGimnasticar">
-    <![CDATA[
-      select distinct r
-      from RezultatskoTakmicenje r
-      left join fetch r.Kategorija kat
-      left join fetch r.TakmicenjeDescription d
-      join r.Takmicenje1 t
-      join t.Gimnasticari g
-      where g = :gimnasticar
-      order by r.RedBroj    
-    ]]>
-  </query>
-
 </hibernate-mapping>

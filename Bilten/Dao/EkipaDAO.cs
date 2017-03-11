@@ -10,5 +10,6 @@ namespace Bilten.Dao
         Ekipa FindEkipaById(int id);
         bool existsEkipaNaziv(int rezTakmicenjeId, string naziv);
         bool existsEkipaKod(int rezTakmicenjeId, string kod);
+        bool existsEkipaForGimnasticar(int gimnasticarId);
     }
 }

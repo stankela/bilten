@@ -440,6 +440,7 @@ namespace Bilten.UI
                 dataContext = factory.GetDataContext();
                 dataContext.BeginTransaction();
 
+                // TODO: iskoristi FindOceneForGimnasticar
                 return dataContext.ExecuteNamedQuery(
                     "FindVezbaneSpraveForGimnasticar",
                     new string[] { "gim", "deoTakKod" },
