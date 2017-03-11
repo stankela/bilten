@@ -295,8 +295,7 @@ namespace Bilten.UI
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveRezTakmicenje.Takmicenje1.PoredakEkipno);
                     foreach (GimnasticarUcesnik g in e.Gimnasticari)
                     {
-                        (DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
-                            as GenericNHibernateDAO<GimnasticarUcesnik, int>).Evict(g);
+                        DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Evict(g);
                     }
                     session.Transaction.Commit();
                 }
@@ -336,7 +335,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    (ocenaDAO as GenericNHibernateDAO<Ocena, int>).Session = session;
+                    ocenaDAO.Session = session;
                     return ocenaDAO.FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
                 }
             }
@@ -429,8 +428,7 @@ namespace Bilten.UI
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveRezTakmicenje.Takmicenje1.PoredakEkipno);
                     foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
                     {
-                        (DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO() 
-                            as GenericNHibernateDAO<GimnasticarUcesnik, int>).Evict(g);
+                        DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Evict(g);
                     }
                     session.Transaction.Commit();
                 }

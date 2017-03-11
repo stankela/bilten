@@ -405,8 +405,7 @@ namespace Bilten.UI
             {
                 // TODO3: Evict sam okruzio sa try/catch zato sto kada promenim srednje ime dobijam izuzetak "The given
                 // key was not present in the dictionary". Proveri u NHibernate in Action zasto se ovo desava.
-                (DAOFactoryFactory.DAOFactory.GetGimnasticarDAO() as GenericNHibernateDAO<Gimnasticar, int>)
-                    .Evict((Gimnasticar)entity);
+                DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().Evict((Gimnasticar)entity);
             }
             catch (Exception)
             { }

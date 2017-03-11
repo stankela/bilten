@@ -875,7 +875,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    (ocenaDAO as GenericNHibernateDAO<Ocena, int>).Session = session;
+                    ocenaDAO.Session = session;
                     return ocenaDAO.FindOceneByDeoTakmicenja(takmicenjeId, deoTakKod);
                 }
             }

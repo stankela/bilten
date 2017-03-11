@@ -940,7 +940,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    (ocenaDAO as GenericNHibernateDAO<Ocena, int>).Session = session;
+                    ocenaDAO.Session = session;
                     return ocenaDAO.FindOceneByDeoTakmicenja(takmicenjeId, DeoTakmicenjaKod.Takmicenje1);
                 }
             }
@@ -1189,8 +1189,7 @@ namespace Bilten.UI
 
         private bool kreirajZbirViseKola(Takmicenje takmicenje)
         {
-            GenericNHibernateDAO<Takmicenje, int> takmicenjeDAO
-                = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO() as GenericNHibernateDAO<Takmicenje, int>;
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             takmicenjeDAO.Attach(takmicenje, false);
             List<List<TakmicarskaKategorija>> listaKategorija = new List<List<TakmicarskaKategorija>>();
             if (takmicenje.PrvoKolo != null)
@@ -1391,11 +1390,11 @@ namespace Bilten.UI
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO();
 
-            (takmicenjeDAO as GenericNHibernateDAO<Takmicenje, int>).Attach(takmicenje, false);
-            (takmicenjeDAO as GenericNHibernateDAO<Takmicenje, int>).Attach(from, false);
+            takmicenjeDAO.Attach(takmicenje, false);
+            takmicenjeDAO.Attach(from, false);
             foreach (RezultatskoTakmicenjeDescription d in descriptionsFrom)
             {
-                (rezTakDescDAO as GenericNHibernateDAO<RezultatskoTakmicenjeDescription, int>).Attach(d, false);
+                rezTakDescDAO.Attach(d, false);
             }
             
             // TODO3: Ovaj metod bi trebalo updateovati svaki put kada se promene neka svojstva koja se kloniraju.
@@ -1692,7 +1691,7 @@ namespace Bilten.UI
                 {
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO
                         = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-                    (rezultatskoTakmicenjeDAO as GenericNHibernateDAO<RezultatskoTakmicenje, int>).Session = session;
+                    rezultatskoTakmicenjeDAO.Session = session;
                     return rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Ekipe_Gimnasticari(takmicenjeId);
                 }
             }
@@ -1771,7 +1770,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
-                    (gimUcesnikDAO as GenericNHibernateDAO<GimnasticarUcesnik, int>).Session = session;
+                    gimUcesnikDAO.Session = session;
                     return gimUcesnikDAO.FindByTakmicenjeKatFetch_Klub_Drzava(tak, kategorija);
                 }
             }

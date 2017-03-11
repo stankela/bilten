@@ -249,8 +249,7 @@ namespace Bilten.UI
             foreach (DrzavaUcesnik d in drzave)
                 drzavaUcesnikDAO.Delete(d);
 
-            GenericNHibernateDAO<Takmicenje, int> takmicenjeDAO
-                = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO() as GenericNHibernateDAO<Takmicenje, int>;
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             TakmicarskaKategorijaDAO takmicarskaKategorijaDAO = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO();
             RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO();
 

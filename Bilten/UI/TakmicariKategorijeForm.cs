@@ -579,7 +579,7 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
-                    (gimUcesnikDAO as GenericNHibernateDAO<GimnasticarUcesnik, int>).Attach(g, false);
+                    gimUcesnikDAO.Attach(g, false);
                     IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindRezTakmicenjaForGimnasticar(g);
                     foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
@@ -598,7 +598,7 @@ namespace Bilten.UI
 
                         DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                         foreach (GimnasticarUcesnik g2 in rezTak.Takmicenje1.Gimnasticari)
-                            (gimUcesnikDAO as GenericNHibernateDAO<GimnasticarUcesnik, int>).Evict(g2);
+                            gimUcesnikDAO.Evict(g2);
                     }
 
                     gimUcesnikDAO.Delete(g);
@@ -684,7 +684,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
-                    (ekipaDAO as GenericNHibernateDAO<Ekipa, int>).Session = session;
+                    ekipaDAO.Session = session;
                     return ekipaDAO.existsEkipaForGimnasticar(g.Id);
                 }
             }
@@ -709,7 +709,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     NastupNaSpraviDAO nastupDAO = DAOFactoryFactory.DAOFactory.GetNastupNaSpraviDAO();
-                    (nastupDAO as GenericNHibernateDAO<NastupNaSpravi, int>).Session = session;
+                    nastupDAO.Session = session;
                     return nastupDAO.existsNastupForGimnasticar(g.Id);
                 }
             }
@@ -735,7 +735,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    (ocenaDAO as GenericNHibernateDAO<Ocena, int>).Session = session;
+                    ocenaDAO.Session = session;
                     return ocenaDAO.existsOcenaForGimnasticar(g.Id);
                 }
             }
@@ -769,7 +769,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     Takmicenje2DAO takmicenje2DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO();
-                    (takmicenje2DAO as GenericNHibernateDAO<Takmicenje2, int>).Session = session;
+                    takmicenje2DAO.Session = session;
                     return takmicenje2DAO.isGimnasticarUcesnik(g.Id);
                 }
             }
@@ -794,7 +794,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     Takmicenje3DAO takmicenje3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
-                    (takmicenje3DAO as GenericNHibernateDAO<Takmicenje3, int>).Session = session;
+                    takmicenje3DAO.Session = session;
                     return takmicenje3DAO.isGimnasticarUcesnik(g.Id);
                 }
             }
@@ -819,7 +819,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    (ocenaDAO as GenericNHibernateDAO<Ocena, int>).Session = session;
+                    ocenaDAO.Session = session;
                     IList result = new List<Sprava>();
                     foreach (Ocena o in ocenaDAO.FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1))
                         result.Add(o.Sprava);

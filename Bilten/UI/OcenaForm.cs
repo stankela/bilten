@@ -1125,12 +1125,9 @@ namespace Bilten.UI
 
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
-                GenericNHibernateDAO<GimnasticarUcesnik, int> gimUcesnikDAO
-                    = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO() as GenericNHibernateDAO<GimnasticarUcesnik, int>;
-                GenericNHibernateDAO<UcesnikTakmicenja2, int> ucesnikTak2DAO
-                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO() as GenericNHibernateDAO<UcesnikTakmicenja2, int>;
-                GenericNHibernateDAO<UcesnikTakmicenja3, int> ucesnikTak3DAO
-                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO() as GenericNHibernateDAO<UcesnikTakmicenja3, int>;
+                GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
+                UcesnikTakmicenja2DAO ucesnikTak2DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO();
+                UcesnikTakmicenja3DAO ucesnikTak3DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO();
 
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
@@ -1202,12 +1199,9 @@ namespace Bilten.UI
 
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
-                GenericNHibernateDAO<GimnasticarUcesnik, int> gimUcesnikDAO
-                    = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO() as GenericNHibernateDAO<GimnasticarUcesnik, int>;
-                GenericNHibernateDAO<UcesnikTakmicenja2, int> ucesnikTak2DAO
-                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO() as GenericNHibernateDAO<UcesnikTakmicenja2, int>;
-                GenericNHibernateDAO<UcesnikTakmicenja3, int> ucesnikTak3DAO
-                    = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO() as GenericNHibernateDAO<UcesnikTakmicenja3, int>;
+                GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
+                UcesnikTakmicenja2DAO ucesnikTak2DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO();
+                UcesnikTakmicenja3DAO ucesnikTak3DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO();
                 
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {

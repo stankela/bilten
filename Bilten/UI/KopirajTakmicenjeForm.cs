@@ -74,8 +74,7 @@ namespace Bilten.UI
                     takmicenje = form.SelTakmicenje;
                     txtTakmicenje.Text = takmicenje.Naziv;
 
-                    GenericNHibernateDAO<Takmicenje, int> takmicenjeDAO
-                        = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO() as GenericNHibernateDAO<Takmicenje, int>;
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
                     takmicenjeDAO.Attach(takmicenje, false);
 
                     lstTakmicenja.Items.Clear();

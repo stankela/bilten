@@ -467,12 +467,9 @@ namespace Bilten.UI
                         }
                     }
 
-                    GenericNHibernateDAO<GimnasticarUcesnik, int> gimUcesnikDAO
-                        = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO() as GenericNHibernateDAO<GimnasticarUcesnik, int>;
-                    GenericNHibernateDAO<UcesnikTakmicenja2, int> ucTak2DAO
-                        = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO() as GenericNHibernateDAO<UcesnikTakmicenja2, int>;
-                    GenericNHibernateDAO<UcesnikTakmicenja3, int> ucTak3DAO
-                        = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO() as GenericNHibernateDAO<UcesnikTakmicenja3, int>;
+                    GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
+                    UcesnikTakmicenja2DAO ucTak2DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO();
+                    UcesnikTakmicenja3DAO ucTak3DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO();
 
                     foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
                     {

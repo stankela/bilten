@@ -1,3 +1,4 @@
+using NHibernate;
 using System.Collections.Generic;
 
 namespace Bilten.Dao
@@ -24,14 +25,12 @@ namespace Bilten.Dao
         void Update(T entity);
         void Delete(T entity);
 
-        /// <summary>
-        /// Affects every managed instance in the current persistence context!
-        /// </summary>
+        // NHibernate specific operations
+        ISession Session { get; set; }
         void Flush();
-
-        /// <summary>
-        /// Affects every managed instance in the current persistence context!
-        /// </summary>
         void Clear();
+        void Evict(T entity);
+        bool Contains(T entity);
+        void Attach(object item, bool update);
     }
 }
