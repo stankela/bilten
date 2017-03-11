@@ -10,7 +10,6 @@ using Microsoft.Win32;
 using Bilten.Domain;
 using Bilten.Data;
 using NHibernate;
-using Bilten.Data.QueryModel;
 using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;

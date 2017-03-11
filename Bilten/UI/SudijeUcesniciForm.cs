@@ -5,7 +5,6 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using Bilten.Data.QueryModel;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;

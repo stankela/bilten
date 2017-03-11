@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Data;
-using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
 using NHibernate;
 using NHibernate.Context;

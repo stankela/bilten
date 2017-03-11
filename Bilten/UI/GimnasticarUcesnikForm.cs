@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Forms;
 using Bilten.Exceptions;
 using Bilten.Domain;
-using Bilten.Data.QueryModel;
 using Bilten.Data;
 using Bilten.Util;
 using Bilten.Dao;

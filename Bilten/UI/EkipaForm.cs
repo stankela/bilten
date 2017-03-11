@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Bilten.Domain;
-using Bilten.Data.QueryModel;
 using Bilten.Exceptions;
 using Bilten.Data;
 using Iesi.Collections.Generic;
