@@ -89,6 +89,9 @@ namespace Bilten.UI
             gimnasticari = new List<GimnasticarUcesnik>[takmicarskeKategorije.Count];
             for (int i = 0; i < takmicarskeKategorije.Count; i++)
             {
+                // TODO4: Na svim mestima gde se u petlji iznova kreira DAO (kao u
+                // DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()), kreiraj DAO izvan petlje, da se ne bi
+                // bezveze gomilali objekti na heapu.
                 List<GimnasticarUcesnik> gimList = new List<GimnasticarUcesnik>(
                     DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindByKategorija(takmicarskeKategorije[i]));
                 gimnasticari[i] = gimList;
@@ -593,8 +596,7 @@ namespace Bilten.UI
                         // proverilo u kojima se gimnasticar nalazi) i zatim bi se svi 
                         // ponovo snimali u bazu.
                         IList sprave = loadVezbaneSpraveTak1(g);
-                        // TODO3: Ovo nije konzistentno sa canDeleteGimnasticar jer se tamo sprecava brisanje
-                        // gimnasticara koji ima unete ocene.
+                        // Izbaci gimnasticara iz svih poredaka.
                         rezTak.Takmicenje1.gimnasticarDeleted(g, sprave, rezTak);
 
                         DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
