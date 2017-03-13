@@ -225,8 +225,16 @@ namespace Bilten.UI
                     }
                     else
                     {
-                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(form.GimnasticarToEdit);
-                        Edit();
+                        List<Gimnasticar> items = dataGridViewUserControl1.getItems<Gimnasticar>();
+                        Gimnasticar g = form.GimnasticarToEdit;
+                        if (items.IndexOf(g) == -1)
+                        {
+                            items.Add(g);
+                            dataGridViewUserControl1.setItems<Gimnasticar>(items);
+                            updateEntityCount();
+                        }
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(g);
+                        Edit(g);
                     }
                 }
             }
@@ -257,9 +265,62 @@ namespace Bilten.UI
                     }
                     else
                     {
-                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(form.GimnasticarToEdit);
-                        Edit();
+                        List<Gimnasticar> items = dataGridViewUserControl1.getItems<Gimnasticar>();
+                        Gimnasticar g = form.GimnasticarToEdit;
+                        if (items.IndexOf(g) == -1)
+                        {
+                            items.Add(g);
+                            dataGridViewUserControl1.setItems<Gimnasticar>(items);
+                            updateEntityCount();
+                        }
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(g);
+                        Edit(g);
                     }                                                                                
+                }
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+        }
+
+        // Ovaj metod je u sustini isti kao i Edit() metod. Poziva se kada se prilikom dodavanja novog gimnasticara ili
+        // menjanja postojeceg predje u rezim rada kada se izabere novi gimnasticar ciji ce se podaci menjati. Glavni
+        // razlog zasto tada pozivam ovaj metod a ne obican Edit() metod je sto postoji situacija kada naredba
+        // dataGridViewUserControl1.setSelectedItem<Gimnasticar>(g) koja se poziva na kraju AddNew() i Edit() metoda
+        // (u rezimu rada kada se u dijalogu izabrao novi gimnasticar ciji ce se podaci menjati) nece selektovati
+        // element, i onda ce provera if (SelectedItem == null) na pocetku obicnog Edit() biti tacna i metod se nece
+        // izvrsiti. A ta situacija je sledeca: kada je gimnasticar oznacen sa kursorom, a nije obojen u plavo (sto se
+        // desi npr kada najpre selektujem gimnasticara, i onda kliknem van grida, tako da se boja izgubi i kursor ostaje.
+        private void Edit(Gimnasticar selItem)
+        {
+            List<Gimnasticar> items = dataGridViewUserControl1.getItems<Gimnasticar>();
+            int index = items.IndexOf(selItem);
+
+            try
+            {
+                GimnasticarForm form = (GimnasticarForm)createEntityDetailForm(selItem.Id);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    if (form.GimnasticarToEdit == null)
+                    {
+                        Gimnasticar entity = (Gimnasticar)form.Entity;
+                        items[index] = entity;
+                        dataGridViewUserControl1.setItems<Gimnasticar>(items);  // ovo ponovo sortira items
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(entity);
+                    }
+                    else
+                    {
+                        Gimnasticar g = form.GimnasticarToEdit;
+                        if (items.IndexOf(g) == -1)
+                        {
+                            items.Add(g);
+                            dataGridViewUserControl1.setItems<Gimnasticar>(items);
+                            updateEntityCount();
+                        }
+                        dataGridViewUserControl1.setSelectedItem<Gimnasticar>(g);
+                        Edit(g);
+                    }
                 }
             }
             catch (InfrastructureException ex)

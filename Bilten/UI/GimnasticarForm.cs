@@ -53,7 +53,7 @@ namespace Bilten.UI
 
             klubovi = new List<Klub>(DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll());
             drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
-            gimnasticari = new List<Gimnasticar>(DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindAllNoFetch());
+            gimnasticari = new List<Gimnasticar>(DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindAll());
         }
 
         protected override void initUI()

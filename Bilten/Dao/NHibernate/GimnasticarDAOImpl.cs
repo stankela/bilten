@@ -17,20 +17,7 @@ namespace Bilten.Dao.NHibernate
                 IQuery q = Session.CreateQuery(@"from Gimnasticar g
                     left join fetch g.Kategorija
                     left join fetch g.Klub
-                    left join fetch g.Drzava");
-                return q.List<Gimnasticar>();
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
-        public IList<Gimnasticar> FindAllNoFetch()
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"from Gimnasticar g
+                    left join fetch g.Drzava
                     order by g.Prezime asc, g.Ime asc");
                 return q.List<Gimnasticar>();
             }
