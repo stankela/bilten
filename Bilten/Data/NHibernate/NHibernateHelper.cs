@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-using Bilten.Domain;
 using NHibernate;
 using NHibernate.Cfg;
 

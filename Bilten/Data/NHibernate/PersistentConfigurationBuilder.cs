@@ -17,8 +17,9 @@ namespace Bilten
             //log.Debug("Building the Configuration");
 
             string fileName = "NHibernateConfig";
+            string path = @"..\..\..\Bilten.Domain\NHibernate\Mappings";
             IList<string> dependencies = 
-                getMappingFiles(@"..\..\Data\NHibernate\Mappings");
+                getMappingFiles(path);
 
             Configuration configuration;
             if (IsNewConfigurationRequired(fileName, dependencies))

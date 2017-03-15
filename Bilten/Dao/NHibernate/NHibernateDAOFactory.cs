@@ -1,5 +1,4 @@
 using System;
-using Bilten.Exceptions;
 
 namespace Bilten.Dao.NHibernate
 {

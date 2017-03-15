@@ -15,6 +15,18 @@ create table klubovi (
 	mesto_id int references mesta(mesto_id)
 );
 
+create table kategorije_gimnasticara (
+	kategorija_id int identity(1,1) primary key,
+	naziv nvarchar(32),
+	gimnastika tinyint
+);
+
+create table drzave (
+	drzava_id int identity(1,1) primary key,
+	naziv nvarchar(32),
+	kod nvarchar(3)
+);
+
 create table gimnasticari (
 	gimnasticar_id int identity(1,1) primary key,
 	ime nvarchar(32),
@@ -32,18 +44,6 @@ create table gimnasticari (
 	kat_id int references kategorije_gimnasticara(kategorija_id),
 	klub_id int references klubovi(klub_id),
 	drzava_id int references drzave(drzava_id)
-);
-
-create table kategorije_gimnasticara (
-	kategorija_id int identity(1,1) primary key,
-	naziv nvarchar(32),
-	gimnastika tinyint
-);
-
-create table drzave (
-	drzava_id int identity(1,1) primary key,
-	naziv nvarchar(32),
-	kod nvarchar(3)
 );
 
 create table propozicije (
