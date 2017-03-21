@@ -1,5 +1,4 @@
-﻿using Bilten;
-using Bilten.Dao;
+﻿using Bilten.Dao;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
@@ -23,9 +22,6 @@ public class Version3Updater
                 CurrentSessionContext.Bind(session);
                 IList<Takmicenje> takmicenja = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAllOdvojenoFinale();
 
-                int brojRezultata = 0;
-                int brojUcesnika = 0;
-
                 foreach (Takmicenje t in takmicenja)
                 {
                     if (!t.ZavrsenoTak1)
@@ -43,47 +39,27 @@ public class Version3Updater
                     {
                         if (rt.Propozicije.PostojiTak2 && !rt.Propozicije.OdvojenoTak2)
                         {
-                            /*brojUcesnika += rt.Takmicenje2.Ucesnici.Count;
                             rt.Takmicenje2.clearUcesnici();
-
-                            brojRezultata += rt.Takmicenje2.Poredak.Rezultati.Count;
                             rt.Takmicenje2.Poredak.Rezultati.Clear();
-
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);*/
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
                         }
                         if (rt.Propozicije.PostojiTak3 && !rt.Propozicije.OdvojenoTak3)
                         {
-                            brojUcesnika += rt.Takmicenje3.Ucesnici.Count;
                             rt.Takmicenje3.clearUcesnici();
-
                             foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
                             {
-                                brojRezultata += p.Rezultati.Count;
                                 p.Rezultati.Clear();
                             }
-                            brojRezultata += rt.Takmicenje3.PoredakPreskok.Rezultati.Count;
                             rt.Takmicenje3.PoredakPreskok.Rezultati.Clear();
-
-                            //MessageDialogs.showMessage(rt.Naziv + "   " + t.Datum + "\n\n" + brojUcesnika.ToString()
-                              //  + "\n\n" + brojRezultata.ToString(), "Bilten");
-
                             DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
                         }
-
                     }
-
                 }
-
-                MessageDialogs.showMessage("broj Ucesnika: " + brojUcesnika + "\n\n" + "broj Rezultata: " +
-                    brojRezultata, "Bilten");
 
                 if (takmicenja.Count > 0)
                 {
                     session.Transaction.Commit();
                 }
-            
-                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                    "Bilten.Update.DatabaseUpdate_version3.sql", true);
             }
         }
         catch (Exception ex)

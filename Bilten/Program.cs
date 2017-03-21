@@ -85,7 +85,10 @@ namespace Bilten
 
                     if (verzijaBaze == 2 && VERZIJA_PROGRAMA > 2)
                     {
+                        // TODO4: Dodati prozor koji prikazuje da se baza apdejtuje, posto apdejt traje desetak sekundi.
                         new Version3Updater().update();
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version3.sql", true);
                         verzijaBaze = 3;
                         converted = true;
                     }
