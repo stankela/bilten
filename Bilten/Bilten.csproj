@@ -98,6 +98,7 @@
     <Compile Include="Dao\KategorijaGimnasticaraDAO.cs" />
     <Compile Include="Dao\KlubDAO.cs" />
     <Compile Include="Dao\KlubUcesnikDAO.cs" />
+    <Compile Include="Dao\KonacanPlasmanDAO.cs" />
     <Compile Include="Dao\MestoDAO.cs" />
     <Compile Include="Dao\NastupNaSpraviDAO.cs" />
     <Compile Include="Dao\NHibernate\DrugaOcenaDAOImpl.cs" />

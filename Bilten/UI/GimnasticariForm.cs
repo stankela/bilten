@@ -20,6 +20,8 @@ namespace Bilten.UI
         {
             this.Text = "Gimnasticari";
             this.ClientSize = new System.Drawing.Size(1100, 540);
+            this.btnPrintPreview.Visible = true;
+            this.btnPrintPreview.Click += btnPrintPreview_Click;
     
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -50,6 +52,13 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        }
+
+        void btnPrintPreview_Click(object sender, EventArgs e)
+        {
+            KonacanPlasmanDAO kpDAO = new KonacanPlasmanDAO();
+            List<KonacanPlasman> result = kpDAO.findPreskokTak3("Nikola", "Jurkovi%");
+            MessageBox.Show(result.Count.ToString());
         }
 
         protected override void prikaziSve()

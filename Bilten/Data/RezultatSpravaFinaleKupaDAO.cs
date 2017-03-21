@@ -9,6 +9,7 @@ using Bilten.Dao;
 
 namespace Bilten.Data
 {
+    // TODO: Prebaci u Bilten.Dao, slicno kao klasa KonacanPlasmanDAO koja takodje nije NHibernate specificna.
     class RezultatSpravaFinaleKupaDAO
     {
         private string insertSQL =

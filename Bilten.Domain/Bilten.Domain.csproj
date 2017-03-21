@@ -60,6 +60,7 @@
     <Compile Include="Entities\KategorijaGimnasticara.cs" />
     <Compile Include="Entities\Klub.cs" />
     <Compile Include="Entities\KlubUcesnik.cs" />
+    <Compile Include="Entities\KonacanPlasman.cs" />
     <Compile Include="Entities\KvalifikacioniStatus.cs" />
     <Compile Include="Entities\Mesto.cs" />
     <Compile Include="Entities\NacinRotacije.cs" />
