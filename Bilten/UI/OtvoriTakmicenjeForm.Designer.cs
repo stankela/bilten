@@ -38,7 +38,7 @@ namespace Bilten.UI
             // 
             this.btnOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOpen.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOpen.Location = new System.Drawing.Point(477, 476);
+            this.btnOpen.Location = new System.Drawing.Point(477, 473);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 1;
@@ -50,7 +50,7 @@ namespace Bilten.UI
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(569, 476);
+            this.btnCancel.Location = new System.Drawing.Point(569, 473);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -60,7 +60,7 @@ namespace Bilten.UI
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDelete.Location = new System.Drawing.Point(12, 476);
+            this.btnDelete.Location = new System.Drawing.Point(12, 473);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(101, 23);
             this.btnDelete.TabIndex = 3;
@@ -70,13 +70,13 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl1
             // 
-            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(12, 12);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(632, 448);
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(632, 447);
             this.dataGridViewUserControl1.TabIndex = 4;
             // 
             // OtvoriTakmicenjeForm
@@ -85,7 +85,7 @@ namespace Bilten.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(656, 524);
+            this.ClientSize = new System.Drawing.Size(656, 534);
             this.Controls.Add(this.dataGridViewUserControl1);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnCancel);

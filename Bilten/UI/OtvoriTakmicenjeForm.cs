@@ -22,6 +22,8 @@ namespace Bilten.UI
         bool selectMode;
         int broj;
         bool gornjaGranica;
+        private StatusBar statusBar;
+
 
         private Takmicenje takmicenje;
         public Takmicenje Takmicenje
@@ -53,6 +55,8 @@ namespace Bilten.UI
                     initUI();
                     takmicenja = new List<Takmicenje>(DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAll());
                     setTakmicenja(takmicenja);
+                    if (!selectMode)
+                        updateTakmicenjaCount();
                 }
             }
             catch (Exception ex)
@@ -73,6 +77,12 @@ namespace Bilten.UI
             {
                 this.Text = "Otvori takmicenje";
                 dataGridViewUserControl1.DataGridView.MultiSelect = false;
+
+                statusBar = new StatusBar();
+                statusBar.Parent = this;
+                statusBar.ShowPanels = true;
+                StatusBarPanel sbPanel1 = new StatusBarPanel();
+                statusBar.Panels.Add(sbPanel1);
             }
             else
             {
@@ -188,6 +198,7 @@ namespace Bilten.UI
             setTakmicenja(takmicenja);
             if (dataGridViewUserControl1.isSorted())
                 dataGridViewUserControl1.refreshItems();
+            updateTakmicenjaCount();
         }
 
         private void deleteTakmicenje(Takmicenje takmicenje)
@@ -263,6 +274,11 @@ namespace Bilten.UI
 
             // brisi takmicenje
             takmicenjeDAO.Delete(takmicenje);
+        }
+
+        private void updateTakmicenjaCount()
+        {
+            statusBar.Panels[0].Text = takmicenja.Count.ToString() + " takmicenja";
         }
 
     }
