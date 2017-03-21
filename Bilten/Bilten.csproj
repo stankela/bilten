@@ -704,6 +704,7 @@
     <Compile Include="UI\ZrebForm.Designer.cs">
       <DependentUpon>ZrebForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Update\Version3Updater.cs" />
     <Compile Include="Util\ColumnAdder.cs" />
     <Compile Include="Util\Database.cs" />
     <Compile Include="Util\DatabaseUpdater.cs" />
@@ -914,6 +915,7 @@
     </EmbeddedResource>
     <Content Include="DatabaseUpdate.txt" />
     <Content Include="DatabaseUpdate_version2.sql" />
+    <Content Include="DatabaseUpdate_version3.sql" />
     <Content Include="Doc\DesignChoices.txt" />
     <Content Include="Doc\pitanja.txt" />
     <Content Include="Doc\Promene.txt" />

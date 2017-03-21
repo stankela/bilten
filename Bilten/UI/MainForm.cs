@@ -848,39 +848,22 @@ namespace Bilten.UI
                         // TODO3: Zakomentarisi ovo kada budes ponovo uveo da se ekipni poredak automatski azurira.
                         rt.Takmicenje1.PoredakEkipno.create(rt, ocene);
 
-                        if (rt.Propozicije.PostojiTak2)
+                        if (rt.Propozicije.PostojiTak2 && rt.Propozicije.OdvojenoTak2)
                         {
                             rt.Takmicenje2.createUcesnici(rt.Takmicenje1);
-                            if (rt.Propozicije.OdvojenoTak2)
-                                rt.Takmicenje2.Poredak.initRezultati(rt.Takmicenje2.getUcesniciGimKvalifikanti());
-                            else
-                                rt.Takmicenje2.Poredak.create(rt, ocene);
+                            rt.Takmicenje2.Poredak.initRezultati(rt.Takmicenje2.getUcesniciGimKvalifikanti());
                         }
-                        if (rt.Propozicije.PostojiTak3)
+                        if (rt.Propozicije.PostojiTak3 && rt.Propozicije.OdvojenoTak3)
                         {
                             rt.Takmicenje3.createUcesnici(rt.Takmicenje1, rt.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
-                            if (rt.Propozicije.OdvojenoTak3)
-                            {
-                                foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
-                                    p.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(p.Sprava));
-                                rt.Takmicenje3.PoredakPreskok.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(Sprava.Preskok));
-                            }
-                            else
-                            {
-                                foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
-                                    p.create(rt, ocene);
-                                rt.Takmicenje3.PoredakPreskok.create(rt, ocene);
-                            }
+                            foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
+                                p.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(p.Sprava));
+                            rt.Takmicenje3.PoredakPreskok.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(Sprava.Preskok));
                         }
-                        if (rt.Propozicije.PostojiTak4)
+                        if (rt.Propozicije.PostojiTak4 && rt.Propozicije.OdvojenoTak4)
                         {
-                            /*
-                            rt.Takmicenje4.createUcesnici(rt.Takmicenje1);
-                            if (rt.Propozicije.OdvojenoTak4)
-                                rt.Takmicenje4.Poredak.initRezultati(rt.Takmicenje4.getUcesnici());
-                            else
-                                rt.Takmicenje4.Poredak.create(rt, ocene);
-                             */
+                            //rt.Takmicenje4.createUcesnici(rt.Takmicenje1);
+                            //rt.Takmicenje4.Poredak.initRezultati(rt.Takmicenje4.getUcesnici());
                         }
 
                         DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Bilten.UI;
 using System.Threading;
 using System.Globalization;
 using Bilten.Test;
@@ -37,7 +36,7 @@ namespace Bilten
         // - Stampanje gimnasticara iz Registra.
         // - Uvoz takmicenja.
 
-        static int VERZIJA_PROGRAMA = 2;
+        static int VERZIJA_PROGRAMA = 3;
 
         /// <summary>
         /// The main entry point for the application.
@@ -81,16 +80,25 @@ namespace Bilten
                     {
                         string databaseFile = "BiltenPodaci.sdf";
                         SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(@"DatabaseUpdate_version2.sql"));
-
-                        verzijaBaze = DatabaseUpdater.getDatabaseVersionNumber();
-                        string msg = String.Format("Baza podataka je konvertovana u verziju {0}.", verzijaBaze);
-                        MessageBox.Show(msg, "Bilten");
                         converted = true;
                     }
 
-                    if (converted && File.Exists("NHibernateConfig"))
+                    if (verzijaBaze == 2 && VERZIJA_PROGRAMA > 2)
                     {
-                        File.Delete("NHibernateConfig");
+                        new Version3Updater().update();
+                        converted = true;
+                    }
+
+                    if (converted)
+                    {
+                        verzijaBaze = DatabaseUpdater.getDatabaseVersionNumber();
+                        string msg = String.Format("Baza podataka je konvertovana u verziju {0}.", verzijaBaze);
+                        MessageBox.Show(msg, "Bilten");
+
+                        if (File.Exists("NHibernateConfig"))
+                        {
+                            File.Delete("NHibernateConfig");
+                        }
                     }
                 }
             }

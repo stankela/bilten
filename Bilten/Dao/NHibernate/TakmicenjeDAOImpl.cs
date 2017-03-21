@@ -83,6 +83,21 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<Takmicenje> FindAllOdvojenoFinale()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select distinct t
+                    from Takmicenje t
+                    where t.ZavrsenoTak1 = true");
+                return q.List<Takmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         // Ovaj metod mi je trebao u MilanoInitalizer, inace nema neku upotrebnu vrednost.
         public Takmicenje FindByMestoGimnastika(string mesto, Gimnastika gim)
         {
