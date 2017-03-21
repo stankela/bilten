@@ -184,10 +184,10 @@ namespace BiltenTest
             bool createdNew = SqlCeUtilities.CreateDatabase(databaseFile, "", false);
             if (createdNew)
                 // Kreiraj semu
-                SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(schemaFile));
+                SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(schemaFile), false);
             else
                 // Brisi podatke
-                SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(@"..\..\BiltenPodaciDelete.sql"));
+                SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(@"..\..\BiltenPodaciDelete.sql"), false);
 
 
             // Create configuration and build session factory.

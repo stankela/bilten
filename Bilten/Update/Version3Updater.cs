@@ -1,4 +1,5 @@
-﻿using Bilten.Dao;
+﻿using Bilten;
+using Bilten.Dao;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
@@ -81,8 +82,8 @@ public class Version3Updater
                     session.Transaction.Commit();
                 }
             
-                //string databaseFile = "BiltenPodaci.sdf";
-                //SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(@"DatabaseUpdate_version3.sql"));
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version3.sql", true);
             }
         }
         catch (Exception ex)

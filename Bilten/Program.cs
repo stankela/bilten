@@ -15,7 +15,6 @@ namespace Bilten
         // TODO4: (sa Memorijala 2016)
         // - Proveri OcenaForm (polje za E ocenu se ne ponasa ocekivano u sledece 3 situacije: kada se ostavi prazno,
         //   kada se ocena unese sa tackom umesto zareza, i kada se unese neki proizvoljan tekst)
-        // - Prebaci DatabaseUpdate_version2.sql da bude embedded resource
         // - Dodati u propozicijama nacin razresavanja kada dva takmicara imaju istu konacnu ocenu
         //   (razresavanje za vezbe na spravi neka bude u propozicijama za takmicenje III itd.)
         // - Mislim da u programu postoji na nekoliko mesta obaveza da se kod menja ako se u neku
@@ -78,20 +77,21 @@ namespace Bilten
                     bool converted = false;
                     if (verzijaBaze == 1 && VERZIJA_PROGRAMA > 1)
                     {
-                        string databaseFile = "BiltenPodaci.sdf";
-                        SqlCeUtilities.ExecuteScript(databaseFile, "", Path.GetFullPath(@"DatabaseUpdate_version2.sql"));
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version2.sql", true);
+                        verzijaBaze = 2;
                         converted = true;
                     }
 
                     if (verzijaBaze == 2 && VERZIJA_PROGRAMA > 2)
                     {
                         new Version3Updater().update();
+                        verzijaBaze = 3;
                         converted = true;
                     }
 
                     if (converted)
                     {
-                        verzijaBaze = DatabaseUpdater.getDatabaseVersionNumber();
                         string msg = String.Format("Baza podataka je konvertovana u verziju {0}.", verzijaBaze);
                         MessageBox.Show(msg, "Bilten");
 

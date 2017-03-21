@@ -1,6 +1,7 @@
 using System.Data.SqlServerCe;
 using System;
 using System.IO;
+using System.Reflection;
 
 public class SqlCeUtilities
 {
@@ -44,27 +45,29 @@ public class SqlCeUtilities
         return true;
     }
 
-    public static void ExecuteScript(string fileName, string password, string scriptFile)
+    public static void ExecuteScript(string fileName, string password, string scriptFile, bool embeddedResource)
     {
         string connectionString = getConnectionString(fileName, password);
         using (SqlCeConnection connection = new SqlCeConnection(connectionString))
         {
             string script = String.Empty;
-
-            // Kada je script ugradjen u assembly.
-            /*string resourceName = "Soko.create_all_objects.sqlce";
-            System.Reflection.Assembly assem = this.GetType().Assembly;
-            using (System.IO.Stream stream = assem.GetManifestResourceStream(resourceName))
+            if (embeddedResource)
             {
-                using (System.IO.StreamReader reader = new System.IO.StreamReader(stream))
+                Assembly assem = Assembly.GetExecutingAssembly();
+                using (Stream stream = assem.GetManifestResourceStream(scriptFile))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        script = reader.ReadToEnd();
+                    }
+                }
+            }
+            else
+            {
+                using (StreamReader reader = new StreamReader(scriptFile))
                 {
                     script = reader.ReadToEnd();
                 }
-            }*/
-
-            using (System.IO.StreamReader reader = new System.IO.StreamReader(scriptFile))
-            {
-                script = reader.ReadToEnd();
             }
 
             // Using the SQL Management Studio convention of using GO to identify individual commands

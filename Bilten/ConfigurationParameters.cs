@@ -22,9 +22,14 @@ namespace Bilten
             }
         }
 
+        public static string DatabaseFile
+        {
+            get { return "BiltenPodaci.sdf"; }
+        }
+
         public static string ConnectionString
         {
-            get { return @"Data Source=BiltenPodaci.sdf"; }
+            get { return String.Format("Data Source={0}", DatabaseFile); }
         }
     }
 }
