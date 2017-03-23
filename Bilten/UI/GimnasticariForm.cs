@@ -21,6 +21,7 @@ namespace Bilten.UI
             this.Text = "Gimnasticari";
             this.ClientSize = new System.Drawing.Size(1100, 540);
             this.btnPrintPreview.Visible = true;
+            this.btnPrintPreview.Text = "Rezultati";
             this.btnPrintPreview.Click += btnPrintPreview_Click;
     
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
@@ -52,13 +53,6 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        void btnPrintPreview_Click(object sender, EventArgs e)
-        {
-            KonacanPlasmanDAO kpDAO = new KonacanPlasmanDAO();
-            List<KonacanPlasman> result = kpDAO.findPreskokTak3("Nikola", "Jurkovi%");
-            MessageBox.Show(result.Count.ToString());
         }
 
         protected override void prikaziSve()
@@ -347,5 +341,102 @@ namespace Bilten.UI
                 StatusPanel.Panels[0].Text = count.ToString() + " gimnasticara";
         }
 
+        void btnPrintPreview_Click(object sender, EventArgs e)
+        {
+            if (SelectedItem == null)
+                return;
+
+            KonacanPlasmanDAO kpDAO = new KonacanPlasmanDAO();
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+
+            List<KonacanPlasman> visebojTak1 = kpDAO.findVisebojTak1(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> visebojTak2 = kpDAO.findVisebojTak2(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> spraveTak1 = kpDAO.findSpraveTak1(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> spraveTak3 = kpDAO.findSpraveTak3(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> preskokTak1 = kpDAO.findPreskokTak1(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> preskokTak3 = kpDAO.findPreskokTak3(SelectedItem.Ime, SelectedItem.Prezime);
+
+            Dictionary<int, KonacanPlasman> plasmaniMap = new Dictionary<int, KonacanPlasman>();
+            foreach (KonacanPlasman kp in visebojTak1)
+            {
+                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                    plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
+                else
+                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+            }
+            foreach (KonacanPlasman kp in visebojTak2)
+            {
+                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                    plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
+                else
+                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+            }
+            foreach (KonacanPlasman kp in spraveTak1)
+            {
+                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                    updatePlasmanSprava(plasmaniMap[kp.RezultatskoTakmicenjeId], kp);
+                else
+                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+            }
+            foreach (KonacanPlasman kp in spraveTak3)
+            {
+                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                    updatePlasmanSprava(plasmaniMap[kp.RezultatskoTakmicenjeId], kp);
+                else
+                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+            }
+            foreach (KonacanPlasman kp in preskokTak1)
+            {
+                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                    plasmaniMap[kp.RezultatskoTakmicenjeId].Preskok = kp.Preskok;
+                else
+                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+            }
+            foreach (KonacanPlasman kp in preskokTak3)
+            {
+                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                    plasmaniMap[kp.RezultatskoTakmicenjeId].Preskok = kp.Preskok;
+                else
+                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+            }
+
+            List<KonacanPlasman> plasmani = new List<KonacanPlasman>(plasmaniMap.Values);
+
+            Cursor.Hide();
+            Cursor.Current = Cursors.Arrow;
+
+            if (plasmani.Count == 0)
+            {
+                MessageDialogs.showMessage("Ne postoje rezultati za gimnasticara '" + 
+                    SelectedItem.ImeSrednjeImePrezimeDatumRodjenja + "'.", "Rezultati");
+            }
+            else
+            {
+                KonacanPlasmanForm form = new KonacanPlasmanForm(plasmani, SelectedItem.Gimnastika);
+                form.ShowDialog();
+            }
+        }
+
+        private void updatePlasmanSprava(KonacanPlasman totalPlasman, KonacanPlasman kp)
+        {
+            if (kp.Parter != null)
+                totalPlasman.Parter = kp.Parter;
+            else if (kp.Konj != null)
+                totalPlasman.Konj = kp.Konj;
+            else if (kp.Karike != null)
+                totalPlasman.Karike = kp.Karike;
+            else if (kp.Preskok != null)
+                throw new Exception("Greska u programu");
+            else if (kp.Razboj != null)
+                totalPlasman.Razboj = kp.Razboj;
+            else if (kp.Vratilo != null)
+                totalPlasman.Vratilo = kp.Vratilo;
+            else if (kp.DvovisinskiRazboj != null)
+                totalPlasman.DvovisinskiRazboj = kp.DvovisinskiRazboj;
+            else if (kp.Greda != null)
+                totalPlasman.Greda = kp.Greda;
+        }
     }
 }

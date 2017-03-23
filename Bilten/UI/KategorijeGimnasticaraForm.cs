@@ -67,7 +67,7 @@ namespace Bilten.UI
 
         private void InitializeGridColumns()
         {
-            AddColumn("Naziv kategorije", "Naziv", 100);
+            AddColumn("Naziv kategorije", "Naziv", 150);
             AddColumn("Gimnastika", "Gimnastika", 70);
         }
 

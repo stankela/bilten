@@ -167,6 +167,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="UI\KonacanPlasmanForm.resx">
+      <DependentUpon>KonacanPlasmanForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Update\DatabaseUpdate_version2.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version3.sql" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -346,6 +349,12 @@
     </Compile>
     <Compile Include="UI\KluboviForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KonacanPlasmanForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\KonacanPlasmanForm.Designer.cs">
+      <DependentUpon>KonacanPlasmanForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\KopirajTakmicenjeForm.cs">
       <SubType>Form</SubType>
