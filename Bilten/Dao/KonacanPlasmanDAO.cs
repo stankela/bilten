@@ -54,7 +54,8 @@ namespace Bilten.Dao
     {
         private string findVisebojTak1SQL = @"
             select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank
+            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank,
+            pr.postoji_tak2, pr.odvojeno_tak2
             from gimnasticari_ucesnici g
             join rezultati_ukupno r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -74,8 +75,6 @@ namespace Bilten.Dao
                 on t.takmicenje_id = rt.takmicenje_id
             where g.prezime like @prezime
             and g.ime like @ime
-            and pr.postoji_tak2 = 1
-            and pr.odvojeno_tak2 = 0
             order by t.datum asc";
 
         private string findVisebojTak2SQL = @"
@@ -102,7 +101,8 @@ namespace Bilten.Dao
 
         private string findSpraveTak1SQL = @"
             select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank
+            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank,
+            pr.postoji_tak3, pr.odvojeno_tak3
             from gimnasticari_ucesnici g
             join rezultati_sprava r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -122,13 +122,12 @@ namespace Bilten.Dao
                 on t.takmicenje_id = rt.takmicenje_id
             where g.prezime like @prezime
             and g.ime like @ime
-            and pr.postoji_tak3 = 1
-            and pr.odvojeno_tak3 = 0
             order by t.datum asc";
 
         private string findPreskokTak1SQL = @"
             select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank, r.rank2
+            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank, r.rank2,
+            pr.postoji_tak3, pr.odvojeno_tak3
             from gimnasticari_ucesnici g
             join rezultati_preskok r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -148,8 +147,6 @@ namespace Bilten.Dao
                 on t.takmicenje_id = rt.takmicenje_id
             where g.prezime like @prezime
             and g.ime like @ime
-            and pr.postoji_tak3 = 1
-            and pr.odvojeno_tak3 = 0
             order by t.datum asc";
 
         private string findSpraveTak3SQL = @"
@@ -266,10 +263,13 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                KonacanPlasman kp = new KonacanPlasman();
-                loadCommonData(kp, rdr);
-                kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
-                result.Add(kp);
+                if ((bool)rdr["postoji_tak2"] && !(bool)rdr["odvojeno_tak2"])
+                {
+                    KonacanPlasman kp = new KonacanPlasman();
+                    loadCommonData(kp, rdr);
+                    kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
+                    result.Add(kp);
+                }
             }
 
             rdr.Close(); // obavezno, da bi se zatvorila konekcija otvorena u executeReader
@@ -306,10 +306,13 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                KonacanPlasman kp = new KonacanPlasman();
-                loadCommonData(kp, rdr);
-                loadSprava(kp, rdr);
-                result.Add(kp);
+                if ((bool)rdr["postoji_tak3"] && !(bool)rdr["odvojeno_tak3"])
+                {
+                    KonacanPlasman kp = new KonacanPlasman();
+                    loadCommonData(kp, rdr);
+                    loadSprava(kp, rdr);
+                    result.Add(kp);
+                }
             }
 
             rdr.Close();
@@ -326,10 +329,13 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                KonacanPlasman kp = new KonacanPlasman();
-                loadCommonData(kp, rdr);
-                loadPreskok(kp, rdr);
-                result.Add(kp);
+                if ((bool)rdr["postoji_tak3"] && !(bool)rdr["odvojeno_tak3"])
+                {
+                    KonacanPlasman kp = new KonacanPlasman();
+                    loadCommonData(kp, rdr);
+                    loadPreskok(kp, rdr);
+                    result.Add(kp);
+                }
             }
 
             rdr.Close();

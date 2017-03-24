@@ -160,7 +160,9 @@
     <EmbeddedResource Include="NHibernate\Mappings\SudijaUcesnik.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\SudijskiOdborNaSpravi.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\TakmicarskaKategorija.hbm.xml" />
-    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mappings\Takmicenje1.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\Takmicenje2.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\Takmicenje3.hbm.xml" />
