@@ -19,10 +19,10 @@ namespace Bilten.UI
         public GimnasticariForm()
         {
             this.Text = "Gimnasticari";
-            this.ClientSize = new System.Drawing.Size(1100, 540);
+            this.ClientSize = new System.Drawing.Size(Screen.PrimaryScreen.WorkingArea.Width - 20, 540);
             this.btnPrintPreview.Visible = true;
             this.btnPrintPreview.Text = "Rezultati";
-            this.btnPrintPreview.Click += btnPrintPreview_Click;
+            this.btnPrintPreview.Click += btnRezultati_Click;
     
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -341,7 +341,7 @@ namespace Bilten.UI
                 StatusPanel.Panels[0].Text = count.ToString() + " gimnasticara";
         }
 
-        void btnPrintPreview_Click(object sender, EventArgs e)
+        void btnRezultati_Click(object sender, EventArgs e)
         {
             if (SelectedItem == null)
                 return;

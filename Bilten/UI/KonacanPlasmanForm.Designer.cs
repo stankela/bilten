@@ -62,6 +62,7 @@
             this.Controls.Add(this.btnZatvori);
             this.Controls.Add(this.dataGridViewUserControl1);
             this.Name = "KonacanPlasmanForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "KonacanPlasmanForm";
             this.Shown += new System.EventHandler(this.KonacanPlasmanForm_Shown);
             this.ResumeLayout(false);

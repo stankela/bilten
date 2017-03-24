@@ -19,6 +19,7 @@ namespace Bilten.UI
         public KonacanPlasmanForm(List<KonacanPlasman> plasmani, Gimnastika gimnastika)
         {
             InitializeComponent();
+            this.ClientSize = new System.Drawing.Size(Screen.PrimaryScreen.WorkingArea.Width - 20, 540);
             this.Text = "Rezultati";
 
             statusBar = new StatusBar();
