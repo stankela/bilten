@@ -622,9 +622,9 @@ namespace Bilten.UI
         private void GimnasticarForm_Shown(object sender, EventArgs e)
         {
             if (!editMode)
-            {
                 txtIme.Focus();
-            }
+            else
+                btnCancel.Focus();
         }
 
         private void txtPrezime_Enter(object sender, EventArgs e)

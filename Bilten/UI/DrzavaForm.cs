@@ -147,9 +147,9 @@ namespace Bilten.UI
         private void DrzavaForm_Shown(object sender, EventArgs e)
         {
             if (!editMode)
-            {
                 txtNaziv.Focus();
-            }
+            else
+                btnCancel.Focus();
         }
     }
 }

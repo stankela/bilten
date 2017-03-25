@@ -216,9 +216,9 @@ namespace Bilten.UI
         private void KlubForm_Shown(object sender, EventArgs e)
         {
             if (!editMode)
-            {
                 txtNaziv.Focus();
-            }
+            else
+                btnCancel.Focus();
         }
     }
 }

@@ -285,9 +285,9 @@ namespace Bilten.UI
         private void SudijaForm_Shown(object sender, EventArgs e)
         {
             if (!editMode)
-            {
                 txtIme.Focus();
-            }
+            else
+                btnCancel.Focus();
         }
     }
 }
