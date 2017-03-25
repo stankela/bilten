@@ -9,9 +9,11 @@ namespace Bilten.Dao
 {
     public class Database
     {
-        public static SqlCeDataReader executeReader(SqlCeCommand cmd, string readErrorMsg)
+        public static SqlCeDataReader executeReader(SqlCeCommand cmd, string readErrorMsg, string connectionString = null)
         {
-            SqlCeConnection conn = new SqlCeConnection(ConfigurationParameters.ConnectionString);
+            if (connectionString == null)
+                connectionString = ConfigurationParameters.ConnectionString;
+            SqlCeConnection conn = new SqlCeConnection(connectionString);
             cmd.Connection = conn;
             try
             {

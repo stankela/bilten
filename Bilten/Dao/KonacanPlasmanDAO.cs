@@ -4,8 +4,6 @@ using System.Text;
 using Bilten.Domain;
 using System.Data.SqlServerCe;
 using System.Data;
-using Bilten.Exceptions;
-using Bilten.Dao;
 
 namespace Bilten.Dao
 {
@@ -52,6 +50,8 @@ namespace Bilten.Dao
     
     public class KonacanPlasmanDAO
     {
+        public string ConnectionString;
+        
         private string findVisebojTak1SQL = @"
             select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
             g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank,
@@ -258,7 +258,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findVisebojTak1SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -281,7 +281,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findVisebojTak2SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -301,7 +301,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findSpraveTak1SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -324,7 +324,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findPreskokTak1SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -347,7 +347,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findSpraveTak3SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -367,7 +367,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findPreskokTak3SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())

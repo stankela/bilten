@@ -347,6 +347,7 @@ namespace Bilten.UI
                 return;
 
             KonacanPlasmanDAO kpDAO = new KonacanPlasmanDAO();
+            kpDAO.ConnectionString = ConfigurationParameters.ConnectionString;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
