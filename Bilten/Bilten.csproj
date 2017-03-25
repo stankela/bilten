@@ -920,7 +920,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Doc\DesignChoices.txt" />
-    <Content Include="Doc\pitanja.txt" />
     <Content Include="Doc\Promene.txt" />
     <Content Include="Doc\todo.txt" />
     <Content Include="hibernate.cfg.xml">
@@ -1088,8 +1087,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\NHibernate\Mappings\" />
-    <Folder Include="Domain\" />
-    <Folder Include="Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

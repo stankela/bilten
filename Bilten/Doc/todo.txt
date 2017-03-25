@@ -1,3 +1,10 @@
+- da li gimnasticar moze da se takmici u vise kategorija (i ako moze, koliko puta
+	nastupa u kvalifikacijama, i kako ovo utice na start liste. Pitaj i generalno
+	za start liste - da li ce biti za svaku kategoriju posebna start lista ili
+	komnbinovano)
+- u pojedinacnoj konkurenciji na medjunarodnim takmicenjima, sta stoji pored
+	imena gimnasticara - klub ili drzava
+- da li gimnasticar moze da se takmici za vise ekipa
 -kada se zatvara dijalog dugmetom X, promeni pitanje u "da li zelite da sacuvate ..."
 (u stvari, najpre proveri da li je u dijalogu nesto menjano. a za pitanje jos razmisli)
 -jedan gimnasticar moze da nastupa u vise kategorija (on u stvari nastupa jednom, ali
