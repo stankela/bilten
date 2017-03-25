@@ -65,6 +65,7 @@ namespace Bilten.UI
             this.Controls.Add(this.txtNaziv);
             this.Name = "MestoForm";
             this.Text = "MestoForm";
+            this.Shown += new System.EventHandler(this.MestoForm_Shown);
             this.Controls.SetChildIndex(this.btnOk, 0);
             this.Controls.SetChildIndex(this.txtNaziv, 0);
             this.Controls.SetChildIndex(this.btnCancel, 0);

@@ -122,6 +122,7 @@ namespace Bilten.UI
             this.btnAddDrzava.Name = "btnAddDrzava";
             this.btnAddDrzava.Size = new System.Drawing.Size(25, 23);
             this.btnAddDrzava.TabIndex = 10;
+            this.btnAddDrzava.TabStop = false;
             this.btnAddDrzava.Text = "...";
             this.btnAddDrzava.UseVisualStyleBackColor = true;
             this.btnAddDrzava.Click += new System.EventHandler(this.btnAddDrzava_Click);
@@ -132,6 +133,7 @@ namespace Bilten.UI
             this.btnAddKlub.Name = "btnAddKlub";
             this.btnAddKlub.Size = new System.Drawing.Size(24, 23);
             this.btnAddKlub.TabIndex = 27;
+            this.btnAddKlub.TabStop = false;
             this.btnAddKlub.Text = "...";
             this.btnAddKlub.UseVisualStyleBackColor = true;
             this.btnAddKlub.Click += new System.EventHandler(this.btnAddKlub_Click);
@@ -172,6 +174,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblPrezime);
             this.Name = "SudijaForm";
             this.Text = "SudijaForm";
+            this.Shown += new System.EventHandler(this.SudijaForm_Shown);
             this.Controls.SetChildIndex(this.lblPrezime, 0);
             this.Controls.SetChildIndex(this.txtPrezime, 0);
             this.Controls.SetChildIndex(this.lblPol, 0);

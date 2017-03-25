@@ -114,5 +114,13 @@ namespace Bilten.UI
                 throw new BusinessException(notification);
             }
         }
+
+        private void MestoForm_Shown(object sender, EventArgs e)
+        {
+            if (!editMode)
+            {
+                txtNaziv.Focus();
+            }
+        }
     }
 }

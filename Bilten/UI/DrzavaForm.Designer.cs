@@ -85,6 +85,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblKod);
             this.Name = "DrzavaForm";
             this.Text = "DrzavaForm";
+            this.Shown += new System.EventHandler(this.DrzavaForm_Shown);
             this.Controls.SetChildIndex(this.lblKod, 0);
             this.Controls.SetChildIndex(this.txtKod, 0);
             this.Controls.SetChildIndex(this.btnOk, 0);

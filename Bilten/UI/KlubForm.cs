@@ -212,6 +212,14 @@ namespace Bilten.UI
                 MessageDialogs.showError(ex.Message, this.Text);
             }
         }
+
+        private void KlubForm_Shown(object sender, EventArgs e)
+        {
+            if (!editMode)
+            {
+                txtNaziv.Focus();
+            }
+        }
     }
 }
 

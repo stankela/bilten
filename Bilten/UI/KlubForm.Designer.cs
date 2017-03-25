@@ -92,6 +92,7 @@ namespace Bilten.UI
             this.btnAddMesto.Name = "btnAddMesto";
             this.btnAddMesto.Size = new System.Drawing.Size(25, 23);
             this.btnAddMesto.TabIndex = 8;
+            this.btnAddMesto.TabStop = false;
             this.btnAddMesto.Text = "...";
             this.btnAddMesto.UseVisualStyleBackColor = true;
             this.btnAddMesto.Click += new System.EventHandler(this.btnAddMesto_Click);
@@ -108,6 +109,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblKod);
             this.Controls.Add(this.lblNaziv);
             this.Name = "KlubForm";
+            this.Shown += new System.EventHandler(this.KlubForm_Shown);
             this.Controls.SetChildIndex(this.btnOk, 0);
             this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.lblNaziv, 0);

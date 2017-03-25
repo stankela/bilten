@@ -281,5 +281,13 @@ namespace Bilten.UI
                 MessageDialogs.showError(ex.Message, this.Text);
             }
         }
+
+        private void SudijaForm_Shown(object sender, EventArgs e)
+        {
+            if (!editMode)
+            {
+                txtIme.Focus();
+            }
+        }
     }
 }

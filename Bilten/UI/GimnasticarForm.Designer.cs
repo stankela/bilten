@@ -219,6 +219,7 @@ namespace Bilten.UI
             this.btnAddDrzava.Name = "btnAddDrzava";
             this.btnAddDrzava.Size = new System.Drawing.Size(25, 23);
             this.btnAddDrzava.TabIndex = 23;
+            this.btnAddDrzava.TabStop = false;
             this.btnAddDrzava.Text = "...";
             this.btnAddDrzava.UseVisualStyleBackColor = true;
             this.btnAddDrzava.Click += new System.EventHandler(this.btnAddDrzava_Click);
@@ -229,6 +230,7 @@ namespace Bilten.UI
             this.btnAddKlub.Name = "btnAddKlub";
             this.btnAddKlub.Size = new System.Drawing.Size(24, 23);
             this.btnAddKlub.TabIndex = 24;
+            this.btnAddKlub.TabStop = false;
             this.btnAddKlub.Text = "...";
             this.btnAddKlub.UseVisualStyleBackColor = true;
             this.btnAddKlub.Click += new System.EventHandler(this.btnAddKlub_Click);
@@ -239,6 +241,7 @@ namespace Bilten.UI
             this.btnAddKategorija.Name = "btnAddKategorija";
             this.btnAddKategorija.Size = new System.Drawing.Size(25, 23);
             this.btnAddKategorija.TabIndex = 25;
+            this.btnAddKategorija.TabStop = false;
             this.btnAddKategorija.Text = "...";
             this.btnAddKategorija.UseVisualStyleBackColor = true;
             this.btnAddKategorija.Click += new System.EventHandler(this.btnAddKategorija_Click);
@@ -257,7 +260,8 @@ namespace Bilten.UI
             this.txtSrednjeIme.Location = new System.Drawing.Point(144, 37);
             this.txtSrednjeIme.Name = "txtSrednjeIme";
             this.txtSrednjeIme.Size = new System.Drawing.Size(59, 20);
-            this.txtSrednjeIme.TabIndex = 27;
+            this.txtSrednjeIme.TabIndex = 4;
+            this.txtSrednjeIme.TabStop = false;
             // 
             // GimnasticarForm
             // 

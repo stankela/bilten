@@ -86,6 +86,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblNaziv);
             this.Name = "KategorijaGimnasticaraForm";
             this.Text = "KategorijaGimnasticaraForm";
+            this.Shown += new System.EventHandler(this.KategorijaGimnasticaraForm_Shown);
             this.Controls.SetChildIndex(this.lblNaziv, 0);
             this.Controls.SetChildIndex(this.cmbGimnastika, 0);
             this.Controls.SetChildIndex(this.btnOk, 0);
