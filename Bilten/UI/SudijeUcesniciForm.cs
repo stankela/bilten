@@ -12,6 +12,7 @@ using System.Data.SqlServerCe;
 using Bilten.Dao;
 using NHibernate;
 using NHibernate.Context;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

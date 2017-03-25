@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Iesi.Collections.Generic;
 using System.ComponentModel;
+using Bilten.Util;
 
 namespace Bilten.Domain
 {

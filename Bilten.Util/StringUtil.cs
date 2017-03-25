@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bilten
+namespace Bilten.Util
 {
     public class StringUtil
     {

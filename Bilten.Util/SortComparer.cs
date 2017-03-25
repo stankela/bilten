@@ -2,8 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 
-// TODO4: Ovo bi trebalo da bude Bilten.Util namespace
-namespace Bilten
+namespace Bilten.Util
 {
     public class SortComparer<T> : IComparer<T>
     {

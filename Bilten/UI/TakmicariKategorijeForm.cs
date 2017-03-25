@@ -14,6 +14,7 @@ using Bilten.Report;
 using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

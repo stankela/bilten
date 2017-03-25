@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using Bilten.Domain;
 using Iesi.Collections.Generic;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

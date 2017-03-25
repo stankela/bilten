@@ -12,6 +12,7 @@ using NHibernate;
 using Bilten.Report;
 using NHibernate.Context;
 using Bilten.Dao;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

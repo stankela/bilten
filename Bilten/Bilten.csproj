@@ -182,8 +182,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Content Include="BiltenPodaci.sdf">
-    </Content>
     <None Include="App.config" />
     <None Include="CreateAllObjects.sqlce" />
     <None Include="Properties\Settings.settings">
@@ -213,7 +211,6 @@
     <Compile Include="SingleInstanceApplication.cs" />
     <Compile Include="SlikeSprava.cs" />
     <Compile Include="Strings.cs" />
-    <Compile Include="StringUtil.cs" />
     <Compile Include="Test\DrzaveParser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -718,7 +715,6 @@
       <DependentUpon>ZrebForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Update\Version3Updater.cs" />
-    <Compile Include="Util\DFS.cs" />
     <Compile Include="Util\SqlCeUtilities.cs" />
   </ItemGroup>
   <ItemGroup>

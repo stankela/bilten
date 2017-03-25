@@ -13,6 +13,7 @@ using System.Collections;
 using NHibernate.Context;
 using Bilten.Dao;
 using NHibernate;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

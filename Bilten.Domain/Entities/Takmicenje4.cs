@@ -4,6 +4,7 @@ using System.Text;
 using Iesi.Collections.Generic;
 using System.ComponentModel;
 using NHibernate;
+using Bilten.Util;
 
 namespace Bilten.Domain
 {

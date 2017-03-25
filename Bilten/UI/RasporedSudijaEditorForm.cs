@@ -12,6 +12,7 @@ using Iesi.Collections;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
+using Bilten.Util;
 
 namespace Bilten.UI
 {

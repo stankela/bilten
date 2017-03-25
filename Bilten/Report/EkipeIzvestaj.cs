@@ -5,6 +5,7 @@ using Bilten.Domain;
 using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Bilten.Util;
 
 namespace Bilten.Report
 {
