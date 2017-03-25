@@ -102,7 +102,7 @@ namespace Bilten.Data
             cmd.Parameters.Add("@gimnasticar_id", SqlDbType.Int).Value = gimnasticar.Id;
             cmd.Parameters.Add("@sprava", SqlDbType.TinyInt).Value = sprava;
 
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
             bool result = false;
             if (rdr.Read())
                 result = true;
@@ -175,7 +175,7 @@ namespace Bilten.Data
         {
             SqlCeCommand cmd = new SqlCeCommand(findByRezTakSQL);
             cmd.Parameters.Add("@rez_takmicenje_id", SqlDbType.Int).Value = rezTak.Id;
-            SqlCeDataReader rdr = Database.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
 
             List<RezultatSpravaFinaleKupaUpdate> result = new List<RezultatSpravaFinaleKupaUpdate>();
             while (rdr.Read())

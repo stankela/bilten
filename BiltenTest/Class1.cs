@@ -9,6 +9,7 @@ using NHibernate.Tool.hbm2ddl;
 using NHibernate;
 using System.IO;
 using System.Diagnostics;
+using Bilten.Dao;
 
 namespace BiltenTest
 {

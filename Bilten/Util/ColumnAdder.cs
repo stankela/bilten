@@ -109,7 +109,7 @@ namespace Bilten
             cmd.Parameters.Add("@ColumnName", SqlDbType.NVarChar).Value = column;
 
             string errMsg = "Greska prilikom citanja podataka iz baze.";
-            SqlCeDataReader rdr = Database.executeReader(cmd, errMsg);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, errMsg);
             bool result = false;
             if (rdr.Read())
                 result = true;

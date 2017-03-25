@@ -2,90 +2,122 @@ using System.Data.SqlServerCe;
 using System;
 using System.IO;
 using System.Reflection;
+using Bilten.Exceptions;
+using System.Data;
 
-public class SqlCeUtilities
+namespace Bilten.Dao
 {
-    private static string getConnectionString(string fileName, string password)
+    public class SqlCeUtilities
     {
-        string result;
-
-        // The DataSource must be surrounded with double quotes. The Password, on the other hand,
-        // must be surrounded  with single quotes
-        if (password != String.Empty)
-            result = string.Format(
-              "DataSource=\"{0}\"; Password='{1}'", fileName, password);
-        else
-            result = string.Format(
-              "DataSource=\"{0}\"", fileName);
-        return result;
-    }
-
-    public static bool CreateDatabase(string fileName, string password, bool overwrite)
-    {
-        string connectionString = getConnectionString(fileName, password);
-
-        // we'll use the SqlServerCe connection object to get the database file path
-        using (SqlCeConnection localConnection = new SqlCeConnection(connectionString))
+        private static string getConnectionString(string fileName, string password)
         {
-            // The SqlCeConnection.Database property contains the file parth portion
-            // of the database from the full connectionstring
-            if (File.Exists(localConnection.Database))
-            {
-                if (overwrite)
-                    File.Delete(localConnection.Database);
-                else
-                    return false;
-            }
+            string result;
 
-            using (SqlCeEngine sqlCeEngine = new SqlCeEngine(connectionString))
-            {
-                sqlCeEngine.CreateDatabase();
-            }
+            // The DataSource must be surrounded with double quotes. The Password, on the other hand,
+            // must be surrounded  with single quotes
+            if (password != String.Empty)
+                result = string.Format(
+                  "DataSource=\"{0}\"; Password='{1}'", fileName, password);
+            else
+                result = string.Format(
+                  "DataSource=\"{0}\"", fileName);
+            return result;
         }
-        return true;
-    }
 
-    public static void ExecuteScript(string fileName, string password, string scriptFile, bool embeddedResource)
-    {
-        string connectionString = getConnectionString(fileName, password);
-        using (SqlCeConnection connection = new SqlCeConnection(connectionString))
+        public static bool CreateDatabase(string fileName, string password, bool overwrite)
         {
-            string script = String.Empty;
-            if (embeddedResource)
+            string connectionString = getConnectionString(fileName, password);
+
+            // we'll use the SqlServerCe connection object to get the database file path
+            using (SqlCeConnection localConnection = new SqlCeConnection(connectionString))
             {
-                Assembly assem = Assembly.GetExecutingAssembly();
-                using (Stream stream = assem.GetManifestResourceStream(scriptFile))
+                // The SqlCeConnection.Database property contains the file parth portion
+                // of the database from the full connectionstring
+                if (File.Exists(localConnection.Database))
                 {
-                    using (StreamReader reader = new StreamReader(stream))
+                    if (overwrite)
+                        File.Delete(localConnection.Database);
+                    else
+                        return false;
+                }
+
+                using (SqlCeEngine sqlCeEngine = new SqlCeEngine(connectionString))
+                {
+                    sqlCeEngine.CreateDatabase();
+                }
+            }
+            return true;
+        }
+
+        public static void ExecuteScript(string fileName, string password, string scriptFile, bool embeddedResource)
+        {
+            string connectionString = getConnectionString(fileName, password);
+            using (SqlCeConnection connection = new SqlCeConnection(connectionString))
+            {
+                string script = String.Empty;
+                if (embeddedResource)
+                {
+                    Assembly assem = Assembly.GetExecutingAssembly();
+                    using (Stream stream = assem.GetManifestResourceStream(scriptFile))
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            script = reader.ReadToEnd();
+                        }
+                    }
+                }
+                else
+                {
+                    using (StreamReader reader = new StreamReader(scriptFile))
                     {
                         script = reader.ReadToEnd();
                     }
                 }
-            }
-            else
-            {
-                using (StreamReader reader = new StreamReader(scriptFile))
+
+                // Using the SQL Management Studio convention of using GO to identify individual commands
+                // Create a list of commands to execute
+                string[] commands = script.Split(
+                    new string[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
+
+                SqlCeCommand cmd = new SqlCeCommand();
+                cmd.Connection = connection;
+                connection.Open();
+                foreach (string command in commands)
                 {
-                    script = reader.ReadToEnd();
+                    string command2 = command.Trim();
+                    if (!String.IsNullOrEmpty(command2))
+                    {
+                        cmd.CommandText = command2;
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
+        }
 
-            // Using the SQL Management Studio convention of using GO to identify individual commands
-            // Create a list of commands to execute
-            string[] commands = script.Split(
-                new string[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
-
-            SqlCeCommand cmd = new SqlCeCommand();
-            cmd.Connection = connection;
-            connection.Open();
-            foreach (string command in commands)
+        public static SqlCeDataReader executeReader(SqlCeCommand cmd, string readErrorMsg, string connectionString = null)
+        {
+            if (connectionString == null)
+                connectionString = ConfigurationParameters.ConnectionString;
+            SqlCeConnection conn = new SqlCeConnection(connectionString);
+            cmd.Connection = conn;
+            try
             {
-                string command2 = command.Trim();
-                if (!String.IsNullOrEmpty(command2))
-                {
-                    cmd.CommandText = command2;
-                    cmd.ExecuteNonQuery();
-                }
+                conn.Open();
+                // CommandBehavior.CloseConnection znaci da kada se DataReader zatvori
+                // zatvara se i konekcija
+                return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            }
+            catch (SqlCeException e)
+            {
+                // in Open()
+                conn.Close();
+                throw new InfrastructureException(readErrorMsg, e);
+            }
+            catch (InvalidOperationException e)
+            {
+                // in ExecuteReader()
+                conn.Close();
+                throw new InfrastructureException(readErrorMsg, e);
             }
         }
     }

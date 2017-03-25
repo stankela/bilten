@@ -7,6 +7,7 @@ using Bilten.Test;
 using Bilten.Domain;
 using System.Diagnostics;
 using System.IO;
+using Bilten.Dao;
 
 namespace Bilten
 {
