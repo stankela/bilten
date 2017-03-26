@@ -120,23 +120,13 @@ namespace Bilten.Domain
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1)
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.PostojiTak2 || !propozicije.OdvojenoTak2)
+            {
+                foreach (RezultatUkupno r in Rezultati)
+                    r.KvalStatus = KvalifikacioniStatus.None;
                 return;
-            if (!propozicije.PostojiTak2)
-                return;
-
-            doUpdateKvalStatus(propozicije.OdvojenoTak2, 
-                propozicije.BrojFinalistaTak2, 
-                propozicije.NeogranicenBrojTakmicaraIzKlubaTak2, 
-                propozicije.MaxBrojTakmicaraIzKlubaTak2, 
-                propozicije.BrojRezerviTak2);
-
-        }
-
-        private void doUpdateKvalStatus(bool odvojenoFinale, int brojFinalista, 
-            bool neogranicenBrojTakmicaraIzKluba, int maxBrojTakmicaraIzKluba, 
-            int brojRezervi)
-        {
+            }
+            
             // TODO: Obradi situaciju kada ima npr. 24 finalista, a 24 i 25 takmicar
             // imaju isti total (uradi i za PoredakSprava i PoredakEkipno)
 
@@ -155,113 +145,89 @@ namespace Bilten.Domain
             int rezCount = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
-                RezultatUkupno rezulat = rezultati[i];
-                if (rezulat.Total == null)
+                RezultatUkupno rezultat = rezultati[i];
+                if (rezultat.Total == null)
                 {
-                    rezulat.KvalStatus = KvalifikacioniStatus.None;
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                     continue;
                 }
 
                 int id;
                 IDictionary<int, int> brojTakmicaraMap;
 
-                if (rezulat.Gimnasticar.KlubUcesnik != null)
+                if (rezultat.Gimnasticar.KlubUcesnik != null)
                 {
-                    id = rezulat.Gimnasticar.KlubUcesnik.Id;
+                    id = rezultat.Gimnasticar.KlubUcesnik.Id;
                     brojTakmicaraMap = brojTakmicaraKlubMap;
                 }
                 else
                 {
-                    id = rezulat.Gimnasticar.DrzavaUcesnik.Id;
+                    id = rezultat.Gimnasticar.DrzavaUcesnik.Id;
                     brojTakmicaraMap = brojTakmicaraDrzavaMap;
                 }
 
                 if (!brojTakmicaraMap.ContainsKey(id))
                     brojTakmicaraMap.Add(id, 0);
 
-                if (odvojenoFinale)
+                if (finCount < propozicije.BrojFinalistaTak2)
                 {
-                    if (finCount < brojFinalista)
+                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
                     {
-                        if (neogranicenBrojTakmicaraIzKluba)
-                        {
-                            finCount++;
-                            rezulat.KvalStatus = KvalifikacioniStatus.Q;
-                        }
-                        else
-                        {
-                            if (brojTakmicaraMap[id] < maxBrojTakmicaraIzKluba)
-                            {
-                                finCount++;
-                                brojTakmicaraMap[id]++;
-                                rezulat.KvalStatus = KvalifikacioniStatus.Q;
-                            }
-                            else
-                            {
-                                if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
-                                && rezCount < brojRezervi)
-                                {
-                                    rezCount++;
-                                    rezulat.KvalStatus = KvalifikacioniStatus.R;
-                                }
-                                else
-                                    rezulat.KvalStatus = KvalifikacioniStatus.None;
-                            }
-                        }
-                    }
-                    else if (rezCount < brojRezervi)
-                    {
-                        if (neogranicenBrojTakmicaraIzKluba)
-                        {
-                            rezCount++;
-                            rezulat.KvalStatus = KvalifikacioniStatus.R;
-                        }
-                        else
-                        {
-                            if (brojTakmicaraMap[id] < maxBrojTakmicaraIzKluba)
-                            {
-                                rezCount++;
-                                brojTakmicaraMap[id]++;
-                                rezulat.KvalStatus = KvalifikacioniStatus.R;
-                            }
-                            else
-                            {
-                                if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
-                                && rezCount < brojRezervi)
-                                {
-                                    rezCount++;
-                                    rezulat.KvalStatus = KvalifikacioniStatus.R;
-                                }
-                                else
-                                    rezulat.KvalStatus = KvalifikacioniStatus.None;
-                            }
-                        }
+                        finCount++;
+                        rezultat.KvalStatus = KvalifikacioniStatus.Q;
                     }
                     else
                     {
-                        rezulat.KvalStatus = KvalifikacioniStatus.None;
+                        if (brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak2)
+                        {
+                            finCount++;
+                            brojTakmicaraMap[id]++;
+                            rezultat.KvalStatus = KvalifikacioniStatus.Q;
+                        }
+                        else
+                        {
+                            if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
+                            && rezCount < propozicije.BrojRezerviTak2)
+                            {
+                                rezCount++;
+                                rezultat.KvalStatus = KvalifikacioniStatus.R;
+                            }
+                            else
+                                rezultat.KvalStatus = KvalifikacioniStatus.None;
+                        }
+                    }
+                }
+                else if (rezCount < propozicije.BrojRezerviTak2)
+                {
+                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
+                    {
+                        rezCount++;
+                        rezultat.KvalStatus = KvalifikacioniStatus.R;
+                    }
+                    else
+                    {
+                        if (brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak2)
+                        {
+                            rezCount++;
+                            brojTakmicaraMap[id]++;
+                            rezultat.KvalStatus = KvalifikacioniStatus.R;
+                        }
+                        else
+                        {
+                            if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
+                            && rezCount < propozicije.BrojRezerviTak2)
+                            {
+                                rezCount++;
+                                rezultat.KvalStatus = KvalifikacioniStatus.R;
+                            }
+                            else
+                                rezultat.KvalStatus = KvalifikacioniStatus.None;
+                        }
                     }
                 }
                 else
                 {
-                    if (neogranicenBrojTakmicaraIzKluba)
-                    {
-                        // u ovom slucaju moze da se stavi i None, tj. svejedno je
-                        // sta se stavlja posto ce svi takmicari imati istu oznaku
-                        rezulat.KvalStatus = KvalifikacioniStatus.Q;
-                    }
-                    else
-                    {
-                        if (brojTakmicaraMap[id] < maxBrojTakmicaraIzKluba)
-                        {
-                            brojTakmicaraMap[id]++;
-                            rezulat.KvalStatus = KvalifikacioniStatus.Q;
-                        }
-                        else
-                        {
-                            rezulat.KvalStatus = KvalifikacioniStatus.None;
-                        }
-                    }
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                 }
             }
         }

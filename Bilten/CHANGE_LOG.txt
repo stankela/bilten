@@ -6,3 +6,4 @@ Promene od r22:
 25-Mar-2017
 - Ubrzano prikazivanje konacnih plasmana
 - Dodata AcceptButton funkcionalnost u GimnasticarForm
+- Dodato prikazivanje rezultata u prozoru za konacne plasmane

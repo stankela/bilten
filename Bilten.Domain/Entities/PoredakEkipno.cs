@@ -171,21 +171,13 @@ namespace Bilten.Domain
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1)
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.PostojiTak4 || !propozicije.OdvojenoTak4)
+            {
+                foreach (RezultatEkipno r in Rezultati)
+                    r.KvalStatus = KvalifikacioniStatus.None;
                 return;
-            if (!propozicije.PostojiTak4)
-                return;
+            }
 
-            doUpdateKvalStatus(propozicije.OdvojenoTak4, propozicije.BrojEkipaUFinalu, 0);
-        }
-
-        // TODO3: izbaci parametar odvojenoFinale i podesi da se ovaj metod poziva samo kada je odvojenoFinale == true.
-        // Kada je odvojenoFinale == false, kvalStatus nema smisla. Takodje i u Propozicijama promeni da kada ne postoji
-        // odvojeno finale da se ne zadaje . Proveri sve ovo detaljnije. Isto uradi i u klasama
-        // PoredakUkupno, PoredakSprava i PoredakPreskok.
-        private void doUpdateKvalStatus(bool odvojenoFinale, int brojFinalista,
-            int brojRezervi)
-        {
             List<RezultatEkipno> rezultati = new List<RezultatEkipno>(Rezultati);
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(RezultatEkipno))["RedBroj"];
@@ -196,35 +188,26 @@ namespace Bilten.Domain
             int rezCount = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
-                Rezultat rezulat = rezultati[i];
-                if (rezulat.Total == null)
+                Rezultat rezultat = rezultati[i];
+                if (rezultat.Total == null)
                 {
-                    rezulat.KvalStatus = KvalifikacioniStatus.None;
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                     continue;
                 }
 
-                if (odvojenoFinale)
+                if (finCount < propozicije.BrojEkipaUFinalu)
                 {
-                    if (finCount < brojFinalista)
-                    {
-                        finCount++;
-                        rezulat.KvalStatus = KvalifikacioniStatus.Q;
-                    }
-                    else if (rezCount < brojRezervi)
-                    {
-                        rezCount++;
-                        rezulat.KvalStatus = KvalifikacioniStatus.R;
-                    }
-                    else
-                    {
-                        rezulat.KvalStatus = KvalifikacioniStatus.None;
-                    }
+                    finCount++;
+                    rezultat.KvalStatus = KvalifikacioniStatus.Q;
+                }
+                else if (rezCount < 0 /* brojRezervi */)
+                {
+                    rezCount++;
+                    rezultat.KvalStatus = KvalifikacioniStatus.R;
                 }
                 else
                 {
-                    // u ovom slucaju moze da se stavi i None, tj. svejedno je
-                    // sta se stavlja posto ce svi takmicari imati istu oznaku
-                    rezulat.KvalStatus = KvalifikacioniStatus.Q;
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                 }
             }
         }
