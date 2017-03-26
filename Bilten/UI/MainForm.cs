@@ -944,7 +944,7 @@ namespace Bilten.UI
             try
             {
                 RezultatiSpravaForm form = new RezultatiSpravaForm(takmicenjeId.Value,
-                    DeoTakmicenjaKod.Takmicenje1, false, null, Sprava.Undefined);
+                    DeoTakmicenjaKod.Takmicenje1, -1, Sprava.Undefined, false, false);
                 form.ShowDialog();
             }
             catch (BusinessException ex)
@@ -962,7 +962,7 @@ namespace Bilten.UI
             try
             {
                 RezultatiSpravaForm form = new RezultatiSpravaForm(takmicenjeId.Value,
-                    DeoTakmicenjaKod.Takmicenje3, false, null, Sprava.Undefined);
+                    DeoTakmicenjaKod.Takmicenje3, -1, Sprava.Undefined, false, false);
                 form.ShowDialog();
             }
             catch (BusinessException ex)

@@ -9,6 +9,7 @@ namespace Bilten.Dao
 {
     public class KonacanPlasman
     {
+        public int TakmicenjeId { get; set; }
         public int RezultatskoTakmicenjeId { get; set; }
         public string NazivTakmicenja { get; set; }
         public string MestoTakmicenja { get; set; }
@@ -53,7 +54,7 @@ namespace Bilten.Dao
         public string ConnectionString;
         
         private string findVisebojTak1SQL = @"
-            select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
+            select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
             g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank,
             pr.postoji_tak2, pr.odvojeno_tak2
             from gimnasticari_ucesnici g
@@ -78,7 +79,7 @@ namespace Bilten.Dao
             order by t.datum asc";
 
         private string findVisebojTak2SQL = @"
-            select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
+            select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
             g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank
             from gimnasticari_ucesnici g
             join rezultati_ukupno r
@@ -100,7 +101,7 @@ namespace Bilten.Dao
             order by t.datum asc";
 
         private string findSpraveTak1SQL = @"
-            select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
+            select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
             g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank,
             pr.postoji_tak3, pr.odvojeno_tak3
             from gimnasticari_ucesnici g
@@ -125,7 +126,7 @@ namespace Bilten.Dao
             order by t.datum asc";
 
         private string findPreskokTak1SQL = @"
-            select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
+            select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
             g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank, r.rank2,
             pr.postoji_tak3, pr.odvojeno_tak3
             from gimnasticari_ucesnici g
@@ -150,7 +151,7 @@ namespace Bilten.Dao
             order by t.datum asc";
 
         private string findSpraveTak3SQL = @"
-            select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
+            select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
             g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank
             from gimnasticari_ucesnici g
             join rezultati_sprava r
@@ -172,7 +173,7 @@ namespace Bilten.Dao
             order by t.datum asc";
 
         private string findPreskokTak3SQL = @"
-            select rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
+            select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
             g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank, r.rank2
             from gimnasticari_ucesnici g
             join rezultati_preskok r
@@ -197,6 +198,7 @@ namespace Bilten.Dao
 
         private void loadCommonData(KonacanPlasman kp, SqlCeDataReader rdr)
         {
+            kp.TakmicenjeId = (int)rdr["takmicenje_id"];
             kp.RezultatskoTakmicenjeId = (int)rdr["rez_takmicenje_id"];
             kp.NazivTakmicenja = (string)rdr["naziv_tak"];
             kp.MestoTakmicenja = (string)rdr["mesto"];

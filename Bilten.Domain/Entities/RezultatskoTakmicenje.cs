@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Iesi.Collections.Generic;
 using Bilten.Exceptions;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -253,7 +252,7 @@ namespace Bilten.Domain
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 return Takmicenje1.PoredakUkupno;
             
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje2);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje2);
             return Takmicenje2.Poredak;
         }
 
@@ -262,7 +261,7 @@ namespace Bilten.Domain
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 return Takmicenje1.getPoredakSprava(sprava);
 
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
             return Takmicenje3.getPoredak(sprava);
         }
 
@@ -271,7 +270,7 @@ namespace Bilten.Domain
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 return Takmicenje1.PoredakPreskok;
 
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
             return Takmicenje3.PoredakPreskok;
         }
 
@@ -280,7 +279,7 @@ namespace Bilten.Domain
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 return Takmicenje1.PoredakEkipno;
 
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje4);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje4);
             return Takmicenje4.Poredak;
         }
 
@@ -304,7 +303,7 @@ namespace Bilten.Domain
 
         public virtual string getNazivIzvestajaViseboj(DeoTakmicenjaKod deoTakKod, bool finaleKupa, bool sumaObaKola)
         {
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
 
             //char shVeliko = '\u0160';
             char shMalo = '\u0161';
@@ -335,7 +334,7 @@ namespace Bilten.Domain
 
         public virtual string getNazivIzvestajaSprava(DeoTakmicenjaKod deoTakKod, bool finaleKupa, bool sumaObaKola)
         {
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje3);
 
             string result = String.Empty;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)

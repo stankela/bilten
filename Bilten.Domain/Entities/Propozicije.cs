@@ -173,7 +173,7 @@ namespace Bilten.Domain
                 }
             }
 
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
             return PoredakTak3PreskokNaOsnovuObaPreskoka;
         }
 

@@ -25,7 +25,8 @@ namespace Bilten.UI
 
         // kljuc je rezTakmicenja.IndexOf(takmicenje) * (Sprava.Max + 1) + sprava
         private ISet<int> rezultatiOpened;
-        private bool selectMode = false;
+        private bool forViewingOnly;
+        private bool select;
 
         private List<RezultatSprava> istiRezultati = new List<RezultatSprava>();
 
@@ -51,12 +52,13 @@ namespace Bilten.UI
             set { cmbSprava.SelectedItem = Sprave.toString(value); }
         }
 
-        public RezultatiSpravaForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod, bool selectMode,
-            RezultatskoTakmicenje startTakmicenje, Sprava startSprava)
+        public RezultatiSpravaForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod, int startRezTakmicenjeId,
+            Sprava startSprava, bool forViewingOnly, bool select)
         {
             InitializeComponent();
             this.deoTakKod = deoTakKod;
-            this.selectMode = selectMode;
+            this.forViewingOnly = forViewingOnly;
+            this.select = select;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -79,7 +81,7 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoji takmicenje III ni za jednu kategoriju.");
 
-                    initUI(startTakmicenje, startSprava);
+                    initUI(startRezTakmicenjeId, startSprava);
                     rezultatiOpened = new HashSet<int>();
                 }
             }
@@ -144,7 +146,7 @@ namespace Bilten.UI
             return result;
         }
 
-        private void initUI(RezultatskoTakmicenje startTakmicenje, Sprava startSprava)
+        private void initUI(int startRezTakmicenjeId, Sprava startSprava)
         {
             Text = "Rezultati - " + DeoTakmicenjaKodovi.toString(deoTakKod);
             this.ClientSize = new Size(ClientSize.Width, 540);
@@ -153,38 +155,40 @@ namespace Bilten.UI
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "Naziv";
             cmbTakmicenje.SelectedIndex = 0;
-            if (selectMode)
-                ActiveTakmicenje = startTakmicenje;
+            if (forViewingOnly)
+                ActiveTakmicenje = findRezTakmicenje(startRezTakmicenjeId);
             cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
 
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
             List<string> sprave = new List<string>(Sprave.getSpraveNazivi(rezTakmicenja[0].Gimnastika));
             cmbSprava.Items.AddRange(sprave.ToArray());
             cmbSprava.SelectedIndex = 0;
-            if (selectMode)
+            if (forViewingOnly)
                 ActiveSprava = startSprava;
             cmbSprava.SelectedIndexChanged += new EventHandler(cmbSprava_SelectedIndexChanged);
             
             spravaGridUserControl1.DataGridViewUserControl.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
-            if (selectMode)
+            if (forViewingOnly)
                 spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = false;
             else
                 spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = true;
 
             spravaGridUserControl1.SpravaGridMouseUp += new EventHandler<SpravaGridMouseUpEventArgs>(spravaGridUserControl1_SpravaGridMouseUp);
 
-            if (selectMode)
+            if (forViewingOnly)
             {
-                btnOk.Enabled = true;
-                btnOk.Visible = true;
-                btnCancel.Enabled = true;
-                btnCancel.Visible = true;
+                btnOk.Enabled = select;
+                btnOk.Visible = select;
+                btnCancel.Enabled = select;
+                btnCancel.Visible = select;
+                btnClose.Enabled = !select;
+                btnClose.Visible = !select;
                 btnPrint.Enabled = btnPrint.Visible = false;
-                btnClose.Enabled = false;
-                btnClose.Visible = false;
                 btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
                 btnStampajKvalifikante.Enabled = btnStampajKvalifikante.Visible = false;
+                if (!select)
+                    btnClose.Location = new Point(btnCancel.Location.X, btnCancel.Location.Y);
             }
             else
             {
@@ -204,6 +208,16 @@ namespace Bilten.UI
             }
         }
 
+        private RezultatskoTakmicenje findRezTakmicenje(int rezTakmicenjeId)
+        {
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.Id == rezTakmicenjeId)
+                    return rt;
+            }
+            return null;
+        }
+
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
             GridColumnHeaderMouseClickEventArgs e)
         {
@@ -216,43 +230,17 @@ namespace Bilten.UI
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedRezultatiChanged();
+            onSelectedRezultatiChanged();
         }
 
         void cmbSprava_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedRezultatiChanged();
-        }
-
-        void cmdSelectedRezultatiChanged()
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    onSelectedRezultatiChanged();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedRezultatiChanged();
         }
 
         private void onSelectedRezultatiChanged()
         {
-            btnStampajKvalifikante.Enabled = kvalColumnVisible();            
+            btnStampajKvalifikante.Enabled = !forViewingOnly && kvalColumnVisible();            
             initSpravaGridUserControl(ActiveSprava);
 
             int rezultatiKey = getRezultatiKey(ActiveTakmicenje, ActiveSprava);
@@ -329,7 +317,7 @@ namespace Bilten.UI
         private void RezultatiSpravaForm_Shown(object sender, EventArgs e)
         {
             spravaGridUserControl1.DataGridViewUserControl.Focus();
-            cmdSelectedRezultatiChanged();
+            onSelectedRezultatiChanged();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -517,11 +505,15 @@ namespace Bilten.UI
             int y = e.MouseEventArgs.Y;
             if (e.MouseEventArgs.Button == MouseButtons.Right && grid.HitTest(x, y).Type == DataGridViewHitTestType.Cell)
             {
-                mnQ.Enabled = /*mnQ.Visible =*/ kvalColumnVisible();
-                mnR.Enabled = /*mnR.Visible =*/ kvalColumnVisible();
-                mnPrazno.Enabled = /*mnPrazno.Visible =*/ kvalColumnVisible();
-                findIstiRezultati();
-                mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
+                mnQ.Enabled = /*mnQ.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnR.Enabled = /*mnR.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnPrazno.Enabled = /*mnPrazno.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnPromeniPoredakZaIsteOcene.Enabled = !forViewingOnly;
+                if (!forViewingOnly)
+                {
+                    findIstiRezultati();
+                    mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
+                }
                 contextMenuStrip1.Show(grid, new Point(x, y));
             }
         }

@@ -1709,7 +1709,7 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiSpravaForm form = new RezultatiSpravaForm(takmicenje.Id, deoTakKod, false, null, Sprava.Undefined);
+                RezultatiSpravaForm form = new RezultatiSpravaForm(takmicenje.Id, deoTakKod, -1, Sprava.Undefined, false, false);
                 form.ShowDialog();
             }
             catch (BusinessException ex)

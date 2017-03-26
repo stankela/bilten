@@ -108,7 +108,7 @@ namespace Bilten.UI
             try
             {
                 form = new RezultatiSpravaForm(takmicenje.Id,
-                    DeoTakmicenjaKod.Takmicenje1, true, rezTakmicenje, sprava);
+                    DeoTakmicenjaKod.Takmicenje1, rezTakmicenje.Id, sprava, true, true);
                 if (form.ShowDialog() != DialogResult.OK)
                     return;
             }

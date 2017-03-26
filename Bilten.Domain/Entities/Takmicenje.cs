@@ -363,7 +363,7 @@ namespace Bilten.Domain
         public virtual IList<RezultatskoTakmicenje> getRezTakmicenjaViseboj(IList<RezultatskoTakmicenje> svaRezTakmicenja,
             DeoTakmicenjaKod deoTakKod, bool sumaObaKola)
         {
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
             IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
             {
@@ -387,7 +387,7 @@ namespace Bilten.Domain
         public virtual IList<RezultatskoTakmicenje> getRezTakmicenjaSprava(IList<RezultatskoTakmicenje> svaRezTakmicenja,
             DeoTakmicenjaKod deoTakKod, bool sumaObaKola)
         {
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje3);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje3);
             IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
             {
@@ -411,7 +411,7 @@ namespace Bilten.Domain
         public virtual IList<RezultatskoTakmicenje> getRezTakmicenjaEkipe(IList<RezultatskoTakmicenje> svaRezTakmicenja,
             DeoTakmicenjaKod deoTakKod, bool sumaObaKola)
         {
-            Debug.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje4);
+            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje4);
             IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
             {

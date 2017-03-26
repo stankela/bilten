@@ -9,7 +9,6 @@ using Bilten.Domain;
 using Bilten.Data;
 using Bilten.Exceptions;
 using NHibernate;
-using Iesi.Collections.Generic;
 using Bilten.Report;
 using NHibernate.Context;
 using Bilten.Dao;

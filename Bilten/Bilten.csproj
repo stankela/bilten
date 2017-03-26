@@ -166,6 +166,8 @@
     <Compile Include="Data\NHibernate\PersistentConfigurationBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="CHANGE_LOG.txt" />
+    <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
     <EmbeddedResource Include="UI\KonacanPlasmanForm.resx">
       <DependentUpon>KonacanPlasmanForm.cs</DependentUpon>
@@ -920,8 +922,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Doc\DesignChoices.txt" />
-    <Content Include="Doc\Promene.txt" />
-    <Content Include="Doc\todo.txt" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
