@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using Bilten.Util;
+using Bilten.Exceptions;
 
 namespace Bilten.Domain
 {
@@ -269,6 +271,29 @@ namespace Bilten.Domain
             set { tak4NeRacunajProsekAkoNemaOceneIzObaKola = value; }
         }
 
+        public virtual void validateTakmicenje2(Notification notification)
+        {
+            if (!PostojiTak2 || !OdvojenoTak2)
+                return;
 
+            if (BrojFinalistaTak2 < 1)
+            {
+                throw new BusinessException(
+                    "BrojFinalistaTak2", "Neispravna vrednost za broj finalista.");
+            }
+
+            if (BrojRezerviTak2 < 1)
+            {
+                throw new BusinessException(
+                    "BrojRezerviTak2", "Neispravna vrednost za broj rezervi.");
+            }
+
+            if (!NeogranicenBrojTakmicaraIzKlubaTak2 && MaxBrojTakmicaraIzKlubaTak2 < 1)
+            {
+                throw new BusinessException("MaxBrojTakmicaraIzKlubaTak2",
+                    "Neispravna vrednost za maksimalan broj " +
+                    "takmicara iz istog kluba/drzave.");
+            }
+        }
     }
 }

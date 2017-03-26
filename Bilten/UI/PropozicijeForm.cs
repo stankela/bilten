@@ -225,33 +225,19 @@ namespace Bilten.UI
                         }
                     }
 
-
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        DAOFactoryFactory.DAOFactory.GetPropozicijeDAO().Update(rt.Propozicije);
-
-                        bool deletedTak2, deletedTak3, deletedTak4;
-
-                        rt.updateTakmicenjaFromChangedPropozicije(
-                            out deletedTak2, out deletedTak3, out deletedTak4);
-
-                        // TODO: Sledece tri Delete naredbe najverovatnije nemaju efekta zato sto ako je npr. deletedTak2 == true,
-                        // tada je rt.Takmicenje2 == null
-                        if (deletedTak2)
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Delete(rt.Takmicenje2);
-                        if (deletedTak3)
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Delete(rt.Takmicenje3);
-                        if (deletedTak4)
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Delete(rt.Takmicenje4);
-
                         // TODO: Potrebno je ponovo izracunati poretke i ucesnike zato
                         // sto su se mozda promenili brojevi finalista, rezervi, nacin
                         // racunanja preskoka itd.
+                        // Takodje, posto ova naredba moze da npr. izbrise celo takmicenje III (ako je postojalo
+                        // odvojeno takmicenje III, a u novim propozicijama je navedeno da ne postoji odvojeno
+                        // takmicenje III), mozda bi trebalo dati mogucnost korisniku da odustane od operacije.
+                        rt.updateTakmicenjaFromChangedPropozicije();
 
-
+                        DAOFactoryFactory.DAOFactory.GetPropozicijeDAO().Update(rt.Propozicije);
                         DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Update(rt);
                     }
-
                     session.Transaction.Commit();
                 }
             }

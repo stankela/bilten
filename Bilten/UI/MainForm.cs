@@ -810,6 +810,10 @@ namespace Bilten.UI
 
         private void mnKreirajTakmicenja234_Click(object sender, EventArgs e)
         {
+            // TODO4: Ova komanda bi trebalo da moze da se ponovljeno izvrsava (kada se klikne drugi put, trebalo
+            // bi obavestiti korisnika da ce prethodno dejstvo biti ponisteno i da ce se ponovo kreirati takmicenja
+            // 2, 3 i 4.)
+
             string msg = "Da li zelite da kreirate takmicenja II, III i IV?";
             if (!MessageDialogs.queryConfirmation(msg, "Kreiraj takmicenja II, III i IV"))
                 return;
@@ -1486,17 +1490,7 @@ namespace Bilten.UI
             }
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                bool deletedTak2, deletedTak3, deletedTak4;
-
-                rt.updateTakmicenjaFromChangedPropozicije(
-                    out deletedTak2, out deletedTak3, out deletedTak4);
-
-                /*if (deletedTak2)
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Delete(rt.Takmicenje2);
-                if (deletedTak3)
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Delete(rt.Takmicenje3);
-                if (deletedTak4)
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Delete(rt.Takmicenje4);*/
+                rt.updateTakmicenjaFromChangedPropozicije();
             }
 
             IDictionary<GimnasticarUcesnik, GimnasticarUcesnik> gimnasticariMap =

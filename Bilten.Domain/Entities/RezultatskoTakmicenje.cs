@@ -97,58 +97,40 @@ namespace Bilten.Domain
             this.gimnastika = takmicenje.Gimnastika;
 
             _takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
-            if (propozicije.PostojiTak2)
+            if (propozicije.PostojiTak2 && propozicije.OdvojenoTak2)
                 _takmicenje2 = new Takmicenje2();
-            if (propozicije.PostojiTak3)
+            if (propozicije.PostojiTak3 && propozicije.OdvojenoTak3)
                 _takmicenje3 = new Takmicenje3(takmicenje.Gimnastika);
-            if (propozicije.PostojiTak4)
+            if (propozicije.PostojiTak4 && propozicije.OdvojenoTak4)
                 _takmicenje4 = new Takmicenje4();
         }
 
-        public virtual void updateTakmicenjaFromChangedPropozicije(
-            out bool deletedTak2, out bool deletedTak3, out bool deletedTak4)
+        public virtual void updateTakmicenjaFromChangedPropozicije()
         {
-            deletedTak2 = deletedTak3 = deletedTak4 = false;
-
-            if (Propozicije.PostojiTak2 != (Takmicenje2 != null))
+            if ((Propozicije.PostojiTak2 && Propozicije.OdvojenoTak2) != (Takmicenje2 != null))
             {
                 if (Takmicenje2 != null)
-                {
-                    // postojalo je takmicenje II, ali je u novim propozicijama
-                    // PostojiTak2 postavljeno na false
+                    // postojalo je odvojeno takmicenje II, ali je u novim propozicijama
+                    // OdvojenoTak2 postavljeno na false
                     Takmicenje2 = null;
-                    deletedTak2 = true;
-                }
                 else
-                {
-                    // nije postojalo takmicenje II, a u novim propozicijama je
-                    // PostojiTak2 postavljeno na true
+                    // nije postojalo odvojeno takmicenje II, a u novim propozicijama je
+                    // OdvojenoTak2 postavljeno na true
                     Takmicenje2 = new Takmicenje2();
-                }
             }
-            if (Propozicije.PostojiTak3 != (Takmicenje3 != null))
+            if ((Propozicije.PostojiTak3 && Propozicije.OdvojenoTak3) != (Takmicenje3 != null))
             {
                 if (Takmicenje3 != null)
-                {
                     Takmicenje3 = null;
-                    deletedTak3 = true;
-                }
                 else
-                {
                     Takmicenje3 = new Takmicenje3(this.Gimnastika);
-                }
             }
-            if (Propozicije.PostojiTak4 != (Takmicenje4 != null))
+            if ((Propozicije.PostojiTak4 && Propozicije.OdvojenoTak4) != (Takmicenje4 != null))
             {
                 if (Takmicenje4 != null)
-                {
                     Takmicenje4 = null;
-                    deletedTak4 = true;
-                }
                 else
-                {
                     Takmicenje4 = new Takmicenje4();
-                }
             }
         }
 
