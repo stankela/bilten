@@ -776,7 +776,7 @@ namespace Bilten.UI
                 else
                 {
                     RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenjeId.Value,
-                       DeoTakmicenjaKod.Takmicenje1);
+                       DeoTakmicenjaKod.Takmicenje1, -1, false);
                     form.ShowDialog();
                 }
             }
@@ -794,8 +794,8 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiUkupnoForm form = new RezultatiUkupnoForm(
-                    takmicenjeId.Value, DeoTakmicenjaKod.Takmicenje2);
+                RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenjeId.Value,
+                    DeoTakmicenjaKod.Takmicenje2, -1, false);
                 form.ShowDialog();
             }
             catch (BusinessException ex)

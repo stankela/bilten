@@ -138,35 +138,54 @@ namespace Bilten.UI
 
         private void btnRezultatiVisebojTak1_Click(object sender, EventArgs e)
         {
-
+            cmbRezultatiVisebojTakmicenjeI();
         }
 
         private void mnRezultatiVisebojTakmicenjeI_Click(object sender, EventArgs e)
         {
+            cmbRezultatiVisebojTakmicenjeI();
+        }
 
+        private void cmbRezultatiVisebojTakmicenjeI()
+        {
+            KonacanPlasman selItem = dataGridViewUserControl1.getSelectedItem<KonacanPlasman>();
+            if (selItem == null)
+                return;
+
+            try
+            {
+                Sprava sprava = gimnastika == Gimnastika.MSG ? Sprava.Parter : Sprava.Preskok;
+                RezultatiUkupnoForm form = new RezultatiUkupnoForm(selItem.TakmicenjeId, DeoTakmicenjaKod.Takmicenje1,
+                    selItem.RezultatskoTakmicenjeId, true);
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showMessage(ex.Message, "Rezultati viseboj takmicenje I");
+            }
         }
 
         private void btnRezultatiSpraveTakI_Click(object sender, EventArgs e)
         {
-            cmdRezultatiSpraveTakmicenje(DeoTakmicenjaKod.Takmicenje1, "Rezultati sprave takmicenje I");
+            cmdRezultatiSprave(DeoTakmicenjaKod.Takmicenje1, "Rezultati sprave takmicenje I");
         }
 
         private void mnRezultatiSpraveTakmicenjeI_Click(object sender, EventArgs e)
         {
-            cmdRezultatiSpraveTakmicenje(DeoTakmicenjaKod.Takmicenje1, "Rezultati sprave takmicenje I");
+            cmdRezultatiSprave(DeoTakmicenjaKod.Takmicenje1, "Rezultati sprave takmicenje I");
         }
 
         private void mnRezultatiSpraveTakmicenjeIII_Click(object sender, EventArgs e)
         {
-            cmdRezultatiSpraveTakmicenje(DeoTakmicenjaKod.Takmicenje3, "Rezultati sprave takmicenje III");
+            cmdRezultatiSprave(DeoTakmicenjaKod.Takmicenje3, "Rezultati sprave takmicenje III");
         }
 
         private void btnRezultatiSpraveTak3_Click(object sender, EventArgs e)
         {
-            cmdRezultatiSpraveTakmicenje(DeoTakmicenjaKod.Takmicenje3, "Rezultati sprave takmicenje III");
+            cmdRezultatiSprave(DeoTakmicenjaKod.Takmicenje3, "Rezultati sprave takmicenje III");
         }
 
-        private void cmdRezultatiSpraveTakmicenje(DeoTakmicenjaKod deoTakKod, string errorMsg)
+        private void cmdRezultatiSprave(DeoTakmicenjaKod deoTakKod, string errorMsg)
         {
             KonacanPlasman selItem = dataGridViewUserControl1.getSelectedItem<KonacanPlasman>();
             if (selItem == null)

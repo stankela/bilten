@@ -81,7 +81,15 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoji takmicenje III ni za jednu kategoriju.");
 
-                    initUI(startRezTakmicenjeId, startSprava);
+                    RezultatskoTakmicenje startRezTakmicenje = null;
+                    if (startRezTakmicenjeId != -1)
+                    {
+                        startRezTakmicenje = findRezTakmicenje(startRezTakmicenjeId, rezTakmicenja);
+                        if (startRezTakmicenje == null)
+                            throw new BusinessException("Ne postoje rezultati sprave za dato takmicenje.");
+                    }
+                    
+                    initUI(startRezTakmicenje, startSprava);
                     rezultatiOpened = new HashSet<int>();
                 }
             }
@@ -146,7 +154,17 @@ namespace Bilten.UI
             return result;
         }
 
-        private void initUI(int startRezTakmicenjeId, Sprava startSprava)
+        private RezultatskoTakmicenje findRezTakmicenje(int rezTakmicenjeId, IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.Id == rezTakmicenjeId)
+                    return rt;
+            }
+            return null;
+        }
+
+        private void initUI(RezultatskoTakmicenje startRezTakmicenje, Sprava startSprava)
         {
             Text = "Rezultati - " + DeoTakmicenjaKodovi.toString(deoTakKod);
             this.ClientSize = new Size(ClientSize.Width, 540);
@@ -155,15 +173,15 @@ namespace Bilten.UI
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "Naziv";
             cmbTakmicenje.SelectedIndex = 0;
-            if (forViewingOnly)
-                ActiveTakmicenje = findRezTakmicenje(startRezTakmicenjeId);
+            if (startRezTakmicenje != null)
+                ActiveTakmicenje = startRezTakmicenje;
             cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
 
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
             List<string> sprave = new List<string>(Sprave.getSpraveNazivi(rezTakmicenja[0].Gimnastika));
             cmbSprava.Items.AddRange(sprave.ToArray());
             cmbSprava.SelectedIndex = 0;
-            if (forViewingOnly)
+            if (startSprava != Sprava.Undefined)
                 ActiveSprava = startSprava;
             cmbSprava.SelectedIndexChanged += new EventHandler(cmbSprava_SelectedIndexChanged);
             
@@ -206,16 +224,6 @@ namespace Bilten.UI
                 btnClose.Visible = true;
                 btnClose.Location = new Point(btnIzracunaj.Location.X + btnIzracunaj.Size.Width + 20, btnCancel.Location.Y);
             }
-        }
-
-        private RezultatskoTakmicenje findRezTakmicenje(int rezTakmicenjeId)
-        {
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                if (rt.Id == rezTakmicenjeId)
-                    return rt;
-            }
-            return null;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,

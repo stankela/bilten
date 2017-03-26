@@ -1692,7 +1692,7 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenje.Id, deoTakKod);
+                RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenje.Id, deoTakKod, -1, false);
                 form.ShowDialog();
             }
             catch (BusinessException ex)

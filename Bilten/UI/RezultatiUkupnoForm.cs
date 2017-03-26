@@ -23,6 +23,7 @@ namespace Bilten.UI
         private bool[] takmicenjeOpened;
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
+        private bool forViewingOnly;
 
         private List<RezultatUkupno> istiRezultati = new List<RezultatUkupno>();
 
@@ -32,10 +33,12 @@ namespace Bilten.UI
             set { cmbTakmicenje.SelectedItem = value; }
         }
 
-        public RezultatiUkupnoForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
+        public RezultatiUkupnoForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod, int startRezTakmicenjeId,
+            bool forViewingOnly)
         {
             InitializeComponent();
             this.deoTakKod = deoTakKod;
+            this.forViewingOnly = forViewingOnly;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -58,7 +61,15 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoji takmicenje II ni za jednu kategoriju.");
 
-                    initUI();
+                    RezultatskoTakmicenje startRezTakmicenje = null;
+                    if (startRezTakmicenjeId != -1)
+                    {
+                        startRezTakmicenje = findRezTakmicenje(startRezTakmicenjeId, rezTakmicenja);
+                        if (startRezTakmicenje == null)
+                            throw new BusinessException("Ne postoje rezultati viseboj za dato takmicenje.");
+                    }
+
+                    initUI(startRezTakmicenje);
                     takmicenjeOpened = new bool[rezTakmicenja.Count];
                 }
             }
@@ -119,7 +130,17 @@ namespace Bilten.UI
             return result;
         }
 
-        private void initUI()
+        private RezultatskoTakmicenje findRezTakmicenje(int rezTakmicenjeId, IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.Id == rezTakmicenjeId)
+                    return rt;
+            }
+            return null;
+        }
+
+        private void initUI(RezultatskoTakmicenje startRezTakmicenje)
         {
             Text = "Rezultati - " + DeoTakmicenjaKodovi.toString(deoTakKod);
             this.ClientSize = new Size(900, 540);
@@ -128,11 +149,19 @@ namespace Bilten.UI
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "Naziv";
             cmbTakmicenje.SelectedIndex = 0;
+            if (startRezTakmicenje != null)
+                ActiveTakmicenje = startRezTakmicenje;
             cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
 
             dataGridViewUserControl1.DataGridView.MouseUp += new MouseEventHandler(DataGridView_MouseUp);
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
+      
+            if (forViewingOnly)
+            {
+                btnPrint.Enabled = btnPrint.Visible = false;
+                btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
+            }
         }
 
         void DataGridView_MouseUp(object sender, MouseEventArgs e)
@@ -140,11 +169,15 @@ namespace Bilten.UI
             DataGridView grid = dataGridViewUserControl1.DataGridView;
             if (e.Button == MouseButtons.Right && grid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
             {
-                mnQ.Enabled = /*mnQ.Visible =*/ kvalColumnVisible();
-                mnR.Enabled = /*mnR.Visible =*/ kvalColumnVisible();
-                mnPrazno.Enabled = /*mnPrazno.Visible =*/ kvalColumnVisible();
-                findIstiRezultati();
-                mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
+                mnQ.Enabled = /*mnQ.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnR.Enabled = /*mnR.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnPrazno.Enabled = /*mnPrazno.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnPromeniPoredakZaIsteOcene.Enabled = !forViewingOnly;
+                if (!forViewingOnly)
+                {
+                    findIstiRezultati();
+                    mnPromeniPoredakZaIsteOcene.Enabled = istiRezultati.Count > 1;
+                }
                 contextMenuStrip1.Show(grid, new Point(e.X, e.Y));
             }
         }
@@ -168,33 +201,7 @@ namespace Bilten.UI
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedTakmicenjeChanged();
-        }
-
-        void cmdSelectedTakmicenjeChanged()
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    onSelectedTakmicenjeChanged();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedTakmicenjeChanged();
         }
 
         private void onSelectedTakmicenjeChanged()
@@ -232,7 +239,7 @@ namespace Bilten.UI
 
         private void RezultatiUkupnoForm_Shown(object sender, EventArgs e)
         {
-            cmdSelectedTakmicenjeChanged();
+            onSelectedTakmicenjeChanged();
             dataGridViewUserControl1.Focus();
         }
 
