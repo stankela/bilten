@@ -295,5 +295,30 @@ namespace Bilten.Domain
                     "takmicara iz istog kluba/drzave.");
             }
         }
+
+        public virtual void validateTakmicenje3(Notification notification)
+        {
+            if (!PostojiTak3 || !OdvojenoTak3)
+                return;
+
+            if (BrojFinalistaTak3 < 1)
+            {
+                throw new BusinessException(
+                    "BrojFinalistaTak3", "Neispravna vrednost za broj finalista.");
+            }
+
+            if (BrojRezerviTak3 < 1)
+            {
+                throw new BusinessException(
+                    "BrojRezerviTak3", "Neispravna vrednost za broj rezervi.");
+            }
+
+            if (!NeogranicenBrojTakmicaraIzKlubaTak3 && MaxBrojTakmicaraIzKlubaTak3 < 1)
+            {
+                throw new BusinessException("MaxBrojTakmicaraIzKlubaTak3",
+                    "Neispravna vrednost za maksimalan broj " +
+                    "takmicara iz istog kluba/drzave.");
+            }
+        }
     }
 }

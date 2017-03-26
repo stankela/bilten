@@ -74,12 +74,12 @@ namespace Bilten.UI
 
         private void setEnabledOdvojenoTak2()
         {
-            bool enabled = rbtOdvojenoTak2.Enabled && rbtOdvojenoTak2.Checked;
-            lblBrojFinalista.Enabled = enabled;
-            txtBrojFinalista.Enabled = enabled;
-            lblBrojRezervi.Enabled = enabled;
-            txtBrojRezervi.Enabled = enabled;
-            ckbNeogranicenBrojTak.Enabled = enabled;
+            bool odvojenoTak2 = rbtOdvojenoTak2.Enabled && rbtOdvojenoTak2.Checked;
+            lblBrojFinalista.Enabled = odvojenoTak2;
+            txtBrojFinalista.Enabled = odvojenoTak2;
+            lblBrojRezervi.Enabled = odvojenoTak2;
+            txtBrojRezervi.Enabled = odvojenoTak2;
+            ckbNeogranicenBrojTak.Enabled = odvojenoTak2;
             setEnabledNeogranicenBrojTak();
         }
 
@@ -113,11 +113,11 @@ namespace Bilten.UI
 
         public override void OnSetActive()
         {
-            refreshUI();
+            updateUIFromPropozicije(propozicije);
             dirty = false;
         }
 
-        private void refreshUI()
+        private void updateUIFromPropozicije(Propozicije propozicije)
         {
             disableHandlers();
             clearUI();
