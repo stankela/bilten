@@ -1088,9 +1088,14 @@ namespace Bilten.UI
             Ocena o = (Ocena)entity;
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Add(o);
 
-            IList<RezultatskoTakmicenje> rezTakmicenja
-                = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
+            ISet<RezultatskoTakmicenje> rezTakSet = new HashSet<RezultatskoTakmicenje>(rezTakmicenja);
+            foreach (RezultatskoTakmicenje rt in rezTakDAO.FindEkipnaTakmicenja(takmicenje.Id))
+            {
+                rezTakSet.Add(rt);
+            }
+            foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {

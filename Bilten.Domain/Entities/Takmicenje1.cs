@@ -211,7 +211,8 @@ namespace Bilten.Domain
 
             // Ova naredba treba da bude unutar if izraza ako clanovi ekipe
             // mogu da budu samo gimnasticari ucesnici istog rez. takmicenja
-            PoredakEkipno.addOcena(o, rezTak);
+            if (rezTak.ImaEkipnoTakmicenje)
+                PoredakEkipno.addOcena(o, rezTak);
         }
 
         public virtual void ocenaDeleted(Ocena o, RezultatskoTakmicenje rezTak)

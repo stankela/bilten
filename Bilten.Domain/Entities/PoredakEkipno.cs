@@ -230,10 +230,8 @@ namespace Bilten.Domain
             updateKvalStatus(rezTak.Propozicije);
         }
 
-        // TODO3: Proveri zasto sam zakomentarisao ovaj i sledece metode.
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
-            /*
             IList<RezultatEkipno> rezultati = getRezultati(o.Gimnasticar);
             if (rezultati.Count == 0)
                 return;
@@ -242,7 +240,6 @@ namespace Bilten.Domain
                 r.addOcena(o);
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
-             */
         }
 
         private IList<RezultatEkipno> getRezultati(GimnasticarUcesnik g)
@@ -258,7 +255,6 @@ namespace Bilten.Domain
 
         public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
-            /*
             IList<RezultatEkipno> rezultati = getRezultati(o.Gimnasticar);
             if (rezultati.Count == 0)
                 return;
@@ -267,12 +263,10 @@ namespace Bilten.Domain
                 r.removeOcena(o);
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
-             */
         }
 
         public virtual void editOcena(Ocena o, Ocena old, RezultatskoTakmicenje rezTak)
         {
-            /*
             IList<RezultatEkipno> rezultati = getRezultati(o.Gimnasticar);
             if (rezultati.Count == 0)
                 return;
@@ -284,13 +278,11 @@ namespace Bilten.Domain
             }
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
-             */
         }
 
         public virtual void addEkipa(Ekipa e, IList<Ocena> ocene,
             RezultatskoTakmicenje rezTak)
         {
-            /*
             RezultatEkipno r = new RezultatEkipno();
             r.Ekipa = e;
             Rezultati.Add(r);
@@ -303,20 +295,17 @@ namespace Bilten.Domain
 
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
-             */
         }
 
         public virtual void deleteEkipa(Ekipa e, RezultatskoTakmicenje rezTak)
         {
-            // Ovde je deo ostao otkometarisan zato sto mi je davao gresku kod brisanja ekipa.
             RezultatEkipno r = getRezultat(e);
             if (r != null)
             {
                 Rezultati.Remove(r);
-                //rankRezultati();
-                //updateKvalStatus(rezTak.Propozicije);
-            }
-             
+                rankRezultati();
+                updateKvalStatus(rezTak.Propozicije);
+            }             
         }
 
         private RezultatEkipno getRezultat(Ekipa e)
@@ -332,7 +321,6 @@ namespace Bilten.Domain
         public virtual void gimnasticarAddedToEkipa(GimnasticarUcesnik g, Ekipa e, 
             IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
-            /*
             if (ocene.Count == 0)
                 return;
             RezultatEkipno r = getRezultat(e);
@@ -344,13 +332,11 @@ namespace Bilten.Domain
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
-             */
         }
 
         public virtual void gimnasticarDeletedFromEkipa(GimnasticarUcesnik g, Ekipa e,
             IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
-            /*
             if (ocene.Count == 0)
                 return;
             RezultatEkipno r = getRezultat(e);
@@ -362,7 +348,6 @@ namespace Bilten.Domain
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
-             */
         }
     }
 }

@@ -80,7 +80,8 @@ namespace Bilten.Domain
 
         public virtual void ocenaAdded(Ocena o, RezultatskoTakmicenje rezTak)
         {
-            Poredak.addOcena(o, rezTak);
+            if (rezTak.ImaEkipnoTakmicenje)
+                Poredak.addOcena(o, rezTak);
         }
 
         public virtual void ocenaDeleted(Ocena o, RezultatskoTakmicenje rezTak)

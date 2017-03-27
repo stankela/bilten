@@ -850,9 +850,6 @@ namespace Bilten.UI
                             p.create(rt, ocene);
                         rt.Takmicenje1.PoredakPreskok.create(rt, ocene);*/
 
-                        // TODO3: Zakomentarisi ovo kada budes ponovo uveo da se ekipni poredak automatski azurira.
-                        rt.Takmicenje1.PoredakEkipno.create(rt, ocene);
-
                         if (rt.Propozicije.PostojiTak2 && rt.Propozicije.OdvojenoTak2)
                         {
                             rt.Takmicenje2.createUcesnici(rt.Takmicenje1);
@@ -867,6 +864,7 @@ namespace Bilten.UI
                         }
                         if (rt.Propozicije.PostojiTak4 && rt.Propozicije.OdvojenoTak4)
                         {
+                            // TODO: Proveri zasto je ovo i ono dole zakomentarisano
                             //rt.Takmicenje4.createUcesnici(rt.Takmicenje1);
                             //rt.Takmicenje4.Poredak.initRezultati(rt.Takmicenje4.getUcesnici());
                         }

@@ -210,34 +210,7 @@ namespace Bilten.UI
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedIndexChanged();
-        }
-
-        void cmdSelectedIndexChanged()
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    if (onSelectedTakmicenjeChanged())
-                        session.Transaction.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedTakmicenjeChanged();
         }
 
         private bool kvalColumnVisible()
@@ -249,7 +222,7 @@ namespace Bilten.UI
                 return ActiveTakmicenje.postojeKvalifikacijeEkipno(deoTakKod);
         }
 
-        private bool onSelectedTakmicenjeChanged()
+        private void onSelectedTakmicenjeChanged()
         {
             GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1, takmicenje, kvalColumnVisible(), true);
             GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2, takmicenje);
@@ -272,35 +245,18 @@ namespace Bilten.UI
                     GridColumnsInitializer.getMaxWidth(klubovi, dataGridViewUserControl2.DataGridView);
             }
 
-            
-            bool save = false;
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
-            {
                 takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
-                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                {
-                    ActiveTakmicenje.Takmicenje1.PoredakEkipno.create(ActiveTakmicenje, ocene);
-                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
-                }
-                else
-                {
-                    ActiveTakmicenje.Takmicenje4.Poredak.create(ActiveTakmicenje, ocene);
-                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.Takmicenje4.Poredak);
-                }
-                save = true;
-            }
 
             dataGridViewUserControl1.setItems<RezultatEkipno>(
                 ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
             onEkipeCellMouseClick();
-
-            return save;
         }
 
         private void RezultatiEkipeForm_Shown(object sender, EventArgs e)
         {
             dataGridViewUserControl1.Focus();
-            cmdSelectedIndexChanged();
+            onSelectedTakmicenjeChanged();
         }
 
         private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)
