@@ -341,12 +341,8 @@ namespace Bilten.Domain
 
         public virtual void validateTakmicenje2FinaleKupa(Notification notification)
         {
-            if (MaxBrojTakmicaraIzKlubaTak2 < 1)
-            {
-                throw new BusinessException("MaxBrojTakmicaraIzKlubaTak2",
-                    "Neispravna vrednost za maksimalan broj " +
-                    "takmicara iz istog kluba/drzave.");
-            }
+            if (!PostojiTak2 || !OdvojenoTak2)
+                return;
 
             if (BrojFinalistaTak2 < 1)
             {
@@ -358,6 +354,38 @@ namespace Bilten.Domain
             {
                 throw new BusinessException(
                     "BrojRezerviTak2", "Neispravna vrednost za broj rezervi.");
+            }
+
+            if (!NeogranicenBrojTakmicaraIzKlubaTak2 && MaxBrojTakmicaraIzKlubaTak2 < 1)
+            {
+                throw new BusinessException("MaxBrojTakmicaraIzKlubaTak2",
+                    "Neispravna vrednost za maksimalan broj " +
+                    "takmicara iz istog kluba/drzave.");
+            }
+        }
+
+        public virtual void validateTakmicenje3FinaleKupa(Notification notification)
+        {
+            if (!PostojiTak3 || !OdvojenoTak3)
+                return;
+
+            if (BrojFinalistaTak3 < 1)
+            {
+                throw new BusinessException(
+                    "BrojFinalistaTak3", "Neispravna vrednost za broj finalista.");
+            }
+
+            if (BrojRezerviTak3 < 1)
+            {
+                throw new BusinessException(
+                    "BrojRezerviTak3", "Neispravna vrednost za broj rezervi.");
+            }
+
+            if (!NeogranicenBrojTakmicaraIzKlubaTak3 && MaxBrojTakmicaraIzKlubaTak3 < 1)
+            {
+                throw new BusinessException("MaxBrojTakmicaraIzKlubaTak3",
+                    "Neispravna vrednost za maksimalan broj " +
+                    "takmicara iz istog kluba/drzave.");
             }
         }
 
@@ -428,6 +456,28 @@ namespace Bilten.Domain
                 p.BrojRezerviTak2 = this.BrojRezerviTak2;
                 p.NeogranicenBrojTakmicaraIzKlubaTak2 = this.NeogranicenBrojTakmicaraIzKlubaTak2;
                 p.MaxBrojTakmicaraIzKlubaTak2 = this.MaxBrojTakmicaraIzKlubaTak2;
+            }
+        }
+
+        public virtual void updateTakmicenje3FinaleKupa(IList<Propozicije> propozicije)
+        {
+            if (propozicije == null)
+                return;
+
+            foreach (Propozicije p in propozicije)
+            {
+                p.PostojiTak3 = this.PostojiTak3;
+                p.OdvojenoTak3 = this.OdvojenoTak3;
+                p.Tak3FinalnaOcenaJeMaxObaKola = this.Tak3FinalnaOcenaJeMaxObaKola;
+                p.Tak3FinalnaOcenaJeZbirObaKola = this.Tak3FinalnaOcenaJeZbirObaKola;
+                p.Tak3FinalnaOcenaJeProsekObaKola = this.Tak3FinalnaOcenaJeProsekObaKola;
+                p.Tak3NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola;
+                p.BrojFinalistaTak3 = this.BrojFinalistaTak3;
+                p.BrojRezerviTak3 = this.BrojRezerviTak3;
+                p.NeogranicenBrojTakmicaraIzKlubaTak3 = this.NeogranicenBrojTakmicaraIzKlubaTak3;
+                p.MaxBrojTakmicaraIzKlubaTak3 = this.MaxBrojTakmicaraIzKlubaTak3;
+                p.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
+                p.PoredakTak3PreskokNaOsnovuObaPreskoka = this.PoredakTak3PreskokNaOsnovuObaPreskoka;
             }
         }
     }

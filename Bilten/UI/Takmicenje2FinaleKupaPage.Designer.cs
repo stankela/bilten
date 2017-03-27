@@ -62,7 +62,7 @@ namespace Bilten.UI
             this.rbtOdvojenoTak2.Location = new System.Drawing.Point(18, 58);
             this.rbtOdvojenoTak2.Name = "rbtOdvojenoTak2";
             this.rbtOdvojenoTak2.Size = new System.Drawing.Size(141, 17);
-            this.rbtOdvojenoTak2.TabIndex = 0;
+            this.rbtOdvojenoTak2.TabIndex = 1;
             this.rbtOdvojenoTak2.Text = "Posebno takmicenje II";
             this.rbtOdvojenoTak2.UseVisualStyleBackColor = true;
             this.rbtOdvojenoTak2.CheckedChanged += new System.EventHandler(this.rbtOdvojenoTak2_CheckedChanged);
@@ -73,7 +73,7 @@ namespace Bilten.UI
             this.rbtNaOsnovuPrvogIDrugogKola.Location = new System.Drawing.Point(18, 81);
             this.rbtNaOsnovuPrvogIDrugogKola.Name = "rbtNaOsnovuPrvogIDrugogKola";
             this.rbtNaOsnovuPrvogIDrugogKola.Size = new System.Drawing.Size(172, 17);
-            this.rbtNaOsnovuPrvogIDrugogKola.TabIndex = 1;
+            this.rbtNaOsnovuPrvogIDrugogKola.TabIndex = 2;
             this.rbtNaOsnovuPrvogIDrugogKola.Text = "Na osnovu rezultata 1. i 2. kola";
             this.rbtNaOsnovuPrvogIDrugogKola.UseVisualStyleBackColor = true;
             this.rbtNaOsnovuPrvogIDrugogKola.CheckedChanged += new System.EventHandler(this.rbtNaOsnovuTak1_CheckedChanged);
@@ -81,7 +81,7 @@ namespace Bilten.UI
             // lblMaxTak
             // 
             this.lblMaxTak.AutoSize = true;
-            this.lblMaxTak.Location = new System.Drawing.Point(15, 277);
+            this.lblMaxTak.Location = new System.Drawing.Point(15, 342);
             this.lblMaxTak.Name = "lblMaxTak";
             this.lblMaxTak.Size = new System.Drawing.Size(233, 13);
             this.lblMaxTak.TabIndex = 2;
@@ -89,19 +89,19 @@ namespace Bilten.UI
             // 
             // txtMaxTak
             // 
-            this.txtMaxTak.Location = new System.Drawing.Point(254, 274);
+            this.txtMaxTak.Location = new System.Drawing.Point(254, 339);
             this.txtMaxTak.Name = "txtMaxTak";
             this.txtMaxTak.Size = new System.Drawing.Size(43, 20);
-            this.txtMaxTak.TabIndex = 3;
+            this.txtMaxTak.TabIndex = 10;
             this.txtMaxTak.TextChanged += new System.EventHandler(this.txtMaxTak_TextChanged);
             // 
             // ckbNeogranicenBrojTak
             // 
             this.ckbNeogranicenBrojTak.AutoSize = true;
-            this.ckbNeogranicenBrojTak.Location = new System.Drawing.Point(303, 276);
+            this.ckbNeogranicenBrojTak.Location = new System.Drawing.Point(303, 341);
             this.ckbNeogranicenBrojTak.Name = "ckbNeogranicenBrojTak";
             this.ckbNeogranicenBrojTak.Size = new System.Drawing.Size(195, 17);
-            this.ckbNeogranicenBrojTak.TabIndex = 4;
+            this.ckbNeogranicenBrojTak.TabIndex = 12;
             this.ckbNeogranicenBrojTak.Text = "Nema ogranicenja za broj takmicara";
             this.ckbNeogranicenBrojTak.UseVisualStyleBackColor = true;
             this.ckbNeogranicenBrojTak.CheckedChanged += new System.EventHandler(this.ckbNeogranicenBrojTak_CheckedChanged);
@@ -109,7 +109,7 @@ namespace Bilten.UI
             // lblBrojFinalista
             // 
             this.lblBrojFinalista.AutoSize = true;
-            this.lblBrojFinalista.Location = new System.Drawing.Point(15, 308);
+            this.lblBrojFinalista.Location = new System.Drawing.Point(17, 265);
             this.lblBrojFinalista.Name = "lblBrojFinalista";
             this.lblBrojFinalista.Size = new System.Drawing.Size(63, 13);
             this.lblBrojFinalista.TabIndex = 5;
@@ -117,7 +117,7 @@ namespace Bilten.UI
             // 
             // txtBrojFinalista
             // 
-            this.txtBrojFinalista.Location = new System.Drawing.Point(84, 305);
+            this.txtBrojFinalista.Location = new System.Drawing.Point(86, 262);
             this.txtBrojFinalista.Name = "txtBrojFinalista";
             this.txtBrojFinalista.Size = new System.Drawing.Size(42, 20);
             this.txtBrojFinalista.TabIndex = 6;
@@ -126,7 +126,7 @@ namespace Bilten.UI
             // lblBrojRezervi
             // 
             this.lblBrojRezervi.AutoSize = true;
-            this.lblBrojRezervi.Location = new System.Drawing.Point(15, 342);
+            this.lblBrojRezervi.Location = new System.Drawing.Point(17, 299);
             this.lblBrojRezervi.Name = "lblBrojRezervi";
             this.lblBrojRezervi.Size = new System.Drawing.Size(59, 13);
             this.lblBrojRezervi.TabIndex = 7;
@@ -134,7 +134,7 @@ namespace Bilten.UI
             // 
             // txtBrojRezervi
             // 
-            this.txtBrojRezervi.Location = new System.Drawing.Point(84, 339);
+            this.txtBrojRezervi.Location = new System.Drawing.Point(86, 296);
             this.txtBrojRezervi.Name = "txtBrojRezervi";
             this.txtBrojRezervi.Size = new System.Drawing.Size(41, 20);
             this.txtBrojRezervi.TabIndex = 8;
@@ -149,7 +149,7 @@ namespace Bilten.UI
             this.panel2.Location = new System.Drawing.Point(18, 130);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(346, 112);
-            this.panel2.TabIndex = 20;
+            this.panel2.TabIndex = 4;
             // 
             // ckbNeRacunajProsek
             // 

@@ -92,10 +92,11 @@ namespace Bilten.UI
             // 
             this.panel1.Controls.Add(this.rbtNaOsnovuTak1);
             this.panel1.Controls.Add(this.rbtOdvojenoTak4);
+            this.panel1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.panel1.Location = new System.Drawing.Point(23, 50);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 51);
-            this.panel1.TabIndex = 13;
+            this.panel1.TabIndex = 4;
             // 
             // rbtNaOsnovuTak1
             // 
@@ -127,7 +128,7 @@ namespace Bilten.UI
             this.panel2.Location = new System.Drawing.Point(23, 122);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(239, 52);
-            this.panel2.TabIndex = 14;
+            this.panel2.TabIndex = 6;
             // 
             // rbtJednoTak4ZaSveKategorije
             // 
