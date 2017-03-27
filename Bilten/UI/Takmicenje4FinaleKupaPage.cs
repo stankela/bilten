@@ -81,8 +81,11 @@ namespace Bilten.UI
         {
             bool postojiTak4 = rbtOdvojenoTak4.Enabled
                                && (rbtOdvojenoTak4.Checked || rbtNaOsnovuPrvogIDrugogKola.Checked);
-            rbtPostojiTak4ZaSvakuKategoriju.Enabled = postojiTak4;
-            rbtJednoTak4ZaSveKategorije.Enabled = postojiTak4;
+            
+            // Ovu opciju ima smisla podesavati samo u propozicijama za takmicenje description
+            rbtPostojiTak4ZaSvakuKategoriju.Enabled = dependentPropozicije != null && postojiTak4;
+            rbtJednoTak4ZaSveKategorije.Enabled = dependentPropozicije != null && postojiTak4;
+            
             rbtFinalnaOcenaJeMax.Enabled = postojiTak4;
             rbtFinalnaOcenaJeZbir.Enabled = postojiTak4;
             rbtFinalnaOcenaJeProsek.Enabled = postojiTak4;

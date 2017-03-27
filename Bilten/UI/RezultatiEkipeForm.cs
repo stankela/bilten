@@ -341,8 +341,8 @@ namespace Bilten.UI
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                // TODO: Ispis za heder3 treba da bude drugaciji ako je jedno ekipno takmicenje za sve kategorije. Isto vazi
-                // i za documentName
+                // TODO: Ispis za heder3 treba da bude drugaciji ako je jedno ekipno takmicenje za sve kategorije.
+                // Isto vazi i za documentName. Koristi svojstvo NazivEkipnog klase RezultatskoTakmicenje.
                 form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
                 form.FooterText = mestoDatum;

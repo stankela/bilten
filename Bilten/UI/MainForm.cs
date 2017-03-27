@@ -1465,29 +1465,7 @@ namespace Bilten.UI
                 clonePropozicije(rezTak.Propozicije, rezTak2.Propozicije);
             }
 
-            bool kombAdded = false;
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
-                {
-                    rt.ImaEkipnoTakmicenje = true;
-                    rt.KombinovanoEkipnoTak = false;
-                }
-                else
-                {
-                    if (!kombAdded)
-                    {
-                        rt.ImaEkipnoTakmicenje = true;
-                        rt.KombinovanoEkipnoTak = true;
-                        kombAdded = true;
-                    }
-                    else
-                    {
-                        rt.ImaEkipnoTakmicenje = false;
-                        rt.KombinovanoEkipnoTak = false;
-                    }
-                }
-            }
+            RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 rt.updateTakmicenjaFromChangedPropozicije();

@@ -342,5 +342,49 @@ namespace Bilten.Domain
             }
             return result;
         }
+
+        public static void updateImaEkipnoTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            IDictionary<int, List<RezultatskoTakmicenje>> rezTakMap = new Dictionary<int, List<RezultatskoTakmicenje>>();
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rezTakMap.ContainsKey(rt.TakmicenjeDescription.Id))
+                {
+                    rezTakMap[rt.TakmicenjeDescription.Id].Add(rt);
+                }
+                else
+                {
+                    List<RezultatskoTakmicenje> rezTakList = new List<RezultatskoTakmicenje>();
+                    rezTakList.Add(rt);
+                    rezTakMap.Add(rt.TakmicenjeDescription.Id, rezTakList);
+                }
+            }
+            foreach (List<RezultatskoTakmicenje> rezTakList in rezTakMap.Values)
+            {
+                bool kombAdded = false;
+                foreach (RezultatskoTakmicenje rt in rezTakList)
+                {
+                    if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
+                    {
+                        rt.ImaEkipnoTakmicenje = true;
+                        rt.KombinovanoEkipnoTak = false;
+                    }
+                    else
+                    {
+                        if (!kombAdded)
+                        {
+                            rt.ImaEkipnoTakmicenje = true;
+                            rt.KombinovanoEkipnoTak = true;
+                            kombAdded = true;
+                        }
+                        else
+                        {
+                            rt.ImaEkipnoTakmicenje = false;
+                            rt.KombinovanoEkipnoTak = false;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -184,57 +184,21 @@ namespace Bilten.UI
 
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
 
-                    IDictionary<int, List<RezultatskoTakmicenje>> rezTakMap = new Dictionary<int, List<RezultatskoTakmicenje>>();
+                    // TODO4: Potrebno je ponovo izracunati poretke i ucesnike zato
+                    // sto su se mozda promenili brojevi finalista, rezervi, nacin
+                    // racunanja preskoka itd.
+                    // Takodje, posto ova naredba moze da npr. izbrise celo takmicenje III (ako je postojalo
+                    // odvojeno takmicenje III, a u novim propozicijama je navedeno da ne postoji odvojeno
+                    // takmicenje III), mozda bi trebalo dati mogucnost korisniku da odustane od operacije.
+                    // Obratiti paznju i na ekipno takmicenje - sta ako je ranije bilo kombinovano a sad nije i obratno.
+                    RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        if (rezTakMap.ContainsKey(rt.TakmicenjeDescription.Id))
-                        {
-                            rezTakMap[rt.TakmicenjeDescription.Id].Add(rt);
-                        }
-                        else
-                        {
-                            List<RezultatskoTakmicenje> rezTakList = new List<RezultatskoTakmicenje>();
-                            rezTakList.Add(rt);
-                            rezTakMap.Add(rt.TakmicenjeDescription.Id, rezTakList);
-                        }
-                    }
-                    foreach (List<RezultatskoTakmicenje> rezTakList in rezTakMap.Values)
-                    {
-                        bool kombAdded = false;
-                        foreach (RezultatskoTakmicenje rt in rezTakList)
-                        {
-                            if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
-                            {
-                                rt.ImaEkipnoTakmicenje = true;
-                                rt.KombinovanoEkipnoTak = false;
-                            }
-                            else
-                            {
-                                if (!kombAdded)
-                                {
-                                    rt.ImaEkipnoTakmicenje = true;
-                                    rt.KombinovanoEkipnoTak = true;
-                                    kombAdded = true;
-                                }
-                                else
-                                {
-                                    rt.ImaEkipnoTakmicenje = false;
-                                    rt.KombinovanoEkipnoTak = false;
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                    {
-                        // TODO4: Potrebno je ponovo izracunati poretke i ucesnike zato
-                        // sto su se mozda promenili brojevi finalista, rezervi, nacin
-                        // racunanja preskoka itd.
-                        // Takodje, posto ova naredba moze da npr. izbrise celo takmicenje III (ako je postojalo
-                        // odvojeno takmicenje III, a u novim propozicijama je navedeno da ne postoji odvojeno
-                        // takmicenje III), mozda bi trebalo dati mogucnost korisniku da odustane od operacije.
                         rt.updateTakmicenjaFromChangedPropozicije();
+                    }
 
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
                         DAOFactoryFactory.DAOFactory.GetPropozicijeDAO().Update(rt.Propozicije);
                         DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Update(rt);
                     }
