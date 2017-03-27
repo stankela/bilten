@@ -48,24 +48,19 @@ namespace Bilten.UI
                 rbtFinalnaOcenaJeProsek.Enabled = false;
                 ckbNeRacunajProsek.Enabled = false;
 
-                lblMaxTak.Enabled = false;
-                txtMaxTak.Enabled = false;
-                ckbNeogranicenBrojTak.Enabled = false;
                 lblBrojFinalista.Enabled = false;
                 txtBrojFinalista.Enabled = false;
                 lblBrojRezervi.Enabled = false;
                 txtBrojRezervi.Enabled = false;
+
+                ckbNeogranicenBrojTak.Enabled = false;
+                lblMaxTak.Enabled = false;
+                txtMaxTak.Enabled = false;
             }
             else
             {
                 rbtOdvojenoTak2.Enabled = true;
                 rbtNaOsnovuPrvogIDrugogKola.Enabled = true;
-
-                rbtFinalnaOcenaJeMax.Enabled = true;
-                rbtFinalnaOcenaJeZbir.Enabled = true;
-                rbtFinalnaOcenaJeProsek.Enabled = true;
-                ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-
                 setEnabledOdvojenoTak2();
             }
         }
@@ -86,46 +81,27 @@ namespace Bilten.UI
 
         private void setEnabledOdvojenoTak2()
         {
-            if (!rbtOdvojenoTak2.Enabled && !rbtNaOsnovuPrvogIDrugogKola.Enabled)
-                return;
+            bool postojiTak2 = rbtOdvojenoTak2.Enabled
+                               && (rbtOdvojenoTak2.Checked || rbtNaOsnovuPrvogIDrugogKola.Checked);
+            rbtFinalnaOcenaJeMax.Enabled = postojiTak2;
+            rbtFinalnaOcenaJeZbir.Enabled = postojiTak2;
+            rbtFinalnaOcenaJeProsek.Enabled = postojiTak2;
+            ckbNeRacunajProsek.Enabled = postojiTak2 && rbtFinalnaOcenaJeProsek.Checked;
 
-            if (!rbtOdvojenoTak2.Checked && !rbtNaOsnovuPrvogIDrugogKola.Checked)
-            {
-                lblMaxTak.Enabled = false;
-                txtMaxTak.Enabled = false;
-                ckbNeogranicenBrojTak.Enabled = false;
-                lblBrojFinalista.Enabled = false;
-                txtBrojFinalista.Enabled = false;
-                lblBrojRezervi.Enabled = false;
-                txtBrojRezervi.Enabled = false;
-            }
-            else
-            {
-                bool odvojenoTak2 = rbtOdvojenoTak2.Checked;
-
-                ckbNeogranicenBrojTak.Enabled = odvojenoTak2;
-                setEnabledNeogranicenBrojTak();
-
-                lblBrojFinalista.Enabled = odvojenoTak2;
-                txtBrojFinalista.Enabled = odvojenoTak2;
-                lblBrojRezervi.Enabled = odvojenoTak2;
-                txtBrojRezervi.Enabled = odvojenoTak2;
-            }
+            bool odvojenoTak2 = rbtOdvojenoTak2.Enabled && rbtOdvojenoTak2.Checked;
+            lblBrojFinalista.Enabled = odvojenoTak2;
+            txtBrojFinalista.Enabled = odvojenoTak2;
+            lblBrojRezervi.Enabled = odvojenoTak2;
+            txtBrojRezervi.Enabled = odvojenoTak2;
+            ckbNeogranicenBrojTak.Enabled = odvojenoTak2;
+            setEnabledNeogranicenBrojTak();
         }
 
         private void setEnabledNeogranicenBrojTak()
         {
-            if (!ckbNeogranicenBrojTak.Enabled)
-            {
-                lblMaxTak.Enabled = false;
-                txtMaxTak.Enabled = false;
-            }
-            else
-            {
-                bool neogranicenBrojTak = ckbNeogranicenBrojTak.Checked;
-                lblMaxTak.Enabled = !neogranicenBrojTak;
-                txtMaxTak.Enabled = !neogranicenBrojTak;
-            }
+            bool enabled = ckbNeogranicenBrojTak.Enabled && !ckbNeogranicenBrojTak.Checked;
+            lblMaxTak.Enabled = enabled;
+            txtMaxTak.Enabled = enabled;
         }
 
         private void ckbNeogranicenBrojTak_CheckedChanged(object sender, EventArgs e)
@@ -134,13 +110,51 @@ namespace Bilten.UI
             setEnabledNeogranicenBrojTak();
         }
 
+        private void txtMaxTak_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void txtBrojFinalista_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void txtBrojRezervi_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtFinalnaOcenaJeMax_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
+        }
+
+        private void rbtFinalnaOcenaJeZbir_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
+        }
+
+        private void rbtFinalnaOcenaJeProsek_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
+        }
+
+        private void ckbNeRacunajProsek_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
         public override void OnSetActive()
         {
-            refreshUI();
+            updateUIFromPropozicije(propozicije);
             dirty = false;
         }
 
-        private void refreshUI()
+        private void updateUIFromPropozicije(Propozicije propozicije)
         {
             disableHandlers();
             clearUI();
@@ -158,12 +172,11 @@ namespace Bilten.UI
 
                 if (propozicije.OdvojenoTak2)
                 {
+                    txtBrojFinalista.Text = propozicije.BrojFinalistaTak2.ToString();
+                    txtBrojRezervi.Text = propozicije.BrojRezerviTak2.ToString();
                     ckbNeogranicenBrojTak.Checked = propozicije.NeogranicenBrojTakmicaraIzKlubaTak2;
                     if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
                         txtMaxTak.Text = propozicije.MaxBrojTakmicaraIzKlubaTak2.ToString();
-
-                    txtBrojFinalista.Text = propozicije.BrojFinalistaTak2.ToString();
-                    txtBrojRezervi.Text = propozicije.BrojRezerviTak2.ToString();
                 }
             }
             
@@ -226,8 +239,14 @@ namespace Bilten.UI
             if (!notification.IsValid())
                 throw new BusinessException(notification);
 
-            validate();
-            updatePropozicije();
+            updatePropozicijeFromUI(propozicije);
+
+            notification = new Notification();
+            propozicije.validateTakmicenje2FinaleKupa(notification);
+            if (!notification.IsValid())
+                throw new BusinessException(notification);
+
+            propozicije.updateTakmicenje2FinaleKupa(dependentPropozicije);
         }
 
         private void requiredFieldsAndFormatValidation(Notification notification)
@@ -256,9 +275,6 @@ namespace Bilten.UI
                 }
                 else if (!byte.TryParse(txtMaxTak.Text, out dummyByte))
                 {
-                    // TODO: Trebalo bi (i ovde i na drugim mestima) format proveravati
-                    // pomocu regular expressions, jer moze da se desi npr. da se
-                    // unese broj 300 i da se dobije poruka da je format neispravan
                     notification.RegisterMessage(
                         "MaxBrojTakmicaraIzKlubaTak2", "Neispravan format za maksimalan broj " +
                         "takmicara iz istog kluba/drzave.");
@@ -295,41 +311,7 @@ namespace Bilten.UI
 
         }
 
-        private void validate()
-        {
-            if (txtMaxTak.Enabled)
-            {
-                byte maxTak = byte.Parse(txtMaxTak.Text);
-                if (maxTak < 1)
-                {
-                    throw new BusinessException("MaxBrojTakmicaraIzKlubaTak2", 
-                        "Neispravna vrednost za maksimalan broj " +
-                        "takmicara iz istog kluba/drzave.");
-                }
-            }
-
-            if (txtBrojFinalista.Enabled)
-            {
-                byte brojFinalista = byte.Parse(txtBrojFinalista.Text);
-                if (brojFinalista < 1)
-                {
-                    throw new BusinessException(
-                        "BrojFinalistaTak2", "Neispravna vrednost za broj finalista.");
-                }
-            }
-
-            if (txtBrojRezervi.Enabled)
-            {
-                byte brojRezervi = byte.Parse(txtBrojRezervi.Text);
-                if (brojRezervi < 1)
-                {
-                    throw new BusinessException(
-                        "BrojRezerviTak2", "Neispravna vrednost za broj rezervi.");
-                }
-            }
-        }
-
-        private void updatePropozicije()
+        private void updatePropozicijeFromUI(Propozicije propozicije)
         {
             propozicije.PostojiTak2 = ckbPostojiTak2.Checked;
             if (propozicije.PostojiTak2)
@@ -340,77 +322,16 @@ namespace Bilten.UI
                 propozicije.Tak2FinalnaOcenaJeZbirObaKola = rbtFinalnaOcenaJeZbir.Checked;
                 propozicije.Tak2FinalnaOcenaJeProsekObaKola = rbtFinalnaOcenaJeProsek.Checked;
                 propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = ckbNeRacunajProsek.Checked;
-                
+
                 if (propozicije.OdvojenoTak2)
                 {
+                    propozicije.BrojFinalistaTak2 = byte.Parse(txtBrojFinalista.Text);
+                    propozicije.BrojRezerviTak2 = byte.Parse(txtBrojRezervi.Text);
                     propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 = ckbNeogranicenBrojTak.Checked;
                     if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
                         propozicije.MaxBrojTakmicaraIzKlubaTak2 = byte.Parse(txtMaxTak.Text);
-
-                    propozicije.BrojFinalistaTak2 = byte.Parse(txtBrojFinalista.Text);
-                    propozicije.BrojRezerviTak2 = byte.Parse(txtBrojRezervi.Text);
                 }
             }
-
-            if (dependentPropozicije != null)
-            {
-                foreach (Propozicije p in dependentPropozicije)
-                {
-                    p.PostojiTak2 = propozicije.PostojiTak2;
-                    p.OdvojenoTak2 = propozicije.OdvojenoTak2;
-                    p.Tak2FinalnaOcenaJeMaxObaKola = propozicije.Tak2FinalnaOcenaJeMaxObaKola;
-                    p.Tak2FinalnaOcenaJeZbirObaKola = propozicije.Tak2FinalnaOcenaJeZbirObaKola;
-                    p.Tak2FinalnaOcenaJeProsekObaKola = propozicije.Tak2FinalnaOcenaJeProsekObaKola;
-                    p.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
-                    p.NeogranicenBrojTakmicaraIzKlubaTak2 = propozicije.NeogranicenBrojTakmicaraIzKlubaTak2;
-                    p.MaxBrojTakmicaraIzKlubaTak2 = propozicije.MaxBrojTakmicaraIzKlubaTak2;
-                    p.BrojFinalistaTak2 = propozicije.BrojFinalistaTak2;
-                    p.BrojRezerviTak2 = propozicije.BrojRezerviTak2;
-                }
-            }
-        }
-
-        private void txtMaxTak_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtBrojFinalista_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtBrojRezervi_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtMaxRezervi_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void rbtFinalnaOcenaJeMax_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-        }
-
-        private void rbtFinalnaOcenaJeZbir_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-        }
-
-        private void rbtFinalnaOcenaJeProsek_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-        }
-
-        private void ckbNeRacunajProsek_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
         }
     }
 }

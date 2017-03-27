@@ -339,6 +339,28 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void validateTakmicenje2FinaleKupa(Notification notification)
+        {
+            if (MaxBrojTakmicaraIzKlubaTak2 < 1)
+            {
+                throw new BusinessException("MaxBrojTakmicaraIzKlubaTak2",
+                    "Neispravna vrednost za maksimalan broj " +
+                    "takmicara iz istog kluba/drzave.");
+            }
+
+            if (BrojFinalistaTak2 < 1)
+            {
+                throw new BusinessException(
+                    "BrojFinalistaTak2", "Neispravna vrednost za broj finalista.");
+            }
+
+            if (BrojRezerviTak2 < 1)
+            {
+                throw new BusinessException(
+                    "BrojRezerviTak2", "Neispravna vrednost za broj rezervi.");
+            }
+        }
+
         public virtual void updateTakmicenje2(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
@@ -386,6 +408,26 @@ namespace Bilten.Domain
                 p.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
                 p.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
                 p.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
+            }
+        }
+
+        public virtual void updateTakmicenje2FinaleKupa(IList<Propozicije> propozicije)
+        {
+            if (propozicije == null)
+                return;
+
+            foreach (Propozicije p in propozicije)
+            {
+                p.PostojiTak2 = this.PostojiTak2;
+                p.OdvojenoTak2 = this.OdvojenoTak2;
+                p.Tak2FinalnaOcenaJeMaxObaKola = this.Tak2FinalnaOcenaJeMaxObaKola;
+                p.Tak2FinalnaOcenaJeZbirObaKola = this.Tak2FinalnaOcenaJeZbirObaKola;
+                p.Tak2FinalnaOcenaJeProsekObaKola = this.Tak2FinalnaOcenaJeProsekObaKola;
+                p.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
+                p.BrojFinalistaTak2 = this.BrojFinalistaTak2;
+                p.BrojRezerviTak2 = this.BrojRezerviTak2;
+                p.NeogranicenBrojTakmicaraIzKlubaTak2 = this.NeogranicenBrojTakmicaraIzKlubaTak2;
+                p.MaxBrojTakmicaraIzKlubaTak2 = this.MaxBrojTakmicaraIzKlubaTak2;
             }
         }
     }
