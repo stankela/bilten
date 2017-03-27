@@ -50,23 +50,15 @@ namespace Bilten.UI
                 rbtFinalnaOcenaJeProsek.Enabled = false;
                 ckbNeRacunajProsek.Enabled = false;
 
-                lblBrojRezultata.Enabled = false;
-                txtBrojRezultata.Enabled = false;
                 lblBrojEkipa.Enabled = false;
                 txtBrojEkipa.Enabled = false;
+                lblBrojRezultata.Enabled = false;
+                txtBrojRezultata.Enabled = false;
             }
             else
             {
                 rbtOdvojenoTak4.Enabled = true;
                 rbtNaOsnovuPrvogIDrugogKola.Enabled = true;
-                rbtPostojiTak4ZaSvakuKategoriju.Enabled = true;
-                rbtJednoTak4ZaSveKategorije.Enabled = true;
-
-                rbtFinalnaOcenaJeMax.Enabled = true;
-                rbtFinalnaOcenaJeZbir.Enabled = true;
-                rbtFinalnaOcenaJeProsek.Enabled = true;
-                ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-
                 setEnabledOdvojenoTak4();
             }
         }
@@ -87,34 +79,72 @@ namespace Bilten.UI
 
         private void setEnabledOdvojenoTak4()
         {
-            if (!rbtOdvojenoTak4.Enabled && !rbtNaOsnovuPrvogIDrugogKola.Enabled)
-                return;
+            bool postojiTak4 = rbtOdvojenoTak4.Enabled
+                               && (rbtOdvojenoTak4.Checked || rbtNaOsnovuPrvogIDrugogKola.Checked);
+            rbtPostojiTak4ZaSvakuKategoriju.Enabled = postojiTak4;
+            rbtJednoTak4ZaSveKategorije.Enabled = postojiTak4;
+            rbtFinalnaOcenaJeMax.Enabled = postojiTak4;
+            rbtFinalnaOcenaJeZbir.Enabled = postojiTak4;
+            rbtFinalnaOcenaJeProsek.Enabled = postojiTak4;
+            ckbNeRacunajProsek.Enabled = postojiTak4 && rbtFinalnaOcenaJeProsek.Checked;
 
-            if (!rbtOdvojenoTak4.Checked && !rbtNaOsnovuPrvogIDrugogKola.Checked)
-            {
-                lblBrojRezultata.Enabled = false;
-                txtBrojRezultata.Enabled = false;
-                lblBrojEkipa.Enabled = false;
-                txtBrojEkipa.Enabled = false;
-            }
-            else
-            {
-                bool odvojenoTak4 = rbtOdvojenoTak4.Checked;
-                lblBrojRezultata.Enabled = odvojenoTak4;
-                txtBrojRezultata.Enabled = odvojenoTak4;
-         
-                lblBrojEkipa.Enabled = odvojenoTak4;
-                txtBrojEkipa.Enabled = odvojenoTak4;
-            }
+            bool odvojenoTak4 = rbtOdvojenoTak4.Enabled && rbtOdvojenoTak4.Checked;
+            lblBrojEkipa.Enabled = odvojenoTak4;
+            txtBrojEkipa.Enabled = odvojenoTak4;
+            lblBrojRezultata.Enabled = odvojenoTak4;
+            txtBrojRezultata.Enabled = odvojenoTak4;
+        }
+
+        private void txtBrojRezultata_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void txtBrojEkipa_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtPostojiTak4ZaSvakuKategoriju_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtJednoTak4ZaSveKategorije_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtFinalnaOcenaJeMax_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
+        }
+
+        private void rbtFinalnaOcenaJeZbir_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
+        }
+
+        private void rbtFinalnaOcenaJeProsek_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
+        }
+
+        private void ckbNeRacunajProsek_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
         }
 
         public override void OnSetActive()
         {
-            refreshUI();
+            updateUIFromPropozicije(propozicije);
             dirty = false;
         }
 
-        private void refreshUI()
+        private void updateUIFromPropozicije(Propozicije propozicije)
         {
             disableHandlers();
             clearUI();
@@ -135,8 +165,8 @@ namespace Bilten.UI
 
                 if (propozicije.OdvojenoTak4)
                 {
-                    txtBrojRezultata.Text = propozicije.BrojRezultataKojiSeBodujuZaEkipu.ToString();
                     txtBrojEkipa.Text = propozicije.BrojEkipaUFinalu.ToString();
+                    txtBrojRezultata.Text = propozicije.BrojRezultataKojiSeBodujuZaEkipu.ToString();
                 }
             }
 
@@ -186,8 +216,8 @@ namespace Bilten.UI
             rbtFinalnaOcenaJeProsek.Checked = false;
             ckbNeRacunajProsek.Checked = false;
 
-            txtBrojRezultata.Text = String.Empty;
             txtBrojEkipa.Text = String.Empty;
+            txtBrojRezultata.Text = String.Empty;
         }
 
         public override void OnApply()
@@ -200,8 +230,14 @@ namespace Bilten.UI
             if (!notification.IsValid())
                 throw new BusinessException(notification);
 
-            validate();
-            updatePropozicije();
+            updatePropozicijeFromUI(propozicije);
+
+            notification = new Notification();
+            propozicije.validateTakmicenje4FinaleKupa(notification);
+            if (!notification.IsValid())
+                throw new BusinessException(notification);
+
+            propozicije.updateTakmicenje4FinaleKupa(dependentPropozicije);
         }
 
         private void requiredFieldsAndFormatValidation(Notification notification)
@@ -227,20 +263,6 @@ namespace Bilten.UI
                     "FinalnaOcena", "Izaberite kako se izracunava finalna ocena.");
             }
 
-            if (txtBrojRezultata.Enabled)
-            {
-                if (txtBrojRezultata.Text.Trim() == String.Empty)
-                {
-                    notification.RegisterMessage(
-                        "BrojRezultataKojiSeBodujuZaEkipu", "Unesite broj rezultata koji se vrednuju za ekipu.");
-                }
-                else if (!byte.TryParse(txtBrojRezultata.Text, out dummyByte))
-                {
-                    notification.RegisterMessage(
-                        "BrojRezultataKojiSeBodujuZaEkipu", "Neispravan format za broj rezultata koji se vrednuju za ekipu.");
-                }
-            }
-
             if (txtBrojEkipa.Enabled)
             {
                 if (txtBrojEkipa.Text.Trim() == String.Empty)
@@ -254,32 +276,23 @@ namespace Bilten.UI
                         "BrojEkipaUFinalu", "Neispravan format za broj ekipa u finalu.");
                 }
             }
-        }
 
-        private void validate()
-        {
             if (txtBrojRezultata.Enabled)
             {
-                byte brojRezultata = byte.Parse(txtBrojRezultata.Text);
-                if (brojRezultata < 1)
+                if (txtBrojRezultata.Text.Trim() == String.Empty)
                 {
-                    throw new BusinessException(
-                        "BrojRezultataKojiSeBodujuZaEkipu", "Neispravna vrednost za broj rezultata koji se vrednuju za ekipu.");
+                    notification.RegisterMessage(
+                        "BrojRezultataKojiSeBodujuZaEkipu", "Unesite broj rezultata koji se vrednuju za ekipu.");
                 }
-            }
-
-            if (txtBrojEkipa.Enabled)
-            {
-                byte brojEkipa = byte.Parse(txtBrojEkipa.Text);
-                if (brojEkipa < 1)
+                else if (!byte.TryParse(txtBrojRezultata.Text, out dummyByte))
                 {
-                    throw new BusinessException(
-                        "BrojEkipaUFinalu", "Neispravna vrednost za broj ekipa u finalu.");
+                    notification.RegisterMessage(
+                        "BrojRezultataKojiSeBodujuZaEkipu", "Neispravan format za broj rezultata koji se vrednuju za ekipu.");
                 }
             }
         }
 
-        private void updatePropozicije()
+        private void updatePropozicijeFromUI(Propozicije propozicije)
         {
             propozicije.PostojiTak4 = ckbPostojiTak4.Checked;
             if (propozicije.PostojiTak4)
@@ -291,77 +304,13 @@ namespace Bilten.UI
                 propozicije.Tak4FinalnaOcenaJeZbirObaKola = rbtFinalnaOcenaJeZbir.Checked;
                 propozicije.Tak4FinalnaOcenaJeProsekObaKola = rbtFinalnaOcenaJeProsek.Checked;
                 propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = ckbNeRacunajProsek.Checked;
-                
+
                 if (propozicije.OdvojenoTak4)
                 {
-                    propozicije.BrojRezultataKojiSeBodujuZaEkipu = byte.Parse(txtBrojRezultata.Text);
                     propozicije.BrojEkipaUFinalu = byte.Parse(txtBrojEkipa.Text);
+                    propozicije.BrojRezultataKojiSeBodujuZaEkipu = byte.Parse(txtBrojRezultata.Text);
                 }
             }
-
-            if (dependentPropozicije != null)
-            {
-                foreach (Propozicije p in dependentPropozicije)
-                {
-                    p.PostojiTak4 = propozicije.PostojiTak4;
-                    p.OdvojenoTak4 = propozicije.OdvojenoTak4;
-                    p.JednoTak4ZaSveKategorije = propozicije.JednoTak4ZaSveKategorije;
-                    p.Tak4FinalnaOcenaJeMaxObaKola = propozicije.Tak4FinalnaOcenaJeMaxObaKola;
-                    p.Tak4FinalnaOcenaJeZbirObaKola = propozicije.Tak4FinalnaOcenaJeZbirObaKola;
-                    p.Tak4FinalnaOcenaJeProsekObaKola = propozicije.Tak4FinalnaOcenaJeProsekObaKola;
-                    p.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
-                    p.BrojRezultataKojiSeBodujuZaEkipu = propozicije.BrojRezultataKojiSeBodujuZaEkipu;
-                    p.BrojEkipaUFinalu = propozicije.BrojEkipaUFinalu;
-                }
-            }
-        }
-
-        private void txtBrojGimnasticara_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtBrojRezultata_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtBrojEkipa_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void rbtPostojiTak4ZaSvakuKategoriju_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void rbtJednoTak4ZaSveKategorije_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void rbtFinalnaOcenaJeMax_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-        }
-
-        private void rbtFinalnaOcenaJeZbir_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-        }
-
-        private void rbtFinalnaOcenaJeProsek_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-            ckbNeRacunajProsek.Enabled = rbtFinalnaOcenaJeProsek.Checked;
-        }
-
-        private void ckbNeRacunajProsek_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
         }
     }
 }

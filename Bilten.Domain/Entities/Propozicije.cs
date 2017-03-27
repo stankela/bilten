@@ -389,6 +389,24 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void validateTakmicenje4FinaleKupa(Notification notification)
+        {
+            if (!PostojiTak4 || !OdvojenoTak4)
+                return;
+
+            if (BrojEkipaUFinalu < 1)
+            {
+                throw new BusinessException(
+                    "BrojEkipaUFinalu", "Neispravna vrednost za broj ekipa u finalu.");
+            }
+
+            if (BrojRezultataKojiSeBodujuZaEkipu < 1)
+            {
+                throw new BusinessException(
+                    "BrojRezultataKojiSeBodujuZaEkipu", "Neispravna vrednost za broj rezultata koji se vrednuju za ekipu.");
+            }
+        }
+
         public virtual void updateTakmicenje2(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
@@ -478,6 +496,25 @@ namespace Bilten.Domain
                 p.MaxBrojTakmicaraIzKlubaTak3 = this.MaxBrojTakmicaraIzKlubaTak3;
                 p.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
                 p.PoredakTak3PreskokNaOsnovuObaPreskoka = this.PoredakTak3PreskokNaOsnovuObaPreskoka;
+            }
+        }
+
+        public virtual void updateTakmicenje4FinaleKupa(IList<Propozicije> propozicije)
+        {
+            if (propozicije == null)
+                return;
+
+            foreach (Propozicije p in propozicije)
+            {
+                p.PostojiTak4 = this.PostojiTak4;
+                p.OdvojenoTak4 = this.OdvojenoTak4;
+                p.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
+                p.Tak4FinalnaOcenaJeMaxObaKola = this.Tak4FinalnaOcenaJeMaxObaKola;
+                p.Tak4FinalnaOcenaJeZbirObaKola = this.Tak4FinalnaOcenaJeZbirObaKola;
+                p.Tak4FinalnaOcenaJeProsekObaKola = this.Tak4FinalnaOcenaJeProsekObaKola;
+                p.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
+                p.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
+                p.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
             }
         }
     }
