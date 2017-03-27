@@ -320,5 +320,73 @@ namespace Bilten.Domain
                     "takmicara iz istog kluba/drzave.");
             }
         }
+
+        public virtual void validateTakmicenje4(Notification notification)
+        {
+            if (!PostojiTak4)
+                return;
+
+            if (BrojRezultataKojiSeBodujuZaEkipu < 1)
+            {
+                throw new BusinessException(
+                    "BrojRezultataKojiSeBodujuZaEkipu", "Neispravna vrednost za broj rezultata koji se vrednuju za ekipu.");
+            }
+
+            if (odvojenoTak4 && BrojEkipaUFinalu < 1)
+            {
+                throw new BusinessException(
+                    "BrojEkipaUFinalu", "Neispravna vrednost za broj ekipa u finalu.");
+            }
+        }
+
+        public virtual void updateTakmicenje2(IList<Propozicije> propozicije)
+        {
+            if (propozicije == null)
+                return;
+
+            foreach (Propozicije p in propozicije)
+            {
+                p.PostojiTak2 = this.PostojiTak2;
+                p.OdvojenoTak2 = this.OdvojenoTak2;
+                p.BrojFinalistaTak2 = this.BrojFinalistaTak2;
+                p.BrojRezerviTak2 = this.BrojRezerviTak2;
+                p.NeogranicenBrojTakmicaraIzKlubaTak2 = this.NeogranicenBrojTakmicaraIzKlubaTak2;
+                p.MaxBrojTakmicaraIzKlubaTak2 = this.MaxBrojTakmicaraIzKlubaTak2;
+            }
+        }
+
+        public virtual void updateTakmicenje3(IList<Propozicije> propozicije)
+        {
+            if (propozicije == null)
+                return;
+
+            foreach (Propozicije p in propozicije)
+            {
+                p.PostojiTak3 = this.PostojiTak3;
+                p.OdvojenoTak3 = this.OdvojenoTak3;
+                p.NeogranicenBrojTakmicaraIzKlubaTak3 = this.NeogranicenBrojTakmicaraIzKlubaTak3;
+                p.MaxBrojTakmicaraIzKlubaTak3 = this.MaxBrojTakmicaraIzKlubaTak3;
+                p.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
+                p.BrojFinalistaTak3 = this.BrojFinalistaTak3;
+                p.BrojRezerviTak3 = this.BrojRezerviTak3;
+                p.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+                p.PoredakTak3PreskokNaOsnovuObaPreskoka = this.PoredakTak3PreskokNaOsnovuObaPreskoka;
+            }
+        }
+
+        public virtual void updateTakmicenje4(IList<Propozicije> propozicije)
+        {
+            if (propozicije == null)
+                return;
+
+            foreach (Propozicije p in propozicije)
+            {
+                p.PostojiTak4 = this.PostojiTak4;
+                p.OdvojenoTak4 = this.OdvojenoTak4;
+                p.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
+                p.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
+                p.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
+            }
+        }
     }
 }

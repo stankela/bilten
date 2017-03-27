@@ -53,8 +53,6 @@ namespace Bilten.UI
             {
                 rbtOdvojenoTak4.Enabled = true;
                 rbtNaOsnovuTak1.Enabled = true;
-                rbtPostojiTak4ZaSvakuKategoriju.Enabled = true;
-                rbtJednoTak4ZaSveKategorije.Enabled = true;
                 setEnabledOdvojenoTak4();
             }
         }
@@ -73,36 +71,46 @@ namespace Bilten.UI
                 setEnabledOdvojenoTak4();
         }
 
+        private void txtBrojRezultata_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void txtBrojEkipa_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtPostojiTak4ZaSvakuKategoriju_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtJednoTak4ZaSveKategorije_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
         private void setEnabledOdvojenoTak4()
         {
-            if (!rbtOdvojenoTak4.Enabled && !rbtNaOsnovuTak1.Enabled)
-                return;
+            bool postojiTak4 = rbtOdvojenoTak4.Enabled && (rbtOdvojenoTak4.Checked || rbtNaOsnovuTak1.Checked);
+            rbtPostojiTak4ZaSvakuKategoriju.Enabled = postojiTak4;
+            rbtJednoTak4ZaSveKategorije.Enabled = postojiTak4;
+            lblBrojRezultata.Enabled = postojiTak4;
+            txtBrojRezultata.Enabled = postojiTak4;
 
-            if (!rbtOdvojenoTak4.Checked && !rbtNaOsnovuTak1.Checked)
-            {
-                lblBrojRezultata.Enabled = false;
-                txtBrojRezultata.Enabled = false;
-                lblBrojEkipa.Enabled = false;
-                txtBrojEkipa.Enabled = false;
-            }
-            else
-            {
-                lblBrojRezultata.Enabled = true;
-                txtBrojRezultata.Enabled = true;
-         
-                bool odvojenoTak4 = rbtOdvojenoTak4.Checked;
-                lblBrojEkipa.Enabled = odvojenoTak4;
-                txtBrojEkipa.Enabled = odvojenoTak4;
-            }
+            bool odvojenoTak4 = rbtOdvojenoTak4.Enabled && rbtOdvojenoTak4.Checked;
+            lblBrojEkipa.Enabled = odvojenoTak4;
+            txtBrojEkipa.Enabled = odvojenoTak4;            
         }
 
         public override void OnSetActive()
         {
-            refreshUI();
+            updateUIFromPropozicije(propozicije);
             dirty = false;
         }
 
-        private void refreshUI()
+        private void updateUIFromPropozicije(Propozicije propozicije)
         {
             disableHandlers();
             clearUI();
@@ -164,8 +172,14 @@ namespace Bilten.UI
             if (!notification.IsValid())
                 throw new BusinessException(notification);
 
-            validate();
-            updatePropozicije();
+            updatePropozicijeFromUI(propozicije);
+
+            notification = new Notification();
+            propozicije.validateTakmicenje4(notification);
+            if (!notification.IsValid())
+                throw new BusinessException(notification);
+
+            propozicije.updateTakmicenje4(dependentPropozicije);
         }
 
         private void requiredFieldsAndFormatValidation(Notification notification)
@@ -215,30 +229,7 @@ namespace Bilten.UI
             }
         }
 
-        private void validate()
-        {
-            if (txtBrojRezultata.Enabled)
-            {
-                byte brojRezultata = byte.Parse(txtBrojRezultata.Text);
-                if (brojRezultata < 1)
-                {
-                    throw new BusinessException(
-                        "BrojRezultataKojiSeBodujuZaEkipu", "Neispravna vrednost za broj rezultata koji se vrednuju za ekipu.");
-                }
-            }
-
-            if (txtBrojEkipa.Enabled)
-            {
-                byte brojEkipa = byte.Parse(txtBrojEkipa.Text);
-                if (brojEkipa < 1)
-                {
-                    throw new BusinessException(
-                        "BrojEkipaUFinalu", "Neispravna vrednost za broj ekipa u finalu.");
-                }
-            }
-        }
-
-        private void updatePropozicije()
+        private void updatePropozicijeFromUI(Propozicije propozicije)
         {
             propozicije.PostojiTak4 = ckbPostojiTak4.Checked;
             if (propozicije.PostojiTak4)
@@ -250,43 +241,6 @@ namespace Bilten.UI
                 if (propozicije.OdvojenoTak4)
                     propozicije.BrojEkipaUFinalu = byte.Parse(txtBrojEkipa.Text);
             }
-
-            if (dependentPropozicije != null)
-            {
-                foreach (Propozicije p in dependentPropozicije)
-                {
-                    p.PostojiTak4 = propozicije.PostojiTak4;
-                    p.OdvojenoTak4 = propozicije.OdvojenoTak4;
-                    p.JednoTak4ZaSveKategorije = propozicije.JednoTak4ZaSveKategorije;
-                    p.BrojRezultataKojiSeBodujuZaEkipu = propozicije.BrojRezultataKojiSeBodujuZaEkipu;
-                    p.BrojEkipaUFinalu = propozicije.BrojEkipaUFinalu;
-                }
-            }
-        }
-
-        private void txtBrojGimnasticara_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtBrojRezultata_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtBrojEkipa_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void rbtPostojiTak4ZaSvakuKategoriju_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void rbtJednoTak4ZaSveKategorije_CheckedChanged(object sender, EventArgs e)
-        {
-            dirty = true;
         }
     }
 }

@@ -185,7 +185,7 @@ namespace Bilten.UI
             if (!notification.IsValid())
                 throw new BusinessException(notification);
 
-            updateDependentPropozicije(dependentPropozicije, propozicije);
+            propozicije.updateTakmicenje2(dependentPropozicije);
         }
 
         private void requiredFieldsAndFormatValidation(Notification notification)
@@ -262,22 +262,6 @@ namespace Bilten.UI
                     if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
                         propozicije.MaxBrojTakmicaraIzKlubaTak2 = byte.Parse(txtMaxTak.Text);
                 }
-            }
-        }
-
-        private void updateDependentPropozicije(IList<Propozicije> dependentPropozicije, Propozicije propozicije)
-        {
-            if (dependentPropozicije == null)
-                return;
-
-            foreach (Propozicije p in dependentPropozicije)
-            {
-                p.PostojiTak2 = propozicije.PostojiTak2;
-                p.OdvojenoTak2 = propozicije.OdvojenoTak2;
-                p.BrojFinalistaTak2 = propozicije.BrojFinalistaTak2;
-                p.BrojRezerviTak2 = propozicije.BrojRezerviTak2;
-                p.NeogranicenBrojTakmicaraIzKlubaTak2 = propozicije.NeogranicenBrojTakmicaraIzKlubaTak2;
-                p.MaxBrojTakmicaraIzKlubaTak2 = propozicije.MaxBrojTakmicaraIzKlubaTak2;
             }
         }
     }

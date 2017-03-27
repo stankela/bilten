@@ -227,7 +227,7 @@ namespace Bilten.UI
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        // TODO: Potrebno je ponovo izracunati poretke i ucesnike zato
+                        // TODO4: Potrebno je ponovo izracunati poretke i ucesnike zato
                         // sto su se mozda promenili brojevi finalista, rezervi, nacin
                         // racunanja preskoka itd.
                         // Takodje, posto ova naredba moze da npr. izbrise celo takmicenje III (ako je postojalo
