@@ -374,6 +374,12 @@ namespace Bilten.Domain
                         if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak2)
                             result.Add(rt);
                     }
+                    else
+                    {
+                        // NOTE: Za takmicenje 1 se rezultati i poredak uvek racunaju za sprave i viseboj, i moguce ih je
+                        // pregledati u prozoru za rezultate, cak i ako su PostojiTak2 ili PostojiTak3 false.
+                        result.Add(rt);
+                    }
                 }
                 else
                 {
@@ -397,6 +403,14 @@ namespace Bilten.Domain
                     {
                         if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak3)
                             result.Add(rt);
+                    }
+                    else
+                    {
+                        // NOTE: Za takmicenje 1 se rezultati i poredak uvek racunaju za sprave i viseboj, i moguce ih je
+                        // pregledati u prozoru za rezultate, cak i ako su PostojiTak2 ili PostojiTak3 false.
+                        // TODO4: Proveri da li treba prikazivati rezultate i za finale kupa i zbir vise kola. Isto i za
+                        // viseboj u metodu getRezTakmicenjaViseboj.
+                        result.Add(rt);
                     }
                 }
                 else

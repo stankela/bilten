@@ -184,11 +184,6 @@ namespace Bilten.UI
 
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
 
-                    // TODO4: Izgleda da prikazuje rezultate za sprave u takmicenju I cak i kada se u propozicijama
-                    // selektuje da ne postoji takmicenje III. U stvari tako i treba zato sto ipak treba da postoji
-                    // pregled nastupa po spravama cak i kada se selektuje da ne postoji takmicenje III. Tako da ovo
-                    // treba da ostane. Promeni da i za viseboj bude ovako.
-
                     // TODO4: Potrebno je ponovo izracunati poretke i ucesnike zato
                     // sto su se mozda promenili brojevi finalista, rezervi, nacin
                     // racunanja preskoka itd.
@@ -196,6 +191,8 @@ namespace Bilten.UI
                     // odvojeno takmicenje III, a u novim propozicijama je navedeno da ne postoji odvojeno
                     // takmicenje III), mozda bi trebalo dati mogucnost korisniku da odustane od operacije.
                     // Obratiti paznju i na ekipno takmicenje - sta ako je ranije bilo kombinovano a sad nije i obratno.
+                    // Takodje obratiti paznju da se za takmicenje 1 rezultati i poredak uvek racunaju za sprave i viseboj,
+                    // cak i ako su PostojiTak2 ili PostojiTak3 false (da bi bilo moguce pregledati rezultate).
 
                     RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
