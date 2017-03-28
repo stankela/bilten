@@ -85,7 +85,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationParameters.cs" />
     <Compile Include="Dao\DAOFactory.cs" />
     <Compile Include="Dao\DAOFactoryFactory.cs" />
     <Compile Include="Dao\DrugaOcenaDAO.cs" />
@@ -163,6 +162,7 @@
     <Compile Include="Data\NHibernate\NHibernateHelper.cs" />
     <Compile Include="Data\RezultatSpravaFinaleKupaDAO.cs" />
     <Compile Include="Data\NHibernate\PersistentConfigurationBuilder.cs" />
+    <Compile Include="Misc\ConfigurationParameters.cs" />
     <Compile Include="Misc\Language.cs" />
     <Compile Include="Misc\Sesija.cs" />
     <Compile Include="Misc\SingleInstanceApplication.cs" />
