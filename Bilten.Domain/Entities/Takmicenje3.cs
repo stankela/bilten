@@ -191,6 +191,8 @@ namespace Bilten.Domain
 
         public virtual void ocenaAdded(Ocena o, RezultatskoTakmicenje rezTak)
         {
+            // TODO4: Trebalo bi obavestiti korisnika ako se unese ocena za gimnasticara koji nije medju kvalifikantima
+            // da mu rezultat nece biti vidljiv.
             if (getUcesnikKvalifikant(o.Gimnasticar, o.Sprava) != null)
             {
                 if (o.Sprava == Sprava.Preskok)

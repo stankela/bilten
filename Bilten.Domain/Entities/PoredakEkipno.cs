@@ -224,22 +224,15 @@ namespace Bilten.Domain
             return result;
         }
 
-        public virtual void calculatePoredak(RezultatskoTakmicenje rezTak)
-        {
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
-        }
-
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
-            IList<RezultatEkipno> rezultati = getRezultati(o.Gimnasticar);
-            if (rezultati.Count == 0)
-                return;
-
-            foreach (RezultatEkipno r in rezultati)
-                r.addOcena(o);
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            // NOTE: Mora ponovo da se izracuna poredak zato sto npr. ako ekipa ima 4 gimnasticara a racunarju se 3 ocene,
+            // i trenutno su unesene 3 ocene, i ocena koja se dodaje nije najlosija, mora jedna ocena da se izbaci, a posto
+            // ne vodim racuna o tome koja je najlosija ocena moram ponovo da racunam poredak.
+            if (DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
+                create(rezTak, Opcije.Instance.OceneTak1);
+            else
+                create(rezTak, Opcije.Instance.OceneTak4);
         }
 
         private IList<RezultatEkipno> getRezultati(GimnasticarUcesnik g)
@@ -344,6 +337,21 @@ namespace Bilten.Domain
             {
                 foreach (Ocena o in ocene)
                     r.removeOcena(o);
+
+                rankRezultati();
+                updateKvalStatus(rezTak.Propozicije);
+            }
+        }
+
+        public virtual void dodajEkipnuPenalizaciju(Ekipa e, float? penalty, RezultatskoTakmicenje rezTak)
+        {
+            RezultatEkipno r = getRezultat(e);
+            if (r != null)
+            {
+                r.addPenalty(penalty);
+                // Posto se ekipni poredak svaki put nanovo kreira iz ocena, moram
+                // da zapamtim penalizaciju u ekipi (metod Poredak.create koristi Ekipa.Penalty)
+                r.Ekipa.Penalty = penalty;
 
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);

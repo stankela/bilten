@@ -386,5 +386,28 @@ namespace Bilten.Domain
                 }
             }
         }
+
+        public virtual bool ucestvujeEkipno(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod)
+        {
+            if (!ImaEkipnoTakmicenje)
+                return false;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                foreach (Ekipa e in Takmicenje1.Ekipe)
+                {
+                    if (e.Gimnasticari.Contains(g))
+                        return true;
+                }
+            }
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
+            {
+                foreach (UcesnikTakmicenja4 u in Takmicenje4.Ucesnici)
+                {
+                    if (u.Ekipa.Gimnasticari.Contains(g))
+                        return true;
+                }
+            }
+            return false;
+        }
     }
 }

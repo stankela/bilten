@@ -414,13 +414,14 @@ namespace Bilten.UI
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
-            if (form.Penalizacija.Trim() == String.Empty)
-                rezultat.addPenalty(null);
+            Nullable<float> penalty = null;
+            if (form.Penalizacija.Trim() != String.Empty)
+                penalty = float.Parse(form.Penalizacija);
+
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                ActiveTakmicenje.Takmicenje1.PoredakEkipno.dodajEkipnuPenalizaciju(rezultat.Ekipa, penalty, ActiveTakmicenje);
             else
-                rezultat.addPenalty(float.Parse(form.Penalizacija));
-            // Posto se ekipni poredak svaki put nanovo kreira iz ocena, moram
-            // da zapamtim penalizaciju u ekipi (metod Poredak.create koristi Ekipa.Penalty)
-            rezultat.Ekipa.Penalty = rezultat.Penalty;
+                ActiveTakmicenje.Takmicenje4.Poredak.dodajEkipnuPenalizaciju(rezultat.Ekipa, penalty, ActiveTakmicenje);
 
             ISession session = null;
             try
@@ -431,15 +432,9 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(rezultat.Ekipa);
                     if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                    {
-                        ActiveTakmicenje.Takmicenje1.PoredakEkipno.calculatePoredak(ActiveTakmicenje);
                         DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
-                    }
                     else
-                    {
-                        ActiveTakmicenje.Takmicenje4.Poredak.calculatePoredak(ActiveTakmicenje);
                         DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.Takmicenje4.Poredak);
-                    }
                     session.Transaction.Commit();
                 }
             }

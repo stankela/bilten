@@ -293,6 +293,5 @@ namespace Bilten.Domain
             if (Ekipe.Contains(e))
                 PoredakEkipno.gimnasticarDeletedFromEkipa(g, e, ocene, rezTak);
         }
-
     }
 }

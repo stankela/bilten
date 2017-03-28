@@ -354,6 +354,11 @@ namespace Bilten.UI
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
 
+            Opcije.Instance.OceneTak1.Clear();
+            Opcije.Instance.OceneTak2.Clear();
+            Opcije.Instance.OceneTak3.Clear();
+            Opcije.Instance.OceneTak4.Clear();
+            
             refreshUI(takmicenje, true);
         }
 
@@ -475,6 +480,23 @@ namespace Bilten.UI
             takmicenjeId = takmicenje.Id;
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
+
+            Opcije.Instance.OceneTak1.Clear();
+            Opcije.Instance.OceneTak2.Clear();
+            Opcije.Instance.OceneTak3.Clear();
+            Opcije.Instance.OceneTak4.Clear();
+            IList<Ocena> ocene = loadOcene(takmicenjeId.Value);
+            foreach (Ocena o in ocene)
+            {
+                if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
+                    Opcije.Instance.OceneTak1.Add(o);
+                else if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje2)
+                    Opcije.Instance.OceneTak2.Add(o);
+                else if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje3)
+                    Opcije.Instance.OceneTak3.Add(o);
+                else if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje4)
+                    Opcije.Instance.OceneTak4.Add(o);
+            }
 
             refreshUI(takmicenje, false);
         }
@@ -839,7 +861,7 @@ namespace Bilten.UI
                         NHibernateUtil.Initialize(tak.Propozicije);
                     }
 
-                    IList<Ocena> ocene = loadOceneTak1(takmicenjeId.Value);
+                    IList<Ocena> ocene = loadOcene(takmicenjeId.Value, DeoTakmicenjaKod.Takmicenje1);
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
@@ -916,7 +938,7 @@ namespace Bilten.UI
             }
         }
 
-        private IList<Ocena> loadOceneTak1(int takmicenjeId)
+        private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {
             ISession session = null;
             try
@@ -926,7 +948,32 @@ namespace Bilten.UI
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
                     ocenaDAO.Session = session;
-                    return ocenaDAO.FindOceneByDeoTakmicenja(takmicenjeId, DeoTakmicenjaKod.Takmicenje1);
+                    return ocenaDAO.FindOceneByDeoTakmicenja(takmicenjeId, deoTakKod);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+
+            }
+        }
+
+        private IList<Ocena> loadOcene(int takmicenjeId)
+        {
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    ocenaDAO.Session = session;
+                    return ocenaDAO.FindByTakmicenje(takmicenjeId);
                 }
             }
             catch (Exception ex)

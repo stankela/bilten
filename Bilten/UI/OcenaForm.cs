@@ -1087,13 +1087,30 @@ namespace Bilten.UI
         {
             Ocena o = (Ocena)entity;
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Add(o);
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                Opcije.Instance.OceneTak1.Add(o);
+            }
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
+            {
+                Opcije.Instance.OceneTak2.Add(o);
+            }
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+            {
+                Opcije.Instance.OceneTak3.Add(o);
+            }
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
+            {
+                Opcije.Instance.OceneTak4.Add(o);
+            }
 
             RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
-            ISet<RezultatskoTakmicenje> rezTakSet = new HashSet<RezultatskoTakmicenje>(rezTakmicenja);
+            ISet<RezultatskoTakmicenje> rezTakSet
+                = new HashSet<RezultatskoTakmicenje>(rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar));
             foreach (RezultatskoTakmicenje rt in rezTakDAO.FindEkipnaTakmicenja(takmicenje.Id))
             {
-                rezTakSet.Add(rt);
+                if (rt.ucestvujeEkipno(o.Gimnasticar, deoTakKod))
+                    rezTakSet.Add(rt);
             }
             foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
@@ -1128,7 +1145,7 @@ namespace Bilten.UI
                 }
             }
 
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
                 GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                 UcesnikTakmicenja2DAO ucesnikTak2DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO();
@@ -1137,7 +1154,10 @@ namespace Bilten.UI
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
                     foreach (GimnasticarUcesnik g in rezTak.Takmicenje1.Gimnasticari)
-                        gimUcesnikDAO.Evict(g);
+                    {
+                        if (gimUcesnikDAO.Contains(g))
+                            gimUcesnikDAO.Evict(g);
+                    }
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                 {

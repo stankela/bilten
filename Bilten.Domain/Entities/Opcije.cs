@@ -450,5 +450,29 @@ namespace Bilten.Domain
                     return "RESERVES";
             }
         }
+
+        private List<Ocena> oceneTak1 = new List<Ocena>();
+        public virtual List<Ocena> OceneTak1
+        {
+            get { return oceneTak1; }
+        }
+
+        private List<Ocena> oceneTak2 = new List<Ocena>();
+        public virtual List<Ocena> OceneTak2
+        {
+            get { return oceneTak2; }
+        }
+
+        private List<Ocena> oceneTak3 = new List<Ocena>();
+        public virtual List<Ocena> OceneTak3
+        {
+            get { return oceneTak3; }
+        }
+
+        private List<Ocena> oceneTak4 = new List<Ocena>();
+        public virtual List<Ocena> OceneTak4
+        {
+            get { return oceneTak4; }
+        }
     }
 }
