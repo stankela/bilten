@@ -265,7 +265,7 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                if ((bool)rdr["postoji_tak2"] && !(bool)rdr["odvojeno_tak2"])
+                if (!(bool)rdr["postoji_tak2"] || ((bool)rdr["postoji_tak2"] && !(bool)rdr["odvojeno_tak2"]))
                 {
                     KonacanPlasman kp = new KonacanPlasman();
                     loadCommonData(kp, rdr);
@@ -308,7 +308,10 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                if ((bool)rdr["postoji_tak3"] && !(bool)rdr["odvojeno_tak3"])
+                // NOTE: Cak i ako ne postoji takmicenje 3, poredak se ipak racuna i rezultate je moguce pregledati
+                // u prozoru RezultatiSpraveForm. Tako da u ovom slucaju treba prikazati i te plasmane. Isto vazi i za
+                // viseboj.
+                if (!(bool)rdr["postoji_tak3"] || ((bool)rdr["postoji_tak3"] && !(bool)rdr["odvojeno_tak3"]))
                 {
                     KonacanPlasman kp = new KonacanPlasman();
                     loadCommonData(kp, rdr);
@@ -331,7 +334,7 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                if ((bool)rdr["postoji_tak3"] && !(bool)rdr["odvojeno_tak3"])
+                if (!(bool)rdr["postoji_tak3"] || ((bool)rdr["postoji_tak3"] && !(bool)rdr["odvojeno_tak3"]))
                 {
                     KonacanPlasman kp = new KonacanPlasman();
                     loadCommonData(kp, rdr);

@@ -1498,10 +1498,6 @@ namespace Bilten.UI
                     gimnasticariMap.Remove(g);
             }
 
-            // TODO2: Izgleda da prikazuje rezultate za sprave u takmicenju I cak i kada se u propozicijama selektuje da
-            // ne postoji takmicenje III. U stvari tako i treba zato sto ipak treba da postoji pregled nastupa po spravama
-            // cak i kada se selektuje da ne postoji takmicenje III. Tako da ovo treba da ostane.
-
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaFrom, rt.TakmicenjeDescription.Naziv,

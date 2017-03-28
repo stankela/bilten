@@ -7,3 +7,6 @@ Promene od r22:
 - Ubrzano prikazivanje konacnih plasmana
 - Dodata AcceptButton funkcionalnost u GimnasticarForm
 - Dodato prikazivanje rezultata u prozoru za konacne plasmane
+
+28-Mar-2018
+- Prikazuj plasmane za sprave i viseboj cak i ako je izabrano da ne postoji odvojeno takmicenje 2 ili 3
