@@ -12,6 +12,7 @@ using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
+using Bilten.Misc;
 
 namespace Bilten.UI
 {
@@ -429,7 +430,7 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
 
                     DAOFactoryFactory.DAOFactory.GetOcenaDAO().Delete(ocena);
-                    Opcije.Instance.deleteOcena(ocena);
+                    Sesija.Instance.deleteOcena(ocena);
 
                     ISet<RezultatskoTakmicenje> rezTakSet
                         = findRezTakmicenjaForGimnasticar(ocena.Gimnasticar, takmicenje.Id, deoTakKod);
@@ -437,7 +438,7 @@ namespace Bilten.UI
                     {
                         if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                         {
-                            rezTak.Takmicenje1.ocenaDeleted(ocena, rezTak);
+                            rezTak.Takmicenje1.ocenaDeleted(ocena, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje1));
                             DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                         }
                         else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
@@ -460,7 +461,7 @@ namespace Bilten.UI
                         {
                             if (rezTak.Propozicije.OdvojenoTak4)
                             {
-                                rezTak.Takmicenje4.ocenaDeleted(ocena, rezTak);
+                                rezTak.Takmicenje4.ocenaDeleted(ocena, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje4));
                                 DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rezTak.Takmicenje4);
                             }
                         }

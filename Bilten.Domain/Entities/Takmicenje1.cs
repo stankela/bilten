@@ -198,7 +198,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void ocenaAdded(Ocena o, RezultatskoTakmicenje rezTak)
+        public virtual void ocenaAdded(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak1)
         {
             if (Gimnasticari.Contains(o.Gimnasticar))
             {
@@ -212,10 +212,10 @@ namespace Bilten.Domain
             // Ova naredba treba da bude unutar if izraza ako clanovi ekipe
             // mogu da budu samo gimnasticari ucesnici istog rez. takmicenja
             if (rezTak.ImaEkipnoTakmicenje)
-                PoredakEkipno.addOcena(o, rezTak);
+                PoredakEkipno.addOcena(o, rezTak, sveOceneTak1);
         }
 
-        public virtual void ocenaDeleted(Ocena o, RezultatskoTakmicenje rezTak)
+        public virtual void ocenaDeleted(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak1)
         {
             if (Gimnasticari.Contains(o.Gimnasticar))
             {
@@ -226,10 +226,10 @@ namespace Bilten.Domain
                     getPoredakSprava(o.Sprava).deleteOcena(o, rezTak, true);
             }
 
-            PoredakEkipno.deleteOcena(o, rezTak);
+            PoredakEkipno.deleteOcena(o, rezTak, sveOceneTak1);
         }
 
-        public virtual void ocenaEdited(Ocena o, Ocena old, RezultatskoTakmicenje rezTak)
+        public virtual void ocenaEdited(Ocena o, Ocena old, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak1)
         {
             if (Gimnasticari.Contains(o.Gimnasticar))
             {
@@ -240,7 +240,7 @@ namespace Bilten.Domain
                     getPoredakSprava(o.Sprava).editOcena(o, rezTak);
             }
 
-            PoredakEkipno.editOcena(o, old, rezTak);
+            PoredakEkipno.editOcena(o, old, rezTak, sveOceneTak1);
         }
 
         public virtual void gimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,

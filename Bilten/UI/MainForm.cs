@@ -14,6 +14,7 @@ using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
 using Bilten.Util;
+using Bilten.Misc;
 
 namespace Bilten.UI
 {
@@ -354,11 +355,7 @@ namespace Bilten.UI
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
 
-            Opcije.Instance.OceneTak1.Clear();
-            Opcije.Instance.OceneTak2.Clear();
-            Opcije.Instance.OceneTak3.Clear();
-            Opcije.Instance.OceneTak4.Clear();
-            
+            Sesija.Instance.TakmicenjeId = takmicenje.Id;
             refreshUI(takmicenje, true);
         }
 
@@ -481,23 +478,7 @@ namespace Bilten.UI
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
 
-            Opcije.Instance.OceneTak1.Clear();
-            Opcije.Instance.OceneTak2.Clear();
-            Opcije.Instance.OceneTak3.Clear();
-            Opcije.Instance.OceneTak4.Clear();
-            IList<Ocena> ocene = loadOcene(takmicenjeId.Value);
-            foreach (Ocena o in ocene)
-            {
-                if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
-                    Opcije.Instance.OceneTak1.Add(o);
-                else if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje2)
-                    Opcije.Instance.OceneTak2.Add(o);
-                else if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje3)
-                    Opcije.Instance.OceneTak3.Add(o);
-                else if (o.DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje4)
-                    Opcije.Instance.OceneTak4.Add(o);
-            }
-
+            Sesija.Instance.TakmicenjeId = takmicenje.Id;
             refreshUI(takmicenje, false);
         }
 
@@ -949,31 +930,6 @@ namespace Bilten.UI
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
                     ocenaDAO.Session = session;
                     return ocenaDAO.FindOceneByDeoTakmicenja(takmicenjeId, deoTakKod);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
-        }
-
-        private IList<Ocena> loadOcene(int takmicenjeId)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.FindByTakmicenje(takmicenjeId);
                 }
             }
             catch (Exception ex)
@@ -1914,6 +1870,9 @@ namespace Bilten.UI
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            // TODO: Prebaci ovo na neko drugo mesto (ApplicationExit ili nesto slicno ako postoji)
+            Sesija.Instance.EndSession();
+
             NHibernateHelper.Instance.SessionFactory.Close();
         }
     }

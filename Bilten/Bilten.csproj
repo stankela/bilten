@@ -164,6 +164,7 @@
     <Compile Include="Data\RezultatSpravaFinaleKupaDAO.cs" />
     <Compile Include="Data\NHibernate\PersistentConfigurationBuilder.cs" />
     <Compile Include="Misc\Language.cs" />
+    <Compile Include="Misc\Sesija.cs" />
     <Compile Include="Misc\SingleInstanceApplication.cs" />
     <Compile Include="Misc\SlikeSprava.cs" />
     <Compile Include="Misc\Strings.cs" />

@@ -14,6 +14,7 @@ using Bilten.Dao;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao.NHibernate;
+using Bilten.Misc;
 
 namespace Bilten.UI
 {
@@ -1087,14 +1088,14 @@ namespace Bilten.UI
         {
             Ocena o = (Ocena)entity;
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Add(o);
-            Opcije.Instance.addOcena(o);
+            Sesija.Instance.addOcena(o);
 
             ISet<RezultatskoTakmicenje> rezTakSet = findRezTakmicenjaForGimnasticar(o.Gimnasticar, takmicenje.Id, deoTakKod);
             foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
-                    rezTak.Takmicenje1.ocenaAdded(o, rezTak);
+                    rezTak.Takmicenje1.ocenaAdded(o, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje1));
                     DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
@@ -1117,7 +1118,7 @@ namespace Bilten.UI
                 {
                     if (rezTak.Propozicije.OdvojenoTak4)
                     {
-                        rezTak.Takmicenje4.ocenaAdded(o, rezTak);
+                        rezTak.Takmicenje4.ocenaAdded(o, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje4));
                         DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rezTak.Takmicenje4);
                     }
                 }
@@ -1178,14 +1179,14 @@ namespace Bilten.UI
             if (origOcena2 != null && o.Ocena2 == null)
                 DAOFactoryFactory.DAOFactory.GetDrugaOcenaDAO().Delete(origOcena2);
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Update(o);
-            Opcije.Instance.updateOcena(o);
+            Sesija.Instance.updateOcena(o);
 
             ISet<RezultatskoTakmicenje> rezTakSet = findRezTakmicenjaForGimnasticar(o.Gimnasticar, takmicenje.Id, deoTakKod);
             foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
-                    rezTak.Takmicenje1.ocenaEdited(o, original, rezTak);
+                    rezTak.Takmicenje1.ocenaEdited(o, original, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje1));
                     DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                 }
                 else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
@@ -1208,7 +1209,7 @@ namespace Bilten.UI
                 {
                     if (rezTak.Propozicije.OdvojenoTak4)
                     {
-                        rezTak.Takmicenje4.ocenaEdited(o, original, rezTak);
+                        rezTak.Takmicenje4.ocenaEdited(o, original, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje4));
                         DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rezTak.Takmicenje4);
                     }
                 }

@@ -224,12 +224,12 @@ namespace Bilten.Domain
             return result;
         }
 
-        public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
+        public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
         {
-            ocenaChanged(o, rezTak);
+            ocenaChanged(o, rezTak, sveOcene);
         }
 
-        private void ocenaChanged(Ocena o, RezultatskoTakmicenje rezTak)
+        private void ocenaChanged(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
         {
             if (o.DeoTakmicenjaKod != this.DeoTakmicenjaKod || !hasEkipa(o.Gimnasticar))
                 return;
@@ -237,10 +237,7 @@ namespace Bilten.Domain
             // NOTE: Mora ponovo da se izracuna poredak zato sto npr. ako ekipa ima 4 gimnasticara a racunaju se 3 ocene,
             // i trenutno su unesene 3 ocene, i ocena koja se dodaje nije najlosija, mora jedna ocena da se izbaci, a posto
             // ne vodim racuna o tome koja je najlosija ocena moram ponovo da racunam poredak.
-            if (DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
-                create(rezTak, Opcije.Instance.OceneTak1);
-            else if (DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje4)
-                create(rezTak, Opcije.Instance.OceneTak4);
+            create(rezTak, sveOcene);
         }
 
         private bool hasEkipa(GimnasticarUcesnik g)
@@ -253,14 +250,14 @@ namespace Bilten.Domain
             return false;
         }
 
-        public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak)
+        public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
         {
-            ocenaChanged(o, rezTak);
+            ocenaChanged(o, rezTak, sveOcene);
         }
 
-        public virtual void editOcena(Ocena o, Ocena old, RezultatskoTakmicenje rezTak)
+        public virtual void editOcena(Ocena o, Ocena old, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
         {
-            ocenaChanged(o, rezTak);
+            ocenaChanged(o, rezTak, sveOcene);
         }
 
         public virtual void addEkipa(Ekipa e, IList<Ocena> ocene,
