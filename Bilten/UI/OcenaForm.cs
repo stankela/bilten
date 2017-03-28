@@ -1087,31 +1087,9 @@ namespace Bilten.UI
         {
             Ocena o = (Ocena)entity;
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Add(o);
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-            {
-                Opcije.Instance.OceneTak1.Add(o);
-            }
-            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
-            {
-                Opcije.Instance.OceneTak2.Add(o);
-            }
-            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
-            {
-                Opcije.Instance.OceneTak3.Add(o);
-            }
-            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
-            {
-                Opcije.Instance.OceneTak4.Add(o);
-            }
+            Opcije.Instance.addOcena(o);
 
-            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            ISet<RezultatskoTakmicenje> rezTakSet
-                = new HashSet<RezultatskoTakmicenje>(rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar));
-            foreach (RezultatskoTakmicenje rt in rezTakDAO.FindEkipnaTakmicenja(takmicenje.Id))
-            {
-                if (rt.ucestvujeEkipno(o.Gimnasticar, deoTakKod))
-                    rezTakSet.Add(rt);
-            }
+            ISet<RezultatskoTakmicenje> rezTakSet = findRezTakmicenjaForGimnasticar(o.Gimnasticar, takmicenje.Id, deoTakKod);
             foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -1180,16 +1158,30 @@ namespace Bilten.UI
             }
         }
 
+        private ISet<RezultatskoTakmicenje> findRezTakmicenjaForGimnasticar(GimnasticarUcesnik g, int takmicenjeId,
+            DeoTakmicenjaKod deoTakKod)
+        {
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            ISet<RezultatskoTakmicenje> result
+                = new HashSet<RezultatskoTakmicenje>(rezTakDAO.FindRezTakmicenjaForGimnasticar(g));
+            foreach (RezultatskoTakmicenje rt in rezTakDAO.FindEkipnaTakmicenja(takmicenjeId))
+            {
+                if (rt.ucestvujeEkipno(g, deoTakKod))
+                    result.Add(rt);
+            }
+            return result;
+        }
+
         protected override void updateEntity(DomainObject entity)
         {
             Ocena o = (Ocena)entity;
             if (origOcena2 != null && o.Ocena2 == null)
                 DAOFactoryFactory.DAOFactory.GetDrugaOcenaDAO().Delete(origOcena2);
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Update(o);
+            Opcije.Instance.updateOcena(o);
 
-            IList<RezultatskoTakmicenje> rezTakmicenja
-                = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            ISet<RezultatskoTakmicenje> rezTakSet = findRezTakmicenjaForGimnasticar(o.Gimnasticar, takmicenje.Id, deoTakKod);
+            foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
@@ -1222,7 +1214,7 @@ namespace Bilten.UI
                 }
             }
 
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            foreach (RezultatskoTakmicenje rezTak in rezTakSet)
             {
                 GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                 UcesnikTakmicenja2DAO ucesnikTak2DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO();

@@ -226,51 +226,41 @@ namespace Bilten.Domain
 
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
-            // NOTE: Mora ponovo da se izracuna poredak zato sto npr. ako ekipa ima 4 gimnasticara a racunarju se 3 ocene,
+            ocenaChanged(o, rezTak);
+        }
+
+        private void ocenaChanged(Ocena o, RezultatskoTakmicenje rezTak)
+        {
+            if (o.DeoTakmicenjaKod != this.DeoTakmicenjaKod || !hasEkipa(o.Gimnasticar))
+                return;
+
+            // NOTE: Mora ponovo da se izracuna poredak zato sto npr. ako ekipa ima 4 gimnasticara a racunaju se 3 ocene,
             // i trenutno su unesene 3 ocene, i ocena koja se dodaje nije najlosija, mora jedna ocena da se izbaci, a posto
             // ne vodim racuna o tome koja je najlosija ocena moram ponovo da racunam poredak.
             if (DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
                 create(rezTak, Opcije.Instance.OceneTak1);
-            else
+            else if (DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje4)
                 create(rezTak, Opcije.Instance.OceneTak4);
         }
 
-        private IList<RezultatEkipno> getRezultati(GimnasticarUcesnik g)
+        private bool hasEkipa(GimnasticarUcesnik g)
         {
-            IList<RezultatEkipno> result = new List<RezultatEkipno>();
             foreach (RezultatEkipno r in Rezultati)
             {
                 if (r.Ekipa.Gimnasticari.Contains(g))
-                    result.Add(r);
+                    return true;
             }
-            return result;
+            return false;
         }
 
         public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
-            IList<RezultatEkipno> rezultati = getRezultati(o.Gimnasticar);
-            if (rezultati.Count == 0)
-                return;
-
-            foreach (RezultatEkipno r in rezultati)
-                r.removeOcena(o);
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            ocenaChanged(o, rezTak);
         }
 
         public virtual void editOcena(Ocena o, Ocena old, RezultatskoTakmicenje rezTak)
         {
-            IList<RezultatEkipno> rezultati = getRezultati(o.Gimnasticar);
-            if (rezultati.Count == 0)
-                return;
-
-            foreach (RezultatEkipno r in rezultati)
-            {
-                r.removeOcena(old);
-                r.addOcena(o);
-            }
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            ocenaChanged(o, rezTak);
         }
 
         public virtual void addEkipa(Ekipa e, IList<Ocena> ocene,

@@ -429,11 +429,11 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
 
                     DAOFactoryFactory.DAOFactory.GetOcenaDAO().Delete(ocena);
+                    Opcije.Instance.deleteOcena(ocena);
 
-                    IList<RezultatskoTakmicenje> rezTakmicenja
-                        = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                            .FindRezTakmicenjaForGimnasticar(ocena.Gimnasticar);
-                    foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+                    ISet<RezultatskoTakmicenje> rezTakSet
+                        = findRezTakmicenjaForGimnasticar(ocena.Gimnasticar, takmicenje.Id, deoTakKod);
+                    foreach (RezultatskoTakmicenje rezTak in rezTakSet)
                     {
                         if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                         {
@@ -470,12 +470,15 @@ namespace Bilten.UI
                     UcesnikTakmicenja2DAO ucTak2DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO();
                     UcesnikTakmicenja3DAO ucTak3DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO();
 
-                    foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+                    foreach (RezultatskoTakmicenje rezTak in rezTakSet)
                     {
                         if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                         {
                             foreach (GimnasticarUcesnik g in rezTak.Takmicenje1.Gimnasticari)
-                                gimUcesnikDAO.Evict(g);
+                            {
+                                if (gimUcesnikDAO.Contains(g))
+                                    gimUcesnikDAO.Evict(g);
+                            }
                         }
                         else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
                         {
@@ -519,6 +522,20 @@ namespace Bilten.UI
             activeOcene.Remove(ocena);
 
             setOcene(activeOcene);
+        }
+
+        private ISet<RezultatskoTakmicenje> findRezTakmicenjaForGimnasticar(GimnasticarUcesnik g, int takmicenjeId,
+            DeoTakmicenjaKod deoTakKod)
+        {
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            ISet<RezultatskoTakmicenje> result
+                = new HashSet<RezultatskoTakmicenje>(rezTakDAO.FindRezTakmicenjaForGimnasticar(g));
+            foreach (RezultatskoTakmicenje rt in rezTakDAO.FindEkipnaTakmicenja(takmicenjeId))
+            {
+                if (rt.ucestvujeEkipno(g, deoTakKod))
+                    result.Add(rt);
+            }
+            return result;
         }
 
         private void btnClose_Click(object sender, EventArgs e)

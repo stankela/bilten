@@ -1916,6 +1916,5 @@ namespace Bilten.UI
         {
             NHibernateHelper.Instance.SessionFactory.Close();
         }
-
     }
 }

@@ -4,6 +4,7 @@ using System.Text;
 using System.Globalization;
 using Bilten.Exceptions;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Bilten.Domain
 {
@@ -473,6 +474,46 @@ namespace Bilten.Domain
         public virtual List<Ocena> OceneTak4
         {
             get { return oceneTak4; }
+        }
+
+        public virtual void addOcena(Ocena o)
+        {
+            getOcene(o.DeoTakmicenjaKod).Add(o);
+        }
+
+        private List<Ocena> getOcene(DeoTakmicenjaKod deoTakKod)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return OceneTak1;
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
+                return OceneTak2;
+            else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+                return OceneTak3;
+            else
+                return OceneTak4;
+        }
+
+        public virtual void deleteOcena(Ocena o)
+        {
+            List<Ocena> ocene = getOcene(o.DeoTakmicenjaKod);
+
+            bool removed = false;
+            for (int i = 0; i < ocene.Count; ++i)
+            {
+                if (ocene[i].Id == o.Id)
+                {
+                    ocene.RemoveAt(i);
+                    removed = true;
+                    break;
+                }
+            }
+            Trace.Assert(removed, "Greska u programu");
+        }
+
+        public virtual void updateOcena(Ocena o)
+        {
+            deleteOcena(o);
+            addOcena(o);
         }
     }
 }
