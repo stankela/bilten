@@ -39,6 +39,7 @@ namespace Bilten.UI
             this.prikaziDrzavuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.dodajPenalizacijuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnIzracunaj = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -64,7 +65,7 @@ namespace Bilten.UI
             // 
             // btnZatvori
             // 
-            this.btnZatvori.Location = new System.Drawing.Point(446, 12);
+            this.btnZatvori.Location = new System.Drawing.Point(532, 12);
             this.btnZatvori.Name = "btnZatvori";
             this.btnZatvori.Size = new System.Drawing.Size(75, 23);
             this.btnZatvori.TabIndex = 4;
@@ -120,20 +121,31 @@ namespace Bilten.UI
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dodajPenalizacijuToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(136, 26);
             // 
             // dodajPenalizacijuToolStripMenuItem
             // 
             this.dodajPenalizacijuToolStripMenuItem.Name = "dodajPenalizacijuToolStripMenuItem";
-            this.dodajPenalizacijuToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dodajPenalizacijuToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.dodajPenalizacijuToolStripMenuItem.Text = "Penalizacija";
             this.dodajPenalizacijuToolStripMenuItem.Click += new System.EventHandler(this.dodajPenalizacijuToolStripMenuItem_Click);
+            // 
+            // btnIzracunaj
+            // 
+            this.btnIzracunaj.Location = new System.Drawing.Point(438, 12);
+            this.btnIzracunaj.Name = "btnIzracunaj";
+            this.btnIzracunaj.Size = new System.Drawing.Size(75, 23);
+            this.btnIzracunaj.TabIndex = 5;
+            this.btnIzracunaj.Text = "Izracunaj";
+            this.btnIzracunaj.UseVisualStyleBackColor = true;
+            this.btnIzracunaj.Click += new System.EventHandler(this.btnIzracunaj_Click);
             // 
             // RezultatiEkipeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(693, 365);
+            this.Controls.Add(this.btnIzracunaj);
             this.Controls.Add(this.btnZatvori);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.dataGridViewUserControl2);
@@ -161,5 +173,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem prikaziDrzavuToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem dodajPenalizacijuToolStripMenuItem;
+        private System.Windows.Forms.Button btnIzracunaj;
     }
 }

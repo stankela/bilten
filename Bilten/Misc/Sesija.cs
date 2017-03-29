@@ -29,7 +29,7 @@ namespace Bilten.Misc
 
         protected Sesija()
         {
-
+            clearOcene();
         }
 
         public void InitSession()
@@ -42,7 +42,25 @@ namespace Bilten.Misc
 
         }
 
-        public int TakmicenjeId;
+        private int takmicenjeId;
+        private List<Ocena> oceneTak1;
+        private List<Ocena> oceneTak2;
+        private List<Ocena> oceneTak3;
+        private List<Ocena> oceneTak4;
+
+        public void onTakmicenjeChanged(int takmicenjeId)
+        {
+            this.takmicenjeId = takmicenjeId;
+            clearOcene();
+        }
+
+        public void clearOcene()
+        {
+            oceneTak1 = null;
+            oceneTak2 = null;
+            oceneTak3 = null;
+            oceneTak4 = null;
+        }
 
         private void loadOcene()
         {
@@ -55,7 +73,7 @@ namespace Bilten.Misc
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
                     ocenaDAO.Session = session;
-                    sveOcene = ocenaDAO.FindByTakmicenje(TakmicenjeId);
+                    sveOcene = ocenaDAO.FindByTakmicenje(takmicenjeId);
                 }
             }
             catch (Exception ex)
@@ -85,11 +103,6 @@ namespace Bilten.Misc
                     oceneTak4.Add(o);
             }
         }
-
-        private List<Ocena> oceneTak1 = null;
-        private List<Ocena> oceneTak2 = null;
-        private List<Ocena> oceneTak3 = null;
-        private List<Ocena> oceneTak4 = null;
 
         public virtual void addOcena(Ocena o)
         {
@@ -132,6 +145,17 @@ namespace Bilten.Misc
         {
             deleteOcena(o);
             addOcena(o);
+        }
+
+        public List<Ocena> getOcene(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod)
+        {
+            List<Ocena> result = new List<Ocena>();
+            foreach (Ocena o in getOcene(deoTakKod))
+            {
+                if (o.Gimnasticar.Id == g.Id)
+                    result.Add(o);
+            }
+            return result;
         }
     }
 }

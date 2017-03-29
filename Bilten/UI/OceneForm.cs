@@ -514,6 +514,7 @@ namespace Bilten.UI
             }
             finally
             {
+                Sesija.Instance.clearOcene();
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);

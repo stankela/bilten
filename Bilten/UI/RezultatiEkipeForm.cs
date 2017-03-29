@@ -431,10 +431,7 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(rezultat.Ekipa);
-                    if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                        DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
-                    else
-                        DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.Takmicenje4.Poredak);
+                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.getPoredakEkipno(deoTakKod));
                     session.Transaction.Commit();
                 }
             }
@@ -454,6 +451,51 @@ namespace Bilten.UI
             dataGridViewUserControl1.setItems<RezultatEkipno>(
                 ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
             dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(rezultat);
+        }
+
+        private void btnIzracunaj_Click(object sender, EventArgs e)
+        {
+            string msg;
+            if (kvalColumnVisible())
+                msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";
+            else
+                msg = "Da li zelite da izracunate poredak?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
+                    p.create(ActiveTakmicenje, loadOcene(takmicenje.Id, deoTakKod));
+                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(p);
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            dataGridViewUserControl1.setItems<RezultatEkipno>(
+                ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
+            onEkipeCellMouseClick();
         }
 
     }

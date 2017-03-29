@@ -61,39 +61,45 @@ namespace Bilten.Domain
             Rezultati.Clear();
             foreach (Ekipa e in ekipe)
             {
-                RezultatEkipno rezultatEkipno = new RezultatEkipno();
-                rezultatEkipno.Ekipa = e;
-
-                List<RezultatUkupno> rezultatiUkupno = ekipaRezUkupnoMap[e.Id];
-                Sprava[] sprave = Sprave.getSprave(rezTak.Gimnastika);
-                foreach (Sprava s in sprave)
-                {
-                    PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
-                        TypeDescriptor.GetProperties(typeof(RezultatEkipno))[s.ToString()]
-                    };
-                    ListSortDirection[] sortDir = new ListSortDirection[] {
-                        ListSortDirection.Descending
-                    };
-                    rezultatiUkupno.Sort(new SortComparer<RezultatUkupno>(propDesc, sortDir));
-
-                    for (int i = 0; i < rezultatiUkupno.Count; i++)
-                    {
-                        if (i < rezTak.Propozicije.BrojRezultataKojiSeBodujuZaEkipu)
-                        {
-                            Nullable<float> ocena = rezultatiUkupno[i].getOcena(s);
-                            if (ocena != null)
-                                rezultatEkipno.addOcena(s, ocena);
-                        }
-                    }
-                }
-
-                if (e.Penalty != null)
-                    rezultatEkipno.addPenalty(e.Penalty);
-                Rezultati.Add(rezultatEkipno);
+                Rezultati.Add(createRezultatEkipno(e, ekipaRezUkupnoMap[e.Id],
+                    rezTak.Propozicije.BrojRezultataKojiSeBodujuZaEkipu, rezTak.Gimnastika));
             }
 
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
+        }
+
+        private RezultatEkipno createRezultatEkipno(Ekipa e, List<RezultatUkupno> rezultatiUkupno, int brojRezultata,
+            Gimnastika gimnastika)
+        {
+            RezultatEkipno result = new RezultatEkipno();
+            result.Ekipa = e;
+
+            Sprava[] sprave = Sprave.getSprave(gimnastika);
+            foreach (Sprava s in sprave)
+            {
+                PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                        TypeDescriptor.GetProperties(typeof(RezultatEkipno))[s.ToString()]
+                    };
+                ListSortDirection[] sortDir = new ListSortDirection[] {
+                        ListSortDirection.Descending
+                    };
+                rezultatiUkupno.Sort(new SortComparer<RezultatUkupno>(propDesc, sortDir));
+
+                for (int i = 0; i < rezultatiUkupno.Count; i++)
+                {
+                    if (i < brojRezultata)
+                    {
+                        Nullable<float> ocena = rezultatiUkupno[i].getOcena(s);
+                        if (ocena != null)
+                            result.addOcena(s, ocena);
+                    }
+                }
+            }
+
+            if (e.Penalty != null)
+                result.addPenalty(e.Penalty);
+            return result;
         }
 
         private IDictionary<int, List<RezultatUkupno>> createEkipaRezultatiUkupnoMap(
@@ -224,55 +230,69 @@ namespace Bilten.Domain
             return result;
         }
 
-        public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
+        public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> ocene)
         {
-            ocenaChanged(o, rezTak, sveOcene);
+            ocenaChanged(o, rezTak, ocene);
         }
 
-        private void ocenaChanged(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
+        public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> ocene)
         {
-            if (o.DeoTakmicenjaKod != this.DeoTakmicenjaKod || !hasEkipa(o.Gimnasticar))
+            ocenaChanged(o, rezTak, ocene);
+        }
+
+        public virtual void editOcena(Ocena o, Ocena old, RezultatskoTakmicenje rezTak, List<Ocena> ocene)
+        {
+            ocenaChanged(o, rezTak, ocene);
+        }
+
+        private void ocenaChanged(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> ocene)
+        {
+            if (o.DeoTakmicenjaKod != this.DeoTakmicenjaKod)
+                return;
+            IList<RezultatEkipno> rezultati = getRezultati(o.Gimnasticar);
+            if (rezultati.Count == 0)
                 return;
 
-            // NOTE: Mora ponovo da se izracuna poredak zato sto npr. ako ekipa ima 4 gimnasticara a racunaju se 3 ocene,
-            // i trenutno su unesene 3 ocene, i ocena koja se dodaje nije najlosija, mora jedna ocena da se izbaci, a posto
-            // ne vodim racuna o tome koja je najlosija ocena moram ponovo da racunam poredak.
-            create(rezTak, sveOcene);
+            // pretpostavio sam da gimnasticar moze da bude clan vise ekipa.
+            foreach (RezultatEkipno r in rezultati)
+            {
+                // NOTE: Mora ponovo da se izracuna rezultat zato sto npr. ako ekipa ima 4 gimnasticara a racunaju se 3
+                // ocene, i trenutno su unesene 3 ocene, i ocena koja se dodaje nije najlosija, mora jedna ocena da se
+                // izbaci, a posto ne vodim racuna o tome koja je najlosija ocena moram ponovo da racunam rezultat.
+                Rezultati.Remove(r);
+                Rezultati.Add(createRezultatEkipno(r.Ekipa, ocene, rezTak));
+            }
+
+            // izracunaj rank
+            rankRezultati();
+            updateKvalStatus(rezTak.Propozicije);
         }
 
-        private bool hasEkipa(GimnasticarUcesnik g)
+        private RezultatEkipno createRezultatEkipno(Ekipa e, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
+            // kreiraj mapu ekipa -> rezultati_ukupno, sa samo jednom ekipom
+            IList<Ekipa> ekipe = new List<Ekipa>();
+            ekipe.Add(e);
+            IDictionary<int, List<RezultatUkupno>> ekipaRezUkupnoMap = createEkipaRezultatiUkupnoMap(ekipe, ocene);
+
+            return createRezultatEkipno(e, ekipaRezUkupnoMap[e.Id],
+                rezTak.Propozicije.BrojRezultataKojiSeBodujuZaEkipu, rezTak.Gimnastika);
+        }
+
+        private IList<RezultatEkipno> getRezultati(GimnasticarUcesnik g)
+        {
+            IList<RezultatEkipno> result = new List<RezultatEkipno>();
             foreach (RezultatEkipno r in Rezultati)
             {
                 if (r.Ekipa.Gimnasticari.Contains(g))
-                    return true;
+                    result.Add(r);
             }
-            return false;
+            return result;
         }
 
-        public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
+        public virtual void addEkipa(Ekipa e, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
-            ocenaChanged(o, rezTak, sveOcene);
-        }
-
-        public virtual void editOcena(Ocena o, Ocena old, RezultatskoTakmicenje rezTak, List<Ocena> sveOcene)
-        {
-            ocenaChanged(o, rezTak, sveOcene);
-        }
-
-        public virtual void addEkipa(Ekipa e, IList<Ocena> ocene,
-            RezultatskoTakmicenje rezTak)
-        {
-            RezultatEkipno r = new RezultatEkipno();
-            r.Ekipa = e;
-            Rezultati.Add(r);
-       
-            foreach (Ocena o in ocene)
-            {
-                if (e.Gimnasticari.Contains(o.Gimnasticar))
-                    r.addOcena(o);
-            }
-
+            Rezultati.Add(createRezultatEkipno(e, ocene, rezTak));
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
         }
@@ -301,30 +321,25 @@ namespace Bilten.Domain
         public virtual void gimnasticarAddedToEkipa(GimnasticarUcesnik g, Ekipa e, 
             IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
-            if (ocene.Count == 0)
-                return;
-            RezultatEkipno r = getRezultat(e);
-            if (r != null)
-            {
-                foreach (Ocena o in ocene)
-                    r.addOcena(o);
-
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
-            }
+            onClanoviEkipeChanged(e, ocene, rezTak);
         }
 
         public virtual void gimnasticarDeletedFromEkipa(GimnasticarUcesnik g, Ekipa e,
             IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
-            if (ocene.Count == 0)
-                return;
+            onClanoviEkipeChanged(e, ocene, rezTak);
+        }
+
+        private void onClanoviEkipeChanged(Ekipa e, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
+        {
             RezultatEkipno r = getRezultat(e);
             if (r != null)
             {
-                foreach (Ocena o in ocene)
-                    r.removeOcena(o);
+                // ponovo kreiraj rezultat za ekipu
+                Rezultati.Remove(r);
+                Rezultati.Add(createRezultatEkipno(e, ocene, rezTak));
 
+                // izracunaj rank
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
@@ -336,7 +351,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 r.addPenalty(penalty);
-                // Posto se ekipni poredak svaki put nanovo kreira iz ocena, moram
+                // Posto se ekipni poredak svaki put iznova kreira iz ocena, moram
                 // da zapamtim penalizaciju u ekipi (metod Poredak.create koristi Ekipa.Penalty)
                 r.Ekipa.Penalty = penalty;
 

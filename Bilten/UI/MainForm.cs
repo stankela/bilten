@@ -355,7 +355,7 @@ namespace Bilten.UI
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
 
-            Sesija.Instance.TakmicenjeId = takmicenje.Id;
+            Sesija.Instance.onTakmicenjeChanged(takmicenje.Id);
             refreshUI(takmicenje, true);
         }
 
@@ -478,7 +478,7 @@ namespace Bilten.UI
             nazivTakmicenja = takmicenje.GimnastikaNaziv;
             gimnastika = takmicenje.Gimnastika;
 
-            Sesija.Instance.TakmicenjeId = takmicenje.Id;
+            Sesija.Instance.onTakmicenjeChanged(takmicenje.Id);
             refreshUI(takmicenje, false);
         }
 

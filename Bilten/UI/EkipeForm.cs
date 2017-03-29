@@ -13,6 +13,7 @@ using NHibernate;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
 using NHibernate.Context;
+using Bilten.Misc;
 
 namespace Bilten.UI
 {
@@ -284,11 +285,13 @@ namespace Bilten.UI
                         loadRezTakmicenje(ActiveRezTakmicenje.Id);
 
                     Ekipa e = (Ekipa)form.Entity;
+
                     List<Ocena> ocene = new List<Ocena>();
                     foreach (GimnasticarUcesnik g in e.Gimnasticari)
                     {
-                        ocene.AddRange(loadOceneTak1(g));
+                        ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
                     }
+                    
                     ActiveRezTakmicenje.Takmicenje1.ekipaAdded(e, ocene, ActiveRezTakmicenje);
 
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveRezTakmicenje.Takmicenje1.PoredakEkipno);
@@ -323,31 +326,6 @@ namespace Bilten.UI
             setEkipe(ActiveRezTakmicenje.Takmicenje1.Ekipe);
             setSelectedEkipa((Ekipa)form.Entity);
             onEkipeCellMouseClick();
-        }
-
-        private IList<Ocena> loadOceneTak1(GimnasticarUcesnik g)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
         }
 
         private void btnEditEkipa_Click(object sender, EventArgs e)
@@ -413,15 +391,23 @@ namespace Bilten.UI
                     List<GimnasticarUcesnik> deleted = new List<GimnasticarUcesnik>();
                     diff(curr, orig, added, updated, deleted);
 
+                    // potrebne su sve ocene za gimnasticare u ekipi jer rezultat za ekipu mora ponovo da se racuna kada
+                    // se gimnasticar dodaje ili brise iz ekipe.
+                    List<Ocena> ocene = new List<Ocena>();
+                    foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
+                    {
+                        ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
+                    }
+
                     foreach (GimnasticarUcesnik g in deleted)
                     {
                         ActiveRezTakmicenje.Takmicenje1.gimnasticarDeletedFromEkipa(
-                            g, ekipa, loadOceneTak1(g), ActiveRezTakmicenje);
+                            g, ekipa, ocene, ActiveRezTakmicenje);
                     }
                     foreach (GimnasticarUcesnik g in added)
                     {
                         ActiveRezTakmicenje.Takmicenje1.gimnasticarAddedToEkipa(
-                            g, ekipa, loadOceneTak1(g), ActiveRezTakmicenje);
+                            g, ekipa, ocene, ActiveRezTakmicenje);
                     }
 
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveRezTakmicenje.Takmicenje1.PoredakEkipno);
