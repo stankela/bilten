@@ -308,7 +308,7 @@ namespace Bilten.Domain
             }
         }*/
 
-        public List<RezultatUkupnoZbirViseKola> getRezultati()
+        public virtual List<RezultatUkupnoZbirViseKola> getRezultati()
         {
             List<RezultatUkupnoZbirViseKola> result = new List<RezultatUkupnoZbirViseKola>(Rezultati);
 

@@ -173,6 +173,7 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version4.sql" />
     <EmbeddedResource Include="UI\KonacanPlasmanForm.resx">
       <DependentUpon>KonacanPlasmanForm.cs</DependentUpon>
     </EmbeddedResource>

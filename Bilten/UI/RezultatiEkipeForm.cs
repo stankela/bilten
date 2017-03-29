@@ -417,11 +417,7 @@ namespace Bilten.UI
             Nullable<float> penalty = null;
             if (form.Penalizacija.Trim() != String.Empty)
                 penalty = float.Parse(form.Penalizacija);
-
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                ActiveTakmicenje.Takmicenje1.PoredakEkipno.dodajEkipnuPenalizaciju(rezultat.Ekipa, penalty, ActiveTakmicenje);
-            else
-                ActiveTakmicenje.Takmicenje4.Poredak.dodajEkipnuPenalizaciju(rezultat.Ekipa, penalty, ActiveTakmicenje);
+            ActiveTakmicenje.getPoredakEkipno(deoTakKod).dodajEkipnuPenalizaciju(rezultat.Ekipa, penalty, ActiveTakmicenje);
 
             ISession session = null;
             try
