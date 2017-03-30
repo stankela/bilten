@@ -1315,38 +1315,6 @@ namespace Bilten.UI
                         Ekipa ekipa = new Ekipa();
                         ekipa.Naziv = e.Naziv;
                         ekipa.Kod = e.Kod;
-                        if (e.DrzavaUcesnik == null)
-                            ekipa.DrzavaUcesnik = null;
-                        else
-                        {
-                            DrzavaUcesnik drzavaUcesnik
-                                = drzavaUcesnikDAO.FindDrzavaUcesnik(takmicenje.Id, e.DrzavaUcesnik.Naziv);
-                            if (drzavaUcesnik == null)
-                            {
-                                drzavaUcesnik = new DrzavaUcesnik();
-                                drzavaUcesnik.Naziv = e.DrzavaUcesnik.Naziv;
-                                drzavaUcesnik.Kod = e.DrzavaUcesnik.Kod;
-                                drzavaUcesnik.Takmicenje = takmicenje;
-                                drzavaUcesnikDAO.Add(drzavaUcesnik);
-                            }
-                            ekipa.DrzavaUcesnik = drzavaUcesnik;
-                        }
-                        if (e.KlubUcesnik == null)
-                            ekipa.KlubUcesnik = null;
-                        else
-                        {
-                            KlubUcesnik klubUcesnik = klubUcesnikDAO.FindKlubUcesnik(takmicenje.Id, e.KlubUcesnik.Naziv);
-                            if (klubUcesnik == null)
-                            {
-                                klubUcesnik = new KlubUcesnik();
-                                klubUcesnik.Naziv = e.KlubUcesnik.Naziv;
-                                klubUcesnik.Kod = e.KlubUcesnik.Kod;
-                                klubUcesnik.Takmicenje = takmicenje;
-                                klubUcesnikDAO.Add(klubUcesnik);
-                            }
-                            ekipa.KlubUcesnik = klubUcesnik;
-                        }
-
                         rt.Takmicenje1.addEkipa(ekipa);
                     }
                 }
@@ -1532,36 +1500,6 @@ namespace Bilten.UI
                     Ekipa ekipa = new Ekipa();
                     ekipa.Naziv = e.Naziv;
                     ekipa.Kod = e.Kod;
-                    if (e.DrzavaUcesnik == null)
-                        ekipa.DrzavaUcesnik = null;
-                    else
-                    {
-                        DrzavaUcesnik drzavaUcesnik = drzavaUcesnikDAO.FindDrzavaUcesnik(takmicenje.Id, e.DrzavaUcesnik.Naziv);
-                        if (drzavaUcesnik == null)
-                        {
-                            drzavaUcesnik = new DrzavaUcesnik();
-                            drzavaUcesnik.Naziv = e.DrzavaUcesnik.Naziv;
-                            drzavaUcesnik.Kod = e.DrzavaUcesnik.Kod;
-                            drzavaUcesnik.Takmicenje = takmicenje;
-                            drzavaUcesnikDAO.Add(drzavaUcesnik);
-                        }
-                        ekipa.DrzavaUcesnik = drzavaUcesnik;
-                    }
-                    if (e.KlubUcesnik == null)
-                        ekipa.KlubUcesnik = null;
-                    else
-                    {
-                        KlubUcesnik klubUcesnik = klubUcesnikDAO.FindKlubUcesnik(takmicenje.Id, e.KlubUcesnik.Naziv);
-                        if (klubUcesnik == null)
-                        {
-                            klubUcesnik = new KlubUcesnik();
-                            klubUcesnik.Naziv = e.KlubUcesnik.Naziv;
-                            klubUcesnik.Kod = e.KlubUcesnik.Kod;
-                            klubUcesnik.Takmicenje = takmicenje;
-                            klubUcesnikDAO.Add(klubUcesnik);
-                        }
-                        ekipa.KlubUcesnik = klubUcesnik;
-                    }
 
                     foreach (GimnasticarUcesnik g in e.Gimnasticari)
                     {

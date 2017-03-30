@@ -123,17 +123,28 @@ namespace Bilten.UI
             Ekipa ekipa = (Ekipa)entity;
 
             cmbKlub.SelectedIndex = -1;
-            if (ekipa.KlubUcesnik != null)
+            for (int i = 0; i < cmbKlub.Items.Count; ++i)
             {
-                rbtKlub.Checked = true;
-                cmbKlub.SelectedItem = ekipa.KlubUcesnik;
+                KlubUcesnik k = cmbKlub.Items[i] as KlubUcesnik;
+                if (k != null && k.Naziv == ekipa.Naziv)
+                {
+                    rbtKlub.Checked = true;
+                    //cmbKlub.SelectedItem = k;
+                    cmbKlub.SelectedIndex = i;
+                    break;
+                }
             }
 
             cmbDrzava.SelectedIndex = -1;
-            if (ekipa.DrzavaUcesnik != null)
+            for (int i = 0; i < cmbDrzava.Items.Count; ++i)
             {
-                rbtDrzava.Checked = true;
-                cmbDrzava.SelectedItem = ekipa.DrzavaUcesnik;
+                DrzavaUcesnik d = cmbDrzava.Items[i] as DrzavaUcesnik;
+                if (d != null && d.Naziv == ekipa.Naziv)
+                {
+                    rbtDrzava.Checked = true;
+                    cmbDrzava.SelectedIndex = i;
+                    break;
+                }
             }
 
             // bitno je da ove dve naredbe idu posle naredbi kojima se podesava
@@ -160,13 +171,6 @@ namespace Bilten.UI
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
         {
-            if (!(cmbKlub.SelectedItem is KlubUcesnik)
-            && !(cmbDrzava.SelectedItem is DrzavaUcesnik))
-            {
-                notification.RegisterMessage(
-                    "Klub", "Unesite klub ili drzavu.");
-            }
-
             if (txtNaziv.Text.Trim() == String.Empty)
             {
                 notification.RegisterMessage(
@@ -186,14 +190,6 @@ namespace Bilten.UI
             {
                 case "RezultatskoTakmicenje":
                     txtRezTakmicenje.Focus();
-                    break;
-
-                case "Klub":
-                    cmbKlub.Focus();
-                    break;
-
-                case "Drzava":
-                    cmbDrzava.Focus();
                     break;
 
                 case "Naziv":
@@ -223,9 +219,6 @@ namespace Bilten.UI
             Ekipa ekipa = (Ekipa)entity;
             ekipa.Naziv = txtNaziv.Text.Trim();
             ekipa.Kod = txtKod.Text.Trim().ToUpper();
-
-            ekipa.KlubUcesnik = cmbKlub.SelectedItem as KlubUcesnik; // radi i za null
-            ekipa.DrzavaUcesnik = cmbDrzava.SelectedItem as DrzavaUcesnik;
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)

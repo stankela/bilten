@@ -114,11 +114,16 @@ namespace Bilten.Report
             {
                 RezultatUkupno rez = rezUkupnoSorted[i];
                 RezultatEkipno rezEkipa = getRezEkipa(i, rezultatiEkipe);
-                string ekipaNaziv = rez.KlubDrzava;
-                if (rezEkipa != null && rezEkipa.Ekipa.DrzavaUcesnik != null)
+
+                // TODO: Proveri da li postoje situacije kada za clana ekipe umesto naziva ekipe treba da stoji naziv
+                // kluba ili drzave (koji se nalazi u RezultatUkupno.KlubDrzava).
+
+                string ekipaNaziv = String.Empty;
+                if (rezEkipa != null && rezEkipa.Ekipa != null)
                 {
                     ekipaNaziv = rezEkipa.Ekipa.Naziv;
                 }
+
                 if (gim == Gimnastika.MSG)
                 {
                     result.Add(new object[] { rez.PrezimeIme, /*rez.KlubDrzava*/ekipaNaziv,

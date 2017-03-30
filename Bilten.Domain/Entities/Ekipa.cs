@@ -25,20 +25,6 @@ namespace Bilten.Domain
             set { kod = value; }
         }
 
-        private KlubUcesnik klubUcesnik;
-        public virtual KlubUcesnik KlubUcesnik
-        {
-            get { return klubUcesnik; }
-            set { klubUcesnik = value; }
-        }
-
-        private DrzavaUcesnik drzavaUcesnik;
-        public virtual DrzavaUcesnik DrzavaUcesnik
-        {
-            get { return drzavaUcesnik; }
-            set { drzavaUcesnik = value; }
-        }
-
         private Nullable<float> penalty;
         public virtual Nullable<float> Penalty
         {
@@ -101,9 +87,6 @@ namespace Bilten.Domain
                     "Kod", "Kod ekipe moze da sadrzi maksimalno "
                     + KOD_MAX_LENGTH + " znakova.");
             }
-
-            // TODO: proveri klub i drzavu, u slucaju nije dozvoljeno da istovremeno
-            // budu zadati i klub i drzava 
         }
 
         public override bool Equals(object other)

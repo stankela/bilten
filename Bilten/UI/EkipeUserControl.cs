@@ -24,7 +24,6 @@ namespace Bilten.UI
             dgwUserControlClanovi.AddColumn("Takmicarski broj", "TakmicarskiBroj", 100);
             dgwUserControlClanovi.AddColumn("Klub", "KlubUcesnik", 150);
             dgwUserControlClanovi.AddColumn("Drzava", "DrzavaUcesnik", 100);
-
         }
 
         public DataGridViewUserControl EkipeDataGridViewUserControl

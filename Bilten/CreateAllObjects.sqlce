@@ -223,8 +223,6 @@ create table ekipe (
 	ekipa_id int identity(1,1) primary key,
 	naziv nvarchar(64),
 	kod nvarchar(7),
-	klub_id int references klubovi_ucesnici(klub_id),
-	drzava_id int references drzave_ucesnici(drzava_id),
 	takmicenje1_id int references takmicenje1(takmicenje1_id)
 );
 
