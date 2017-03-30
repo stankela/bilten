@@ -137,10 +137,23 @@ namespace Bilten.Domain
                 Poredak.editOcena(o, old, rezTak);
         }
 
-
         public virtual void dump(StringBuilder strBuilder)
         {
-            throw new NotImplementedException();
+            strBuilder.AppendLine(Id.ToString());
+            
+            if (Ucesnici == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Ucesnici.Count.ToString());
+                foreach (UcesnikTakmicenja2 u in Ucesnici)
+                    u.dump(strBuilder);
+            }
+
+            if (Poredak == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Poredak.dump(strBuilder);
         }
     }
 }

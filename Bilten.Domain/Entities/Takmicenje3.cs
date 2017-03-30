@@ -293,7 +293,31 @@ namespace Bilten.Domain
 
         public virtual void dump(StringBuilder strBuilder)
         {
-            throw new NotImplementedException();
+            strBuilder.AppendLine(Id.ToString());
+
+            if (Ucesnici == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Ucesnici.Count.ToString());
+                foreach (UcesnikTakmicenja3 u in Ucesnici)
+                    u.dump(strBuilder);
+            }
+
+            if (Poredak == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Poredak.Count.ToString());
+                foreach (PoredakSprava u in Poredak)
+                    u.dump(strBuilder);
+            }
+
+            if (PoredakPreskok == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakPreskok.dump(strBuilder);
         }
+
     }
 }

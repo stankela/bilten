@@ -6,13 +6,6 @@ namespace Bilten.Domain
 {
     public class UcesnikTakmicenja3 : UcesnikFinala
     {
-        private Sprava _sprava;
-        public virtual Sprava Sprava
-        {
-            get { return _sprava; }
-            set { _sprava = value; }
-        }
-    
         private GimnasticarUcesnik _gimnasticar;
         public virtual GimnasticarUcesnik Gimnasticar
         {
@@ -20,6 +13,13 @@ namespace Bilten.Domain
             set { _gimnasticar = value; }
         }
 
+        private Sprava _sprava;
+        public virtual Sprava Sprava
+        {
+            get { return _sprava; }
+            set { _sprava = value; }
+        }
+    
         public virtual Nullable<int> TakmicarskiBroj
         {
             get
@@ -65,6 +65,13 @@ namespace Bilten.Domain
         {
             _gimnasticar = gimnasticar;
             _sprava = sprava;
+        }
+
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+            strBuilder.AppendLine(Sprava.ToString());
         }
     }
 }

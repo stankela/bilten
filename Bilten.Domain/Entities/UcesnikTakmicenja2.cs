@@ -57,5 +57,11 @@ namespace Bilten.Domain
         {
             _gimnasticar = gimnasticar;
         }
+
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+        }
     }
 }

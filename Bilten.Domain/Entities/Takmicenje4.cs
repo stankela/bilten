@@ -96,7 +96,21 @@ namespace Bilten.Domain
 
         public virtual void dump(StringBuilder strBuilder)
         {
-            throw new NotImplementedException();
+            strBuilder.AppendLine(Id.ToString());
+
+            if (Ucesnici == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Ucesnici.Count.ToString());
+                foreach (UcesnikTakmicenja4 u in Ucesnici)
+                    u.dump(strBuilder);
+            }
+
+            if (Poredak == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Poredak.dump(strBuilder);
         }
     }
 }

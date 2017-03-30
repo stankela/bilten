@@ -47,5 +47,14 @@ namespace Bilten.Domain
             _qualRank = qualRank;
             _kvalStatus = kvalStatus;
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(QualOrder.ToString());
+            strBuilder.AppendLine(QualScore.ToString());
+            strBuilder.AppendLine(QualRank.ToString());
+            strBuilder.AppendLine(KvalStatus.ToString());
+        }
     }
 }
