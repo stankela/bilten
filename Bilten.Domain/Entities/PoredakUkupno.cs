@@ -353,5 +353,20 @@ namespace Bilten.Domain
                 updateKvalStatus(rezTak.Propozicije);
             }
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
+
+            if (Rezultati == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Rezultati.Count.ToString());
+                foreach (RezultatUkupno r in Rezultati)
+                    r.dump(strBuilder);
+            }
+        }
     }
 }

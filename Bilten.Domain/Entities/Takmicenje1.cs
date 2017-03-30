@@ -132,13 +132,6 @@ namespace Bilten.Domain
             set { _poredakUkupnoFinaleKupa = value; }
         }
 
-        private PoredakUkupnoZbirViseKola _poredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
-        public virtual PoredakUkupnoZbirViseKola PoredakUkupnoZbirViseKola
-        {
-            get { return _poredakUkupnoZbirViseKola; }
-            set { _poredakUkupnoZbirViseKola = value; }
-        }
-
         private Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> _poredakSpravaFinaleKupa = new HashedSet<PoredakSpravaFinaleKupa>();
         public virtual Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> PoredakSpravaFinaleKupa
         {
@@ -161,6 +154,13 @@ namespace Bilten.Domain
         {
             get { return _poredakEkipnoFinaleKupa; }
             set { _poredakEkipnoFinaleKupa = value; }
+        }
+
+        private PoredakUkupnoZbirViseKola _poredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
+        public virtual PoredakUkupnoZbirViseKola PoredakUkupnoZbirViseKola
+        {
+            get { return _poredakUkupnoZbirViseKola; }
+            set { _poredakUkupnoZbirViseKola = value; }
         }
 
         private PoredakEkipnoZbirViseKola _poredakEkipnoZbirViseKola = new PoredakEkipnoZbirViseKola();
@@ -292,6 +292,74 @@ namespace Bilten.Domain
         {
             if (Ekipe.Contains(e))
                 PoredakEkipno.gimnasticarDeletedFromEkipa(g, e, ocene, rezTak);
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            
+            // gimnasticari
+            strBuilder.AppendLine(Gimnasticari.Count.ToString());
+            foreach (GimnasticarUcesnik g in Gimnasticari)
+                strBuilder.AppendLine(g.Id.ToString());
+
+            // ekipe
+            strBuilder.AppendLine(Ekipe.Count.ToString());
+            foreach (Ekipa e in Ekipe)
+                e.dump(strBuilder);
+            
+            if (PoredakUkupno == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakUkupno.dump(strBuilder);
+
+            if (PoredakSprava == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(PoredakSprava.Count.ToString());
+                foreach (PoredakSprava p in PoredakSprava)
+                    p.dump(strBuilder);
+            }
+
+            if (PoredakPreskok == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakPreskok.dump(strBuilder);
+
+            if (PoredakEkipno == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakEkipno.dump(strBuilder);
+
+            if (PoredakUkupnoFinaleKupa == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakUkupnoFinaleKupa.dump(strBuilder);
+
+            if (PoredakSpravaFinaleKupa == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(PoredakSpravaFinaleKupa.Count.ToString());
+                foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
+                    p.dump(strBuilder);
+            }
+
+            if (PoredakEkipnoFinaleKupa == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakEkipnoFinaleKupa.dump(strBuilder);
+
+            if (PoredakUkupnoZbirViseKola == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakUkupnoZbirViseKola.dump(strBuilder);
+
+            if (PoredakEkipnoZbirViseKola == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakEkipnoZbirViseKola.dump(strBuilder);
         }
     }
 }

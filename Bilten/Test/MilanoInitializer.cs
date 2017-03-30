@@ -94,8 +94,6 @@ namespace Bilten.Test
         {
             Propozicije result = new Propozicije();
 
-            result.MaxBrojTakmicaraIzKlubaTak1 = 0; // nema ogranicenja
-
             result.PostojiTak2 = true;
             result.OdvojenoTak2 = true;
             result.NeogranicenBrojTakmicaraIzKlubaTak2 = false;

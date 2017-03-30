@@ -48,7 +48,6 @@ create table gimnasticari (
 
 create table propozicije (
 	propozicije_id int identity (1,1) primary key,
-	max_tak_tak1 tinyint,
 	postoji_tak2 bit,
 	odvojeno_tak2 bit,
 	neogr_broj_tak_tak2 bit,

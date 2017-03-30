@@ -9,11 +9,11 @@ namespace Bilten.Domain
 {
     public class RezultatskoTakmicenje : DomainObject
     {
-        private Takmicenje takmicenje;
-        public virtual Takmicenje Takmicenje
+        private byte redBroj;
+        public virtual byte RedBroj
         {
-            get { return takmicenje; }
-            set { takmicenje = value; }
+            get { return redBroj; }
+            set { redBroj = value; }
         }
 
         private Gimnastika gimnastika;
@@ -21,6 +21,34 @@ namespace Bilten.Domain
         {
             get { return gimnastika; }
             set { gimnastika = value; }
+        }
+
+        // TODO: Ukloni ovaj hack, tj. sledeca dva svojstva. Kreiraj klasu 
+        // EkipnoTakmicenje, koja ce biti zaduzena za Takmicenja 1 i 4 u ekipnoj 
+        // konkurenciji). Ukloniti takodje i svojstvo JednoTak4ZaSveKategorije 
+        // klase Propozicije.
+
+        private bool imaEkipnoTakmicenje = true;
+        public virtual bool ImaEkipnoTakmicenje
+        {
+            get { return imaEkipnoTakmicenje; }
+            set { imaEkipnoTakmicenje = value; }
+        }
+
+        // kada postoji samo jedno ekipno takmicenje za vise kategorija, ovo svojstvo
+        // ce biti true samo za jedno RezultatskoTakmicenje.
+        private bool kombinovanoEkipnoTak;
+        public virtual bool KombinovanoEkipnoTak
+        {
+            get { return kombinovanoEkipnoTak; }
+            set { kombinovanoEkipnoTak = value; }
+        }
+
+        private Takmicenje takmicenje;
+        public virtual Takmicenje Takmicenje
+        {
+            get { return takmicenje; }
+            set { takmicenje = value; }
         }
 
         private TakmicarskaKategorija kategorija;
@@ -42,13 +70,6 @@ namespace Bilten.Domain
         {
             get { return propozicije; }
             set { propozicije = value; }
-        }
-
-        private byte redBroj;
-        public virtual byte RedBroj
-        {
-            get { return redBroj; }
-            set { redBroj = value; }
         }
 
         private Takmicenje1 _takmicenje1;
@@ -160,27 +181,6 @@ namespace Bilten.Domain
         public virtual byte TakmicenjeDescriptionRedBroj
         {
             get { return TakmicenjeDescription.RedBroj; }
-        }
-
-        // TODO: Ukloni ovaj hack, tj. sledeca dva svojstva. Kreiraj klasu 
-        // EkipnoTakmicenje, koja ce biti zaduzena za Takmicenja 1 i 4 u ekipnoj 
-        // konkurenciji). Ukloniti takodje i svojstvo JednoTak4ZaSveKategorije 
-        // klase Propozicije.
-
-        private bool imaEkipnoTakmicenje = true;
-        public virtual bool ImaEkipnoTakmicenje
-        {
-            get { return imaEkipnoTakmicenje; }
-            set { imaEkipnoTakmicenje = value; }
-        }
-
-        // kada postoji samo jedno ekipno takmicenje za vise kategorija, ovo svojstvo
-        // ce biti true samo za jedno RezultatskoTakmicenje.
-        private bool kombinovanoEkipnoTak;
-        public virtual bool KombinovanoEkipnoTak
-        {
-            get { return kombinovanoEkipnoTak; }
-            set { kombinovanoEkipnoTak = value; }
         }
 
         public virtual string NazivEkipnog
@@ -408,6 +408,38 @@ namespace Bilten.Domain
                 }
             }
             return false;
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(RedBroj.ToString());
+            strBuilder.AppendLine(Gimnastika.ToString());
+            strBuilder.AppendLine(ImaEkipnoTakmicenje.ToString());
+            strBuilder.AppendLine(KombinovanoEkipnoTak.ToString());
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
+            strBuilder.AppendLine(Kategorija != null ? Kategorija.Id.ToString() : NULL);
+            strBuilder.AppendLine(TakmicenjeDescription != null ? TakmicenjeDescription.Id.ToString() : NULL);
+            if (Propozicije == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Propozicije.dump(strBuilder);
+            if (Takmicenje1 == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Takmicenje1.dump(strBuilder);
+            if (Takmicenje2 == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Takmicenje2.dump(strBuilder);
+            if (Takmicenje3 == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Takmicenje3.dump(strBuilder);
+            if (Takmicenje4 == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Takmicenje4.dump(strBuilder);
         }
     }
 }

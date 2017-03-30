@@ -15,18 +15,18 @@ namespace Bilten.Domain
             set { deoTakKod = value; }
         }
 
-        private IList<RezultatPreskok> _rezultati = new List<RezultatPreskok>();
-        public virtual IList<RezultatPreskok> Rezultati
-        {
-            get { return _rezultati; }
-            protected set { _rezultati = value; }
-        }
-
         private Sprava _sprava;
         public virtual Sprava Sprava
         {
             get { return _sprava; }
             protected set { _sprava = value; }
+        }
+
+        private IList<RezultatPreskok> _rezultati = new List<RezultatPreskok>();
+        public virtual IList<RezultatPreskok> Rezultati
+        {
+            get { return _rezultati; }
+            protected set { _rezultati = value; }
         }
 
         protected PoredakPreskok()
@@ -504,6 +504,22 @@ namespace Bilten.Domain
                 Rezultati.Remove(r);
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
+            }
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
+            strBuilder.AppendLine(Sprava.ToString());
+
+            if (Rezultati == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Rezultati.Count.ToString());
+                foreach (RezultatPreskok r in Rezultati)
+                    r.dump(strBuilder);
             }
         }
     }

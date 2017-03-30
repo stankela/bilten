@@ -93,5 +93,10 @@ namespace Bilten.Domain
         {
             Poredak.editOcena(o, old, rezTak, sveOceneTak4);
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -33,5 +33,14 @@ namespace Bilten.Domain
             get { return total; }
             protected set { total = value; }
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(RedBroj.ToString());
+            strBuilder.AppendLine(Rank != null ? Rank.Value.ToString() : NULL);
+            strBuilder.AppendLine(KvalStatus.ToString());
+            strBuilder.AppendLine(Total != null ? Total.Value.ToString() : NULL);
+        }
     }
 }

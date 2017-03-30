@@ -318,5 +318,19 @@ namespace Bilten.Domain
 
             return result;
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+
+            if (Rezultati == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Rezultati.Count.ToString());
+                foreach (RezultatUkupnoZbirViseKola r in Rezultati)
+                    r.dump(strBuilder);
+            }
+        }
     }
 }

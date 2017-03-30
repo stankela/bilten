@@ -6,6 +6,13 @@ namespace Bilten.Domain
 {
     public class RezultatUkupno : Rezultat
     {
+        private GimnasticarUcesnik gimnasticar;
+        public virtual GimnasticarUcesnik Gimnasticar
+        {
+            get { return gimnasticar; }
+            set { gimnasticar = value; }
+        }
+
         private Nullable<float> _parter;
         public virtual Nullable<float> Parter
         {
@@ -48,18 +55,18 @@ namespace Bilten.Domain
             protected set { _vratilo = value; }
         }
 
-        private Nullable<float> _greda;
-        public virtual Nullable<float> Greda
-        {
-            get { return _greda; }
-            protected set { _greda = value; }
-        }
-
         private Nullable<float> _dvovisinskiRazboj;
         public virtual Nullable<float> DvovisinskiRazboj
         {
             get { return _dvovisinskiRazboj; }
             protected set { _dvovisinskiRazboj = value; }
+        }
+
+        private Nullable<float> _greda;
+        public virtual Nullable<float> Greda
+        {
+            get { return _greda; }
+            protected set { _greda = value; }
         }
 
         public RezultatUkupno()
@@ -217,13 +224,6 @@ namespace Bilten.Domain
             && Greda == null && DvovisinskiRazboj == null;
         }
 
-        private GimnasticarUcesnik gimnasticar;
-        public virtual GimnasticarUcesnik Gimnasticar
-        {
-            get { return gimnasticar; }
-            set { gimnasticar = value; }
-        }
-
         public virtual Nullable<int> TakmicarskiBroj
         {
             get
@@ -257,5 +257,18 @@ namespace Bilten.Domain
             }
         }
 
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+            strBuilder.AppendLine(Parter != null ? Parter.Value.ToString() : NULL);
+            strBuilder.AppendLine(Konj != null ? Konj.Value.ToString() : NULL);
+            strBuilder.AppendLine(Karike != null ? Karike.Value.ToString() : NULL);
+            strBuilder.AppendLine(Preskok != null ? Preskok.Value.ToString() : NULL);
+            strBuilder.AppendLine(Razboj != null ? Razboj.Value.ToString() : NULL);
+            strBuilder.AppendLine(Vratilo != null ? Vratilo.Value.ToString() : NULL);
+            strBuilder.AppendLine(DvovisinskiRazboj != null ? DvovisinskiRazboj.Value.ToString() : NULL);
+            strBuilder.AppendLine(Greda != null ? Greda.Value.ToString() : NULL);
+        }
     }
 }

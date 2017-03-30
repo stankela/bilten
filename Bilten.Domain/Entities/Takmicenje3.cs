@@ -290,5 +290,10 @@ namespace Bilten.Domain
             u.QualOrder++;
             return true;
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

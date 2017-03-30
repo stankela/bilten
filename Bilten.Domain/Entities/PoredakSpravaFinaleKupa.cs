@@ -8,18 +8,18 @@ namespace Bilten.Domain
 {
     public class PoredakSpravaFinaleKupa : DomainObject
     {
-        private IList<RezultatSpravaFinaleKupa> _rezultati = new List<RezultatSpravaFinaleKupa>();
-        public virtual IList<RezultatSpravaFinaleKupa> Rezultati
-        {
-            get { return _rezultati; }
-            protected set { _rezultati = value; }
-        }
-
         private Sprava _sprava;
         public virtual Sprava Sprava
         {
             get { return _sprava; }
             set { _sprava = value; }
+        }
+
+        private IList<RezultatSpravaFinaleKupa> _rezultati = new List<RezultatSpravaFinaleKupa>();
+        public virtual IList<RezultatSpravaFinaleKupa> Rezultati
+        {
+            get { return _rezultati; }
+            protected set { _rezultati = value; }
         }
 
         public PoredakSpravaFinaleKupa()
@@ -462,6 +462,21 @@ namespace Bilten.Domain
                     result.Add(rez);
             }
             return result;
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Sprava.ToString());
+
+            if (Rezultati == null)
+                strBuilder.AppendLine(NULL);
+            else
+            {
+                strBuilder.AppendLine(Rezultati.Count.ToString());
+                foreach (RezultatSpravaFinaleKupa r in Rezultati)
+                    r.dump(strBuilder);
+            }
         }
     }
 }

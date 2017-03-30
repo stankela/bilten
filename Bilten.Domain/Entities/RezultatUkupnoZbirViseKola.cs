@@ -6,6 +6,13 @@ namespace Bilten.Domain
 {
     public class RezultatUkupnoZbirViseKola : Rezultat
     {
+        private GimnasticarUcesnik gimnasticar;
+        public virtual GimnasticarUcesnik Gimnasticar
+        {
+            get { return gimnasticar; }
+            set { gimnasticar = value; }
+        }
+
         private Nullable<float> _parterPrvoKolo;
         public virtual Nullable<float> ParterPrvoKolo
         {
@@ -269,13 +276,6 @@ namespace Bilten.Domain
         
         }
 
-        private GimnasticarUcesnik gimnasticar;
-        public virtual GimnasticarUcesnik Gimnasticar
-        {
-            get { return gimnasticar; }
-            set { gimnasticar = value; }
-        }
-
         public virtual Nullable<int> TakmicarskiBroj
         {
             get
@@ -309,5 +309,55 @@ namespace Bilten.Domain
             }
         }
 
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+
+            strBuilder.AppendLine(ParterPrvoKolo != null ? ParterPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(ParterDrugoKolo != null ? ParterDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(ParterTreceKolo != null ? ParterTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(ParterCetvrtoKolo != null ? ParterCetvrtoKolo.Value.ToString() : NULL);
+            
+            strBuilder.AppendLine(KonjPrvoKolo != null ? KonjPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(KonjDrugoKolo != null ? KonjDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(KonjTreceKolo != null ? KonjTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(KonjCetvrtoKolo != null ? KonjCetvrtoKolo.Value.ToString() : NULL);
+            
+            strBuilder.AppendLine(KarikePrvoKolo != null ? KarikePrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(KarikeDrugoKolo != null ? KarikeDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(KarikeTreceKolo != null ? KarikeTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(KarikeCetvrtoKolo != null ? KarikeCetvrtoKolo.Value.ToString() : NULL);
+            
+            strBuilder.AppendLine(PreskokPrvoKolo != null ? PreskokPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(PreskokDrugoKolo != null ? PreskokDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(PreskokTreceKolo != null ? PreskokTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(PreskokCetvrtoKolo != null ? PreskokCetvrtoKolo.Value.ToString() : NULL);
+            
+            strBuilder.AppendLine(RazbojPrvoKolo != null ? RazbojPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(RazbojDrugoKolo != null ? RazbojDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(RazbojTreceKolo != null ? RazbojTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(RazbojCetvrtoKolo != null ? RazbojCetvrtoKolo.Value.ToString() : NULL);
+            
+            strBuilder.AppendLine(VratiloPrvoKolo != null ? VratiloPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(VratiloDrugoKolo != null ? VratiloDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(VratiloTreceKolo != null ? VratiloTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(VratiloCetvrtoKolo != null ? VratiloCetvrtoKolo.Value.ToString() : NULL);
+            
+            strBuilder.AppendLine(DvovisinskiRazbojPrvoKolo != null ? DvovisinskiRazbojPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(DvovisinskiRazbojDrugoKolo != null ? DvovisinskiRazbojDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(DvovisinskiRazbojTreceKolo != null ? DvovisinskiRazbojTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(DvovisinskiRazbojCetvrtoKolo != null ? DvovisinskiRazbojCetvrtoKolo.Value.ToString() : NULL);
+            
+            strBuilder.AppendLine(GredaPrvoKolo != null ? GredaPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(GredaDrugoKolo != null ? GredaDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(GredaTreceKolo != null ? GredaTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(GredaCetvrtoKolo != null ? GredaCetvrtoKolo.Value.ToString() : NULL);
+
+            strBuilder.AppendLine(TotalPrvoKolo != null ? TotalPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(TotalDrugoKolo != null ? TotalDrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(TotalTreceKolo != null ? TotalTreceKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(TotalCetvrtoKolo != null ? TotalCetvrtoKolo.Value.ToString() : NULL);
+        }
     }
 }

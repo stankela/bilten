@@ -60,5 +60,12 @@ namespace Bilten.Domain
             }
             Penalty = value;
         }
+
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Ekipa != null ? Ekipa.Id.ToString() : NULL);
+            strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
+        }
     }
 }

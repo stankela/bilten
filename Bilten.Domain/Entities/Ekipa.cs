@@ -129,5 +129,18 @@ namespace Bilten.Domain
             }
             return result;
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
+            strBuilder.AppendLine(Kod != null ? Kod : NULL);
+            strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
+
+            // gimnasticari
+            strBuilder.AppendLine(Gimnasticari.Count.ToString());
+            foreach (GimnasticarUcesnik g in Gimnasticari)
+                strBuilder.AppendLine(g.Id.ToString());
+        }
     }
 }

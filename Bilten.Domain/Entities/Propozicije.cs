@@ -9,13 +9,6 @@ namespace Bilten.Domain
 {
     public class Propozicije : DomainObject
     {
-        private byte maxBrojTakmicaraIzKlubaTak1;
-        public virtual byte MaxBrojTakmicaraIzKlubaTak1
-        {
-            get { return maxBrojTakmicaraIzKlubaTak1; }
-            set { maxBrojTakmicaraIzKlubaTak1 = value; }
-        }
-
         private bool postojiTak2;
         public virtual bool PostojiTak2
         {
@@ -516,6 +509,49 @@ namespace Bilten.Domain
                 p.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
                 p.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
             }
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            
+            strBuilder.AppendLine(PostojiTak2.ToString());
+            strBuilder.AppendLine(OdvojenoTak2.ToString());
+            strBuilder.AppendLine(NeogranicenBrojTakmicaraIzKlubaTak2.ToString());
+            strBuilder.AppendLine(MaxBrojTakmicaraIzKlubaTak2.ToString());
+            strBuilder.AppendLine(BrojFinalistaTak2.ToString());
+            strBuilder.AppendLine(BrojRezerviTak2.ToString());
+
+            strBuilder.AppendLine(PostojiTak3.ToString());
+            strBuilder.AppendLine(OdvojenoTak3.ToString());
+            strBuilder.AppendLine(NeogranicenBrojTakmicaraIzKlubaTak3.ToString());
+            strBuilder.AppendLine(MaxBrojTakmicaraIzKlubaTak3.ToString());
+            strBuilder.AppendLine(MaxBrojTakmicaraTak3VaziZaDrzavu.ToString());
+            strBuilder.AppendLine(BrojFinalistaTak3.ToString());
+            strBuilder.AppendLine(BrojRezerviTak3.ToString());
+            strBuilder.AppendLine(KvalifikantiTak3PreskokNaOsnovuObaPreskoka.ToString());
+            strBuilder.AppendLine(PoredakTak3PreskokNaOsnovuObaPreskoka.ToString());
+
+            strBuilder.AppendLine(PostojiTak4.ToString());
+            strBuilder.AppendLine(OdvojenoTak4.ToString());
+            strBuilder.AppendLine(BrojRezultataKojiSeBodujuZaEkipu.ToString());
+            strBuilder.AppendLine(BrojEkipaUFinalu.ToString());
+            strBuilder.AppendLine(JednoTak4ZaSveKategorije.ToString());
+
+            strBuilder.AppendLine(Tak2FinalnaOcenaJeZbirObaKola.ToString());
+            strBuilder.AppendLine(Tak2FinalnaOcenaJeMaxObaKola.ToString());
+            strBuilder.AppendLine(Tak2FinalnaOcenaJeProsekObaKola.ToString());
+            strBuilder.AppendLine(Tak2NeRacunajProsekAkoNemaOceneIzObaKola.ToString());
+
+            strBuilder.AppendLine(Tak3FinalnaOcenaJeZbirObaKola.ToString());
+            strBuilder.AppendLine(Tak3FinalnaOcenaJeMaxObaKola.ToString());
+            strBuilder.AppendLine(Tak3FinalnaOcenaJeProsekObaKola.ToString());
+            strBuilder.AppendLine(Tak3NeRacunajProsekAkoNemaOceneIzObaKola.ToString());
+
+            strBuilder.AppendLine(Tak4FinalnaOcenaJeZbirObaKola.ToString());
+            strBuilder.AppendLine(Tak4FinalnaOcenaJeMaxObaKola.ToString());
+            strBuilder.AppendLine(Tak4FinalnaOcenaJeProsekObaKola.ToString());
+            strBuilder.AppendLine(Tak4NeRacunajProsekAkoNemaOceneIzObaKola.ToString());
         }
     }
 }

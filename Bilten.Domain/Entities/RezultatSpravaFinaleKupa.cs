@@ -6,6 +6,13 @@ namespace Bilten.Domain
 {
     public class RezultatSpravaFinaleKupa : Rezultat
     {
+        private GimnasticarUcesnik gimnasticar;
+        public virtual GimnasticarUcesnik Gimnasticar
+        {
+            get { return gimnasticar; }
+            set { gimnasticar = value; }
+        }
+
         private Nullable<float> d_PrvoKolo;
         public virtual Nullable<float> D_PrvoKolo
         {
@@ -54,13 +61,6 @@ namespace Bilten.Domain
             Total = value;
         }
 
-        private GimnasticarUcesnik gimnasticar;
-        public virtual GimnasticarUcesnik Gimnasticar
-        {
-            get { return gimnasticar; }
-            set { gimnasticar = value; }
-        }
-
         public virtual Nullable<int> TakmicarskiBroj
         {
             get
@@ -94,5 +94,16 @@ namespace Bilten.Domain
             }
         }
 
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+            strBuilder.AppendLine(D_PrvoKolo != null ? D_PrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(E_PrvoKolo != null ? E_PrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(TotalPrvoKolo != null ? TotalPrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(D_DrugoKolo != null ? D_DrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(E_DrugoKolo != null ? E_DrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(TotalDrugoKolo != null ? TotalDrugoKolo.Value.ToString() : NULL);
+        }
     }
 }

@@ -24,5 +24,10 @@ namespace Bilten.Domain
             }
         }
 
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Ekipa != null ? Ekipa.Id.ToString() : NULL);
+        }
     }
 }

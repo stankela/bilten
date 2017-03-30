@@ -1202,9 +1202,11 @@ namespace Bilten.UI
             foreach (GimnasticarUcesnik g in gimnasticari)
                 g.dump(strBuilder);
 
-
+            strBuilder.AppendLine("\nREZULTATSKA TAKMICENJA");
             IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByTakmicenje(takmicenje.Id);
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                rt.dump(strBuilder);
         }
 
         private bool kreirajZbirViseKola(Takmicenje takmicenje)
@@ -1649,7 +1651,6 @@ namespace Bilten.UI
             // da generisem jednostavan test suite koji bi proveravao ovo)
             // TODO3: Uvedi komentar TODO9 za ono sto mora uvek da se proverava kada se menja program (kao naprimer ovde sto
             // mora da se proverava da li sam u medjuvremenu dodao novo svojstvo u klasu Propozicije.)
-            propozicije.MaxBrojTakmicaraIzKlubaTak1 = from.MaxBrojTakmicaraIzKlubaTak1;
             propozicije.PostojiTak2 = from.PostojiTak2;
             propozicije.OdvojenoTak2 = from.OdvojenoTak2;
             propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 = from.NeogranicenBrojTakmicaraIzKlubaTak2;

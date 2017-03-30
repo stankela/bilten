@@ -6,6 +6,13 @@ namespace Bilten.Domain
 {
     public class RezultatSprava : Rezultat
     {
+        private GimnasticarUcesnik gimnasticar;
+        public virtual GimnasticarUcesnik Gimnasticar
+        {
+            get { return gimnasticar; }
+            set { gimnasticar = value; }
+        }
+
         private Nullable<float> d;
         public virtual Nullable<float> D
         {
@@ -53,13 +60,6 @@ namespace Bilten.Domain
             Total = null;
         }
 
-        private GimnasticarUcesnik gimnasticar;
-        public virtual GimnasticarUcesnik Gimnasticar
-        {
-            get { return gimnasticar; }
-            set { gimnasticar = value; }
-        }
-
         public virtual Nullable<int> TakmicarskiBroj
         {
             get
@@ -91,6 +91,15 @@ namespace Bilten.Domain
                 else
                     return String.Empty;
             }
+        }
+
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+            strBuilder.AppendLine(D != null ? D.Value.ToString() : NULL);
+            strBuilder.AppendLine(E != null ? E.Value.ToString() : NULL);
+            strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
         }
     }
 }

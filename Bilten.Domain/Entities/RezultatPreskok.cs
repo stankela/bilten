@@ -99,5 +99,17 @@ namespace Bilten.Domain
             Total_2 = null;
             TotalObeOcene = null;
         }
+
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(RedBroj2 != null ? RedBroj2.Value.ToString() : NULL);
+            strBuilder.AppendLine(Rank2 != null ? Rank2.Value.ToString() : NULL);
+            strBuilder.AppendLine(D_2 != null ? D_2.Value.ToString() : NULL);
+            strBuilder.AppendLine(E_2 != null ? E_2.Value.ToString() : NULL);
+            strBuilder.AppendLine(Penalty_2 != null ? Penalty_2.Value.ToString() : NULL);
+            strBuilder.AppendLine(Total_2 != null ? Total_2.Value.ToString() : NULL);
+            strBuilder.AppendLine(TotalObeOcene != null ? TotalObeOcene.Value.ToString() : NULL);
+        }
     }
 }
