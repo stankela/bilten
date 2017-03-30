@@ -58,5 +58,13 @@ namespace Bilten.Domain
                 return result;
             }
         }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
+            strBuilder.AppendLine(Kod != null ? Kod : NULL);
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
+        }
     }
 }

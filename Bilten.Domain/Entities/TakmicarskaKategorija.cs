@@ -14,6 +14,7 @@ namespace Bilten.Domain
             set { naziv = value; }
         }
 
+        // TODO4: Da li je ovo potrebno? Gimnastika je uvek kao i za Takmicenje.
         private Gimnastika gimnastika;
         public virtual Gimnastika Gimnastika
         {
@@ -112,6 +113,15 @@ namespace Bilten.Domain
                 result = 29 * result + Naziv.GetHashCode();
                 return result;
             }
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
+            strBuilder.AppendLine(Gimnastika.ToString());
+            strBuilder.AppendLine(RedBroj.ToString());
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
         }
     }
 }

@@ -14,6 +14,8 @@ namespace Bilten.Domain
             get { return id; }
         }
 
+        protected readonly string NULL = "__NULL__";
+
         public virtual void validate(Notification notification)
         {
             // TODO: Remove this when you implement IValidatable on DomainObject

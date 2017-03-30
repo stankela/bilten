@@ -67,6 +67,7 @@ namespace Bilten.Domain
             set { drzava = value; }
         }
 
+        // TODO4: Prebaci tip u string.
         private RegistarskiBroj registarskiBroj;
         public virtual RegistarskiBroj RegistarskiBroj
         {

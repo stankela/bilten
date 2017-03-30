@@ -118,11 +118,7 @@ namespace Bilten.Report
                 // TODO: Proveri da li postoje situacije kada za clana ekipe umesto naziva ekipe treba da stoji naziv
                 // kluba ili drzave (koji se nalazi u RezultatUkupno.KlubDrzava).
 
-                string ekipaNaziv = String.Empty;
-                if (rezEkipa != null && rezEkipa.Ekipa != null)
-                {
-                    ekipaNaziv = rezEkipa.Ekipa.Naziv;
-                }
+                string ekipaNaziv = rezEkipa != null ? rezEkipa.Ekipa.Naziv : rez.KlubDrzava;
 
                 if (gim == Gimnastika.MSG)
                 {

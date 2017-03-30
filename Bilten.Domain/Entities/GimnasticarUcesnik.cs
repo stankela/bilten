@@ -35,6 +35,7 @@ namespace Bilten.Domain
             set { datumRodjenja = value; }
         }
 
+        // TODO4: Da li je ovo potrebno? Gimnastika je uvek kao i za Takmicenje.
         private Gimnastika gimnastika;
         public virtual Gimnastika Gimnastika
         {
@@ -42,6 +43,7 @@ namespace Bilten.Domain
             set { gimnastika = value; }
         }
 
+        // TODO4: Izbaci ovo.
         private RegistarskiBroj registarskiBroj;
         public virtual RegistarskiBroj RegistarskiBroj
         {
@@ -49,6 +51,7 @@ namespace Bilten.Domain
             set { registarskiBroj = value; }
         }
 
+        // TODO4: Izbaci ovo.
         private Nullable<int> takmicarskiBroj;
         public virtual Nullable<int> TakmicarskiBroj
         {
@@ -229,5 +232,22 @@ namespace Bilten.Domain
         }
 
         #endregion
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Ime != null ? Ime : NULL);
+            strBuilder.AppendLine(SrednjeIme != null ? SrednjeIme : NULL);
+            strBuilder.AppendLine(Prezime != null ? Prezime : NULL);
+            strBuilder.AppendLine(DatumRodjenja != null ? DatumRodjenja.ToString() : NULL);
+            strBuilder.AppendLine(Gimnastika.ToString());
+            strBuilder.AppendLine(RegistarskiBroj != null ? RegistarskiBroj.ToString() : NULL);
+            strBuilder.AppendLine(TakmicarskiBroj != null ? TakmicarskiBroj.ToString() : NULL);
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
+            strBuilder.AppendLine(KlubUcesnik != null ? KlubUcesnik.Id.ToString() : NULL);
+            strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
+            strBuilder.AppendLine(TakmicarskaKategorija != null ? TakmicarskaKategorija.Id.ToString() : NULL);
+            strBuilder.AppendLine(NastupaZaDrzavu.ToString());
+        }
     }
 }

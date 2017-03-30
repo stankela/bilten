@@ -15,6 +15,7 @@ using Bilten.Dao;
 using Bilten.Dao.NHibernate;
 using Bilten.Util;
 using Bilten.Misc;
+using System.IO;
 
 namespace Bilten.UI
 {
@@ -1173,6 +1174,37 @@ namespace Bilten.UI
             }
 
             mnKopirajPrethodnoTakmicenje.Enabled = false;
+        }
+
+        private void dumpTakmicenje(Takmicenje takmicenje)
+        {
+            StringBuilder strBuilder = new StringBuilder();
+
+            strBuilder.AppendLine("\nKLUBOVI:");
+            IList<KlubUcesnik> klubovi = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(takmicenje.Id);
+            foreach (KlubUcesnik k in klubovi)
+                k.dump(strBuilder);
+
+            strBuilder.AppendLine("\nDRZAVE:");
+            IList<DrzavaUcesnik> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenje.Id);
+            foreach (DrzavaUcesnik d in drzave)
+                d.dump(strBuilder);
+
+            strBuilder.AppendLine("\nKATEGORIJE:");
+            IList<TakmicarskaKategorija> kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                .FindByTakmicenje(takmicenje.Id);
+            foreach (TakmicarskaKategorija k in kategorije)
+                k.dump(strBuilder);
+
+            strBuilder.AppendLine("\nGIMNASTICARI:");
+            IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
+                .FindByTakmicenje(takmicenje.Id);
+            foreach (GimnasticarUcesnik g in gimnasticari)
+                g.dump(strBuilder);
+
+
+            IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByTakmicenje(takmicenje.Id);
         }
 
         private bool kreirajZbirViseKola(Takmicenje takmicenje)
