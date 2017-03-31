@@ -4,6 +4,7 @@ using System.Text;
 using Iesi.Collections.Generic;
 using Bilten.Exceptions;
 using System.Collections;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -360,6 +361,11 @@ namespace Bilten.Domain
                 strBuilder.AppendLine(NULL);
             else
                 PoredakEkipnoZbirViseKola.dump(strBuilder);
+        }
+
+        public static Takmicenje1 loadFromDump(StringReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

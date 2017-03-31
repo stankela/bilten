@@ -4,6 +4,7 @@ using System.Text;
 using Bilten.Exceptions;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -440,6 +441,32 @@ namespace Bilten.Domain
                 strBuilder.AppendLine(NULL);
             else
                 Takmicenje4.dump(strBuilder);
+        }
+
+        public static RezultatskoTakmicenje loadFromDump(StringReader reader)
+        {
+            string id = reader.ReadLine();
+            if (id == NULL)
+                return null;
+            
+            RezultatskoTakmicenje result = new RezultatskoTakmicenje();
+
+            result.RedBroj = byte.Parse(reader.ReadLine());
+            result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
+            result.ImaEkipnoTakmicenje = bool.Parse(reader.ReadLine());
+            result.KombinovanoEkipnoTak = bool.Parse(reader.ReadLine());
+
+            string takmicenjeId = reader.ReadLine();
+            string kategorijaId = reader.ReadLine();
+            string takmicenjeDescriptionId = reader.ReadLine();
+
+            result.Propozicije = Propozicije.loadFromDump(reader);
+            result.Takmicenje1 = Takmicenje1.loadFromDump(reader);
+            result.Takmicenje2 = Takmicenje2.loadFromDump(reader);
+            result.Takmicenje3 = Takmicenje3.loadFromDump(reader);
+            result.Takmicenje4 = Takmicenje4.loadFromDump(reader);
+
+            return result;
         }
     }
 }

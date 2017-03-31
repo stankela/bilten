@@ -5,6 +5,7 @@ using Iesi.Collections.Generic;
 using System.ComponentModel;
 using NHibernate;
 using Bilten.Util;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -111,6 +112,11 @@ namespace Bilten.Domain
                 strBuilder.AppendLine(NULL);
             else
                 Poredak.dump(strBuilder);
+        }
+
+        public static Takmicenje4 loadFromDump(StringReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,6 +1,7 @@
 using Bilten.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -74,5 +75,31 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
+            strBuilder.AppendLine(RedBroj.ToString());
+            if (Propozicije == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Propozicije.dump(strBuilder);
+        }
+
+        public static RezultatskoTakmicenjeDescription loadFromDump(StringReader reader)
+        {
+            string id = reader.ReadLine();
+            if (id == NULL)
+                return null;
+
+            RezultatskoTakmicenjeDescription result = new RezultatskoTakmicenjeDescription();
+
+            string naziv = reader.ReadLine();
+            result.Naziv = naziv != NULL ? naziv : null;
+            result.RedBroj = byte.Parse(reader.ReadLine());
+            result.Propozicije = Propozicije.loadFromDump(reader);
+
+            return result;
+        }
     }
 }

@@ -1176,39 +1176,6 @@ namespace Bilten.UI
             mnKopirajPrethodnoTakmicenje.Enabled = false;
         }
 
-        private void dumpTakmicenje(Takmicenje takmicenje)
-        {
-            StringBuilder strBuilder = new StringBuilder();
-
-            strBuilder.AppendLine("\nKLUBOVI:");
-            IList<KlubUcesnik> klubovi = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(takmicenje.Id);
-            foreach (KlubUcesnik k in klubovi)
-                k.dump(strBuilder);
-
-            strBuilder.AppendLine("\nDRZAVE:");
-            IList<DrzavaUcesnik> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenje.Id);
-            foreach (DrzavaUcesnik d in drzave)
-                d.dump(strBuilder);
-
-            strBuilder.AppendLine("\nKATEGORIJE:");
-            IList<TakmicarskaKategorija> kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
-                .FindByTakmicenje(takmicenje.Id);
-            foreach (TakmicarskaKategorija k in kategorije)
-                k.dump(strBuilder);
-
-            strBuilder.AppendLine("\nGIMNASTICARI:");
-            IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
-                .FindByTakmicenje(takmicenje.Id);
-            foreach (GimnasticarUcesnik g in gimnasticari)
-                g.dump(strBuilder);
-
-            strBuilder.AppendLine("\nREZULTATSKA TAKMICENJA");
-            IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                .FindByTakmicenje(takmicenje.Id);
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                rt.dump(strBuilder);
-        }
-
         private bool kreirajZbirViseKola(Takmicenje takmicenje)
         {
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
@@ -1331,9 +1298,6 @@ namespace Bilten.UI
                     }
                 }
             }
-
-            DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
-            KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
@@ -1845,6 +1809,56 @@ namespace Bilten.UI
             Sesija.Instance.EndSession();
 
             NHibernateHelper.Instance.SessionFactory.Close();
+        }
+
+        private void mnEksportujTakmicenje_Click(object sender, EventArgs e)
+        {
+            if (Sesija.Instance.TakmicenjeId <= 0)
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            TakmicenjeDump takDump;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+
+                    takDump = new TakmicenjeDump();
+                    takDump.dumpTakmicenje(Sesija.Instance.TakmicenjeId);
+                    
+                    using (StringReader reader = new StringReader(takDump.getTakmicenjeDump()))
+                    {
+                        int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
+                        Takmicenje t = Takmicenje.loadFromDump(reader, out prvoKoloId, out drugoKoloId,
+                            out treceKoloId, out cetvrtoKoloId);
+                        t.PrvoKolo = prvoKoloId == -1 ? null :
+                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(prvoKoloId);
+                        t.DrugoKolo = drugoKoloId == -1 ? null :
+                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(drugoKoloId);
+                        t.TreceKolo = treceKoloId == -1 ? null :
+                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(treceKoloId);
+                        t.CetvrtoKolo = cetvrtoKoloId == -1 ? null :
+                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(cetvrtoKoloId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, strProgName);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
         }
     }
 }

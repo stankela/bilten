@@ -29,6 +29,7 @@ namespace Bilten.Misc
 
         protected Sesija()
         {
+            takmicenjeId = -1;
             clearOcene();
         }
 
@@ -43,6 +44,11 @@ namespace Bilten.Misc
         }
 
         private int takmicenjeId;
+        public int TakmicenjeId
+        { 
+            get { return takmicenjeId; }
+        }
+
         private List<Ocena> oceneTak1;
         private List<Ocena> oceneTak2;
         private List<Ocena> oceneTak3;

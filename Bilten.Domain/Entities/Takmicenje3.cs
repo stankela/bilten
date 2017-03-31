@@ -4,6 +4,7 @@ using System.Text;
 using Iesi.Collections.Generic;
 using System.ComponentModel;
 using Bilten.Util;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -319,5 +320,10 @@ namespace Bilten.Domain
                 PoredakPreskok.dump(strBuilder);
         }
 
+
+        public static Takmicenje3 loadFromDump(StringReader reader)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

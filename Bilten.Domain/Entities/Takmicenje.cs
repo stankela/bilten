@@ -4,6 +4,7 @@ using System.Text;
 using Iesi.Collections.Generic;
 using System.Diagnostics;
 using Bilten.Util;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -582,5 +583,84 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
+            strBuilder.AppendLine(Gimnastika.ToString());
+            strBuilder.AppendLine(Datum.ToString());
+            strBuilder.AppendLine(Mesto != null ? Mesto : NULL);
+            strBuilder.AppendLine(TipTakmicenja.ToString());
+            strBuilder.AppendLine(PrvoKolo != null ? PrvoKolo.Id.ToString() : NULL);
+            strBuilder.AppendLine(DrugoKolo != null ? DrugoKolo.Id.ToString() : NULL);
+            strBuilder.AppendLine(TreceKolo != null ? TreceKolo.Id.ToString() : NULL);
+            strBuilder.AppendLine(CetvrtoKolo != null ? CetvrtoKolo.Id.ToString() : NULL);
+
+            strBuilder.AppendLine(BrojEOcena.ToString());
+            strBuilder.AppendLine(BrojDecimalaD.ToString());
+            strBuilder.AppendLine(BrojDecimalaE1.ToString());
+            strBuilder.AppendLine(BrojDecimalaE.ToString());
+            strBuilder.AppendLine(BrojDecimalaPen.ToString());
+            strBuilder.AppendLine(BrojDecimalaTotal.ToString());
+            strBuilder.AppendLine(ZavrsenoTak1.ToString());
+            strBuilder.AppendLine(ZrebZaFinalePoSpravama.ToString());
+
+            strBuilder.AppendLine(TakmicenjeDescriptions.Count.ToString());
+            foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
+                d.dump(strBuilder);
+
+            strBuilder.AppendLine(Kategorije.Count.ToString());
+            foreach (TakmicarskaKategorija k in Kategorije)
+                k.dump(strBuilder);
+        }
+
+        public static Takmicenje loadFromDump(StringReader reader, out int prvoKoloId, out int drugoKoloId,
+            out int treceKoloId, out int cetvrtoKoloId)
+        {
+            string id = reader.ReadLine();
+            if (id == NULL)
+            {
+                prvoKoloId = drugoKoloId = treceKoloId = cetvrtoKoloId = -1;
+                return null;
+            }
+
+            Takmicenje result = new Takmicenje();
+
+            string naziv = reader.ReadLine();
+            result.Naziv = naziv != NULL ? naziv : null;            
+            result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
+            result.Datum = DateTime.Parse(reader.ReadLine());
+            string mesto = reader.ReadLine();
+            result.Mesto = mesto != NULL ? mesto : null;
+
+            result.TipTakmicenja = (TipTakmicenja)Enum.Parse(typeof(TipTakmicenja), reader.ReadLine());
+
+            string prvoKoloIdStr = reader.ReadLine();
+            string drugoKoloIdStr = reader.ReadLine();
+            string treceKoloIdStr = reader.ReadLine();
+            string cetvrtoKoloIdStr = reader.ReadLine();
+            prvoKoloId = prvoKoloIdStr != NULL ? int.Parse(prvoKoloIdStr) : -1;
+            drugoKoloId = drugoKoloIdStr != NULL ? int.Parse(drugoKoloIdStr) : -1;
+            treceKoloId = treceKoloIdStr != NULL ? int.Parse(treceKoloIdStr) : -1;
+            cetvrtoKoloId = cetvrtoKoloIdStr != NULL ? int.Parse(cetvrtoKoloIdStr) : -1;
+
+            result.BrojEOcena = byte.Parse(reader.ReadLine());
+            result.BrojDecimalaD = byte.Parse(reader.ReadLine());
+            result.BrojDecimalaE1 = byte.Parse(reader.ReadLine());
+            result.BrojDecimalaE = byte.Parse(reader.ReadLine());
+            result.BrojDecimalaPen = byte.Parse(reader.ReadLine());
+            result.BrojDecimalaTotal = byte.Parse(reader.ReadLine());
+            result.ZavrsenoTak1 = bool.Parse(reader.ReadLine());
+            result.ZrebZaFinalePoSpravama = reader.ReadLine();
+
+            int brojTakmicenja = int.Parse(reader.ReadLine());
+            for (int i = 0; i < brojTakmicenja; ++i)
+                result.TakmicenjeDescriptions.Add(RezultatskoTakmicenjeDescription.loadFromDump(reader));
+            int brojKategorija = int.Parse(reader.ReadLine()); 
+            for (int i = 0; i < brojKategorija; ++i)
+                result.Kategorije.Add(TakmicarskaKategorija.loadFromDump(reader, result));
+
+            return result;
+        }
     }
 }
