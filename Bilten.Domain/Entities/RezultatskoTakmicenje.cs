@@ -443,7 +443,9 @@ namespace Bilten.Domain
                 Takmicenje4.dump(strBuilder);
         }
 
-        public static RezultatskoTakmicenje loadFromDump(StringReader reader)
+        public static RezultatskoTakmicenje loadFromDump(StringReader reader, IDictionary<int, Takmicenje> takmicenjeMap,
+            IDictionary<int, TakmicarskaKategorija> kategorijeMap,
+            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap)
         {
             string id = reader.ReadLine();
             if (id == NULL)
@@ -456,9 +458,9 @@ namespace Bilten.Domain
             result.ImaEkipnoTakmicenje = bool.Parse(reader.ReadLine());
             result.KombinovanoEkipnoTak = bool.Parse(reader.ReadLine());
 
-            string takmicenjeId = reader.ReadLine();
-            string kategorijaId = reader.ReadLine();
-            string takmicenjeDescriptionId = reader.ReadLine();
+            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
+            result.Kategorija = kategorijeMap[int.Parse(reader.ReadLine())];
+            result.TakmicenjeDescription = descriptionsMap[int.Parse(reader.ReadLine())];
 
             result.Propozicije = Propozicije.loadFromDump(reader);
             result.Takmicenje1 = Takmicenje1.loadFromDump(reader);

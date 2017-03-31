@@ -86,13 +86,15 @@ namespace Bilten.Domain
                 Propozicije.dump(strBuilder);
         }
 
-        public static RezultatskoTakmicenjeDescription loadFromDump(StringReader reader)
+        public static RezultatskoTakmicenjeDescription loadFromDump(StringReader reader,
+            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap)
         {
             string id = reader.ReadLine();
             if (id == NULL)
                 return null;
 
             RezultatskoTakmicenjeDescription result = new RezultatskoTakmicenjeDescription();
+            descriptionsMap.Add(int.Parse(id), result);
 
             string naziv = reader.ReadLine();
             result.Naziv = naziv != NULL ? naziv : null;

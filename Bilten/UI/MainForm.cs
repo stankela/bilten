@@ -1829,12 +1829,20 @@ namespace Bilten.UI
 
                     takDump = new TakmicenjeDump();
                     takDump.dumpTakmicenje(Sesija.Instance.TakmicenjeId);
+
+                    IDictionary<int, Takmicenje> takmicenjeMap = new Dictionary<int, Takmicenje>();
+                    IDictionary<int, TakmicarskaKategorija> kategorijeMap = new Dictionary<int, TakmicarskaKategorija>();
+                    IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap
+                        = new Dictionary<int, RezultatskoTakmicenjeDescription>();
+                    IDictionary<int, KlubUcesnik> kluboviMap = new Dictionary<int, KlubUcesnik>();
+                    IDictionary<int, DrzavaUcesnik> drzaveMap = new Dictionary<int, DrzavaUcesnik>();
+                    IDictionary<int, GimnasticarUcesnik> gimnasticariMap = new Dictionary<int, GimnasticarUcesnik>();
                     
                     using (StringReader reader = new StringReader(takDump.getTakmicenjeDump()))
                     {
                         int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
                         Takmicenje t = Takmicenje.loadFromDump(reader, out prvoKoloId, out drugoKoloId,
-                            out treceKoloId, out cetvrtoKoloId);
+                            out treceKoloId, out cetvrtoKoloId, takmicenjeMap, kategorijeMap, descriptionsMap);
                         t.PrvoKolo = prvoKoloId == -1 ? null :
                             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(prvoKoloId);
                         t.DrugoKolo = drugoKoloId == -1 ? null :
@@ -1843,6 +1851,40 @@ namespace Bilten.UI
                             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(treceKoloId);
                         t.CetvrtoKolo = cetvrtoKoloId == -1 ? null :
                             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(cetvrtoKoloId);
+                    }
+                    
+                    IList<KlubUcesnik> klubovi = new List<KlubUcesnik>();
+                    using (StringReader reader = new StringReader(takDump.getKluboviDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                            klubovi.Add(KlubUcesnik.loadFromDump(reader, kluboviMap, takmicenjeMap));
+                    }
+
+                    IList<DrzavaUcesnik> drzave = new List<DrzavaUcesnik>();
+                    using (StringReader reader = new StringReader(takDump.getDrzaveDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                            drzave.Add(DrzavaUcesnik.loadFromDump(reader, drzaveMap, takmicenjeMap));
+                    }
+
+                    IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
+                    using (StringReader reader = new StringReader(takDump.getGimnasticariDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                            gimnasticari.Add(GimnasticarUcesnik.loadFromDump(reader, gimnasticariMap, takmicenjeMap,
+                                kluboviMap, drzaveMap, kategorijeMap));
+                    }
+
+                    IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
+                    using (StringReader reader = new StringReader(takDump.getRezTakmicenjaDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                            rezTakmicenja.Add(RezultatskoTakmicenje.loadFromDump(reader, takmicenjeMap, kategorijeMap,
+                                descriptionsMap));
                     }
                 }
             }

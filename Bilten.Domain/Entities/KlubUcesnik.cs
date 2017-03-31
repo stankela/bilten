@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -65,6 +67,26 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
             strBuilder.AppendLine(Kod != null ? Kod : NULL);
             strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
+        }
+
+        public static KlubUcesnik loadFromDump(StringReader reader, IDictionary<int, KlubUcesnik> kluboviMap,
+            IDictionary<int, Takmicenje> takmicenjeMap)
+        {
+            string id = reader.ReadLine();
+            if (id == NULL)
+                return null;
+
+            KlubUcesnik result = new KlubUcesnik();
+            kluboviMap.Add(int.Parse(id), result);
+
+            string naziv = reader.ReadLine();
+            result.Naziv = naziv != NULL ? naziv : null;
+            string kod = reader.ReadLine();
+            result.Kod = kod != NULL ? kod : null;
+           
+            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
+
+            return result;
         }
     }
 }

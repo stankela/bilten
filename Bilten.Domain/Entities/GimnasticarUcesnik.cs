@@ -1,6 +1,8 @@
 using Bilten.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -248,6 +250,48 @@ namespace Bilten.Domain
             strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(TakmicarskaKategorija != null ? TakmicarskaKategorija.Id.ToString() : NULL);
             strBuilder.AppendLine(NastupaZaDrzavu.ToString());
+        }
+
+        public static GimnasticarUcesnik loadFromDump(StringReader reader,
+            IDictionary<int, GimnasticarUcesnik> gimnasticariMap, IDictionary<int, Takmicenje> takmicenjeMap,
+            IDictionary<int, KlubUcesnik> kluboviMap, IDictionary<int, DrzavaUcesnik> drzaveMap,
+            IDictionary<int, TakmicarskaKategorija> kategorijeMap)
+        {
+            string id = reader.ReadLine();
+            if (id == NULL)
+                return null;
+
+            GimnasticarUcesnik result = new GimnasticarUcesnik();
+            gimnasticariMap.Add(int.Parse(id), result);
+
+            string ime = reader.ReadLine();
+            result.Ime = ime != NULL ? ime : null;
+            
+            string srednjeIme = reader.ReadLine();
+            result.SrednjeIme = srednjeIme != NULL ? srednjeIme : null;
+            
+            string prezime = reader.ReadLine();
+            result.Prezime = prezime != NULL ? prezime : null;
+            
+            string datumRodjenja = reader.ReadLine();
+            result.DatumRodjenja = datumRodjenja != NULL ? Datum.Parse(datumRodjenja) : null;
+            
+            result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
+
+            string registarskiBroj = reader.ReadLine();
+            result.RegistarskiBroj = registarskiBroj != NULL ? RegistarskiBroj.Parse(registarskiBroj) : null;
+
+            string takmicarskiBroj = reader.ReadLine();
+            result.TakmicarskiBroj = takmicarskiBroj != NULL ? int.Parse(takmicarskiBroj) : (int?)null;
+
+            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
+            result.KlubUcesnik = kluboviMap[int.Parse(reader.ReadLine())];
+            result.DrzavaUcesnik = drzaveMap[int.Parse(reader.ReadLine())];
+            result.TakmicarskaKategorija = kategorijeMap[int.Parse(reader.ReadLine())];
+
+            result.NastupaZaDrzavu = bool.Parse(reader.ReadLine());
+
+            return result;
         }
     }
 }

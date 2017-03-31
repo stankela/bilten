@@ -47,6 +47,7 @@ namespace Bilten.Misc
         {
             strBuilder.Clear();
             IList<KlubUcesnik> klubovi = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(klubovi.Count.ToString());
             foreach (KlubUcesnik k in klubovi)
                 k.dump(strBuilder);
             kluboviDump = strBuilder.ToString();
@@ -56,6 +57,7 @@ namespace Bilten.Misc
         {
             strBuilder.Clear();
             IList<DrzavaUcesnik> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(drzave.Count.ToString());
             foreach (DrzavaUcesnik d in drzave)
                 d.dump(strBuilder);
             drzaveDump = strBuilder.ToString();
@@ -66,6 +68,7 @@ namespace Bilten.Misc
             strBuilder.Clear();
             IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
                 .FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(gimnasticari.Count.ToString());
             foreach (GimnasticarUcesnik g in gimnasticari)
                 g.dump(strBuilder);
             gimnasticariDump = strBuilder.ToString();
@@ -76,6 +79,7 @@ namespace Bilten.Misc
             strBuilder.Clear();
             IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(rezTakmicenja.Count.ToString());
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                 rt.dump(strBuilder);
             rezTakmicenjaDump = strBuilder.ToString();
@@ -84,6 +88,26 @@ namespace Bilten.Misc
         public string getTakmicenjeDump()
         {
             return takmicenjeId != -1 ? takmicenjeDump : String.Empty;
+        }
+
+        public string getKluboviDump()
+        {
+            return takmicenjeId != -1 ? kluboviDump : String.Empty;
+        }
+
+        public string getDrzaveDump()
+        {
+            return takmicenjeId != -1 ? drzaveDump : String.Empty;
+        }
+
+        public string getGimnasticariDump()
+        {
+            return takmicenjeId != -1 ? gimnasticariDump : String.Empty;
+        }
+
+        public string getRezTakmicenjaDump()
+        {
+            return takmicenjeId != -1 ? rezTakmicenjaDump : String.Empty;
         }
     }
 }

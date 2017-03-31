@@ -1,6 +1,7 @@
 using Bilten.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -125,23 +126,22 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
         }
 
-        public static TakmicarskaKategorija loadFromDump(StringReader reader, Takmicenje t)
+        public static TakmicarskaKategorija loadFromDump(StringReader reader,
+            IDictionary<int, TakmicarskaKategorija> kategorijeMap, IDictionary<int, Takmicenje> takmicenjeMap)
         {
             string id = reader.ReadLine();
             if (id == NULL)
                 return null;
 
             TakmicarskaKategorija result = new TakmicarskaKategorija();
+            kategorijeMap.Add(int.Parse(id), result);
 
             string naziv = reader.ReadLine();
             result.Naziv = naziv != NULL ? naziv : null;
             result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
             result.RedBroj = byte.Parse(reader.ReadLine());
 
-            int takmicenjeId = int.Parse(reader.ReadLine());
-            // NOTE: Posto postoji cirkularna referenca izmedju takmicenja i kategorije, ocitano takmicenjeId se ne
-            // koristi vec se koristi takmicenje prosledjeno kao argument.
-            result.Takmicenje = t;
+            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
 
             return result;
         }

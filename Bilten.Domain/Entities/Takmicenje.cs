@@ -615,7 +615,9 @@ namespace Bilten.Domain
         }
 
         public static Takmicenje loadFromDump(StringReader reader, out int prvoKoloId, out int drugoKoloId,
-            out int treceKoloId, out int cetvrtoKoloId)
+            out int treceKoloId, out int cetvrtoKoloId, IDictionary<int, Takmicenje> takmicenjeMap,
+            IDictionary<int, TakmicarskaKategorija> kategorijeMap,
+            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap)
         {
             string id = reader.ReadLine();
             if (id == NULL)
@@ -625,6 +627,7 @@ namespace Bilten.Domain
             }
 
             Takmicenje result = new Takmicenje();
+            takmicenjeMap.Add(int.Parse(id), result);
 
             string naziv = reader.ReadLine();
             result.Naziv = naziv != NULL ? naziv : null;            
@@ -655,10 +658,10 @@ namespace Bilten.Domain
 
             int brojTakmicenja = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojTakmicenja; ++i)
-                result.TakmicenjeDescriptions.Add(RezultatskoTakmicenjeDescription.loadFromDump(reader));
+                result.TakmicenjeDescriptions.Add(RezultatskoTakmicenjeDescription.loadFromDump(reader, descriptionsMap));
             int brojKategorija = int.Parse(reader.ReadLine()); 
             for (int i = 0; i < brojKategorija; ++i)
-                result.Kategorije.Add(TakmicarskaKategorija.loadFromDump(reader, result));
+                result.Kategorije.Add(TakmicarskaKategorija.loadFromDump(reader, kategorijeMap, takmicenjeMap));
 
             return result;
         }
