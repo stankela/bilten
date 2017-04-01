@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -104,6 +105,32 @@ namespace Bilten.Domain
             strBuilder.AppendLine(D_DrugoKolo != null ? D_DrugoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(E_DrugoKolo != null ? E_DrugoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(TotalDrugoKolo != null ? TotalDrugoKolo.Value.ToString() : NULL);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        {
+            base.loadFromDump(reader);
+
+            string line = reader.ReadLine();
+            Gimnasticar = line != NULL ? gimnasticariMap[int.Parse(line)] : null;
+
+            line = reader.ReadLine();
+            D_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            TotalPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            D_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            TotalDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
         }
     }
 }

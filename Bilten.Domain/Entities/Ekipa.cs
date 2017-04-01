@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Iesi.Collections.Generic;
 using Bilten.Util;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -141,6 +142,30 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Gimnasticari.Count.ToString());
             foreach (GimnasticarUcesnik g in Gimnasticari)
                 strBuilder.AppendLine(g.Id.ToString());
+        }
+
+        public static Ekipa loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap, 
+            IDictionary<int, Ekipa> ekipeMap)
+        {
+            string id = reader.ReadLine();
+            if (id == NULL)
+                return null;
+
+            Ekipa result = new Ekipa();
+            ekipeMap.Add(int.Parse(id), result);
+
+            string naziv = reader.ReadLine();
+            result.Naziv = naziv != NULL ? naziv : null;
+            string kod = reader.ReadLine();
+            result.Kod = kod != NULL ? kod : null;
+            string penalty = reader.ReadLine();
+            result.Penalty = penalty != NULL ? float.Parse(penalty) : (float?)null;
+
+            int brojGimnasticara = int.Parse(reader.ReadLine());
+            for (int i = 0; i < brojGimnasticara; ++i)
+                result.Gimnasticari.Add(gimnasticariMap[int.Parse(reader.ReadLine())]);
+
+            return result;
         }
     }
 }

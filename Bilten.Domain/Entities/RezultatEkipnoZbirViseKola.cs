@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -28,6 +29,14 @@ namespace Bilten.Domain
         {
             base.dump(strBuilder);
             strBuilder.AppendLine(Ekipa != null ? Ekipa.Id.ToString() : NULL);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IDictionary<int, Ekipa> ekipeMap)
+        {
+            base.loadFromDump(reader, null);
+
+            string ekipaId = reader.ReadLine();
+            Ekipa = ekipaId != NULL ? ekipeMap[int.Parse(ekipaId)] : null;
         }
     }
 }

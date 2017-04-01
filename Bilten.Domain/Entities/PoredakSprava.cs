@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Bilten.Util;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -29,13 +30,15 @@ namespace Bilten.Domain
             protected set { _rezultati = value; }
         }
 
-        protected PoredakSprava()
+        public PoredakSprava()
         {
 
         }
 
         public PoredakSprava(DeoTakmicenjaKod deoTakKod, Sprava sprava)
         {
+            // TODO4: Proveri da li treba da se koristi DeoTakmicenjaKod i Sprava (zbog NHibernate)? Ako treba, izmeni
+            // i na ostalim mestima.
             this.deoTakKod = deoTakKod;
             this._sprava = sprava;
         }
@@ -468,13 +471,23 @@ namespace Bilten.Domain
             strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
             strBuilder.AppendLine(Sprava.ToString());
 
-            if (Rezultati == null)
-                strBuilder.AppendLine(NULL);
-            else
+            strBuilder.AppendLine(Rezultati.Count.ToString());
+            foreach (RezultatSprava r in Rezultati)
+                r.dump(strBuilder);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        {
+            DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
+            Sprava = (Sprava)Enum.Parse(typeof(Sprava), reader.ReadLine());
+
+            int brojRezultata = int.Parse(reader.ReadLine());
+            for (int i = 0; i < brojRezultata; ++i)
             {
-                strBuilder.AppendLine(Rezultati.Count.ToString());
-                foreach (RezultatSprava r in Rezultati)
-                    r.dump(strBuilder);
+                reader.ReadLine();  // id
+                RezultatSprava r = new RezultatSprava();
+                r.loadFromDump(reader, gimnasticariMap);
+                Rezultati.Add(r);
             }
         }
     }

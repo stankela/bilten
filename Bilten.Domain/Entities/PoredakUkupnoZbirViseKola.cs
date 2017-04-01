@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Bilten.Util;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -323,13 +324,20 @@ namespace Bilten.Domain
         {
             strBuilder.AppendLine(Id.ToString());
 
-            if (Rezultati == null)
-                strBuilder.AppendLine(NULL);
-            else
+            strBuilder.AppendLine(Rezultati.Count.ToString());
+            foreach (RezultatUkupnoZbirViseKola r in Rezultati)
+                r.dump(strBuilder);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        {
+            int brojRezultata = int.Parse(reader.ReadLine());
+            for (int i = 0; i < brojRezultata; ++i)
             {
-                strBuilder.AppendLine(Rezultati.Count.ToString());
-                foreach (RezultatUkupnoZbirViseKola r in Rezultati)
-                    r.dump(strBuilder);
+                reader.ReadLine();  // id
+                RezultatUkupnoZbirViseKola r = new RezultatUkupnoZbirViseKola();
+                r.loadFromDump(reader, gimnasticariMap);
+                Rezultati.Add(r);
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -269,6 +270,38 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Vratilo != null ? Vratilo.Value.ToString() : NULL);
             strBuilder.AppendLine(DvovisinskiRazboj != null ? DvovisinskiRazboj.Value.ToString() : NULL);
             strBuilder.AppendLine(Greda != null ? Greda.Value.ToString() : NULL);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        {
+            base.loadFromDump(reader);
+
+            string line = reader.ReadLine();
+            Gimnasticar = line != NULL ? gimnasticariMap[int.Parse(line)] : null;
+        
+            line = reader.ReadLine();
+            Parter = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Konj = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Karike = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Preskok = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Razboj = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Vratilo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            DvovisinskiRazboj = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Greda = line != NULL ? float.Parse(line) : (float?)null;
         }
     }
 }

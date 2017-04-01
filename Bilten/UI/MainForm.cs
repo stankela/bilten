@@ -1884,7 +1884,7 @@ namespace Bilten.UI
                         int count = int.Parse(reader.ReadLine());
                         for (int i = 0; i < count; ++i)
                             rezTakmicenja.Add(RezultatskoTakmicenje.loadFromDump(reader, takmicenjeMap, kategorijeMap,
-                                descriptionsMap));
+                                descriptionsMap, gimnasticariMap));
                     }
                 }
             }

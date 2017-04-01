@@ -126,6 +126,8 @@ namespace Bilten.Domain
             set { _poredakEkipno = value; }
         }
 
+        // TODO4: Proveri da li je potrebno da inicijalizujem poredak sa novim objektom (za standardne poretke to nisam
+        // radio). Isto i za zbir vise kola.
         private PoredakUkupnoFinaleKupa _poredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
         public virtual PoredakUkupnoFinaleKupa PoredakUkupnoFinaleKupa
         {
@@ -314,14 +316,9 @@ namespace Bilten.Domain
             else
                 PoredakUkupno.dump(strBuilder);
 
-            if (PoredakSprava == null)
-                strBuilder.AppendLine(NULL);
-            else
-            {
-                strBuilder.AppendLine(PoredakSprava.Count.ToString());
-                foreach (PoredakSprava p in PoredakSprava)
-                    p.dump(strBuilder);
-            }
+            strBuilder.AppendLine(PoredakSprava.Count.ToString());
+            foreach (PoredakSprava p in PoredakSprava)
+                p.dump(strBuilder);
 
             if (PoredakPreskok == null)
                 strBuilder.AppendLine(NULL);
@@ -338,14 +335,9 @@ namespace Bilten.Domain
             else
                 PoredakUkupnoFinaleKupa.dump(strBuilder);
 
-            if (PoredakSpravaFinaleKupa == null)
-                strBuilder.AppendLine(NULL);
-            else
-            {
-                strBuilder.AppendLine(PoredakSpravaFinaleKupa.Count.ToString());
-                foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
-                    p.dump(strBuilder);
-            }
+            strBuilder.AppendLine(PoredakSpravaFinaleKupa.Count.ToString());
+            foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
+                p.dump(strBuilder);
 
             if (PoredakEkipnoFinaleKupa == null)
                 strBuilder.AppendLine(NULL);
@@ -363,9 +355,109 @@ namespace Bilten.Domain
                 PoredakEkipnoZbirViseKola.dump(strBuilder);
         }
 
-        public static Takmicenje1 loadFromDump(StringReader reader)
+        // TODO4: Izbaci sve dictionary parametre i smesti ih kao staticke clanove u klasu DomainObject.
+        // Takodje, konvertuj sve preostale staticke loadFromDump metode.
+
+        public static Takmicenje1 loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
         {
-            throw new NotImplementedException();
+            string id = reader.ReadLine();
+            if (id == NULL)
+                return null;
+
+            Takmicenje1 result = new Takmicenje1();
+
+            int count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+                result.Gimnasticari.Add(gimnasticariMap[int.Parse(reader.ReadLine())]);
+
+            IDictionary<int, Ekipa> ekipeMap = new Dictionary<int, Ekipa>();
+
+            count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+                result.Ekipe.Add(Ekipa.loadFromDump(reader, gimnasticariMap, ekipeMap));
+
+            id = reader.ReadLine();
+            PoredakUkupno poredakUkupno = null;
+            if (id != NULL)
+            {
+                poredakUkupno = new PoredakUkupno();
+                poredakUkupno.loadFromDump(reader, gimnasticariMap);
+            }
+            result.PoredakUkupno = poredakUkupno;
+
+            count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                PoredakSprava poredakSprava = new PoredakSprava();
+                poredakSprava.loadFromDump(reader, gimnasticariMap);
+                result.PoredakSprava.Add(poredakSprava);
+            }
+
+            id = reader.ReadLine();
+            PoredakPreskok poredakPreskok = null;
+            if (id != NULL)
+            {
+                poredakPreskok = new PoredakPreskok();
+                poredakPreskok.loadFromDump(reader, gimnasticariMap);
+            }
+            result.PoredakPreskok = poredakPreskok;
+
+            id = reader.ReadLine();
+            PoredakEkipno poredakEkipno = null;
+            if (id != NULL)
+            {
+                poredakEkipno = new PoredakEkipno();
+                poredakEkipno.loadFromDump(reader, ekipeMap);
+            }
+            result.PoredakEkipno = poredakEkipno;
+
+            id = reader.ReadLine();
+            PoredakUkupnoFinaleKupa poredakUkupnoFinaleKupa = null;
+            if (id != NULL)
+            {
+                poredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
+                poredakUkupnoFinaleKupa.loadFromDump(reader, gimnasticariMap);
+            }
+            result.PoredakUkupnoFinaleKupa = poredakUkupnoFinaleKupa;
+
+            count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                PoredakSpravaFinaleKupa p = new PoredakSpravaFinaleKupa();
+                p.loadFromDump(reader, gimnasticariMap);
+                result.PoredakSpravaFinaleKupa.Add(p);
+            }
+
+            id = reader.ReadLine();
+            PoredakEkipnoFinaleKupa poredakEkipnoFinaleKupa = null;
+            if (id != NULL)
+            {
+                poredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();
+                poredakEkipnoFinaleKupa.loadFromDump(reader, ekipeMap);
+            }
+            result.PoredakEkipnoFinaleKupa = poredakEkipnoFinaleKupa;
+
+            id = reader.ReadLine();
+            PoredakUkupnoZbirViseKola poredakUkupnoZbirViseKola = null;
+            if (id != NULL)
+            {
+                poredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
+                poredakUkupnoZbirViseKola.loadFromDump(reader, gimnasticariMap);
+            }
+            result.PoredakUkupnoZbirViseKola = poredakUkupnoZbirViseKola;
+
+            id = reader.ReadLine();
+            PoredakEkipnoZbirViseKola poredakEkipnoZbirViseKola = null;
+            if (id != NULL)
+            {
+                poredakEkipnoZbirViseKola = new PoredakEkipnoZbirViseKola();
+                poredakEkipnoZbirViseKola.loadFromDump(reader, ekipeMap);
+            }
+            result.PoredakEkipnoZbirViseKola = poredakEkipnoZbirViseKola;
+
+            return result;
         }
     }
 }

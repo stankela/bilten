@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Bilten.Util;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -22,7 +23,7 @@ namespace Bilten.Domain
             protected set { _rezultati = value; }
         }
 
-        protected PoredakEkipno()
+        public PoredakEkipno()
         {
 
         }
@@ -365,13 +366,22 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Id.ToString());
             strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
 
-            if (Rezultati == null)
-                strBuilder.AppendLine(NULL);
-            else
+            strBuilder.AppendLine(Rezultati.Count.ToString());
+            foreach (RezultatEkipno r in Rezultati)
+                r.dump(strBuilder);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IDictionary<int, Ekipa> ekipeMap)
+        {
+            DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
+
+            int brojRezultata = int.Parse(reader.ReadLine());
+            for (int i = 0; i < brojRezultata; ++i)
             {
-                strBuilder.AppendLine(Rezultati.Count.ToString());
-                foreach (RezultatEkipno r in Rezultati)
-                    r.dump(strBuilder);
+                reader.ReadLine();  // id
+                RezultatEkipno r = new RezultatEkipno();
+                r.loadFromDump(reader, ekipeMap);
+                Rezultati.Add(r);
             }
         }
     }

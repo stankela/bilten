@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -110,6 +111,32 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Penalty_2 != null ? Penalty_2.Value.ToString() : NULL);
             strBuilder.AppendLine(Total_2 != null ? Total_2.Value.ToString() : NULL);
             strBuilder.AppendLine(TotalObeOcene != null ? TotalObeOcene.Value.ToString() : NULL);
+        }
+
+        public override void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        {
+            base.loadFromDump(reader, gimnasticariMap);
+
+            string redBroj2 = reader.ReadLine();
+            RedBroj2 = redBroj2 != NULL ? short.Parse(redBroj2) : (short?)null;
+
+            string rank2 = reader.ReadLine();
+            Rank2 = rank2 != NULL ? short.Parse(rank2) : (short?)null;
+
+            string d_2 = reader.ReadLine();
+            D_2 = d_2 != NULL ? float.Parse(d_2) : (float?)null;
+
+            string e_2 = reader.ReadLine();
+            E_2 = e_2 != NULL ? float.Parse(e_2) : (float?)null;
+
+            string penalty_2 = reader.ReadLine();
+            Penalty_2 = penalty_2 != NULL ? float.Parse(penalty_2) : (float?)null;
+
+            string total_2 = reader.ReadLine();
+            Total_2 = total_2 != NULL ? float.Parse(total_2) : (float?)null;
+
+            string totalObeOcene = reader.ReadLine();
+            TotalObeOcene = totalObeOcene != NULL ? float.Parse(totalObeOcene) : (float?)null;
         }
     }
 }

@@ -445,7 +445,8 @@ namespace Bilten.Domain
 
         public static RezultatskoTakmicenje loadFromDump(StringReader reader, IDictionary<int, Takmicenje> takmicenjeMap,
             IDictionary<int, TakmicarskaKategorija> kategorijeMap,
-            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap)
+            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap,
+            IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
         {
             string id = reader.ReadLine();
             if (id == NULL)
@@ -463,7 +464,7 @@ namespace Bilten.Domain
             result.TakmicenjeDescription = descriptionsMap[int.Parse(reader.ReadLine())];
 
             result.Propozicije = Propozicije.loadFromDump(reader);
-            result.Takmicenje1 = Takmicenje1.loadFromDump(reader);
+            result.Takmicenje1 = Takmicenje1.loadFromDump(reader, gimnasticariMap);
             result.Takmicenje2 = Takmicenje2.loadFromDump(reader);
             result.Takmicenje3 = Takmicenje3.loadFromDump(reader);
             result.Takmicenje4 = Takmicenje4.loadFromDump(reader);

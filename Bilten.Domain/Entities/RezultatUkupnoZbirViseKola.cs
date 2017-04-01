@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -358,6 +359,122 @@ namespace Bilten.Domain
             strBuilder.AppendLine(TotalDrugoKolo != null ? TotalDrugoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(TotalTreceKolo != null ? TotalTreceKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(TotalCetvrtoKolo != null ? TotalCetvrtoKolo.Value.ToString() : NULL);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        {
+            base.loadFromDump(reader);
+
+            string gimnasticarId = reader.ReadLine();
+            Gimnasticar = gimnasticarId != NULL ? gimnasticariMap[int.Parse(gimnasticarId)] : null;
+
+            string line = reader.ReadLine();
+            ParterPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            ParterDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            ParterTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            ParterCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KonjPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KonjDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KonjTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KonjCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KarikePrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KarikeDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KarikeTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            KarikeCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            PreskokPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            PreskokDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            PreskokTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            PreskokCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            RazbojPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            RazbojDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            RazbojTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            RazbojCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            VratiloPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            VratiloDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            VratiloTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            VratiloCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            DvovisinskiRazbojPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            DvovisinskiRazbojDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            DvovisinskiRazbojTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            DvovisinskiRazbojCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            GredaPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            GredaDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            GredaTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            GredaCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            TotalPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            TotalDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            TotalTreceKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            TotalCetvrtoKolo = line != NULL ? float.Parse(line) : (float?)null;
         }
     }
 }

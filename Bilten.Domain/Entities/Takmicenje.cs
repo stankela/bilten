@@ -603,7 +603,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(BrojDecimalaPen.ToString());
             strBuilder.AppendLine(BrojDecimalaTotal.ToString());
             strBuilder.AppendLine(ZavrsenoTak1.ToString());
-            strBuilder.AppendLine(ZrebZaFinalePoSpravama.ToString());
+            strBuilder.AppendLine(ZrebZaFinalePoSpravama != null ? ZrebZaFinalePoSpravama : NULL);
 
             strBuilder.AppendLine(TakmicenjeDescriptions.Count.ToString());
             foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
@@ -654,7 +654,9 @@ namespace Bilten.Domain
             result.BrojDecimalaPen = byte.Parse(reader.ReadLine());
             result.BrojDecimalaTotal = byte.Parse(reader.ReadLine());
             result.ZavrsenoTak1 = bool.Parse(reader.ReadLine());
-            result.ZrebZaFinalePoSpravama = reader.ReadLine();
+
+            string zreb = reader.ReadLine();
+            result.ZrebZaFinalePoSpravama = zreb != NULL ? zreb : null;
 
             int brojTakmicenja = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojTakmicenja; ++i)
