@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -46,7 +47,7 @@ namespace Bilten.Domain
             }
         }
 
-        protected UcesnikTakmicenja2()
+        public UcesnikTakmicenja2()
         { 
         
         }
@@ -62,6 +63,14 @@ namespace Bilten.Domain
         {
             base.dump(strBuilder);
             strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            base.loadFromDump(reader);
+
+            string line = reader.ReadLine();
+            Gimnasticar = line != NULL ? map.gimnasticariMap[int.Parse(line)] : null;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -51,10 +52,24 @@ namespace Bilten.Domain
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
-            strBuilder.AppendLine(QualOrder.ToString());
-            strBuilder.AppendLine(QualScore.ToString());
-            strBuilder.AppendLine(QualRank.ToString());
+            strBuilder.AppendLine(QualOrder != null ? QualOrder.Value.ToString() : NULL);
+            strBuilder.AppendLine(QualScore != null ? QualScore.Value.ToString() : NULL);
+            strBuilder.AppendLine(QualRank != null ? QualRank.Value.ToString() : NULL);
             strBuilder.AppendLine(KvalStatus.ToString());
+        }
+
+        public virtual void loadFromDump(StringReader reader)
+        {
+            string line = reader.ReadLine();
+            QualOrder = line != NULL ? short.Parse(line) : (short?)null;
+
+            line = reader.ReadLine();
+            QualScore = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            QualRank = line != NULL ? short.Parse(line) : (short?)null;
+
+            KvalStatus = (KvalifikacioniStatus)Enum.Parse(typeof(KvalifikacioniStatus), reader.ReadLine());
         }
     }
 }

@@ -141,15 +141,10 @@ namespace Bilten.Domain
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
-            
-            if (Ucesnici == null)
-                strBuilder.AppendLine(NULL);
-            else
-            {
-                strBuilder.AppendLine(Ucesnici.Count.ToString());
-                foreach (UcesnikTakmicenja2 u in Ucesnici)
-                    u.dump(strBuilder);
-            }
+
+            strBuilder.AppendLine(Ucesnici.Count.ToString());
+            foreach (UcesnikTakmicenja2 u in Ucesnici)
+                u.dump(strBuilder);
 
             if (Poredak == null)
                 strBuilder.AppendLine(NULL);
@@ -159,7 +154,23 @@ namespace Bilten.Domain
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            throw new NotImplementedException();
+            int count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                UcesnikTakmicenja2 u = new UcesnikTakmicenja2();
+                u.loadFromDump(reader, map);
+                Ucesnici.Add(u);
+            }
+
+            string id = reader.ReadLine();
+            PoredakUkupno p = null;
+            if (id != NULL)
+            {
+                p = new PoredakUkupno();
+                p.loadFromDump(reader, map);
+            }
+            Poredak = p;
         }
     }
 }

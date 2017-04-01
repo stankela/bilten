@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -13,7 +14,7 @@ namespace Bilten.Domain
             set { _ekipa = value; }
         }
 
-        protected UcesnikTakmicenja4()
+        public UcesnikTakmicenja4()
         { 
         
         }
@@ -29,6 +30,14 @@ namespace Bilten.Domain
         {
             base.dump(strBuilder);
             strBuilder.AppendLine(Ekipa != null ? Ekipa.Id.ToString() : NULL);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            base.loadFromDump(reader);
+
+            string line = reader.ReadLine();
+            Ekipa = line != NULL ? map.ekipeMap[int.Parse(line)] : null;
         }
     }
 }

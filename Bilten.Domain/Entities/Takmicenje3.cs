@@ -296,23 +296,13 @@ namespace Bilten.Domain
         {
             strBuilder.AppendLine(Id.ToString());
 
-            if (Ucesnici == null)
-                strBuilder.AppendLine(NULL);
-            else
-            {
-                strBuilder.AppendLine(Ucesnici.Count.ToString());
-                foreach (UcesnikTakmicenja3 u in Ucesnici)
-                    u.dump(strBuilder);
-            }
+            strBuilder.AppendLine(Ucesnici.Count.ToString());
+            foreach (UcesnikTakmicenja3 u in Ucesnici)
+                u.dump(strBuilder);
 
-            if (Poredak == null)
-                strBuilder.AppendLine(NULL);
-            else
-            {
-                strBuilder.AppendLine(Poredak.Count.ToString());
-                foreach (PoredakSprava u in Poredak)
-                    u.dump(strBuilder);
-            }
+            strBuilder.AppendLine(Poredak.Count.ToString());
+            foreach (PoredakSprava u in Poredak)
+                u.dump(strBuilder);
 
             if (PoredakPreskok == null)
                 strBuilder.AppendLine(NULL);
@@ -322,7 +312,32 @@ namespace Bilten.Domain
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            throw new NotImplementedException();
+            int count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                UcesnikTakmicenja3 u = new UcesnikTakmicenja3();
+                u.loadFromDump(reader, map);
+                Ucesnici.Add(u);
+            }
+
+            count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                PoredakSprava p = new PoredakSprava();
+                p.loadFromDump(reader, map);
+                Poredak.Add(p);
+            }
+
+            string id = reader.ReadLine();
+            PoredakPreskok p2 = null;
+            if (id != NULL)
+            {
+                p2 = new PoredakPreskok();
+                p2.loadFromDump(reader, map);
+            }
+            PoredakPreskok = p2;
         }
     }
 }
