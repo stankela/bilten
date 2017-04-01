@@ -126,24 +126,14 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
         }
 
-        public static TakmicarskaKategorija loadFromDump(StringReader reader,
-            IDictionary<int, TakmicarskaKategorija> kategorijeMap, IDictionary<int, Takmicenje> takmicenjeMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            string id = reader.ReadLine();
-            if (id == NULL)
-                return null;
-
-            TakmicarskaKategorija result = new TakmicarskaKategorija();
-            kategorijeMap.Add(int.Parse(id), result);
-
             string naziv = reader.ReadLine();
-            result.Naziv = naziv != NULL ? naziv : null;
-            result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
-            result.RedBroj = byte.Parse(reader.ReadLine());
+            Naziv = naziv != NULL ? naziv : null;
+            Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
+            RedBroj = byte.Parse(reader.ReadLine());
 
-            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
-
-            return result;
+            Takmicenje = map.takmicenjeMap[int.Parse(reader.ReadLine())];
         }
     }
 }

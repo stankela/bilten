@@ -443,33 +443,61 @@ namespace Bilten.Domain
                 Takmicenje4.dump(strBuilder);
         }
 
-        public static RezultatskoTakmicenje loadFromDump(StringReader reader, IDictionary<int, Takmicenje> takmicenjeMap,
-            IDictionary<int, TakmicarskaKategorija> kategorijeMap,
-            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap,
-            IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
+            RedBroj = byte.Parse(reader.ReadLine());
+            Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
+            ImaEkipnoTakmicenje = bool.Parse(reader.ReadLine());
+            KombinovanoEkipnoTak = bool.Parse(reader.ReadLine());
+
+            Takmicenje = map.takmicenjeMap[int.Parse(reader.ReadLine())];
+            Kategorija = map.kategorijeMap[int.Parse(reader.ReadLine())];
+            TakmicenjeDescription = map.descriptionsMap[int.Parse(reader.ReadLine())];
+
             string id = reader.ReadLine();
-            if (id == NULL)
-                return null;
-            
-            RezultatskoTakmicenje result = new RezultatskoTakmicenje();
+            Propozicije p = null;
+            if (id != NULL)
+            {
+                p = new Propozicije();
+                p.loadFromDump(reader);
+            }
+            Propozicije = p;
 
-            result.RedBroj = byte.Parse(reader.ReadLine());
-            result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
-            result.ImaEkipnoTakmicenje = bool.Parse(reader.ReadLine());
-            result.KombinovanoEkipnoTak = bool.Parse(reader.ReadLine());
+            id = reader.ReadLine();
+            Takmicenje1 t1 = null;
+            if (id != NULL)
+            {
+                t1 = new Takmicenje1();
+                t1.loadFromDump(reader, map);
+            }
+            Takmicenje1 = t1;
 
-            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
-            result.Kategorija = kategorijeMap[int.Parse(reader.ReadLine())];
-            result.TakmicenjeDescription = descriptionsMap[int.Parse(reader.ReadLine())];
+            id = reader.ReadLine();
+            Takmicenje2 t2 = null;
+            if (id != NULL)
+            {
+                t2 = new Takmicenje2();
+                t2.loadFromDump(reader, map);
+            }
+            Takmicenje2 = t2;
 
-            result.Propozicije = Propozicije.loadFromDump(reader);
-            result.Takmicenje1 = Takmicenje1.loadFromDump(reader, gimnasticariMap);
-            result.Takmicenje2 = Takmicenje2.loadFromDump(reader);
-            result.Takmicenje3 = Takmicenje3.loadFromDump(reader);
-            result.Takmicenje4 = Takmicenje4.loadFromDump(reader);
+            id = reader.ReadLine();
+            Takmicenje3 t3 = null;
+            if (id != NULL)
+            {
+                t3 = new Takmicenje3();
+                t3.loadFromDump(reader, map);
+            }
+            Takmicenje3 = t3;
 
-            return result;
+            id = reader.ReadLine();
+            Takmicenje4 t4 = null;
+            if (id != NULL)
+            {
+                t4 = new Takmicenje4();
+                t4.loadFromDump(reader, map);
+            }
+            Takmicenje4 = t4;
         }
     }
 }

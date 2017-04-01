@@ -252,46 +252,34 @@ namespace Bilten.Domain
             strBuilder.AppendLine(NastupaZaDrzavu.ToString());
         }
 
-        public static GimnasticarUcesnik loadFromDump(StringReader reader,
-            IDictionary<int, GimnasticarUcesnik> gimnasticariMap, IDictionary<int, Takmicenje> takmicenjeMap,
-            IDictionary<int, KlubUcesnik> kluboviMap, IDictionary<int, DrzavaUcesnik> drzaveMap,
-            IDictionary<int, TakmicarskaKategorija> kategorijeMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            string id = reader.ReadLine();
-            if (id == NULL)
-                return null;
-
-            GimnasticarUcesnik result = new GimnasticarUcesnik();
-            gimnasticariMap.Add(int.Parse(id), result);
-
             string ime = reader.ReadLine();
-            result.Ime = ime != NULL ? ime : null;
+            Ime = ime != NULL ? ime : null;
             
             string srednjeIme = reader.ReadLine();
-            result.SrednjeIme = srednjeIme != NULL ? srednjeIme : null;
+            SrednjeIme = srednjeIme != NULL ? srednjeIme : null;
             
             string prezime = reader.ReadLine();
-            result.Prezime = prezime != NULL ? prezime : null;
+            Prezime = prezime != NULL ? prezime : null;
             
             string datumRodjenja = reader.ReadLine();
-            result.DatumRodjenja = datumRodjenja != NULL ? Datum.Parse(datumRodjenja) : null;
+            DatumRodjenja = datumRodjenja != NULL ? Datum.Parse(datumRodjenja) : null;
             
-            result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
+            Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
 
             string registarskiBroj = reader.ReadLine();
-            result.RegistarskiBroj = registarskiBroj != NULL ? RegistarskiBroj.Parse(registarskiBroj) : null;
+            RegistarskiBroj = registarskiBroj != NULL ? RegistarskiBroj.Parse(registarskiBroj) : null;
 
             string takmicarskiBroj = reader.ReadLine();
-            result.TakmicarskiBroj = takmicarskiBroj != NULL ? int.Parse(takmicarskiBroj) : (int?)null;
+            TakmicarskiBroj = takmicarskiBroj != NULL ? int.Parse(takmicarskiBroj) : (int?)null;
 
-            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
-            result.KlubUcesnik = kluboviMap[int.Parse(reader.ReadLine())];
-            result.DrzavaUcesnik = drzaveMap[int.Parse(reader.ReadLine())];
-            result.TakmicarskaKategorija = kategorijeMap[int.Parse(reader.ReadLine())];
+            Takmicenje = map.takmicenjeMap[int.Parse(reader.ReadLine())];
+            KlubUcesnik = map.kluboviMap[int.Parse(reader.ReadLine())];
+            DrzavaUcesnik = map.drzaveMap[int.Parse(reader.ReadLine())];
+            TakmicarskaKategorija = map.kategorijeMap[int.Parse(reader.ReadLine())];
 
-            result.NastupaZaDrzavu = bool.Parse(reader.ReadLine());
-
-            return result;
+            NastupaZaDrzavu = bool.Parse(reader.ReadLine());
         }
     }
 }

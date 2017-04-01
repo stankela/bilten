@@ -614,29 +614,17 @@ namespace Bilten.Domain
                 k.dump(strBuilder);
         }
 
-        public static Takmicenje loadFromDump(StringReader reader, out int prvoKoloId, out int drugoKoloId,
-            out int treceKoloId, out int cetvrtoKoloId, IDictionary<int, Takmicenje> takmicenjeMap,
-            IDictionary<int, TakmicarskaKategorija> kategorijeMap,
-            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map, out int prvoKoloId, out int drugoKoloId,
+            out int treceKoloId, out int cetvrtoKoloId)
         {
-            string id = reader.ReadLine();
-            if (id == NULL)
-            {
-                prvoKoloId = drugoKoloId = treceKoloId = cetvrtoKoloId = -1;
-                return null;
-            }
-
-            Takmicenje result = new Takmicenje();
-            takmicenjeMap.Add(int.Parse(id), result);
-
             string naziv = reader.ReadLine();
-            result.Naziv = naziv != NULL ? naziv : null;            
-            result.Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
-            result.Datum = DateTime.Parse(reader.ReadLine());
+            Naziv = naziv != NULL ? naziv : null;            
+            Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
+            Datum = DateTime.Parse(reader.ReadLine());
             string mesto = reader.ReadLine();
-            result.Mesto = mesto != NULL ? mesto : null;
+            Mesto = mesto != NULL ? mesto : null;
 
-            result.TipTakmicenja = (TipTakmicenja)Enum.Parse(typeof(TipTakmicenja), reader.ReadLine());
+            TipTakmicenja = (TipTakmicenja)Enum.Parse(typeof(TipTakmicenja), reader.ReadLine());
 
             string prvoKoloIdStr = reader.ReadLine();
             string drugoKoloIdStr = reader.ReadLine();
@@ -647,25 +635,36 @@ namespace Bilten.Domain
             treceKoloId = treceKoloIdStr != NULL ? int.Parse(treceKoloIdStr) : -1;
             cetvrtoKoloId = cetvrtoKoloIdStr != NULL ? int.Parse(cetvrtoKoloIdStr) : -1;
 
-            result.BrojEOcena = byte.Parse(reader.ReadLine());
-            result.BrojDecimalaD = byte.Parse(reader.ReadLine());
-            result.BrojDecimalaE1 = byte.Parse(reader.ReadLine());
-            result.BrojDecimalaE = byte.Parse(reader.ReadLine());
-            result.BrojDecimalaPen = byte.Parse(reader.ReadLine());
-            result.BrojDecimalaTotal = byte.Parse(reader.ReadLine());
-            result.ZavrsenoTak1 = bool.Parse(reader.ReadLine());
+            BrojEOcena = byte.Parse(reader.ReadLine());
+            BrojDecimalaD = byte.Parse(reader.ReadLine());
+            BrojDecimalaE1 = byte.Parse(reader.ReadLine());
+            BrojDecimalaE = byte.Parse(reader.ReadLine());
+            BrojDecimalaPen = byte.Parse(reader.ReadLine());
+            BrojDecimalaTotal = byte.Parse(reader.ReadLine());
+            ZavrsenoTak1 = bool.Parse(reader.ReadLine());
 
             string zreb = reader.ReadLine();
-            result.ZrebZaFinalePoSpravama = zreb != NULL ? zreb : null;
+            ZrebZaFinalePoSpravama = zreb != NULL ? zreb : null;
 
             int brojTakmicenja = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojTakmicenja; ++i)
-                result.TakmicenjeDescriptions.Add(RezultatskoTakmicenjeDescription.loadFromDump(reader, descriptionsMap));
-            int brojKategorija = int.Parse(reader.ReadLine()); 
-            for (int i = 0; i < brojKategorija; ++i)
-                result.Kategorije.Add(TakmicarskaKategorija.loadFromDump(reader, kategorijeMap, takmicenjeMap));
+            {
+                string id = reader.ReadLine();
+                RezultatskoTakmicenjeDescription d = new RezultatskoTakmicenjeDescription();
+                map.descriptionsMap.Add(int.Parse(id), d);
+                d.loadFromDump(reader);
+                TakmicenjeDescriptions.Add(d);
+            }
 
-            return result;
+            int brojKategorija = int.Parse(reader.ReadLine());
+            for (int i = 0; i < brojKategorija; ++i)
+            {
+                string id = reader.ReadLine();
+                TakmicarskaKategorija k = new TakmicarskaKategorija();
+                map.kategorijeMap.Add(int.Parse(id), k);
+                k.loadFromDump(reader, map);
+                Kategorije.Add(k);
+            }
         }
     }
 }

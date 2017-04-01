@@ -114,7 +114,7 @@ namespace Bilten.Domain
                 Poredak.dump(strBuilder);
         }
 
-        public static Takmicenje4 loadFromDump(StringReader reader)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             throw new NotImplementedException();
         }

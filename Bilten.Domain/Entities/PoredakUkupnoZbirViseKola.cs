@@ -329,14 +329,14 @@ namespace Bilten.Domain
                 r.dump(strBuilder);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             int brojRezultata = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojRezultata; ++i)
             {
                 reader.ReadLine();  // id
                 RezultatUkupnoZbirViseKola r = new RezultatUkupnoZbirViseKola();
-                r.loadFromDump(reader, gimnasticariMap);
+                r.loadFromDump(reader, map);
                 Rezultati.Add(r);
             }
         }

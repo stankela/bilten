@@ -86,22 +86,20 @@ namespace Bilten.Domain
                 Propozicije.dump(strBuilder);
         }
 
-        public static RezultatskoTakmicenjeDescription loadFromDump(StringReader reader,
-            IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap)
+        public virtual void loadFromDump(StringReader reader)
         {
-            string id = reader.ReadLine();
-            if (id == NULL)
-                return null;
-
-            RezultatskoTakmicenjeDescription result = new RezultatskoTakmicenjeDescription();
-            descriptionsMap.Add(int.Parse(id), result);
-
             string naziv = reader.ReadLine();
-            result.Naziv = naziv != NULL ? naziv : null;
-            result.RedBroj = byte.Parse(reader.ReadLine());
-            result.Propozicije = Propozicije.loadFromDump(reader);
+            Naziv = naziv != NULL ? naziv : null;
+            RedBroj = byte.Parse(reader.ReadLine());
 
-            return result;
+            string id = reader.ReadLine();
+            Propozicije p = null;
+            if (id != NULL)
+            {
+                p = new Propozicije();
+                p.loadFromDump(reader);
+            }
+            Propozicije = p;
         }
     }
 }

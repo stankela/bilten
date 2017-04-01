@@ -1830,19 +1830,21 @@ namespace Bilten.UI
                     takDump = new TakmicenjeDump();
                     takDump.dumpTakmicenje(Sesija.Instance.TakmicenjeId);
 
-                    IDictionary<int, Takmicenje> takmicenjeMap = new Dictionary<int, Takmicenje>();
-                    IDictionary<int, TakmicarskaKategorija> kategorijeMap = new Dictionary<int, TakmicarskaKategorija>();
-                    IDictionary<int, RezultatskoTakmicenjeDescription> descriptionsMap
-                        = new Dictionary<int, RezultatskoTakmicenjeDescription>();
-                    IDictionary<int, KlubUcesnik> kluboviMap = new Dictionary<int, KlubUcesnik>();
-                    IDictionary<int, DrzavaUcesnik> drzaveMap = new Dictionary<int, DrzavaUcesnik>();
-                    IDictionary<int, GimnasticarUcesnik> gimnasticariMap = new Dictionary<int, GimnasticarUcesnik>();
-                    
+                    IdMap map = new IdMap();
+
                     using (StringReader reader = new StringReader(takDump.getTakmicenjeDump()))
                     {
                         int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
-                        Takmicenje t = Takmicenje.loadFromDump(reader, out prvoKoloId, out drugoKoloId,
-                            out treceKoloId, out cetvrtoKoloId, takmicenjeMap, kategorijeMap, descriptionsMap);
+
+                        string id = reader.ReadLine();
+                        Takmicenje t = new Takmicenje();
+
+                        // odmah dodajem takmicenje u mapu, za slucaj da bude potrebno u loadFromDump
+                        map.takmicenjeMap.Add(int.Parse(id), t);
+
+                        t.loadFromDump(reader, map, out prvoKoloId, out drugoKoloId,
+                            out treceKoloId, out cetvrtoKoloId);
+
                         t.PrvoKolo = prvoKoloId == -1 ? null :
                             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(prvoKoloId);
                         t.DrugoKolo = drugoKoloId == -1 ? null :
@@ -1858,7 +1860,13 @@ namespace Bilten.UI
                     {
                         int count = int.Parse(reader.ReadLine());
                         for (int i = 0; i < count; ++i)
-                            klubovi.Add(KlubUcesnik.loadFromDump(reader, kluboviMap, takmicenjeMap));
+                        {
+                            string id = reader.ReadLine();
+                            KlubUcesnik k = new KlubUcesnik();
+                            map.kluboviMap.Add(int.Parse(id), k);
+                            k.loadFromDump(reader, map);                            
+                            klubovi.Add(k);
+                        }
                     }
 
                     IList<DrzavaUcesnik> drzave = new List<DrzavaUcesnik>();
@@ -1866,7 +1874,13 @@ namespace Bilten.UI
                     {
                         int count = int.Parse(reader.ReadLine());
                         for (int i = 0; i < count; ++i)
-                            drzave.Add(DrzavaUcesnik.loadFromDump(reader, drzaveMap, takmicenjeMap));
+                        {
+                            string id = reader.ReadLine();
+                            DrzavaUcesnik d = new DrzavaUcesnik();
+                            map.drzaveMap.Add(int.Parse(id), d);
+                            d.loadFromDump(reader, map);
+                            drzave.Add(d);
+                        }
                     }
 
                     IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
@@ -1874,8 +1888,13 @@ namespace Bilten.UI
                     {
                         int count = int.Parse(reader.ReadLine());
                         for (int i = 0; i < count; ++i)
-                            gimnasticari.Add(GimnasticarUcesnik.loadFromDump(reader, gimnasticariMap, takmicenjeMap,
-                                kluboviMap, drzaveMap, kategorijeMap));
+                        {
+                            string id = reader.ReadLine();
+                            GimnasticarUcesnik g = new GimnasticarUcesnik();
+                            map.gimnasticariMap.Add(int.Parse(id), g);
+                            g.loadFromDump(reader, map);                            
+                            gimnasticari.Add(g);
+                        }
                     }
 
                     IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
@@ -1883,8 +1902,12 @@ namespace Bilten.UI
                     {
                         int count = int.Parse(reader.ReadLine());
                         for (int i = 0; i < count; ++i)
-                            rezTakmicenja.Add(RezultatskoTakmicenje.loadFromDump(reader, takmicenjeMap, kategorijeMap,
-                                descriptionsMap, gimnasticariMap));
+                        {
+                            string id = reader.ReadLine();
+                            RezultatskoTakmicenje rt = new RezultatskoTakmicenje();
+                            rt.loadFromDump(reader, map);
+                            rezTakmicenja.Add(rt);
+                        }
                     }
                 }
             }

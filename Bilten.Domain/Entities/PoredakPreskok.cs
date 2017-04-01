@@ -519,7 +519,7 @@ namespace Bilten.Domain
                 r.dump(strBuilder);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
             Sprava = (Sprava)Enum.Parse(typeof(Sprava), reader.ReadLine());
@@ -529,7 +529,7 @@ namespace Bilten.Domain
             {
                 reader.ReadLine();  // id
                 RezultatPreskok r = new RezultatPreskok();
-                r.loadFromDump(reader, gimnasticariMap);
+                r.loadFromDump(reader, map);
                 Rezultati.Add(r);
             }
         }

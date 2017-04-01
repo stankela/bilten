@@ -361,12 +361,12 @@ namespace Bilten.Domain
             strBuilder.AppendLine(TotalCetvrtoKolo != null ? TotalCetvrtoKolo.Value.ToString() : NULL);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             base.loadFromDump(reader);
 
             string gimnasticarId = reader.ReadLine();
-            Gimnasticar = gimnasticarId != NULL ? gimnasticariMap[int.Parse(gimnasticarId)] : null;
+            Gimnasticar = gimnasticarId != NULL ? map.gimnasticariMap[int.Parse(gimnasticarId)] : null;
 
             string line = reader.ReadLine();
             ParterPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;

@@ -107,12 +107,12 @@ namespace Bilten.Domain
             strBuilder.AppendLine(TotalDrugoKolo != null ? TotalDrugoKolo.Value.ToString() : NULL);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             base.loadFromDump(reader);
 
             string line = reader.ReadLine();
-            Gimnasticar = line != NULL ? gimnasticariMap[int.Parse(line)] : null;
+            Gimnasticar = line != NULL ? map.gimnasticariMap[int.Parse(line)] : null;
 
             line = reader.ReadLine();
             D_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;

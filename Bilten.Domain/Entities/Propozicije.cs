@@ -555,53 +555,45 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Tak4NeRacunajProsekAkoNemaOceneIzObaKola.ToString());
         }
 
-        public static Propozicije loadFromDump(StringReader reader)
+        public virtual void loadFromDump(StringReader reader)
         {
-            string id = reader.ReadLine();
-            if (id == NULL)
-                return null;
+            PostojiTak2 = bool.Parse(reader.ReadLine());
+            OdvojenoTak2 = bool.Parse(reader.ReadLine());
+            NeogranicenBrojTakmicaraIzKlubaTak2 = bool.Parse(reader.ReadLine());
+            MaxBrojTakmicaraIzKlubaTak2 = byte.Parse(reader.ReadLine());
+            BrojFinalistaTak2 = byte.Parse(reader.ReadLine());
+            BrojRezerviTak2 = byte.Parse(reader.ReadLine());
 
-            Propozicije result = new Propozicije();
+            PostojiTak3 = bool.Parse(reader.ReadLine());
+            OdvojenoTak3 = bool.Parse(reader.ReadLine());
+            NeogranicenBrojTakmicaraIzKlubaTak3 = bool.Parse(reader.ReadLine());
+            MaxBrojTakmicaraIzKlubaTak3 = byte.Parse(reader.ReadLine());
+            MaxBrojTakmicaraTak3VaziZaDrzavu = bool.Parse(reader.ReadLine());
+            BrojFinalistaTak3 = byte.Parse(reader.ReadLine());
+            BrojRezerviTak3 = byte.Parse(reader.ReadLine());
+            KvalifikantiTak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
+            PoredakTak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
 
-            result.PostojiTak2 = bool.Parse(reader.ReadLine());
-            result.OdvojenoTak2 = bool.Parse(reader.ReadLine());
-            result.NeogranicenBrojTakmicaraIzKlubaTak2 = bool.Parse(reader.ReadLine());
-            result.MaxBrojTakmicaraIzKlubaTak2 = byte.Parse(reader.ReadLine());
-            result.BrojFinalistaTak2 = byte.Parse(reader.ReadLine());
-            result.BrojRezerviTak2 = byte.Parse(reader.ReadLine());
+            PostojiTak4 = bool.Parse(reader.ReadLine());
+            OdvojenoTak4 = bool.Parse(reader.ReadLine());
+            BrojRezultataKojiSeBodujuZaEkipu = byte.Parse(reader.ReadLine());
+            BrojEkipaUFinalu = byte.Parse(reader.ReadLine());
+            JednoTak4ZaSveKategorije = bool.Parse(reader.ReadLine());
 
-            result.PostojiTak3 = bool.Parse(reader.ReadLine());
-            result.OdvojenoTak3 = bool.Parse(reader.ReadLine());
-            result.NeogranicenBrojTakmicaraIzKlubaTak3 = bool.Parse(reader.ReadLine());
-            result.MaxBrojTakmicaraIzKlubaTak3 = byte.Parse(reader.ReadLine());
-            result.MaxBrojTakmicaraTak3VaziZaDrzavu = bool.Parse(reader.ReadLine());
-            result.BrojFinalistaTak3 = byte.Parse(reader.ReadLine());
-            result.BrojRezerviTak3 = byte.Parse(reader.ReadLine());
-            result.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
-            result.PoredakTak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
+            Tak2FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
+            Tak2FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
+            Tak2FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
+            Tak2NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
 
-            result.PostojiTak4 = bool.Parse(reader.ReadLine());
-            result.OdvojenoTak4 = bool.Parse(reader.ReadLine());
-            result.BrojRezultataKojiSeBodujuZaEkipu = byte.Parse(reader.ReadLine());
-            result.BrojEkipaUFinalu = byte.Parse(reader.ReadLine());
-            result.JednoTak4ZaSveKategorije = bool.Parse(reader.ReadLine());
+            Tak3FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
+            Tak3FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
+            Tak3FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
+            Tak3NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
 
-            result.Tak2FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
-            result.Tak2FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
-            result.Tak2FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
-            result.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
-
-            result.Tak3FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
-            result.Tak3FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
-            result.Tak3FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
-            result.Tak3NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
-
-            result.Tak4FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
-            result.Tak4FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
-            result.Tak4FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
-            result.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
-
-            return result;
+            Tak4FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
+            Tak4FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
+            Tak4FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
+            Tak4NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
         }
     }
 }

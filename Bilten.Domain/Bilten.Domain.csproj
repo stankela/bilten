@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IdMap.cs" />
     <Compile Include="Entities\Datum.cs" />
     <Compile Include="Entities\DeoTakmicenjaKod.cs" />
     <Compile Include="Entities\DomainObject.cs" />

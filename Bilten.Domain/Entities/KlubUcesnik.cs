@@ -69,24 +69,14 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
         }
 
-        public static KlubUcesnik loadFromDump(StringReader reader, IDictionary<int, KlubUcesnik> kluboviMap,
-            IDictionary<int, Takmicenje> takmicenjeMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            string id = reader.ReadLine();
-            if (id == NULL)
-                return null;
-
-            KlubUcesnik result = new KlubUcesnik();
-            kluboviMap.Add(int.Parse(id), result);
-
             string naziv = reader.ReadLine();
-            result.Naziv = naziv != NULL ? naziv : null;
+            Naziv = naziv != NULL ? naziv : null;
             string kod = reader.ReadLine();
-            result.Kod = kod != NULL ? kod : null;
+            Kod = kod != NULL ? kod : null;
            
-            result.Takmicenje = takmicenjeMap[int.Parse(reader.ReadLine())];
-
-            return result;
+            Takmicenje = map.takmicenjeMap[int.Parse(reader.ReadLine())];
         }
     }
 }

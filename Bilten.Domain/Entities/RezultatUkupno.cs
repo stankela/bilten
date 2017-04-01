@@ -272,12 +272,12 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Greda != null ? Greda.Value.ToString() : NULL);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             base.loadFromDump(reader);
 
             string line = reader.ReadLine();
-            Gimnasticar = line != NULL ? gimnasticariMap[int.Parse(line)] : null;
+            Gimnasticar = line != NULL ? map.gimnasticariMap[int.Parse(line)] : null;
         
             line = reader.ReadLine();
             Parter = line != NULL ? float.Parse(line) : (float?)null;

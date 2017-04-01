@@ -209,14 +209,14 @@ namespace Bilten.Domain
                 r.dump(strBuilder);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, Ekipa> ekipeMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             int brojRezultata = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojRezultata; ++i)
             {
                 reader.ReadLine();  // id
                 RezultatEkipnoFinaleKupa r = new RezultatEkipnoFinaleKupa();
-                r.loadFromDump(reader, ekipeMap);
+                r.loadFromDump(reader, map);
                 Rezultati.Add(r);
             }
         }

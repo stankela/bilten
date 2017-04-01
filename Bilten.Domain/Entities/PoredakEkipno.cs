@@ -371,7 +371,7 @@ namespace Bilten.Domain
                 r.dump(strBuilder);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, Ekipa> ekipeMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
 
@@ -380,7 +380,7 @@ namespace Bilten.Domain
             {
                 reader.ReadLine();  // id
                 RezultatEkipno r = new RezultatEkipno();
-                r.loadFromDump(reader, ekipeMap);
+                r.loadFromDump(reader, map);
                 Rezultati.Add(r);
             }
         }

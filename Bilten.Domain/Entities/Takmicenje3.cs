@@ -175,7 +175,7 @@ namespace Bilten.Domain
             set { _poredakPreskok = value; }
         }
 
-        protected Takmicenje3()
+        public Takmicenje3()
         {
 
         }
@@ -320,8 +320,7 @@ namespace Bilten.Domain
                 PoredakPreskok.dump(strBuilder);
         }
 
-
-        public static Takmicenje3 loadFromDump(StringReader reader)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             throw new NotImplementedException();
         }

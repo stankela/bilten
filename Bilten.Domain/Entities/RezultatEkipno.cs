@@ -69,12 +69,12 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
         }
 
-        public virtual void loadFromDump(StringReader reader, IDictionary<int, Ekipa> ekipeMap)
+        public override void loadFromDump(StringReader reader, IdMap map)
         {
-            base.loadFromDump(reader, null);
+            base.loadFromDump(reader, map);
 
             string ekipaId = reader.ReadLine();
-            Ekipa = ekipaId != NULL ? ekipeMap[int.Parse(ekipaId)] : null;
+            Ekipa = ekipaId != NULL ? map.ekipeMap[int.Parse(ekipaId)] : null;
 
             string penalty = reader.ReadLine();
             Penalty = penalty != NULL ? float.Parse(penalty) : (float?)null;

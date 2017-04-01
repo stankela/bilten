@@ -144,28 +144,18 @@ namespace Bilten.Domain
                 strBuilder.AppendLine(g.Id.ToString());
         }
 
-        public static Ekipa loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap, 
-            IDictionary<int, Ekipa> ekipeMap)
+        public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            string id = reader.ReadLine();
-            if (id == NULL)
-                return null;
-
-            Ekipa result = new Ekipa();
-            ekipeMap.Add(int.Parse(id), result);
-
             string naziv = reader.ReadLine();
-            result.Naziv = naziv != NULL ? naziv : null;
+            Naziv = naziv != NULL ? naziv : null;
             string kod = reader.ReadLine();
-            result.Kod = kod != NULL ? kod : null;
+            Kod = kod != NULL ? kod : null;
             string penalty = reader.ReadLine();
-            result.Penalty = penalty != NULL ? float.Parse(penalty) : (float?)null;
+            Penalty = penalty != NULL ? float.Parse(penalty) : (float?)null;
 
             int brojGimnasticara = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojGimnasticara; ++i)
-                result.Gimnasticari.Add(gimnasticariMap[int.Parse(reader.ReadLine())]);
-
-            return result;
+                Gimnasticari.Add(map.gimnasticariMap[int.Parse(reader.ReadLine())]);
         }
     }
 }

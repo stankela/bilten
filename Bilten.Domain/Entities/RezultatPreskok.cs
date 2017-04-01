@@ -113,9 +113,9 @@ namespace Bilten.Domain
             strBuilder.AppendLine(TotalObeOcene != null ? TotalObeOcene.Value.ToString() : NULL);
         }
 
-        public override void loadFromDump(StringReader reader, IDictionary<int, GimnasticarUcesnik> gimnasticariMap)
+        public override void loadFromDump(StringReader reader, IdMap map)
         {
-            base.loadFromDump(reader, gimnasticariMap);
+            base.loadFromDump(reader, map);
 
             string redBroj2 = reader.ReadLine();
             RedBroj2 = redBroj2 != NULL ? short.Parse(redBroj2) : (short?)null;
