@@ -312,8 +312,6 @@ create table sud_odbor_na_spravi (
  	has_d1_e1 bit,
  	has_d2_e2 bit,
     broj_e_sudija tinyint,
-	broj_lin_sudija tinyint,
-	broj_meraca_vremena tinyint,
 	raspored_sud_id int references raspored_sudija(raspored_sud_id)
 );
 

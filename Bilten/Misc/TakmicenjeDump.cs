@@ -16,6 +16,8 @@ namespace Bilten.Misc
         private string gimnasticariDump;
         private string oceneDump;
         private string rasporediNastupaDump;
+        private string sudijeDump;
+        private string rasporediSudijaDump;
         private string rezTakmicenjaDump;
 
         private StringBuilder strBuilder;
@@ -36,6 +38,8 @@ namespace Bilten.Misc
             dumpGimnasticari();
             dumpOcene();
             dumpRasporediNastupa();
+            dumpSudije();
+            dumpRasporediSudija();
             dumpRezTakmicenja();
         }
 
@@ -99,6 +103,27 @@ namespace Bilten.Misc
             rasporediNastupaDump = strBuilder.ToString();
         }
 
+        private void dumpSudije()
+        {
+            strBuilder.Clear();
+            IList<SudijaUcesnik> sudije = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(sudije.Count.ToString());
+            foreach (SudijaUcesnik s in sudije)
+                s.dump(strBuilder);
+            sudijeDump = strBuilder.ToString();
+        }
+
+        private void dumpRasporediSudija()
+        {
+            strBuilder.Clear();
+            IList<RasporedSudija> rasporediSudija = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO()
+                .FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(rasporediSudija.Count.ToString());
+            foreach (RasporedSudija r in rasporediSudija)
+                r.dump(strBuilder);
+            rasporediSudijaDump = strBuilder.ToString();
+        }
+
         private void dumpRezTakmicenja()
         {
             strBuilder.Clear();
@@ -138,6 +163,16 @@ namespace Bilten.Misc
         public string getRasporediNastupaDump()
         {
             return takmicenjeId != -1 ? rasporediNastupaDump : String.Empty;
+        }
+
+        public string getSudijeDump()
+        {
+            return takmicenjeId != -1 ? sudijeDump : String.Empty;
+        }
+
+        public string getRasporediSudijaDump()
+        {
+            return takmicenjeId != -1 ? rasporediSudijaDump : String.Empty;
         }
 
         public string getRezTakmicenjaDump()

@@ -2,29 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Iesi.Collections.Generic;
+using System.IO;
 
 namespace Bilten.Domain
 {
     public class RasporedSudija : DomainObject
     {
-        public virtual Gimnastika Gimnastika
-        {
-            get
-            {
-                foreach (TakmicarskaKategorija k in Kategorije)
-                {
-                    return k.Gimnastika;
-                }
-                return Gimnastika.Undefined;
-            }
-        }
-
         private DeoTakmicenjaKod deoTakKod;
         public virtual DeoTakmicenjaKod DeoTakmicenjaKod
         {
             get { return deoTakKod; }
             protected set { deoTakKod = value; }
         }
+
+        // TODO4: Izbrisi kategorije
 
         private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
         public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
@@ -48,6 +39,18 @@ namespace Bilten.Domain
         {
             get { return odbori; }
             set { odbori = value; }
+        }
+
+        public virtual Gimnastika Gimnastika
+        {
+            get
+            {
+                foreach (TakmicarskaKategorija k in Kategorije)
+                {
+                    return k.Gimnastika;
+                }
+                return Gimnastika.Undefined;
+            }
         }
 
         public RasporedSudija()
@@ -78,6 +81,43 @@ namespace Bilten.Domain
                     return o;
             }
             return null;
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
+
+            strBuilder.AppendLine(Kategorije.Count.ToString());
+            foreach (TakmicarskaKategorija k in Kategorije)
+                k.dump(strBuilder);
+
+            strBuilder.AppendLine(Odbori.Count.ToString());
+            foreach (SudijskiOdborNaSpravi s in Odbori)
+                s.dump(strBuilder);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
+
+            int count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                TakmicarskaKategorija k = new TakmicarskaKategorija();
+                k.loadFromDump(reader, map);
+                Kategorije.Add(k);
+            }
+
+            count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                SudijskiOdborNaSpravi s = new SudijskiOdborNaSpravi();
+                s.loadFromDump(reader, map);
+                Odbori.Add(s);
+            }
         }
     }
 }

@@ -16,5 +16,6 @@ namespace Bilten.Domain
         public IDictionary<int, DrzavaUcesnik> drzaveMap = new Dictionary<int, DrzavaUcesnik>();
         public IDictionary<int, GimnasticarUcesnik> gimnasticariMap = new Dictionary<int, GimnasticarUcesnik>();
         public IDictionary<int, Ekipa> ekipeMap = new Dictionary<int, Ekipa>();
+        public IDictionary<int, SudijaUcesnik> sudijeMap = new Dictionary<int, SudijaUcesnik>();
     }
 }

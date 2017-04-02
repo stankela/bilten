@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -121,6 +122,43 @@ namespace Bilten.Domain
                 result = 29 * result + Prezime.GetHashCode();
                 return result;
             }
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Ime != null ? Ime : NULL);
+            strBuilder.AppendLine(Prezime != null ? Prezime : NULL);
+            strBuilder.AppendLine(Pol.ToString());
+            strBuilder.AppendLine(KlubUcesnik != null ? KlubUcesnik.Id.ToString() : NULL);
+            strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
+            strBuilder.AppendLine(UlogaUGlavnomSudijskomOdboru.ToString());
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
+            strBuilder.AppendLine(NastupaZaDrzavu.ToString());
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            string line = reader.ReadLine();
+            Ime = line != NULL ? line : null;
+
+            line = reader.ReadLine();
+            Prezime = line != NULL ? line : null;
+
+            Pol = (Pol)Enum.Parse(typeof(Pol), reader.ReadLine());
+
+            line = reader.ReadLine();
+            KlubUcesnik = line != NULL ? map.kluboviMap[int.Parse(line)] : null;
+
+            line = reader.ReadLine();
+            DrzavaUcesnik = line != NULL ? map.drzaveMap[int.Parse(line)] : null;
+            
+            UlogaUGlavnomSudijskomOdboru = (SudijskaUloga)Enum.Parse(typeof(SudijskaUloga), reader.ReadLine());
+
+            line = reader.ReadLine();
+            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
+            
+            NastupaZaDrzavu = bool.Parse(reader.ReadLine());
         }
     }
 }

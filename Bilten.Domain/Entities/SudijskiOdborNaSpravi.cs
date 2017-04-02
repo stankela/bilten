@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Bilten.Exceptions;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -168,7 +169,6 @@ namespace Bilten.Domain
                     createRaspored();
                 return raspored;
             }
-
         }
 
         private void createRaspored()
@@ -233,7 +233,7 @@ namespace Bilten.Domain
             protected set { brojMeracaVremena = value; }
         }
 
-        protected SudijskiOdborNaSpravi()
+        public SudijskiOdborNaSpravi()
         {
 
         }
@@ -323,5 +323,39 @@ namespace Bilten.Domain
             return true;
         }
 
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Sprava.ToString());
+            strBuilder.AppendLine(BrojDSudija.ToString());
+            strBuilder.AppendLine(HasD1_E1.ToString());
+            strBuilder.AppendLine(HasD2_E2.ToString());
+            strBuilder.AppendLine(BrojESudija.ToString());
+
+            strBuilder.AppendLine(Sudije.Count.ToString());
+            IEnumerator<KeyValuePair<byte, SudijaUcesnik>> e = Sudije.GetEnumerator();
+            while (e.MoveNext())
+            {
+                strBuilder.AppendLine(e.Current.Key.ToString());
+                strBuilder.AppendLine(e.Current.Value.Id.ToString());
+            }
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            Sprava = (Sprava)Enum.Parse(typeof(Sprava), reader.ReadLine());
+            BrojDSudija = byte.Parse(reader.ReadLine());
+            HasD1_E1 = bool.Parse(reader.ReadLine());
+            HasD2_E2 = bool.Parse(reader.ReadLine());
+            BrojESudija = byte.Parse(reader.ReadLine());
+
+            int count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                byte key = byte.Parse(reader.ReadLine());
+                SudijaUcesnik s = map.sudijeMap[int.Parse(reader.ReadLine())];
+                Sudije.Add(key, s);
+            }
+        }
     }
 }

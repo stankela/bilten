@@ -1923,6 +1923,33 @@ namespace Bilten.UI
                         }
                     }
 
+                    IList<SudijaUcesnik> sudije = new List<SudijaUcesnik>();
+                    using (StringReader reader = new StringReader(takDump.getSudijeDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                        {
+                            string id = reader.ReadLine();
+                            SudijaUcesnik s = new SudijaUcesnik();
+                            map.sudijeMap.Add(int.Parse(id), s);
+                            s.loadFromDump(reader, map);
+                            sudije.Add(s);
+                        }
+                    }
+
+                    IList<RasporedSudija> rasporediSudija = new List<RasporedSudija>();
+                    using (StringReader reader = new StringReader(takDump.getRasporediSudijaDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                        {
+                            string id = reader.ReadLine();
+                            RasporedSudija r = new RasporedSudija();
+                            r.loadFromDump(reader, map);
+                            rasporediSudija.Add(r);
+                        }
+                    }
+
                     IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
                     using (StringReader reader = new StringReader(takDump.getRezTakmicenjaDump()))
                     {

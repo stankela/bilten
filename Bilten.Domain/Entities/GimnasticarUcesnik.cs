@@ -254,30 +254,37 @@ namespace Bilten.Domain
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            string ime = reader.ReadLine();
-            Ime = ime != NULL ? ime : null;
+            string line = reader.ReadLine();
+            Ime = line != NULL ? line : null;
             
-            string srednjeIme = reader.ReadLine();
-            SrednjeIme = srednjeIme != NULL ? srednjeIme : null;
+            line = reader.ReadLine();
+            SrednjeIme = line != NULL ? line : null;
             
-            string prezime = reader.ReadLine();
-            Prezime = prezime != NULL ? prezime : null;
+            line = reader.ReadLine();
+            Prezime = line != NULL ? line : null;
             
-            string datumRodjenja = reader.ReadLine();
-            DatumRodjenja = datumRodjenja != NULL ? Datum.Parse(datumRodjenja) : null;
+            line = reader.ReadLine();
+            DatumRodjenja = line != NULL ? Datum.Parse(line) : null;
             
             Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
 
-            string registarskiBroj = reader.ReadLine();
-            RegistarskiBroj = registarskiBroj != NULL ? RegistarskiBroj.Parse(registarskiBroj) : null;
+            line = reader.ReadLine();
+            RegistarskiBroj = line != NULL ? RegistarskiBroj.Parse(line) : null;
 
-            string takmicarskiBroj = reader.ReadLine();
-            TakmicarskiBroj = takmicarskiBroj != NULL ? int.Parse(takmicarskiBroj) : (int?)null;
+            line = reader.ReadLine();
+            TakmicarskiBroj = line != NULL ? int.Parse(line) : (int?)null;
 
-            Takmicenje = map.takmicenjeMap[int.Parse(reader.ReadLine())];
-            KlubUcesnik = map.kluboviMap[int.Parse(reader.ReadLine())];
-            DrzavaUcesnik = map.drzaveMap[int.Parse(reader.ReadLine())];
-            TakmicarskaKategorija = map.kategorijeMap[int.Parse(reader.ReadLine())];
+            line = reader.ReadLine();
+            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
+
+            line = reader.ReadLine();
+            KlubUcesnik = line != NULL ? map.kluboviMap[int.Parse(line)] : null;
+
+            line = reader.ReadLine();
+            DrzavaUcesnik = line != NULL ? map.drzaveMap[int.Parse(line)] : null;
+            
+            line = reader.ReadLine();
+            TakmicarskaKategorija = line != NULL ? map.kategorijeMap[int.Parse(line)] : null;
 
             NastupaZaDrzavu = bool.Parse(reader.ReadLine());
         }
