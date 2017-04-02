@@ -7,18 +7,6 @@ namespace Bilten.Domain
 {
     public class RasporedNastupa : DomainObject
     {
-        public virtual Gimnastika Gimnastika
-        {
-            get
-            {
-                foreach (TakmicarskaKategorija k in Kategorije)
-                {
-                    return k.Gimnastika;
-                }
-                return Gimnastika.Undefined;
-            }
-        }
-
         private DeoTakmicenjaKod deoTakKod;
         public virtual DeoTakmicenjaKod DeoTakmicenjaKod
         {
@@ -29,6 +17,8 @@ namespace Bilten.Domain
         // TODO4: U 4.5 je u System.Collections.Generic uveden ISet, tako da sam morao eksplicitno da kvalifikujem
         // ISet sa Iesi.Collections.Generic.ISet posto NHibernate trenutno ne radi sa System.Collections.Generic.ISet.
         // Proveri da li se nesto promenilo, tj. da li je NHibernate poceo da podrzava Iesi.Collections.Generic.ISet.
+
+        // TODO4: Izbaci Kategorije iz rasporeda nastupa
 
         private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
         public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
@@ -52,6 +42,18 @@ namespace Bilten.Domain
         {
             get { return startListe; }
             set { startListe = value; }
+        }
+
+        public virtual Gimnastika Gimnastika
+        {
+            get
+            {
+                foreach (TakmicarskaKategorija k in Kategorije)
+                {
+                    return k.Gimnastika;
+                }
+                return Gimnastika.Undefined;
+            }
         }
 
         public RasporedNastupa()
@@ -142,6 +144,20 @@ namespace Bilten.Domain
                     result.Add(s);
             }
             return result;
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
+
+            strBuilder.AppendLine(Kategorije.Count.ToString());
+            foreach (TakmicarskaKategorija k in Kategorije)
+                k.dump(strBuilder);
+
+            strBuilder.AppendLine(StartListe.Count.ToString());
+            foreach (StartListaNaSpravi s in StartListe)
+                s.dump(strBuilder);
         }
     }
 }

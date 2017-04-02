@@ -69,7 +69,10 @@ namespace Bilten.Domain
 
         public virtual void addNastup(NastupNaSpravi nastup)
         {
-            Nastupi.Add(nastup);
+            // TODO4: Dodaj ovakve provere u svim kolekcijama. Ako se null objekat doda u kolekciju, dump i loadFromDump
+            // metodi nece raditi.
+            if (nastup != null)
+                Nastupi.Add(nastup);
         }
 
         public virtual void removeNastup(NastupNaSpravi nastup)
@@ -134,6 +137,22 @@ namespace Bilten.Domain
             Nastupi.Remove(nastup);
             Nastupi.Insert(index + 1, nastup);
             return true;
+        }
+
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            // TODO4: Prebaci sve ovakve pozive u DomainObject, a ovde pozivaj base.dump(). Takodje, sve loadFromDump
+            // metode pocinji sa base.loadFromDump.
+            strBuilder.AppendLine(Id.ToString());
+
+            strBuilder.AppendLine(Sprava.ToString());
+            strBuilder.AppendLine(Grupa.ToString());
+            strBuilder.AppendLine(Rotacija.ToString());
+            strBuilder.AppendLine(NacinRotacije.ToString());
+
+            strBuilder.AppendLine(Nastupi.Count.ToString());
+            foreach (NastupNaSpravi n in Nastupi)
+                n.dump(strBuilder);
         }
     }
 }

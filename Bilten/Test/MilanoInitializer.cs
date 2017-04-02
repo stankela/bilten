@@ -544,7 +544,7 @@ namespace Bilten.Test
                         ocena = new Ocena();
                         ocena.Sprava = sprava;
                         ocena.DeoTakmicenjaKod = deoTakmicenja[i];
-                        ocena.VremeVezbe = vreme;
+                        //ocena.VremeVezbe = vreme;
                         ocena.D = D;
                         ocena.E1 = E1;
                         ocena.E2 = E2;
@@ -554,9 +554,9 @@ namespace Bilten.Test
                         ocena.E6 = E6;
                         ocena.E = E;
                         ocena.Penalty = pen;
-                        ocena.LinePenalty = L;
-                        ocena.TimePenalty = T;
-                        ocena.OtherPenalty = O;
+                        //ocena.LinePenalty = L;
+                        //ocena.TimePenalty = T;
+                        //ocena.OtherPenalty = O;
                         if (sprava != Sprava.Preskok || deoTakmicenja[i] == DeoTakmicenjaKod.Takmicenje2)
                         {
                             // za finale viseboja postoji samo jedna ocena preskoka
@@ -587,8 +587,8 @@ namespace Bilten.Test
                         ocena2.E6 = E6;
                         ocena2.E = E;
                         ocena2.Penalty = pen;
-                        ocena2.LinePenalty = L;
-                        ocena2.OtherPenalty = O;
+                        //ocena2.LinePenalty = L;
+                        //ocena2.OtherPenalty = O;
                         ocena2.Total = ocenaPreskok;
                         ocena2.BrojEOcena = 6;
                         ocena2.RucnoUnetaOcena = false;

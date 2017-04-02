@@ -16,8 +16,6 @@
     <property name="E6" column="e6" />
     <property name="E" column="e" />
     <property name="Penalty" column="penalty" />
-    <property name="LinePenalty" column="line_penalty" />
-    <property name="OtherPenalty" column="other_penalty" />
     <property name="Total" column="total" />
     <property name="BrojEOcena" column="broj_e_ocena" type="Byte" />
     <property name="RucnoUnetaOcena" column="rucno_uneta_ocena" type="Boolean" />

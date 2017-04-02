@@ -1897,6 +1897,19 @@ namespace Bilten.UI
                         }
                     }
 
+                    IList<Ocena> ocene = new List<Ocena>();
+                    using (StringReader reader = new StringReader(takDump.getOceneDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                        {
+                            string id = reader.ReadLine();
+                            Ocena o = new Ocena();
+                            o.loadFromDump(reader, map);
+                            ocene.Add(o);
+                        }
+                    }
+
                     IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
                     using (StringReader reader = new StringReader(takDump.getRezTakmicenjaDump()))
                     {

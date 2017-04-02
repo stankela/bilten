@@ -14,6 +14,8 @@ namespace Bilten.Misc
         private string kluboviDump;
         private string drzaveDump;
         private string gimnasticariDump;
+        private string oceneDump;
+        private string rasporediNastupaDump;
         private string rezTakmicenjaDump;
 
         private StringBuilder strBuilder;
@@ -32,6 +34,8 @@ namespace Bilten.Misc
             dumpKlubovi();
             dumpDrzave();
             dumpGimnasticari();
+            dumpOcene();
+            dumpRasporediNastupa();
             dumpRezTakmicenja();
         }
 
@@ -74,6 +78,27 @@ namespace Bilten.Misc
             gimnasticariDump = strBuilder.ToString();
         }
 
+        private void dumpOcene()
+        {
+            strBuilder.Clear();
+            IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(ocene.Count.ToString());
+            foreach (Ocena o in ocene)
+                o.dump(strBuilder);
+            oceneDump = strBuilder.ToString();
+        }
+
+        private void dumpRasporediNastupa()
+        {
+            strBuilder.Clear();
+            IList<RasporedNastupa> rasporediNastupa = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO()
+                .FindByTakmicenje(takmicenjeId);
+            strBuilder.AppendLine(rasporediNastupa.Count.ToString());
+            foreach (RasporedNastupa r in rasporediNastupa)
+                r.dump(strBuilder);
+            rasporediNastupaDump = strBuilder.ToString();
+        }
+
         private void dumpRezTakmicenja()
         {
             strBuilder.Clear();
@@ -103,6 +128,16 @@ namespace Bilten.Misc
         public string getGimnasticariDump()
         {
             return takmicenjeId != -1 ? gimnasticariDump : String.Empty;
+        }
+
+        public string getOceneDump()
+        {
+            return takmicenjeId != -1 ? oceneDump : String.Empty;
+        }
+
+        public string getRasporediNastupaDump()
+        {
+            return takmicenjeId != -1 ? rasporediNastupaDump : String.Empty;
         }
 
         public string getRezTakmicenjaDump()

@@ -104,5 +104,11 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void dump(StringBuilder strBuilder)
+        {
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+            strBuilder.AppendLine(Ekipa.ToString());
+        }
     }
 }

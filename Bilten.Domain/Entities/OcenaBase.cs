@@ -1,6 +1,7 @@
 using Bilten.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -68,27 +69,6 @@ namespace Bilten.Domain
         {
             get { return penalty; }
             set { penalty = value; }
-        }
-
-        private Nullable<float> linePenalty;
-        public virtual Nullable<float> LinePenalty
-        {
-            get { return linePenalty; }
-            set { linePenalty = value; }
-        }
-
-        private Nullable<float> timePenalty;
-        public virtual Nullable<float> TimePenalty
-        {
-            get { return timePenalty; }
-            set { timePenalty = value; }
-        }
-
-        private Nullable<float> otherPenalty;
-        public virtual Nullable<float> OtherPenalty
-        {
-            get { return otherPenalty; }
-            set { otherPenalty = value; }
         }
 
         private Nullable<float> total;
@@ -265,28 +245,63 @@ namespace Bilten.Domain
             int brojDecimalaTotal)
         {
             E = izracunajEOcenu(brojDecimalaE);
-            Penalty = izracunajPenalty(brojDecimalaPen);
             Total = (float)RounderToZero.round((decimal)D.Value + (decimal)E.Value -
                 (decimal)((Penalty != null) ? Penalty.Value : 0), brojDecimalaTotal);
             if (Total < 0)
                 Total = 0;
         }
 
-        private Nullable<float> izracunajPenalty(int brojDecimala)
+        public virtual void dump(StringBuilder strBuilder)
         {
-            if (LinePenalty != null || TimePenalty != null || OtherPenalty != null)
-            {
-                decimal result;
-                result = (decimal)((LinePenalty != null) ? LinePenalty.Value : 0);
-                result += (decimal)((TimePenalty != null) ? TimePenalty.Value : 0);
-                result += (decimal)((OtherPenalty != null) ? OtherPenalty.Value : 0);
-                return (float)RounderToZero.round(result, brojDecimala);
-            }
-            else
-            {
-                return Penalty;
-            }
+            strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(D != null ? D.Value.ToString() : NULL);
+            strBuilder.AppendLine(E1 != null ? E1.Value.ToString() : NULL);
+            strBuilder.AppendLine(E2 != null ? E2.Value.ToString() : NULL);
+            strBuilder.AppendLine(E3 != null ? E3.Value.ToString() : NULL);
+            strBuilder.AppendLine(E4 != null ? E4.Value.ToString() : NULL);
+            strBuilder.AppendLine(E5 != null ? E5.Value.ToString() : NULL);
+            strBuilder.AppendLine(E6 != null ? E6.Value.ToString() : NULL);            
+            strBuilder.AppendLine(E != null ? E.Value.ToString() : NULL);
+            strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
+            strBuilder.AppendLine(Total != null ? Total.Value.ToString() : NULL);
+            strBuilder.AppendLine(BrojEOcena.ToString());
+            strBuilder.AppendLine(RucnoUnetaOcena.ToString());
         }
 
+        public virtual void loadFromDump(StringReader reader)
+        {
+            string line = reader.ReadLine();
+            D = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E1 = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E2 = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E3 = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E4 = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E5 = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E6 = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            E = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Penalty = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Total = line != NULL ? float.Parse(line) : (float?)null;
+
+            BrojEOcena = byte.Parse(reader.ReadLine());
+            RucnoUnetaOcena = bool.Parse(reader.ReadLine());
+        }
     }
 }

@@ -1,6 +1,7 @@
 using Bilten.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -19,15 +20,6 @@ namespace Bilten.Domain
         {
             get { return deoTakmicenjaKod; }
             set { deoTakmicenjaKod = value; }
-        }
-
-        // TODO: Ovo bi u stvari trebalo da bude u klasi Nastup (a mozda i ne, posto
-        // vreme vezbe utice na time penalty)
-        private Nullable<short> vremeVezbe;
-        public virtual Nullable<short> VremeVezbe
-        {
-            get { return vremeVezbe; }
-            set { vremeVezbe = value; }
         }
 
         private Nullable<float> totalObeOcene;
@@ -300,5 +292,40 @@ namespace Bilten.Domain
             }
         }
 
+        public override void dump(StringBuilder strBuilder)
+        {
+            base.dump(strBuilder);
+            strBuilder.AppendLine(Sprava.ToString());
+            strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
+            strBuilder.AppendLine(TotalObeOcene != null ? TotalObeOcene.Value.ToString() : NULL);
+            strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
+
+            if (Ocena2 == null)
+                strBuilder.AppendLine(NULL);
+            else
+                Ocena2.dump(strBuilder);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            base.loadFromDump(reader);
+            Sprava = (Sprava)Enum.Parse(typeof(Sprava), reader.ReadLine());
+            DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
+
+            string line = reader.ReadLine();
+            TotalObeOcene = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Gimnasticar = line != NULL ? map.gimnasticariMap[int.Parse(line)] : null;
+
+            line = reader.ReadLine();
+            DrugaOcena o = null;
+            if (line != NULL)
+            {
+                o = new DrugaOcena();
+                o.loadFromDump(reader);                
+            }
+            Ocena2 = o;
+        }
     }
 }
