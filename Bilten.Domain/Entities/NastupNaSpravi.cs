@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bilten.Domain
@@ -109,6 +110,13 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Id.ToString());
             strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
             strBuilder.AppendLine(Ekipa.ToString());
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            string line = reader.ReadLine();
+            Gimnasticar = line != NULL ? map.gimnasticariMap[int.Parse(line)] : null;
+            Ekipa = byte.Parse(reader.ReadLine());
         }
     }
 }

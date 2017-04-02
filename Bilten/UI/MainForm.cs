@@ -1910,6 +1910,19 @@ namespace Bilten.UI
                         }
                     }
 
+                    IList<RasporedNastupa> rasporediNastupa = new List<RasporedNastupa>();
+                    using (StringReader reader = new StringReader(takDump.getRasporediNastupaDump()))
+                    {
+                        int count = int.Parse(reader.ReadLine());
+                        for (int i = 0; i < count; ++i)
+                        {
+                            string id = reader.ReadLine();
+                            RasporedNastupa r = new RasporedNastupa();
+                            r.loadFromDump(reader, map);
+                            rasporediNastupa.Add(r);
+                        }
+                    }
+
                     IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
                     using (StringReader reader = new StringReader(takDump.getRezTakmicenjaDump()))
                     {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Iesi.Collections.Generic;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -158,6 +159,29 @@ namespace Bilten.Domain
             strBuilder.AppendLine(StartListe.Count.ToString());
             foreach (StartListaNaSpravi s in StartListe)
                 s.dump(strBuilder);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
+
+            int count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                TakmicarskaKategorija k = new TakmicarskaKategorija();
+                k.loadFromDump(reader, map);
+                Kategorije.Add(k);
+            }
+
+            count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                StartListaNaSpravi s = new StartListaNaSpravi();
+                s.loadFromDump(reader, map);
+                StartListe.Add(s);
+            }
         }
     }
 }

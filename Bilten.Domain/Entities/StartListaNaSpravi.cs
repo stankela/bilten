@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Bilten.Exceptions;
+using System.IO;
 
 namespace Bilten.Domain
 {
@@ -14,6 +15,7 @@ namespace Bilten.Domain
             set { sprava = value; }
         }
 
+        // TODO: Preimenuj grupu u turnus
         private byte grupa;
         public virtual byte Grupa
         {
@@ -153,6 +155,23 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Nastupi.Count.ToString());
             foreach (NastupNaSpravi n in Nastupi)
                 n.dump(strBuilder);
+        }
+
+        public virtual void loadFromDump(StringReader reader, IdMap map)
+        {
+            Sprava = (Sprava)Enum.Parse(typeof(Sprava), reader.ReadLine());
+            Grupa = byte.Parse(reader.ReadLine());
+            Rotacija = byte.Parse(reader.ReadLine());
+            NacinRotacije = (NacinRotacije)Enum.Parse(typeof(NacinRotacije), reader.ReadLine());
+
+            int count = int.Parse(reader.ReadLine());
+            for (int i = 0; i < count; ++i)
+            {
+                reader.ReadLine();  // id
+                NastupNaSpravi n = new NastupNaSpravi();
+                n.loadFromDump(reader, map);
+                Nastupi.Add(n);
+            }
         }
     }
 }
