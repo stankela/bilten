@@ -171,7 +171,6 @@ namespace Bilten.UI
             result.Ime = s.Ime;
             result.Prezime = s.Prezime;
             result.Pol = s.Pol;
-            result.UlogaUGlavnomSudijskomOdboru = SudijskaUloga.Undefined;
             result.Takmicenje = takmicenje;
             if (s.Drzava == null)
                 result.DrzavaUcesnik = null;

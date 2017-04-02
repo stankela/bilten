@@ -42,13 +42,6 @@ namespace Bilten.Domain
             set { drzavaUcesnik = value; }
         }
 
-        private SudijskaUloga ulogaUGlavnomSudijskomOdboru;
-        public virtual SudijskaUloga UlogaUGlavnomSudijskomOdboru
-        {
-            get { return ulogaUGlavnomSudijskomOdboru; }
-            set { ulogaUGlavnomSudijskomOdboru = value; }
-        }
-
         private Takmicenje takmicenje;
         public virtual Takmicenje Takmicenje
         {
@@ -132,7 +125,6 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Pol.ToString());
             strBuilder.AppendLine(KlubUcesnik != null ? KlubUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
-            strBuilder.AppendLine(UlogaUGlavnomSudijskomOdboru.ToString());
             strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
             strBuilder.AppendLine(NastupaZaDrzavu.ToString());
         }
@@ -153,8 +145,6 @@ namespace Bilten.Domain
             line = reader.ReadLine();
             DrzavaUcesnik = line != NULL ? map.drzaveMap[int.Parse(line)] : null;
             
-            UlogaUGlavnomSudijskomOdboru = (SudijskaUloga)Enum.Parse(typeof(SudijskaUloga), reader.ReadLine());
-
             line = reader.ReadLine();
             Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
             

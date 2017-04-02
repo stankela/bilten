@@ -237,18 +237,18 @@ namespace Bilten.Test
                     string prezime = (string)o[1];
                     string kod = (string)o[2];
                     SudijskaUloga uloga = (SudijskaUloga)o[4];
-                    bool clanGlavSudOdbora =
+                    /*bool clanGlavSudOdbora =
                         uloga >= SudijskaUloga.PredsednikGlavnogSudijskogOdbora
-                        && uloga <= SudijskaUloga.GredaKontrolor;
+                        && uloga <= SudijskaUloga.GredaKontrolor;*/
 
                     SudijaUcesnik sudija = new SudijaUcesnik();
                     sudija.Ime = ime;
                     sudija.Prezime = prezime;
                     sudija.Pol = pol;
-                    if (clanGlavSudOdbora)
+                    /*if (clanGlavSudOdbora)
                         sudija.UlogaUGlavnomSudijskomOdboru = uloga;
                     else
-                        sudija.UlogaUGlavnomSudijskomOdboru = SudijskaUloga.Undefined;
+                        sudija.UlogaUGlavnomSudijskomOdboru = SudijskaUloga.Undefined;*/
                     sudija.DrzavaUcesnik = findDrzavaUcesnik(kod, drzave);
                     if (sudija.DrzavaUcesnik == null)
                         throw new Exception("Greska prilikom dodavanja sudija ucesnika.");
@@ -300,16 +300,14 @@ namespace Bilten.Test
                 parser.parse(fileNames[i]);
 
                 Sprava prevSprava = Sprava.Undefined;
-                int brojMeracaVremena = 0;
-                int brojLinijskihSudija = 0;
                 SudijskiOdborNaSpravi odbor = null;
 
                 foreach (object[] o in parser.SudijskeUloge)
                 {
                     SudijskaUloga uloga = (SudijskaUloga)o[4];
                     bool clanGlavSudOdbora =
-                        uloga >= SudijskaUloga.PredsednikGlavnogSudijskogOdbora
-                        && uloga <= SudijskaUloga.GredaKontrolor;
+                        false/*uloga >= SudijskaUloga.PredsednikGlavnogSudijskogOdbora
+                        && uloga <= SudijskaUloga.GredaKontrolor*/;
                     if (clanGlavSudOdbora)
                         continue;
 
@@ -322,10 +320,10 @@ namespace Bilten.Test
                     Sprava sprava = (Sprava)o[3];
                     if (sprava == prevSprava)
                     {
-                        if (SudijskeUloge.isMeracVremena(uloga))
+                        /*if (SudijskeUloge.isMeracVremena(uloga))
                             brojMeracaVremena++;
                         else if (SudijskeUloge.isLinijskiSudija(uloga))
-                            brojLinijskihSudija++;
+                            brojLinijskihSudija++;*/
                     }
                     else
                     {
@@ -337,8 +335,6 @@ namespace Bilten.Test
                             odbor.setSupportedUloge(odbor.BrojDSudija, odbor.HasD1_E1, odbor.HasD2_E2, odbor.BrojESudija);
                         }
                         prevSprava = sprava;
-                        brojMeracaVremena = 0;
-                        brojLinijskihSudija = 0;
                     }
 
                     raspored.getOdbor(sprava).addSudija(sudija, uloga);

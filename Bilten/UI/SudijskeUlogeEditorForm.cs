@@ -145,20 +145,6 @@ namespace Bilten.UI
             if (isChecked(SudijskaUloga.E6))
                 brojESudija += 1;
 
-            byte merVremena = 0;
-            foreach (SudijskaUloga uloga in SudijskeUloge.meraciVremena())
-            {
-                if (isChecked(uloga))
-                    merVremena += 1;
-            }
-
-            byte linSudije = 0;
-            foreach (SudijskaUloga uloga in SudijskeUloge.linijskeSudije())
-            {
-                if (isChecked(uloga))
-                    linSudije += 1;
-            }
-
             odbor.setSupportedUloge(brojDSudija, isChecked(SudijskaUloga.D1_E1), isChecked(SudijskaUloga.D2_E2), brojESudija);
         }
 
@@ -228,36 +214,10 @@ namespace Bilten.UI
                     eSudije.Add(getCheckBox(uloga));
             }
 
-            List<CheckBox> merVremena = new List<CheckBox>();
-            foreach (SudijskaUloga uloga in SudijskeUloge.meraciVremena())
-            {
-                if (getCheckBox(uloga) != null)
-                    merVremena.Add(getCheckBox(uloga));
-            }
-
-            List<CheckBox> linSudije = new List<CheckBox>();
-            foreach (SudijskaUloga uloga in SudijskeUloge.linijskeSudije())
-            {
-                if (getCheckBox(uloga) != null)
-                    linSudije.Add(getCheckBox(uloga));
-            }
-
             if (!validateUzastopno(eSudije))
             {
                 MessageDialogs.showMessage(
                     "Moguce je selektovati samo uzastopne E sudije.", this.Text);
-                return false;
-            }
-            else if (!validateUzastopno(merVremena))
-            {
-                MessageDialogs.showMessage(
-                    "Moguce je selektovati samo uzastopne merace vremena.", this.Text);
-                return false;
-            }
-            else if (!validateUzastopno(linSudije))
-            {
-                MessageDialogs.showMessage(
-                    "Moguce je selektovati samo uzastopne linijske sudije.", this.Text);
                 return false;
             }
 

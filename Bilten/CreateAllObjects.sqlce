@@ -298,7 +298,6 @@ create table sudija_ucesnik (
 	ime nvarchar(32),
     prezime nvarchar(32),
     pol tinyint,
-	uloga_u_glav_sud_odboru tinyint,
     nastupa_za_drzavu bit,
 	klub_id int references klubovi_ucesnici(klub_id),
     drzava_id int references drzave_ucesnici(drzava_id),

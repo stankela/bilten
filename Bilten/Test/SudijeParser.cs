@@ -113,26 +113,6 @@ namespace Bilten.Test
         {
             switch (uloga)
             {
-                case "President":
-                    return SudijskaUloga.PredsednikGlavnogSudijskogOdbora;
-                case "":
-                    return SudijskaUloga.ClanGlavnogSudijskogOdbora;
-                case "Floor Supervisor":
-                    return SudijskaUloga.ParterKontrolor;
-                case "Pommel Horse Supervisor":
-                    return SudijskaUloga.KonjKontrolor;
-                case "Rings Supervisor":
-                    return SudijskaUloga.KarikeKontrolor;
-                case "Vault Supervisor":
-                    return SudijskaUloga.PreskokKontrolor;
-                case "Parallel Bars Supervisor":
-                    return SudijskaUloga.RazbojKontrolor;
-                case "High Bar Supervisor":
-                    return SudijskaUloga.VratiloKontrolor;
-                case "Uneven Bars Supervisor":
-                    return SudijskaUloga.DvovisinskiRazbojKontrolor;
-                case "Beam Supervisor":
-                    return SudijskaUloga.GredaKontrolor;
                 case "D1":
                     return SudijskaUloga.D1;
                 case "D2":
@@ -149,18 +129,24 @@ namespace Bilten.Test
                     return SudijskaUloga.E5;
                 case "E6":
                     return SudijskaUloga.E6;
+
+                case "President":
+                case "":
+                case "Floor Supervisor":
+                case "Pommel Horse Supervisor":
+                case "Rings Supervisor":
+                case "Vault Supervisor":
+                case "Parallel Bars Supervisor":
+                case "High Bar Supervisor":
+                case "Uneven Bars Supervisor":
+                case "Beam Supervisor":
                 case "Timer 1":
-                    return SudijskaUloga.MeracVremena1;
                 case "Timer 2":
-                    return SudijskaUloga.MeracVremena2;
                 case "Line 1":
-                    return SudijskaUloga.LinijskiSudija1;
                 case "Line 2":
-                    return SudijskaUloga.LinijskiSudija2;
                 case "Line 3":
-                    return SudijskaUloga.LinijskiSudija3;
                 case "Line 4":
-                    return SudijskaUloga.LinijskiSudija4;
+                    return SudijskaUloga.Undefined;
                 default:
                     throw new ArgumentException("Invalid sudijska uloga.");
             }

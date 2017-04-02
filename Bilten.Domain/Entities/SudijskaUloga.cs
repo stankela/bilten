@@ -7,16 +7,11 @@ namespace Bilten.Domain
     public enum SudijskaUloga : byte
     {
         Undefined = 0,
-        PredsednikGlavnogSudijskogOdbora,
-        ClanGlavnogSudijskogOdbora,
-        ParterKontrolor,
-        KonjKontrolor,
-        KarikeKontrolor,
-        PreskokKontrolor,
-        RazbojKontrolor,
-        VratiloKontrolor,
-        DvovisinskiRazbojKontrolor,
-        GredaKontrolor,
+
+        // NOTE: Ako se dodaju nove konstante, treba ih dodavati na kraj (iza E6) da se ne bi promenile vrednosti
+        // postojecih konstanti, zato sto se vrednosti konstanti unose u bazu podataka, u kolonu uloga tabele
+        // sudija_na_spravi
+        // TODO: Mozda da promenim ovo, da baza podataka ne zavisi od vrednosti enuma.
         D1,
         D1_E1,
         D2,
@@ -26,14 +21,9 @@ namespace Bilten.Domain
         E3,
         E4,
         E5,
-        E6,
-        MeracVremena1,
-        MeracVremena2,
-        LinijskiSudija1,
-        LinijskiSudija2,
-        LinijskiSudija3,
-        LinijskiSudija4,
-        Max = LinijskiSudija4
+        E6
+
+
 
         /*
         Undefined = 0,
@@ -135,80 +125,10 @@ namespace Bilten.Domain
             };
         }
 
-        public static SudijskaUloga[] meraciVremena()
-        {
-            return new SudijskaUloga[]
-            {
-                SudijskaUloga.MeracVremena1,
-                SudijskaUloga.MeracVremena2
-            };
-        }
-
-        public static SudijskaUloga[] linijskeSudije()
-        {
-            return new SudijskaUloga[]
-            {
-                SudijskaUloga.LinijskiSudija1,
-                SudijskaUloga.LinijskiSudija2,
-                SudijskaUloga.LinijskiSudija3,
-                SudijskaUloga.LinijskiSudija4
-            };
-        }
-
-        public static bool isMeracVremena(SudijskaUloga uloga)
-        {
-            foreach (SudijskaUloga u in meraciVremena())
-            {
-                if (u == uloga)
-                    return true;
-            }
-            return false;
-        }
-
-        public static bool isLinijskiSudija(SudijskaUloga uloga)
-        {
-            foreach (SudijskaUloga u in linijskeSudije())
-            {
-                if (u == uloga)
-                    return true;
-            }
-            return false;
-        }
-
         public static string toString(SudijskaUloga uloga)
         {
             switch (uloga)
             {
-                case SudijskaUloga.PredsednikGlavnogSudijskogOdbora:
-                    return "Predsednik glavnog sudijskog odbora";
-
-                case SudijskaUloga.ClanGlavnogSudijskogOdbora:
-                    return "Clan glavnog sudijskog odbora";
-
-                case SudijskaUloga.ParterKontrolor:
-                    return "Kontrolor na parteru";
-
-                case SudijskaUloga.KonjKontrolor:
-                    return "Kontrolor na konju sa hvataljkama";
-
-                case SudijskaUloga.KarikeKontrolor:
-                    return "Kontrolor na karikama";
-
-                case SudijskaUloga.PreskokKontrolor:
-                    return "Kontrolor na preskoku";
-
-                case SudijskaUloga.RazbojKontrolor:
-                    return "Kontrolor na razboju";
-
-                case SudijskaUloga.VratiloKontrolor:
-                    return "Kontrolor na vratilu";
-
-                case SudijskaUloga.DvovisinskiRazbojKontrolor:
-                    return "Kontrolor na dvovisinskom razboju";
-
-                case SudijskaUloga.GredaKontrolor:
-                    return "Kontrolor na gredi";
-
                 case SudijskaUloga.D1:
                     return "D1";
 
@@ -238,24 +158,6 @@ namespace Bilten.Domain
 
                 case SudijskaUloga.E6:
                     return "E6";
-
-                case SudijskaUloga.MeracVremena1:
-                    return "Merac vremena 1";
-
-                case SudijskaUloga.MeracVremena2:
-                    return "Merac vremena 2";
-
-                case SudijskaUloga.LinijskiSudija1:
-                    return "Linijski sudija 1";
-
-                case SudijskaUloga.LinijskiSudija2:
-                    return "Linijski sudija 2";
-
-                case SudijskaUloga.LinijskiSudija3:
-                    return "Linijski sudija 3";
-
-                case SudijskaUloga.LinijskiSudija4:
-                    return "Linijski sudija 4";
 
                 case SudijskaUloga.Undefined:
                     return "Nepoznata sudijska funkcija";
