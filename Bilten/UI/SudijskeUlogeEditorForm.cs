@@ -159,8 +159,7 @@ namespace Bilten.UI
                     linSudije += 1;
             }
 
-            odbor.setSupportedUloge(brojDSudija, isChecked(SudijskaUloga.D1_E1), isChecked(SudijskaUloga.D2_E2), brojESudija,
-                merVremena, linSudije);
+            odbor.setSupportedUloge(brojDSudija, isChecked(SudijskaUloga.D1_E1), isChecked(SudijskaUloga.D2_E2), brojESudija);
         }
 
         private bool validate()

@@ -15,6 +15,34 @@ namespace Bilten.Domain
             set { sprava = value; }
         }
 
+        private byte brojDSudija = 2;
+        public virtual byte BrojDSudija
+        {
+            get { return brojDSudija; }
+            protected set { brojDSudija = value; }
+        }
+
+        private bool hasD1_E1 = false;
+        public virtual bool HasD1_E1
+        {
+            get { return hasD1_E1; }
+            protected set { hasD1_E1 = value; }
+        }
+
+        private bool hasD2_E2 = false;
+        public virtual bool HasD2_E2
+        {
+            get { return hasD2_E2; }
+            protected set { hasD2_E2 = value; }
+        }
+
+        private byte brojESudija = 6;
+        public virtual byte BrojESudija
+        {
+            get { return brojESudija; }
+            protected set { brojESudija = value; }
+        }
+
         // NOTE: Stavio sam byte umesto SudijskaUloga zato sto inace daje gresku
         private IDictionary<byte, SudijaUcesnik> sudije =
             new Dictionary<byte, SudijaUcesnik>();
@@ -61,19 +89,15 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void setSupportedUloge(byte brojDSudija, bool has_d1_e1, bool has_d2_e2, byte brojESudija,
-            byte brojMerVremena, byte brojLinSudija)
+        public virtual void setSupportedUloge(byte brojDSudija, bool has_d1_e1, bool has_d2_e2, byte brojESudija)
         {
             BrojDSudija = brojDSudija;
             HasD1_E1 = has_d1_e1;
             HasD2_E2 = has_d2_e2;
             BrojESudija = brojESudija;
-            BrojMeracaVremena = brojMerVremena;
-            BrojLinijskihSudija = brojLinSudija;
 
             List<SudijskaUloga> noveUloge = new List<SudijskaUloga>(
-                SudijskeUloge.getUloge(brojDSudija, has_d1_e1, has_d2_e2, brojESudija, brojMerVremena, 
-                brojLinSudija));
+                SudijskeUloge.getUloge(brojDSudija, has_d1_e1, has_d2_e2, brojESudija));
 
             // ukloni sudije sa ulogama koje ne postoje u novim ulogama
 
@@ -191,48 +215,6 @@ namespace Bilten.Domain
                 });
         }
 
-        private byte brojDSudija = 2;
-        public virtual byte BrojDSudija
-        {
-            get { return brojDSudija; }
-            protected set { brojDSudija = value; }
-        }
-
-        private bool hasD1_E1 = false;
-        public virtual bool HasD1_E1
-        {
-            get { return hasD1_E1; }
-            protected set { hasD1_E1 = value; }
-        }
-
-        private bool hasD2_E2 = false;
-        public virtual bool HasD2_E2
-        {
-            get { return hasD2_E2; }
-            protected set { hasD2_E2 = value; }
-        }
-
-        private byte brojESudija = 6;
-        public virtual byte BrojESudija
-        {
-            get { return brojESudija; }
-            protected set { brojESudija = value; }
-        }
-
-        private byte brojLinijskihSudija = 0;
-        public virtual byte BrojLinijskihSudija
-        {
-            get { return brojLinijskihSudija; }
-            protected set { brojLinijskihSudija = value; }
-        }
-
-        private byte brojMeracaVremena = 0;
-        public virtual byte BrojMeracaVremena
-        {
-            get { return brojMeracaVremena; }
-            protected set { brojMeracaVremena = value; }
-        }
-
         public SudijskiOdborNaSpravi()
         {
 
@@ -256,8 +238,7 @@ namespace Bilten.Domain
 
         private void createSupportedUloge()
         {
-            List<SudijskaUloga> uloge = SudijskeUloge.getUloge(BrojDSudija, HasD1_E1, HasD2_E2, BrojESudija,
-                BrojMeracaVremena, BrojLinijskihSudija);
+            List<SudijskaUloga> uloge = SudijskeUloge.getUloge(BrojDSudija, HasD1_E1, HasD2_E2, BrojESudija);
             
             _supportedUloge = new List<SudijskaUloga>();
             foreach (SudijskaUloga u in uloge)

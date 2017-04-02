@@ -66,8 +66,7 @@ namespace Bilten.Domain
 
     public static class SudijskeUloge
     {
-        public static List<SudijskaUloga> getUloge(byte brojDSudija, bool hasD1_E1, bool hasD2_E2, byte brojESudija, 
-            byte brojMeracaVremena, byte brojLinijskihSudija)
+        public static List<SudijskaUloga> getUloge(byte brojDSudija, bool hasD1_E1, bool hasD2_E2, byte brojESudija)
         {
             List<SudijskaUloga> result = new List<SudijskaUloga>();
 
@@ -116,14 +115,6 @@ namespace Bilten.Domain
                 result.Add(SudijskaUloga.E5);
             if (brojESudija > 5)
                 result.Add(SudijskaUloga.E6);
-
-            SudijskaUloga[] merVremena = meraciVremena();
-            for (int i = 0; i < brojMeracaVremena; i++)
-                result.Add(merVremena[i]);
-
-            SudijskaUloga[] linSudije = linijskeSudije();
-            for (int i = 0; i < brojLinijskihSudija; i++)
-                result.Add(linSudije[i]);
 
             return result;
         }

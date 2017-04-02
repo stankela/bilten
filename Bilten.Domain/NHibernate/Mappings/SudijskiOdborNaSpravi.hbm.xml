@@ -12,8 +12,6 @@
     <property name="HasD1_E1" column="has_d1_e1" type="Boolean" />
     <property name="HasD2_E2" column="has_d2_e2" type="Boolean" />
     <property name="BrojESudija" column="broj_e_sudija" type="Byte" />
-    <property name="BrojLinijskihSudija" column="broj_lin_sudija" type="Byte" />
-    <property name="BrojMeracaVremena" column="broj_meraca_vremena" type="Byte" />
     <map name="Sudije" table="sudija_na_spravi" lazy="true" >
       <key column="sud_odbor_id"/>
       <index type="Byte" column="uloga"/>
