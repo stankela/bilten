@@ -36,7 +36,7 @@ namespace Bilten
         // - Stampanje gimnasticara iz Registra.
         // - Uvoz takmicenja.
 
-        static int VERZIJA_PROGRAMA = 4;
+        static int VERZIJA_PROGRAMA = 5;
 
         /// <summary>
         /// The main entry point for the application.
@@ -99,6 +99,16 @@ namespace Bilten
                         SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                             "Bilten.Update.DatabaseUpdate_version4.sql", true);
                         verzijaBaze = 4;
+                        converted = true;
+                    }
+
+                    if (verzijaBaze == 4 && VERZIJA_PROGRAMA > 4)
+                    {
+                        SqlCeUtilities.dropReferentialConstraint("ekipe", "klubovi_ucesnici");
+                        SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version5.sql", true);
+                        verzijaBaze = 5;
                         converted = true;
                     }
 

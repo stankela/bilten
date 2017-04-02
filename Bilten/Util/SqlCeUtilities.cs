@@ -252,5 +252,70 @@ namespace Bilten.Dao
                     throw new Exception();
             }
         }
+
+        public static void dropReferentialConstraint(string table, string referencedTable)
+        {
+            string findConstraintSQL = @"
+                SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
+                WHERE CONSTRAINT_TABLE_NAME = @Table AND UNIQUE_CONSTRAINT_TABLE_NAME = @ReferencedTable";
+            SqlCeCommand cmd = new SqlCeCommand(findConstraintSQL);
+            cmd.Parameters.Add("@Table", SqlDbType.NVarChar).Value = table;
+            cmd.Parameters.Add("@ReferencedTable", SqlDbType.NVarChar).Value = referencedTable;
+
+            string errMsg = "Greska prilikom citanja podataka iz baze.";
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, errMsg);
+
+            if (!rdr.Read())
+                throw new Exception("Constraint does not exist.");
+
+            string constraintName = (string)rdr["CONSTRAINT_NAME"];
+
+            // NOTE: Izgleda da dodavanje parametara (pomocu @parameterName) radi samo kada je parametar sa desne
+            // strane znaka jednakosti (kao u findConstraintSQL). Zato ovde koristim spajanje stringova.
+            string dropConstraintSQL = "ALTER TABLE " + table + " DROP CONSTRAINT " + constraintName;
+
+            SqlCeCommand cmd2 = new SqlCeCommand(dropConstraintSQL);
+
+            SqlCeConnection conn = new SqlCeConnection(ConfigurationParameters.ConnectionString);
+            errMsg = "Neuspesna promena baze.";
+            SqlCeTransaction tr = null;
+            try
+            {
+                conn.Open();
+                tr = conn.BeginTransaction();
+
+                cmd2.Connection = conn;
+                cmd2.Transaction = tr;
+                int result = cmd2.ExecuteNonQuery();
+
+                tr.Commit();
+            }
+            catch (SqlCeException e)
+            {
+                // in Open()
+                if (tr != null)
+                    tr.Rollback(); // TODO: this can throw Exception and InvalidOperationException
+                throw new InfrastructureException(errMsg, e);
+            }
+            catch (InvalidOperationException e)
+            {
+                // in ExecuteNonQuery(), ExecureScalar()
+                if (tr != null)
+                    tr.Rollback();
+                throw new InfrastructureException(errMsg, e);
+            }
+            // za svaki slucaj
+            catch (Exception)
+            {
+                if (tr != null)
+                    tr.Rollback();
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
     }
 }
