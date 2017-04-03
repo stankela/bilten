@@ -43,6 +43,8 @@ namespace Bilten.UI
             this.mnOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.mnSave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnIzveziTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnUveziTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.mnZatvoriTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnKopirajPrethodnoTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,7 +83,6 @@ namespace Bilten.UI
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcije = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOpcijeOpcije = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnEksportujTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -179,7 +180,8 @@ namespace Bilten.UI
             this.mnOpen,
             this.mnSave,
             this.mnSaveAs,
-            this.mnEksportujTakmicenje,
+            this.mnIzveziTakmicenje,
+            this.mnUveziTakmicenje,
             this.mnZatvoriTakmicenje,
             this.toolStripMenuItem1,
             this.mnKopirajPrethodnoTakmicenje,
@@ -220,6 +222,20 @@ namespace Bilten.UI
             this.mnSaveAs.Size = new System.Drawing.Size(231, 22);
             this.mnSaveAs.Text = "Snimi takmicenje kao...";
             this.mnSaveAs.Click += new System.EventHandler(this.mnSaveAs_Click);
+            // 
+            // mnIzveziTakmicenje
+            // 
+            this.mnIzveziTakmicenje.Name = "mnIzveziTakmicenje";
+            this.mnIzveziTakmicenje.Size = new System.Drawing.Size(231, 22);
+            this.mnIzveziTakmicenje.Text = "Izvezi takmicenje";
+            this.mnIzveziTakmicenje.Click += new System.EventHandler(this.mnIzveziTakmicenje_Click);
+            // 
+            // mnUveziTakmicenje
+            // 
+            this.mnUveziTakmicenje.Name = "mnUveziTakmicenje";
+            this.mnUveziTakmicenje.Size = new System.Drawing.Size(231, 22);
+            this.mnUveziTakmicenje.Text = "Uvezi takmicenje";
+            this.mnUveziTakmicenje.Click += new System.EventHandler(this.mnUveziTakmicenje_Click);
             // 
             // mnZatvoriTakmicenje
             // 
@@ -506,13 +522,6 @@ namespace Bilten.UI
             this.mnOpcijeOpcije.Text = "Opcije";
             this.mnOpcijeOpcije.Click += new System.EventHandler(this.mnOpcijeOpcije_Click);
             // 
-            // mnEksportujTakmicenje
-            // 
-            this.mnEksportujTakmicenje.Name = "mnEksportujTakmicenje";
-            this.mnEksportujTakmicenje.Size = new System.Drawing.Size(231, 22);
-            this.mnEksportujTakmicenje.Text = "Eksportuj takmicenje";
-            this.mnEksportujTakmicenje.Click += new System.EventHandler(this.mnEksportujTakmicenje_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -585,7 +594,8 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnKopirajPrethodnoTakmicenje;
         private System.Windows.Forms.ToolStripMenuItem mnZrebZaFinaleKupa;
         private System.Windows.Forms.ToolStripMenuItem mnTakmicenje3RasporedSudija;
-        private System.Windows.Forms.ToolStripMenuItem mnEksportujTakmicenje;
+        private System.Windows.Forms.ToolStripMenuItem mnIzveziTakmicenje;
+        private System.Windows.Forms.ToolStripMenuItem mnUveziTakmicenje;
     }
 }
 

@@ -22,12 +22,45 @@ namespace Bilten.UI
         private static readonly string IZABERI_PRETHODNA_KOLA = "Izaberi prethodna kola";
         private static readonly int MAX_KOLA = 4;
 
+        private static readonly string MSG = "MSG";
+        private static readonly string ZSG = "ZSG";
+
         List<Takmicenje> prethodnaKola = new List<Takmicenje>();
+        private bool uzmiOsnovnePodatke = false;
 
         public TakmicenjeForm()
         {
             InitializeComponent();
             initialize(null, true);
+        }
+
+        public TakmicenjeForm(string naziv, Gimnastika gimnastika, DateTime datum, string mesto, TipTakmicenja tipTakmicenja)
+        {
+            InitializeComponent();
+            initialize(null, false);
+
+            uzmiOsnovnePodatke = true;
+
+            lblGimnastika.Enabled = false;
+            cmbGimnastika.Enabled = false;
+            lblTipTakmicenja.Enabled = false;
+            cmbTipTakmicenja.Enabled = false;
+            listBox1.Enabled = false;
+            btnIzaberiPrvaDvaKola.Enabled = false;
+                        
+            txtNaziv.Text = naziv;
+            if (gimnastika == Gimnastika.MSG)
+                cmbGimnastika.SelectedItem = MSG;
+            else if (gimnastika == Gimnastika.ZSG)
+                cmbGimnastika.SelectedItem = ZSG;
+            txtDatum.Text = datum.ToShortDateString();
+            txtMesto.Text = mesto;
+            if (tipTakmicenja == TipTakmicenja.StandardnoTakmicenje)
+                cmbTipTakmicenja.SelectedItem = STANDARDNO_TAKMICENJE;
+            else if (tipTakmicenja == TipTakmicenja.FinaleKupa)
+                cmbTipTakmicenja.SelectedItem = FINALE_KUPA;
+            else if (tipTakmicenja == TipTakmicenja.ZbirViseKola)
+                cmbTipTakmicenja.SelectedItem = ZBIR_VISE_KOLA;
         }
 
         protected override void initUI()
@@ -42,7 +75,7 @@ namespace Bilten.UI
             prethodnaKola.Clear();
 
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbGimnastika.Items.AddRange(new string[] { "MSG", "ZSG" });
+            cmbGimnastika.Items.AddRange(new string[] { MSG, ZSG });
             cmbGimnastika.SelectedIndex = -1;
 
             cmbTipTakmicenja.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -69,6 +102,9 @@ namespace Bilten.UI
 
         private void cmbTipTakmicenja_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (uzmiOsnovnePodatke)
+                return;
+
             listBox1.Enabled = finaleKupa() || zbirViseKola();
             btnIzaberiPrvaDvaKola.Enabled = finaleKupa() || zbirViseKola();
             if (finaleKupa())
@@ -117,21 +153,24 @@ namespace Bilten.UI
                     "Mesto", "Mesto odrzavanja je obavezno.");
             }
 
-            if (finaleKupa() && (prethodnaKola.Count != 2))
+            if (!uzmiOsnovnePodatke)
             {
-                notification.RegisterMessage(
-                    "FinaleKupa", "Izaberite I i II kolo kupa.");
-            }
-            if (zbirViseKola())
-            {
-                if (prethodnaKola.Count == 0)
+                if (finaleKupa() && (prethodnaKola.Count != 2))
                 {
-                    notification.RegisterMessage("FinaleKupa", "Izaberite prethodna kola.");
+                    notification.RegisterMessage(
+                        "FinaleKupa", "Izaberite I i II kolo kupa.");
                 }
-                else if (prethodnaKola.Count > MAX_KOLA)
+                if (zbirViseKola())
                 {
-                    string msg = String.Format("Maksimalno dozvoljen broj kola je {0}.", MAX_KOLA);
-                    notification.RegisterMessage("FinaleKupa", msg);
+                    if (prethodnaKola.Count == 0)
+                    {
+                        notification.RegisterMessage("FinaleKupa", "Izaberite prethodna kola.");
+                    }
+                    else if (prethodnaKola.Count > MAX_KOLA)
+                    {
+                        string msg = String.Format("Maksimalno dozvoljen broj kola je {0}.", MAX_KOLA);
+                        notification.RegisterMessage("FinaleKupa", msg);
+                    }
                 }
             }
         }
@@ -188,37 +227,40 @@ namespace Bilten.UI
             takmicenje.Datum = Datum.Parse(txtDatum.Text).ToDateTime();
             takmicenje.Mesto = txtMesto.Text.Trim();
 
-            takmicenje.PrvoKolo = null;
-            takmicenje.DrugoKolo = null;
-            takmicenje.TreceKolo = null;
-            takmicenje.CetvrtoKolo = null;
-            if (finaleKupa())
-            {
-                takmicenje.TipTakmicenja = TipTakmicenja.FinaleKupa;
-                takmicenje.PrvoKolo = prethodnaKola[0];
-                takmicenje.DrugoKolo = prethodnaKola[1];
-            }
-            else if (zbirViseKola())
-            {
-                takmicenje.TipTakmicenja = TipTakmicenja.ZbirViseKola;
-                if (prethodnaKola.Count > 0)
-                    takmicenje.PrvoKolo = prethodnaKola[0];
-                if (prethodnaKola.Count > 1)
-                    takmicenje.DrugoKolo = prethodnaKola[1];
-                if (prethodnaKola.Count > 2)
-                    takmicenje.TreceKolo = prethodnaKola[2];
-                if (prethodnaKola.Count > 3)
-                    takmicenje.CetvrtoKolo = prethodnaKola[3];
-            }
-            else
-            {
-                takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
-            }
-
             if (cmbGimnastika.SelectedIndex == 0)
                 takmicenje.Gimnastika = Gimnastika.MSG;
             else if (cmbGimnastika.SelectedIndex == 1)
                 takmicenje.Gimnastika = Gimnastika.ZSG;
+
+            if (!uzmiOsnovnePodatke)
+            {
+                takmicenje.PrvoKolo = null;
+                takmicenje.DrugoKolo = null;
+                takmicenje.TreceKolo = null;
+                takmicenje.CetvrtoKolo = null;
+                if (finaleKupa())
+                {
+                    takmicenje.TipTakmicenja = TipTakmicenja.FinaleKupa;
+                    takmicenje.PrvoKolo = prethodnaKola[0];
+                    takmicenje.DrugoKolo = prethodnaKola[1];
+                }
+                else if (zbirViseKola())
+                {
+                    takmicenje.TipTakmicenja = TipTakmicenja.ZbirViseKola;
+                    if (prethodnaKola.Count > 0)
+                        takmicenje.PrvoKolo = prethodnaKola[0];
+                    if (prethodnaKola.Count > 1)
+                        takmicenje.DrugoKolo = prethodnaKola[1];
+                    if (prethodnaKola.Count > 2)
+                        takmicenje.TreceKolo = prethodnaKola[2];
+                    if (prethodnaKola.Count > 3)
+                        takmicenje.CetvrtoKolo = prethodnaKola[3];
+                }
+                else
+                {
+                    takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
+                }
+            }
         }
 
         protected override void addEntity(DomainObject entity)
@@ -242,6 +284,9 @@ namespace Bilten.UI
 
         private void btnIzaberiPrvaDvaKola_Click(object sender, EventArgs e)
         {
+            if (uzmiOsnovnePodatke)
+                return;
+
             OtvoriTakmicenjeForm form = null;
             DialogResult result;
             try
@@ -283,8 +328,10 @@ namespace Bilten.UI
 
         private void TakmicenjeForm_Shown(object sender, EventArgs e)
         {
-            txtNaziv.Focus();
+            if (!uzmiOsnovnePodatke)
+                txtNaziv.Focus();
+            else
+                lblNaziv.Focus();
         }
-
     }
 }

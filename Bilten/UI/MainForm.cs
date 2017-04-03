@@ -1811,15 +1811,24 @@ namespace Bilten.UI
             NHibernateHelper.Instance.SessionFactory.Close();
         }
 
-        private void mnEksportujTakmicenje_Click(object sender, EventArgs e)
+        private void mnIzveziTakmicenje_Click(object sender, EventArgs e)
         {
-            if (Sesija.Instance.TakmicenjeId <= 0)
+            OtvoriTakmicenjeForm form = null;
+            DialogResult result;
+            try
+            {
+                form = new OtvoriTakmicenjeForm(null, true, 1, false);
+                result = form.ShowDialog();
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
                 return;
+            }
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             ISession session = null;
-            TakmicenjeDump takDump;
             try
             {
                 using (session = NHibernateHelper.Instance.OpenSession())
@@ -1827,141 +1836,11 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
 
-                    takDump = new TakmicenjeDump();
-                    takDump.dumpTakmicenje(Sesija.Instance.TakmicenjeId);
-
-                    IdMap map = new IdMap();
-
-                    using (StringReader reader = new StringReader(takDump.getTakmicenjeDump()))
-                    {
-                        int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
-
-                        string id = reader.ReadLine();
-                        Takmicenje t = new Takmicenje();
-
-                        // odmah dodajem takmicenje u mapu, za slucaj da bude potrebno u loadFromDump
-                        map.takmicenjeMap.Add(int.Parse(id), t);
-
-                        t.loadFromDump(reader, map, out prvoKoloId, out drugoKoloId,
-                            out treceKoloId, out cetvrtoKoloId);
-
-                        t.PrvoKolo = prvoKoloId == -1 ? null :
-                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(prvoKoloId);
-                        t.DrugoKolo = drugoKoloId == -1 ? null :
-                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(drugoKoloId);
-                        t.TreceKolo = treceKoloId == -1 ? null :
-                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(treceKoloId);
-                        t.CetvrtoKolo = cetvrtoKoloId == -1 ? null :
-                            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(cetvrtoKoloId);
-                    }
-                    
-                    IList<KlubUcesnik> klubovi = new List<KlubUcesnik>();
-                    using (StringReader reader = new StringReader(takDump.getKluboviDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            KlubUcesnik k = new KlubUcesnik();
-                            map.kluboviMap.Add(int.Parse(id), k);
-                            k.loadFromDump(reader, map);                            
-                            klubovi.Add(k);
-                        }
-                    }
-
-                    IList<DrzavaUcesnik> drzave = new List<DrzavaUcesnik>();
-                    using (StringReader reader = new StringReader(takDump.getDrzaveDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            DrzavaUcesnik d = new DrzavaUcesnik();
-                            map.drzaveMap.Add(int.Parse(id), d);
-                            d.loadFromDump(reader, map);
-                            drzave.Add(d);
-                        }
-                    }
-
-                    IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
-                    using (StringReader reader = new StringReader(takDump.getGimnasticariDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            GimnasticarUcesnik g = new GimnasticarUcesnik();
-                            map.gimnasticariMap.Add(int.Parse(id), g);
-                            g.loadFromDump(reader, map);                            
-                            gimnasticari.Add(g);
-                        }
-                    }
-
-                    IList<Ocena> ocene = new List<Ocena>();
-                    using (StringReader reader = new StringReader(takDump.getOceneDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            Ocena o = new Ocena();
-                            o.loadFromDump(reader, map);
-                            ocene.Add(o);
-                        }
-                    }
-
-                    IList<RasporedNastupa> rasporediNastupa = new List<RasporedNastupa>();
-                    using (StringReader reader = new StringReader(takDump.getRasporediNastupaDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            RasporedNastupa r = new RasporedNastupa();
-                            r.loadFromDump(reader, map);
-                            rasporediNastupa.Add(r);
-                        }
-                    }
-
-                    IList<SudijaUcesnik> sudije = new List<SudijaUcesnik>();
-                    using (StringReader reader = new StringReader(takDump.getSudijeDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            SudijaUcesnik s = new SudijaUcesnik();
-                            map.sudijeMap.Add(int.Parse(id), s);
-                            s.loadFromDump(reader, map);
-                            sudije.Add(s);
-                        }
-                    }
-
-                    IList<RasporedSudija> rasporediSudija = new List<RasporedSudija>();
-                    using (StringReader reader = new StringReader(takDump.getRasporediSudijaDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            RasporedSudija r = new RasporedSudija();
-                            r.loadFromDump(reader, map);
-                            rasporediSudija.Add(r);
-                        }
-                    }
-
-                    IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
-                    using (StringReader reader = new StringReader(takDump.getRezTakmicenjaDump()))
-                    {
-                        int count = int.Parse(reader.ReadLine());
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string id = reader.ReadLine();
-                            RezultatskoTakmicenje rt = new RezultatskoTakmicenje();
-                            rt.loadFromDump(reader, map);
-                            rezTakmicenja.Add(rt);
-                        }
-                    }
+                    string fileName = "bilten.takmicenje";
+                    TakmicenjeDump takDump = new TakmicenjeDump();
+                    takDump.dumpToFile(form.SelTakmicenja[0].Id, fileName);
+                    MessageDialogs.showMessage(
+                        "Takmicenje je izvezeno u fajl '" + fileName + "' u direktorijumu za bilten.", strProgName);
                 }
             }
             catch (Exception ex)
@@ -1977,6 +1856,82 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        }
+
+        private void mnUveziTakmicenje_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    uveziTakmicenje(ofd.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, strProgName);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        }
+
+        private void uveziTakmicenje(string fileName)
+        {
+            TakmicenjeDump takDump = new TakmicenjeDump();
+            takDump.loadFromFile(fileName);
+
+            Takmicenje t = takDump.takmicenje;
+            if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
+            {
+                // TODO4
+                return;
+            }
+
+            SelectOptionForm form = new SelectOptionForm(
+                "Takmicenje sa datim nazivom vec postoji",
+                new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
+                strProgName);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            if (form.SelectedIndex == 1)
+            {
+                // Prebrisi postojece takmicenje
+                // TODO4
+            }
+            else
+            {
+                // Uvezi takmicenje pod novim imenom
+                TakmicenjeForm takForm = new TakmicenjeForm(t.Naziv, t.Gimnastika, t.Datum, t.Mesto, t.TipTakmicenja);
+                if (takForm.ShowDialog() == DialogResult.OK)
+                {
+                    t.Naziv = (takForm.Entity as Takmicenje).Naziv;
+                    t.Datum = (takForm.Entity as Takmicenje).Datum;
+                    t.Mesto = (takForm.Entity as Takmicenje).Mesto;
+                }
+            }
+
+            // Dodaj novo takmicenje
+
+            MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
+
         }
     }
 }
