@@ -28,7 +28,7 @@
     <!-- NOTE: Kada menjam naziv takmicenja (u svojstvu Naziv), menjam i naziv prvog descriptiona da bude isti.
     To znaci da kada snimam takmicenje moram da snimim i descriptione, sto je obezbedjeno sa save-update. Ako
     eventualno promenim nacin mapiranja i izbacim save-update, na svim mestima u kodu gde snimam takmicenje
-    moram runcno da snimim i descriptione. -->
+    moram rucno da snimim i descriptione. -->
     <set name="TakmicenjeDescriptions" lazy="true" cascade="save-update" >
       <key column="takmicenje_id" />
       <one-to-many class="RezultatskoTakmicenjeDescription" />
