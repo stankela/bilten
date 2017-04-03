@@ -134,5 +134,11 @@ namespace Bilten.UI
             }
         }
 
+        private void RezultatskoTakmicenjeDescriptionForm_Shown(object sender, EventArgs e)
+        {
+            if (!editMode)
+                txtNaziv.Focus();
+        }
+
     }
 }

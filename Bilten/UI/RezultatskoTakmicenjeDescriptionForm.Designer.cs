@@ -65,6 +65,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblNaziv);
             this.Name = "RezultatskoTakmicenjeDescriptionForm";
             this.Text = "RezultatskoTakmicenjeDescriptionForm";
+            this.Shown += new System.EventHandler(this.RezultatskoTakmicenjeDescriptionForm_Shown);
             this.Controls.SetChildIndex(this.btnOk, 0);
             this.Controls.SetChildIndex(this.lblNaziv, 0);
             this.Controls.SetChildIndex(this.btnCancel, 0);

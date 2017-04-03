@@ -5,6 +5,7 @@ using Iesi.Collections.Generic;
 using System.Diagnostics;
 using Bilten.Util;
 using System.IO;
+using Bilten.Exceptions;
 
 namespace Bilten.Domain
 {
@@ -17,7 +18,24 @@ namespace Bilten.Domain
         public virtual string Naziv
         {
             get { return naziv; }
-            set { naziv = value; }
+            set {
+                // Naziv takmicenja i naziv prvog descriptiona moraju da se poklapaju.
+                naziv = value;
+                if (TakmicenjeDescriptions.Count == 0)
+                {
+                    RezultatskoTakmicenjeDescription d = new RezultatskoTakmicenjeDescription();
+                    d.Naziv = value;
+                    d.Propozicije = new Propozicije();
+                    addTakmicenjeDescription(d);
+                }
+                else
+                {
+                    RezultatskoTakmicenjeDescription d = getDescription(0);
+                    d.Naziv = value;
+                }
+                // Prethodni kod se ne izvrsava prilikom ucitavanja takmicenja iz baze zato sto sam za Naziv stavio
+                // access="nosetter.camelcase"
+            }
         }
 
         private Gimnastika gimnastika;
@@ -156,15 +174,17 @@ namespace Bilten.Domain
 
         public virtual void addTakmicenjeDescription(RezultatskoTakmicenjeDescription desc)
         {
-            if (!TakmicenjeDescriptions.Contains(desc))
-            {
-                TakmicenjeDescriptions.Add(desc);
+            if (TakmicenjeDescriptions.Add(desc))
                 desc.RedBroj = (byte)(TakmicenjeDescriptions.Count - 1);
-            }
         }
 
         public virtual void removeTakmicenjeDescription(RezultatskoTakmicenjeDescription desc)
         {
+            // Nije dozvoljeno uklanjati prvi description zato sto je prvi description kreiran da ima isti naziv kao i
+            // takmicenje.
+            if (desc.RedBroj == 0)
+                throw new BusinessException("Nije dozvoljeno brisati prvo takmicenje.");
+
             if (TakmicenjeDescriptions.Remove(desc))
             {
                 foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
@@ -178,10 +198,13 @@ namespace Bilten.Domain
         public virtual bool moveTakmicenjeDescriptionUp(
             RezultatskoTakmicenjeDescription desc)
         {
-            //if (redBroj < 1 || redBroj > TakmicenjeDescriptions.Count - 1)
-            //    return false;
             if (desc.RedBroj == 0)
                 return false;
+
+            // Posto je description 0 nepromenljiv (tj. mora da bude istog naziva kao i takmicenje), nije moguce
+            // description 1 pomeriti na njegovo mesto.
+            if (desc.RedBroj == 1)
+                throw new BusinessException("Nije dozvoljeno pomeriti prvo takmicenje.");
 
             foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
             {
@@ -198,8 +221,10 @@ namespace Bilten.Domain
         public virtual bool moveTakmicenjeDescriptionDown(
             RezultatskoTakmicenjeDescription desc)
         {
-            //if (redBroj < 0 || redBroj >= TakmicenjeDescriptions.Count - 1)
-            //    return false;
+            // Description 0 nije moguce pomeriti na dole.
+            if (desc.RedBroj == 0)
+                throw new BusinessException("Nije dozvoljeno pomeriti prvo takmicenje.");
+
             if (desc.RedBroj == TakmicenjeDescriptions.Count - 1)
                 return false;
 
@@ -213,6 +238,16 @@ namespace Bilten.Domain
             }
             desc.RedBroj++;
             return true;
+        }
+
+        private RezultatskoTakmicenjeDescription getDescription(int redBroj)
+        {
+            foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
+            {
+                if (d.RedBroj == redBroj)
+                    return d;
+            }
+            return null;
         }
 
         private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije =
