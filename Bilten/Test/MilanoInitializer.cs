@@ -168,7 +168,6 @@ namespace Bilten.Test
                 gimnasticarUcesnik.DrzavaUcesnik = drzavaUcesnik;
 
                 gimnasticarUcesnik.TakmicarskiBroj = broj;
-                gimnasticarUcesnik.Takmicenje = takmicenje;
                 gimnasticarUcesnik.Gimnastika = gimnastika;
                 gimnasticarUcesnik.TakmicarskaKategorija = seniori;
                 gimnasticarUcesnik.NastupaZaDrzavu = true;
@@ -634,7 +633,7 @@ namespace Bilten.Test
                 rezTak.Takmicenje2.createUcesnici(rezTak.Takmicenje1);
                 if (gimnastika == Gimnastika.ZSG)
                 {
-                    GimnasticarUcesnik GORYUNOVAKristina = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 172);
+                    /*GimnasticarUcesnik GORYUNOVAKristina = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 172);
                     GimnasticarUcesnik AFANASEVAKsenia = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 170);
 
                     UcesnikTakmicenja2 ucesnikGORYUNOVAKristina =
@@ -653,7 +652,7 @@ namespace Bilten.Test
                     // se brisu stari ucesnici, tj. bice automatski izbrisani. 
                     // Ispitati zasto se desava razlicito ponasanje
 
-                    DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO().Delete(ucesnikGORYUNOVAKristina);
+                    DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO().Delete(ucesnikGORYUNOVAKristina);*/
                 }
             }
             else
@@ -692,7 +691,7 @@ namespace Bilten.Test
                 GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                 if (gimnastika == Gimnastika.MSG)
                 {
-                    GimnasticarUcesnik KHOROKHORDINSergei = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 628);
+                    /*GimnasticarUcesnik KHOROKHORDINSergei = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 628);
                     GimnasticarUcesnik WAMMESJeffrey = gimUcesnikDAO.FindByTakmicenjeTakBroj(takmicenje, 600);
 
                     UcesnikTakmicenja3 ucesnikKHOROKHORDINSergei =
@@ -703,7 +702,7 @@ namespace Bilten.Test
                         new UcesnikTakmicenja3(WAMMESJeffrey, Sprava.Vratilo, 8, 14.600f, 8,
                             KvalifikacioniStatus.Q));
 
-                    DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO().Delete(ucesnikKHOROKHORDINSergei);
+                    DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO().Delete(ucesnikKHOROKHORDINSergei);*/
                 }
             }
             else

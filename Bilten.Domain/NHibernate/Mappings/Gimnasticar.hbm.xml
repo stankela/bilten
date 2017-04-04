@@ -35,7 +35,7 @@
       select distinct g
       from Gimnasticar g, GimnasticarUcesnik gu 
       where g.Ime = gu.Ime and g.Prezime = gu.Prezime
-      and gu.Takmicenje = :takmicenje
+      and gu.TakmicarskaKategorija.Takmicenje = :takmicenje
       order by g.Prezime, g.Ime
     ]]>
   </query>

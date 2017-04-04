@@ -405,7 +405,6 @@ namespace Bilten.UI
             result.DatumRodjenja = g.DatumRodjenja;
             result.RegistarskiBroj = g.RegistarskiBroj;
             result.TakmicarskaKategorija = kategorija;
-            result.Takmicenje = kategorija.Takmicenje;
             if (g.Drzava == null)
                 result.DrzavaUcesnik = null;
             else
@@ -452,7 +451,6 @@ namespace Bilten.UI
             result.DatumRodjenja = g.DatumRodjenja;
             result.RegistarskiBroj = g.RegistarskiBroj;
             result.TakmicarskaKategorija = kategorija;
-            result.Takmicenje = kategorija.Takmicenje;
             if (g.DrzavaUcesnik == null)
                 result.DrzavaUcesnik = null;
             else

@@ -188,7 +188,6 @@ create table gimnasticari_ucesnici (
 	god_reg smallint,
 	takmicarski_broj int,
 	nastupa_za_drzavu bit,
-	takmicenje_id int references takmicenja(takmicenje_id),
 	kategorija_id int references takmicarske_kategorije(kategorija_id),
 	klub_id int references klubovi_ucesnici(klub_id),
 	drzava_id int references drzave_ucesnici(drzava_id),

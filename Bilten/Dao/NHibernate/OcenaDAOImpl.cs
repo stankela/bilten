@@ -52,7 +52,7 @@ namespace Bilten.Dao.NHibernate
                     from Ocena o
                     left join fetch o.Ocena2
                     join o.Gimnasticar g
-                    where g.Takmicenje.Id = :takmicenjeId
+                    where g.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId
                     and o.DeoTakmicenjaKod = :deoTakKod");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 q.SetByte("deoTakKod", (byte)deoTakKod);

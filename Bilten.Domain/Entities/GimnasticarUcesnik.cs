@@ -61,13 +61,6 @@ namespace Bilten.Domain
             set { takmicarskiBroj = value; }
         }
 
-        private Takmicenje takmicenje;
-        public virtual Takmicenje Takmicenje
-        {
-            get { return takmicenje; }
-            set { takmicenje = value; }
-        }
-
         private KlubUcesnik klubUcesnik;
         public virtual KlubUcesnik KlubUcesnik
         {
@@ -245,7 +238,6 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Gimnastika.ToString());
             strBuilder.AppendLine(RegistarskiBroj != null ? RegistarskiBroj.ToString() : NULL);
             strBuilder.AppendLine(TakmicarskiBroj != null ? TakmicarskiBroj.ToString() : NULL);
-            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
             strBuilder.AppendLine(KlubUcesnik != null ? KlubUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(TakmicarskaKategorija != null ? TakmicarskaKategorija.Id.ToString() : NULL);
@@ -273,9 +265,6 @@ namespace Bilten.Domain
 
             line = reader.ReadLine();
             TakmicarskiBroj = line != NULL ? int.Parse(line) : (int?)null;
-
-            line = reader.ReadLine();
-            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
 
             line = reader.ReadLine();
             KlubUcesnik = line != NULL ? map.kluboviMap[int.Parse(line)] : null;

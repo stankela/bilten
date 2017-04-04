@@ -1700,7 +1700,6 @@ namespace Bilten.UI
             result.DatumRodjenja = g.DatumRodjenja;
             result.RegistarskiBroj = g.RegistarskiBroj;
             result.TakmicarskaKategorija = kategorija;
-            result.Takmicenje = kategorija.Takmicenje;
             if (g.DrzavaUcesnik == null)
                 result.DrzavaUcesnik = null;
             else
@@ -1841,7 +1840,7 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
 
-                    string fileName = "bilten.takmicenje";
+                    string fileName = "BILTEN.TAKMICENJE";
                     TakmicenjeDump takDump = new TakmicenjeDump();
                     takDump.dumpToFile(form.SelTakmicenja[0].Id, fileName);
                     MessageDialogs.showMessage(

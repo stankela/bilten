@@ -16,7 +16,7 @@ namespace Bilten.Dao.NHibernate
             {
                 IQuery q = Session.CreateQuery(@"
                     from GimnasticarUcesnik g
-                    where g.Takmicenje.Id = :takmicenjeId");
+                    where g.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<GimnasticarUcesnik>();
             }
@@ -33,10 +33,10 @@ namespace Bilten.Dao.NHibernate
                 IQuery q = Session.CreateQuery(@"
                     select distinct g
                     from GimnasticarUcesnik g
-                    left join fetch g.TakmicarskaKategorija
+                    left join fetch g.TakmicarskaKategorija k
                     left join fetch g.KlubUcesnik
                     left join fetch g.DrzavaUcesnik
-                    where g.Takmicenje.Id = :takmicenjeId
+                    where k.Takmicenje.Id = :takmicenjeId
                     order by g.Prezime asc, g.Ime asc");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<GimnasticarUcesnik>();
@@ -52,11 +52,10 @@ namespace Bilten.Dao.NHibernate
             try
             {
                 string query = @"from GimnasticarUcesnik g
-                    left join fetch g.Takmicenje
-                    left join fetch g.TakmicarskaKategorija
+                    left join fetch g.TakmicarskaKategorija k
                     left join fetch g.KlubUcesnik
                     left join fetch g.DrzavaUcesnik
-                    where g.Takmicenje.Id = :takmicenjeId";
+                    where k.Takmicenje.Id = :takmicenjeId";
                 if (kategorija != null)
                     query += " and g.TakmicarskaKategorija = :kategorija";
                 query += " order by g.Prezime asc, g.Ime asc";
@@ -100,7 +99,7 @@ namespace Bilten.Dao.NHibernate
                     from GimnasticarUcesnik g
                     left join fetch g.KlubUcesnik
                     left join fetch g.DrzavaUcesnik
-                    where g.Takmicenje = :tak
+                    where g.TakmicarskaKategorija.Takmicenje = :tak
                     and g.TakmicarskaKategorija.Naziv = :kategorija
                     order by g.Prezime, g.Ime");
                 q.SetEntity("tak", tak);
@@ -118,11 +117,10 @@ namespace Bilten.Dao.NHibernate
             KlubUcesnik klub, int takmicenjeId)
         {
             string query = @"from GimnasticarUcesnik g
-                    left join fetch g.Takmicenje
-                    left join fetch g.TakmicarskaKategorija
+                    left join fetch g.TakmicarskaKategorija k
                     left join fetch g.KlubUcesnik
                     left join fetch g.DrzavaUcesnik
-                    where g.Takmicenje.Id = :takmicenjeId";
+                    where k.Takmicenje.Id = :takmicenjeId";
             if (!String.IsNullOrEmpty(ime))
                 query += " and lower(g.Ime) like :ime";
             if (!String.IsNullOrEmpty(prezime))
@@ -154,34 +152,13 @@ namespace Bilten.Dao.NHibernate
             return q.List<GimnasticarUcesnik>();
         }
 
-        public GimnasticarUcesnik FindByTakmicenjeTakBroj(Takmicenje takmicenje, int takBroj)
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"from GimnasticarUcesnik g
-                    where g.TakmicarskiBroj = :takBroj
-                    and g.Takmicenje = :takmicenje");
-                q.SetInt32("takBroj", takBroj);
-                q.SetEntity("takmicenje", takmicenje);
-                IList<GimnasticarUcesnik> result = q.List<GimnasticarUcesnik>();
-                if (result.Count > 0)
-                    return result[0];
-                return null;
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-
-        }
-
         public bool existsGimnasticarTakBroj(int takBroj, Takmicenje takmicenje)
         {
             try
             {
                 IQuery q = Session.CreateQuery(@"select count(*) from GimnasticarUcesnik g
                     where g.TakmicarskiBroj = :takBroj
-                    and g.Takmicenje = :takmicenje");
+                    and g.TakmicarskaKategorija.Takmicenje = :takmicenje");
                 q.SetInt32("takBroj", takBroj);
                 q.SetEntity("takmicenje", takmicenje);
                 return (long)q.UniqueResult() > 0;
@@ -190,7 +167,6 @@ namespace Bilten.Dao.NHibernate
             {
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
-
         }
 
         #endregion
