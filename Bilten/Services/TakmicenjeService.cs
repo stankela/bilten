@@ -15,18 +15,11 @@ namespace Bilten.Services
             IList<SudijaUcesnik> sudije, IList<RasporedSudija> rasporediSudija, IList<RasporedNastupa> rasporediNastupa,
             IList<Ocena> ocene)
         {
-            RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory
-                .GetRezultatskoTakmicenjeDescriptionDAO();
-            foreach (RezultatskoTakmicenjeDescription d in t.TakmicenjeDescriptions)
-                rezTakDescDAO.Add(d);
-
             // dodaj takmicenje
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             takmicenjeDAO.Add(t);
 
-            TakmicarskaKategorijaDAO takKategorijaDAO = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO();
-            foreach (TakmicarskaKategorija k in t.Kategorije)
-                takKategorijaDAO.Add(k);
+            // kategorije i descriptions se dodaju pomocu transitive persistance
 
             // dodaj klubove ucesnike
             KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();

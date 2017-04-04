@@ -154,7 +154,7 @@ namespace Bilten.Domain
 
             strBuilder.AppendLine(Kategorije.Count.ToString());
             foreach (TakmicarskaKategorija k in Kategorije)
-                k.dump(strBuilder);
+                strBuilder.AppendLine(k.Id.ToString());
 
             strBuilder.AppendLine(StartListe.Count.ToString());
             foreach (StartListaNaSpravi s in StartListe)
@@ -167,12 +167,7 @@ namespace Bilten.Domain
 
             int count = int.Parse(reader.ReadLine());
             for (int i = 0; i < count; ++i)
-            {
-                reader.ReadLine();  // id
-                TakmicarskaKategorija k = new TakmicarskaKategorija();
-                k.loadFromDump(reader, map);
-                Kategorije.Add(k);
-            }
+                Kategorije.Add(map.kategorijeMap[int.Parse(reader.ReadLine())]);
 
             count = int.Parse(reader.ReadLine());
             for (int i = 0; i < count; ++i)

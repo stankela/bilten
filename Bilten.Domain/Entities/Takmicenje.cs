@@ -653,7 +653,8 @@ namespace Bilten.Domain
             out int treceKoloId, out int cetvrtoKoloId)
         {
             string naziv = reader.ReadLine();
-            Naziv = naziv != NULL ? naziv : null;            
+            // NOTE: Koristim field naziv (a ne svojstvo Naziv) da bih zaobisao kod u set accessoru za Naziv.
+            this.naziv = naziv != NULL ? naziv : null;            
             Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
             Datum = DateTime.Parse(reader.ReadLine());
             string mesto = reader.ReadLine();
