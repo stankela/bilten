@@ -69,6 +69,9 @@ namespace Bilten.Services
 
         public static void deleteTakmicenje(int takmicenjeId)
         {
+            // TODO4: Potrebna je provera da li se neko takmicenje (finale kupa ili zbir vise kola) referise na ovo
+            // takmicenje.
+
             // brisi ocene
             OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
             foreach (Ocena o in ocenaDAO.FindByTakmicenje(takmicenjeId))

@@ -1828,6 +1828,9 @@ namespace Bilten.UI
                 return;
             }
 
+            if (result != DialogResult.OK)
+                return;
+
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             ISession session = null;
@@ -1867,8 +1870,6 @@ namespace Bilten.UI
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
 
-            Cursor.Current = Cursors.WaitCursor;
-            Cursor.Show();
             ISession session = null;
             try
             {
@@ -1897,8 +1898,6 @@ namespace Bilten.UI
             }
             finally
             {
-                Cursor.Hide();
-                Cursor.Current = Cursors.Arrow;
                 Sesija.Instance.Session = null;
                 //CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
@@ -1913,15 +1912,25 @@ namespace Bilten.UI
             if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
             {
                 // Uvezi takmicenje pod postojecim imenom
-                TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                    takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
-                    takDump.ocene);
+                Cursor.Current = Cursors.WaitCursor;
+                Cursor.Show();
+                try
+                {
+                    TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                        takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
+                        takDump.ocene);
+                }
+                finally
+                {
+                    Cursor.Hide();
+                    Cursor.Current = Cursors.Arrow;
+                }
                 return true;
             }
-        
+
+            string header = String.Format("Takmicenje '{0}' vec postoji", t.ToString());
             SelectOptionForm form = new SelectOptionForm(
-                "Takmicenje sa datim nazivom vec postoji",
-                new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
+                header, new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
                 strProgName);
             if (form.ShowDialog() != DialogResult.OK)
                 return false;
@@ -1929,17 +1938,27 @@ namespace Bilten.UI
             if (form.SelectedOption == 1)
             {
                 // Prebrisi postojece takmicenje
-                if (TakmicenjeService.deleteTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
+                Cursor.Current = Cursors.WaitCursor;
+                Cursor.Show();
+                try
                 {
-                    TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                        takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
-                        takDump.ocene);
-                    return true;
+                    if (TakmicenjeService.deleteTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
+                    {
+                        TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                            takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
+                            takDump.ocene);
+                        return true;
+                    }
+                    else
+                    {
+                        // concurrency error
+                        throw new Exception("Neuspesno uvozenje takmicenja");
+                    }
                 }
-                else
+                finally
                 {
-                    // concurrency error
-                    throw new Exception("Neuspesno uvozenje takmicenja");
+                    Cursor.Hide();
+                    Cursor.Current = Cursors.Arrow;
                 }
             }
             else
@@ -1953,9 +1972,19 @@ namespace Bilten.UI
                 t.Datum = (takForm.Entity as Takmicenje).Datum;
                 t.Mesto = (takForm.Entity as Takmicenje).Mesto;
 
-                TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                    takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
-                    takDump.ocene);
+                Cursor.Current = Cursors.WaitCursor;
+                Cursor.Show();
+                try
+                {
+                    TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                        takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
+                        takDump.ocene);
+                }
+                finally
+                {
+                    Cursor.Hide();
+                    Cursor.Current = Cursors.Arrow;
+                }
                 return true;
             }
         }
