@@ -16,10 +16,6 @@
       <property name="Godina" column="god_rodj" type="Int16" />
     </component>
     <property name="Gimnastika" column="gimnastika" type="Byte" />
-    <component name="RegistarskiBroj" class="RegistarskiBroj">
-      <property name="Broj" column="reg_broj" type="Int32" />
-      <property name="GodinaRegistracije" column="god_reg" type="Int16" />
-    </component>
     <property name="TakmicarskiBroj" column="takmicarski_broj" />
     <property name="NastupaZaDrzavu" column="nastupa_za_drzavu" type="Boolean" />
     <many-to-one name="TakmicarskaKategorija" class="TakmicarskaKategorija" column="kategorija_id" />

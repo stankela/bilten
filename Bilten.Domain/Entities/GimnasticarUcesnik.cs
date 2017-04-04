@@ -46,14 +46,6 @@ namespace Bilten.Domain
         }
 
         // TODO4: Izbaci ovo.
-        private RegistarskiBroj registarskiBroj;
-        public virtual RegistarskiBroj RegistarskiBroj
-        {
-            get { return registarskiBroj; }
-            set { registarskiBroj = value; }
-        }
-
-        // TODO4: Izbaci ovo.
         private Nullable<int> takmicarskiBroj;
         public virtual Nullable<int> TakmicarskiBroj
         {
@@ -236,7 +228,6 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Prezime != null ? Prezime : NULL);
             strBuilder.AppendLine(DatumRodjenja != null ? DatumRodjenja.ToString() : NULL);
             strBuilder.AppendLine(Gimnastika.ToString());
-            strBuilder.AppendLine(RegistarskiBroj != null ? RegistarskiBroj.ToString() : NULL);
             strBuilder.AppendLine(TakmicarskiBroj != null ? TakmicarskiBroj.ToString() : NULL);
             strBuilder.AppendLine(KlubUcesnik != null ? KlubUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
@@ -259,9 +250,6 @@ namespace Bilten.Domain
             DatumRodjenja = line != NULL ? Datum.Parse(line) : null;
             
             Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
-
-            line = reader.ReadLine();
-            RegistarskiBroj = line != NULL ? RegistarskiBroj.Parse(line) : null;
 
             line = reader.ReadLine();
             TakmicarskiBroj = line != NULL ? int.Parse(line) : (int?)null;

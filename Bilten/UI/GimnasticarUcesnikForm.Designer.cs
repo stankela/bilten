@@ -42,8 +42,6 @@ namespace Bilten.UI
             this.txtTakBroj = new System.Windows.Forms.TextBox();
             this.lblTakKategorija = new System.Windows.Forms.Label();
             this.txtTakKategorija = new System.Windows.Forms.TextBox();
-            this.txtRegBroj = new System.Windows.Forms.TextBox();
-            this.lblRegBroj = new System.Windows.Forms.Label();
             this.lblTakmicenja = new System.Windows.Forms.Label();
             this.lstTakmicenja = new System.Windows.Forms.ListBox();
             this.lblNastupaZa = new System.Windows.Forms.Label();
@@ -137,7 +135,7 @@ namespace Bilten.UI
             // lblKlub
             // 
             this.lblKlub.AutoSize = true;
-            this.lblKlub.Location = new System.Drawing.Point(63, 180);
+            this.lblKlub.Location = new System.Drawing.Point(63, 166);
             this.lblKlub.Name = "lblKlub";
             this.lblKlub.Size = new System.Drawing.Size(28, 13);
             this.lblKlub.TabIndex = 20;
@@ -146,7 +144,7 @@ namespace Bilten.UI
             // lblDrzava
             // 
             this.lblDrzava.AutoSize = true;
-            this.lblDrzava.Location = new System.Drawing.Point(50, 215);
+            this.lblDrzava.Location = new System.Drawing.Point(50, 201);
             this.lblDrzava.Name = "lblDrzava";
             this.lblDrzava.Size = new System.Drawing.Size(41, 13);
             this.lblDrzava.TabIndex = 22;
@@ -186,24 +184,6 @@ namespace Bilten.UI
             this.txtTakKategorija.TabIndex = 4;
             this.txtTakKategorija.TabStop = false;
             // 
-            // txtRegBroj
-            // 
-            this.txtRegBroj.Location = new System.Drawing.Point(97, 148);
-            this.txtRegBroj.Name = "txtRegBroj";
-            this.txtRegBroj.ReadOnly = true;
-            this.txtRegBroj.Size = new System.Drawing.Size(100, 20);
-            this.txtRegBroj.TabIndex = 24;
-            this.txtRegBroj.TabStop = false;
-            // 
-            // lblRegBroj
-            // 
-            this.lblRegBroj.AutoSize = true;
-            this.lblRegBroj.Location = new System.Drawing.Point(13, 151);
-            this.lblRegBroj.Name = "lblRegBroj";
-            this.lblRegBroj.Size = new System.Drawing.Size(79, 13);
-            this.lblRegBroj.TabIndex = 25;
-            this.lblRegBroj.Text = "Registarski broj";
-            // 
             // lblTakmicenja
             // 
             this.lblTakmicenja.AutoSize = true;
@@ -224,7 +204,7 @@ namespace Bilten.UI
             // lblNastupaZa
             // 
             this.lblNastupaZa.AutoSize = true;
-            this.lblNastupaZa.Location = new System.Drawing.Point(90, 267);
+            this.lblNastupaZa.Location = new System.Drawing.Point(90, 253);
             this.lblNastupaZa.Name = "lblNastupaZa";
             this.lblNastupaZa.Size = new System.Drawing.Size(64, 13);
             this.lblNastupaZa.TabIndex = 28;
@@ -233,7 +213,7 @@ namespace Bilten.UI
             // rbtKlub
             // 
             this.rbtKlub.AutoSize = true;
-            this.rbtKlub.Location = new System.Drawing.Point(160, 267);
+            this.rbtKlub.Location = new System.Drawing.Point(160, 253);
             this.rbtKlub.Name = "rbtKlub";
             this.rbtKlub.Size = new System.Drawing.Size(46, 17);
             this.rbtKlub.TabIndex = 29;
@@ -244,7 +224,7 @@ namespace Bilten.UI
             // rbtDrzava
             // 
             this.rbtDrzava.AutoSize = true;
-            this.rbtDrzava.Location = new System.Drawing.Point(160, 290);
+            this.rbtDrzava.Location = new System.Drawing.Point(160, 276);
             this.rbtDrzava.Name = "rbtDrzava";
             this.rbtDrzava.Size = new System.Drawing.Size(59, 17);
             this.rbtDrzava.TabIndex = 30;
@@ -255,7 +235,7 @@ namespace Bilten.UI
             // cmbKlub
             // 
             this.cmbKlub.FormattingEnabled = true;
-            this.cmbKlub.Location = new System.Drawing.Point(97, 177);
+            this.cmbKlub.Location = new System.Drawing.Point(97, 163);
             this.cmbKlub.Name = "cmbKlub";
             this.cmbKlub.Size = new System.Drawing.Size(192, 21);
             this.cmbKlub.TabIndex = 31;
@@ -263,7 +243,7 @@ namespace Bilten.UI
             // cmbDrzava
             // 
             this.cmbDrzava.FormattingEnabled = true;
-            this.cmbDrzava.Location = new System.Drawing.Point(97, 212);
+            this.cmbDrzava.Location = new System.Drawing.Point(97, 198);
             this.cmbDrzava.Name = "cmbDrzava";
             this.cmbDrzava.Size = new System.Drawing.Size(192, 21);
             this.cmbDrzava.TabIndex = 32;
@@ -300,8 +280,6 @@ namespace Bilten.UI
             this.Controls.Add(this.lblNastupaZa);
             this.Controls.Add(this.lstTakmicenja);
             this.Controls.Add(this.lblTakmicenja);
-            this.Controls.Add(this.lblRegBroj);
-            this.Controls.Add(this.txtRegBroj);
             this.Controls.Add(this.txtTakKategorija);
             this.Controls.Add(this.lblTakKategorija);
             this.Controls.Add(this.txtTakBroj);
@@ -334,8 +312,6 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.txtTakBroj, 0);
             this.Controls.SetChildIndex(this.lblTakKategorija, 0);
             this.Controls.SetChildIndex(this.txtTakKategorija, 0);
-            this.Controls.SetChildIndex(this.txtRegBroj, 0);
-            this.Controls.SetChildIndex(this.lblRegBroj, 0);
             this.Controls.SetChildIndex(this.lblTakmicenja, 0);
             this.Controls.SetChildIndex(this.lstTakmicenja, 0);
             this.Controls.SetChildIndex(this.lblNastupaZa, 0);
@@ -366,8 +342,6 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtTakBroj;
         private System.Windows.Forms.Label lblTakKategorija;
         private System.Windows.Forms.TextBox txtTakKategorija;
-        private System.Windows.Forms.TextBox txtRegBroj;
-        private System.Windows.Forms.Label lblRegBroj;
         private System.Windows.Forms.Label lblTakmicenja;
         private System.Windows.Forms.ListBox lstTakmicenja;
         private System.Windows.Forms.Label lblNastupaZa;

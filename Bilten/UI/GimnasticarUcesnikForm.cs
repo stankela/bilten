@@ -123,7 +123,6 @@ namespace Bilten.UI
             txtPrezime.Text = String.Empty;
             txtGimnastika.Text = String.Empty;
             txtDatumRodj.Text = String.Empty;
-            txtRegBroj.Text = String.Empty;
 
             cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
             cmbKlub.DataSource = klubovi;
@@ -168,10 +167,6 @@ namespace Bilten.UI
             txtDatumRodj.Text = String.Empty;
             if (gimnasticar.DatumRodjenja != null)
                 txtDatumRodj.Text = gimnasticar.DatumRodjenja.ToString("d");
-
-            txtRegBroj.Text = String.Empty;
-            if (gimnasticar.RegistarskiBroj != null)
-                txtRegBroj.Text = gimnasticar.RegistarskiBroj.ToString();
 
             SelectedKlub = gimnasticar.KlubUcesnik;
             SelectedDrzava = gimnasticar.DrzavaUcesnik;

@@ -16,7 +16,6 @@ namespace Bilten.UI
             dgw.AddColumn("Ime", "Ime", 100);
             dgw.AddColumn("Prezime", "Prezime", 100);
             dgw.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
-            dgw.AddColumn("Registarski broj", "RegistarskiBroj", 100);
             dgw.AddColumn("Takmicarski broj", "TakmicarskiBroj", 70);
             dgw.AddColumn("Klub", "KlubUcesnik", 150);
             dgw.AddColumn("Drzava", "DrzavaUcesnik", 100);

@@ -1698,7 +1698,6 @@ namespace Bilten.UI
             result.Prezime = g.Prezime;
             result.Gimnastika = g.Gimnastika;
             result.DatumRodjenja = g.DatumRodjenja;
-            result.RegistarskiBroj = g.RegistarskiBroj;
             result.TakmicarskaKategorija = kategorija;
             if (g.DrzavaUcesnik == null)
                 result.DrzavaUcesnik = null;
