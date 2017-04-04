@@ -37,14 +37,6 @@ namespace Bilten.Domain
             set { datumRodjenja = value; }
         }
 
-        // TODO4: Da li je ovo potrebno? Gimnastika je uvek kao i za Takmicenje.
-        private Gimnastika gimnastika;
-        public virtual Gimnastika Gimnastika
-        {
-            get { return gimnastika; }
-            set { gimnastika = value; }
-        }
-
         private KlubUcesnik klubUcesnik;
         public virtual KlubUcesnik KlubUcesnik
         {
@@ -219,7 +211,6 @@ namespace Bilten.Domain
             strBuilder.AppendLine(SrednjeIme != null ? SrednjeIme : NULL);
             strBuilder.AppendLine(Prezime != null ? Prezime : NULL);
             strBuilder.AppendLine(DatumRodjenja != null ? DatumRodjenja.ToString() : NULL);
-            strBuilder.AppendLine(Gimnastika.ToString());
             strBuilder.AppendLine(KlubUcesnik != null ? KlubUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(TakmicarskaKategorija != null ? TakmicarskaKategorija.Id.ToString() : NULL);
@@ -240,8 +231,6 @@ namespace Bilten.Domain
             line = reader.ReadLine();
             DatumRodjenja = line != NULL ? Datum.Parse(line) : null;
             
-            Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
-
             line = reader.ReadLine();
             KlubUcesnik = line != NULL ? map.kluboviMap[int.Parse(line)] : null;
 

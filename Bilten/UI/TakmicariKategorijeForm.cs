@@ -380,9 +380,6 @@ namespace Bilten.UI
 
         private bool canAddGimnasticar(GimnasticarUcesnik g, TakmicarskaKategorija kategorija)
         {
-            if (g.Gimnastika != kategorija.Gimnastika)
-                return false;
-
             foreach (IList<GimnasticarUcesnik> gimList in gimnasticari)
             {
                 foreach (GimnasticarUcesnik g2 in gimList)
@@ -401,7 +398,6 @@ namespace Bilten.UI
             result.Ime = g.Ime;
             result.SrednjeIme = g.SrednjeIme;
             result.Prezime = g.Prezime;
-            result.Gimnastika = g.Gimnastika;
             result.DatumRodjenja = g.DatumRodjenja;
             result.TakmicarskaKategorija = kategorija;
             if (g.Drzava == null)
@@ -446,7 +442,6 @@ namespace Bilten.UI
             result.Ime = g.Ime;
             result.SrednjeIme = g.SrednjeIme;
             result.Prezime = g.Prezime;
-            result.Gimnastika = g.Gimnastika;
             result.DatumRodjenja = g.DatumRodjenja;
             result.TakmicarskaKategorija = kategorija;
             if (g.DrzavaUcesnik == null)

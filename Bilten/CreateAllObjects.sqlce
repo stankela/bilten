@@ -183,7 +183,6 @@ create table gimnasticari_ucesnici (
 	dan_rodj tinyint,
 	mesec_rodj tinyint,
 	god_rodj smallint,
-	gimnastika tinyint,
 	nastupa_za_drzavu bit,
 	kategorija_id int references takmicarske_kategorije(kategorija_id),
 	klub_id int references klubovi_ucesnici(klub_id),

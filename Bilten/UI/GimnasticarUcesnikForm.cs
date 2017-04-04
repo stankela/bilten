@@ -120,7 +120,6 @@ namespace Bilten.UI
             txtIme.Text = String.Empty;
             txtSrednjeIme.Text = String.Empty;
             txtPrezime.Text = String.Empty;
-            txtGimnastika.Text = String.Empty;
             txtDatumRodj.Text = String.Empty;
 
             cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
@@ -154,7 +153,6 @@ namespace Bilten.UI
             txtIme.Text = gimnasticar.Ime;
             txtSrednjeIme.Text = gimnasticar.SrednjeIme;
             txtPrezime.Text = gimnasticar.Prezime;
-            txtGimnastika.Text = gimnasticar.Gimnastika.ToString();
 
             txtDatumRodj.Text = String.Empty;
             if (gimnasticar.DatumRodjenja != null)

@@ -32,8 +32,6 @@ namespace Bilten.UI
             this.txtIme = new System.Windows.Forms.TextBox();
             this.lblPrezime = new System.Windows.Forms.Label();
             this.txtPrezime = new System.Windows.Forms.TextBox();
-            this.lblGimnastika = new System.Windows.Forms.Label();
-            this.txtGimnastika = new System.Windows.Forms.TextBox();
             this.lblDatumRodj = new System.Windows.Forms.Label();
             this.txtDatumRodj = new System.Windows.Forms.TextBox();
             this.lblKlub = new System.Windows.Forms.Label();
@@ -95,28 +93,10 @@ namespace Bilten.UI
             this.txtPrezime.TabIndex = 13;
             this.txtPrezime.TabStop = false;
             // 
-            // lblGimnastika
-            // 
-            this.lblGimnastika.AutoSize = true;
-            this.lblGimnastika.Location = new System.Drawing.Point(32, 99);
-            this.lblGimnastika.Name = "lblGimnastika";
-            this.lblGimnastika.Size = new System.Drawing.Size(59, 13);
-            this.lblGimnastika.TabIndex = 14;
-            this.lblGimnastika.Text = "Gimnastika";
-            // 
-            // txtGimnastika
-            // 
-            this.txtGimnastika.Location = new System.Drawing.Point(97, 96);
-            this.txtGimnastika.Name = "txtGimnastika";
-            this.txtGimnastika.ReadOnly = true;
-            this.txtGimnastika.Size = new System.Drawing.Size(48, 20);
-            this.txtGimnastika.TabIndex = 15;
-            this.txtGimnastika.TabStop = false;
-            // 
             // lblDatumRodj
             // 
             this.lblDatumRodj.AutoSize = true;
-            this.lblDatumRodj.Location = new System.Drawing.Point(13, 125);
+            this.lblDatumRodj.Location = new System.Drawing.Point(13, 110);
             this.lblDatumRodj.Name = "lblDatumRodj";
             this.lblDatumRodj.Size = new System.Drawing.Size(78, 13);
             this.lblDatumRodj.TabIndex = 16;
@@ -124,7 +104,7 @@ namespace Bilten.UI
             // 
             // txtDatumRodj
             // 
-            this.txtDatumRodj.Location = new System.Drawing.Point(97, 122);
+            this.txtDatumRodj.Location = new System.Drawing.Point(97, 107);
             this.txtDatumRodj.Name = "txtDatumRodj";
             this.txtDatumRodj.Size = new System.Drawing.Size(100, 20);
             this.txtDatumRodj.TabIndex = 17;
@@ -133,7 +113,7 @@ namespace Bilten.UI
             // lblKlub
             // 
             this.lblKlub.AutoSize = true;
-            this.lblKlub.Location = new System.Drawing.Point(63, 166);
+            this.lblKlub.Location = new System.Drawing.Point(63, 151);
             this.lblKlub.Name = "lblKlub";
             this.lblKlub.Size = new System.Drawing.Size(28, 13);
             this.lblKlub.TabIndex = 20;
@@ -142,7 +122,7 @@ namespace Bilten.UI
             // lblDrzava
             // 
             this.lblDrzava.AutoSize = true;
-            this.lblDrzava.Location = new System.Drawing.Point(50, 201);
+            this.lblDrzava.Location = new System.Drawing.Point(50, 186);
             this.lblDrzava.Name = "lblDrzava";
             this.lblDrzava.Size = new System.Drawing.Size(41, 13);
             this.lblDrzava.TabIndex = 22;
@@ -186,7 +166,7 @@ namespace Bilten.UI
             // lblNastupaZa
             // 
             this.lblNastupaZa.AutoSize = true;
-            this.lblNastupaZa.Location = new System.Drawing.Point(90, 243);
+            this.lblNastupaZa.Location = new System.Drawing.Point(90, 228);
             this.lblNastupaZa.Name = "lblNastupaZa";
             this.lblNastupaZa.Size = new System.Drawing.Size(64, 13);
             this.lblNastupaZa.TabIndex = 28;
@@ -195,7 +175,7 @@ namespace Bilten.UI
             // rbtKlub
             // 
             this.rbtKlub.AutoSize = true;
-            this.rbtKlub.Location = new System.Drawing.Point(160, 243);
+            this.rbtKlub.Location = new System.Drawing.Point(160, 228);
             this.rbtKlub.Name = "rbtKlub";
             this.rbtKlub.Size = new System.Drawing.Size(46, 17);
             this.rbtKlub.TabIndex = 29;
@@ -206,7 +186,7 @@ namespace Bilten.UI
             // rbtDrzava
             // 
             this.rbtDrzava.AutoSize = true;
-            this.rbtDrzava.Location = new System.Drawing.Point(160, 266);
+            this.rbtDrzava.Location = new System.Drawing.Point(160, 251);
             this.rbtDrzava.Name = "rbtDrzava";
             this.rbtDrzava.Size = new System.Drawing.Size(59, 17);
             this.rbtDrzava.TabIndex = 30;
@@ -217,7 +197,7 @@ namespace Bilten.UI
             // cmbKlub
             // 
             this.cmbKlub.FormattingEnabled = true;
-            this.cmbKlub.Location = new System.Drawing.Point(97, 163);
+            this.cmbKlub.Location = new System.Drawing.Point(97, 148);
             this.cmbKlub.Name = "cmbKlub";
             this.cmbKlub.Size = new System.Drawing.Size(192, 21);
             this.cmbKlub.TabIndex = 31;
@@ -225,7 +205,7 @@ namespace Bilten.UI
             // cmbDrzava
             // 
             this.cmbDrzava.FormattingEnabled = true;
-            this.cmbDrzava.Location = new System.Drawing.Point(97, 198);
+            this.cmbDrzava.Location = new System.Drawing.Point(97, 183);
             this.cmbDrzava.Name = "cmbDrzava";
             this.cmbDrzava.Size = new System.Drawing.Size(192, 21);
             this.cmbDrzava.TabIndex = 32;
@@ -270,16 +250,12 @@ namespace Bilten.UI
             this.Controls.Add(this.lblKlub);
             this.Controls.Add(this.txtDatumRodj);
             this.Controls.Add(this.lblDatumRodj);
-            this.Controls.Add(this.txtGimnastika);
-            this.Controls.Add(this.lblGimnastika);
             this.Controls.Add(this.lblPrezime);
             this.Controls.Add(this.txtPrezime);
             this.Name = "GimnasticarUcesnikForm";
             this.Text = "GimnasticarUcesnikForm";
             this.Controls.SetChildIndex(this.txtPrezime, 0);
             this.Controls.SetChildIndex(this.lblPrezime, 0);
-            this.Controls.SetChildIndex(this.lblGimnastika, 0);
-            this.Controls.SetChildIndex(this.txtGimnastika, 0);
             this.Controls.SetChildIndex(this.lblDatumRodj, 0);
             this.Controls.SetChildIndex(this.txtDatumRodj, 0);
             this.Controls.SetChildIndex(this.lblKlub, 0);
@@ -310,8 +286,6 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtIme;
         private System.Windows.Forms.Label lblPrezime;
         private System.Windows.Forms.TextBox txtPrezime;
-        private System.Windows.Forms.Label lblGimnastika;
-        private System.Windows.Forms.TextBox txtGimnastika;
         private System.Windows.Forms.Label lblDatumRodj;
         private System.Windows.Forms.TextBox txtDatumRodj;
         private System.Windows.Forms.Label lblKlub;

@@ -167,7 +167,6 @@ namespace Bilten.Test
                 }
                 gimnasticarUcesnik.DrzavaUcesnik = drzavaUcesnik;
 
-                gimnasticarUcesnik.Gimnastika = gimnastika;
                 gimnasticarUcesnik.TakmicarskaKategorija = seniori;
                 gimnasticarUcesnik.NastupaZaDrzavu = true;
 
