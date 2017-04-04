@@ -12,6 +12,7 @@ namespace Bilten.Dao
         IList<Takmicenje> FindAll();
         IList<Takmicenje> FindByGimnastika(Gimnastika gim);
         IList<Takmicenje> FindAllOdvojenoFinale();
+        Takmicenje FindByNazivGimnastikaDatum(string naziv, Gimnastika gim, DateTime datum);
 
         // Ovaj metod mi je trebao u MilanoInitalizer, inace nema neku upotrebnu vrednost.
         Takmicenje FindByMestoGimnastika(string mesto, Gimnastika gim);

@@ -12,7 +12,7 @@ namespace Bilten.UI
 {
     public partial class SelectOptionForm : Form
     {
-        public int SelectedIndex;
+        public int SelectedOption;
 
         public SelectOptionForm(string header, string[] options, string caption)
         {
@@ -123,7 +123,7 @@ namespace Bilten.UI
                 RadioButton rbt = c as RadioButton;
                 if (rbt != null && rbt.Checked)
                 {
-                    SelectedIndex = (int)rbt.Tag;
+                    SelectedOption = (int)rbt.Tag;
                     break;
                 }
             }

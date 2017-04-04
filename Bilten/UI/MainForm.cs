@@ -16,6 +16,7 @@ using Bilten.Dao.NHibernate;
 using Bilten.Util;
 using Bilten.Misc;
 using System.IO;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -1318,6 +1319,7 @@ namespace Bilten.UI
                 }
             }
 
+            // TODO4: Ovde treba Update.
             takmicenjeDAO.Add(takmicenje);
 
             RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
@@ -1873,8 +1875,17 @@ namespace Bilten.UI
                 using (session = NHibernateHelper.Instance.OpenSession())
                 using (session.BeginTransaction())
                 {
-                    CurrentSessionContext.Bind(session);
-                    uveziTakmicenje(ofd.FileName);
+                    //CurrentSessionContext.Bind(session);
+
+                    // NOTE: Izgleda da CurrentSessionContext ne radi kada se otvara vise prozora. Zato koristim globalnu
+                    // promenljivu Sesija.Instance.Session.
+                    Sesija.Instance.Session = session;
+                    Takmicenje t;
+                    if (uveziTakmicenje(ofd.FileName, out t))
+                    {
+                        session.Transaction.Commit();
+                        MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1888,50 +1899,65 @@ namespace Bilten.UI
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+                Sesija.Instance.Session = null;
+                //CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
-        private void uveziTakmicenje(string fileName)
+        private bool uveziTakmicenje(string fileName, out Takmicenje t)
         {
             TakmicenjeDump takDump = new TakmicenjeDump();
             takDump.loadFromFile(fileName);
 
-            Takmicenje t = takDump.takmicenje;
+            t = takDump.takmicenje;
             if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
             {
-                // TODO4
-                return;
+                // Uvezi takmicenje pod postojecim imenom
+                TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                    takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
+                    takDump.ocene);
+                return true;
             }
-
+        
             SelectOptionForm form = new SelectOptionForm(
                 "Takmicenje sa datim nazivom vec postoji",
                 new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
                 strProgName);
             if (form.ShowDialog() != DialogResult.OK)
-                return;
+                return false;
 
-            if (form.SelectedIndex == 1)
+            if (form.SelectedOption == 1)
             {
                 // Prebrisi postojece takmicenje
-                // TODO4
+                if (TakmicenjeService.deleteTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
+                {
+                    TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                        takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
+                        takDump.ocene);
+                    return true;
+                }
+                else
+                {
+                    // concurrency error
+                    throw new Exception("Neuspesno uvozenje takmicenja");
+                }
             }
             else
             {
                 // Uvezi takmicenje pod novim imenom
                 TakmicenjeForm takForm = new TakmicenjeForm(t.Naziv, t.Gimnastika, t.Datum, t.Mesto, t.TipTakmicenja);
-                if (takForm.ShowDialog() == DialogResult.OK)
-                {
-                    t.Naziv = (takForm.Entity as Takmicenje).Naziv;
-                    t.Datum = (takForm.Entity as Takmicenje).Datum;
-                    t.Mesto = (takForm.Entity as Takmicenje).Mesto;
-                }
+                if (takForm.ShowDialog() != DialogResult.OK)
+                    return false;
+
+                t.Naziv = (takForm.Entity as Takmicenje).Naziv;
+                t.Datum = (takForm.Entity as Takmicenje).Datum;
+                t.Mesto = (takForm.Entity as Takmicenje).Mesto;
+
+                TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                    takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
+                    takDump.ocene);
+                return true;
             }
-
-            // Dodaj novo takmicenje
-
-            MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
-
         }
     }
 }

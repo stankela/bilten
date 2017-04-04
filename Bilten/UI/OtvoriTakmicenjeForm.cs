@@ -12,6 +12,7 @@ using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -175,7 +176,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    deleteTakmicenje(selTakmicenje);
+                    TakmicenjeService.deleteTakmicenje(selTakmicenje.Id);
                     session.Transaction.Commit();
                 }
             }
@@ -199,81 +200,6 @@ namespace Bilten.UI
             if (dataGridViewUserControl1.isSorted())
                 dataGridViewUserControl1.refreshItems();
             updateTakmicenjaCount();
-        }
-
-        private void deleteTakmicenje(Takmicenje takmicenje)
-        {
-            // brisi ocene
-            OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-            IList<Ocena> ocene = ocenaDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (Ocena o in ocene)
-                ocenaDAO.Delete(o);
-
-            // brisi rasporede nastupa
-            RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
-            IList<RasporedNastupa> rasporediNastupa = rasporedNastupaDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (RasporedNastupa r in rasporediNastupa)
-            {
-                rasporedNastupaDAO.Delete(r);
-            }
-
-            // brisi rasporede sudija
-            RasporedSudijaDAO rasporedSudijaDAO = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO();
-            IList<RasporedSudija> rasporediSudija = rasporedSudijaDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (RasporedSudija r in rasporediSudija)
-                rasporedSudijaDAO.Delete(r);
-
-            // brisi sudije ucesnike
-            SudijaUcesnikDAO sudijaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO();
-            IList<SudijaUcesnik> sudije = sudijaUcesnikDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (SudijaUcesnik s in sudije)
-                sudijaUcesnikDAO.Delete(s);
-
-            // brisi rezultatska takmicenja i ekipe
-            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
-            IList<RezultatskoTakmicenje> rezTakmicenja = rezultatskoTakmicenjeDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (RezultatskoTakmicenje r in rezTakmicenja)
-            {
-                Takmicenje1 t1 = r.Takmicenje1;
-                foreach (Ekipa ek in t1.Ekipe)
-                    ekipaDAO.Delete(ek);
-                rezultatskoTakmicenjeDAO.Delete(r);
-            }
-
-            // brisi gimnasticare ucesnike
-            GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
-            IList<GimnasticarUcesnik> gimnasticari = gimnasticarUcesnikDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (GimnasticarUcesnik g in gimnasticari)
-                gimnasticarUcesnikDAO.Delete(g);
-
-            // brisi klubove ucesnike
-            KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
-            IList<KlubUcesnik> klubovi = klubUcesnikDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (KlubUcesnik k in klubovi)
-                klubUcesnikDAO.Delete(k);
-
-            // brisi drzave ucesnike
-            DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
-            IList<DrzavaUcesnik> drzave = drzavaUcesnikDAO.FindByTakmicenje(takmicenje.Id);
-            foreach (DrzavaUcesnik d in drzave)
-                drzavaUcesnikDAO.Delete(d);
-
-            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
-            TakmicarskaKategorijaDAO takmicarskaKategorijaDAO = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO();
-            RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO();
-
-            // brisi kategorije
-            takmicenjeDAO.Attach(takmicenje, false);
-            foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
-                takmicarskaKategorijaDAO.Delete(k);
-
-            // brisi descriptions
-            foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
-                rezTakDescDAO.Delete(d);
-
-            // brisi takmicenje
-            takmicenjeDAO.Delete(takmicenje);
         }
 
         private void updateTakmicenjaCount()

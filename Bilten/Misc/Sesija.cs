@@ -163,5 +163,7 @@ namespace Bilten.Misc
             }
             return result;
         }
+
+        public ISession Session = null;
     }
 }

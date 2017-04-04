@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection;
 using NHibernate;
 using NHibernate.Cfg;
+using Bilten.Misc;
 
 // TODO: Ovo treba da bude Bilten.Data.NHibernate namespace
 namespace Bilten.Data
@@ -60,6 +61,8 @@ namespace Bilten.Data
 
         public ISession GetCurrentSession()
         {
+            if (Sesija.Instance.Session != null)
+                return Sesija.Instance.Session;
             return SessionFactory.GetCurrentSession();
         }
     }

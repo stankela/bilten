@@ -119,7 +119,29 @@ namespace Bilten.Dao.NHibernate
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }
         }
-        
+
+        public Takmicenje FindByNazivGimnastikaDatum(string naziv, Gimnastika gim, DateTime datum)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Takmicenje t
+                    where t.Naziv like :naziv
+                    and t.Gimnastika = :gim
+                    and t.Datum = :datum");
+                q.SetString("naziv", naziv);
+                q.SetByte("gim", (byte)gim);
+                q.SetDateTime("datum", datum);
+                IList<Takmicenje> result = q.List<Takmicenje>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public bool existsTakmicenje(string naziv, Gimnastika gim, DateTime datum)
         {
             try
