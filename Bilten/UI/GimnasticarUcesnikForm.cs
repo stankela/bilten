@@ -15,7 +15,6 @@ namespace Bilten.UI
 {
     public partial class GimnasticarUcesnikForm : EntityDetailForm
     {
-        private Nullable<int> oldTakBroj;
         private TakmicarskaKategorija kategorija;
         private List<KlubUcesnik> klubovi;
         private List<DrzavaUcesnik> drzave;
@@ -137,7 +136,6 @@ namespace Bilten.UI
             cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
 
             txtTakKategorija.Text = kategorija.ToString();
-            txtTakBroj.Text = String.Empty;
 
             lstTakmicenja.HorizontalScrollbar = true;
             lstTakmicenja.Items.Clear();
@@ -148,12 +146,6 @@ namespace Bilten.UI
         protected override DomainObject getEntityById(int id)
         {
             return DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindById(id);
-        }
-
-        protected override void saveOriginalData(DomainObject entity)
-        {
-            GimnasticarUcesnik gimnasticar = (GimnasticarUcesnik)entity;
-            oldTakBroj = gimnasticar.TakmicarskiBroj;
         }
 
         protected override void updateUIFromEntity(DomainObject entity)
@@ -172,10 +164,6 @@ namespace Bilten.UI
             SelectedDrzava = gimnasticar.DrzavaUcesnik;
             txtTakKategorija.Text = kategorija.ToString();
 
-            txtTakBroj.Text = String.Empty;
-            if (gimnasticar.TakmicarskiBroj != null)
-                txtTakBroj.Text = gimnasticar.TakmicarskiBroj.ToString();
-
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                 lstTakmicenja.Items.Add(rt.Naziv);
 
@@ -185,18 +173,11 @@ namespace Bilten.UI
         protected override void requiredFieldsAndFormatValidation(Notification notification)
         {
             Datum dummyDatum;
-            int dummyInt;
             if (txtDatumRodj.Text.Trim() != String.Empty
             && !Datum.TryParse(txtDatumRodj.Text, out dummyDatum))
             {
                 notification.RegisterMessage(
                     "DatumRodjenja", "Neispravan format za datum ili godinu rodjenja.");
-            }
-            if (txtTakBroj.Text.Trim() != String.Empty &&
-                !int.TryParse(txtTakBroj.Text, out dummyInt))
-            {
-                notification.RegisterMessage(
-                    "TakmicarskiBroj", "Neispravan format za takmicarski broj.");
             }
             if (cmbKlub.Text.Trim() != String.Empty && cmbKlub.Text.Trim() != PRAZNO && SelectedKlub == null)
             {
@@ -216,10 +197,6 @@ namespace Bilten.UI
             {
                 case "DatumRodjenja":
                     txtDatumRodj.Focus();
-                    break;
-
-                case "TakmicarskiBroj":
-                    txtTakBroj.Focus();
                     break;
 
                 case "Klub":
@@ -243,11 +220,6 @@ namespace Bilten.UI
             else
                 gimnasticar.DatumRodjenja = Datum.Parse(txtDatumRodj.Text);
 
-            if (txtTakBroj.Text.Trim() == String.Empty)
-                gimnasticar.TakmicarskiBroj = null;
-            else
-                gimnasticar.TakmicarskiBroj = int.Parse(txtTakBroj.Text);
-
             gimnasticar.KlubUcesnik = SelectedKlub;
             if (gimnasticar.KlubUcesnik != null && gimnasticar.KlubUcesnik.Naziv == PRAZNO)
                 gimnasticar.KlubUcesnik = null;
@@ -257,23 +229,6 @@ namespace Bilten.UI
                 gimnasticar.DrzavaUcesnik = null;
             
             gimnasticar.NastupaZaDrzavu = rbtDrzava.Checked;
-        }
-
-        protected override void checkBusinessRulesOnUpdate(DomainObject entity)
-        {
-            GimnasticarUcesnik gimnasticar = (GimnasticarUcesnik)entity;
-            Notification notification = new Notification();
-
-            bool takBrojChanged =
-                (gimnasticar.TakmicarskiBroj != oldTakBroj) ? true : false;
-            if (takBrojChanged && gimnasticar.TakmicarskiBroj != null
-            && DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().existsGimnasticarTakBroj(
-                gimnasticar.TakmicarskiBroj.Value, kategorija.Takmicenje))
-            {
-                notification.RegisterMessage("TakmicarskiBroj",
-                    "Gimnasticar sa datim takmicarskim brojem vec postoji.");
-                throw new BusinessException(notification);
-            }
         }
 
         protected override void updateEntity(DomainObject entity)

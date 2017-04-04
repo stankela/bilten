@@ -48,17 +48,6 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual string TakmicarskiBroj
-        {
-            get
-            {
-                if (Gimnasticar != null && Gimnasticar.TakmicarskiBroj.HasValue)
-                    return Gimnasticar.TakmicarskiBroj.ToString();
-                else
-                    return String.Empty;
-            }
-        }
-
         public virtual string PrezimeIme
         {
             get

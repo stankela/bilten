@@ -15,6 +15,5 @@ namespace Bilten.Dao
         IList<GimnasticarUcesnik> FindGimnasticariUcesnici(string ime,
             string prezime, Nullable<int> godRodj, DrzavaUcesnik drzava, TakmicarskaKategorija kategorija,
             KlubUcesnik klub, int takmicenjeId);
-        bool existsGimnasticarTakBroj(int takBroj, Takmicenje takmicenje);
     }
 }

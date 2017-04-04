@@ -225,17 +225,6 @@ namespace Bilten.Domain
             && Greda == null && DvovisinskiRazboj == null;
         }
 
-        public virtual Nullable<int> TakmicarskiBroj
-        {
-            get
-            {
-                if (Gimnasticar != null && Gimnasticar.TakmicarskiBroj.HasValue)
-                    return Gimnasticar.TakmicarskiBroj;
-                else
-                    return null;
-            }
-        }
-
         public virtual string PrezimeIme
         {
             get

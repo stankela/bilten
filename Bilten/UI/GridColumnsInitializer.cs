@@ -16,7 +16,6 @@ namespace Bilten.UI
             dgw.AddColumn("Ime", "Ime", 100);
             dgw.AddColumn("Prezime", "Prezime", 100);
             dgw.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
-            dgw.AddColumn("Takmicarski broj", "TakmicarskiBroj", 70);
             dgw.AddColumn("Klub", "KlubUcesnik", 150);
             dgw.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
@@ -131,7 +130,6 @@ namespace Bilten.UI
             dgw.DataGridView.Columns.Clear();
 
             DataGridViewColumn column;
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
             
@@ -212,7 +210,6 @@ namespace Bilten.UI
             dgw.DataGridView.Columns.Clear();
 
             dgw.AddColumn("Rank", "Rank", 40);
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
 
@@ -284,7 +281,6 @@ namespace Bilten.UI
             else
                 dgw.AddColumn("Rank", "Rank", 40);
 
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
 
@@ -364,7 +360,6 @@ namespace Bilten.UI
             dgw.DataGridView.Columns.Clear();
 
             dgw.AddColumn("Red. broj", "QualOrder", 40);
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
 
@@ -377,7 +372,6 @@ namespace Bilten.UI
             dgw.DataGridView.Columns.Clear();
 
             dgw.AddColumn("Red. broj", "QualOrder", 40);
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
 
@@ -457,7 +451,6 @@ namespace Bilten.UI
             dgw.DataGridView.Columns.Clear();
 
             dgw.AddColumn("Rank", "Rank", 40);
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
             dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
@@ -492,7 +485,6 @@ namespace Bilten.UI
             dgw.DataGridView.Columns.Clear();
 
             dgw.AddColumn("Rank", "Rank", 40);
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
             dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
@@ -529,7 +521,6 @@ namespace Bilten.UI
             dgw.DataGridView.Columns.Clear();
 
             dgw.AddColumn("Rank", "Rank", 40);
-            dgw.AddColumn("Broj", "TakmicarskiBroj", 50);
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
 

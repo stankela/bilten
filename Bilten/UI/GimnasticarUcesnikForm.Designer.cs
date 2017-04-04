@@ -38,8 +38,6 @@ namespace Bilten.UI
             this.txtDatumRodj = new System.Windows.Forms.TextBox();
             this.lblKlub = new System.Windows.Forms.Label();
             this.lblDrzava = new System.Windows.Forms.Label();
-            this.lblBroj = new System.Windows.Forms.Label();
-            this.txtTakBroj = new System.Windows.Forms.TextBox();
             this.lblTakKategorija = new System.Windows.Forms.Label();
             this.txtTakKategorija = new System.Windows.Forms.TextBox();
             this.lblTakmicenja = new System.Windows.Forms.Label();
@@ -55,11 +53,11 @@ namespace Bilten.UI
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(434, 251);
+            this.btnOk.Location = new System.Drawing.Point(434, 269);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(526, 252);
+            this.btnCancel.Location = new System.Drawing.Point(526, 270);
             // 
             // lblIme
             // 
@@ -150,26 +148,10 @@ namespace Bilten.UI
             this.lblDrzava.TabIndex = 22;
             this.lblDrzava.Text = "Drzava";
             // 
-            // lblBroj
-            // 
-            this.lblBroj.AutoSize = true;
-            this.lblBroj.Location = new System.Drawing.Point(345, 20);
-            this.lblBroj.Name = "lblBroj";
-            this.lblBroj.Size = new System.Drawing.Size(84, 13);
-            this.lblBroj.TabIndex = 5;
-            this.lblBroj.Text = "Takmicarski broj";
-            // 
-            // txtTakBroj
-            // 
-            this.txtTakBroj.Location = new System.Drawing.Point(348, 34);
-            this.txtTakBroj.Name = "txtTakBroj";
-            this.txtTakBroj.Size = new System.Drawing.Size(100, 20);
-            this.txtTakBroj.TabIndex = 6;
-            // 
             // lblTakKategorija
             // 
             this.lblTakKategorija.AutoSize = true;
-            this.lblTakKategorija.Location = new System.Drawing.Point(345, 70);
+            this.lblTakKategorija.Location = new System.Drawing.Point(345, 17);
             this.lblTakKategorija.Name = "lblTakKategorija";
             this.lblTakKategorija.Size = new System.Drawing.Size(54, 13);
             this.lblTakKategorija.TabIndex = 3;
@@ -177,7 +159,7 @@ namespace Bilten.UI
             // 
             // txtTakKategorija
             // 
-            this.txtTakKategorija.Location = new System.Drawing.Point(348, 86);
+            this.txtTakKategorija.Location = new System.Drawing.Point(348, 33);
             this.txtTakKategorija.Name = "txtTakKategorija";
             this.txtTakKategorija.ReadOnly = true;
             this.txtTakKategorija.Size = new System.Drawing.Size(201, 20);
@@ -187,7 +169,7 @@ namespace Bilten.UI
             // lblTakmicenja
             // 
             this.lblTakmicenja.AutoSize = true;
-            this.lblTakmicenja.Location = new System.Drawing.Point(345, 116);
+            this.lblTakmicenja.Location = new System.Drawing.Point(345, 63);
             this.lblTakmicenja.Name = "lblTakmicenja";
             this.lblTakmicenja.Size = new System.Drawing.Size(62, 13);
             this.lblTakmicenja.TabIndex = 26;
@@ -196,7 +178,7 @@ namespace Bilten.UI
             // lstTakmicenja
             // 
             this.lstTakmicenja.FormattingEnabled = true;
-            this.lstTakmicenja.Location = new System.Drawing.Point(348, 132);
+            this.lstTakmicenja.Location = new System.Drawing.Point(348, 79);
             this.lstTakmicenja.Name = "lstTakmicenja";
             this.lstTakmicenja.Size = new System.Drawing.Size(253, 69);
             this.lstTakmicenja.TabIndex = 27;
@@ -204,7 +186,7 @@ namespace Bilten.UI
             // lblNastupaZa
             // 
             this.lblNastupaZa.AutoSize = true;
-            this.lblNastupaZa.Location = new System.Drawing.Point(90, 253);
+            this.lblNastupaZa.Location = new System.Drawing.Point(90, 243);
             this.lblNastupaZa.Name = "lblNastupaZa";
             this.lblNastupaZa.Size = new System.Drawing.Size(64, 13);
             this.lblNastupaZa.TabIndex = 28;
@@ -213,7 +195,7 @@ namespace Bilten.UI
             // rbtKlub
             // 
             this.rbtKlub.AutoSize = true;
-            this.rbtKlub.Location = new System.Drawing.Point(160, 253);
+            this.rbtKlub.Location = new System.Drawing.Point(160, 243);
             this.rbtKlub.Name = "rbtKlub";
             this.rbtKlub.Size = new System.Drawing.Size(46, 17);
             this.rbtKlub.TabIndex = 29;
@@ -224,7 +206,7 @@ namespace Bilten.UI
             // rbtDrzava
             // 
             this.rbtDrzava.AutoSize = true;
-            this.rbtDrzava.Location = new System.Drawing.Point(160, 276);
+            this.rbtDrzava.Location = new System.Drawing.Point(160, 266);
             this.rbtDrzava.Name = "rbtDrzava";
             this.rbtDrzava.Size = new System.Drawing.Size(59, 17);
             this.rbtDrzava.TabIndex = 30;
@@ -270,7 +252,7 @@ namespace Bilten.UI
             this.AcceptButton = null;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(623, 332);
+            this.ClientSize = new System.Drawing.Size(623, 308);
             this.Controls.Add(this.txtSrednjeIme);
             this.Controls.Add(this.lblSrednjeIme);
             this.Controls.Add(this.cmbDrzava);
@@ -282,8 +264,6 @@ namespace Bilten.UI
             this.Controls.Add(this.lblTakmicenja);
             this.Controls.Add(this.txtTakKategorija);
             this.Controls.Add(this.lblTakKategorija);
-            this.Controls.Add(this.txtTakBroj);
-            this.Controls.Add(this.lblBroj);
             this.Controls.Add(this.lblDrzava);
             this.Controls.Add(this.lblIme);
             this.Controls.Add(this.txtIme);
@@ -308,8 +288,6 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.txtIme, 0);
             this.Controls.SetChildIndex(this.lblIme, 0);
             this.Controls.SetChildIndex(this.lblDrzava, 0);
-            this.Controls.SetChildIndex(this.lblBroj, 0);
-            this.Controls.SetChildIndex(this.txtTakBroj, 0);
             this.Controls.SetChildIndex(this.lblTakKategorija, 0);
             this.Controls.SetChildIndex(this.txtTakKategorija, 0);
             this.Controls.SetChildIndex(this.lblTakmicenja, 0);
@@ -338,8 +316,6 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtDatumRodj;
         private System.Windows.Forms.Label lblKlub;
         private System.Windows.Forms.Label lblDrzava;
-        private System.Windows.Forms.Label lblBroj;
-        private System.Windows.Forms.TextBox txtTakBroj;
         private System.Windows.Forms.Label lblTakKategorija;
         private System.Windows.Forms.TextBox txtTakKategorija;
         private System.Windows.Forms.Label lblTakmicenja;

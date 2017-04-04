@@ -184,7 +184,6 @@ create table gimnasticari_ucesnici (
 	mesec_rodj tinyint,
 	god_rodj smallint,
 	gimnastika tinyint,
-	takmicarski_broj int,
 	nastupa_za_drzavu bit,
 	kategorija_id int references takmicarske_kategorije(kategorija_id),
 	klub_id int references klubovi_ucesnici(klub_id),

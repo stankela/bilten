@@ -96,18 +96,6 @@ namespace Bilten.Domain
             }
         }
 
-        // svojstva za prikaz ocene u gridu
-        public virtual Nullable<int> TakmicarskiBroj
-        {
-            get
-            {
-                if (Gimnasticar != null && Gimnasticar.TakmicarskiBroj.HasValue)
-                    return Gimnasticar.TakmicarskiBroj;
-                else
-                    return null;
-            }
-        }
-
         public virtual string PrezimeIme
         {
             get

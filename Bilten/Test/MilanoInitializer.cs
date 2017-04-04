@@ -167,7 +167,6 @@ namespace Bilten.Test
                 }
                 gimnasticarUcesnik.DrzavaUcesnik = drzavaUcesnik;
 
-                gimnasticarUcesnik.TakmicarskiBroj = broj;
                 gimnasticarUcesnik.Gimnastika = gimnastika;
                 gimnasticarUcesnik.TakmicarskaKategorija = seniori;
                 gimnasticarUcesnik.NastupaZaDrzavu = true;
@@ -372,8 +371,8 @@ namespace Bilten.Test
             IList<GimnasticarUcesnik> gim_uces = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
                 .FindByTakmicenje(takmicenje.Id);
             Dictionary<int, GimnasticarUcesnik> gim_ucesnici = new Dictionary<int, GimnasticarUcesnik>();
-            foreach (GimnasticarUcesnik g in gim_uces)
-                gim_ucesnici.Add(g.TakmicarskiBroj.Value, g);
+            //foreach (GimnasticarUcesnik g in gim_uces)
+              //  gim_ucesnici.Add(g.TakmicarskiBroj.Value, g);
 
             DeoTakmicenjaKod[] deoTakmicenja = { 
                 DeoTakmicenjaKod.Takmicenje1, 
@@ -443,8 +442,8 @@ namespace Bilten.Test
                 .FindByTakmicenje(takmicenje.Id);
 
             Dictionary<int, GimnasticarUcesnik> gimnasticariMap = new Dictionary<int, GimnasticarUcesnik>();
-            foreach (GimnasticarUcesnik g in gimnasticari)
-                gimnasticariMap.Add(g.TakmicarskiBroj.Value, g);
+            //foreach (GimnasticarUcesnik g in gimnasticari)
+              //  gimnasticariMap.Add(g.TakmicarskiBroj.Value, g);
 
             DeoTakmicenjaKod[] deoTakmicenja = { 
                 DeoTakmicenjaKod.Takmicenje1, 
