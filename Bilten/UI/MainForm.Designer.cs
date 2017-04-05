@@ -254,7 +254,6 @@ namespace Bilten.UI
             this.mnKopirajPrethodnoTakmicenje.Name = "mnKopirajPrethodnoTakmicenje";
             this.mnKopirajPrethodnoTakmicenje.Size = new System.Drawing.Size(231, 22);
             this.mnKopirajPrethodnoTakmicenje.Text = "Kopiraj prethodno takmicenje";
-            this.mnKopirajPrethodnoTakmicenje.Click += new System.EventHandler(this.mnKopirajPrethodnoTakmicenje_Click);
             // 
             // mnKategorijeITakmicenja
             // 

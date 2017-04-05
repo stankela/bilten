@@ -12,38 +12,41 @@ using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
+using Bilten.Util;
 
 namespace Bilten.UI
 {
     public partial class KopirajTakmicenjeForm : Form
     {
-        private IList<RezultatskoTakmicenjeDescription> takmicenja = new List<RezultatskoTakmicenjeDescription>();
-        private IList<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>();
-        Gimnastika gimnastika;
-
         private Takmicenje takmicenje;
-        public Takmicenje Takmicenje
+
+        private List<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
+
+        private List<RezultatskoTakmicenje> selRezTakmicenja = new List<RezultatskoTakmicenje>();
+        public List<RezultatskoTakmicenje> SelRezTakmicenja
         {
-            get { return takmicenje; }
+            get { return selRezTakmicenja; }
         }
 
-        private List<RezultatskoTakmicenjeDescription> selDescriptions = new List<RezultatskoTakmicenjeDescription>();
-        public List<RezultatskoTakmicenjeDescription> SelDescriptions
-        {
-            get { return selDescriptions; }
-        }
-
-        private List<TakmicarskaKategorija> selKategorije = new List<TakmicarskaKategorija>();
-        public List<TakmicarskaKategorija> SelKategorije
-        {
-            get { return selKategorije; }
-        }
-
-        public KopirajTakmicenjeForm(Gimnastika gim)
+        public KopirajTakmicenjeForm(Takmicenje takmicenje, IList<RezultatskoTakmicenje> rezTakmicenja)
         {
             InitializeComponent();
-            this.gimnastika = gim;
+            this.takmicenje = takmicenje;
             this.Text = "Izaberi takmicenje i kategorije";
+
+            txtTakmicenje.Text = takmicenje.Naziv;
+
+            this.rezTakmicenja = new List<RezultatskoTakmicenje>(rezTakmicenja);
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenje))["RedBroj"];
+            this.rezTakmicenja.Sort(new SortComparer<RezultatskoTakmicenje>(
+                propDesc, ListSortDirection.Ascending));
+
+            lstRezTakmicenja.Items.Clear();
+            foreach (RezultatskoTakmicenje rt in this.rezTakmicenja)
+            {
+                lstRezTakmicenja.Items.Add(rt, true);
+            }
         }
 
         private void btnIzaberi_Click(object sender, EventArgs e)
@@ -52,7 +55,7 @@ namespace Bilten.UI
             SelectGimnasticariPrethTakmForm form = null;
             try
             {
-                form = new SelectGimnasticariPrethTakmForm(gimnastika, true);
+                form = new SelectGimnasticariPrethTakmForm(takmicenje.Gimnastika, true);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -63,80 +66,21 @@ namespace Bilten.UI
 
             if (dlgResult != DialogResult.OK || form.SelTakmicenje == null)
                 return;
-
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    takmicenje = form.SelTakmicenje;
-                    txtTakmicenje.Text = takmicenje.Naziv;
-
-                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
-                    takmicenjeDAO.Attach(takmicenje, false);
-
-                    lstTakmicenja.Items.Clear();
-                    takmicenja.Clear();
-                    foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
-                    {
-                        lstTakmicenja.Items.Add(d, true);
-                        takmicenja.Add(d);
-                    }
-                    lstKategorije.Items.Clear();
-                    kategorije.Clear();
-                    foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
-                    {
-                        lstKategorije.Items.Add(k, true);
-                        kategorije.Add(k);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if (takmicenje == null)
-            {
-                MessageDialogs.showMessage("Izaberite takmicenje.", this.Text);
-                DialogResult = DialogResult.None;
-                return;
-            }
-            if (lstTakmicenja.CheckedItems.Count == 0)
+            if (lstRezTakmicenja.CheckedItems.Count == 0)
             {
                 MessageDialogs.showMessage("Selektujte takmicenja.", this.Text);
                 DialogResult = DialogResult.None;
                 return;
             }
-            if (lstKategorije.CheckedItems.Count == 0)
-            {
-                MessageDialogs.showMessage("Selektujte kategorije.", this.Text);
-                DialogResult = DialogResult.None;
-                return;
-            }
 
-            selDescriptions.Clear();
-            foreach (int index in lstTakmicenja.CheckedIndices)
+            selRezTakmicenja.Clear();
+            foreach (int index in lstRezTakmicenja.CheckedIndices)
             {
-                selDescriptions.Add(takmicenja[index]);
-            }
-            selKategorije.Clear();
-            foreach (int index in lstKategorije.CheckedIndices)
-            {
-                selKategorije.Add(kategorije[index]);
+                selRezTakmicenja.Add(rezTakmicenja[index]);
             }
         }
     }

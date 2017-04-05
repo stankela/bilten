@@ -11,7 +11,6 @@ namespace Bilten.Misc
     {
         private const string BILTEN_TAKMICENJE_DUMP = "BILTEN_TAKMICENJE_DUMP";
 
-        private int takmicenjeId;
         public Takmicenje takmicenje;
         public IList<KlubUcesnik> klubovi;
         public IList<DrzavaUcesnik> drzave;
@@ -27,7 +26,7 @@ namespace Bilten.Misc
 
         }
 
-        private string dumpTakmicenje()
+        private string dumpTakmicenje(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
@@ -35,7 +34,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpKlubovi()
+        private string dumpKlubovi(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<KlubUcesnik> klubovi = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(takmicenjeId);
@@ -45,7 +44,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpDrzave()
+        private string dumpDrzave(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<DrzavaUcesnik> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenjeId);
@@ -55,7 +54,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpGimnasticari()
+        private string dumpGimnasticari(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
@@ -66,7 +65,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpOcene()
+        private string dumpOcene(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindByTakmicenje(takmicenjeId);
@@ -76,7 +75,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpRasporediNastupa()
+        private string dumpRasporediNastupa(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<RasporedNastupa> rasporediNastupa = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO()
@@ -87,7 +86,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpSudije()
+        private string dumpSudije(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<SudijaUcesnik> sudije = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindByTakmicenje(takmicenjeId);
@@ -97,7 +96,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpRasporediSudija()
+        private string dumpRasporediSudija(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<RasporedSudija> rasporediSudija = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO()
@@ -108,7 +107,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpRezTakmicenja()
+        private string dumpRezTakmicenja(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
@@ -119,29 +118,39 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        private string dumpAll()
+        public string dumpAll(int takmicenjeId)
         {
             return BILTEN_TAKMICENJE_DUMP + "\n" +
-                dumpTakmicenje() +
-                dumpKlubovi() +
-                dumpDrzave() +
-                dumpGimnasticari() +
-                dumpOcene() +
-                dumpRasporediNastupa() +
-                dumpSudije() +
-                dumpRasporediSudija() +
-                dumpRezTakmicenja();
+                dumpTakmicenje(takmicenjeId) +
+                dumpKlubovi(takmicenjeId) +
+                dumpDrzave(takmicenjeId) +
+                dumpGimnasticari(takmicenjeId) +
+                dumpOcene(takmicenjeId) +
+                dumpRasporediNastupa(takmicenjeId) +
+                dumpSudije(takmicenjeId) +
+                dumpRasporediSudija(takmicenjeId) +
+                dumpRezTakmicenja(takmicenjeId);
         }
 
         public void dumpToFile(int takmicenjeId, string fileName)
         {
-            this.takmicenjeId = takmicenjeId;
-            File.WriteAllText(fileName, dumpAll());
+            File.WriteAllText(fileName, dumpAll(takmicenjeId));
         }
 
-        private void loadFromDump(string dump)
+        public void loadFromDump(string dump)
         {
             IdMap map = new IdMap();
+
+            // clear
+            takmicenje = new Takmicenje();
+            klubovi = new List<KlubUcesnik>();
+            drzave = new List<DrzavaUcesnik>();
+            gimnasticari = new List<GimnasticarUcesnik>();
+            ocene = new List<Ocena>();
+            rasporediNastupa = new List<RasporedNastupa>();
+            sudije = new List<SudijaUcesnik>();
+            rasporediSudija = new List<RasporedSudija>();
+            rezTakmicenja = new List<RezultatskoTakmicenje>();
 
             using (StringReader reader = new StringReader(dump))
             {
@@ -150,12 +159,9 @@ namespace Bilten.Misc
 
                 int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
 
+                // load takmicenje
                 string id = reader.ReadLine();
-                takmicenje = new Takmicenje();
-
-                // odmah dodajem takmicenje u mapu, za slucaj da bude potrebno u loadFromDump
                 map.takmicenjeMap.Add(int.Parse(id), takmicenje);
-
                 takmicenje.loadFromDump(reader, map, out prvoKoloId, out drugoKoloId,
                     out treceKoloId, out cetvrtoKoloId);
 
@@ -168,7 +174,7 @@ namespace Bilten.Misc
                 takmicenje.CetvrtoKolo = cetvrtoKoloId == -1 ? null :
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(cetvrtoKoloId);
 
-                klubovi = new List<KlubUcesnik>();
+                // load klubovi
                 int count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
@@ -179,7 +185,7 @@ namespace Bilten.Misc
                     klubovi.Add(k);
                 }
 
-                drzave = new List<DrzavaUcesnik>();
+                // load drzave
                 count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
@@ -190,7 +196,7 @@ namespace Bilten.Misc
                     drzave.Add(d);
                 }
 
-                gimnasticari = new List<GimnasticarUcesnik>();
+                // load gimnasticari
                 count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
@@ -201,7 +207,7 @@ namespace Bilten.Misc
                     gimnasticari.Add(g);
                 }
 
-                ocene = new List<Ocena>();
+                // load ocene
                 count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
@@ -211,7 +217,7 @@ namespace Bilten.Misc
                     ocene.Add(o);
                 }
 
-                rasporediNastupa = new List<RasporedNastupa>();
+                // load rasporedi nastupa
                 count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
@@ -221,7 +227,7 @@ namespace Bilten.Misc
                     rasporediNastupa.Add(r);
                 }
 
-                sudije = new List<SudijaUcesnik>();
+                // load sudije
                 count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
@@ -232,7 +238,7 @@ namespace Bilten.Misc
                     sudije.Add(s);
                 }
 
-                rasporediSudija = new List<RasporedSudija>();
+                // load rasporedi sudija
                 count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {
@@ -242,7 +248,7 @@ namespace Bilten.Misc
                     rasporediSudija.Add(r);
                 }
 
-                rezTakmicenja = new List<RezultatskoTakmicenje>();
+                // load rezultatska takmicenja
                 count = int.Parse(reader.ReadLine());
                 for (int i = 0; i < count; ++i)
                 {

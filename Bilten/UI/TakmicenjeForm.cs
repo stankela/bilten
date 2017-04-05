@@ -387,7 +387,7 @@ namespace Bilten.UI
         private void ckbKopirajPrethTak_CheckedChanged(object sender, EventArgs e)
         {
             setEnabledKopirajPrethTak();
-            persistEntity = !(ckbKopirajPrethTak.Enabled && ckbKopirajPrethTak.Checked);
+            persistEntity = standardnoTakmicenje() && !ckbKopirajPrethTak.Checked;
         }
 
         private void btnIzaberiPrethTak_Click(object sender, EventArgs e)

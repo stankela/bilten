@@ -32,9 +32,7 @@ namespace Bilten.UI
             this.txtTakmicenje = new System.Windows.Forms.TextBox();
             this.btnIzaberi = new System.Windows.Forms.Button();
             this.lblTakmicenja = new System.Windows.Forms.Label();
-            this.lstTakmicenja = new System.Windows.Forms.CheckedListBox();
-            this.lblKategorije = new System.Windows.Forms.Label();
-            this.lstKategorije = new System.Windows.Forms.CheckedListBox();
+            this.lstRezTakmicenja = new System.Windows.Forms.CheckedListBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -77,30 +75,13 @@ namespace Bilten.UI
             this.lblTakmicenja.TabIndex = 3;
             this.lblTakmicenja.Text = "Takmicenja";
             // 
-            // lstTakmicenja
+            // lstRezTakmicenja
             // 
-            this.lstTakmicenja.FormattingEnabled = true;
-            this.lstTakmicenja.Location = new System.Drawing.Point(21, 100);
-            this.lstTakmicenja.Name = "lstTakmicenja";
-            this.lstTakmicenja.Size = new System.Drawing.Size(339, 49);
-            this.lstTakmicenja.TabIndex = 4;
-            // 
-            // lblKategorije
-            // 
-            this.lblKategorije.AutoSize = true;
-            this.lblKategorije.Location = new System.Drawing.Point(18, 175);
-            this.lblKategorije.Name = "lblKategorije";
-            this.lblKategorije.Size = new System.Drawing.Size(54, 13);
-            this.lblKategorije.TabIndex = 5;
-            this.lblKategorije.Text = "Kategorije";
-            // 
-            // lstKategorije
-            // 
-            this.lstKategorije.FormattingEnabled = true;
-            this.lstKategorije.Location = new System.Drawing.Point(21, 191);
-            this.lstKategorije.Name = "lstKategorije";
-            this.lstKategorije.Size = new System.Drawing.Size(157, 139);
-            this.lstKategorije.TabIndex = 6;
+            this.lstRezTakmicenja.FormattingEnabled = true;
+            this.lstRezTakmicenja.Location = new System.Drawing.Point(21, 100);
+            this.lstRezTakmicenja.Name = "lstRezTakmicenja";
+            this.lstRezTakmicenja.Size = new System.Drawing.Size(419, 169);
+            this.lstRezTakmicenja.TabIndex = 4;
             // 
             // btnOK
             // 
@@ -132,9 +113,7 @@ namespace Bilten.UI
             this.ClientSize = new System.Drawing.Size(463, 409);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.lstKategorije);
-            this.Controls.Add(this.lblKategorije);
-            this.Controls.Add(this.lstTakmicenja);
+            this.Controls.Add(this.lstRezTakmicenja);
             this.Controls.Add(this.lblTakmicenja);
             this.Controls.Add(this.btnIzaberi);
             this.Controls.Add(this.txtTakmicenje);
@@ -157,9 +136,7 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtTakmicenje;
         private System.Windows.Forms.Button btnIzaberi;
         private System.Windows.Forms.Label lblTakmicenja;
-        private System.Windows.Forms.CheckedListBox lstTakmicenja;
-        private System.Windows.Forms.Label lblKategorije;
-        private System.Windows.Forms.CheckedListBox lstKategorije;
+        private System.Windows.Forms.CheckedListBox lstRezTakmicenja;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
     }

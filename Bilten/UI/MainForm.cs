@@ -303,10 +303,11 @@ namespace Bilten.UI
                 return;
 
             Takmicenje t = (Takmicenje)form.Entity;
-            onTakmicenjeCreated(t);
-
-            if (takmicenje.StandardnoTakmicenje && form.copyFromTakmicenje == null)
+            if (t.StandardnoTakmicenje && form.copyFromTakmicenje == null)
+            {
+                onTakmicenjeCreated(t);
                 return;
+            }
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -317,19 +318,73 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    if (takmicenje.StandardnoTakmicenje && form.copyFromTakmicenje != null)
-                    { 
-                        // TODO4
-                    }
-                    else if (takmicenje.FinaleKupa)
-                    { 
-                        // TODO4
-                    }
-                    else if (takmicenje.ZbirViseKola)
+                    if (t.StandardnoTakmicenje && form.copyFromTakmicenje != null)
                     {
-                        kreirajZbirViseKola(takmicenje);
+                        TakmicenjeDump takDump = new TakmicenjeDump();
+                        string dump = takDump.dumpAll(form.copyFromTakmicenje.Id);
+                        takDump.loadFromDump(dump);
+                        Takmicenje takFrom = takDump.takmicenje;
+
+
+                        KopirajTakmicenjeForm form2;
+                        result = DialogResult.None;
+                        try
+                        {
+                            form2 = new KopirajTakmicenjeForm(takFrom, takDump.rezTakmicenja);
+                            result = form2.ShowDialog();
+                        }
+                        catch (InfrastructureException ex)
+                        {
+                            MessageDialogs.showError(ex.Message, this.Text);
+                        }
+
+                        if (result != DialogResult.OK)
+                            return;
+                        //cloneTakmicenje(takmicenje, form2.Takmicenje, form2.SelDescriptions, form2.SelKategorije);
+
+
+
+
+
+
+
+                        takFrom.Naziv = t.Naziv;
+                        takFrom.Datum = t.Datum;
+                        takFrom.Mesto = t.Mesto;
+
+                        Cursor.Current = Cursors.WaitCursor;
+                        Cursor.Show();
+                        try
+                        {
+                            TakmicenjeService.addTakmicenje(takFrom, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                                takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
+                                takDump.ocene);
+                            session.Transaction.Commit();
+                            // TODO4: Ne refreshuje dobro UI kada sam kopirao memorijal MSG 2015 gde postoji odvojeno
+                            // takmicenje 3
+                            onTakmicenjeCreated(takFrom);
+                        }
+                        finally
+                        {
+                            Cursor.Hide();
+                            Cursor.Current = Cursors.Arrow;
+                        }
                     }
-                    session.Transaction.Commit();
+                    else if (t.FinaleKupa)
+                    { 
+                        // TODO4
+
+                        session.Transaction.Commit();
+                        //onTakmicenjeCreated(takFrom);
+                    }
+                    else // ZbirViseKola
+                    {
+                        // TODO4
+                        kreirajZbirViseKola(t);
+
+                        session.Transaction.Commit();
+                        //onTakmicenjeCreated(takFrom);
+                    }
                 }
             }
             catch (Exception ex)
@@ -345,6 +400,7 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+
         }
 
         private void loadBrojDecimalaUOpcije(Takmicenje t)
@@ -1136,55 +1192,6 @@ namespace Bilten.UI
             {
                 MessageDialogs.showError(ex.Message, strProgName);
             }
-        }
-
-        private void mnKopirajPrethodnoTakmicenje_Click(object sender, EventArgs e)
-        {
-            // TODO3: Za finale kupa treba da se ponudi da se kopiraju prva dva kola.
-            KopirajTakmicenjeForm form;
-            DialogResult result;
-            try
-            {
-                form = new KopirajTakmicenjeForm(this.gimnastika);
-                result = form.ShowDialog();
-            }
-            catch (InfrastructureException ex)
-            {
-                MessageDialogs.showError(ex.Message, this.Text);
-                return;
-            }
-
-            if (result != DialogResult.OK || form.SelDescriptions.Count == 0 || form.SelKategorije.Count == 0)
-                return;
-
-            Cursor.Current = Cursors.WaitCursor;
-            Cursor.Show();
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    cloneTakmicenje(takmicenje, form.Takmicenje, form.SelDescriptions, form.SelKategorije);
-                    session.Transaction.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                return;
-            }
-            finally
-            {
-                Cursor.Hide();
-                Cursor.Current = Cursors.Arrow;
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
-
-            mnKopirajPrethodnoTakmicenje.Enabled = false;
         }
 
         private void kreirajZbirViseKola(Takmicenje takmicenje)

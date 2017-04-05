@@ -173,6 +173,11 @@ namespace Bilten.Domain
             }
         }
 
+        public override string ToString()
+        {
+            return Naziv;
+        }
+
         // sledeca dva svojstva omogucuju da se sortiranjem kreira RedBroj
         public virtual byte KategorijaRedBroj
         {
