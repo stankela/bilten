@@ -28,6 +28,8 @@ namespace Bilten.UI
         List<Takmicenje> prethodnaKola = new List<Takmicenje>();
         private bool uzmiOsnovnePodatke = false;
 
+        public Takmicenje copyFromTakmicenje;
+
         public TakmicenjeForm()
         {
             InitializeComponent();
@@ -37,16 +39,8 @@ namespace Bilten.UI
         public TakmicenjeForm(string naziv, Gimnastika gimnastika, DateTime datum, string mesto, TipTakmicenja tipTakmicenja)
         {
             InitializeComponent();
-            initialize(null, false);
-
             uzmiOsnovnePodatke = true;
-
-            lblGimnastika.Enabled = false;
-            cmbGimnastika.Enabled = false;
-            lblTipTakmicenja.Enabled = false;
-            cmbTipTakmicenja.Enabled = false;
-            listBox1.Enabled = false;
-            btnIzaberiPrvaDvaKola.Enabled = false;
+            initialize(null, false);
                         
             txtNaziv.Text = naziv;
             if (gimnastika == Gimnastika.MSG)
@@ -72,6 +66,9 @@ namespace Bilten.UI
             txtDatum.Text = String.Empty;
             txtMesto.Text = String.Empty;
 
+            txtPrethTak.ReadOnly = true;
+            txtPrethTak.BackColor = SystemColors.Window;
+
             prethodnaKola.Clear();
 
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -82,12 +79,56 @@ namespace Bilten.UI
             cmbTipTakmicenja.Items.AddRange(new string[] { STANDARDNO_TAKMICENJE, FINALE_KUPA, ZBIR_VISE_KOLA });
             cmbTipTakmicenja.SelectedIndex = 0;
 
-            listBox1.Enabled = false;
             listBox1.Items.Clear();
-            btnIzaberiPrvaDvaKola.Enabled = false;
             btnIzaberiPrvaDvaKola.Text = IZABERI_PRVO_I_DRUGO_KOLO;
 
+            setEnabled();
+
             cmbTipTakmicenja.SelectedIndexChanged += new EventHandler(cmbTipTakmicenja_SelectedIndexChanged);
+        }
+
+        private void setEnabled()
+        {
+            if (uzmiOsnovnePodatke)
+            {
+                lblGimnastika.Enabled = false;
+                cmbGimnastika.Enabled = false;
+                lblTipTakmicenja.Enabled = false;
+                cmbTipTakmicenja.Enabled = false;
+                ckbKopirajPrethTak.Enabled = false;
+                txtPrethTak.Enabled = false;
+                btnIzaberiPrethTak.Enabled = false;
+                listBox1.Enabled = false;
+                btnIzaberiPrvaDvaKola.Enabled = false;
+            }
+            else
+            {
+                lblGimnastika.Enabled = true;
+                cmbGimnastika.Enabled = true;
+                lblTipTakmicenja.Enabled = true;
+                cmbTipTakmicenja.Enabled = true;
+                setEnabledTipTakmicenja();
+            }
+        }
+
+        private void setEnabledTipTakmicenja()
+        {
+            ckbKopirajPrethTak.Enabled = !uzmiOsnovnePodatke && standardnoTakmicenje();
+            setEnabledKopirajPrethTak();                
+
+            listBox1.Enabled = !uzmiOsnovnePodatke && (finaleKupa() || zbirViseKola());
+            btnIzaberiPrvaDvaKola.Enabled = !uzmiOsnovnePodatke && (finaleKupa() || zbirViseKola());
+        }
+
+        private void setEnabledKopirajPrethTak()
+        {
+            txtPrethTak.Enabled = !uzmiOsnovnePodatke && ckbKopirajPrethTak.Checked && standardnoTakmicenje();
+            btnIzaberiPrethTak.Enabled = !uzmiOsnovnePodatke && ckbKopirajPrethTak.Checked && standardnoTakmicenje();
+        }
+
+        private bool standardnoTakmicenje()
+        {
+            return cmbTipTakmicenja.SelectedIndex == cmbTipTakmicenja.Items.IndexOf(STANDARDNO_TAKMICENJE);
         }
 
         private bool finaleKupa()
@@ -105,8 +146,8 @@ namespace Bilten.UI
             if (uzmiOsnovnePodatke)
                 return;
 
-            listBox1.Enabled = finaleKupa() || zbirViseKola();
-            btnIzaberiPrvaDvaKola.Enabled = finaleKupa() || zbirViseKola();
+            setEnabledTipTakmicenja();
+
             if (finaleKupa())
                 btnIzaberiPrvaDvaKola.Text = IZABERI_PRVO_I_DRUGO_KOLO;
             else if (zbirViseKola())
@@ -155,6 +196,11 @@ namespace Bilten.UI
 
             if (!uzmiOsnovnePodatke)
             {
+                if (ckbKopirajPrethTak.Enabled && ckbKopirajPrethTak.Checked
+                    && txtPrethTak.Text.Trim() == String.Empty)
+                {
+                    notification.RegisterMessage("PrethodnoTakmicenje", "Izaberite takmicenje koje zelite da kopirate.");
+                }
                 if (finaleKupa() && (prethodnaKola.Count != 2))
                 {
                     notification.RegisterMessage(
@@ -208,6 +254,10 @@ namespace Bilten.UI
 
                 case "FinaleKupa":
                     listBox1.Focus();
+                    break;
+
+                case "PrethodnoTakmicenje":
+                    btnIzaberiPrethTak.Focus();
                     break;
 
                 default:
@@ -332,6 +382,34 @@ namespace Bilten.UI
                 txtNaziv.Focus();
             else
                 lblNaziv.Focus();
+        }
+
+        private void ckbKopirajPrethTak_CheckedChanged(object sender, EventArgs e)
+        {
+            setEnabledKopirajPrethTak();
+            persistEntity = !(ckbKopirajPrethTak.Enabled && ckbKopirajPrethTak.Checked);
+        }
+
+        private void btnIzaberiPrethTak_Click(object sender, EventArgs e)
+        {
+            OtvoriTakmicenjeForm form = null;
+            DialogResult result;
+            try
+            {
+                form = new OtvoriTakmicenjeForm(null, true, 1, false);
+                result = form.ShowDialog();
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+
+            if (result != DialogResult.OK)
+                return;
+
+            copyFromTakmicenje = form.SelTakmicenja[0];
+            txtPrethTak.Text = copyFromTakmicenje.ToString();
         }
     }
 }

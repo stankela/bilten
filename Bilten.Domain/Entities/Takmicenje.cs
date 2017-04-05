@@ -66,6 +66,12 @@ namespace Bilten.Domain
             set { tipTakmicenja = value; }
         }
 
+        public virtual bool StandardnoTakmicenje
+        {
+            get { return TipTakmicenja == TipTakmicenja.StandardnoTakmicenje; }
+            set { throw new Exception("Not supported"); }
+        }
+
         public virtual bool FinaleKupa
         {
             get { return TipTakmicenja == TipTakmicenja.FinaleKupa; }

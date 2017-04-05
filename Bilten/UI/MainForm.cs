@@ -287,27 +287,25 @@ namespace Bilten.UI
             if (!OkToTrash())
                 return;
 
-            bool ok = false;
+            DialogResult result = DialogResult.None;
+            TakmicenjeForm form = null;
             try
             {
-                TakmicenjeForm form = new TakmicenjeForm();
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    Takmicenje t = (Takmicenje)form.Entity;
-                    newTakmicenje(t);
-                    loadBrojDecimalaUOpcije(t);
-                    Opcije.Instance.HeaderFooterInitialized = false;
-                    ok = true;
-                }
+                form = new TakmicenjeForm();
+                result = form.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, strProgName);
             }
 
-            if (!ok)
+            if (result != DialogResult.OK)
                 return;
-            if (!takmicenje.ZbirViseKola)
+
+            Takmicenje t = (Takmicenje)form.Entity;
+            onTakmicenjeCreated(t);
+
+            if (takmicenje.StandardnoTakmicenje && form.copyFromTakmicenje == null)
                 return;
 
             Cursor.Current = Cursors.WaitCursor;
@@ -319,11 +317,19 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    if (takmicenje.ZbirViseKola)
-                    {
-                        if (kreirajZbirViseKola(takmicenje))
-                            session.Transaction.Commit();
+                    if (takmicenje.StandardnoTakmicenje && form.copyFromTakmicenje != null)
+                    { 
+                        // TODO4
                     }
+                    else if (takmicenje.FinaleKupa)
+                    { 
+                        // TODO4
+                    }
+                    else if (takmicenje.ZbirViseKola)
+                    {
+                        kreirajZbirViseKola(takmicenje);
+                    }
+                    session.Transaction.Commit();
                 }
             }
             catch (Exception ex)
@@ -350,7 +356,7 @@ namespace Bilten.UI
             Opcije.Instance.BrojDecimalaTotal = t.BrojDecimalaTotal;
         }
 
-        private void newTakmicenje(Takmicenje takmicenje)
+        private void onTakmicenjeCreated(Takmicenje takmicenje)
         {
             this.takmicenje = takmicenje;
             takmicenjeId = takmicenje.Id;
@@ -359,6 +365,9 @@ namespace Bilten.UI
 
             Sesija.Instance.onTakmicenjeChanged(takmicenje.Id);
             refreshUI(takmicenje, true);
+
+            loadBrojDecimalaUOpcije(takmicenje);
+            Opcije.Instance.HeaderFooterInitialized = false;
         }
 
         private void refreshUI(Takmicenje takmicenje, bool newTakmicenje)
@@ -423,8 +432,6 @@ namespace Bilten.UI
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     onTakmicenjeOpened(form.Takmicenje);
-                    loadBrojDecimalaUOpcije(form.Takmicenje);
-                    Opcije.Instance.HeaderFooterInitialized = false;
                 }
             }
             catch (InfrastructureException ex)
@@ -482,6 +489,9 @@ namespace Bilten.UI
 
             Sesija.Instance.onTakmicenjeChanged(takmicenje.Id);
             refreshUI(takmicenje, false);
+
+            loadBrojDecimalaUOpcije(takmicenje);
+            Opcije.Instance.HeaderFooterInitialized = false;
         }
 
         void SaveFile()
@@ -1177,7 +1187,7 @@ namespace Bilten.UI
             mnKopirajPrethodnoTakmicenje.Enabled = false;
         }
 
-        private bool kreirajZbirViseKola(Takmicenje takmicenje)
+        private void kreirajZbirViseKola(Takmicenje takmicenje)
         {
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             takmicenjeDAO.Attach(takmicenje, false);
@@ -1223,8 +1233,7 @@ namespace Bilten.UI
                         // prethodna cetiri kola poklapaju, i ako se ne poklapaju da se otvori prozor
                         // gde ce korisnik moci da upari odgovarajuca rezultatska takmicenja (i da izabere
                         // koja rez. takmicenja zeli da ukljuci u novo takmicenje). Slicno i za finale kupa.
-                        MessageBox.Show("Kategorije iz prethodnih kola se ne poklapaju", "Bilten");
-                        return false;
+                        throw new BusinessException("Kategorije iz prethodnih kola se ne poklapaju");
                     }
                 }
             }
@@ -1336,8 +1345,6 @@ namespace Bilten.UI
             {
                 gimnasticarUcesnikDAO.Add(g);
             }
-            
-            return true;
         }
 
         void cloneTakmicenje(Takmicenje takmicenje, Takmicenje from, List<RezultatskoTakmicenjeDescription> descriptionsFrom,

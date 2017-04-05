@@ -40,15 +40,18 @@ namespace Bilten.UI
             this.btnIzaberiPrvaDvaKola = new System.Windows.Forms.Button();
             this.lblTipTakmicenja = new System.Windows.Forms.Label();
             this.cmbTipTakmicenja = new System.Windows.Forms.ComboBox();
+            this.ckbKopirajPrethTak = new System.Windows.Forms.CheckBox();
+            this.txtPrethTak = new System.Windows.Forms.TextBox();
+            this.btnIzaberiPrethTak = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(219, 415);
+            this.btnOk.Location = new System.Drawing.Point(393, 483);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(311, 415);
+            this.btnCancel.Location = new System.Drawing.Point(485, 483);
             // 
             // lblNaziv
             // 
@@ -63,13 +66,13 @@ namespace Bilten.UI
             // 
             this.txtNaziv.Location = new System.Drawing.Point(24, 34);
             this.txtNaziv.Name = "txtNaziv";
-            this.txtNaziv.Size = new System.Drawing.Size(325, 20);
+            this.txtNaziv.Size = new System.Drawing.Size(455, 20);
             this.txtNaziv.TabIndex = 3;
             // 
             // lblDatum
             // 
             this.lblDatum.AutoSize = true;
-            this.lblDatum.Location = new System.Drawing.Point(21, 125);
+            this.lblDatum.Location = new System.Drawing.Point(21, 121);
             this.lblDatum.Name = "lblDatum";
             this.lblDatum.Size = new System.Drawing.Size(103, 13);
             this.lblDatum.TabIndex = 4;
@@ -77,7 +80,7 @@ namespace Bilten.UI
             // 
             // txtDatum
             // 
-            this.txtDatum.Location = new System.Drawing.Point(24, 141);
+            this.txtDatum.Location = new System.Drawing.Point(24, 137);
             this.txtDatum.Name = "txtDatum";
             this.txtDatum.Size = new System.Drawing.Size(100, 20);
             this.txtDatum.TabIndex = 5;
@@ -85,7 +88,7 @@ namespace Bilten.UI
             // lblMesto
             // 
             this.lblMesto.AutoSize = true;
-            this.lblMesto.Location = new System.Drawing.Point(21, 183);
+            this.lblMesto.Location = new System.Drawing.Point(21, 175);
             this.lblMesto.Name = "lblMesto";
             this.lblMesto.Size = new System.Drawing.Size(101, 13);
             this.lblMesto.TabIndex = 6;
@@ -93,7 +96,7 @@ namespace Bilten.UI
             // 
             // txtMesto
             // 
-            this.txtMesto.Location = new System.Drawing.Point(24, 199);
+            this.txtMesto.Location = new System.Drawing.Point(24, 191);
             this.txtMesto.Name = "txtMesto";
             this.txtMesto.Size = new System.Drawing.Size(100, 20);
             this.txtMesto.TabIndex = 7;
@@ -118,14 +121,14 @@ namespace Bilten.UI
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(24, 304);
+            this.listBox1.Location = new System.Drawing.Point(24, 369);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(325, 69);
+            this.listBox1.Size = new System.Drawing.Size(455, 69);
             this.listBox1.TabIndex = 11;
             // 
             // btnIzaberiPrvaDvaKola
             // 
-            this.btnIzaberiPrvaDvaKola.Location = new System.Drawing.Point(24, 379);
+            this.btnIzaberiPrvaDvaKola.Location = new System.Drawing.Point(24, 444);
             this.btnIzaberiPrvaDvaKola.Name = "btnIzaberiPrvaDvaKola";
             this.btnIzaberiPrvaDvaKola.Size = new System.Drawing.Size(130, 23);
             this.btnIzaberiPrvaDvaKola.TabIndex = 12;
@@ -136,7 +139,7 @@ namespace Bilten.UI
             // lblTipTakmicenja
             // 
             this.lblTipTakmicenja.AutoSize = true;
-            this.lblTipTakmicenja.Location = new System.Drawing.Point(21, 242);
+            this.lblTipTakmicenja.Location = new System.Drawing.Point(21, 230);
             this.lblTipTakmicenja.Name = "lblTipTakmicenja";
             this.lblTipTakmicenja.Size = new System.Drawing.Size(76, 13);
             this.lblTipTakmicenja.TabIndex = 14;
@@ -145,16 +148,47 @@ namespace Bilten.UI
             // cmbTipTakmicenja
             // 
             this.cmbTipTakmicenja.FormattingEnabled = true;
-            this.cmbTipTakmicenja.Location = new System.Drawing.Point(24, 258);
+            this.cmbTipTakmicenja.Location = new System.Drawing.Point(24, 246);
             this.cmbTipTakmicenja.Name = "cmbTipTakmicenja";
             this.cmbTipTakmicenja.Size = new System.Drawing.Size(183, 21);
             this.cmbTipTakmicenja.TabIndex = 15;
+            // 
+            // ckbKopirajPrethTak
+            // 
+            this.ckbKopirajPrethTak.AutoSize = true;
+            this.ckbKopirajPrethTak.Location = new System.Drawing.Point(24, 294);
+            this.ckbKopirajPrethTak.Name = "ckbKopirajPrethTak";
+            this.ckbKopirajPrethTak.Size = new System.Drawing.Size(163, 17);
+            this.ckbKopirajPrethTak.TabIndex = 16;
+            this.ckbKopirajPrethTak.Text = "Kopiraj prethodno takmicenje";
+            this.ckbKopirajPrethTak.UseVisualStyleBackColor = true;
+            this.ckbKopirajPrethTak.CheckedChanged += new System.EventHandler(this.ckbKopirajPrethTak_CheckedChanged);
+            // 
+            // txtPrethTak
+            // 
+            this.txtPrethTak.Location = new System.Drawing.Point(24, 317);
+            this.txtPrethTak.Name = "txtPrethTak";
+            this.txtPrethTak.Size = new System.Drawing.Size(455, 20);
+            this.txtPrethTak.TabIndex = 17;
+            // 
+            // btnIzaberiPrethTak
+            // 
+            this.btnIzaberiPrethTak.Location = new System.Drawing.Point(485, 315);
+            this.btnIzaberiPrethTak.Name = "btnIzaberiPrethTak";
+            this.btnIzaberiPrethTak.Size = new System.Drawing.Size(75, 23);
+            this.btnIzaberiPrethTak.TabIndex = 18;
+            this.btnIzaberiPrethTak.Text = "Izaberi";
+            this.btnIzaberiPrethTak.UseVisualStyleBackColor = true;
+            this.btnIzaberiPrethTak.Click += new System.EventHandler(this.btnIzaberiPrethTak_Click);
             // 
             // TakmicenjeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 450);
+            this.ClientSize = new System.Drawing.Size(572, 518);
+            this.Controls.Add(this.btnIzaberiPrethTak);
+            this.Controls.Add(this.txtPrethTak);
+            this.Controls.Add(this.ckbKopirajPrethTak);
             this.Controls.Add(this.cmbGimnastika);
             this.Controls.Add(this.btnIzaberiPrvaDvaKola);
             this.Controls.Add(this.cmbTipTakmicenja);
@@ -184,6 +218,9 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.btnIzaberiPrvaDvaKola, 0);
             this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.cmbGimnastika, 0);
+            this.Controls.SetChildIndex(this.ckbKopirajPrethTak, 0);
+            this.Controls.SetChildIndex(this.txtPrethTak, 0);
+            this.Controls.SetChildIndex(this.btnIzaberiPrethTak, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -203,5 +240,8 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnIzaberiPrvaDvaKola;
         private System.Windows.Forms.Label lblTipTakmicenja;
         private System.Windows.Forms.ComboBox cmbTipTakmicenja;
+        private System.Windows.Forms.CheckBox ckbKopirajPrethTak;
+        private System.Windows.Forms.TextBox txtPrethTak;
+        private System.Windows.Forms.Button btnIzaberiPrethTak;
     }
 }
