@@ -174,7 +174,7 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version7.sql" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version8.sql" />
     <EmbeddedResource Include="UI\SelectOptionForm.resx">
       <DependentUpon>SelectOptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -185,7 +185,6 @@
       <DependentUpon>KonacanPlasmanForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Update\DatabaseUpdate_version2.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version3.sql" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -733,6 +732,7 @@
       <DependentUpon>ZrebForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Update\Version3Updater.cs" />
+    <Compile Include="Update\Version7Updater.cs" />
     <Compile Include="Util\SqlCeUtilities.cs" />
   </ItemGroup>
   <ItemGroup>

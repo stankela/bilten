@@ -36,7 +36,7 @@ namespace Bilten
         // - Stampanje gimnasticara iz Registra.
         // - Uvoz takmicenja.
 
-        static int VERZIJA_PROGRAMA = 6;
+        static int VERZIJA_PROGRAMA = 7;
 
         /// <summary>
         /// The main entry point for the application.
@@ -80,6 +80,7 @@ namespace Bilten
                     {
                         SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                             "Bilten.Update.DatabaseUpdate_version2.sql", true);
+                        SqlCeUtilities.updateDatabaseVersionNumber(2);
                         verzijaBaze = 2;
                         converted = true;
                     }
@@ -88,16 +89,17 @@ namespace Bilten
                     {
                         // TODO4: Dodati prozor koji prikazuje da se baza apdejtuje, posto apdejt traje desetak sekundi.
                         new Version3Updater().update();
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version3.sql", true);
+                        SqlCeUtilities.updateDatabaseVersionNumber(3);
                         verzijaBaze = 3;
                         converted = true;
                     }
 
                     if (verzijaBaze == 3 && VERZIJA_PROGRAMA > 3)
                     {
+                        // TODO: Ove dve naredbe bi trebalo izvrsavati u okviru jedne transakcije. Isto i za ostale verzije.
                         SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                             "Bilten.Update.DatabaseUpdate_version4.sql", true);
+                        SqlCeUtilities.updateDatabaseVersionNumber(4);
                         verzijaBaze = 4;
                         converted = true;
                     }
@@ -108,6 +110,7 @@ namespace Bilten
                         SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
                         SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                             "Bilten.Update.DatabaseUpdate_version5.sql", true);
+                        SqlCeUtilities.updateDatabaseVersionNumber(5);
                         verzijaBaze = 5;
                         converted = true;
                     }
@@ -117,7 +120,16 @@ namespace Bilten
                         SqlCeUtilities.dropReferentialConstraint("gimnasticari_ucesnici", "takmicenja");
                         SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                             "Bilten.Update.DatabaseUpdate_version6.sql", true);
+                        SqlCeUtilities.updateDatabaseVersionNumber(6);
                         verzijaBaze = 6;
+                        converted = true;
+                    }
+
+                    if (verzijaBaze == 6 && VERZIJA_PROGRAMA > 6)
+                    {
+                        new Version7Updater().update();
+                        SqlCeUtilities.updateDatabaseVersionNumber(7);
+                        verzijaBaze = 7;
                         converted = true;
                     }
 

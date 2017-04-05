@@ -34,7 +34,7 @@ namespace Bilten.Dao.NHibernate
             try
             {
                 IQuery q = Session.CreateQuery(@"from Ocena o
-	                       where o.Gimnasticar.Takmicenje.Id = :takmicenjeId");
+	                       where o.Gimnasticar.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<Ocena>();
             }
@@ -145,7 +145,7 @@ namespace Bilten.Dao.NHibernate
             try
             {
                 IQuery q = Session.CreateQuery(@"select count(*) from Ocena o
-	                       where o.Gimnasticar.Takmicenje.Id = :takmicenjeId");
+	                       where o.Gimnasticar.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return (long)q.UniqueResult() > 0;
             }

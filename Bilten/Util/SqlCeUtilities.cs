@@ -175,6 +175,56 @@ namespace Bilten.Dao
             return result;
         }
 
+        public static void updateDatabaseVersionNumber(int newVersion)
+        {
+            string tableName = "verzija_baze";
+            string sql =
+                String.Format("UPDATE {0} SET broj_verzije = {1} WHERE verzija_id = 1", tableName, newVersion);
+            SqlCeCommand cmd = new SqlCeCommand(sql);
+
+            SqlCeConnection conn = new SqlCeConnection(ConfigurationParameters.ConnectionString);
+            string errMsg = "Neuspesna promena baze.";
+            SqlCeTransaction tr = null;
+            
+            // TODO: Ovaj kod se ponavlja na vise mesta u fajlu.
+            try
+            {
+                conn.Open();
+                tr = conn.BeginTransaction();
+
+                cmd.Connection = conn;
+                cmd.Transaction = tr;
+                int result = cmd.ExecuteNonQuery();
+
+                tr.Commit();
+            }
+            catch (SqlCeException e)
+            {
+                // in Open()
+                if (tr != null)
+                    tr.Rollback(); // TODO: this can throw Exception and InvalidOperationException
+                throw new InfrastructureException(errMsg, e);
+            }
+            catch (InvalidOperationException e)
+            {
+                // in ExecuteNonQuery(), ExecureScalar()
+                if (tr != null)
+                    tr.Rollback();
+                throw new InfrastructureException(errMsg, e);
+            }
+            // za svaki slucaj
+            catch (Exception)
+            {
+                if (tr != null)
+                    tr.Rollback();
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
         public static void addColumn(string table, string column, SqlDbType type,
             Nullable<int> size, object columnValue)
         {
