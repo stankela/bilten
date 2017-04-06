@@ -268,9 +268,8 @@ namespace Bilten.Domain
         // asocijacijom izmedju Takmicenja i TakmicarskeKategorije
         public virtual void addKategorija(TakmicarskaKategorija kat)
         {
-            if (!Kategorije.Contains(kat))
+            if (Kategorije.Add(kat))
             {
-                Kategorije.Add(kat);
                 kat.setTakmicenjeInternal(this);
                 kat.RedBroj = (byte)(Kategorije.Count - 1);
             }

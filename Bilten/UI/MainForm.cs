@@ -320,34 +320,10 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     if (t.StandardnoTakmicenje && form.copyFromTakmicenje != null)
                     {
-                        TakmicenjeDump takDump = new TakmicenjeDump();
-                        string dump = takDump.dumpAll(form.copyFromTakmicenje.Id);
-                        takDump.loadFromDump(dump);
-                        Takmicenje takFrom = takDump.takmicenje;
-
-                        //cloneTakmicenje(takmicenje, form2.Takmicenje, form2.SelDescriptions, form2.SelKategorije);
-
-                        takFrom.Naziv = t.Naziv;
-                        takFrom.Datum = t.Datum;
-                        takFrom.Mesto = t.Mesto;
-
-                        Cursor.Current = Cursors.WaitCursor;
-                        Cursor.Show();
-                        try
-                        {
-                            TakmicenjeService.addTakmicenje(takFrom, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                                takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
-                                takDump.ocene);
-                            session.Transaction.Commit();
-                            // TODO4: Ne refreshuje dobro UI kada sam kopirao memorijal MSG 2015 gde postoji odvojeno
-                            // takmicenje 3
-                            onTakmicenjeCreated(takFrom);
-                        }
-                        finally
-                        {
-                            Cursor.Hide();
-                            Cursor.Current = Cursors.Arrow;
-                        }
+                        TakmicenjeService.createFromPrevTakmicenje(t, form.copyFromTakmicenje, form.rezTakmicenja,
+                            form.rezTakToGimnasticarMap);
+                        session.Transaction.Commit();
+                        onTakmicenjeCreated(t);
                     }
                     else if (t.FinaleKupa)
                     { 
@@ -1268,7 +1244,7 @@ namespace Bilten.UI
                     {
                         if (!gimnasticariMap.ContainsKey(g))
                         {
-                            GimnasticarUcesnik g2 = createGimnasticarUcesnik(g, kat);
+                            GimnasticarUcesnik g2 = GimnasticarUcesnikService.createGimnasticarUcesnik(g, kat);
                             gimnasticariMap.Add(g2, g2);
                         }
                     }
@@ -1330,201 +1306,6 @@ namespace Bilten.UI
             foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
             {
                 gimnasticarUcesnikDAO.Add(g);
-            }
-        }
-
-        void cloneTakmicenje(Takmicenje takmicenje, Takmicenje from, List<RezultatskoTakmicenjeDescription> descriptionsFrom,
-            List<TakmicarskaKategorija> kategorijeFrom)
-        {
-            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
-            RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO();
-
-            takmicenjeDAO.Attach(takmicenje, false);
-            takmicenjeDAO.Attach(from, false);
-            foreach (RezultatskoTakmicenjeDescription d in descriptionsFrom)
-            {
-                rezTakDescDAO.Attach(d, false);
-            }
-            
-            // TODO3: Ovaj metod bi trebalo updateovati svaki put kada se promene neka svojstva koja se kloniraju.
-
-            takmicenje.BrojEOcena = from.BrojEOcena;
-            takmicenje.BrojDecimalaD = from.BrojDecimalaD;
-            takmicenje.BrojDecimalaE1 = from.BrojDecimalaE1;
-            takmicenje.BrojDecimalaE = from.BrojDecimalaE;
-            takmicenje.BrojDecimalaPen = from.BrojDecimalaPen;
-            takmicenje.BrojDecimalaTotal = from.BrojDecimalaTotal;
-            takmicenje.ZavrsenoTak1 = false;
-
-            // TODO: Kreiraj metod u klasi TakmicarskaKategorija koji vraca kategorije sortirane po rednom broju.
-            // Pronadji sva mesta na kojima sortiram kategorije po rednom broju, i zameni ih pozivom novog metoda.
-            // Uradi isto i za klasu RezultatskoTakmicenjeDescription, a i za druge ako postoje.
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
-            kategorijeFrom.Sort(new SortComparer<TakmicarskaKategorija>(
-                propDesc, ListSortDirection.Ascending));
-            foreach (TakmicarskaKategorija k in kategorijeFrom)
-            {
-                takmicenje.addKategorija(new TakmicarskaKategorija(k.Naziv, takmicenje.Gimnastika));
-            }
-
-            PropertyDescriptor propDesc2 =
-                TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
-            descriptionsFrom.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
-                propDesc2, ListSortDirection.Ascending));
-
-            // prvi description je uvek kao naziv takmicenja.
-            RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
-            desc.Naziv = takmicenje.Naziv;
-            desc.Propozicije = new Propozicije();
-            takmicenje.addTakmicenjeDescription(desc);
-            for (int i = 1; i < descriptionsFrom.Count; i++)
-            {
-                desc = new RezultatskoTakmicenjeDescription();
-                desc.Naziv = descriptionsFrom[i].Naziv;
-                desc.Propozicije = new Propozicije();
-                takmicenje.addTakmicenjeDescription(desc);
-            }
-
-            IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
-            foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
-            {
-                foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
-                {
-                    RezultatskoTakmicenje rt = new RezultatskoTakmicenje(takmicenje,
-                        k, d, new Propozicije());
-                    rezTakmicenja.Add(rt);
-                }
-            }
-
-            List<RezultatskoTakmicenjeDescription> descriptions =
-                new List<RezultatskoTakmicenjeDescription>(takmicenje.TakmicenjeDescriptions);
-            propDesc = TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
-            descriptions.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
-                propDesc, ListSortDirection.Ascending));
-            for (int i = 0; i < descriptions.Count; i++)
-            {
-                clonePropozicije(descriptions[i].Propozicije, descriptionsFrom[i].Propozicije);
-            }
-
-            IList<RezultatskoTakmicenje> rezTakmicenjaFrom = new List<RezultatskoTakmicenje>();
-            foreach (RezultatskoTakmicenje rt in loadRezTakmicenja(from.Id))
-            {
-                // filtriraj rez. takmicenja.
-                ISet<TakmicarskaKategorija> katFromSet = new HashSet<TakmicarskaKategorija>(kategorijeFrom);
-                ISet<RezultatskoTakmicenjeDescription> descFromSet
-                    = new HashSet<RezultatskoTakmicenjeDescription>(descriptionsFrom);
-                if (katFromSet.Contains(rt.Kategorija) && descFromSet.Contains(rt.TakmicenjeDescription))
-                {
-                    rezTakmicenjaFrom.Add(rt);
-                }
-
-            }
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-            {
-                RezultatskoTakmicenje rezTak2 = findRezTakmicenje(rezTakmicenjaFrom, rezTak.TakmicenjeDescription.Naziv,
-                    rezTak.Kategorija);
-                clonePropozicije(rezTak.Propozicije, rezTak2.Propozicije);
-            }
-
-            RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                rt.updateTakmicenjaFromChangedPropozicije();
-            }
-
-            IDictionary<GimnasticarUcesnik, GimnasticarUcesnik> gimnasticariMap =
-                new Dictionary<GimnasticarUcesnik, GimnasticarUcesnik>();
-            List<GimnasticarUcesnik> dupliGimnasticari = new List<GimnasticarUcesnik>();
-            foreach (TakmicarskaKategorija kat in takmicenje.Kategorije)
-            {
-                foreach (GimnasticarUcesnik g in loadGimnasticari(from, kat.Naziv))
-                {
-                    if (!gimnasticariMap.ContainsKey(g))
-                    {
-                        // Ovo proveravam zato sto se vec desilo da isti gimnasticar bude prijavljen u dve razlicite
-                        // kategorije (program to ne proverava). Npr. na takmicenju I KOLO PGL SRBIJE MSG od 21.05.2011.
-                        // Sinisa Jurkovic je bio prijavljen u dve kategorije. U novoj verziji programa nije moguce da
-                        // isti gimnsticar bude prijavljen u dve razlicite kategorije.
-
-                        GimnasticarUcesnik g2 = createGimnasticarUcesnik(g, kat);
-                        gimnasticariMap.Add(g2, g2);
-                    }
-                    else
-                        dupliGimnasticari.Add(g);
-                }
-            }
-            // Proveravanje gimnasticara koji su prijavljeni u vise kategorija je samo za legacy baze. Program je vec
-            // promenjen da ne dozvoljava da isti gimnasticar bude prijavljen u vise kategorija.
-            foreach (GimnasticarUcesnik g in dupliGimnasticari)
-            {
-                if (gimnasticariMap.ContainsKey(g))
-                    gimnasticariMap.Remove(g);
-            }
-
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaFrom, rt.TakmicenjeDescription.Naziv,
-                    rt.Kategorija);
-                foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
-                {
-                    if (gimnasticariMap.ContainsKey(g))
-                    {
-                        GimnasticarUcesnik g2 = gimnasticariMap[g];
-                        rt.Takmicenje1.addGimnasticar(g2);
-                        rt.Takmicenje1.gimnasticarAdded(g2, new List<Ocena>(), rt);
-
-                    }
-                }
-            }
-
-            DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
-            KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
-            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
-            GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
-
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaFrom, rt.TakmicenjeDescription.Naziv,
-                    rt.Kategorija);
-                foreach (Ekipa e in rtFrom.Takmicenje1.Ekipe)
-                {
-                    Ekipa ekipa = new Ekipa();
-                    ekipa.Naziv = e.Naziv;
-                    ekipa.Kod = e.Kod;
-
-                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
-                    {
-                        if (gimnasticariMap.ContainsKey(g))
-                        {
-                            GimnasticarUcesnik g2 = gimnasticariMap[g];
-                            ekipa.addGimnasticar(g2);
-                        }
-                    }
-
-                    rt.Takmicenje1.addEkipa(ekipa);
-                }
-            }
-
-            takmicenjeDAO.Add(takmicenje);
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                rezultatskoTakmicenjeDAO.Add(rt);
-                foreach (Ekipa e in rt.Takmicenje1.Ekipe)
-                    ekipaDAO.Add(e);
-            }
-            foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
-            {
-                gimnasticarUcesnikDAO.Add(g);
-            }
-
-            if (dupliGimnasticari.Count > 0)
-            {
-                string msg = "Sledeci gimnasticari nisu dodati zato sto su prijavljeni u vise " +
-                    "kategorija.  Ove gimnasticare morate da unesete rucno: \n\n";
-                msg += StringUtil.getListString(dupliGimnasticari.ToArray());
-                MessageDialogs.showMessage(msg, this.Text);
             }
         }
 
@@ -1602,47 +1383,6 @@ namespace Bilten.UI
             }
         }
 
-        private void clonePropozicije(Propozicije propozicije, Propozicije from)
-        {
-            // TODO3: Dodaj ono sto fali
-            // TODO3: Probaj da koristis refleksiju za ovo (ili da ona izvrsi kopiranje, ili samo da te obavesti da li je
-            // u medjuvremenu u klasi Propozicije dodato neko novo svojstvo, i ako jeste da generise izuzetak. Mogao bi i 
-            // da generisem jednostavan test suite koji bi proveravao ovo)
-            // TODO3: Uvedi komentar TODO9 za ono sto mora uvek da se proverava kada se menja program (kao naprimer ovde sto
-            // mora da se proverava da li sam u medjuvremenu dodao novo svojstvo u klasu Propozicije.)
-            propozicije.PostojiTak2 = from.PostojiTak2;
-            propozicije.OdvojenoTak2 = from.OdvojenoTak2;
-            propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 = from.NeogranicenBrojTakmicaraIzKlubaTak2;
-            propozicije.MaxBrojTakmicaraIzKlubaTak2 = from.MaxBrojTakmicaraIzKlubaTak2;
-            propozicije.BrojFinalistaTak2 = from.BrojFinalistaTak2;
-            propozicije.BrojRezerviTak2 = from.BrojRezerviTak2;
-            propozicije.PostojiTak3 = from.PostojiTak3;
-            propozicije.OdvojenoTak3 = from.OdvojenoTak3;
-            propozicije.NeogranicenBrojTakmicaraIzKlubaTak3 = from.NeogranicenBrojTakmicaraIzKlubaTak3;
-            propozicije.MaxBrojTakmicaraIzKlubaTak3 = from.MaxBrojTakmicaraIzKlubaTak3;
-            propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu = from.MaxBrojTakmicaraTak3VaziZaDrzavu;
-            propozicije.BrojFinalistaTak3 = from.BrojFinalistaTak3;
-            propozicije.BrojRezerviTak3 = from.BrojRezerviTak3;
-            propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = from.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-            propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = from.PoredakTak3PreskokNaOsnovuObaPreskoka;
-            propozicije.PostojiTak4 = from.PostojiTak4;
-            propozicije.OdvojenoTak4 = from.OdvojenoTak4;
-            propozicije.BrojRezultataKojiSeBodujuZaEkipu = from.BrojRezultataKojiSeBodujuZaEkipu;
-            propozicije.BrojEkipaUFinalu = from.BrojEkipaUFinalu;
-            propozicije.JednoTak4ZaSveKategorije = from.JednoTak4ZaSveKategorije;
-
-            propozicije.Tak2FinalnaOcenaJeZbirObaKola = from.Tak2FinalnaOcenaJeZbirObaKola;
-            propozicije.Tak2FinalnaOcenaJeMaxObaKola = from.Tak2FinalnaOcenaJeMaxObaKola;
-            propozicije.Tak2FinalnaOcenaJeProsekObaKola = from.Tak2FinalnaOcenaJeProsekObaKola;
-            propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = from.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
-
-            propozicije.Tak4FinalnaOcenaJeZbirObaKola = from.Tak4FinalnaOcenaJeZbirObaKola;
-            propozicije.Tak4FinalnaOcenaJeMaxObaKola = from.Tak4FinalnaOcenaJeMaxObaKola;
-            propozicije.Tak4FinalnaOcenaJeProsekObaKola = from.Tak4FinalnaOcenaJeProsekObaKola;
-            propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = from.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
-
-        }
-
         private IList<GimnasticarUcesnik> loadGimnasticari(Takmicenje tak, string kategorija)
         {
             ISession session = null;
@@ -1678,52 +1418,6 @@ namespace Bilten.UI
             {
 
             }
-        }
-
-        // TODO: Ovaj metod (i sledeca dva) je prekopiran iz klase TakmicariKategorijeForm. Probaj da oba metoda
-        // spojis u jedan.
-        private GimnasticarUcesnik createGimnasticarUcesnik(GimnasticarUcesnik g,
-            TakmicarskaKategorija kategorija)
-        {
-            GimnasticarUcesnik result = new GimnasticarUcesnik();
-            result.Ime = g.Ime;
-            result.SrednjeIme = g.SrednjeIme;
-            result.Prezime = g.Prezime;
-            result.DatumRodjenja = g.DatumRodjenja;
-            result.TakmicarskaKategorija = kategorija;
-            if (g.DrzavaUcesnik == null)
-                result.DrzavaUcesnik = null;
-            else
-            {
-                DrzavaUcesnik drzavaUcesnik = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO()
-                    .FindDrzavaUcesnik(kategorija.Takmicenje.Id, g.DrzavaUcesnik.Naziv);
-                if (drzavaUcesnik == null)
-                {
-                    drzavaUcesnik = new DrzavaUcesnik();
-                    drzavaUcesnik.Naziv = g.DrzavaUcesnik.Naziv;
-                    drzavaUcesnik.Kod = g.DrzavaUcesnik.Kod;
-                    drzavaUcesnik.Takmicenje = kategorija.Takmicenje;
-                    DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().Add(drzavaUcesnik);
-                }
-                result.DrzavaUcesnik = drzavaUcesnik;
-            }
-            if (g.KlubUcesnik == null)
-                result.KlubUcesnik = null;
-            else
-            {
-                KlubUcesnik klubUcesnik = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO()
-                    .FindKlubUcesnik(kategorija.Takmicenje.Id, g.KlubUcesnik.Naziv);
-                if (klubUcesnik == null)
-                {
-                    klubUcesnik = new KlubUcesnik();
-                    klubUcesnik.Naziv = g.KlubUcesnik.Naziv;
-                    klubUcesnik.Kod = g.KlubUcesnik.Kod;
-                    klubUcesnik.Takmicenje = kategorija.Takmicenje;
-                    DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().Add(klubUcesnik);
-                }
-                result.KlubUcesnik = klubUcesnik;
-            }
-            return result;
         }
 
         private void mnPrvoDrugoKoloEkipno_Click(object sender, EventArgs e)

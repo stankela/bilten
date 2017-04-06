@@ -30,8 +30,11 @@ namespace Bilten.UI
         List<Takmicenje> prethodnaKola = new List<Takmicenje>();
         private bool uzmiOsnovnePodatke = false;
 
+        private IList<RezultatskoTakmicenje> svaRezTakmicenja;
+
         public Takmicenje copyFromTakmicenje;
-        private IList<RezultatskoTakmicenje> rezTakmicenja;
+        public IList<RezultatskoTakmicenje> rezTakmicenja;
+        public IDictionary<int, List<GimnasticarUcesnik>> rezTakToGimnasticarMap;
 
         public TakmicenjeForm()
         {
@@ -58,6 +61,11 @@ namespace Bilten.UI
                 cmbTipTakmicenja.SelectedItem = FINALE_KUPA;
             else if (tipTakmicenja == TipTakmicenja.ZbirViseKola)
                 cmbTipTakmicenja.SelectedItem = ZBIR_VISE_KOLA;
+
+            ClientSize = new Size(txtNaziv.Location.X + txtNaziv.Size.Width + 24,
+                cmbTipTakmicenja.Location.Y + cmbTipTakmicenja.Size.Height + 48);
+            listBox1.Visible = false;
+            btnIzaberiPrvaDvaKola.Visible = false;   
         }
 
         protected override void initUI()
@@ -157,9 +165,15 @@ namespace Bilten.UI
             setEnabledTipTakmicenja();
 
             if (finaleKupa())
+            {
                 btnIzaberiPrvaDvaKola.Text = IZABERI_PRVO_I_DRUGO_KOLO;
+                ckbKopirajPrethTak.Checked = false;
+            }
             else if (zbirViseKola())
+            {
                 btnIzaberiPrvaDvaKola.Text = IZABERI_PRETHODNA_KOLA;
+                ckbKopirajPrethTak.Checked = false;
+            }
             else
             {
                 prethodnaKola.Clear();
@@ -406,6 +420,8 @@ namespace Bilten.UI
         {
             txtPrethTak.Clear();
             treeView1.Nodes.Clear();
+            copyFromTakmicenje = null;
+
         }
 
         private void btnIzaberiPrethTak_Click(object sender, EventArgs e)
@@ -437,14 +453,14 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                    svaRezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenjeFetch_Tak1_Gimnasticari(copyFromTakmicenje.Id);
 
                     const string BEZVEZE = "__BEZVEZE__";
 
                     string lastDescription = BEZVEZE;
                     TreeNode descNode = null;
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
                     {
                         if (rt.TakmicenjeDescription.Naziv != lastDescription)
                         {
@@ -453,6 +469,7 @@ namespace Bilten.UI
                             descNode.Checked = true;
                         }
                         TreeNode katNode = descNode.Nodes.Add(rt.Kategorija.Naziv);
+                        katNode.Tag = rt;
                         katNode.Checked = true;
 
                         List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rt.Takmicenje1.Gimnasticari);
@@ -473,8 +490,9 @@ namespace Bilten.UI
                                 klubNode = katNode.Nodes.Add(g.KlubDrzava);
                                 klubNode.Checked = true;
                             }
-                            TreeNode node = klubNode.Nodes.Add(g.ImeSrednjeImePrezimeDatumRodjenja);
-                            node.Checked = true;
+                            TreeNode gimNode = klubNode.Nodes.Add(g.ImeSrednjeImePrezimeDatumRodjenja);
+                            gimNode.Tag = g;
+                            gimNode.Checked = true;
                         }
                     }
                 }
@@ -510,6 +528,44 @@ namespace Bilten.UI
                 node.Checked = nodeChecked;
                 if (node.Nodes.Count > 0)
                     CheckAllChildNodes(node, nodeChecked);
+            }
+        }
+
+        protected override void handleOkClick()
+        {
+            base.handleOkClick();
+            if (DialogResult == DialogResult.OK && ckbKopirajPrethTak.Enabled && ckbKopirajPrethTak.Checked)
+                collectCheckedItems();
+        }
+
+        private void collectCheckedItems()
+        {
+            rezTakToGimnasticarMap = new Dictionary<int, List<GimnasticarUcesnik>>();
+            foreach (TreeNode descNode in treeView1.Nodes)
+            {
+                if (!descNode.Checked)
+                    continue;
+                foreach (TreeNode katNode in descNode.Nodes)
+                {
+                    if (!katNode.Checked)
+                        continue;
+
+                    rezTakmicenja = new List<RezultatskoTakmicenje>();
+                    rezTakmicenja.Add((RezultatskoTakmicenje)katNode.Tag);
+
+                    List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();
+                    foreach (TreeNode klubNode in katNode.Nodes)
+                    {
+                        if (!klubNode.Checked)
+                            continue;
+                        foreach (TreeNode gimNode in klubNode.Nodes)
+                        {
+                            if (gimNode.Checked)
+                                gimnasticari.Add((GimnasticarUcesnik)gimNode.Tag);
+                        }
+                    }
+                    rezTakToGimnasticarMap.Add(((RezultatskoTakmicenje)katNode.Tag).Id, gimnasticari);
+                }
             }
         }
     }

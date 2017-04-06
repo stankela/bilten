@@ -76,6 +76,10 @@ namespace Bilten.UI
         {
             List<TakmicarskaKategorija> katList = new List<TakmicarskaKategorija>(kategorije);
 
+            // TODO: Kreiraj metod u klasi TakmicarskaKategorija koji vraca kategorije sortirane po rednom broju.
+            // Pronadji sva mesta na kojima sortiram kategorije po rednom broju, i zameni ih pozivom novog metoda.
+            // Uradi isto i za klasu RezultatskoTakmicenjeDescription, a i za druge ako postoje.
+
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
             katList.Sort(new SortComparer<TakmicarskaKategorija>(

@@ -44,8 +44,6 @@ namespace Bilten.UI
             this.txtPrethTak = new System.Windows.Forms.TextBox();
             this.btnIzaberiPrethTak = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnOk
@@ -161,9 +159,9 @@ namespace Bilten.UI
             this.ckbKopirajPrethTak.AutoSize = true;
             this.ckbKopirajPrethTak.Location = new System.Drawing.Point(548, 23);
             this.ckbKopirajPrethTak.Name = "ckbKopirajPrethTak";
-            this.ckbKopirajPrethTak.Size = new System.Drawing.Size(163, 17);
+            this.ckbKopirajPrethTak.Size = new System.Drawing.Size(327, 17);
             this.ckbKopirajPrethTak.TabIndex = 16;
-            this.ckbKopirajPrethTak.Text = "Kopiraj prethodno takmicenje";
+            this.ckbKopirajPrethTak.Text = "Kopiraj kategorije, gimnasticare i ekipe iz prethodnog takmicenja";
             this.ckbKopirajPrethTak.UseVisualStyleBackColor = true;
             this.ckbKopirajPrethTak.CheckedChanged += new System.EventHandler(this.ckbKopirajPrethTak_CheckedChanged);
             // 
@@ -190,38 +188,14 @@ namespace Bilten.UI
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treeView1.Location = new System.Drawing.Point(548, 84);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(455, 323);
+            this.treeView1.Size = new System.Drawing.Size(455, 381);
             this.treeView1.TabIndex = 19;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(548, 427);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 20;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(548, 450);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(80, 17);
-            this.checkBox2.TabIndex = 21;
-            this.checkBox2.Text = "checkBox2";
-            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // TakmicenjeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1113, 518);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.btnIzaberiPrethTak);
             this.Controls.Add(this.txtPrethTak);
@@ -260,8 +234,6 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.txtPrethTak, 0);
             this.Controls.SetChildIndex(this.btnIzaberiPrethTak, 0);
             this.Controls.SetChildIndex(this.treeView1, 0);
-            this.Controls.SetChildIndex(this.checkBox1, 0);
-            this.Controls.SetChildIndex(this.checkBox2, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -285,7 +257,5 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtPrethTak;
         private System.Windows.Forms.Button btnIzaberiPrethTak;
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
     }
 }
