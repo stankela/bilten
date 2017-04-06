@@ -325,28 +325,7 @@ namespace Bilten.UI
                         takDump.loadFromDump(dump);
                         Takmicenje takFrom = takDump.takmicenje;
 
-
-                        KopirajTakmicenjeForm form2;
-                        result = DialogResult.None;
-                        try
-                        {
-                            form2 = new KopirajTakmicenjeForm(takFrom, takDump.rezTakmicenja);
-                            result = form2.ShowDialog();
-                        }
-                        catch (InfrastructureException ex)
-                        {
-                            MessageDialogs.showError(ex.Message, this.Text);
-                        }
-
-                        if (result != DialogResult.OK)
-                            return;
                         //cloneTakmicenje(takmicenje, form2.Takmicenje, form2.SelDescriptions, form2.SelKategorije);
-
-
-
-
-
-
 
                         takFrom.Naziv = t.Naziv;
                         takFrom.Datum = t.Datum;

@@ -10,6 +10,8 @@ using Bilten.Exceptions;
 using Bilten.Data;
 using Bilten.Util;
 using Bilten.Dao;
+using NHibernate;
+using NHibernate.Context;
 
 namespace Bilten.UI
 {
@@ -29,6 +31,7 @@ namespace Bilten.UI
         private bool uzmiOsnovnePodatke = false;
 
         public Takmicenje copyFromTakmicenje;
+        private IList<RezultatskoTakmicenje> rezTakmicenja;
 
         public TakmicenjeForm()
         {
@@ -61,6 +64,8 @@ namespace Bilten.UI
         {
             base.initUI();
             this.Text = "Takmicenje";
+            btnOk.Anchor = (AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right);
+            btnCancel.Anchor = (AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right);
 
             txtNaziv.Text = String.Empty;
             txtDatum.Text = String.Empty;
@@ -81,6 +86,9 @@ namespace Bilten.UI
 
             listBox1.Items.Clear();
             btnIzaberiPrvaDvaKola.Text = IZABERI_PRVO_I_DRUGO_KOLO;
+
+            treeView1.CheckBoxes = true;
+            treeView1.AfterCheck += treeView1_AfterCheck;
 
             setEnabled();
 
@@ -387,7 +395,17 @@ namespace Bilten.UI
         private void ckbKopirajPrethTak_CheckedChanged(object sender, EventArgs e)
         {
             setEnabledKopirajPrethTak();
+            if (!ckbKopirajPrethTak.Checked)
+            {
+                clearPrethodnoTakmicenje();
+            }
             persistEntity = standardnoTakmicenje() && !ckbKopirajPrethTak.Checked;
+        }
+
+        private void clearPrethodnoTakmicenje()
+        {
+            txtPrethTak.Clear();
+            treeView1.Nodes.Clear();
         }
 
         private void btnIzaberiPrethTak_Click(object sender, EventArgs e)
@@ -399,7 +417,7 @@ namespace Bilten.UI
                 form = new OtvoriTakmicenjeForm(null, true, 1, false);
                 result = form.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
                 return;
@@ -410,6 +428,89 @@ namespace Bilten.UI
 
             copyFromTakmicenje = form.SelTakmicenja[0];
             txtPrethTak.Text = copyFromTakmicenje.ToString();
+            treeView1.Nodes.Clear();
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                        .FindByTakmicenjeFetch_Tak1_Gimnasticari(copyFromTakmicenje.Id);
+
+                    const string BEZVEZE = "__BEZVEZE__";
+
+                    string lastDescription = BEZVEZE;
+                    TreeNode descNode = null;
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        if (rt.TakmicenjeDescription.Naziv != lastDescription)
+                        {
+                            lastDescription = rt.TakmicenjeDescription.Naziv;
+                            descNode = treeView1.Nodes.Add(rt.TakmicenjeDescription.Naziv);
+                            descNode.Checked = true;
+                        }
+                        TreeNode katNode = descNode.Nodes.Add(rt.Kategorija.Naziv);
+                        katNode.Checked = true;
+
+                        List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rt.Takmicenje1.Gimnasticari);
+                        PropertyDescriptor propDesc =
+                            TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubDrzava"];
+                        gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(
+                            propDesc, ListSortDirection.Ascending));
+
+                        // nisam stavio String.Empty, za slucaj da neki gimnasticar nema ni klub ni drzavu
+                        string lastKlub = BEZVEZE;
+                        TreeNode klubNode = null;
+
+                        foreach (GimnasticarUcesnik g in gimnasticari)
+                        {
+                            if (g.KlubDrzava != lastKlub)
+                            {
+                                lastKlub = g.KlubDrzava;
+                                klubNode = katNode.Nodes.Add(g.KlubDrzava);
+                                klubNode.Checked = true;
+                            }
+                            TreeNode node = klubNode.Nodes.Add(g.ImeSrednjeImePrezimeDatumRodjenja);
+                            node.Checked = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        }
+
+        void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            // The code only executes if the user caused the checked state to change.
+            if (e.Action != TreeViewAction.Unknown)
+            {
+                if (e.Node.Nodes.Count > 0)
+                    CheckAllChildNodes(e.Node, e.Node.Checked);
+            }
+        }
+
+        // Updates all child tree nodes recursively.
+        private void CheckAllChildNodes(TreeNode treeNode, bool nodeChecked)
+        {
+            foreach (TreeNode node in treeNode.Nodes)
+            {
+                node.Checked = nodeChecked;
+                if (node.Nodes.Count > 0)
+                    CheckAllChildNodes(node, nodeChecked);
+            }
         }
     }
 }

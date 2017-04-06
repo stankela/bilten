@@ -265,6 +265,7 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        // TODO4: Izbaci ovo
         public IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Ekipe_Gimnasticari(int takmicenjeId)
         {
             try
@@ -279,8 +280,6 @@ namespace Bilten.Dao.NHibernate
                     left join fetch t.Gimnasticari g
                     left join fetch t.Ekipe e
                     left join fetch e.Gimnasticari
-                    left join fetch e.DrzavaUcesnik
-                    left join fetch e.KlubUcesnik
                     where r.Takmicenje.Id = :takmicenjeId
                     order by r.RedBroj");
                 q.SetInt32("takmicenjeId", takmicenjeId);
