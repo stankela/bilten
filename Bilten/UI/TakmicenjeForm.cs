@@ -535,7 +535,14 @@ namespace Bilten.UI
         {
             base.handleOkClick();
             if (DialogResult == DialogResult.OK && ckbKopirajPrethTak.Enabled && ckbKopirajPrethTak.Checked)
+            {
                 collectCheckedItems();
+                if (rezTakmicenja.Count == 0)
+                {
+                    MessageDialogs.showMessage("Izaberite takmicenje/kategoriju sa prethodnog takmicenja.", this.Text);
+                    DialogResult = DialogResult.None;
+                }
+            }
         }
 
         private void collectCheckedItems()

@@ -435,6 +435,8 @@ namespace Bilten.UI
             return result;
         }
 
+        // TODO4: Dodati srednje ime u tabelama za gimnasticare ucesnike
+
         private GimnasticarUcesnik createGimnasticarUcesnik(GimnasticarUcesnik g,
             TakmicarskaKategorija kategorija)
         {

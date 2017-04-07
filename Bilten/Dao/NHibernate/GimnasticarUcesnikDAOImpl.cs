@@ -91,27 +91,6 @@ namespace Bilten.Dao.NHibernate
             }
         }
         
-        public IList<GimnasticarUcesnik> FindByTakmicenjeKatFetch_Klub_Drzava(Takmicenje tak, string kategorija)
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"select distinct g
-                    from GimnasticarUcesnik g
-                    left join fetch g.KlubUcesnik
-                    left join fetch g.DrzavaUcesnik
-                    where g.TakmicarskaKategorija.Takmicenje = :tak
-                    and g.TakmicarskaKategorija.Naziv = :kategorija
-                    order by g.Prezime, g.Ime");
-                q.SetEntity("tak", tak);
-                q.SetString("kategorija", kategorija);
-                return q.List<GimnasticarUcesnik>();
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
         public IList<GimnasticarUcesnik> FindGimnasticariUcesnici(string ime,
             string prezime, Nullable<int> godRodj, DrzavaUcesnik drzava, TakmicarskaKategorija kategorija,
             KlubUcesnik klub, int takmicenjeId)

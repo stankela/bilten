@@ -1,5 +1,8 @@
 ﻿using Bilten.Dao;
+using Bilten.Data;
 using Bilten.Domain;
+using Bilten.Exceptions;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -148,7 +151,7 @@ namespace Bilten.Services
             IList<RezultatskoTakmicenje> rezTakmicenjaFrom,
             IDictionary<int, List<GimnasticarUcesnik>> rezTakToGimnasticarUcesnikMap)
         {
-            const int MAX = 256;
+            const int MAX = 1024;
 
             TakmicarskaKategorija[] kategorije = new TakmicarskaKategorija[MAX];
             for (int i = 0; i < MAX; ++i)
@@ -261,11 +264,8 @@ namespace Bilten.Services
                     ekipa.Naziv = e.Naziv;
                     ekipa.Kod = e.Kod;
 
-                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
-                    {
-                        if (gimnasticariMap.ContainsKey(g.Id))
-                            ekipa.addGimnasticar(gimnasticariMap[g.Id]);
-                    }
+                    // Ne kopiram clanove ekipe zato sto dodavati clanove ekipe ima smisla jedino ako se znaju
+                    // rezultati, a ovaj metod samo pravi pripremu takmicenja i nema nikakvih rezultata.
 
                     rt.Takmicenje1.addEkipa(ekipa);
                 }
@@ -286,5 +286,180 @@ namespace Bilten.Services
                 gimnasticarUcesnikDAO.Add(g);
             }
         }
+
+        // TODO4: Trenutno je implementiran najjednostavniji slucaj, gde u svakom od prethodnih kola
+        // postoji samo jedno takmicenje, i kategorije se potopuno poklapaju. Implementiraj proveru
+        // ovoga i izbaci izuzetak ako nije ispunjeno. Takodje implementiraj i generalni slucaj gde
+        // ovo ne vazi.
+        public static void kreirajZbirViseKola(Takmicenje takmicenje)
+        {
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+            takmicenjeDAO.Attach(takmicenje, false);
+
+            List<Takmicenje> prethodnaKola = new List<Takmicenje>();
+            if (takmicenje.PrvoKolo != null)
+            {
+                takmicenjeDAO.Attach(takmicenje.PrvoKolo, false);
+                prethodnaKola.Add(takmicenje.PrvoKolo);
+            }
+            if (takmicenje.DrugoKolo != null)
+            {
+                takmicenjeDAO.Attach(takmicenje.DrugoKolo, false);
+                prethodnaKola.Add(takmicenje.DrugoKolo);
+            }
+            if (takmicenje.TreceKolo != null)
+            {
+                takmicenjeDAO.Attach(takmicenje.TreceKolo, false);
+                prethodnaKola.Add(takmicenje.TreceKolo);
+            }
+            if (takmicenje.CetvrtoKolo != null)
+            {
+                takmicenjeDAO.Attach(takmicenje.CetvrtoKolo, false);
+                prethodnaKola.Add(takmicenje.CetvrtoKolo);
+            }
+
+            takmicenje.Kategorije.Clear();
+            for (int i = 0; i < prethodnaKola[0].Kategorije.Count; ++i)
+            {
+                TakmicarskaKategorija kat = prethodnaKola[0].getKategorija(i);
+                foreach (Takmicenje t in prethodnaKola)
+                {
+                    if (!t.getKategorija(i).Equals(kat))
+                    {
+                        // TODO4: Ovde bi ustvari trebalo proveravati da li se rezultatska takmicenja iz
+                        // prethodna cetiri kola poklapaju, i ako se ne poklapaju da se otvori prozor
+                        // gde ce korisnik moci da upari odgovarajuca rezultatska takmicenja (i da izabere
+                        // koja rez. takmicenja zeli da ukljuci u novo takmicenje). Slicno i za finale kupa.
+                        throw new BusinessException("Kategorije iz prethodnih kola se ne poklapaju");
+                    }
+                }
+                takmicenje.addKategorija(new TakmicarskaKategorija(kat.Naziv, takmicenje.Gimnastika));
+            }
+
+            // prvi description je uvek kao naziv takmicenja.
+            takmicenje.TakmicenjeDescriptions.Clear();            
+            RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
+            desc.Naziv = takmicenje.Naziv;
+            desc.Propozicije = new Propozicije();
+            takmicenje.addTakmicenjeDescription(desc);
+
+            // Takmicenje dodajem ovako rano zato sto se takmicenje.Id koristi dole u createGimnasticarUcesnik
+            takmicenjeDAO.Add(takmicenje);
+
+            IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
+            foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
+            {
+                RezultatskoTakmicenje rt = new RezultatskoTakmicenje(takmicenje, k, desc, new Propozicije());
+                // HACK
+                rt.Propozicije.PostojiTak2 = true;
+                rt.Propozicije.PostojiTak4 = true;
+                rt.ImaEkipnoTakmicenje = true;
+                rt.KombinovanoEkipnoTak = false;
+                rezTakmicenja.Add(rt);
+            }
+
+            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            
+            List<List<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<List<RezultatskoTakmicenje>>();
+            foreach (Takmicenje prethKolo in prethodnaKola)
+            {
+                rezTakmicenjaPrethodnaKola.Add(new List<RezultatskoTakmicenje>(rezultatskoTakmicenjeDAO
+                    .FindByTakmicenjeFetch_Tak1_Gimnasticari(prethKolo.Id)));
+            }
+
+            IDictionary<GimnasticarUcesnik, GimnasticarUcesnik> gimnasticariMap =
+                new Dictionary<GimnasticarUcesnik, GimnasticarUcesnik>();
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
+                {
+                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaPrethKolo,
+                        rt.TakmicenjeDescription.Naziv, rt.Kategorija);
+                    foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
+                    {
+                        GimnasticarUcesnik g2;
+                        if (!gimnasticariMap.ContainsKey(g))
+                        {
+                            g2 = GimnasticarUcesnikService.createGimnasticarUcesnik(g, rt.Kategorija);
+                            gimnasticariMap.Add(g2, g2);
+                        }
+                        else
+                            g2 = gimnasticariMap[g];
+                        rt.Takmicenje1.addGimnasticar(g2);
+                    }
+                }
+            }
+
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
+                {
+                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaPrethKolo,
+                        rt.TakmicenjeDescription.Naziv, rt.Kategorija);
+                    foreach (Ekipa e in rtFrom.Takmicenje1.Ekipe)
+                    {
+                        if (rt.Takmicenje1.Ekipe.Contains(e))
+                            continue;
+
+                        Ekipa ekipa = new Ekipa();
+                        ekipa.Naziv = e.Naziv;
+                        ekipa.Kod = e.Kod;
+                        rt.Takmicenje1.addEkipa(ekipa);
+                    }
+                }
+            }
+
+            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
+            GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
+
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                rezultatskoTakmicenjeDAO.Add(rt);
+                foreach (Ekipa e in rt.Takmicenje1.Ekipe)
+                    ekipaDAO.Add(e);
+            }
+            foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
+            {
+                gimnasticarUcesnikDAO.Add(g);
+            }
+        }
+
+        private static RezultatskoTakmicenje findRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
+          string nazivDesc, TakmicarskaKategorija kat)
+        {
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.TakmicenjeDescription.Naziv == nazivDesc
+                && rezTak.Kategorija.Equals(kat))
+                    return rezTak;
+            }
+
+            // Nije pronadjeno rez. takmicenje. Ovo je situacija koja se najcesce desava zato sto se najcesce kopira
+            // takmicenje za koje postoji samo jedno takmicenje description, i data se description takmicenja koje se
+            // kopira i description takmicenja u koje se kopira ne poklapaju (naziv descriptiona po defaultu je naziv
+            // takmicenja). Pronadji sva descriptions za datu kategoriju. Description koji trazimo je descriptions sa
+            // najnizim brojem.
+            List<RezultatskoTakmicenjeDescription> descriptions = new List<RezultatskoTakmicenjeDescription>();
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.Kategorija.Equals(kat))
+                    descriptions.Add(rezTak.TakmicenjeDescription);
+            }
+            System.ComponentModel.PropertyDescriptor propDesc
+                = System.ComponentModel.TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
+            descriptions.Sort(new Bilten.Util.SortComparer<RezultatskoTakmicenjeDescription>(
+                propDesc, System.ComponentModel.ListSortDirection.Ascending));
+
+            // ponovljen kod sa pocetka funkcije
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.TakmicenjeDescription.Naziv == descriptions[0].Naziv
+                && rezTak.Kategorija.Equals(kat))
+                    return rezTak;
+            }
+
+            return null;
+        }
+
     }
 }
