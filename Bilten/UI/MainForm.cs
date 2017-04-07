@@ -69,7 +69,6 @@ namespace Bilten.UI
             mnTakmicenje1RasporedSudija.Visible = true;
             mnTakmicenje1StartListe.Visible = true;
             mnOpcije.Visible = false;
-            mnKopirajPrethodnoTakmicenje.Enabled = false;
         }
 
         protected override void OnMove(EventArgs ea)
@@ -396,7 +395,6 @@ namespace Bilten.UI
                 mnTakmicenje2.Visible = false;
                 mnTakmicenje3.Visible = false;
                 mnTakmicenje4.Visible = false;
-                mnKopirajPrethodnoTakmicenje.Enabled = true;
             }
             else
             {
@@ -404,7 +402,6 @@ namespace Bilten.UI
                 mnTakmicenje2.Visible = takmicenje.ZavrsenoTak1;
                 mnTakmicenje3.Visible = takmicenje.ZavrsenoTak1;
                 mnTakmicenje4.Visible = takmicenje.ZavrsenoTak1;
-                mnKopirajPrethodnoTakmicenje.Enabled = false;
             }
 
             mnPrvoDrugoKoloViseboj.Visible = takmicenje.FinaleKupa;
@@ -595,9 +592,7 @@ namespace Bilten.UI
             try
             {
                 TakmicarskeKategorijeForm form = new TakmicarskeKategorijeForm(takmicenjeId.Value);
-                DialogResult dlgResult = form.ShowDialog();
-                if (dlgResult == DialogResult.OK)
-                    mnKopirajPrethodnoTakmicenje.Enabled = false;
+                form.ShowDialog();
             }
             catch (InfrastructureException ex)
             {

@@ -540,6 +540,7 @@ namespace Bilten.UI
 
         private void collectCheckedItems()
         {
+            rezTakmicenja = new List<RezultatskoTakmicenje>();
             rezTakToGimnasticarMap = new Dictionary<int, List<GimnasticarUcesnik>>();
             foreach (TreeNode descNode in treeView1.Nodes)
             {
@@ -550,7 +551,6 @@ namespace Bilten.UI
                     if (!katNode.Checked)
                         continue;
 
-                    rezTakmicenja = new List<RezultatskoTakmicenje>();
                     rezTakmicenja.Add((RezultatskoTakmicenje)katNode.Tag);
 
                     List<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>();

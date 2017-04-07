@@ -148,41 +148,41 @@ namespace Bilten.Services
             IList<RezultatskoTakmicenje> rezTakmicenjaFrom,
             IDictionary<int, List<GimnasticarUcesnik>> rezTakToGimnasticarUcesnikMap)
         {
-            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
-            RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO();
-
-            /*takmicenjeDAO.Attach(takmicenje, false);
-            takmicenjeDAO.Attach(from, false);
-            foreach (RezultatskoTakmicenjeDescription d in descriptionsFrom)
-            {
-                rezTakDescDAO.Attach(d, false);
-            }*/
-
-
-            
             const int MAX = 256;
 
             TakmicarskaKategorija[] kategorije = new TakmicarskaKategorija[MAX];
             for (int i = 0; i < MAX; ++i)
                 kategorije[i] = null;
-            foreach (RezultatskoTakmicenje rt in rezTakmicenjaFrom)
+            foreach (RezultatskoTakmicenje rtFrom in rezTakmicenjaFrom)
             {
-                if (kategorije[rt.Kategorija.RedBroj] == null)
-                    kategorije[rt.Kategorija.RedBroj] = new TakmicarskaKategorija(rt.Kategorija.Naziv, takmicenje.Gimnastika);
+                if (kategorije[rtFrom.Kategorija.RedBroj] == null)
+                    kategorije[rtFrom.Kategorija.RedBroj]
+                        = new TakmicarskaKategorija(rtFrom.Kategorija.Naziv, takmicenje.Gimnastika);
+            }
+
+            PropozicijeDAO propozicijeDAO = DAOFactoryFactory.DAOFactory.GetPropozicijeDAO();
+            foreach (RezultatskoTakmicenje rtFrom in rezTakmicenjaFrom)
+            {
+                propozicijeDAO.Attach(rtFrom.TakmicenjeDescription.Propozicije, false);
+                propozicijeDAO.Attach(rtFrom.Propozicije, false);
             }
 
             RezultatskoTakmicenjeDescription[] descriptions = new RezultatskoTakmicenjeDescription[MAX];
             for (int i = 0; i < MAX; ++i)
                 descriptions[i] = null;
-            foreach (RezultatskoTakmicenje rt in rezTakmicenjaFrom)
+            foreach (RezultatskoTakmicenje rtFrom in rezTakmicenjaFrom)
             {
-                if (descriptions[rt.TakmicenjeDescription.RedBroj] == null)
+                if (descriptions[rtFrom.TakmicenjeDescription.RedBroj] == null)
                 {
                     RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
-                    desc.Naziv = rt.TakmicenjeDescription.Naziv;
+                    desc.Naziv = rtFrom.TakmicenjeDescription.Naziv;
                     desc.Propozicije = new Propozicije();
-                    clonePropozicije(desc.Propozicije, rt.TakmicenjeDescription.Propozicije);
-                    descriptions[rt.TakmicenjeDescription.RedBroj] = desc;
+
+                    // Apdejtujem jedino propozicije za takmicenje 4 zbog kombinovanog ekipnog takmicenja.
+                    // Ostale propozicije su na inicijalnim vrednostima.
+                    rtFrom.TakmicenjeDescription.Propozicije.copyTakmicenje4To(desc.Propozicije);                    
+                    
+                    descriptions[rtFrom.TakmicenjeDescription.RedBroj] = desc;
                 }
             }
 
@@ -212,16 +212,6 @@ namespace Bilten.Services
                 }
             }
 
-            // TODO3: Ovaj metod bi trebalo updateovati svaki put kada se promene neka svojstva koja se kloniraju.
-
-            takmicenje.BrojEOcena = from.BrojEOcena;
-            takmicenje.BrojDecimalaD = from.BrojDecimalaD;
-            takmicenje.BrojDecimalaE1 = from.BrojDecimalaE1;
-            takmicenje.BrojDecimalaE = from.BrojDecimalaE;
-            takmicenje.BrojDecimalaPen = from.BrojDecimalaPen;
-            takmicenje.BrojDecimalaTotal = from.BrojDecimalaTotal;
-            takmicenje.ZavrsenoTak1 = false;
-
             IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rtFrom in rezTakmicenjaFrom)
             {
@@ -229,15 +219,14 @@ namespace Bilten.Services
                     kategorije[rtFrom.Kategorija.RedBroj],
                     descriptions[rtFrom.TakmicenjeDescription.RedBroj],
                     new Propozicije());
-                clonePropozicije(rt.Propozicije, rtFrom.Propozicije);
+                rtFrom.Propozicije.copyTakmicenje4To(rt.Propozicije);
                 rezTakmicenja.Add(rt);
             }
 
             RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                rt.updateTakmicenjaFromChangedPropozicije();
-            }
+
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+            takmicenjeDAO.Add(takmicenje);
 
             IDictionary<int, GimnasticarUcesnik> gimnasticariMap = new Dictionary<int, GimnasticarUcesnik>();
             for (int i = 0; i < rezTakmicenja.Count; ++i)
@@ -249,7 +238,8 @@ namespace Bilten.Services
                     GimnasticarUcesnik g2;
                     if (!gimnasticariMap.ContainsKey(g.Id))
                     {
-                        g2 = GimnasticarUcesnikService.createGimnasticarUcesnik(g, g.TakmicarskaKategorija);
+                        g2 = GimnasticarUcesnikService.createGimnasticarUcesnik(g,
+                            kategorije[g.TakmicarskaKategorija.RedBroj]);
                         gimnasticariMap[g.Id] = g2;
                     }
                     else
@@ -259,16 +249,12 @@ namespace Bilten.Services
                 }
             }
 
-            DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
-            KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
-            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
-            GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
-
+            Takmicenje1DAO takmicenje1DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO();
             for (int i = 0; i < rezTakmicenja.Count; ++i)
             {
                 RezultatskoTakmicenje rt = rezTakmicenja[i];
                 RezultatskoTakmicenje rtFrom = rezTakmicenjaFrom[i];
+                takmicenje1DAO.Attach(rtFrom.Takmicenje1, false);
                 foreach (Ekipa e in rtFrom.Takmicenje1.Ekipe)
                 {
                     Ekipa ekipa = new Ekipa();
@@ -283,62 +269,22 @@ namespace Bilten.Services
 
                     rt.Takmicenje1.addEkipa(ekipa);
                 }
-            }                                   
+            }
 
-            takmicenjeDAO.Add(takmicenje);
+            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 rezultatskoTakmicenjeDAO.Add(rt);
                 foreach (Ekipa e in rt.Takmicenje1.Ekipe)
                     ekipaDAO.Add(e);
             }
+
+            GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
             foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
             {
                 gimnasticarUcesnikDAO.Add(g);
             }
         }
-
-        private static void clonePropozicije(Propozicije propozicije, Propozicije from)
-        {
-            // TODO3: Dodaj ono sto fali
-            // TODO3: Probaj da koristis refleksiju za ovo (ili da ona izvrsi kopiranje, ili samo da te obavesti da li je
-            // u medjuvremenu u klasi Propozicije dodato neko novo svojstvo, i ako jeste da generise izuzetak. Mogao bi i 
-            // da generisem jednostavan test suite koji bi proveravao ovo)
-            // TODO3: Uvedi komentar TODO9 za ono sto mora uvek da se proverava kada se menja program (kao naprimer ovde sto
-            // mora da se proverava da li sam u medjuvremenu dodao novo svojstvo u klasu Propozicije.)
-            propozicije.PostojiTak2 = from.PostojiTak2;
-            propozicije.OdvojenoTak2 = from.OdvojenoTak2;
-            propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 = from.NeogranicenBrojTakmicaraIzKlubaTak2;
-            propozicije.MaxBrojTakmicaraIzKlubaTak2 = from.MaxBrojTakmicaraIzKlubaTak2;
-            propozicije.BrojFinalistaTak2 = from.BrojFinalistaTak2;
-            propozicije.BrojRezerviTak2 = from.BrojRezerviTak2;
-            propozicije.PostojiTak3 = from.PostojiTak3;
-            propozicije.OdvojenoTak3 = from.OdvojenoTak3;
-            propozicije.NeogranicenBrojTakmicaraIzKlubaTak3 = from.NeogranicenBrojTakmicaraIzKlubaTak3;
-            propozicije.MaxBrojTakmicaraIzKlubaTak3 = from.MaxBrojTakmicaraIzKlubaTak3;
-            propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu = from.MaxBrojTakmicaraTak3VaziZaDrzavu;
-            propozicije.BrojFinalistaTak3 = from.BrojFinalistaTak3;
-            propozicije.BrojRezerviTak3 = from.BrojRezerviTak3;
-            propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = from.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-            propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = from.PoredakTak3PreskokNaOsnovuObaPreskoka;
-            propozicije.PostojiTak4 = from.PostojiTak4;
-            propozicije.OdvojenoTak4 = from.OdvojenoTak4;
-            propozicije.BrojRezultataKojiSeBodujuZaEkipu = from.BrojRezultataKojiSeBodujuZaEkipu;
-            propozicije.BrojEkipaUFinalu = from.BrojEkipaUFinalu;
-            propozicije.JednoTak4ZaSveKategorije = from.JednoTak4ZaSveKategorije;
-
-            propozicije.Tak2FinalnaOcenaJeZbirObaKola = from.Tak2FinalnaOcenaJeZbirObaKola;
-            propozicije.Tak2FinalnaOcenaJeMaxObaKola = from.Tak2FinalnaOcenaJeMaxObaKola;
-            propozicije.Tak2FinalnaOcenaJeProsekObaKola = from.Tak2FinalnaOcenaJeProsekObaKola;
-            propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = from.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
-
-            propozicije.Tak4FinalnaOcenaJeZbirObaKola = from.Tak4FinalnaOcenaJeZbirObaKola;
-            propozicije.Tak4FinalnaOcenaJeMaxObaKola = from.Tak4FinalnaOcenaJeMaxObaKola;
-            propozicije.Tak4FinalnaOcenaJeProsekObaKola = from.Tak4FinalnaOcenaJeProsekObaKola;
-            propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = from.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
-
-        }
-
-
     }
 }

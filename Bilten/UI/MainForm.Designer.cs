@@ -47,7 +47,6 @@ namespace Bilten.UI
             this.mnUveziTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.mnZatvoriTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnKopirajPrethodnoTakmicenje = new System.Windows.Forms.ToolStripMenuItem();
             this.mnKategorijeITakmicenja = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPropozicije = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicariKategorije = new System.Windows.Forms.ToolStripMenuItem();
@@ -184,7 +183,6 @@ namespace Bilten.UI
             this.mnUveziTakmicenje,
             this.mnZatvoriTakmicenje,
             this.toolStripMenuItem1,
-            this.mnKopirajPrethodnoTakmicenje,
             this.mnKategorijeITakmicenja,
             this.mnPropozicije,
             this.mnTakmicariKategorije,
@@ -198,102 +196,96 @@ namespace Bilten.UI
             // mnNew
             // 
             this.mnNew.Name = "mnNew";
-            this.mnNew.Size = new System.Drawing.Size(231, 22);
+            this.mnNew.Size = new System.Drawing.Size(196, 22);
             this.mnNew.Text = "Novo takmicenje";
             this.mnNew.Click += new System.EventHandler(this.mnNew_Click);
             // 
             // mnOpen
             // 
             this.mnOpen.Name = "mnOpen";
-            this.mnOpen.Size = new System.Drawing.Size(231, 22);
+            this.mnOpen.Size = new System.Drawing.Size(196, 22);
             this.mnOpen.Text = "Otvori takmicenje";
             this.mnOpen.Click += new System.EventHandler(this.mnOpen_Click);
             // 
             // mnSave
             // 
             this.mnSave.Name = "mnSave";
-            this.mnSave.Size = new System.Drawing.Size(231, 22);
+            this.mnSave.Size = new System.Drawing.Size(196, 22);
             this.mnSave.Text = "Snimi takmicenje";
             this.mnSave.Click += new System.EventHandler(this.mnSave_Click);
             // 
             // mnSaveAs
             // 
             this.mnSaveAs.Name = "mnSaveAs";
-            this.mnSaveAs.Size = new System.Drawing.Size(231, 22);
+            this.mnSaveAs.Size = new System.Drawing.Size(196, 22);
             this.mnSaveAs.Text = "Snimi takmicenje kao...";
             this.mnSaveAs.Click += new System.EventHandler(this.mnSaveAs_Click);
             // 
             // mnIzveziTakmicenje
             // 
             this.mnIzveziTakmicenje.Name = "mnIzveziTakmicenje";
-            this.mnIzveziTakmicenje.Size = new System.Drawing.Size(231, 22);
+            this.mnIzveziTakmicenje.Size = new System.Drawing.Size(196, 22);
             this.mnIzveziTakmicenje.Text = "Izvezi takmicenje";
             this.mnIzveziTakmicenje.Click += new System.EventHandler(this.mnIzveziTakmicenje_Click);
             // 
             // mnUveziTakmicenje
             // 
             this.mnUveziTakmicenje.Name = "mnUveziTakmicenje";
-            this.mnUveziTakmicenje.Size = new System.Drawing.Size(231, 22);
+            this.mnUveziTakmicenje.Size = new System.Drawing.Size(196, 22);
             this.mnUveziTakmicenje.Text = "Uvezi takmicenje";
             this.mnUveziTakmicenje.Click += new System.EventHandler(this.mnUveziTakmicenje_Click);
             // 
             // mnZatvoriTakmicenje
             // 
             this.mnZatvoriTakmicenje.Name = "mnZatvoriTakmicenje";
-            this.mnZatvoriTakmicenje.Size = new System.Drawing.Size(231, 22);
+            this.mnZatvoriTakmicenje.Size = new System.Drawing.Size(196, 22);
             this.mnZatvoriTakmicenje.Text = "Zatvori takmicenje";
             this.mnZatvoriTakmicenje.Click += new System.EventHandler(this.mnZatvoriTakmicenje_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(228, 6);
-            // 
-            // mnKopirajPrethodnoTakmicenje
-            // 
-            this.mnKopirajPrethodnoTakmicenje.Name = "mnKopirajPrethodnoTakmicenje";
-            this.mnKopirajPrethodnoTakmicenje.Size = new System.Drawing.Size(231, 22);
-            this.mnKopirajPrethodnoTakmicenje.Text = "Kopiraj prethodno takmicenje";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(193, 6);
             // 
             // mnKategorijeITakmicenja
             // 
             this.mnKategorijeITakmicenja.Name = "mnKategorijeITakmicenja";
-            this.mnKategorijeITakmicenja.Size = new System.Drawing.Size(231, 22);
+            this.mnKategorijeITakmicenja.Size = new System.Drawing.Size(196, 22);
             this.mnKategorijeITakmicenja.Text = "Kategorije i takmicenja";
             this.mnKategorijeITakmicenja.Click += new System.EventHandler(this.mnKategorijeITakmicenja_Click);
             // 
             // mnPropozicije
             // 
             this.mnPropozicije.Name = "mnPropozicije";
-            this.mnPropozicije.Size = new System.Drawing.Size(231, 22);
+            this.mnPropozicije.Size = new System.Drawing.Size(196, 22);
             this.mnPropozicije.Text = "Propozicije";
             this.mnPropozicije.Click += new System.EventHandler(this.mnPropozicije_Click);
             // 
             // mnTakmicariKategorije
             // 
             this.mnTakmicariKategorije.Name = "mnTakmicariKategorije";
-            this.mnTakmicariKategorije.Size = new System.Drawing.Size(231, 22);
+            this.mnTakmicariKategorije.Size = new System.Drawing.Size(196, 22);
             this.mnTakmicariKategorije.Text = "Takmicari - kategorije";
             this.mnTakmicariKategorije.Click += new System.EventHandler(this.mnTakmicariKategorije_Click);
             // 
             // mnTakmicariTakmicenja
             // 
             this.mnTakmicariTakmicenja.Name = "mnTakmicariTakmicenja";
-            this.mnTakmicariTakmicenja.Size = new System.Drawing.Size(231, 22);
+            this.mnTakmicariTakmicenja.Size = new System.Drawing.Size(196, 22);
             this.mnTakmicariTakmicenja.Text = "Takmicari - takmicenja";
             this.mnTakmicariTakmicenja.Click += new System.EventHandler(this.mnTakmicariTakmicenja_Click);
             // 
             // mnEkipe
             // 
             this.mnEkipe.Name = "mnEkipe";
-            this.mnEkipe.Size = new System.Drawing.Size(231, 22);
+            this.mnEkipe.Size = new System.Drawing.Size(196, 22);
             this.mnEkipe.Text = "Ekipe";
             this.mnEkipe.Click += new System.EventHandler(this.mnEkipe_Click);
             // 
             // mnSudijeNaTakmicenju
             // 
             this.mnSudijeNaTakmicenju.Name = "mnSudijeNaTakmicenju";
-            this.mnSudijeNaTakmicenju.Size = new System.Drawing.Size(231, 22);
+            this.mnSudijeNaTakmicenju.Size = new System.Drawing.Size(196, 22);
             this.mnSudijeNaTakmicenju.Text = "Sudije na takmicenju";
             this.mnSudijeNaTakmicenju.Click += new System.EventHandler(this.mnSudijeNaTakmicenju_Click);
             // 
@@ -590,7 +582,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnPrvoDrugoKoloViseboj;
         private System.Windows.Forms.ToolStripMenuItem mnPrvoDrugoKoloSprave;
         private System.Windows.Forms.ToolStripMenuItem mnPrvoDrugoKoloEkipno;
-        private System.Windows.Forms.ToolStripMenuItem mnKopirajPrethodnoTakmicenje;
         private System.Windows.Forms.ToolStripMenuItem mnZrebZaFinaleKupa;
         private System.Windows.Forms.ToolStripMenuItem mnTakmicenje3RasporedSudija;
         private System.Windows.Forms.ToolStripMenuItem mnIzveziTakmicenje;

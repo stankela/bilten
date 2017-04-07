@@ -12,8 +12,7 @@ namespace Bilten.Services
     {
         // TODO4: Ovaj metod je prekopiran iz klase TakmicariKategorijeForm. Probaj da oba metoda
         // spojis u jedan.
-        public static GimnasticarUcesnik createGimnasticarUcesnik(GimnasticarUcesnik g,
-            TakmicarskaKategorija kategorija)
+        public static GimnasticarUcesnik createGimnasticarUcesnik(GimnasticarUcesnik g, TakmicarskaKategorija kategorija)
         {
             GimnasticarUcesnik result = new GimnasticarUcesnik();
             result.Ime = g.Ime;

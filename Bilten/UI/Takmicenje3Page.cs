@@ -252,7 +252,7 @@ namespace Bilten.UI
             if (!notification.IsValid())
                 throw new BusinessException(notification);
 
-            propozicije.updateTakmicenje3(dependentPropozicije);
+            propozicije.copyTakmicenje3To(dependentPropozicije);
         }
 
         private void requiredFieldsAndFormatValidation(Notification notification)

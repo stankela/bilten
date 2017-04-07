@@ -401,7 +401,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void updateTakmicenje2(IList<Propozicije> propozicije)
+        public virtual void copyTakmicenje2To(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
                 return;
@@ -417,7 +417,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void updateTakmicenje3(IList<Propozicije> propozicije)
+        public virtual void copyTakmicenje3To(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
                 return;
@@ -436,22 +436,26 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void updateTakmicenje4(IList<Propozicije> propozicije)
+        // TODO: I za ostale propozicije (takmicenje 2, takmicenje 3, ...) kreiraj dva metoda - jedan sto kao argument
+        // dobija object i jedan sto dobija listu.
+        public virtual void copyTakmicenje4To(Propozicije p)
+        {
+            p.PostojiTak4 = this.PostojiTak4;
+            p.OdvojenoTak4 = this.OdvojenoTak4;
+            p.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
+            p.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
+            p.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
+        }
+
+        public virtual void copyTakmicenje4To(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
                 return;
-
             foreach (Propozicije p in propozicije)
-            {
-                p.PostojiTak4 = this.PostojiTak4;
-                p.OdvojenoTak4 = this.OdvojenoTak4;
-                p.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
-                p.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
-                p.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
-            }
+                copyTakmicenje4To(p);
         }
 
-        public virtual void updateTakmicenje2FinaleKupa(IList<Propozicije> propozicije)
+        public virtual void copyTakmicenje2FinaleKupaTo(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
                 return;
@@ -471,7 +475,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void updateTakmicenje3FinaleKupa(IList<Propozicije> propozicije)
+        public virtual void copyTakmicenje3FinaleKupaTo(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
                 return;
@@ -493,7 +497,13 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void updateTakmicenje4FinaleKupa(IList<Propozicije> propozicije)
+        // TODO3: Probaj da koristis refleksiju za ovo (ili da ona izvrsi kopiranje, ili samo da te obavesti da li je
+        // u medjuvremenu u klasi Propozicije dodato neko novo svojstvo, i ako jeste da generise izuzetak. Mogao bi i 
+        // da generisem jednostavan test suite koji bi proveravao ovo)
+        // TODO3: Uvedi komentar TODO9 za ono sto mora uvek da se proverava kada se menja program (kao naprimer ovde sto
+        // mora da se proverava da li sam u medjuvremenu dodao novo svojstvo u klasu Propozicije.)
+        
+        public virtual void copyTakmicenje4FinaleKupaTo(IList<Propozicije> propozicije)
         {
             if (propozicije == null)
                 return;

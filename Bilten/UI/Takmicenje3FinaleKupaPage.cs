@@ -290,7 +290,7 @@ namespace Bilten.UI
             if (!notification.IsValid())
                 throw new BusinessException(notification);
 
-            propozicije.updateTakmicenje3FinaleKupa(dependentPropozicije);
+            propozicije.copyTakmicenje3FinaleKupaTo(dependentPropozicije);
         }
 
         private void requiredFieldsAndFormatValidation(Notification notification)

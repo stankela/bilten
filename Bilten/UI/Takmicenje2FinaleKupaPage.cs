@@ -246,7 +246,7 @@ namespace Bilten.UI
             if (!notification.IsValid())
                 throw new BusinessException(notification);
 
-            propozicije.updateTakmicenje2FinaleKupa(dependentPropozicije);
+            propozicije.copyTakmicenje2FinaleKupaTo(dependentPropozicije);
         }
 
         private void requiredFieldsAndFormatValidation(Notification notification)
