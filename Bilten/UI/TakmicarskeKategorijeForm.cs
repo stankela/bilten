@@ -41,6 +41,15 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindByIdFetch_Kat_Desc(takmicenjeId);
+                    if (takmicenje.TakmicenjeDescriptions.Count == 0)
+                    {
+                        // za novo takmicenje, automatski se dodaje takmicenje sa nazivom
+                        // kao glavno takmicenje
+                        RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
+                        desc.Naziv = takmicenje.Naziv;
+                        desc.Propozicije = new Propozicije();
+                        takmicenje.addTakmicenjeDescription(desc);
+                    }
 
                     originalKategorije = new List<TakmicarskaKategorija>(takmicenje.Kategorije);
                     originalTakmicenja =
@@ -207,12 +216,6 @@ namespace Bilten.UI
         {
             if (SelectedTakmicenje == null)
                 return;
-            if (SelectedTakmicenje.RedBroj == 0)
-            {
-                MessageDialogs.showMessage("Nije dozvoljeno menjati naziv prvog takmicenja.", this.Text);
-                return;
-            }
-
             try
             {
                 RezultatskoTakmicenjeDescriptionForm form =
@@ -242,15 +245,7 @@ namespace Bilten.UI
                 String.Format(msgFmt, takmicenjeDesc.Naziv), this.Text))
                 return;
 
-            try
-            {
-                takmicenje.removeTakmicenjeDescription(takmicenjeDesc);
-            }
-            catch (BusinessException ex)
-            {
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                return;
-            }
+            takmicenje.removeTakmicenjeDescription(takmicenjeDesc);
             setTakmicenja(takmicenje.TakmicenjeDescriptions);
         }
 
@@ -261,17 +256,7 @@ namespace Bilten.UI
             if (takmicenjeDesc == null)
                 return;
 
-            bool moved = false;
-            try
-            {
-                moved = takmicenje.moveTakmicenjeDescriptionUp(takmicenjeDesc);
-            }
-            catch (BusinessException ex)
-            {
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                return;
-            }
-            if (moved)
+            if (takmicenje.moveTakmicenjeDescriptionUp(takmicenjeDesc))
             {
                 setTakmicenja(takmicenje.TakmicenjeDescriptions);
                 SelectedTakmicenje = takmicenjeDesc;
@@ -285,17 +270,7 @@ namespace Bilten.UI
             if (takmicenjeDesc == null)
                 return;
 
-            bool moved = false;
-            try
-            {
-                moved = takmicenje.moveTakmicenjeDescriptionDown(takmicenjeDesc);
-            }
-            catch (BusinessException ex)
-            {
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                return;
-            }
-            if (moved)
+            if (takmicenje.moveTakmicenjeDescriptionDown(takmicenjeDesc))
             {
                 setTakmicenja(takmicenje.TakmicenjeDescriptions);
                 SelectedTakmicenje = takmicenjeDesc;
