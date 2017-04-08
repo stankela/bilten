@@ -12,7 +12,7 @@ namespace Bilten.Domain
         // TODO: Ovo svojstvo u sustini nema nikakvu ulogu zato sto ga uvek inicijalizujem na Takmicenje1. Morao sam da ga
         // uvedem zato sto mi inace NHibernate prijavljuje gresku kod snimanja u bazu zato sto tabela
         // poredak_ukupno_zbir_vise_kola ima samo jednu kolonu (primary key), i u insert naredbi se dobijaju prazne
-        // zagrade - "INSERT INTO poredak_ukupno_zbir_vise_kola VALUES ( )".
+        // zagrade - "INSERT INTO poredak_ukupno_zbir_vise_kola VALUES ( )". Isto i za PoredakEkipnoZbirViseKola.
         // Proveri da li moze drugacije.
         private DeoTakmicenjaKod deoTakKod;
         public virtual DeoTakmicenjaKod DeoTakmicenjaKod

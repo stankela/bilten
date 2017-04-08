@@ -101,9 +101,9 @@ namespace Bilten.UI
                 NHibernateUtil.Initialize(tak.Propozicije);
 
                 PoredakEkipno poredak1 =
-                    takmicenje.getRezTakmicenje(rezTakmicenjaPrvoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
+                    Takmicenje.getRezTakmicenje(rezTakmicenjaPrvoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
                 PoredakEkipno poredak2 =
-                    takmicenje.getRezTakmicenje(rezTakmicenjaDrugoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
+                    Takmicenje.getRezTakmicenje(rezTakmicenjaDrugoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
                 tak.Takmicenje1.PoredakEkipnoFinaleKupa.create(tak, poredak1, poredak2);
             }
             return result;

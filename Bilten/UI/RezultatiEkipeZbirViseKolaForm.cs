@@ -87,43 +87,11 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = null;
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = null;
-            IList<RezultatskoTakmicenje> rezTakmicenjaTreceKolo = null;
-            IList<RezultatskoTakmicenje> rezTakmicenjaCetvrtoKolo = null;
-
-            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            if (takmicenje.PrvoKolo != null)
-                rezTakmicenjaPrvoKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.PrvoKolo.Id);
-            if (takmicenje.DrugoKolo != null)
-                rezTakmicenjaDrugoKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.DrugoKolo.Id);
-            if (takmicenje.TreceKolo != null)
-                rezTakmicenjaTreceKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.TreceKolo.Id);
-            if (takmicenje.CetvrtoKolo != null)
-                rezTakmicenjaCetvrtoKolo = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno(takmicenje.CetvrtoKolo.Id);
-
-            IList<RezultatskoTakmicenje> result = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Ekipe(takmicenje.Id);
+            IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByTakmicenjeFetch_Tak1_PoredakEkipnoZbirViseKola(takmicenje.Id);
 
             foreach (RezultatskoTakmicenje tak in result)
-            {
-                // potrebno u Poredak.create
-                NHibernateUtil.Initialize(tak.Propozicije);
-
-                PoredakEkipno poredak1 = null;
-                PoredakEkipno poredak2 = null;
-                PoredakEkipno poredak3 = null;
-                PoredakEkipno poredak4 = null;
-
-                if (rezTakmicenjaPrvoKolo != null)
-                    poredak1 = takmicenje.getRezTakmicenje(rezTakmicenjaPrvoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
-                if (rezTakmicenjaDrugoKolo != null)
-                    poredak2 = takmicenje.getRezTakmicenje(rezTakmicenjaDrugoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
-                if (rezTakmicenjaTreceKolo != null)
-                    poredak3 = takmicenje.getRezTakmicenje(rezTakmicenjaTreceKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
-                if (rezTakmicenjaCetvrtoKolo != null)
-                    poredak4 = takmicenje.getRezTakmicenje(rezTakmicenjaCetvrtoKolo, tak.Kategorija).Takmicenje1.PoredakEkipno;
-                tak.Takmicenje1.PoredakEkipnoZbirViseKola.create(tak, poredak1, poredak2, poredak3, poredak4);
-            }
+                NHibernateUtil.Initialize(tak.Takmicenje1.PoredakEkipnoZbirViseKola.Rezultati);
             return result;
         }
 
@@ -149,29 +117,7 @@ namespace Bilten.UI
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    if (onSelectedTakmicenjeChanged())
-                        session.Transaction.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedTakmicenjeChanged();
         }
 
         private bool kvalColumnVisible()
@@ -179,22 +125,14 @@ namespace Bilten.UI
             return ActiveTakmicenje.postojeKvalifikacijeEkipno(DeoTakmicenjaKod.Takmicenje1);
         }
 
-        private bool onSelectedTakmicenjeChanged()
+        private void onSelectedTakmicenjeChanged()
         {
             GridColumnsInitializer.initRezultatiEkipnoZbirViseKola(dataGridViewUserControl1,
                 takmicenje, kvalColumnVisible());
             
-            bool save = false;
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
-            {
                 takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
-                //ActiveTakmicenje.Takmicenje1.PoredakEkipno.create(ActiveTakmicenje, ocene);
-                //dataContext.Save(ActiveTakmicenje.Takmicenje1.PoredakEkipno);
-                //save = true;
-            }
             setItems();
-
-            return save;
         }
 
         private void setItems()

@@ -3,7 +3,7 @@
                    assembly="Bilten.Domain"
                    namespace="Bilten.Domain">
 
-  <class name="RezultatUkupnoZbirViseKola" table="rezultati_ukupno_zbir_vise_kola" >
+  <class name="RezultatEkipnoZbirViseKola" table="rezultati_ekipno_zbir_vise_kola" >
     <id name="Id" column="rezultat_id" access="nosetter.camelcase">
       <generator class="identity" />
     </id>
@@ -47,7 +47,7 @@
     <property name="TotalTreceKolo" column="total_3" />
     <property name="TotalCetvrtoKolo" column="total_4" />
     <property name="Total" column="total" />
-    <many-to-one name="Gimnasticar" class="GimnasticarUcesnik" column="gimnasticar_id" />
+    <many-to-one name="Ekipa" class="Ekipa" column="ekipa_id" />
   </class>
 
 </hibernate-mapping>

@@ -120,33 +120,7 @@ namespace Bilten.UI
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedTakmicenjeChanged();
-        }
-
-        void cmdSelectedTakmicenjeChanged()
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    onSelectedTakmicenjeChanged();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedTakmicenjeChanged();
         }
 
         private void onSelectedTakmicenjeChanged()
@@ -192,7 +166,7 @@ namespace Bilten.UI
         private void RezultatiUkupnoZbirViseKolaForm_Shown(object sender, EventArgs e)
         {
             dataGridViewUserControl1.Focus();
-            cmdSelectedTakmicenjeChanged();
+            onSelectedTakmicenjeChanged();
         }
 
         private void btnPrint_Click(object sender, EventArgs e)

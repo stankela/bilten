@@ -497,7 +497,7 @@ namespace Bilten.Domain
             return result;
         }
 
-        public virtual RezultatskoTakmicenje getRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
+        public static RezultatskoTakmicenje getRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
             TakmicarskaKategorija kat)
         {
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
@@ -519,30 +519,6 @@ namespace Bilten.Domain
             PoredakUkupno poredak2 =
                 getRezTakmicenje(rezTakmicenjaDrugoKolo, rezTakFinaleKupa.Kategorija).Takmicenje1.PoredakUkupno;
             rezTakFinaleKupa.Takmicenje1.PoredakUkupnoFinaleKupa.create(rezTakFinaleKupa, poredak1, poredak2);
-        }
-
-        public virtual void createPoredakUkupnoZbirViseKola(RezultatskoTakmicenje rezTakZbirViseKola,
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo,
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo,
-            IList<RezultatskoTakmicenje> rezTakmicenjaTreceKolo,
-            IList<RezultatskoTakmicenje> rezTakmicenjaCetvrtoKolo)
-        {
-            // TODO3: Ovo ce raditi samo ako su prvo i drugo kolo imali samo jedno takmicenje. (takodje i kod
-            // poretka ekipa i sprava)
-            PoredakUkupno poredak1 = null;
-            PoredakUkupno poredak2 = null;
-            PoredakUkupno poredak3 = null;
-            PoredakUkupno poredak4 = null;
-            if (rezTakmicenjaPrvoKolo != null)
-                poredak1 = getRezTakmicenje(rezTakmicenjaPrvoKolo, rezTakZbirViseKola.Kategorija).Takmicenje1.PoredakUkupno;
-            if (rezTakmicenjaDrugoKolo != null)
-                poredak2 = getRezTakmicenje(rezTakmicenjaDrugoKolo, rezTakZbirViseKola.Kategorija).Takmicenje1.PoredakUkupno;
-            if (rezTakmicenjaTreceKolo != null)
-                poredak3 = getRezTakmicenje(rezTakmicenjaTreceKolo, rezTakZbirViseKola.Kategorija).Takmicenje1.PoredakUkupno;
-            if (rezTakmicenjaCetvrtoKolo != null)
-                poredak4 = getRezTakmicenje(rezTakmicenjaCetvrtoKolo, rezTakZbirViseKola.Kategorija).Takmicenje1.PoredakUkupno;
-            rezTakZbirViseKola.Takmicenje1.PoredakUkupnoZbirViseKola.create(rezTakZbirViseKola, poredak1,
-                poredak2, poredak3, poredak4);
         }
 
         public virtual void createPoredakSpravaFinaleKupa(RezultatskoTakmicenje rezTak,
