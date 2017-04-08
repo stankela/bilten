@@ -29,6 +29,8 @@
       column="poredak_ukupno_finale_kupa_id" cascade="all" />
     <many-to-one name="PoredakUkupnoZbirViseKola" class="PoredakUkupnoZbirViseKola"
       column="poredak_ukupno_zbir_vise_kola_id" cascade="all" />
+    <many-to-one name="PoredakEkipnoFinaleKupa" class="PoredakEkipnoFinaleKupa"
+      column="poredak_ekipno_finale_kupa_id" cascade="all" />
     <many-to-one name="PoredakEkipnoZbirViseKola" class="PoredakEkipnoZbirViseKola"
       column="poredak_ekipno_zbir_vise_kola_id" cascade="all" />
   </class>

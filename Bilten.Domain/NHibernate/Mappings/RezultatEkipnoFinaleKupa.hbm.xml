@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="RezultatEkipnoFinaleKupa" table="rezultati_ekipno_finale_kupa" >
+    <id name="Id" column="rezultat_id" access="nosetter.camelcase">
+      <generator class="identity" />
+    </id>
+    <property name="RedBroj" column="red_broj" type="Int16" />
+    <property name="Rank" column="rank" type="Int16" />
+    <property name="KvalStatus" column="kval_status" type="Byte" />
+    <property name="ParterPrvoKolo" column="parter_1" />
+    <property name="ParterDrugoKolo" column="parter_2" />
+    <property name="KonjPrvoKolo" column="konj_1" />
+    <property name="KonjDrugoKolo" column="konj_2" />
+    <property name="KarikePrvoKolo" column="karike_1" />
+    <property name="KarikeDrugoKolo" column="karike_2" />
+    <property name="PreskokPrvoKolo" column="preskok_1" />
+    <property name="PreskokDrugoKolo" column="preskok_2" />
+    <property name="RazbojPrvoKolo" column="razboj_1" />
+    <property name="RazbojDrugoKolo" column="razboj_2" />
+    <property name="VratiloPrvoKolo" column="vratilo_1" />
+    <property name="VratiloDrugoKolo" column="vratilo_2" />
+    <property name="DvovisinskiRazbojPrvoKolo" column="dvo_razboj_1" />
+    <property name="DvovisinskiRazbojDrugoKolo" column="dvo_razboj_2" />
+    <property name="GredaPrvoKolo" column="greda_1" />
+    <property name="GredaDrugoKolo" column="greda_2" />
+    <property name="TotalPrvoKolo" column="total_1" />
+    <property name="TotalDrugoKolo" column="total_2" />
+    <property name="Total" column="total" />
+    <many-to-one name="Ekipa" class="Ekipa" column="ekipa_id" />
+  </class>
+
+</hibernate-mapping>

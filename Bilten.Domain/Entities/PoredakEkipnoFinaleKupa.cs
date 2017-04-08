@@ -9,6 +9,13 @@ namespace Bilten.Domain
 {
     public class PoredakEkipnoFinaleKupa : DomainObject
     {
+        private DeoTakmicenjaKod deoTakKod;
+        public virtual DeoTakmicenjaKod DeoTakmicenjaKod
+        {
+            get { return deoTakKod; }
+            set { deoTakKod = value; }
+        }
+
         private IList<RezultatEkipnoFinaleKupa> _rezultati = new List<RezultatEkipnoFinaleKupa>();
         public virtual IList<RezultatEkipnoFinaleKupa> Rezultati
         {
@@ -18,7 +25,7 @@ namespace Bilten.Domain
 
         public PoredakEkipnoFinaleKupa()
         {
-
+            DeoTakmicenjaKod = DeoTakmicenjaKod.Takmicenje1;
         }
 
         public virtual void create(RezultatskoTakmicenje rezTak, PoredakEkipno poredakPrvoKolo,
@@ -189,7 +196,7 @@ namespace Bilten.Domain
             }
         }
 
-        public List<RezultatEkipnoFinaleKupa> getRezultati()
+        public virtual List<RezultatEkipnoFinaleKupa> getRezultati()
         {
             List<RezultatEkipnoFinaleKupa> result = new List<RezultatEkipnoFinaleKupa>(Rezultati);
 
@@ -203,6 +210,7 @@ namespace Bilten.Domain
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
 
             strBuilder.AppendLine(Rezultati.Count.ToString());
             foreach (RezultatEkipnoFinaleKupa r in Rezultati)
@@ -211,6 +219,8 @@ namespace Bilten.Domain
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
+            DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
+            
             int brojRezultata = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojRezultata; ++i)
             {

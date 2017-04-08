@@ -10,16 +10,14 @@ namespace Bilten.Dao
         RezultatskoTakmicenje loadRezTakmicenje(int rezTakmicenjeId);
         IList<RezultatskoTakmicenje> FindRezTakmicenjaForGimnasticar(GimnasticarUcesnik g);
         IList<RezultatskoTakmicenje> FindByTakmicenje(int takmicenjeId);
-        IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Ekipe(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Gimnasticari(int takmicenjeId);
-        IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakUkupno(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakUkupno_KlubDrzava(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupno_KlubDrzava(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoFinaleKupa_KlubDrzava(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoZbirViseKola_KlubDrzava(int takmicenjeId);
+        IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakEkipnoFinaleKupa(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakEkipnoZbirViseKola(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakSprava(int takmicenjeId);
-        IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakEkipno(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Gimnasticari_PoredakEkipno(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak3_Poredak(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeKatFetch_Tak3_Poredak(int takmicenjeId, TakmicarskaKategorija kat);

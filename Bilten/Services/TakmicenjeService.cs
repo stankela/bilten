@@ -451,8 +451,11 @@ namespace Bilten.Services
                     poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], rt.Kategorija).Takmicenje1.PoredakEkipno;
                 if (takmicenje.CetvrtoKolo != null)
                     poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], rt.Kategorija).Takmicenje1.PoredakEkipno;
-                
-                rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
+
+                if (takmicenje.FinaleKupa)
+                    rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, poredak1, poredak2);
+                else if (takmicenje.ZbirViseKola)
+                    rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
             }
 
             foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
