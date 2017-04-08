@@ -452,6 +452,10 @@ namespace Bilten.Services
                 rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
             }
 
+            foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
+                foreach (RezultatskoTakmicenje rt in rezTakmicenjaPrethKolo)
+                    rezultatskoTakmicenjeDAO.Evict(rt);
+
             EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
             GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
 
