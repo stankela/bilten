@@ -9,6 +9,18 @@ namespace Bilten.Domain
 {
     public class PoredakUkupnoZbirViseKola : DomainObject
     {
+        // TODO: Ovo svojstvo u sustini nema nikakvu ulogu zato sto ga uvek inicijalizujem na Takmicenje1. Morao sam da ga
+        // uvedem zato sto mi inace NHibernate prijavljuje gresku kod snimanja u bazu zato sto tabela
+        // poredak_ukupno_zbir_vise_kola ima samo jednu kolonu (primary key), i u insert naredbi se dobijaju prazne
+        // zagrade - "INSERT INTO poredak_ukupno_zbir_vise_kola VALUES ( )".
+        // Proveri da li moze drugacije.
+        private DeoTakmicenjaKod deoTakKod;
+        public virtual DeoTakmicenjaKod DeoTakmicenjaKod
+        {
+            get { return deoTakKod; }
+            set { deoTakKod = value; }
+        }
+
         private IList<RezultatUkupnoZbirViseKola> _rezultati = new List<RezultatUkupnoZbirViseKola>();
         public virtual IList<RezultatUkupnoZbirViseKola> Rezultati
         {
@@ -17,8 +29,8 @@ namespace Bilten.Domain
         }
 
         public PoredakUkupnoZbirViseKola()
-        { 
-        
+        {
+            DeoTakmicenjaKod = DeoTakmicenjaKod.Takmicenje1;
         }
 
         public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno poredakPrvoKolo,
@@ -323,6 +335,7 @@ namespace Bilten.Domain
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
 
             strBuilder.AppendLine(Rezultati.Count.ToString());
             foreach (RezultatUkupnoZbirViseKola r in Rezultati)
@@ -331,6 +344,8 @@ namespace Bilten.Domain
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
+            DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
+            
             int brojRezultata = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojRezultata; ++i)
             {

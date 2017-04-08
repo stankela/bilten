@@ -82,29 +82,15 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = null;
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = null;
-            IList<RezultatskoTakmicenje> rezTakmicenjaTreceKolo = null;
-            IList<RezultatskoTakmicenje> rezTakmicenjaCetvrtoKolo = null;
-
-            RezultatskoTakmicenjeDAO rezTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-
-            if (takmicenje.PrvoKolo != null)
-                rezTakmicenjaPrvoKolo = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakUkupno(takmicenje.PrvoKolo.Id);
-            if (takmicenje.DrugoKolo != null)
-                rezTakmicenjaDrugoKolo = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakUkupno(takmicenje.DrugoKolo.Id);
-            if (takmicenje.TreceKolo != null)
-                rezTakmicenjaTreceKolo = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakUkupno(takmicenje.TreceKolo.Id);
-            if (takmicenje.CetvrtoKolo != null)
-                rezTakmicenjaCetvrtoKolo = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakUkupno(takmicenje.CetvrtoKolo.Id);
-
-            IList<RezultatskoTakmicenje> result = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.Id);
+            IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoZbirViseKola_KlubDrzava(takmicenje.Id);
             foreach (RezultatskoTakmicenje rt in result)
             {
-                // potrebno u Poredak.create
-                NHibernateUtil.Initialize(rt.Propozicije);
-                takmicenje.createPoredakUkupnoZbirViseKola(rt, rezTakmicenjaPrvoKolo, rezTakmicenjaDrugoKolo,
-                    rezTakmicenjaTreceKolo, rezTakmicenjaCetvrtoKolo);
+                // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
+                // fetch u queriju, jako se sporo izvrsava (verovato
+                // zato sto se dobavljaju dve kolekcije - Gimnasticari i 
+                // Rezultati).
+                NHibernateUtil.Initialize(rt.Takmicenje1.PoredakUkupnoZbirViseKola.Rezultati);
             }
             return result;
         }

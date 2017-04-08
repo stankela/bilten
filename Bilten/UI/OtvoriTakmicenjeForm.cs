@@ -41,6 +41,7 @@ namespace Bilten.UI
         public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId, bool selectMode, int broj, bool gornjaGranica)
         {
             InitializeComponent();
+            ClientSize = new System.Drawing.Size(ClientSize.Width, Screen.PrimaryScreen.WorkingArea.Height - 100);
             this.currTakmicenjeId = currTakmicenjeId;
             this.selectMode = selectMode;
             this.broj = broj;
@@ -205,6 +206,11 @@ namespace Bilten.UI
         private void updateTakmicenjaCount()
         {
             statusBar.Panels[0].Text = takmicenja.Count.ToString() + " takmicenja";
+        }
+
+        private void OtvoriTakmicenjeForm_Shown(object sender, EventArgs e)
+        {
+            dataGridViewUserControl1.clearSelection();
         }
 
     }

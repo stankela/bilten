@@ -133,7 +133,8 @@ create table takmicenje1 (
 	takmicenje1_id int identity(1,1) primary key,
 	poredak_ukupno_id int references poredak_ukupno(poredak_id),
 	poredak_preskok_id int references poredak_sprava(poredak_id),
-	poredak_ekipno_id int references poredak_ekipno(poredak_id)
+	poredak_ekipno_id int references poredak_ekipno(poredak_id),
+	poredak_ukupno_zbir_vise_kola_id int references poredak_ukupno_zbir_vise_kola(poredak_id)
 );
 
 create table takmicenje2 (
@@ -456,4 +457,22 @@ create table rezultati_sprava_finale_kupa_update (
 	kval_status tinyint,
 	constraint PK_rezultati_sprava_finale_kupa_update 
 		primary key (rez_takmicenje_id, gimnasticar_id, sprava)
+);
+
+create table poredak_ukupno_zbir_vise_kola (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+
+create table rezultati_ukupno_zbir_vise_kola (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	total_1 real,
+	total_2 real,
+	total_3 real,
+	total_4 real,
+	total real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_ukupno_zbir_vise_kola(poredak_id)
 );

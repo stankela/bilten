@@ -91,12 +91,12 @@ namespace Bilten.UI
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOpen);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OtvoriTakmicenjeForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OtvoriTakmicenjeForm";
+            this.Shown += new System.EventHandler(this.OtvoriTakmicenjeForm_Shown);
             this.ResumeLayout(false);
 
         }
