@@ -508,19 +508,6 @@ namespace Bilten.Domain
             return null;
         }
 
-        public virtual void createPoredakUkupnoFinaleKupa(RezultatskoTakmicenje rezTakFinaleKupa,
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo,
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo)
-        {
-            // TODO3: Ovo ce raditi samo ako su prvo i drugo kolo imali samo jedno takmicenje. (takodje i kod
-            // poretka ekipa i sprava)
-            PoredakUkupno poredak1 =
-                getRezTakmicenje(rezTakmicenjaPrvoKolo, rezTakFinaleKupa.Kategorija).Takmicenje1.PoredakUkupno;
-            PoredakUkupno poredak2 =
-                getRezTakmicenje(rezTakmicenjaDrugoKolo, rezTakFinaleKupa.Kategorija).Takmicenje1.PoredakUkupno;
-            rezTakFinaleKupa.Takmicenje1.PoredakUkupnoFinaleKupa.create(rezTakFinaleKupa, poredak1, poredak2);
-        }
-
         public virtual void createPoredakSpravaFinaleKupa(RezultatskoTakmicenje rezTak,
             IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo,
             IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo,

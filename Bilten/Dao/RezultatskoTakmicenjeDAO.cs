@@ -15,6 +15,7 @@ namespace Bilten.Dao
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakUkupno(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakUkupno_KlubDrzava(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupno_KlubDrzava(int takmicenjeId);
+        IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoFinaleKupa_KlubDrzava(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoZbirViseKola_KlubDrzava(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakEkipnoZbirViseKola(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_PoredakSprava(int takmicenjeId);

@@ -192,6 +192,32 @@ namespace Bilten.Dao.NHibernate
         }
 
         public IList<RezultatskoTakmicenje>
+            FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoFinaleKupa_KlubDrzava(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RezultatskoTakmicenje r
+                    left join fetch r.Kategorija kat
+                    left join fetch r.TakmicenjeDescription d
+                    left join fetch r.Takmicenje1 t
+                    left join fetch t.PoredakUkupnoFinaleKupa
+                    left join fetch t.Gimnasticari g
+                    left join fetch g.DrzavaUcesnik dr
+                    left join fetch g.KlubUcesnik kl
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RezultatskoTakmicenje>
             FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoZbirViseKola_KlubDrzava(int takmicenjeId)
         {
             try

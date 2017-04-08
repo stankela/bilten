@@ -325,15 +325,17 @@ namespace Bilten.UI
                         onTakmicenjeCreated(t);
                     }
                     else if (t.FinaleKupa)
-                    { 
-                        // TODO4
-
+                    {
+                        TakmicenjeService.kreirajNaOsnovuViseKola(t);
                         session.Transaction.Commit();
-                        //onTakmicenjeCreated(takFrom);
+                        string msg = "Takmicenje je kreirano, sa svim ocenama. Podesite u propozicijama " + 
+                            "nacin kako se racuna finalna ocena na osnovu ocena iz 1. i 2. kola.";
+                        MessageDialogs.showMessage(msg, strProgName);
+                        onTakmicenjeCreated(t);
                     }
                     else // ZbirViseKola
                     {
-                        TakmicenjeService.kreirajZbirViseKola(t);
+                        TakmicenjeService.kreirajNaOsnovuViseKola(t);
                         session.Transaction.Commit();
                         onTakmicenjeCreated(t);
                     }

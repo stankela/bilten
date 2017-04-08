@@ -287,7 +287,7 @@ namespace Bilten.Services
             }
         }
 
-        public static void kreirajZbirViseKola(Takmicenje takmicenje)
+        public static void kreirajNaOsnovuViseKola(Takmicenje takmicenje)
         {
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             takmicenjeDAO.Attach(takmicenje, false);
@@ -430,7 +430,10 @@ namespace Bilten.Services
                 if (takmicenje.CetvrtoKolo != null)
                     poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], rt.Kategorija).Takmicenje1.PoredakUkupno;
 
-                rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
+                if (takmicenje.FinaleKupa)
+                    rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, poredak1, poredak2);
+                else if (takmicenje.ZbirViseKola)
+                    rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
             }
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)

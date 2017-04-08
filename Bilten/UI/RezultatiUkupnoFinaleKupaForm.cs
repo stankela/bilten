@@ -82,19 +82,10 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
-            RezultatskoTakmicenjeDAO rezTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo
-                = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakUkupno(takmicenje.PrvoKolo.Id);
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo
-                = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakUkupno(takmicenje.DrugoKolo.Id);
-
-            IList<RezultatskoTakmicenje> result = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.Id);
+            IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoFinaleKupa_KlubDrzava(takmicenje.Id);
             foreach (RezultatskoTakmicenje rt in result)
-            {
-                // potrebno u Poredak.create
-                NHibernateUtil.Initialize(rt.Propozicije);
-                takmicenje.createPoredakUkupnoFinaleKupa(rt, rezTakmicenjaPrvoKolo, rezTakmicenjaDrugoKolo);
-            }
+                NHibernateUtil.Initialize(rt.Takmicenje1.PoredakUkupnoFinaleKupa.Rezultati);
             return result;
         }
 
@@ -123,33 +114,7 @@ namespace Bilten.UI
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedTakmicenjeChanged();
-        }
-
-        void cmdSelectedTakmicenjeChanged()
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    onSelectedTakmicenjeChanged();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedTakmicenjeChanged();
         }
 
         private void onSelectedTakmicenjeChanged()
@@ -195,7 +160,7 @@ namespace Bilten.UI
         private void RezultatiUkupnoFinaleKupaForm_Shown(object sender, EventArgs e)
         {
             dataGridViewUserControl1.Focus();
-            cmdSelectedTakmicenjeChanged();
+            onSelectedTakmicenjeChanged();
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
