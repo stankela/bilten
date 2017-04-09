@@ -1417,7 +1417,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje.Id);
+                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenjaFinaleKupa(takmicenje.Id);
 
                     IList<RezultatskoTakmicenje> svaRezTakmicenja2 = new List<RezultatskoTakmicenje>();
                     foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
@@ -1596,79 +1596,16 @@ namespace Bilten.UI
             return result[0];
         }
 
-        private IList<RezultatskoTakmicenje> loadRezTakmicenja(int takmicenjeId)
+        private IList<RezultatskoTakmicenje> loadRezTakmicenjaFinaleKupa(int takmicenjeId)
         {
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo = DAOFactoryFactory.DAOFactory
-                .GetRezultatskoTakmicenjeDAO().FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenje.PrvoKolo.Id);
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo = DAOFactoryFactory.DAOFactory
-                .GetRezultatskoTakmicenjeDAO().FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenje.DrugoKolo.Id);
-
             IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenjeId);
-
-            // TODO4: Proveri kakva je ovo cudna DAO klasa.
-            RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
-            
-            foreach (RezultatskoTakmicenje rezTak in result)
+                .FindByTakmicenjeFetch_Tak1_PoredakSpravaFinaleKupa(takmicenje.Id);
+            foreach (RezultatskoTakmicenje rt in result)
             {
-                // potrebno u Poredak.create
-                NHibernateUtil.Initialize(rezTak.Propozicije);
-
-                RezultatskoTakmicenje rezTakPrvoKolo = findRezTakmicenje(rezTakmicenjaPrvoKolo, rezTak.Kategorija);
-                RezultatskoTakmicenje rezTakDrugoKolo = findRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
-
-                rezTak.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
-                List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate = dao.findByRezTak(rezTak);
-                
-                foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
-                {
-                    if (s != Sprava.Preskok)
-                    {
-                        PoredakSprava poredakPrvoKolo = null;
-                        PoredakSprava poredakDrugoKolo = null;
-                        if (rezTakPrvoKolo != null)
-                            poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.getPoredakSprava(s);
-                        if (rezTakDrugoKolo != null)
-                            poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s);
-                        rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                            poredakPrvoKolo, poredakDrugoKolo, rezultatiUpdate);
-                    }
-                    else
-                    {
-                        PoredakPreskok poredakPrvoKolo = null;
-                        PoredakPreskok poredakDrugoKolo = null;
-                        if (rezTakPrvoKolo != null)
-                            poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.PoredakPreskok;
-                        if (rezTakDrugoKolo != null)
-                            poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.PoredakPreskok;
-
-                        bool poredakNaOsnovuObaPreskokaPrvoKolo = false;
-                        bool poredakNaOsnovuObaPreskokaDrugoKolo = false;
-                        if (rezTakPrvoKolo != null)
-                            poredakNaOsnovuObaPreskokaPrvoKolo =
-                                rezTakPrvoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-                        if (rezTakDrugoKolo != null)
-                            poredakNaOsnovuObaPreskokaDrugoKolo =
-                                rezTakDrugoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-
-                        rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                            poredakPrvoKolo, poredakDrugoKolo,
-                            poredakNaOsnovuObaPreskokaPrvoKolo, poredakNaOsnovuObaPreskokaDrugoKolo, rezultatiUpdate);
-                    }
-                }
+                foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
+                    NHibernateUtil.Initialize(p.Rezultati);
             }
             return result;
-        }
-
-        private RezultatskoTakmicenje findRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
-            TakmicarskaKategorija kat)
-        {
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-            {
-                if (rezTak.Kategorija.Equals(kat))
-                    return rezTak;
-            }
-            return null;
         }
 
         private void mnOcene_Click(object sender, EventArgs e)

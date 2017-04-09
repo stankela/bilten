@@ -90,23 +90,12 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
-            RezultatskoTakmicenjeDAO rezTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo
-                = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenje.PrvoKolo.Id);
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo
-                = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenje.DrugoKolo.Id);
-
-            IList<RezultatskoTakmicenje> result = rezTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.Id);
-
-            RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
-
-            foreach (RezultatskoTakmicenje rezTak in result)
+            IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByTakmicenjeFetch_Tak1_PoredakSpravaFinaleKupa(takmicenje.Id);
+            foreach (RezultatskoTakmicenje rt in result)
             {
-                // potrebno u Poredak.create
-                NHibernateUtil.Initialize(rezTak.Propozicije);
-                List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate = dao.findByRezTak(rezTak);
-                takmicenje.createPoredakSpravaFinaleKupa(rezTak, rezTakmicenjaPrvoKolo, rezTakmicenjaDrugoKolo,
-                    rezultatiUpdate);
+                foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
+                    NHibernateUtil.Initialize(p.Rezultati);
             }
             return result;
         }
@@ -155,38 +144,12 @@ namespace Bilten.UI
 
         void cmbTakmicenje_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedRezultatiChanged();
+            onSelectedRezultatiChanged();
         }
 
         void cmbSprava_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmdSelectedRezultatiChanged();
-        }
-
-        void cmdSelectedRezultatiChanged()
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    onSelectedRezultatiChanged();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedRezultatiChanged();
         }
 
         private void onSelectedRezultatiChanged()
@@ -251,7 +214,7 @@ namespace Bilten.UI
         private void RezultatiSpravaFinaleKupaForm_Shown(object sender, EventArgs e)
         {
             spravaGridUserControl1.DataGridViewUserControl.Focus();
-            cmdSelectedRezultatiChanged();
+            onSelectedRezultatiChanged();
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -405,8 +368,10 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    insertRezultatSpravaFinaleKupaUpdate(rez.Gimnasticar, ActiveTakmicenje, ActiveSprava, kvalStatus);
                     rez.KvalStatus = kvalStatus;
+                    DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(
+                        ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava));
+                    session.Transaction.Commit();
                 }
             }
             catch (Exception ex)
@@ -425,16 +390,5 @@ namespace Bilten.UI
             spravaGridUserControl1.DataGridViewUserControl.refreshItems();
             spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatSpravaFinaleKupa>(rez);
         }
-
-        private void insertRezultatSpravaFinaleKupaUpdate(GimnasticarUcesnik gimnasticar, RezultatskoTakmicenje rezTak,
-            Sprava sprava, KvalifikacioniStatus newKvalStatus)
-        {
-            RezultatSpravaFinaleKupaDAO dao = new RezultatSpravaFinaleKupaDAO();
-            if (!dao.postojiRezultatSpravaFinaleKupaUpdate(gimnasticar, rezTak, sprava))
-                dao.insert(gimnasticar, rezTak, sprava, newKvalStatus);
-            else
-                dao.update(gimnasticar, rezTak, sprava, newKvalStatus);
-        }
-
     }
 }

@@ -93,7 +93,6 @@
     <Compile Include="Entities\RezultatskoTakmicenjeDescription.cs" />
     <Compile Include="Entities\RezultatSprava.cs" />
     <Compile Include="Entities\RezultatSpravaFinaleKupa.cs" />
-    <Compile Include="Entities\RezultatSpravaFinaleKupaUpdate.cs" />
     <Compile Include="Entities\RezultatUkupno.cs" />
     <Compile Include="Entities\RezultatUkupnoExtended.cs" />
     <Compile Include="Entities\RezultatUkupnoFinaleKupa.cs" />
@@ -198,6 +197,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="NHibernate\Mappings\RezultatEkipnoFinaleKupa.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NHibernate\Mappings\PoredakSpravaFinaleKupa.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatSpravaFinaleKupa.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

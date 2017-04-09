@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="RezultatSpravaFinaleKupa" table="rezultati_sprava_finale_kupa" >
+    <id name="Id" column="rezultat_id" access="nosetter.camelcase">
+      <generator class="identity" />
+    </id>
+    <property name="RedBroj" column="red_broj" type="Int16" />
+    <property name="Rank" column="rank" type="Int16" />
+    <property name="KvalStatus" column="kval_status" type="Byte" />
+    <property name="D_PrvoKolo" column="d_prvo_kolo" />
+    <property name="E_PrvoKolo" column="e_prvo_kolo" />
+    <property name="TotalPrvoKolo" column="total_prvo_kolo" />
+    <property name="D_DrugoKolo" column="d_drugo_kolo" />
+    <property name="E_DrugoKolo" column="e_drugo_kolo" />
+    <property name="TotalDrugoKolo" column="total_drugo_kolo" />
+    <property name="Total" column="total" />
+    <many-to-one name="Gimnasticar" class="GimnasticarUcesnik" column="gimnasticar_id" />
+  </class>
+
+</hibernate-mapping>

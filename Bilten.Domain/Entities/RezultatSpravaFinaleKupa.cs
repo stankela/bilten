@@ -57,7 +57,7 @@ namespace Bilten.Domain
         }
 
         // moram ovako jer je set accessor za Total protected u klasi Rezultat
-        public void setTotal(Nullable<float> value)
+        public virtual void setTotal(Nullable<float> value)
         {
             Total = value;
         }

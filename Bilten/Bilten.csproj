@@ -118,6 +118,7 @@
     <Compile Include="Dao\NHibernate\PoredakEkipnoDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakPreskokDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakSpravaDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\PoredakSpravaFinaleKupaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakUkupnoDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PropozicijeDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\RasporedNastupaDAOImpl.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Dao\PoredakEkipnoDAO.cs" />
     <Compile Include="Dao\PoredakPreskokDAO.cs" />
     <Compile Include="Dao\PoredakSpravaDAO.cs" />
+    <Compile Include="Dao\PoredakSpravaFinaleKupaDAO.cs" />
     <Compile Include="Dao\PoredakUkupnoDAO.cs" />
     <Compile Include="Dao\PropozicijeDAO.cs" />
     <Compile Include="Dao\RasporedNastupaDAO.cs" />
@@ -160,7 +162,6 @@
     <Compile Include="Dao\UcesnikTakmicenja2DAO.cs" />
     <Compile Include="Dao\UcesnikTakmicenja3DAO.cs" />
     <Compile Include="Data\NHibernate\NHibernateHelper.cs" />
-    <Compile Include="Data\RezultatSpravaFinaleKupaDAO.cs" />
     <Compile Include="Data\NHibernate\PersistentConfigurationBuilder.cs" />
     <Compile Include="Misc\ConfigurationParameters.cs" />
     <Compile Include="Misc\Language.cs" />
@@ -174,6 +175,7 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version12.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version11.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version10.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version9.sql" />
@@ -729,8 +731,7 @@
     <Compile Include="UI\ZrebForm.Designer.cs">
       <DependentUpon>ZrebForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Update\Version3Updater.cs" />
-    <Compile Include="Update\Version7Updater.cs" />
+    <Compile Include="Update\VersionUpdater.cs" />
     <Compile Include="Util\SqlCeUtilities.cs" />
   </ItemGroup>
   <ItemGroup>

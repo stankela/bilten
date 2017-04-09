@@ -28,10 +28,8 @@ namespace Bilten.Domain
 
         }
 
-        // TODO3: Kod finala kupa bi trebalo kod kloniranja ubaciti gimnasticare iz oba kola.
-
         public virtual void create(RezultatskoTakmicenje rezTak, PoredakSprava poredakPrvoKolo,
-            PoredakSprava poredakDrugoKolo, List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)
+            PoredakSprava poredakDrugoKolo)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -115,24 +113,6 @@ namespace Bilten.Domain
                                  rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu,
                                  rezTak.Propozicije.BrojRezerviTak3);
-                applyRezultatiUpdate(rezultatiUpdate);
-            }
-        }
-
-        private void applyRezultatiUpdate(List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)
-        {
-            foreach (RezultatSpravaFinaleKupaUpdate rezultatUpdate in rezultatiUpdate)
-            {
-                if (rezultatUpdate.Sprava != this.Sprava)
-                    continue;
-                foreach (RezultatSpravaFinaleKupa rezultat in Rezultati)
-                {
-                    if (rezultatUpdate.GimnasticarId == rezultat.Gimnasticar.Id)
-                    {
-                        rezultat.KvalStatus = rezultatUpdate.KvalStatus;
-                        break;
-                    }
-                }
             }
         }
 
@@ -140,8 +120,7 @@ namespace Bilten.Domain
         // pravila razresavanja istih ocena.
 
         public virtual void create(RezultatskoTakmicenje rezTak, PoredakPreskok poredakPrvoKolo,
-            PoredakPreskok poredakDrugoKolo, bool poredak1NaOsnovuObaPreskoka, bool poredak2NaOsnovuObaPreskoka,
-            List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)
+            PoredakPreskok poredakDrugoKolo, bool poredak1NaOsnovuObaPreskoka, bool poredak2NaOsnovuObaPreskoka)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -279,7 +258,6 @@ namespace Bilten.Domain
                                  rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak3,
                                  rezTak.Propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu,
                                  rezTak.Propozicije.BrojRezerviTak3);
-                applyRezultatiUpdate(rezultatiUpdate);
             }
         }
 
@@ -443,7 +421,7 @@ namespace Bilten.Domain
             }
         }
 
-        public List<RezultatSpravaFinaleKupa> getRezultati()
+        public virtual List<RezultatSpravaFinaleKupa> getRezultati()
         {
             List<RezultatSpravaFinaleKupa> result = new List<RezultatSpravaFinaleKupa>(Rezultati);
 
@@ -454,7 +432,7 @@ namespace Bilten.Domain
             return result;
         }
 
-        public List<RezultatSpravaFinaleKupa> getKvalifikanti()
+        public virtual List<RezultatSpravaFinaleKupa> getKvalifikanti()
         {
             List<RezultatSpravaFinaleKupa> result = new List<RezultatSpravaFinaleKupa>();
             foreach (RezultatSpravaFinaleKupa rez in getRezultati())

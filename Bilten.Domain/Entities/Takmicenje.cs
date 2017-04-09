@@ -466,54 +466,6 @@ namespace Bilten.Domain
             return null;
         }
 
-        public virtual void createPoredakSpravaFinaleKupa(RezultatskoTakmicenje rezTak,
-            IList<RezultatskoTakmicenje> rezTakmicenjaPrvoKolo,
-            IList<RezultatskoTakmicenje> rezTakmicenjaDrugoKolo,
-            List<RezultatSpravaFinaleKupaUpdate> rezultatiUpdate)
-        {
-            RezultatskoTakmicenje rezTakPrvoKolo = getRezTakmicenje(rezTakmicenjaPrvoKolo, rezTak.Kategorija);
-            RezultatskoTakmicenje rezTakDrugoKolo = getRezTakmicenje(rezTakmicenjaDrugoKolo, rezTak.Kategorija);
-
-            rezTak.Takmicenje1.initPoredakSpravaFinaleKupa(this.Gimnastika);
-
-            foreach (Sprava s in Sprave.getSprave(this.Gimnastika))
-            {
-                if (s != Sprava.Preskok)
-                {
-                    PoredakSprava poredakPrvoKolo = null;
-                    PoredakSprava poredakDrugoKolo = null;
-                    if (rezTakPrvoKolo != null)
-                        poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.getPoredakSprava(s);
-                    if (rezTakDrugoKolo != null)
-                        poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.getPoredakSprava(s);
-                    rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                        poredakPrvoKolo, poredakDrugoKolo, rezultatiUpdate);
-                }
-                else
-                {
-                    PoredakPreskok poredakPrvoKolo = null;
-                    PoredakPreskok poredakDrugoKolo = null;
-                    if (rezTakPrvoKolo != null)
-                        poredakPrvoKolo = rezTakPrvoKolo.Takmicenje1.PoredakPreskok;
-                    if (rezTakDrugoKolo != null)
-                        poredakDrugoKolo = rezTakDrugoKolo.Takmicenje1.PoredakPreskok;
-
-                    bool poredakNaOsnovuObaPreskokaPrvoKolo = false;
-                    bool poredakNaOsnovuObaPreskokaDrugoKolo = false;
-                    if (rezTakPrvoKolo != null)
-                        poredakNaOsnovuObaPreskokaPrvoKolo =
-                            rezTakPrvoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-                    if (rezTakDrugoKolo != null)
-                        poredakNaOsnovuObaPreskokaDrugoKolo =
-                            rezTakDrugoKolo.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-
-                    rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rezTak,
-                        poredakPrvoKolo, poredakDrugoKolo,
-                        poredakNaOsnovuObaPreskokaPrvoKolo, poredakNaOsnovuObaPreskokaDrugoKolo, rezultatiUpdate);
-                }
-            }
-        }
-
         public virtual IList<RezultatUkupno> createRezultatiUkupnoZaSveEkipe(
             IList<RezultatskoTakmicenje> rezTakmicenja, IList<Ocena> ocene, DeoTakmicenjaKod deoTakKod)
         {

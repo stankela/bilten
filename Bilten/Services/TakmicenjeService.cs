@@ -293,16 +293,11 @@ namespace Bilten.Services
             takmicenjeDAO.Attach(takmicenje, false);
 
             List<Takmicenje> prethodnaKola = new List<Takmicenje>();
-            if (takmicenje.PrvoKolo != null)
-            {
-                takmicenjeDAO.Attach(takmicenje.PrvoKolo, false);
-                prethodnaKola.Add(takmicenje.PrvoKolo);
-            }
-            if (takmicenje.DrugoKolo != null)
-            {
-                takmicenjeDAO.Attach(takmicenje.DrugoKolo, false);
-                prethodnaKola.Add(takmicenje.DrugoKolo);
-            }
+            takmicenjeDAO.Attach(takmicenje.PrvoKolo, false);
+            takmicenjeDAO.Attach(takmicenje.DrugoKolo, false);
+
+            prethodnaKola.Add(takmicenje.PrvoKolo);
+            prethodnaKola.Add(takmicenje.DrugoKolo);
             if (takmicenje.TreceKolo != null)
             {
                 takmicenjeDAO.Attach(takmicenje.TreceKolo, false);
@@ -413,18 +408,18 @@ namespace Bilten.Services
                 }
             }
 
+            // TODO: Prebaci u domenske klase sto vise koda iz ove funkcije.
+
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 // TODO3: Ovo ce raditi samo ako su prvo i drugo kolo imali samo jedno takmicenje. (takodje i kod
                 // poretka ekipa i sprava)
-                PoredakUkupno poredak1 = null;
-                PoredakUkupno poredak2 = null;
+                PoredakUkupno poredak1
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija).Takmicenje1.PoredakUkupno;
+                PoredakUkupno poredak2
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija).Takmicenje1.PoredakUkupno;
                 PoredakUkupno poredak3 = null;
                 PoredakUkupno poredak4 = null;
-                if (takmicenje.PrvoKolo != null)
-                    poredak1 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija).Takmicenje1.PoredakUkupno;
-                if (takmicenje.DrugoKolo != null)
-                    poredak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija).Takmicenje1.PoredakUkupno;
                 if (takmicenje.TreceKolo != null)
                     poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], rt.Kategorija).Takmicenje1.PoredakUkupno;
                 if (takmicenje.CetvrtoKolo != null)
@@ -436,17 +431,45 @@ namespace Bilten.Services
                     rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
             }
 
+            if (takmicenje.FinaleKupa)
+            {
+                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                {
+                    RezultatskoTakmicenje rezTak1 =
+                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija);
+                    RezultatskoTakmicenje rezTak2 =
+                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija);
+
+                    rt.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
+
+                    foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+                    {
+                        if (s != Sprava.Preskok)
+                        {
+                            rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt,
+                                rezTak1.Takmicenje1.getPoredakSprava(s), rezTak2.Takmicenje1.getPoredakSprava(s));
+                        }
+                        else
+                        {
+                            rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt,
+                                rezTak1.Takmicenje1.PoredakPreskok,
+                                rezTak2.Takmicenje1.PoredakPreskok,
+                                rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                                rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka);
+                        }
+                    }
+                }
+            }
+
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja.
-                PoredakEkipno poredak1 = null;
-                PoredakEkipno poredak2 = null;
+                PoredakEkipno poredak1
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija).Takmicenje1.PoredakEkipno;
+                PoredakEkipno poredak2
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija).Takmicenje1.PoredakEkipno;
                 PoredakEkipno poredak3 = null;
                 PoredakEkipno poredak4 = null;
-                if (takmicenje.PrvoKolo != null)
-                    poredak1 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija).Takmicenje1.PoredakEkipno;
-                if (takmicenje.DrugoKolo != null)
-                    poredak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija).Takmicenje1.PoredakEkipno;
                 if (takmicenje.TreceKolo != null)
                     poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], rt.Kategorija).Takmicenje1.PoredakEkipno;
                 if (takmicenje.CetvrtoKolo != null)
