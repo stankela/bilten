@@ -457,7 +457,7 @@ namespace Bilten.Services
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja.
+                // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja (na svim mestima gde se racuna).
                 PoredakEkipno poredak1
                     = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
                 PoredakEkipno poredak2

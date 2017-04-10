@@ -168,7 +168,6 @@ namespace Bilten.Report
             {
                 spravaWidth = spravaWidth * 2.3f;
             }
-            float kvalWidth = rankWidth / 2;
 
 			float xRank = contentBounds.X;
             float xIme = xRank + rankWidth;

@@ -219,7 +219,7 @@ namespace Bilten.UI
                 // Za finale kupa se kvalifikanti prikazuju u RezultatiEkipeFinaleKupa
                 return false;
             else
-                return ActiveTakmicenje.postojeKvalifikacijeEkipno(deoTakKod);
+                return deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak4();
         }
 
         private void onSelectedTakmicenjeChanged()

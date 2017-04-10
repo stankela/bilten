@@ -883,7 +883,7 @@ namespace Bilten.UI
                                 p.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(p.Sprava));
                             rt.Takmicenje3.PoredakPreskok.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(Sprava.Preskok));
                         }
-                        if (rt.Propozicije.PostojiTak4 && rt.Propozicije.OdvojenoTak4)
+                        if (rt.odvojenoTak4())
                         {
                             // TODO: Proveri zasto je ovo i ono dole zakomentarisano
                             //rt.Takmicenje4.createUcesnici(rt.Takmicenje1);

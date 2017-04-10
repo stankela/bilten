@@ -279,6 +279,21 @@ namespace Bilten.UI
                     ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.create(ActiveTakmicenje,
                         poredak1, poredak2, poredak3, poredak4);
 
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja1)
+                        rezultatskoTakmicenjeDAO.Evict(rt);
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
+                        rezultatskoTakmicenjeDAO.Evict(rt);
+                    if (takmicenje.TreceKolo != null)
+                    {
+                        foreach (RezultatskoTakmicenje rt in rezTakmicenja3)
+                            rezultatskoTakmicenjeDAO.Evict(rt);
+                    }
+                    if (takmicenje.CetvrtoKolo != null)
+                    {
+                        foreach (RezultatskoTakmicenje rt in rezTakmicenja4)
+                            rezultatskoTakmicenjeDAO.Evict(rt);
+                    }
+
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoZbirViseKolaDAO()
                         .Update(ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola);
 

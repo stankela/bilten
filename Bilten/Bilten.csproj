@@ -116,6 +116,8 @@
     <Compile Include="Dao\NHibernate\OcenaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\OpcijeDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakEkipnoDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\PoredakEkipnoFinaleKupaDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\PoredakEkipnoZbirViseKolaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakPreskokDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakSpravaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakSpravaFinaleKupaDAOImpl.cs" />
@@ -142,6 +144,8 @@
     <Compile Include="Dao\OcenaDAO.cs" />
     <Compile Include="Dao\OpcijeDAO.cs" />
     <Compile Include="Dao\PoredakEkipnoDAO.cs" />
+    <Compile Include="Dao\PoredakEkipnoFinaleKupaDAO.cs" />
+    <Compile Include="Dao\PoredakEkipnoZbirViseKolaDAO.cs" />
     <Compile Include="Dao\PoredakPreskokDAO.cs" />
     <Compile Include="Dao\PoredakSpravaDAO.cs" />
     <Compile Include="Dao\PoredakSpravaFinaleKupaDAO.cs" />

@@ -123,7 +123,7 @@ namespace Bilten.Domain
                 _takmicenje2 = new Takmicenje2();
             if (propozicije.PostojiTak3 && propozicije.OdvojenoTak3)
                 _takmicenje3 = new Takmicenje3(takmicenje.Gimnastika);
-            if (propozicije.PostojiTak4 && propozicije.OdvojenoTak4)
+            if (odvojenoTak4())
                 _takmicenje4 = new Takmicenje4();
         }
 
@@ -147,7 +147,7 @@ namespace Bilten.Domain
                 else
                     Takmicenje3 = new Takmicenje3(this.Gimnastika);
             }
-            if ((Propozicije.PostojiTak4 && Propozicije.OdvojenoTak4) != (Takmicenje4 != null))
+            if (odvojenoTak4() != (Takmicenje4 != null))
             {
                 if (Takmicenje4 != null)
                     Takmicenje4 = null;
@@ -282,10 +282,9 @@ namespace Bilten.Domain
                 && Propozicije.PostojiTak3 && Propozicije.OdvojenoTak3;
         }
 
-        public virtual bool postojeKvalifikacijeEkipno(DeoTakmicenjaKod deoTakKod)
+        public virtual bool odvojenoTak4()
         {
-            return deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && Propozicije.PostojiTak4 && Propozicije.OdvojenoTak4;
+            return Propozicije.PostojiTak4 && Propozicije.OdvojenoTak4;
         }
 
         public virtual string getNazivIzvestajaViseboj(DeoTakmicenjaKod deoTakKod, bool finaleKupa, bool sumaObaKola)

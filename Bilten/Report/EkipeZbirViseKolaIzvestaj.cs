@@ -14,7 +14,7 @@ namespace Bilten.Report
         private EkipeZbirViseKolaLista lista;
 
         public EkipeZbirViseKolaIzvestaj(IList<RezultatEkipnoZbirViseKola> rezultati, Gimnastika gim,
-            bool kvalColumn, DataGridView formGrid, string documentName)
+            DataGridView formGrid, string documentName)
         {
             DocumentName = documentName;
 
@@ -24,8 +24,7 @@ namespace Bilten.Report
             Landscape = false;
             Margins = new Margins(75, 75, 75, 75);
 
-            lista = new EkipeZbirViseKolaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, kvalColumn, formGrid);
+            lista = new EkipeZbirViseKolaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, gim, formGrid);
         }
 
         protected override void doSetupContent(Graphics g)
@@ -46,15 +45,13 @@ namespace Bilten.Report
         private Brush totalBrush;
         private Brush totalAllBrush;
 
-        private bool kvalColumn;
         private Gimnastika gimnastika;
 
         public EkipeZbirViseKolaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatEkipnoZbirViseKola> rezultati,
-            Gimnastika gim, bool kvalColumn, DataGridView formGrid)
+            Gimnastika gim, DataGridView formGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
-            this.kvalColumn = kvalColumn;
             this.gimnastika = gim;
 
             totalBrush = Brushes.White;
@@ -128,7 +125,6 @@ namespace Bilten.Report
 
             float spravaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float totalWidth = spravaWidth;
-            float kvalWidth = rankWidth / 2;
 
             float xRank = contentBounds.X;
             float xEkipa = xRank + rankWidth;
@@ -142,12 +138,7 @@ namespace Bilten.Report
             float xTotal = xVratilo + spravaWidth;
             if (gimnastika == Gimnastika.ZSG)
                 xTotal = xRazboj;
-
-            float xKval = xTotal + totalWidth;
-
-            float xRightEnd = xKval;
-            if (kvalColumn)
-                xRightEnd += kvalWidth;
+            float xRightEnd = xTotal + totalWidth;
 
             float dWidth = (xKonj - xParter) / 3;
 
@@ -177,7 +168,6 @@ namespace Bilten.Report
             xRazboj += delta;
             xVratilo += delta;
             xTotal += delta;
-            xKval += delta;
             xRightEnd += delta;
 
             xParterE += delta;
@@ -251,13 +241,6 @@ namespace Bilten.Report
             column = addTotalColumn(column.getItemsIndexEnd(), 5, xTotal, totalWidth, fmtTot, totalFormat,
                 totalTitle, totalHeaderFormat);
             column.Brush = totalAllBrush;
-
-            if (kvalColumn)
-            {
-                column = addColumn(xKval, kvalWidth, kvalFormat, kvalTitle);
-                column.DrawHeaderRect = false;
-                column.DrawItemRect = false;
-            }
         }
 
         private EkipnoZbirViseKolaSpravaReportColumn addKoloColumn(int itemsIndex, int itemsSpan, float x, float width,

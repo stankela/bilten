@@ -260,6 +260,11 @@ namespace Bilten.UI
 
                     ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa.create(ActiveTakmicenje, poredak1, poredak2);
 
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja1)
+                        rezultatskoTakmicenjeDAO.Evict(rt);
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
+                        rezultatskoTakmicenjeDAO.Evict(rt);
+
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoFinaleKupaDAO()
                         .Update(ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa);
                     session.Transaction.Commit();

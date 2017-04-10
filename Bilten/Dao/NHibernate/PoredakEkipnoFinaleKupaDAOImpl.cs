@@ -6,10 +6,10 @@ using Bilten.Domain;
 
 namespace Bilten.Dao.NHibernate
 {
-    public class PoredakUkupnoFinaleKupaDAOImpl : GenericNHibernateDAO<PoredakUkupnoFinaleKupa, int>,
-        PoredakUkupnoFinaleKupaDAO
+    public class PoredakEkipnoFinaleKupaDAOImpl : GenericNHibernateDAO<PoredakEkipnoFinaleKupa, int>,
+        PoredakEkipnoFinaleKupaDAO
     {
-        #region PoredakUkupnoFinaleKupaDAO Members
+        #region PoredakEkipnoFinaleKupaDAO Members
 
         #endregion
     }

@@ -448,7 +448,7 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    if (rt.Propozicije.PostojiTak4 && rt.Propozicije.OdvojenoTak4 && rt.ImaEkipnoTakmicenje)
+                    if (rt.odvojenoTak4() && rt.ImaEkipnoTakmicenje)
                         result.Add(rt);
                 }
             }
