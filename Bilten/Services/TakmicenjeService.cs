@@ -319,27 +319,24 @@ namespace Bilten.Services
             }
 
             takmicenje.Kategorije.Clear();
-            int i = 0;
-            while (i < rezTakmicenjaPrethodnaKola[0].Count)
+            foreach (RezultatskoTakmicenje rt in rezTakmicenjaPrethodnaKola[0])
             {
                 // Trenutno je implementiran najjednostavniji slucaj, gde se u svakom od prethodnih kola gleda samo prvo
-                // takmicenje, i uzimaju se redom kategorije sve dok postoji poklapanje.
-                if (rezTakmicenjaPrethodnaKola[0][i].TakmicenjeDescription.RedBroj != 0)
-                    break;
+                // takmicenje, i uzimaju se samo one kategorije gde postoji poklapanje.
+                if (rt.TakmicenjeDescription.RedBroj != 0)
+                    continue;
 
-                TakmicarskaKategorija kat1 = rezTakmicenjaPrethodnaKola[0][i].Kategorija;
-                int j = 1;
-                while (j < rezTakmicenjaPrethodnaKola.Count)
+                bool ok = true;
+                foreach (List<RezultatskoTakmicenje> rezTakList in rezTakmicenjaPrethodnaKola)
                 {
-                    TakmicarskaKategorija kat2 = rezTakmicenjaPrethodnaKola[j][i].Kategorija;
-                    if (!kat2.Equals(kat1))
+                    if (Takmicenje.getRezTakmicenje(rezTakList, 0, rt.Kategorija) == null)
+                    {
+                        ok = false;
                         break;
-                    ++j;
+                    }
                 }
-                if (j < rezTakmicenjaPrethodnaKola.Count)
-                    break;
-                takmicenje.addKategorija(new TakmicarskaKategorija(kat1.Naziv, takmicenje.Gimnastika));
-                ++i;
+                if (ok)
+                    takmicenje.addKategorija(new TakmicarskaKategorija(rt.Kategorija.Naziv, takmicenje.Gimnastika));
             }
             if (takmicenje.Kategorije.Count == 0)
                 throw new BusinessException("Kategorije iz prethodnih kola se ne poklapaju");
@@ -372,8 +369,7 @@ namespace Bilten.Services
             {
                 foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
                 {
-                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaPrethKolo,
-                        rt.TakmicenjeDescription.Naziv, rt.Kategorija);
+                    RezultatskoTakmicenje rtFrom = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethKolo, 0, rt.Kategorija);
                     foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
                     {
                         GimnasticarUcesnik g2;
@@ -393,8 +389,7 @@ namespace Bilten.Services
             {
                 foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
                 {
-                    RezultatskoTakmicenje rtFrom = findRezTakmicenje(rezTakmicenjaPrethKolo,
-                        rt.TakmicenjeDescription.Naziv, rt.Kategorija);
+                    RezultatskoTakmicenje rtFrom = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethKolo, 0, rt.Kategorija);
                     foreach (Ekipa e in rtFrom.Takmicenje1.Ekipe)
                     {
                         if (rt.Takmicenje1.Ekipe.Contains(e))
@@ -412,18 +407,16 @@ namespace Bilten.Services
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                // TODO3: Ovo ce raditi samo ako su prvo i drugo kolo imali samo jedno takmicenje. (takodje i kod
-                // poretka ekipa i sprava)
                 PoredakUkupno poredak1
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija).Takmicenje1.PoredakUkupno;
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
                 PoredakUkupno poredak2
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija).Takmicenje1.PoredakUkupno;
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
                 PoredakUkupno poredak3 = null;
                 PoredakUkupno poredak4 = null;
                 if (takmicenje.TreceKolo != null)
-                    poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], rt.Kategorija).Takmicenje1.PoredakUkupno;
+                    poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
                 if (takmicenje.CetvrtoKolo != null)
-                    poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], rt.Kategorija).Takmicenje1.PoredakUkupno;
+                    poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
 
                 if (takmicenje.FinaleKupa)
                     rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, poredak1, poredak2);
@@ -436,9 +429,9 @@ namespace Bilten.Services
                 foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                 {
                     RezultatskoTakmicenje rezTak1 =
-                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija);
+                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
                     RezultatskoTakmicenje rezTak2 =
-                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija);
+                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
 
                     rt.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
 
@@ -465,15 +458,15 @@ namespace Bilten.Services
             {
                 // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja.
                 PoredakEkipno poredak1
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], rt.Kategorija).Takmicenje1.PoredakEkipno;
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
                 PoredakEkipno poredak2
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], rt.Kategorija).Takmicenje1.PoredakEkipno;
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
                 PoredakEkipno poredak3 = null;
                 PoredakEkipno poredak4 = null;
                 if (takmicenje.TreceKolo != null)
-                    poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], rt.Kategorija).Takmicenje1.PoredakEkipno;
+                    poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
                 if (takmicenje.CetvrtoKolo != null)
-                    poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], rt.Kategorija).Takmicenje1.PoredakEkipno;
+                    poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
 
                 if (takmicenje.FinaleKupa)
                     rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, poredak1, poredak2);
@@ -499,43 +492,5 @@ namespace Bilten.Services
                 gimnasticarUcesnikDAO.Add(g);
             }
         }
-
-        private static RezultatskoTakmicenje findRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
-          string nazivDesc, TakmicarskaKategorija kat)
-        {
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-            {
-                if (rezTak.TakmicenjeDescription.Naziv == nazivDesc
-                && rezTak.Kategorija.Equals(kat))
-                    return rezTak;
-            }
-
-            // Nije pronadjeno rez. takmicenje. Ovo je situacija koja se najcesce desava zato sto se najcesce kopira
-            // takmicenje za koje postoji samo jedno takmicenje description, i data se description takmicenja koje se
-            // kopira i description takmicenja u koje se kopira ne poklapaju (naziv descriptiona po defaultu je naziv
-            // takmicenja). Pronadji sva descriptions za datu kategoriju. Description koji trazimo je descriptions sa
-            // najnizim brojem.
-            List<RezultatskoTakmicenjeDescription> descriptions = new List<RezultatskoTakmicenjeDescription>();
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-            {
-                if (rezTak.Kategorija.Equals(kat))
-                    descriptions.Add(rezTak.TakmicenjeDescription);
-            }
-            System.ComponentModel.PropertyDescriptor propDesc
-                = System.ComponentModel.TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
-            descriptions.Sort(new Bilten.Util.SortComparer<RezultatskoTakmicenjeDescription>(
-                propDesc, System.ComponentModel.ListSortDirection.Ascending));
-
-            // ponovljen kod sa pocetka funkcije
-            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-            {
-                if (rezTak.TakmicenjeDescription.Naziv == descriptions[0].Naziv
-                && rezTak.Kategorija.Equals(kat))
-                    return rezTak;
-            }
-
-            return null;
-        }
-
     }
 }

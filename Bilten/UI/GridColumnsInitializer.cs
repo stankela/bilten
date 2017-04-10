@@ -120,6 +120,7 @@ namespace Bilten.UI
             dgw.AddColumn("Gimnastika", "Gimnastika", 70);
             dgw.AddColumn("Datum odrzavanja", "Datum", 100, "{0:d}");
             dgw.AddColumn("Mesto odrzavanja", "Mesto", 100);
+            dgw.AddColumn("Tip takmicenja", "TipTakmicenja", 100);
         }
 
         public static void initOcene(DataGridViewUserControl dgw, 

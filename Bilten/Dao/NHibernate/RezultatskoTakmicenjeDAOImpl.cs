@@ -112,7 +112,8 @@ namespace Bilten.Dao.NHibernate
                     left join fetch t.Gimnasticari g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
-                    where r.Takmicenje.Id = :takmicenjeId");
+                    where r.Takmicenje.Id = :takmicenjeId
+                    order by r.RedBroj");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<RezultatskoTakmicenje>();
             }
@@ -564,7 +565,8 @@ namespace Bilten.Dao.NHibernate
             {
                 IQuery q = Session.CreateQuery(@"
                     from RezultatskoTakmicenje r
-                    where r.Kategorija = :kat");
+                    where r.Kategorija = :kat
+                    order by r.RedBroj");
                 q.SetEntity("kat", kat);
                 return q.List<RezultatskoTakmicenje>();
             }
@@ -586,7 +588,8 @@ namespace Bilten.Dao.NHibernate
                     join r.Takmicenje1 t
                     join t.Gimnasticari g
                     where r.Takmicenje.Id = :takmicenjeId
-                    and r.ImaEkipnoTakmicenje = true");
+                    and r.ImaEkipnoTakmicenje = true
+                    order by r.RedBroj");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<RezultatskoTakmicenje>();
             }

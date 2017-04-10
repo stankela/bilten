@@ -175,6 +175,7 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version13.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version12.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version11.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version10.sql" />

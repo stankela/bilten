@@ -46,43 +46,6 @@ namespace Bilten
         {
             // Do your initialization here
 
-            // This creates singleton instance of NHibernateHelper and builds session factory
-            NHibernateHelper nh = NHibernateHelper.Instance;
-
-            Sesija.Instance.InitSession();
-
-            // TODO: Can throw InfrastructureException. Verovatno bi trebalo prekinuti program.
-
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    OpcijeDAO opcijeDAO = DAOFactoryFactory.DAOFactory.GetOpcijeDAO();
-                    Opcije opcije = opcijeDAO.FindOpcije();
-                    if (opcije == null)
-                    {
-                        // NOTE: Ova naredba se izvrsava samo pri prvom izvrsavanju aplikacije
-                        opcije = new Opcije();
-                        opcijeDAO.Add(opcije);
-                        session.Transaction.Commit();
-                    }
-                    Opcije.Instance = opcije;
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
-
             // Then create the main form, the splash screen will automatically close
             this.MainForm = new MainForm();
         }

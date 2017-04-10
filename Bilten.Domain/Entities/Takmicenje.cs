@@ -456,11 +456,11 @@ namespace Bilten.Domain
         }
 
         public static RezultatskoTakmicenje getRezTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
-            TakmicarskaKategorija kat)
+            int redBrojDesc, TakmicarskaKategorija kat)
         {
             foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
             {
-                if (rezTak.Kategorija.Equals(kat))
+                if (rezTak.TakmicenjeDescription.RedBroj == redBrojDesc && rezTak.Kategorija.Equals(kat))
                     return rezTak;
             }
             return null;

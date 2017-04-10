@@ -8,6 +8,11 @@ using Bilten.Domain;
 using System.Diagnostics;
 using System.IO;
 using Bilten.Dao;
+using Bilten.Exceptions;
+using NHibernate.Context;
+using Bilten.Data;
+using Bilten.Misc;
+using NHibernate;
 
 namespace Bilten
 {
@@ -36,7 +41,7 @@ namespace Bilten
         // - Stampanje gimnasticara iz Registra.
         // - Uvoz takmicenja.
 
-        static int VERZIJA_PROGRAMA = 12;
+        static int VERZIJA_PROGRAMA = 13;
 
         /// <summary>
         /// The main entry point for the application.
@@ -56,6 +61,42 @@ namespace Bilten
             //Bilten.Util.DFS dfs = new Bilten.Util.DFS();
             //dfs.createGraphFromExportSqlCeStript(schemaFile);
             //dfs.doDFS();
+
+
+            // NOTE: Prebacio sam ovde inicijalizaciju opcija jer se opcije koriste u nekim od update metoda.
+
+            Sesija.Instance.InitSession();
+
+            // TODO: Can throw InfrastructureException. Verovatno bi trebalo prekinuti program.
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    OpcijeDAO opcijeDAO = DAOFactoryFactory.DAOFactory.GetOpcijeDAO();
+                    Opcije opcije = opcijeDAO.FindOpcije();
+                    if (opcije == null)
+                    {
+                        // NOTE: Ova naredba se izvrsava samo pri prvom izvrsavanju aplikacije
+                        opcije = new Opcije();
+                        opcijeDAO.Add(opcije);
+                        session.Transaction.Commit();
+                    }
+                    Opcije.Instance = opcije;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
 
             try
             {
@@ -82,6 +123,48 @@ namespace Bilten
                             "Bilten.Update.DatabaseUpdate_version2.sql", true);
                         SqlCeUtilities.updateDatabaseVersionNumber(2);
                         verzijaBaze = 2;
+                        converted = true;
+                    }
+
+                    // Precica
+                    if (verzijaBaze == 2 && VERZIJA_PROGRAMA == 13)
+                    {
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version4.sql", true);
+
+                        SqlCeUtilities.dropReferentialConstraint("ekipe", "klubovi_ucesnici");
+                        SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version5.sql", true);
+
+                        SqlCeUtilities.dropReferentialConstraint("gimnasticari_ucesnici", "takmicenja");
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version6.sql", true);
+
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version8.sql", true);
+
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version9.sql", true);
+
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version10.sql", true);
+
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version11.sql", true);
+
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version12.sql", true);
+
+                        new VersionUpdater().updateVersion3();
+                        new VersionUpdater().updateVersion7();
+                        new VersionUpdater().updateVersion13();
+
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version13.sql", true);
+
+                        SqlCeUtilities.updateDatabaseVersionNumber(13);
+                        verzijaBaze = 13;
                         converted = true;
                     }
 
@@ -175,6 +258,16 @@ namespace Bilten
                             "Bilten.Update.DatabaseUpdate_version12.sql", true);
                         SqlCeUtilities.updateDatabaseVersionNumber(12);
                         verzijaBaze = 12;
+                        converted = true;
+                    }
+
+                    if (verzijaBaze == 12 && VERZIJA_PROGRAMA > 12)
+                    {
+                        new VersionUpdater().updateVersion13();
+                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                            "Bilten.Update.DatabaseUpdate_version13.sql", true);
+                        SqlCeUtilities.updateDatabaseVersionNumber(13);
+                        verzijaBaze = 13;
                         converted = true;
                     }
 

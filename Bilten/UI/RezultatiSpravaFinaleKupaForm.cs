@@ -88,6 +88,9 @@ namespace Bilten.UI
             }
         }
 
+        // TODO4: Podesi na svim mestima sirinu kombo bokseva u kojima se prikazuju rezultatska takmicenja da
+        // ceo naziv bude vidljiv.
+
         private IList<RezultatskoTakmicenje> loadRezTakmicenja(Takmicenje takmicenje)
         {
             IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()

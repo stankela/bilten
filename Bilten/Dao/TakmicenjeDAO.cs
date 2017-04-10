@@ -11,8 +11,10 @@ namespace Bilten.Dao
         Takmicenje FindByIdFetch_Prop_Kat_Desc(int takmicenjeId);
         IList<Takmicenje> FindAll();
         IList<Takmicenje> FindByGimnastika(Gimnastika gim);
-        IList<Takmicenje> FindAllOdvojenoFinale();
         Takmicenje FindByNazivGimnastikaDatum(string naziv, Gimnastika gim, DateTime datum);
+
+        IList<Takmicenje> FindAllOdvojenoFinale();
+        IList<Takmicenje> FindViseKola();
 
         // Ovaj metod mi je trebao u MilanoInitalizer, inace nema neku upotrebnu vrednost.
         Takmicenje FindByMestoGimnastika(string mesto, Gimnastika gim);

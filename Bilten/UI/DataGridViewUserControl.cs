@@ -104,6 +104,16 @@ namespace Bilten.UI
                 e.Value = KvalifikacioniStatusi.toString((KvalifikacioniStatus)e.Value);
                 e.FormattingApplied = true;
             }
+            else if (e.Value.GetType() == typeof(TipTakmicenja))
+            {
+                if ((TipTakmicenja)e.Value == TipTakmicenja.FinaleKupa)
+                    e.Value = "Finale kupa";
+                else if ((TipTakmicenja)e.Value == TipTakmicenja.ZbirViseKola)
+                    e.Value = "Zbir vise kola";
+                else
+                    e.Value = String.Empty;
+                e.FormattingApplied = true;
+            }
         }
 
         private DataGridViewColumn CreateGridColumn(string columnTitle, string boundPropertyName)

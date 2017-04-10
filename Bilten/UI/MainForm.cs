@@ -555,7 +555,7 @@ namespace Bilten.UI
 
         protected string FileTitle()
         {
-            return takmicenjeId != null ? nazivTakmicenja : "";
+            return takmicenjeId != null ? takmicenje.ToString() : "";
             //return (strFileName != null && strFileName.Length > 1) ?
               //             Path.GetFileName(strFileName) : "Untitled";
         }
