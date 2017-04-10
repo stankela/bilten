@@ -311,18 +311,19 @@ namespace Bilten.Services
 
             RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
-            List<List<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<List<RezultatskoTakmicenje>>();
+            List<IList<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<IList<RezultatskoTakmicenje>>();
             foreach (Takmicenje prethKolo in prethodnaKola)
-            {
-                rezTakmicenjaPrethodnaKola.Add(new List<RezultatskoTakmicenje>(rezultatskoTakmicenjeDAO
-                    .FindByTakmicenjeFetch_Tak1_Gimnasticari(prethKolo.Id)));
-            }
+                rezTakmicenjaPrethodnaKola.Add(rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(prethKolo.Id));
 
             takmicenje.Kategorije.Clear();
             foreach (RezultatskoTakmicenje rt in rezTakmicenjaPrethodnaKola[0])
             {
-                // Trenutno je implementiran najjednostavniji slucaj, gde se u svakom od prethodnih kola gleda samo prvo
-                // takmicenje, i uzimaju se samo one kategorije gde postoji poklapanje.
+                // Implementiran je najjednostavniji slucaj, gde se u svakom od prethodnih kola gleda samo prvo
+                // takmicenje, i uzimaju se samo one kategorije gde postoji poklapanje. U principu, mogla bi se
+                // implementirati i slozenija varijanta gde bi se, u slucaju da ne postoji poklapanje medju kategorijama,
+                // otvorio prozor gde bi mogle da se uparuju kategorije, ali onda bi morao da nekako pamtim
+                // koja su uparivanja izabrana (da bi ih primenio kod apdejtovanja kada se npr. ocena iz nekog od
+                // prethodnih kola promeni).
                 if (rt.TakmicenjeDescription.RedBroj != 0)
                     continue;
 

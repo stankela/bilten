@@ -44,7 +44,7 @@ namespace Bilten.UI
                     rezTakmicenja = new List<RezultatskoTakmicenje>();
                     foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
                     {
-                        if (rt.Propozicije.PostojiTak2 && rt.Propozicije.OdvojenoTak2)
+                        if (rt.odvojenoTak2())
                             rezTakmicenja.Add(rt);
                     }
                     if (rezTakmicenja.Count == 0)

@@ -188,7 +188,7 @@ namespace Bilten.UI
                 // Za finale kupa se kvalifikanti prikazuju u RezultatiUkupnoFinaleKupa
                 return false;
             else
-                return ActiveTakmicenje.postojeKvalifikacijeViseboj(deoTakKod);
+                return deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak2();
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,

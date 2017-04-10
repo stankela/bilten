@@ -182,5 +182,15 @@ namespace Bilten.Dao.NHibernate
         {
             return new PoredakSpravaFinaleKupaDAOImpl();
         }
+
+        public override PoredakUkupnoFinaleKupaDAO GetPoredakUkupnoFinaleKupaDAO()
+        {
+            return new PoredakUkupnoFinaleKupaDAOImpl();
+        }
+
+        public override PoredakUkupnoZbirViseKolaDAO GetPoredakUkupnoZbirViseKolaDAO()
+        {
+            return new PoredakUkupnoZbirViseKolaDAOImpl();
+        }
     }
 }

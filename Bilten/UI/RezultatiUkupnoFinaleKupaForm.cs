@@ -149,7 +149,7 @@ namespace Bilten.UI
 
         private bool kvalColumnVisible()
         {
-            return ActiveTakmicenje.postojeKvalifikacijeViseboj(DeoTakmicenjaKod.Takmicenje1);
+            return ActiveTakmicenje.odvojenoTak2();
         }
 
         private void cmbTakmicenja_DropDownClosed(object sender, EventArgs e)
@@ -225,5 +225,61 @@ namespace Bilten.UI
             Close();
         }
 
+        // TODO: Pitaj da li da se izracuna za sva rez. takmicenja ili samo za aktivno.
+        private void btnIzracunaj_Click(object sender, EventArgs e)
+        {
+            string msg;
+            if (kvalColumnVisible())
+                msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";
+            else
+                msg = "Da li zelite da izracunate poredak?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+
+                    RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                    IList<RezultatskoTakmicenje> rezTakmicenja1
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
+                    IList<RezultatskoTakmicenje> rezTakmicenja2
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
+                    
+                    PoredakUkupno poredak1
+                        = Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakUkupno;
+                    PoredakUkupno poredak2
+                        = Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakUkupno;
+
+                    ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa.create(ActiveTakmicenje, poredak1, poredak2);
+
+                    DAOFactoryFactory.DAOFactory.GetPoredakUkupnoFinaleKupaDAO()
+                        .Update(ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa);
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            setItems();
+        }
     }
 }

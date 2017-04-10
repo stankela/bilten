@@ -132,7 +132,7 @@ namespace Bilten.UI
             {
                 IList<Takmicenje> selItems = dataGridViewUserControl1.getSelectedItems<Takmicenje>();
                 if ((!gornjaGranica && selItems.Count == broj) ||
-                    (gornjaGranica && selItems.Count > 0 && selItems.Count <= broj))
+                    (gornjaGranica && selItems.Count > 1 && selItems.Count <= broj))
                     selTakmicenja = selItems;
                 else
                 {
@@ -142,7 +142,7 @@ namespace Bilten.UI
                     else if (!gornjaGranica)
                         msg = String.Format("Izaberite {0} takmicenja.", broj);
                     else
-                        msg = String.Format("Izaberite do {0} takmicenja.", broj);
+                        msg = String.Format("Izaberite do {0} takmicenja (minimalno 2).", broj);
                     MessageDialogs.showMessage(msg, this.Text);
                     DialogResult = DialogResult.None;
                 }

@@ -481,7 +481,7 @@ namespace Bilten.UI
         }
 
         public static void initRezultatiUkupnoZbirViseKola(DataGridViewUserControl dgw,
-            Takmicenje takmicenje, bool kvalColumn)
+            Takmicenje takmicenje)
         {
             dgw.DataGridView.Columns.Clear();
 
@@ -493,8 +493,6 @@ namespace Bilten.UI
             dgw.AddColumn("III Kolo", "TotalTreceKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             dgw.AddColumn("IV Kolo", "TotalCetvrtoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
-            if (kvalColumn)
-                dgw.AddColumn("", "KvalStatus", 30);
         }
 
         public static void maximizeColumnsRezultatiUkupnoZbirViseKola(DataGridViewUserControl dgw,

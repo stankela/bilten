@@ -119,7 +119,7 @@ namespace Bilten.Domain
             this.gimnastika = takmicenje.Gimnastika;
 
             _takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
-            if (propozicije.PostojiTak2 && propozicije.OdvojenoTak2)
+            if (odvojenoTak2())
                 _takmicenje2 = new Takmicenje2();
             if (propozicije.PostojiTak3 && propozicije.OdvojenoTak3)
                 _takmicenje3 = new Takmicenje3(takmicenje.Gimnastika);
@@ -129,7 +129,7 @@ namespace Bilten.Domain
 
         public virtual void updateTakmicenjaFromChangedPropozicije()
         {
-            if ((Propozicije.PostojiTak2 && Propozicije.OdvojenoTak2) != (Takmicenje2 != null))
+            if (odvojenoTak2() != (Takmicenje2 != null))
             {
                 if (Takmicenje2 != null)
                     // postojalo je odvojeno takmicenje II, ali je u novim propozicijama
@@ -271,10 +271,9 @@ namespace Bilten.Domain
             return Takmicenje4.Poredak;
         }
 
-        public virtual bool postojeKvalifikacijeViseboj(DeoTakmicenjaKod deoTakKod)
+        public virtual bool odvojenoTak2()
         {
-            return deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && Propozicije.PostojiTak2 && Propozicije.OdvojenoTak2;
+            return Propozicije.PostojiTak2 && Propozicije.OdvojenoTak2;
         }
 
         public virtual bool postojeKvalifikacijeSprava(DeoTakmicenjaKod deoTakKod)

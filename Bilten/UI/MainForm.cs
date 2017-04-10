@@ -871,7 +871,7 @@ namespace Bilten.UI
                             p.create(rt, ocene);
                         rt.Takmicenje1.PoredakPreskok.create(rt, ocene);*/
 
-                        if (rt.Propozicije.PostojiTak2 && rt.Propozicije.OdvojenoTak2)
+                        if (rt.odvojenoTak2())
                         {
                             rt.Takmicenje2.createUcesnici(rt.Takmicenje1);
                             rt.Takmicenje2.Poredak.initRezultati(rt.Takmicenje2.getUcesniciGimKvalifikanti());

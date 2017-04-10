@@ -392,7 +392,7 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    if (rt.Propozicije.PostojiTak2 && rt.Propozicije.OdvojenoTak2)
+                    if (rt.odvojenoTak2())
                         result.Add(rt);
                 }
             }

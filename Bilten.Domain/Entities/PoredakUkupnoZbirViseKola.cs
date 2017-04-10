@@ -49,41 +49,35 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            if (poredakPrvoKolo != null)
+            foreach (RezultatUkupno r in poredakPrvoKolo.Rezultati)
             {
-                foreach (RezultatUkupno r in poredakPrvoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                    {
-                        rezultatiMap[r.Gimnasticar].ParterPrvoKolo = r.Parter;
-                        rezultatiMap[r.Gimnasticar].KonjPrvoKolo = r.Konj;
-                        rezultatiMap[r.Gimnasticar].KarikePrvoKolo = r.Karike;
-                        rezultatiMap[r.Gimnasticar].PreskokPrvoKolo = r.Preskok;
-                        rezultatiMap[r.Gimnasticar].RazbojPrvoKolo = r.Razboj;
-                        rezultatiMap[r.Gimnasticar].VratiloPrvoKolo = r.Vratilo;
-                        rezultatiMap[r.Gimnasticar].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Gimnasticar].GredaPrvoKolo = r.Greda;
-                        rezultatiMap[r.Gimnasticar].TotalPrvoKolo = r.Total;
-                    }
+                    rezultatiMap[r.Gimnasticar].ParterPrvoKolo = r.Parter;
+                    rezultatiMap[r.Gimnasticar].KonjPrvoKolo = r.Konj;
+                    rezultatiMap[r.Gimnasticar].KarikePrvoKolo = r.Karike;
+                    rezultatiMap[r.Gimnasticar].PreskokPrvoKolo = r.Preskok;
+                    rezultatiMap[r.Gimnasticar].RazbojPrvoKolo = r.Razboj;
+                    rezultatiMap[r.Gimnasticar].VratiloPrvoKolo = r.Vratilo;
+                    rezultatiMap[r.Gimnasticar].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
+                    rezultatiMap[r.Gimnasticar].GredaPrvoKolo = r.Greda;
+                    rezultatiMap[r.Gimnasticar].TotalPrvoKolo = r.Total;
                 }
             }
 
-            if (poredakDrugoKolo != null)
+            foreach (RezultatUkupno r in poredakDrugoKolo.Rezultati)
             {
-                foreach (RezultatUkupno r in poredakDrugoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                    {
-                        rezultatiMap[r.Gimnasticar].ParterDrugoKolo = r.Parter;
-                        rezultatiMap[r.Gimnasticar].KonjDrugoKolo = r.Konj;
-                        rezultatiMap[r.Gimnasticar].KarikeDrugoKolo = r.Karike;
-                        rezultatiMap[r.Gimnasticar].PreskokDrugoKolo = r.Preskok;
-                        rezultatiMap[r.Gimnasticar].RazbojDrugoKolo = r.Razboj;
-                        rezultatiMap[r.Gimnasticar].VratiloDrugoKolo = r.Vratilo;
-                        rezultatiMap[r.Gimnasticar].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Gimnasticar].GredaDrugoKolo = r.Greda;
-                        rezultatiMap[r.Gimnasticar].TotalDrugoKolo = r.Total;
-                    }
+                    rezultatiMap[r.Gimnasticar].ParterDrugoKolo = r.Parter;
+                    rezultatiMap[r.Gimnasticar].KonjDrugoKolo = r.Konj;
+                    rezultatiMap[r.Gimnasticar].KarikeDrugoKolo = r.Karike;
+                    rezultatiMap[r.Gimnasticar].PreskokDrugoKolo = r.Preskok;
+                    rezultatiMap[r.Gimnasticar].RazbojDrugoKolo = r.Razboj;
+                    rezultatiMap[r.Gimnasticar].VratiloDrugoKolo = r.Vratilo;
+                    rezultatiMap[r.Gimnasticar].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
+                    rezultatiMap[r.Gimnasticar].GredaDrugoKolo = r.Greda;
+                    rezultatiMap[r.Gimnasticar].TotalDrugoKolo = r.Total;
                 }
             }
 

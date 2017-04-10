@@ -166,11 +166,11 @@ public class VersionUpdater
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
                     IList<RezultatskoTakmicenje> svaRezTakmicenja = rezultatskoTakmicenjeDAO.FindByTakmicenje(takmicenje.Id);
                     
-                    List<List<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<List<RezultatskoTakmicenje>>();
+                    List<IList<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<IList<RezultatskoTakmicenje>>();
                     foreach (Takmicenje prethKolo in prethodnaKola)
                     {
-                        rezTakmicenjaPrethodnaKola.Add(new List<RezultatskoTakmicenje>(rezultatskoTakmicenjeDAO
-                            .FindByTakmicenjeFetch_Tak1_Gimnasticari(prethKolo.Id)));
+                        rezTakmicenjaPrethodnaKola.Add(
+                            rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(prethKolo.Id));
                     }
 
                     IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();

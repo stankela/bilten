@@ -127,10 +127,8 @@ namespace Bilten.UI
         {
             if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
             {
-                GridColumnsInitializer.initRezultatiUkupnoZbirViseKola(dataGridViewUserControl1,
-                    takmicenje, kvalColumnVisible());
-                GridColumnsInitializer.maximizeColumnsRezultatiUkupnoZbirViseKola(dataGridViewUserControl1,
-                    rezTakmicenja);
+                GridColumnsInitializer.initRezultatiUkupnoZbirViseKola(dataGridViewUserControl1, takmicenje);
+                GridColumnsInitializer.maximizeColumnsRezultatiUkupnoZbirViseKola(dataGridViewUserControl1, rezTakmicenja);
             }
             else
             {
@@ -151,11 +149,6 @@ namespace Bilten.UI
             dataGridViewUserControl1.setItems<RezultatUkupnoZbirViseKola>(
                 ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.getRezultati());
             dataGridViewUserControl1.clearSelection();
-        }
-
-        private bool kvalColumnVisible()
-        {
-            return ActiveTakmicenje.postojeKvalifikacijeViseboj(DeoTakmicenjaKod.Takmicenje1);
         }
 
         private void cmbTakmicenja_DropDownClosed(object sender, EventArgs e)
@@ -211,7 +204,7 @@ namespace Bilten.UI
                     = ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.getRezultati();
 
                 p.setIzvestaj(new UkupnoZbirViseKolaIzvestaj(rezultati, ActiveTakmicenje.Gimnastika,
-                    Opcije.Instance.PrikaziDEOcene, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
+                    Opcije.Instance.PrikaziDEOcene, dataGridViewUserControl1.DataGridView,
                     documentName));
                 p.ShowDialog();
             }
@@ -231,5 +224,82 @@ namespace Bilten.UI
             Close();
         }
 
+        private void btnIzracunaj_Click(object sender, EventArgs e)
+        {
+            string msg = "Da li zelite da izracunate poredak?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+
+                    RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                    IList<RezultatskoTakmicenje> rezTakmicenja1
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
+                    IList<RezultatskoTakmicenje> rezTakmicenja2
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
+                    IList<RezultatskoTakmicenje> rezTakmicenja3 = null;
+                    if (takmicenje.TreceKolo != null)
+                    {
+                        rezTakmicenja3 = rezultatskoTakmicenjeDAO
+                            .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.TreceKolo.Id);
+                    }
+                    IList<RezultatskoTakmicenje> rezTakmicenja4 = null;
+                    if (takmicenje.CetvrtoKolo != null)
+                    {
+                        rezTakmicenja4 = rezultatskoTakmicenjeDAO
+                            .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.CetvrtoKolo.Id);
+                    }
+
+                    PoredakUkupno poredak1
+                        = Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakUkupno;
+                    PoredakUkupno poredak2
+                        = Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakUkupno;
+                    PoredakUkupno poredak3 = null;
+                    if (takmicenje.TreceKolo != null)
+                    {
+                        poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenja3, 0, ActiveTakmicenje.Kategorija)
+                            .Takmicenje1.PoredakUkupno;
+                    }
+                    PoredakUkupno poredak4 = null;
+                    if (takmicenje.CetvrtoKolo != null)
+                    {
+                        poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenja4, 0, ActiveTakmicenje.Kategorija)
+                            .Takmicenje1.PoredakUkupno;
+                    }
+
+                    ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.create(ActiveTakmicenje,
+                        poredak1, poredak2, poredak3, poredak4);
+
+                    DAOFactoryFactory.DAOFactory.GetPoredakUkupnoZbirViseKolaDAO()
+                        .Update(ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola);
+
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            setItems();
+        }
     }
 }

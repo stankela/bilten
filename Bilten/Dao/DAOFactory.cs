@@ -36,6 +36,8 @@ namespace Bilten.Dao
         public abstract PoredakPreskokDAO GetPoredakPreskokDAO();
         public abstract PoredakUkupnoDAO GetPoredakUkupnoDAO();
         public abstract NastupNaSpraviDAO GetNastupNaSpraviDAO();
+        public abstract PoredakUkupnoFinaleKupaDAO GetPoredakUkupnoFinaleKupaDAO();
         public abstract PoredakSpravaFinaleKupaDAO GetPoredakSpravaFinaleKupaDAO();
+        public abstract PoredakUkupnoZbirViseKolaDAO GetPoredakUkupnoZbirViseKolaDAO();
     }
 }
