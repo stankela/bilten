@@ -424,7 +424,7 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    if (rt.Propozicije.PostojiTak3 && rt.Propozicije.OdvojenoTak3)
+                    if (rt.odvojenoTak3())
                         result.Add(rt);
                 }
             }

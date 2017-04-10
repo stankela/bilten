@@ -124,15 +124,7 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             spravaGridUserControl1.SpravaGridMouseUp +=
                 new EventHandler<SpravaGridMouseUpEventArgs>(spravaGridUserControl1_SpravaGridMouseUp);
-            spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = true;
-    
-            btnOk.Enabled = false;
-            btnOk.Visible = false;
-            btnCancel.Enabled = false;
-            btnCancel.Visible = false;
-            btnClose.Enabled = true;
-            btnClose.Visible = true;
-            btnClose.Location = new Point(btnOk.Location.X + 10, btnClose.Location.Y);
+            spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = true;    
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -195,7 +187,7 @@ namespace Bilten.UI
 
         private bool kvalColumnVisible()
         {
-            return ActiveTakmicenje.postojeKvalifikacijeSprava(DeoTakmicenjaKod.Takmicenje1);
+            return ActiveTakmicenje.odvojenoTak3();
         }
 
         private int getRezultatiKey(RezultatskoTakmicenje tak, Sprava sprava)
@@ -357,13 +349,6 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
-            // NOTE: Promena kval. statusa kod finala kupa namerno je implementirana da se cuva u posebnoj tabeli kao
-            // update na postojece rezultate. Ako bih implementirao drugacije, tj. da se cuva u istoj tabeli gde su i rezultati,
-            // tada bi se poredak snimio u bazu prilikom prvog otvaranja prozora, i ne bi se ponovo izracunavao prilikom
-            // svakog sledeceg otvaranja prozora vec bi se ucitavao iz baze. U tom slucaju ne bih mogao da postignem da se
-            // npr. promeni neki rezultat iz prvog i drugog kola i da ta promena automatski bude vidljiva kada se ponovo
-            // otvori prozor za finale kupa.
-
             ISession session = null;
             try
             {
@@ -392,6 +377,73 @@ namespace Bilten.UI
 
             spravaGridUserControl1.DataGridViewUserControl.refreshItems();
             spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatSpravaFinaleKupa>(rez);
+        }
+
+        private void btnIzracunaj_Click(object sender, EventArgs e)
+        {
+            string msg;
+            if (kvalColumnVisible())
+                msg = "Da li zelite da izracunate poredak, kvalifikante i rezerve?";
+            else
+                msg = "Da li zelite da izracunate poredak?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    
+                    IList<RezultatskoTakmicenje> rezTakmicenja1
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
+                    IList<RezultatskoTakmicenje> rezTakmicenja2
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
+                    
+                    RezultatskoTakmicenje rezTak1 =
+                        Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, ActiveTakmicenje.Kategorija);
+                    RezultatskoTakmicenje rezTak2 =
+                        Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, ActiveTakmicenje.Kategorija);
+
+                    PoredakSpravaFinaleKupa p = ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava);
+                    if (ActiveSprava != Sprava.Preskok)
+                    {
+                        p.create(ActiveTakmicenje,
+                            rezTak1.Takmicenje1.getPoredakSprava(ActiveSprava),
+                            rezTak2.Takmicenje1.getPoredakSprava(ActiveSprava));
+                    }
+                    else
+                    {
+                        p.create(ActiveTakmicenje,
+                            rezTak1.Takmicenje1.PoredakPreskok,
+                            rezTak2.Takmicenje1.PoredakPreskok,
+                            rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                            rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka);
+                    }
+                    DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(p);
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            setItems();
         }
     }
 }

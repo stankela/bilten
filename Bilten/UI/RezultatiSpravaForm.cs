@@ -303,7 +303,7 @@ namespace Bilten.UI
                 // Za finale kupa se kvalifikanti prikazuju u RezultatiSpravaFinaleKupa
                 return false;
             else
-                return ActiveTakmicenje.postojeKvalifikacijeSprava(deoTakKod);            
+                return deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak3();
         }
 
         private int getRezultatiKey(RezultatskoTakmicenje tak, Sprava sprava)
@@ -852,7 +852,6 @@ namespace Bilten.UI
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
                 MessageDialogs.showError(ex.Message, this.Text);
-                Close();
                 return;
             }
             finally

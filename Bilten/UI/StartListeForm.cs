@@ -1422,7 +1422,7 @@ namespace Bilten.UI
                     IList<RezultatskoTakmicenje> svaRezTakmicenja2 = new List<RezultatskoTakmicenje>();
                     foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
                     {
-                        if (rt.Propozicije.PostojiTak3 && rt.Propozicije.OdvojenoTak3)
+                        if (rt.odvojenoTak3())
                             svaRezTakmicenja2.Add(rt);
                     }
                     if (svaRezTakmicenja2.Count == 0)
@@ -1590,7 +1590,7 @@ namespace Bilten.UI
             List<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
             {
-                if (rt.Propozicije.PostojiTak3 && rt.Propozicije.OdvojenoTak3)
+                if (rt.odvojenoTak3())
                     result.Add(rt);
             }
             return result[0];

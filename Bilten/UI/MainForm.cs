@@ -876,7 +876,7 @@ namespace Bilten.UI
                             rt.Takmicenje2.createUcesnici(rt.Takmicenje1);
                             rt.Takmicenje2.Poredak.initRezultati(rt.Takmicenje2.getUcesniciGimKvalifikanti());
                         }
-                        if (rt.Propozicije.PostojiTak3 && rt.Propozicije.OdvojenoTak3)
+                        if (rt.odvojenoTak3())
                         {
                             rt.Takmicenje3.createUcesnici(rt.Takmicenje1, rt.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
                             foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
