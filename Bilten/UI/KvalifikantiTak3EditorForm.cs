@@ -339,7 +339,7 @@ namespace Bilten.UI
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
                     ocenaDAO.Session = session;
-                    return ocenaDAO.FindOceneForGimnasticar(g, deoTakKod);
+                    return ocenaDAO.FindByGimnasticar(g, deoTakKod);
                 }
             }
             catch (Exception ex)

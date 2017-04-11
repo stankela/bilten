@@ -228,10 +228,10 @@ namespace Bilten.UI
             if (dlgResult != DialogResult.OK || form.SelectedEntities.Count == 0)
                 return;
 
+            IList<GimnasticarUcesnik> addedGimnasticari = new List<GimnasticarUcesnik>();
+
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
-            bool added = false;
-            List<GimnasticarUcesnik> illegalGimnasticari = new List<GimnasticarUcesnik>();
             ISession session = null;
             try
             {
@@ -239,58 +239,14 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Attach(ActiveRezTakmicenje, false);
 
-                    GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
-                    foreach (GimnasticarUcesnik g in ActiveRezTakmicenje.Takmicenje1.Gimnasticari)
-                        gimUcesnikDAO.Attach(g, false);
-
+                    IList<GimnasticarUcesnik> selGimnasticari = new List<GimnasticarUcesnik>();
                     foreach (GimnasticarUcesnik g in form.SelectedEntities)
-                    {
-                        if (canAddGimnasticar(ActiveRezTakmicenje, g))
-                        {
-                            ActiveRezTakmicenje.Takmicenje1.addGimnasticar(g);
-
-                            OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                            IList<Ocena> ocene = ocenaDAO.FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
-
-                            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                                .FindById(ActiveRezTakmicenje.Takmicenje.Id);
-
-                            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-
-                            IList<RezultatskoTakmicenje> rezTakmicenja1
-                                = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
-                            IList<RezultatskoTakmicenje> rezTakmicenja2
-                                = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
-
-                            PoredakUkupno poredak1
-                                = Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, ActiveRezTakmicenje.Kategorija).Takmicenje1.PoredakUkupno;
-                            PoredakUkupno poredak2
-                                = Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, ActiveRezTakmicenje.Kategorija).Takmicenje1.PoredakUkupno;
-
-                            ActiveRezTakmicenje.Takmicenje1.gimnasticarAdded(g, ocene, ActiveRezTakmicenje,
-                                poredak1, poredak2);
-
-                            foreach (RezultatskoTakmicenje rt in rezTakmicenja1)
-                                rezultatskoTakmicenjeDAO.Evict(rt);
-                            foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
-                                rezultatskoTakmicenjeDAO.Evict(rt);
-
-                            added = true;
-                        }
-                        else
-                        {
-                            illegalGimnasticari.Add(g);
-                        }
-                    }
-                    if (added)
-                    {
-                        DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(ActiveRezTakmicenje.Takmicenje1);
-                        foreach (GimnasticarUcesnik g in ActiveRezTakmicenje.Takmicenje1.Gimnasticari)
-                            gimUcesnikDAO.Evict(g);
+                        selGimnasticari.Add(g);
+                    RezultatskoTakmicenjeService.addGimnasticariToRezTak(selGimnasticari, ActiveRezTakmicenje,
+                        addedGimnasticari);
+                    if (addedGimnasticari.Count > 0)
                         session.Transaction.Commit();
-                    }
                 }
             }
             catch (InfrastructureException ex)
@@ -298,7 +254,6 @@ namespace Bilten.UI
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
                 MessageDialogs.showError(ex.Message, this.Text);
-                Close();
                 return;
             }
             catch (Exception ex)
@@ -306,7 +261,6 @@ namespace Bilten.UI
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
                 MessageDialogs.showMessage(ex.Message, this.Text);
-                Close();
                 return;
             }
             finally
@@ -316,30 +270,11 @@ namespace Bilten.UI
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
-            if (added)
+            if (addedGimnasticari.Count > 0)
             {
                 setGimnasticari(ActiveRezTakmicenje.Takmicenje1.Gimnasticari);
                 updateGimnasticariCount();
             }
-
-            if (illegalGimnasticari.Count > 0)
-            {
-                string msg = "Sledeci gimnasticari nisu dodati: \n\n";
-                msg += StringUtil.getListString(illegalGimnasticari.ToArray());
-                //       MessageDialogs.showMessage(msg, this.Text);
-            }
-        }
-
-        private bool canAddGimnasticar(RezultatskoTakmicenje rezTakmicenje, 
-            GimnasticarUcesnik gimnasticar)
-        {
-            // TODO: Verovatno bi trebalo proveriti i kategoriju
-            foreach (GimnasticarUcesnik g in rezTakmicenje.Takmicenje1.Gimnasticari)
-            {
-                if (g.Equals(gimnasticar))
-                    return false;
-            }
-            return true;
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -372,7 +307,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    GimnasticarUcesnikService.delete(selItems, ActiveRezTakmicenje);
+                    RezultatskoTakmicenjeService.deleteGimnasticariFromRezTak(selItems, ActiveRezTakmicenje);
                     session.Transaction.Commit();
                     
                     setGimnasticari(ActiveRezTakmicenje.Takmicenje1.Gimnasticari);

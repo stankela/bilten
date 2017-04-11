@@ -10,7 +10,7 @@ namespace Bilten.Dao.NHibernate
     {
         #region OcenaDAO Members
 
-        public IList<Ocena> FindOceneForGimnasticar(GimnasticarUcesnik gim, DeoTakmicenjaKod deoTakKod)
+        public IList<Ocena> FindByGimnasticar(GimnasticarUcesnik gim, DeoTakmicenjaKod deoTakKod)
         {
             try
             {

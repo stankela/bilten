@@ -236,6 +236,7 @@
     <Compile Include="Report\UkupnoIzvestaj.cs" />
     <Compile Include="Report\UkupnoZbirViseKolaIzvestaj.cs" />
     <Compile Include="Services\GimnasticarUcesnikService.cs" />
+    <Compile Include="Services\RezultatskoTakmicenjeService.cs" />
     <Compile Include="Services\TakmicenjeService.cs" />
     <Compile Include="Test\DrzaveParser.cs">
       <SubType>Code</SubType>

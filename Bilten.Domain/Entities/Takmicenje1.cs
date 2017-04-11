@@ -17,9 +17,9 @@ namespace Bilten.Domain
             protected set { _gimnasticari = value; }
         }
 
-        public virtual void addGimnasticar(GimnasticarUcesnik gimnasticar)
+        public virtual bool addGimnasticar(GimnasticarUcesnik gimnasticar)
         {
-            Gimnasticari.Add(gimnasticar);
+            return Gimnasticari.Add(gimnasticar);
         }
 
         public virtual void removeGimnasticar(GimnasticarUcesnik gimnasticar)
@@ -246,8 +246,8 @@ namespace Bilten.Domain
             PoredakEkipno.editOcena(o, old, rezTak, sveOceneTak1);
         }
 
-        public virtual void gimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene, RezultatskoTakmicenje rezTak,
-            PoredakUkupno poredak1, PoredakUkupno poredak2)
+        public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
+            RezultatskoTakmicenje rezTak)
         {
             PoredakUkupno.addGimnasticar(g, ocene, rezTak);
             foreach (Ocena o in ocene)
@@ -257,12 +257,19 @@ namespace Bilten.Domain
                 else
                     getPoredakSprava(o.Sprava).addGimnasticar(g, o, rezTak);
             }
+        }
+
+        public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
+            RezultatskoTakmicenje rezTak, PoredakUkupno poredak1, PoredakUkupno poredak2)
+        {
+            updateRezultatiOnGimnasticarAdded(g, ocene, rezTak);
 
             if (PoredakUkupnoFinaleKupa != null)
                 PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, poredak1, poredak2);
         }
 
-        public virtual void gimnasticarDeleted(GimnasticarUcesnik g, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
+        public virtual void updateRezultatiOnGimnasticarDeleted(GimnasticarUcesnik g, IList<Ocena> ocene,
+            RezultatskoTakmicenje rezTak)
         {
             PoredakUkupno.deleteGimnasticar(g, rezTak);
             foreach (Ocena o in ocene)

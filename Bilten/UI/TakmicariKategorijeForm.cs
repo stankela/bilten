@@ -586,8 +586,8 @@ namespace Bilten.UI
 
                         // Izbaci gimnasticara iz svih poredaka na kojima je vezbao.
                         IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
-                            .FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
-                        rezTak.Takmicenje1.gimnasticarDeleted(g, ocene, rezTak);
+                            .FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
+                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarDeleted(g, ocene, rezTak);
 
                         DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                         foreach (GimnasticarUcesnik g2 in rezTak.Takmicenje1.Gimnasticari)

@@ -7,7 +7,7 @@ namespace Bilten.Dao
 {
     public interface OcenaDAO : GenericDAO<Ocena, int>
     {
-        IList<Ocena> FindOceneForGimnasticar(GimnasticarUcesnik gim, DeoTakmicenjaKod deoTakKod);
+        IList<Ocena> FindByGimnasticar(GimnasticarUcesnik gim, DeoTakmicenjaKod deoTakKod);
         IList<Ocena> FindByTakmicenje(int takmicenjeId);
         IList<Ocena> FindOceneByDeoTakmicenja(int takmicenjeId, DeoTakmicenjaKod deoTakKod);
         IList<Ocena> FindByKatSpravaDeoTak(TakmicarskaKategorija kategorija, Sprava sprava,

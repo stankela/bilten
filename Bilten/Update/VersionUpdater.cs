@@ -88,7 +88,7 @@ public class VersionUpdater
                 GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                 GimnasticarUcesnik g = gimUcesnikDAO.FindById(14422);
                 OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                IList<Ocena> ocene = ocenaDAO.FindOceneForGimnasticar(g,
+                IList<Ocena> ocene = ocenaDAO.FindByGimnasticar(g,
                     DeoTakmicenjaKod.Takmicenje1);
 
                 ocenaDAO.Delete(ocene[0]);
