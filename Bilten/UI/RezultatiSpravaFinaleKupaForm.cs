@@ -124,7 +124,7 @@ namespace Bilten.UI
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             spravaGridUserControl1.SpravaGridMouseUp +=
                 new EventHandler<SpravaGridMouseUpEventArgs>(spravaGridUserControl1_SpravaGridMouseUp);
-            spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = true;    
+            spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = true;
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,

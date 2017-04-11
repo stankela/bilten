@@ -177,6 +177,23 @@ namespace Bilten.Domain
 
         // Takmicenje 2
 
+        // TODO4: Napravi ovo svojstvo presistent, i izbrisi Tak2FinalnaOcenaJeZbirObaKola, Tak2FinalnaOcenaJeMaxObaKola,
+        // Tak2FinalnaOcenaJeProsekObaKola. Isto i za takmicenja 3 i 4.
+        public virtual NacinRacunanjaOceneFinaleKupa NacinRacunanjaOceneFinaleKupaTak2
+        {
+            get 
+            {
+                if (Tak2FinalnaOcenaJeZbirObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Zbir;
+                else if (Tak2FinalnaOcenaJeMaxObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Max;
+                else if (Tak2FinalnaOcenaJeProsekObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Prosek;
+                else
+                    return NacinRacunanjaOceneFinaleKupa.Undefined;
+            }
+        }
+
         private bool tak2FinalnaOcenaJeZbirObaKola;
         public virtual bool Tak2FinalnaOcenaJeZbirObaKola
         {

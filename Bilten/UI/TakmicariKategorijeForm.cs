@@ -584,14 +584,10 @@ namespace Bilten.UI
                     {
                         rezTak.Takmicenje1.removeGimnasticar(g);
 
-                        // najpre ucitavam sprave na kojima je gimnasticar vezbao, da bih
-                        // azurirao samo te poretke. Inace bi se u metodu 
-                        // Takmicenje1.gimnasticarDeleted ucitavali svi poretci (da bi se
-                        // proverilo u kojima se gimnasticar nalazi) i zatim bi se svi 
-                        // ponovo snimali u bazu.
-                        IList sprave = loadVezbaneSpraveTak1(g);
-                        // Izbaci gimnasticara iz svih poredaka.
-                        rezTak.Takmicenje1.gimnasticarDeleted(g, sprave, rezTak);
+                        // Izbaci gimnasticara iz svih poredaka na kojima je vezbao.
+                        IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
+                            .FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
+                        rezTak.Takmicenje1.gimnasticarDeleted(g, ocene, rezTak);
 
                         DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
                         foreach (GimnasticarUcesnik g2 in rezTak.Takmicenje1.Gimnasticari)
@@ -793,34 +789,6 @@ namespace Bilten.UI
                     Takmicenje3DAO takmicenje3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
                     takmicenje3DAO.Session = session;
                     return takmicenje3DAO.isGimnasticarUcesnik(g.Id);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
-        }
-
-        private IList loadVezbaneSpraveTak1(GimnasticarUcesnik g)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    IList result = new List<Sprava>();
-                    foreach (Ocena o in ocenaDAO.FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1))
-                        result.Add(o.Sprava);
-                    return result;
                 }
             }
             catch (Exception ex)

@@ -129,7 +129,7 @@ namespace Bilten.Domain
             }
             
             // TODO: Obradi situaciju kada ima npr. 24 finalista, a 24 i 25 takmicar
-            // imaju isti total (uradi i za PoredakSprava i PoredakEkipno)
+            // imaju isti total (uradi i za PoredakSprava i PoredakEkipno, finale kupa i zbir vise kola)
 
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>(Rezultati);
             PropertyDescriptor propDesc =
@@ -327,8 +327,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void addGimnasticar(GimnasticarUcesnik g, IList<Ocena> ocene, 
-            RezultatskoTakmicenje rezTak)
+        public virtual void addGimnasticar(GimnasticarUcesnik g, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
             RezultatUkupno r = new RezultatUkupno();
             r.Gimnasticar = g;
@@ -343,8 +342,7 @@ namespace Bilten.Domain
             updateKvalStatus(rezTak.Propozicije);
         }
 
-        public virtual void deleteGimnasticar(GimnasticarUcesnik g, 
-            RezultatskoTakmicenje rezTak)
+        public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
         {
             RezultatUkupno r = getRezultat(g);
             if (r != null)

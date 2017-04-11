@@ -79,44 +79,16 @@ namespace Bilten.Domain
             List<RezultatUkupnoFinaleKupa> rezultati = new List<RezultatUkupnoFinaleKupa>(rezultatiMap.Values);
             Rezultati.Clear();
             foreach (RezultatUkupnoFinaleKupa rez in rezultati)
-                Rezultati.Add(rez);
-
-            // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
-            // na isti nacin.
-            foreach (RezultatUkupnoFinaleKupa rez in Rezultati)
             {
-                if (rez.TotalPrvoKolo == null && rez.TotalDrugoKolo == null)
-                {
-                    rez.setTotal(null);
-                    continue;
-                }
-                float total1 = rez.TotalPrvoKolo == null ? 0 : rez.TotalPrvoKolo.Value;
-                float total2 = rez.TotalDrugoKolo == null ? 0 : rez.TotalDrugoKolo.Value;
-                float total;
-
-                if (rezTak.Propozicije.Tak2FinalnaOcenaJeZbirObaKola)
-                    total = total1 + total2;
-                else if (rezTak.Propozicije.Tak2FinalnaOcenaJeMaxObaKola)
-                    total = total1 > total2 ? total1 : total2;
-                else
-                {
-                    // TODO3: Proveri da li ovde treba podesavati broj decimala.
-                    total = (total1 + total2) / 2;
-                    if (rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola
-                        && (rez.TotalPrvoKolo == null || rez.TotalDrugoKolo == null))
-                    {
-                        total = total1 + total2;
-                    }
-                }
-                rez.setTotal(total);
+                // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
+                // na isti nacin.
+                rez.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2,
+                    rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
+                Rezultati.Add(rez);
             }
 
             rankRezultati();
-            if (rezTak.Propozicije.OdvojenoTak2)
-                updateKvalStatus(rezTak.Propozicije.BrojFinalistaTak2,
-                                 rezTak.Propozicije.NeogranicenBrojTakmicaraIzKlubaTak2,
-                                 rezTak.Propozicije.MaxBrojTakmicaraIzKlubaTak2,
-                                 rezTak.Propozicije.BrojRezerviTak2);
+            updateKvalStatus(rezTak.Propozicije);
         }
 
         private void rankRezultati()
@@ -159,12 +131,14 @@ namespace Bilten.Domain
             }
         }
 
-        private void updateKvalStatus(int brojFinalista, 
-            bool neogranicenBrojTakmicaraIzKluba, int maxBrojTakmicaraIzKluba, 
-            int brojRezervi)
+        private void updateKvalStatus(Propozicije propozicije)
         {
-            // TODO: Obradi situaciju kada ima npr. 24 finalista, a 24 i 25 takmicar
-            // imaju isti total (uradi i za PoredakSprava i PoredakEkipno)
+            if (!propozicije.PostojiTak2 || !propozicije.OdvojenoTak2)
+            {
+                foreach (RezultatUkupnoFinaleKupa r in Rezultati)
+                    r.KvalStatus = KvalifikacioniStatus.None;
+                return;
+            }
 
             List<RezultatUkupnoFinaleKupa> rezultati = new List<RezultatUkupnoFinaleKupa>(Rezultati);
             PropertyDescriptor propDesc =
@@ -205,16 +179,16 @@ namespace Bilten.Domain
                 if (!brojTakmicaraMap.ContainsKey(id))
                     brojTakmicaraMap.Add(id, 0);
 
-                if (finCount < brojFinalista)
+                if (finCount < propozicije.BrojFinalistaTak2)
                 {
-                    if (neogranicenBrojTakmicaraIzKluba)
+                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
                     {
                         finCount++;
                         rezulat.KvalStatus = KvalifikacioniStatus.Q;
                     }
                     else
                     {
-                        if (brojTakmicaraMap[id] < maxBrojTakmicaraIzKluba)
+                        if (brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak2)
                         {
                             finCount++;
                             brojTakmicaraMap[id]++;
@@ -223,7 +197,7 @@ namespace Bilten.Domain
                         else
                         {
                             if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
-                            && rezCount < brojRezervi)
+                            && rezCount < propozicije.BrojRezerviTak2)
                             {
                                 rezCount++;
                                 rezulat.KvalStatus = KvalifikacioniStatus.R;
@@ -233,16 +207,16 @@ namespace Bilten.Domain
                         }
                     }
                 }
-                else if (rezCount < brojRezervi)
+                else if (rezCount < propozicije.BrojRezerviTak2)
                 {
-                    if (neogranicenBrojTakmicaraIzKluba)
+                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
                     {
                         rezCount++;
                         rezulat.KvalStatus = KvalifikacioniStatus.R;
                     }
                     else
                     {
-                        if (brojTakmicaraMap[id] < maxBrojTakmicaraIzKluba)
+                        if (brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak2)
                         {
                             rezCount++;
                             brojTakmicaraMap[id]++;
@@ -251,7 +225,7 @@ namespace Bilten.Domain
                         else
                         {
                             if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
-                            && rezCount < brojRezervi)
+                            && rezCount < propozicije.BrojRezerviTak2)
                             {
                                 rezCount++;
                                 rezulat.KvalStatus = KvalifikacioniStatus.R;
@@ -268,6 +242,53 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
+            PoredakUkupno poredakPrvoKolo, PoredakUkupno poredakDrugoKolo)
+        {
+            RezultatUkupnoFinaleKupa rezultat = new RezultatUkupnoFinaleKupa();
+            rezultat.Gimnasticar = g;
+
+            foreach (RezultatUkupno r in poredakPrvoKolo.Rezultati)
+            {
+                if (r.Gimnasticar.Equals(g))
+                {
+                    rezultat.ParterPrvoKolo = r.Parter;
+                    rezultat.KonjPrvoKolo = r.Konj;
+                    rezultat.KarikePrvoKolo = r.Karike;
+                    rezultat.PreskokPrvoKolo = r.Preskok;
+                    rezultat.RazbojPrvoKolo = r.Razboj;
+                    rezultat.VratiloPrvoKolo = r.Vratilo;
+                    rezultat.DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
+                    rezultat.GredaPrvoKolo = r.Greda;
+                    rezultat.TotalPrvoKolo = r.Total;
+                    break;
+                }
+            }
+
+            foreach (RezultatUkupno r in poredakDrugoKolo.Rezultati)
+            {
+                if (r.Gimnasticar.Equals(g))
+                {
+                    rezultat.ParterDrugoKolo = r.Parter;
+                    rezultat.KonjDrugoKolo = r.Konj;
+                    rezultat.KarikeDrugoKolo = r.Karike;
+                    rezultat.PreskokDrugoKolo = r.Preskok;
+                    rezultat.RazbojDrugoKolo = r.Razboj;
+                    rezultat.VratiloDrugoKolo = r.Vratilo;
+                    rezultat.DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
+                    rezultat.GredaDrugoKolo = r.Greda;
+                    rezultat.TotalDrugoKolo = r.Total;
+                    break;
+                }
+            }
+            rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2,
+                rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
+            Rezultati.Add(rezultat);
+
+            rankRezultati();
+            updateKvalStatus(rezTak.Propozicije);
+        }
+
         public virtual List<RezultatUkupnoFinaleKupa> getRezultati()
         {
             List<RezultatUkupnoFinaleKupa> result = new List<RezultatUkupnoFinaleKupa>(Rezultati);
@@ -277,6 +298,27 @@ namespace Bilten.Domain
             result.Sort(new SortComparer<RezultatUkupnoFinaleKupa>(propDesc, ListSortDirection.Ascending));
 
             return result;
+        }
+
+        private RezultatUkupnoFinaleKupa getRezultat(GimnasticarUcesnik g)
+        {
+            foreach (RezultatUkupnoFinaleKupa r in Rezultati)
+            {
+                if (r.Gimnasticar.Equals(g))
+                    return r;
+            }
+            return null;
+        }
+
+        public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
+        {
+            RezultatUkupnoFinaleKupa r = getRezultat(g);
+            if (r != null)
+            {
+                Rezultati.Remove(r);
+                rankRezultati();
+                updateKvalStatus(rezTak.Propozicije);
+            }
         }
 
         public virtual void dump(StringBuilder strBuilder)

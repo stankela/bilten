@@ -1,6 +1,10 @@
 ﻿using Bilten.Dao;
+using Bilten.Data;
 using Bilten.Domain;
+using Bilten.Exceptions;
+using NHibernate;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,6 +57,21 @@ namespace Bilten.Services
                 result.KlubUcesnik = klubUcesnik;
             }
             return result;
+        }
+
+        public static void delete(IList<GimnasticarUcesnik> gimnasticari, RezultatskoTakmicenje rezTak)
+        {
+            DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Attach(rezTak, false);
+
+            foreach (GimnasticarUcesnik g in gimnasticari)
+            {
+                rezTak.Takmicenje1.removeGimnasticar(g);
+                IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
+                    .FindOceneForGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
+                rezTak.Takmicenje1.gimnasticarDeleted(g, ocene, rezTak);
+            }
+
+            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
         }
     }
 }

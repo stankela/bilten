@@ -258,5 +258,33 @@ namespace Bilten.Domain
             line = reader.ReadLine();
             TotalDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
         }
+
+        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin, bool neRacunajProsekAkoNemaOceneIzObaKola)
+        {
+            if (TotalPrvoKolo == null && TotalDrugoKolo == null)
+            {
+                setTotal(null);
+                return;
+            }
+            float total1 = TotalPrvoKolo == null ? 0 : TotalPrvoKolo.Value;
+            float total2 = TotalDrugoKolo == null ? 0 : TotalDrugoKolo.Value;
+            float total;
+
+            if (nacin == NacinRacunanjaOceneFinaleKupa.Zbir)
+                total = total1 + total2;
+            else if (nacin == NacinRacunanjaOceneFinaleKupa.Max)
+                total = total1 > total2 ? total1 : total2;
+            else
+            {
+                // TODO3: Proveri da li ovde treba podesavati broj decimala.
+                total = (total1 + total2) / 2;
+                if (neRacunajProsekAkoNemaOceneIzObaKola
+                    && (TotalPrvoKolo == null || TotalDrugoKolo == null))
+                {
+                    total = total1 + total2;
+                }
+            }
+            setTotal(total);
+        }
     }
 }

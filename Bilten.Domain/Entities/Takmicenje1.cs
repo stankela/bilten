@@ -246,8 +246,8 @@ namespace Bilten.Domain
             PoredakEkipno.editOcena(o, old, rezTak, sveOceneTak1);
         }
 
-        public virtual void gimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
-            RezultatskoTakmicenje rezTak)
+        public virtual void gimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene, RezultatskoTakmicenje rezTak,
+            PoredakUkupno poredak1, PoredakUkupno poredak2)
         {
             PoredakUkupno.addGimnasticar(g, ocene, rezTak);
             foreach (Ocena o in ocene)
@@ -257,19 +257,26 @@ namespace Bilten.Domain
                 else
                     getPoredakSprava(o.Sprava).addGimnasticar(g, o, rezTak);
             }
+
+            if (PoredakUkupnoFinaleKupa != null)
+                PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, poredak1, poredak2);
         }
 
-        public virtual void gimnasticarDeleted(GimnasticarUcesnik g, IList vezbaneSprave,
-            RezultatskoTakmicenje rezTak)
+        public virtual void gimnasticarDeleted(GimnasticarUcesnik g, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
             PoredakUkupno.deleteGimnasticar(g, rezTak);
-            foreach (Sprava s in vezbaneSprave)
+            foreach (Ocena o in ocene)
             {
-                if (s == Sprava.Preskok)
+                if (o.Sprava == Sprava.Preskok)
                     PoredakPreskok.deleteGimnasticar(g, rezTak);
                 else
-                    getPoredakSprava(s).deleteGimnasticar(g, rezTak);
+                    getPoredakSprava(o.Sprava).deleteGimnasticar(g, rezTak);
             }
+
+            // TODO4: I poredak ekipno treba da se azurira.
+
+            if (PoredakUkupnoFinaleKupa != null)
+                PoredakUkupnoFinaleKupa.deleteGimnasticar(g, rezTak);
         }
 
         public virtual void ekipaAdded(Ekipa e, IList<Ocena> ocene,

@@ -248,7 +248,7 @@ namespace Bilten.Services
                     else
                         g2 = gimnasticariMap[g.Id];
                     rt.Takmicenje1.addGimnasticar(g2);
-                    rt.Takmicenje1.gimnasticarAdded(g2, new List<Ocena>(), rt);
+                    rt.Takmicenje1.gimnasticarAdded(g2, new List<Ocena>(), rt, new PoredakUkupno(), new PoredakUkupno());
                 }
             }
 
