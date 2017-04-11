@@ -47,33 +47,13 @@ namespace Bilten.Domain
             foreach (RezultatUkupno r in poredakPrvoKolo.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                {
-                    rezultatiMap[r.Gimnasticar].ParterPrvoKolo = r.Parter;
-                    rezultatiMap[r.Gimnasticar].KonjPrvoKolo = r.Konj;
-                    rezultatiMap[r.Gimnasticar].KarikePrvoKolo = r.Karike;
-                    rezultatiMap[r.Gimnasticar].PreskokPrvoKolo = r.Preskok;
-                    rezultatiMap[r.Gimnasticar].RazbojPrvoKolo = r.Razboj;
-                    rezultatiMap[r.Gimnasticar].VratiloPrvoKolo = r.Vratilo;
-                    rezultatiMap[r.Gimnasticar].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
-                    rezultatiMap[r.Gimnasticar].GredaPrvoKolo = r.Greda;
-                    rezultatiMap[r.Gimnasticar].TotalPrvoKolo = r.Total;
-                }
+                    rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
             }
 
             foreach (RezultatUkupno r in poredakDrugoKolo.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                {
-                    rezultatiMap[r.Gimnasticar].ParterDrugoKolo = r.Parter;
-                    rezultatiMap[r.Gimnasticar].KonjDrugoKolo = r.Konj;
-                    rezultatiMap[r.Gimnasticar].KarikeDrugoKolo = r.Karike;
-                    rezultatiMap[r.Gimnasticar].PreskokDrugoKolo = r.Preskok;
-                    rezultatiMap[r.Gimnasticar].RazbojDrugoKolo = r.Razboj;
-                    rezultatiMap[r.Gimnasticar].VratiloDrugoKolo = r.Vratilo;
-                    rezultatiMap[r.Gimnasticar].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
-                    rezultatiMap[r.Gimnasticar].GredaDrugoKolo = r.Greda;
-                    rezultatiMap[r.Gimnasticar].TotalDrugoKolo = r.Total;
-                }
+                    rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
             }
 
             List<RezultatUkupnoFinaleKupa> rezultati = new List<RezultatUkupnoFinaleKupa>(rezultatiMap.Values);
@@ -133,7 +113,7 @@ namespace Bilten.Domain
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (!propozicije.PostojiTak2 || !propozicije.OdvojenoTak2)
+            if (!propozicije.odvojenoTak2())
             {
                 foreach (RezultatUkupnoFinaleKupa r in Rezultati)
                     r.KvalStatus = KvalifikacioniStatus.None;
@@ -252,15 +232,7 @@ namespace Bilten.Domain
             {
                 if (r.Gimnasticar.Equals(g))
                 {
-                    rezultat.ParterPrvoKolo = r.Parter;
-                    rezultat.KonjPrvoKolo = r.Konj;
-                    rezultat.KarikePrvoKolo = r.Karike;
-                    rezultat.PreskokPrvoKolo = r.Preskok;
-                    rezultat.RazbojPrvoKolo = r.Razboj;
-                    rezultat.VratiloPrvoKolo = r.Vratilo;
-                    rezultat.DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
-                    rezultat.GredaPrvoKolo = r.Greda;
-                    rezultat.TotalPrvoKolo = r.Total;
+                    rezultat.initPrvoKolo(r);
                     break;
                 }
             }
@@ -269,15 +241,7 @@ namespace Bilten.Domain
             {
                 if (r.Gimnasticar.Equals(g))
                 {
-                    rezultat.ParterDrugoKolo = r.Parter;
-                    rezultat.KonjDrugoKolo = r.Konj;
-                    rezultat.KarikeDrugoKolo = r.Karike;
-                    rezultat.PreskokDrugoKolo = r.Preskok;
-                    rezultat.RazbojDrugoKolo = r.Razboj;
-                    rezultat.VratiloDrugoKolo = r.Vratilo;
-                    rezultat.DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
-                    rezultat.GredaDrugoKolo = r.Greda;
-                    rezultat.TotalDrugoKolo = r.Total;
+                    rezultat.initDrugoKolo(r);
                     break;
                 }
             }

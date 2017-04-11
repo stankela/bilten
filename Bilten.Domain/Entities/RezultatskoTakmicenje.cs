@@ -273,7 +273,7 @@ namespace Bilten.Domain
 
         public virtual bool odvojenoTak2()
         {
-            return Propozicije.PostojiTak2 && Propozicije.OdvojenoTak2;
+            return Propozicije.odvojenoTak2();
         }
 
         public virtual bool odvojenoTak3()

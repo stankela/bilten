@@ -151,6 +151,60 @@ namespace Bilten.Domain
         
         }
 
+        public virtual void initPrvoKolo(RezultatUkupno r)
+        {
+            ParterPrvoKolo = r.Parter;
+            KonjPrvoKolo = r.Konj;
+            KarikePrvoKolo = r.Karike;
+            PreskokPrvoKolo = r.Preskok;
+            RazbojPrvoKolo = r.Razboj;
+            VratiloPrvoKolo = r.Vratilo;
+            DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
+            GredaPrvoKolo = r.Greda;
+            TotalPrvoKolo = r.Total;
+        }
+
+        public virtual void initDrugoKolo(RezultatUkupno r)
+        {
+            ParterDrugoKolo = r.Parter;
+            KonjDrugoKolo = r.Konj;
+            KarikeDrugoKolo = r.Karike;
+            PreskokDrugoKolo = r.Preskok;
+            RazbojDrugoKolo = r.Razboj;
+            VratiloDrugoKolo = r.Vratilo;
+            DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
+            GredaDrugoKolo = r.Greda;
+            TotalDrugoKolo = r.Total;
+        }
+
+        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin, bool neRacunajProsekAkoNemaOceneIzObaKola)
+        {
+            if (TotalPrvoKolo == null && TotalDrugoKolo == null)
+            {
+                setTotal(null);
+                return;
+            }
+            float total1 = TotalPrvoKolo == null ? 0 : TotalPrvoKolo.Value;
+            float total2 = TotalDrugoKolo == null ? 0 : TotalDrugoKolo.Value;
+            float total;
+
+            if (nacin == NacinRacunanjaOceneFinaleKupa.Zbir)
+                total = total1 + total2;
+            else if (nacin == NacinRacunanjaOceneFinaleKupa.Max)
+                total = total1 > total2 ? total1 : total2;
+            else
+            {
+                // TODO3: Proveri da li ovde treba podesavati broj decimala.
+                total = (total1 + total2) / 2;
+                if (neRacunajProsekAkoNemaOceneIzObaKola
+                    && (TotalPrvoKolo == null || TotalDrugoKolo == null))
+                {
+                    total = total1 + total2;
+                }
+            }
+            setTotal(total);
+        }
+
         public virtual string PrezimeIme
         {
             get
@@ -257,34 +311,6 @@ namespace Bilten.Domain
 
             line = reader.ReadLine();
             TotalDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
-        }
-
-        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin, bool neRacunajProsekAkoNemaOceneIzObaKola)
-        {
-            if (TotalPrvoKolo == null && TotalDrugoKolo == null)
-            {
-                setTotal(null);
-                return;
-            }
-            float total1 = TotalPrvoKolo == null ? 0 : TotalPrvoKolo.Value;
-            float total2 = TotalDrugoKolo == null ? 0 : TotalDrugoKolo.Value;
-            float total;
-
-            if (nacin == NacinRacunanjaOceneFinaleKupa.Zbir)
-                total = total1 + total2;
-            else if (nacin == NacinRacunanjaOceneFinaleKupa.Max)
-                total = total1 > total2 ? total1 : total2;
-            else
-            {
-                // TODO3: Proveri da li ovde treba podesavati broj decimala.
-                total = (total1 + total2) / 2;
-                if (neRacunajProsekAkoNemaOceneIzObaKola
-                    && (TotalPrvoKolo == null || TotalDrugoKolo == null))
-                {
-                    total = total1 + total2;
-                }
-            }
-            setTotal(total);
         }
     }
 }

@@ -17,11 +17,11 @@ namespace Bilten.Domain
             set { postojiTak2 = value; }
         }
 
-        private bool odvojenoTak2;
+        private bool _odvojenoTak2;
         public virtual bool OdvojenoTak2
         {
-            get { return odvojenoTak2; }
-            set { odvojenoTak2 = value; }
+            get { return _odvojenoTak2; }
+            set { _odvojenoTak2 = value; }
         }
 
         private bool neogranicenBrojTakmicaraIzKlubaTak2;
@@ -282,9 +282,14 @@ namespace Bilten.Domain
             set { tak4NeRacunajProsekAkoNemaOceneIzObaKola = value; }
         }
 
+        public virtual bool odvojenoTak2()
+        {
+            return PostojiTak2 && OdvojenoTak2;
+        }
+
         public virtual void validateTakmicenje2(Notification notification)
         {
-            if (!PostojiTak2 || !OdvojenoTak2)
+            if (!odvojenoTak2())
                 return;
 
             if (BrojFinalistaTak2 < 1)
@@ -352,7 +357,7 @@ namespace Bilten.Domain
 
         public virtual void validateTakmicenje2FinaleKupa(Notification notification)
         {
-            if (!PostojiTak2 || !OdvojenoTak2)
+            if (!odvojenoTak2())
                 return;
 
             if (BrojFinalistaTak2 < 1)
