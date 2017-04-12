@@ -277,6 +277,72 @@ namespace Bilten.Domain
         
         }
 
+        public virtual void initPrvoKolo(RezultatUkupno r)
+        {
+            ParterPrvoKolo = r.Parter;
+            KonjPrvoKolo = r.Konj;
+            KarikePrvoKolo = r.Karike;
+            PreskokPrvoKolo = r.Preskok;
+            RazbojPrvoKolo = r.Razboj;
+            VratiloPrvoKolo = r.Vratilo;
+            DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
+            GredaPrvoKolo = r.Greda;
+            TotalPrvoKolo = r.Total;
+        }
+
+        public virtual void initDrugoKolo(RezultatUkupno r)
+        {
+            ParterDrugoKolo = r.Parter;
+            KonjDrugoKolo = r.Konj;
+            KarikeDrugoKolo = r.Karike;
+            PreskokDrugoKolo = r.Preskok;
+            RazbojDrugoKolo = r.Razboj;
+            VratiloDrugoKolo = r.Vratilo;
+            DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
+            GredaDrugoKolo = r.Greda;
+            TotalDrugoKolo = r.Total;
+        }
+
+        public virtual void initTreceKolo(RezultatUkupno r)
+        {
+            ParterTreceKolo = r.Parter;
+            KonjTreceKolo = r.Konj;
+            KarikeTreceKolo = r.Karike;
+            PreskokTreceKolo = r.Preskok;
+            RazbojTreceKolo = r.Razboj;
+            VratiloTreceKolo = r.Vratilo;
+            DvovisinskiRazbojTreceKolo = r.DvovisinskiRazboj;
+            GredaTreceKolo = r.Greda;
+            TotalTreceKolo = r.Total;
+        }
+
+        public virtual void initCetvrtoKolo(RezultatUkupno r)
+        {
+            ParterCetvrtoKolo = r.Parter;
+            KonjCetvrtoKolo = r.Konj;
+            KarikeCetvrtoKolo = r.Karike;
+            PreskokCetvrtoKolo = r.Preskok;
+            RazbojCetvrtoKolo = r.Razboj;
+            VratiloCetvrtoKolo = r.Vratilo;
+            DvovisinskiRazbojCetvrtoKolo = r.DvovisinskiRazboj;
+            GredaCetvrtoKolo = r.Greda;
+            TotalCetvrtoKolo = r.Total;
+        }
+
+        public virtual void calculateTotal()
+        {
+            if (TotalPrvoKolo == null && TotalDrugoKolo == null && TotalTreceKolo == null && TotalCetvrtoKolo == null)
+            {
+                setTotal(null);
+                return;
+            }
+            float total1 = TotalPrvoKolo == null ? 0 : TotalPrvoKolo.Value;
+            float total2 = TotalDrugoKolo == null ? 0 : TotalDrugoKolo.Value;
+            float total3 = TotalTreceKolo == null ? 0 : TotalTreceKolo.Value;
+            float total4 = TotalCetvrtoKolo == null ? 0 : TotalCetvrtoKolo.Value;
+            setTotal(total1 + total2 + total3 + total4);
+        }
+
         public virtual string PrezimeIme
         {
             get

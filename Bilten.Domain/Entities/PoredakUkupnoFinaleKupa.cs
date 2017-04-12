@@ -28,8 +28,7 @@ namespace Bilten.Domain
             DeoTakmicenjaKod = DeoTakmicenjaKod.Takmicenje1;
         }
 
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno poredakPrvoKolo,
-            PoredakUkupno poredakDrugoKolo)
+        public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -44,27 +43,25 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            foreach (RezultatUkupno r in poredakPrvoKolo.Rezultati)
+            foreach (RezultatUkupno r in p1.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
             }
-
-            foreach (RezultatUkupno r in poredakDrugoKolo.Rezultati)
+            foreach (RezultatUkupno r in p2.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
             }
 
-            List<RezultatUkupnoFinaleKupa> rezultati = new List<RezultatUkupnoFinaleKupa>(rezultatiMap.Values);
             Rezultati.Clear();
-            foreach (RezultatUkupnoFinaleKupa rez in rezultati)
+            foreach (RezultatUkupnoFinaleKupa r in rezultatiMap.Values)
             {
                 // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
                 // na isti nacin.
-                rez.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2,
+                r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2,
                     rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
-                Rezultati.Add(rez);
+                Rezultati.Add(r);
             }
 
             rankRezultati();
@@ -223,12 +220,12 @@ namespace Bilten.Domain
         }
 
         public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
-            PoredakUkupno poredakPrvoKolo, PoredakUkupno poredakDrugoKolo)
+            PoredakUkupno p1, PoredakUkupno p2)
         {
             RezultatUkupnoFinaleKupa rezultat = new RezultatUkupnoFinaleKupa();
             rezultat.Gimnasticar = g;
 
-            foreach (RezultatUkupno r in poredakPrvoKolo.Rezultati)
+            foreach (RezultatUkupno r in p1.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
@@ -236,8 +233,7 @@ namespace Bilten.Domain
                     break;
                 }
             }
-
-            foreach (RezultatUkupno r in poredakDrugoKolo.Rezultati)
+            foreach (RezultatUkupno r in p2.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
@@ -253,15 +249,15 @@ namespace Bilten.Domain
             updateKvalStatus(rezTak.Propozicije);
         }
 
-        public virtual List<RezultatUkupnoFinaleKupa> getRezultati()
+        public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
         {
-            List<RezultatUkupnoFinaleKupa> result = new List<RezultatUkupnoFinaleKupa>(Rezultati);
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatUkupnoFinaleKupa))["RedBroj"];
-            result.Sort(new SortComparer<RezultatUkupnoFinaleKupa>(propDesc, ListSortDirection.Ascending));
-
-            return result;
+            RezultatUkupnoFinaleKupa r = getRezultat(g);
+            if (r != null)
+            {
+                Rezultati.Remove(r);
+                rankRezultati();
+                updateKvalStatus(rezTak.Propozicije);
+            }
         }
 
         private RezultatUkupnoFinaleKupa getRezultat(GimnasticarUcesnik g)
@@ -274,15 +270,15 @@ namespace Bilten.Domain
             return null;
         }
 
-        public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
+        public virtual List<RezultatUkupnoFinaleKupa> getRezultati()
         {
-            RezultatUkupnoFinaleKupa r = getRezultat(g);
-            if (r != null)
-            {
-                Rezultati.Remove(r);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
-            }
+            List<RezultatUkupnoFinaleKupa> result = new List<RezultatUkupnoFinaleKupa>(Rezultati);
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatUkupnoFinaleKupa))["RedBroj"];
+            result.Sort(new SortComparer<RezultatUkupnoFinaleKupa>(propDesc, ListSortDirection.Ascending));
+
+            return result;
         }
 
         public virtual void dump(StringBuilder strBuilder)

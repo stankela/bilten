@@ -255,21 +255,21 @@ namespace Bilten.UI
                 }
             }
             if (imena.Count > 0)
-                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+                dgw.DataGridView.Columns[1].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
             if (klubovi.Count > 0)
-                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
         public static void reinitRezultatiUkupnoKeepColumnWidths(DataGridViewUserControl dgw, Takmicenje takmicenje, 
             bool kvalColumn)
         {
-            int oldImeWidth = dgw.DataGridView.Columns[2].Width;
-            int oldKlubWidth = dgw.DataGridView.Columns[3].Width;
+            int oldImeWidth = dgw.DataGridView.Columns[1].Width;
+            int oldKlubWidth = dgw.DataGridView.Columns[2].Width;
 
             GridColumnsInitializer.initRezultatiUkupno(dgw, takmicenje, kvalColumn);
 
-            dgw.DataGridView.Columns[2].Width = oldImeWidth;
-            dgw.DataGridView.Columns[3].Width = oldKlubWidth;
+            dgw.DataGridView.Columns[1].Width = oldImeWidth;
+            dgw.DataGridView.Columns[2].Width = oldKlubWidth;
         }
 
         public static void initRezultatiSprava(DataGridViewUserControl dgw,
@@ -340,20 +340,20 @@ namespace Bilten.UI
                 }
             }
             if (imena.Count > 0)
-                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+                dgw.DataGridView.Columns[1].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
             if (klubovi.Count > 0)
-                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
         public static void reinitRezultatiSpravaKeepColumnWidths(DataGridViewUserControl dataGridViewUserControl,
             Takmicenje takmicenje, bool kvalColumnVisible, bool obaPreskoka)
         {
             DataGridView dgw = dataGridViewUserControl.DataGridView;
-            int oldImeWidth = dgw.Columns[2].Width;
-            int oldKlubWidth = dgw.Columns[3].Width;
+            int oldImeWidth = dgw.Columns[1].Width;
+            int oldKlubWidth = dgw.Columns[2].Width;
             GridColumnsInitializer.initRezultatiSprava(dataGridViewUserControl, takmicenje, kvalColumnVisible, obaPreskoka);
-            dgw.Columns[2].Width = oldImeWidth;
-            dgw.Columns[3].Width = oldKlubWidth;
+            dgw.Columns[1].Width = oldImeWidth;
+            dgw.Columns[2].Width = oldKlubWidth;
         }
    
         public static void initKvalifikantiTak2(DataGridViewUserControl dgw, Takmicenje takmicenje)
@@ -475,9 +475,9 @@ namespace Bilten.UI
                 }
             }
             if (imena.Count > 0)
-                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+                dgw.DataGridView.Columns[1].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
             if (klubovi.Count > 0)
-                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
         public static void initRezultatiUkupnoZbirViseKola(DataGridViewUserControl dgw,
@@ -509,9 +509,9 @@ namespace Bilten.UI
                 }
             }
             if (imena.Count > 0)
-                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+                dgw.DataGridView.Columns[1].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
             if (klubovi.Count > 0)
-                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
         public static void initRezultatiSpravaFinaleKupa(DataGridViewUserControl dgw,
@@ -552,9 +552,9 @@ namespace Bilten.UI
                 }
             }
             if (imena.Count > 0)
-                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+                dgw.DataGridView.Columns[1].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
             if (klubovi.Count > 0)
-                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
         }
 
         public static void initRezultatiEkipnoFinaleKupa(DataGridViewUserControl dgw, Takmicenje takmicenje, bool kvalColumn)

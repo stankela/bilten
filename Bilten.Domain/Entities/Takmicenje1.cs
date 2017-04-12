@@ -260,12 +260,28 @@ namespace Bilten.Domain
         }
 
         public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
-            RezultatskoTakmicenje rezTak, PoredakUkupno poredak1, PoredakUkupno poredak2)
+            RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2)
         {
-            updateRezultatiOnGimnasticarAdded(g, ocene, rezTak);
+            PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, p1, p2);
+            
+            if (rezTak.odvojenoTak2())
+                PoredakUkupno.addGimnasticar(g, ocene, rezTak);
+            if (rezTak.odvojenoTak3())
+            {
+                foreach (Ocena o in ocene)
+                {
+                    if (o.Sprava == Sprava.Preskok)
+                        PoredakPreskok.addGimnasticar(g, o, rezTak);
+                    else
+                        getPoredakSprava(o.Sprava).addGimnasticar(g, o, rezTak);
+                }
+            }
+        }
 
-            if (PoredakUkupnoFinaleKupa != null)
-                PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, poredak1, poredak2);
+        public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
+            RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2, PoredakUkupno p3, PoredakUkupno p4)
+        {
+            PoredakUkupnoZbirViseKola.addGimnasticar(g, rezTak, p1, p2, p3, p4);
         }
 
         public virtual void updateRezultatiOnGimnasticarDeleted(GimnasticarUcesnik g, IList<Ocena> ocene,
@@ -284,6 +300,8 @@ namespace Bilten.Domain
 
             if (PoredakUkupnoFinaleKupa != null)
                 PoredakUkupnoFinaleKupa.deleteGimnasticar(g, rezTak);
+            if (PoredakUkupnoZbirViseKola != null)
+                PoredakUkupnoZbirViseKola.deleteGimnasticar(g, rezTak);
         }
 
         public virtual void ekipaAdded(Ekipa e, IList<Ocena> ocene,

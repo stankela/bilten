@@ -33,8 +33,8 @@ namespace Bilten.Domain
             DeoTakmicenjaKod = DeoTakmicenjaKod.Takmicenje1;
         }
 
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno poredakPrvoKolo,
-            PoredakUkupno poredakDrugoKolo, PoredakUkupno poredakTreceKolo, PoredakUkupno poredakCetvrtoKolo)
+        public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2,
+            PoredakUkupno p3, PoredakUkupno p4)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -49,113 +49,38 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            foreach (RezultatUkupno r in poredakPrvoKolo.Rezultati)
+            foreach (RezultatUkupno r in p1.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                {
-                    rezultatiMap[r.Gimnasticar].ParterPrvoKolo = r.Parter;
-                    rezultatiMap[r.Gimnasticar].KonjPrvoKolo = r.Konj;
-                    rezultatiMap[r.Gimnasticar].KarikePrvoKolo = r.Karike;
-                    rezultatiMap[r.Gimnasticar].PreskokPrvoKolo = r.Preskok;
-                    rezultatiMap[r.Gimnasticar].RazbojPrvoKolo = r.Razboj;
-                    rezultatiMap[r.Gimnasticar].VratiloPrvoKolo = r.Vratilo;
-                    rezultatiMap[r.Gimnasticar].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
-                    rezultatiMap[r.Gimnasticar].GredaPrvoKolo = r.Greda;
-                    rezultatiMap[r.Gimnasticar].TotalPrvoKolo = r.Total;
-                }
+                    rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
             }
-
-            foreach (RezultatUkupno r in poredakDrugoKolo.Rezultati)
+            foreach (RezultatUkupno r in p2.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                {
-                    rezultatiMap[r.Gimnasticar].ParterDrugoKolo = r.Parter;
-                    rezultatiMap[r.Gimnasticar].KonjDrugoKolo = r.Konj;
-                    rezultatiMap[r.Gimnasticar].KarikeDrugoKolo = r.Karike;
-                    rezultatiMap[r.Gimnasticar].PreskokDrugoKolo = r.Preskok;
-                    rezultatiMap[r.Gimnasticar].RazbojDrugoKolo = r.Razboj;
-                    rezultatiMap[r.Gimnasticar].VratiloDrugoKolo = r.Vratilo;
-                    rezultatiMap[r.Gimnasticar].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
-                    rezultatiMap[r.Gimnasticar].GredaDrugoKolo = r.Greda;
-                    rezultatiMap[r.Gimnasticar].TotalDrugoKolo = r.Total;
-                }
+                    rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
             }
-
-            if (poredakTreceKolo != null)
+            if (p3 != null)
             {
-                foreach (RezultatUkupno r in poredakTreceKolo.Rezultati)
+                foreach (RezultatUkupno r in p3.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                    {
-                        rezultatiMap[r.Gimnasticar].ParterTreceKolo = r.Parter;
-                        rezultatiMap[r.Gimnasticar].KonjTreceKolo = r.Konj;
-                        rezultatiMap[r.Gimnasticar].KarikeTreceKolo = r.Karike;
-                        rezultatiMap[r.Gimnasticar].PreskokTreceKolo = r.Preskok;
-                        rezultatiMap[r.Gimnasticar].RazbojTreceKolo = r.Razboj;
-                        rezultatiMap[r.Gimnasticar].VratiloTreceKolo = r.Vratilo;
-                        rezultatiMap[r.Gimnasticar].DvovisinskiRazbojTreceKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Gimnasticar].GredaTreceKolo = r.Greda;
-                        rezultatiMap[r.Gimnasticar].TotalTreceKolo = r.Total;
-                    }
+                        rezultatiMap[r.Gimnasticar].initTreceKolo(r);
                 }
             }
-
-            if (poredakCetvrtoKolo != null)
+            if (p4 != null)
             {
-                foreach (RezultatUkupno r in poredakCetvrtoKolo.Rezultati)
+                foreach (RezultatUkupno r in p4.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                    {
-                        rezultatiMap[r.Gimnasticar].ParterCetvrtoKolo = r.Parter;
-                        rezultatiMap[r.Gimnasticar].KonjCetvrtoKolo = r.Konj;
-                        rezultatiMap[r.Gimnasticar].KarikeCetvrtoKolo = r.Karike;
-                        rezultatiMap[r.Gimnasticar].PreskokCetvrtoKolo = r.Preskok;
-                        rezultatiMap[r.Gimnasticar].RazbojCetvrtoKolo = r.Razboj;
-                        rezultatiMap[r.Gimnasticar].VratiloCetvrtoKolo = r.Vratilo;
-                        rezultatiMap[r.Gimnasticar].DvovisinskiRazbojCetvrtoKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Gimnasticar].GredaCetvrtoKolo = r.Greda;
-                        rezultatiMap[r.Gimnasticar].TotalCetvrtoKolo = r.Total;
-                    }
+                        rezultatiMap[r.Gimnasticar].initCetvrtoKolo(r);
                 }
             }
 
-            List<RezultatUkupnoZbirViseKola> rezultati = new List<RezultatUkupnoZbirViseKola>(rezultatiMap.Values);
             Rezultati.Clear();
-            foreach (RezultatUkupnoZbirViseKola rez in rezultati)
-                Rezultati.Add(rez);
-
-            // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
-            // na isti nacin.
-            foreach (RezultatUkupnoZbirViseKola rez in Rezultati)
+            foreach (RezultatUkupnoZbirViseKola r in rezultatiMap.Values)
             {
-                if (rez.TotalPrvoKolo == null && rez.TotalDrugoKolo == null
-                && rez.TotalTreceKolo == null && rez.TotalCetvrtoKolo == null)
-                {
-                    rez.setTotal(null);
-                    continue;
-                }
-                float total1 = rez.TotalPrvoKolo == null ? 0 : rez.TotalPrvoKolo.Value;
-                float total2 = rez.TotalDrugoKolo == null ? 0 : rez.TotalDrugoKolo.Value;
-                float total3 = rez.TotalTreceKolo == null ? 0 : rez.TotalTreceKolo.Value;
-                float total4 = rez.TotalCetvrtoKolo == null ? 0 : rez.TotalCetvrtoKolo.Value;
-                float total;
-
-                /*if (rezTak.Propozicije.Tak2FinalnaOcenaJeZbirObaKola)
-                    total = total1 + total2;
-                else if (rezTak.Propozicije.Tak2FinalnaOcenaJeMaxObaKola)
-                    total = total1 > total2 ? total1 : total2;
-                else
-                {
-                    // TODO3: Proveri da li ovde treba podesavati broj decimala.
-                    total = (total1 + total2) / 2;
-                    if (rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola
-                        && (rez.TotalPrvoKolo == null || rez.TotalDrugoKolo == null))
-                    {
-                        total = total1 + total2;
-                    }
-                }*/
-                total = total1 + total2 + total3 + total4;
-                rez.setTotal(total);
+                r.calculateTotal();
+                Rezultati.Add(r);
             }
 
             rankRezultati();
@@ -199,6 +124,77 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
+        }
+
+        public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
+            PoredakUkupno p1, PoredakUkupno p2, PoredakUkupno p3, PoredakUkupno p4)
+        {
+            RezultatUkupnoZbirViseKola rezultat = new RezultatUkupnoZbirViseKola();
+            rezultat.Gimnasticar = g;
+
+            foreach (RezultatUkupno r in p1.Rezultati)
+            {
+                if (r.Gimnasticar.Equals(g))
+                {
+                    rezultat.initPrvoKolo(r);
+                    break;
+                }
+            }
+            foreach (RezultatUkupno r in p2.Rezultati)
+            {
+                if (r.Gimnasticar.Equals(g))
+                {
+                    rezultat.initDrugoKolo(r);
+                    break;
+                }
+            }
+            if (p3 != null)
+            {
+                foreach (RezultatUkupno r in p3.Rezultati)
+                {
+                    if (r.Gimnasticar.Equals(g))
+                    {
+                        rezultat.initTreceKolo(r);
+                        break;
+                    }
+                }
+            }
+            if (p4 != null)
+            {
+                foreach (RezultatUkupno r in p4.Rezultati)
+                {
+                    if (r.Gimnasticar.Equals(g))
+                    {
+                        rezultat.initCetvrtoKolo(r);
+                        break;
+                    }
+                }
+            }
+
+            rezultat.calculateTotal();
+            Rezultati.Add(rezultat);
+
+            rankRezultati();
+        }
+
+        public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
+        {
+            RezultatUkupnoZbirViseKola r = getRezultat(g);
+            if (r != null)
+            {
+                Rezultati.Remove(r);
+                rankRezultati();
+            }
+        }
+
+        private RezultatUkupnoZbirViseKola getRezultat(GimnasticarUcesnik g)
+        {
+            foreach (RezultatUkupnoZbirViseKola r in Rezultati)
+            {
+                if (r.Gimnasticar.Equals(g))
+                    return r;
+            }
+            return null;
         }
 
         public virtual List<RezultatUkupnoZbirViseKola> getRezultati()
