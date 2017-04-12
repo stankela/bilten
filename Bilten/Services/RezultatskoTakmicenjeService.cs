@@ -50,11 +50,13 @@ namespace Bilten.Services
                 if (rezTak.Takmicenje1.addGimnasticar(g))
                 {
                     IList<Ocena> ocene = ocenaDAO.FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
-                    if (takmicenje.ZbirViseKola)
+                    if (takmicenje.FinaleKupa)
+                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, rezTak1, rezTak2);
+                    else if (takmicenje.ZbirViseKola)
+                    {
                         rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, rezTak1, rezTak2,
                             rezTak3, rezTak4);
-                    else if (takmicenje.FinaleKupa)
-                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, rezTak1, rezTak2);
+                    }
                     else
                         rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak);
 

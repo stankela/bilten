@@ -59,11 +59,11 @@ namespace Bilten.Domain
             set { postojiTak3 = value; }
         }
 
-        private bool odvojenoTak3;
+        private bool _odvojenoTak3;
         public virtual bool OdvojenoTak3
         {
-            get { return odvojenoTak3; }
-            set { odvojenoTak3 = value; }
+            get { return _odvojenoTak3; }
+            set { _odvojenoTak3 = value; }
         }
 
         private bool neogranicenBrojTakmicaraIzKlubaTak3;
@@ -224,6 +224,21 @@ namespace Bilten.Domain
 
         // Takmicenje 3
 
+        public virtual NacinRacunanjaOceneFinaleKupa NacinRacunanjaOceneFinaleKupaTak3
+        {
+            get
+            {
+                if (Tak3FinalnaOcenaJeZbirObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Zbir;
+                else if (Tak3FinalnaOcenaJeMaxObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Max;
+                else if (Tak3FinalnaOcenaJeProsekObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Prosek;
+                else
+                    return NacinRacunanjaOceneFinaleKupa.Undefined;
+            }
+        }
+
         private bool tak3FinalnaOcenaJeZbirObaKola;
         public virtual bool Tak3FinalnaOcenaJeZbirObaKola
         {
@@ -285,6 +300,11 @@ namespace Bilten.Domain
         public virtual bool odvojenoTak2()
         {
             return PostojiTak2 && OdvojenoTak2;
+        }
+
+        public virtual bool odvojenoTak3()
+        {
+            return PostojiTak3 && OdvojenoTak3;
         }
 
         public virtual void validateTakmicenje2(Notification notification)

@@ -80,10 +80,9 @@ namespace Bilten.Domain
                     rezultatiMap[o.Gimnasticar.Id].setOcena(o);
             }
 
-            List<RezultatSprava> rezultati = new List<RezultatSprava>(rezultatiMap.Values);
             Rezultati.Clear();
-            foreach (RezultatSprava rez in rezultati)
-                Rezultati.Add(rez);
+            foreach (RezultatSprava r in rezultatiMap.Values)
+                Rezultati.Add(r);
 
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);

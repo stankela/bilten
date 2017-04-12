@@ -263,6 +263,9 @@ namespace Bilten.Domain
             RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
         {
             PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, rezTak1, rezTak2);
+
+            foreach (Sprava s in Sprave.getSprave(rezTak.Gimnastika))
+                getPoredakSpravaFinaleKupa(s).addGimnasticar(g, rezTak, rezTak1, rezTak2);
             
             if (rezTak.odvojenoTak2())
                 PoredakUkupno.addGimnasticar(g, ocene, rezTak);

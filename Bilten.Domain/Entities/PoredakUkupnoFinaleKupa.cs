@@ -31,13 +31,11 @@ namespace Bilten.Domain
         public virtual void create(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
             RezultatskoTakmicenje rezTak2)
         {
-            IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
-
             // NOTE: Da bi GimnasticarUcesnik mogao da se koristi kao key u Dictionary, mora da implementira
             // interfejs IEquatable<GimnasticarUcesnik>.
             IDictionary<GimnasticarUcesnik, RezultatUkupnoFinaleKupa> rezultatiMap =
                 new Dictionary<GimnasticarUcesnik, RezultatUkupnoFinaleKupa>();
-            foreach (GimnasticarUcesnik g in gimnasticari)
+            foreach (GimnasticarUcesnik g in rezTak.Takmicenje1.Gimnasticari)
             {
                 RezultatUkupnoFinaleKupa rezultat = new RezultatUkupnoFinaleKupa();
                 rezultat.Gimnasticar = g;

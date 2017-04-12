@@ -194,7 +194,6 @@ namespace Bilten.Domain
                 total = total1 > total2 ? total1 : total2;
             else
             {
-                // TODO3: Proveri da li ovde treba podesavati broj decimala.
                 total = (total1 + total2) / 2;
                 if (neRacunajProsekAkoNemaOceneIzObaKola
                     && (TotalPrvoKolo == null || TotalDrugoKolo == null))

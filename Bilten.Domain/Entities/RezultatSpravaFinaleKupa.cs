@@ -56,10 +56,47 @@ namespace Bilten.Domain
             set { _totalDrugoKolo = value; }
         }
 
-        // moram ovako jer je set accessor za Total protected u klasi Rezultat
-        public virtual void setTotal(Nullable<float> value)
+        public virtual void initPrvoKolo(RezultatSprava r)
         {
-            Total = value;
+            D_PrvoKolo = r.D;
+            E_PrvoKolo = r.E;
+            TotalPrvoKolo = r.Total;
+        }
+
+        public virtual void initDrugoKolo(RezultatSprava r)
+        {
+            D_DrugoKolo = r.D;
+            E_DrugoKolo = r.E;
+            TotalDrugoKolo = r.Total;
+        }
+
+        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin, bool neRacunajProsekAkoNemaOceneIzObaKola)
+        {
+            if (TotalPrvoKolo == null && TotalDrugoKolo == null)
+            {
+                Total = null;
+                return;
+            }
+            float total1 = TotalPrvoKolo == null ? 0 : TotalPrvoKolo.Value;
+            float total2 = TotalDrugoKolo == null ? 0 : TotalDrugoKolo.Value;
+            float total;
+
+            if (nacin == NacinRacunanjaOceneFinaleKupa.Zbir)
+                total = total1 + total2;
+            else if (nacin == NacinRacunanjaOceneFinaleKupa.Max)
+                total = total1 > total2 ? total1 : total2;
+            else
+            {
+                // TODO3: Proveri da li treba podesavati broj decimala (isto i za ostale rezultate finala kupa i
+                // zbira vise kola).
+                total = (total1 + total2) / 2;
+                if (neRacunajProsekAkoNemaOceneIzObaKola
+                    && (TotalPrvoKolo == null || TotalDrugoKolo == null))
+                {
+                    total = total1 + total2;
+                }
+            }
+            Total = total;
         }
 
         public virtual string PrezimeIme
