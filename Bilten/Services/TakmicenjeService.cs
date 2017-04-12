@@ -356,7 +356,7 @@ namespace Bilten.Services
             foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
             {
                 RezultatskoTakmicenje rt = new RezultatskoTakmicenje(takmicenje, k, desc, new Propozicije());
-                // HACK
+                // TODO: HACK
                 rt.Propozicije.PostojiTak2 = true;
                 rt.Propozicije.PostojiTak4 = true;
                 rt.ImaEkipnoTakmicenje = true;
@@ -418,45 +418,21 @@ namespace Bilten.Services
                     rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
 
                 if (takmicenje.FinaleKupa)
-                    rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
-                else if (takmicenje.ZbirViseKola)
-                    rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
-            }
-
-            if (takmicenje.FinaleKupa)
-            {
-                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                 {
-                    RezultatskoTakmicenje rezTak1 =
-                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
-                    RezultatskoTakmicenje rezTak2 =
-                        Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
+                    rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
 
                     rt.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
-
                     foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
                         rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt, rezTak1, rezTak2);
-                }
-            }
 
-            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-            {
-                // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja (na svim mestima gde se racuna).
-                RezultatskoTakmicenje rezTak1
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
-                RezultatskoTakmicenje rezTak2
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
-                RezultatskoTakmicenje rezTak3 = null;
-                RezultatskoTakmicenje rezTak4 = null;
-                if (takmicenje.TreceKolo != null)
-                    rezTak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija);
-                if (takmicenje.CetvrtoKolo != null)
-                    rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
-
-                if (takmicenje.FinaleKupa)
+                    // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja (na svim mestima gde se racuna).
                     rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, rezTak1, rezTak2);
+                }
                 else if (takmicenje.ZbirViseKola)
+                {
+                    rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
                     rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
+                }
             }
 
             foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)

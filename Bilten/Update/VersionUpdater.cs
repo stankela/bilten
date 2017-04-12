@@ -201,6 +201,8 @@ public class VersionUpdater
                         else
                         {
                             rezTak2 = new RezultatskoTakmicenje();
+                            rezTak2.Propozicije = new Propozicije();
+                            rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = false;
                             rezTak2.Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
                         }
 
@@ -216,37 +218,12 @@ public class VersionUpdater
                             if (rt.Takmicenje1.PoredakUkupnoFinaleKupa == null)
                                 rt.Takmicenje1.PoredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
                             rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
-                        }
-                        else if (takmicenje.ZbirViseKola)
-                        {
-                            if (rt.Takmicenje1.PoredakUkupnoZbirViseKola == null)
-                                rt.Takmicenje1.PoredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
-                            rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
-                        }
-                    }
-
-                    if (takmicenje.FinaleKupa)
-                    {
-                        foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                        {
-                            RezultatskoTakmicenje rezTak1 =
-                                Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
-                            RezultatskoTakmicenje rezTak2 =
-                                Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
-                            if (rt.Id == 654)
-                            {
-                                rezTak2 = new RezultatskoTakmicenje();
-                                rezTak2.Propozicije = new Propozicije();
-                                rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = false;
-                                rezTak2.Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
-                            }
 
                             rt.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
-
                             foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
                                 rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt, rezTak1, rezTak2);
 
-                            // update kval status
+                            // update kval status za sprave
                             if (rezultatiUpdate.ContainsKey(rt.Id))
                             {
                                 rezTakmicenjaSet.Add(rt.ToString());
@@ -260,37 +237,17 @@ public class VersionUpdater
                                     }
                                 }
                             }
-                        }
-                    }
 
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                    {
-                        RezultatskoTakmicenje rezTak1 = Takmicenje.getRezTakmicenje(
-                            rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
-                        RezultatskoTakmicenje rezTak2;
-                        if (rt.Id != 654)
-                            rezTak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
-                        else
-                        {
-                            rezTak2 = new RezultatskoTakmicenje();
-                            rezTak2.Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
-                        }
-
-                        RezultatskoTakmicenje rezTak3 = null;
-                        RezultatskoTakmicenje rezTak4 = null;
-                        if (takmicenje.TreceKolo != null)
-                            rezTak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija);
-                        if (takmicenje.CetvrtoKolo != null)
-                            rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
-
-                        if (takmicenje.FinaleKupa)
-                        {
                             if (rt.Takmicenje1.PoredakEkipnoFinaleKupa == null)
                                 rt.Takmicenje1.PoredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();
                             rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, rezTak1, rezTak2);
                         }
                         else if (takmicenje.ZbirViseKola)
                         {
+                            if (rt.Takmicenje1.PoredakUkupnoZbirViseKola == null)
+                                rt.Takmicenje1.PoredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
+                            rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
+
                             if (rt.Takmicenje1.PoredakEkipnoZbirViseKola == null)
                                 rt.Takmicenje1.PoredakEkipnoZbirViseKola = new PoredakEkipnoZbirViseKola();
                             rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
