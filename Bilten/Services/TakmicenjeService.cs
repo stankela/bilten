@@ -408,21 +408,19 @@ namespace Bilten.Services
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                PoredakUkupno poredak1
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
-                PoredakUkupno poredak2
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
-                PoredakUkupno poredak3 = null;
-                PoredakUkupno poredak4 = null;
+                RezultatskoTakmicenje rezTak1 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
+                RezultatskoTakmicenje rezTak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
+                RezultatskoTakmicenje rezTak3 = null;
+                RezultatskoTakmicenje rezTak4 = null;
                 if (takmicenje.TreceKolo != null)
-                    poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
+                    rezTak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija);
                 if (takmicenje.CetvrtoKolo != null)
-                    poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
+                    rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
 
                 if (takmicenje.FinaleKupa)
-                    rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, poredak1, poredak2);
+                    rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
                 else if (takmicenje.ZbirViseKola)
-                    rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
+                    rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
             }
 
             if (takmicenje.FinaleKupa)

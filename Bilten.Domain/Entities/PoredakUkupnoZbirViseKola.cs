@@ -33,8 +33,8 @@ namespace Bilten.Domain
             DeoTakmicenjaKod = DeoTakmicenjaKod.Takmicenje1;
         }
 
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2,
-            PoredakUkupno p3, PoredakUkupno p4)
+        public virtual void create(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
+            RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3, RezultatskoTakmicenje rezTak4)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -49,27 +49,27 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            foreach (RezultatUkupno r in p1.Rezultati)
+            foreach (RezultatUkupno r in rezTak1.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
             }
-            foreach (RezultatUkupno r in p2.Rezultati)
+            foreach (RezultatUkupno r in rezTak2.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
             }
-            if (p3 != null)
+            if (rezTak3 != null)
             {
-                foreach (RezultatUkupno r in p3.Rezultati)
+                foreach (RezultatUkupno r in rezTak3.Takmicenje1.PoredakUkupno.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
                         rezultatiMap[r.Gimnasticar].initTreceKolo(r);
                 }
             }
-            if (p4 != null)
+            if (rezTak4 != null)
             {
-                foreach (RezultatUkupno r in p4.Rezultati)
+                foreach (RezultatUkupno r in rezTak4.Takmicenje1.PoredakUkupno.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
                         rezultatiMap[r.Gimnasticar].initCetvrtoKolo(r);

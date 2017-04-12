@@ -194,31 +194,34 @@ public class VersionUpdater
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        PoredakUkupno poredak1 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
-                        PoredakUkupno poredak2;
+                        RezultatskoTakmicenje rezTak1 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
+                        RezultatskoTakmicenje rezTak2;
                         if (rt.Id != 654)
-                            poredak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
+                            rezTak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
                         else
-                            poredak2 = new PoredakUkupno();
+                        {
+                            rezTak2 = new RezultatskoTakmicenje();
+                            rezTak2.Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
+                        }
 
-                        PoredakUkupno poredak3 = null;
-                        PoredakUkupno poredak4 = null;
+                        RezultatskoTakmicenje rezTak3 = null;
+                        RezultatskoTakmicenje rezTak4 = null;
                         if (takmicenje.TreceKolo != null)
-                            poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
+                            rezTak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija);
                         if (takmicenje.CetvrtoKolo != null)
-                            poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija).Takmicenje1.PoredakUkupno;
+                            rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
 
                         if (takmicenje.FinaleKupa)
                         {
                             if (rt.Takmicenje1.PoredakUkupnoFinaleKupa == null)
                                 rt.Takmicenje1.PoredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
-                            rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, poredak1, poredak2);
+                            rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
                         }
                         else if (takmicenje.ZbirViseKola)
                         {
                             if (rt.Takmicenje1.PoredakUkupnoZbirViseKola == null)
                                 rt.Takmicenje1.PoredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
-                            rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
+                            rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
                         }
                     }
 

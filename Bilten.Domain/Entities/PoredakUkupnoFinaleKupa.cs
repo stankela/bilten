@@ -28,7 +28,8 @@ namespace Bilten.Domain
             DeoTakmicenjaKod = DeoTakmicenjaKod.Takmicenje1;
         }
 
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2)
+        public virtual void create(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
+            RezultatskoTakmicenje rezTak2)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -43,12 +44,12 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            foreach (RezultatUkupno r in p1.Rezultati)
+            foreach (RezultatUkupno r in rezTak1.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
             }
-            foreach (RezultatUkupno r in p2.Rezultati)
+            foreach (RezultatUkupno r in rezTak2.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
