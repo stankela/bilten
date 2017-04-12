@@ -28,9 +28,15 @@ namespace Bilten.Domain
 
         }
 
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakSprava poredakPrvoKolo,
-            PoredakSprava poredakDrugoKolo)
+        public virtual void create(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
+            RezultatskoTakmicenje rezTak2)
         {
+            if (Sprava == Sprava.Preskok)
+            {
+                createPreskok(rezTak, rezTak1, rezTak2);
+                return;
+            }
+
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
             IDictionary<GimnasticarUcesnik, RezultatSpravaFinaleKupa> rezultatiMap =
@@ -42,31 +48,24 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            if (poredakPrvoKolo != null)
+            foreach (RezultatSprava r in rezTak1.Takmicenje1.getPoredakSprava(Sprava).Rezultati)
             {
-                foreach (RezultatSprava r in poredakPrvoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                    {
-                        RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                        r2.D_PrvoKolo = r.D;
-                        r2.E_PrvoKolo = r.E;
-                        r2.TotalPrvoKolo = r.Total;
-                    }
+                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                    r2.D_PrvoKolo = r.D;
+                    r2.E_PrvoKolo = r.E;
+                    r2.TotalPrvoKolo = r.Total;
                 }
             }
-
-            if (poredakDrugoKolo != null)
+            foreach (RezultatSprava r in rezTak2.Takmicenje1.getPoredakSprava(Sprava).Rezultati)
             {
-                foreach (RezultatSprava r in poredakDrugoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                    {
-                        RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                        r2.D_DrugoKolo = r.D;
-                        r2.E_DrugoKolo = r.E;
-                        r2.TotalDrugoKolo = r.Total;
-                    }
+                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                    r2.D_DrugoKolo = r.D;
+                    r2.E_DrugoKolo = r.E;
+                    r2.TotalDrugoKolo = r.Total;
                 }
             }
 
@@ -119,8 +118,8 @@ namespace Bilten.Domain
         // TODO3: Za sve poretke (ukupno, sprava, ekipno, kako za finale kupa, tako i za obicna takmicenja) specifikuj
         // pravila razresavanja istih ocena.
 
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakPreskok poredakPrvoKolo,
-            PoredakPreskok poredakDrugoKolo, bool poredak1NaOsnovuObaPreskoka, bool poredak2NaOsnovuObaPreskoka)
+        private void createPreskok(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
+            RezultatskoTakmicenje rezTak2)
         {
             IList<GimnasticarUcesnik> gimnasticari = new List<GimnasticarUcesnik>(rezTak.Takmicenje1.Gimnasticari);
 
@@ -133,84 +132,78 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            if (poredakPrvoKolo != null)
+            bool postojiTotalObeOcene = false;
+            foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
             {
-                bool postojiTotalObeOcene = false;
-                foreach (RezultatPreskok r in poredakPrvoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                {
+                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                    if (!rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka)
+                    {
+                        r2.D_PrvoKolo = r.D;
+                        r2.E_PrvoKolo = r.E;
+                        r2.TotalPrvoKolo = r.Total;
+                    }
+                    else
+                    {
+                        r2.D_PrvoKolo = null;
+                        r2.E_PrvoKolo = null;
+                        r2.TotalPrvoKolo = r.TotalObeOcene;
+                        postojiTotalObeOcene |= (r.TotalObeOcene != null);
+                    }
+                }
+            }
+            if (rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka && !postojiTotalObeOcene)
+            {
+                // U propozicijama za prvo kolo je stavljeno da se preskok racuna na osnovu
+                // oba preskoka, ali ni za jednog gimnasticara ne postoji ocena za oba preskoka.
+                // Ova situacija najverovatnije nastaje kada se u prvom kolu kao prvi preskok
+                // unosila konacna ocena za oba preskoka.
+                // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
+                foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     {
                         RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                        if (!poredak1NaOsnovuObaPreskoka)
-                        {
-                            r2.D_PrvoKolo = r.D;
-                            r2.E_PrvoKolo = r.E;
-                            r2.TotalPrvoKolo = r.Total;
-                        }
-                        else
-                        {
-                            r2.D_PrvoKolo = null;
-                            r2.E_PrvoKolo = null;
-                            r2.TotalPrvoKolo = r.TotalObeOcene;
-                            postojiTotalObeOcene |= (r.TotalObeOcene != null);
-                        }
-                    }
-                }
-                if (poredak1NaOsnovuObaPreskoka && !postojiTotalObeOcene)
-                {
-                    // U propozicijama za prvo kolo je stavljeno da se preskok racuna na osnovu
-                    // oba preskoka, ali ni za jednog gimnasticara ne postoji ocena za oba preskoka.
-                    // Ova situacija najverovatnije nastaje kada se u prvom kolu kao prvi preskok
-                    // unosila konacna ocena za oba preskoka.
-                    // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
-                    foreach (RezultatPreskok r in poredakPrvoKolo.Rezultati)
-                    {
-                        if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                        {
-                            RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                            r2.D_PrvoKolo = r.D;
-                            r2.E_PrvoKolo = r.E;
-                            r2.TotalPrvoKolo = r.Total;
-                        }
+                        r2.D_PrvoKolo = r.D;
+                        r2.E_PrvoKolo = r.E;
+                        r2.TotalPrvoKolo = r.Total;
                     }
                 }
             }
 
-            if (poredakDrugoKolo != null)
+            postojiTotalObeOcene = false;
+            foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
             {
-                bool postojiTotalObeOcene = false;
-                foreach (RezultatPreskok r in poredakDrugoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                {
+                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
+                    if (!rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka)
+                    {
+                        r2.D_DrugoKolo = r.D;
+                        r2.E_DrugoKolo = r.E;
+                        r2.TotalDrugoKolo = r.Total;
+                    }
+                    else
+                    {
+                        r2.D_DrugoKolo = null;
+                        r2.E_DrugoKolo = null;
+                        r2.TotalDrugoKolo = r.TotalObeOcene;
+                        postojiTotalObeOcene |= (r.TotalObeOcene != null);
+                    }
+                }
+            }
+            if (rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka && !postojiTotalObeOcene)
+            {
+                // Isti komentar kao za prvo kolo.
+                foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Gimnasticar))
                     {
                         RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                        if (!poredak2NaOsnovuObaPreskoka)
-                        {
-                            r2.D_DrugoKolo = r.D;
-                            r2.E_DrugoKolo = r.E;
-                            r2.TotalDrugoKolo = r.Total;
-                        }
-                        else
-                        {
-                            r2.D_DrugoKolo = null;
-                            r2.E_DrugoKolo = null;
-                            r2.TotalDrugoKolo = r.TotalObeOcene;
-                            postojiTotalObeOcene |= (r.TotalObeOcene != null);
-                        }
-                    }
-                }
-                if (poredak2NaOsnovuObaPreskoka && !postojiTotalObeOcene)
-                {
-                    // Isti komentar kao za prvo kolo.
-                    foreach (RezultatPreskok r in poredakDrugoKolo.Rezultati)
-                    {
-                        if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                        {
-                            RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                            r2.D_DrugoKolo = r.D;
-                            r2.E_DrugoKolo = r.E;
-                            r2.TotalDrugoKolo = r.Total;
-                        }
+                        r2.D_DrugoKolo = r.D;
+                        r2.E_DrugoKolo = r.E;
+                        r2.TotalDrugoKolo = r.Total;
                     }
                 }
             }

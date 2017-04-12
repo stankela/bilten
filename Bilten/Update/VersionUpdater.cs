@@ -230,43 +230,18 @@ public class VersionUpdater
                                 Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
                             RezultatskoTakmicenje rezTak2 =
                                 Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
+                            if (rt.Id == 654)
+                            {
+                                rezTak2 = new RezultatskoTakmicenje();
+                                rezTak2.Propozicije = new Propozicije();
+                                rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = false;
+                                rezTak2.Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
+                            }
 
                             rt.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
 
                             foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
-                            {
-                                if (s != Sprava.Preskok)
-                                {
-                                    PoredakSprava poredakSprava1 = rezTak1.Takmicenje1.getPoredakSprava(s);
-                                    PoredakSprava poredakSprava2;
-                                    if (rt.Id != 654)
-                                        poredakSprava2 = rezTak2.Takmicenje1.getPoredakSprava(s);
-                                    else
-                                        poredakSprava2 = new PoredakSprava();
-                                    rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt, poredakSprava1, poredakSprava2);
-                                }
-                                else
-                                {
-                                    PoredakPreskok poredakPreskok1 = rezTak1.Takmicenje1.PoredakPreskok;
-                                    bool obaPreskoka1 = rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-
-                                    PoredakPreskok poredakPreskok2;
-                                    bool obaPreskoka2;
-
-                                    if (rt.Id != 654)
-                                    {
-                                        poredakPreskok2 = rezTak2.Takmicenje1.PoredakPreskok;
-                                        obaPreskoka2 = rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-                                    }
-                                    else
-                                    {
-                                        poredakPreskok2 = new PoredakPreskok();
-                                        obaPreskoka2 = false;
-                                    }
-                                    rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt,
-                                        poredakPreskok1, poredakPreskok2, obaPreskoka1, obaPreskoka2);
-                                }
-                            }
+                                rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt, rezTak1, rezTak2);
 
                             // update kval status
                             if (rezultatiUpdate.ContainsKey(rt.Id))
@@ -295,7 +270,7 @@ public class VersionUpdater
                         else
                         {
                             rezTak2 = new RezultatskoTakmicenje();
-                            rezTak2.Takmicenje1 = new Takmicenje1();
+                            rezTak2.Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
                         }
 
                         RezultatskoTakmicenje rezTak3 = null;

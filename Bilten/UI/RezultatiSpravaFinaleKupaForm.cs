@@ -400,31 +400,17 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
                     
-                    IList<RezultatskoTakmicenje> rezTakmicenja1
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
-                    IList<RezultatskoTakmicenje> rezTakmicenja2
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
+                    RezultatskoTakmicenje rezTak1 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        takmicenje.PrvoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
+                    RezultatskoTakmicenje rezTak2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        takmicenje.DrugoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     
-                    RezultatskoTakmicenje rezTak1 =
-                        Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, ActiveTakmicenje.Kategorija);
-                    RezultatskoTakmicenje rezTak2 =
-                        Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, ActiveTakmicenje.Kategorija);
-
                     PoredakSpravaFinaleKupa p = ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava);
-                    if (ActiveSprava != Sprava.Preskok)
-                    {
-                        p.create(ActiveTakmicenje,
-                            rezTak1.Takmicenje1.getPoredakSprava(ActiveSprava),
-                            rezTak2.Takmicenje1.getPoredakSprava(ActiveSprava));
-                    }
-                    else
-                    {
-                        p.create(ActiveTakmicenje,
-                            rezTak1.Takmicenje1.PoredakPreskok,
-                            rezTak2.Takmicenje1.PoredakPreskok,
-                            rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
-                            rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka);
-                    }
+                        p.create(ActiveTakmicenje, rezTak1, rezTak2);
+                    
+                    rezultatskoTakmicenjeDAO.Evict(rezTak1);
+                    rezultatskoTakmicenjeDAO.Evict(rezTak2);
+                    
                     DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(p);
                     session.Transaction.Commit();
                 }

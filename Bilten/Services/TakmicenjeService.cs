@@ -437,21 +437,7 @@ namespace Bilten.Services
                     rt.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
 
                     foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
-                    {
-                        if (s != Sprava.Preskok)
-                        {
-                            rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt,
-                                rezTak1.Takmicenje1.getPoredakSprava(s), rezTak2.Takmicenje1.getPoredakSprava(s));
-                        }
-                        else
-                        {
-                            rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt,
-                                rezTak1.Takmicenje1.PoredakPreskok,
-                                rezTak2.Takmicenje1.PoredakPreskok,
-                                rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
-                                rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka);
-                        }
-                    }
+                        rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt, rezTak1, rezTak2);
                 }
             }
 

@@ -79,6 +79,7 @@ namespace Bilten.Domain
             get { return _takmicenje1; }
             // NOTE: Postavio sam na public jer mi je trebalo u VersionUpdater.updateVersion13, da ispravim
             // neregularnost u jednom finalu kupa.
+            // TODO: Eventualno ukloni ovo
             /*protected*/ set { _takmicenje1 = value; }
         }
 
