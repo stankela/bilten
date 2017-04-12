@@ -28,8 +28,8 @@ namespace Bilten.Domain
             DeoTakmicenjaKod = DeoTakmicenjaKod.Takmicenje1;
         }
 
-        public virtual void create(RezultatskoTakmicenje rezTak, PoredakEkipno poredakPrvoKolo,
-            PoredakEkipno poredakDrugoKolo, PoredakEkipno poredakTreceKolo, PoredakEkipno poredakCetvrtoKolo)
+        public virtual void create(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
+            RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3, RezultatskoTakmicenje rezTak4)
         {
             IList<Ekipa> ekipe = new List<Ekipa>(rezTak.Takmicenje1.Ekipe);
 
@@ -44,47 +44,39 @@ namespace Bilten.Domain
                 rezultatiMap.Add(e, rezultat);
             }
 
-            if (poredakPrvoKolo != null)
+            foreach (RezultatEkipno r in rezTak1.Takmicenje1.PoredakEkipno.Rezultati)
             {
-                foreach (RezultatEkipno r in poredakPrvoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Ekipa))
                 {
-                    if (rezultatiMap.ContainsKey(r.Ekipa))
-                    {
-                        rezultatiMap[r.Ekipa].ParterPrvoKolo = r.Parter;
-                        rezultatiMap[r.Ekipa].KonjPrvoKolo = r.Konj;
-                        rezultatiMap[r.Ekipa].KarikePrvoKolo = r.Karike;
-                        rezultatiMap[r.Ekipa].PreskokPrvoKolo = r.Preskok;
-                        rezultatiMap[r.Ekipa].RazbojPrvoKolo = r.Razboj;
-                        rezultatiMap[r.Ekipa].VratiloPrvoKolo = r.Vratilo;
-                        rezultatiMap[r.Ekipa].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Ekipa].GredaPrvoKolo = r.Greda;
-                        rezultatiMap[r.Ekipa].TotalPrvoKolo = r.Total;
-                    }
+                    rezultatiMap[r.Ekipa].ParterPrvoKolo = r.Parter;
+                    rezultatiMap[r.Ekipa].KonjPrvoKolo = r.Konj;
+                    rezultatiMap[r.Ekipa].KarikePrvoKolo = r.Karike;
+                    rezultatiMap[r.Ekipa].PreskokPrvoKolo = r.Preskok;
+                    rezultatiMap[r.Ekipa].RazbojPrvoKolo = r.Razboj;
+                    rezultatiMap[r.Ekipa].VratiloPrvoKolo = r.Vratilo;
+                    rezultatiMap[r.Ekipa].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
+                    rezultatiMap[r.Ekipa].GredaPrvoKolo = r.Greda;
+                    rezultatiMap[r.Ekipa].TotalPrvoKolo = r.Total;
                 }
             }
-
-            if (poredakDrugoKolo != null)
+            foreach (RezultatEkipno r in rezTak2.Takmicenje1.PoredakEkipno.Rezultati)
             {
-                foreach (RezultatEkipno r in poredakDrugoKolo.Rezultati)
+                if (rezultatiMap.ContainsKey(r.Ekipa))
                 {
-                    if (rezultatiMap.ContainsKey(r.Ekipa))
-                    {
-                        rezultatiMap[r.Ekipa].ParterDrugoKolo = r.Parter;
-                        rezultatiMap[r.Ekipa].KonjDrugoKolo = r.Konj;
-                        rezultatiMap[r.Ekipa].KarikeDrugoKolo = r.Karike;
-                        rezultatiMap[r.Ekipa].PreskokDrugoKolo = r.Preskok;
-                        rezultatiMap[r.Ekipa].RazbojDrugoKolo = r.Razboj;
-                        rezultatiMap[r.Ekipa].VratiloDrugoKolo = r.Vratilo;
-                        rezultatiMap[r.Ekipa].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Ekipa].GredaDrugoKolo = r.Greda;
-                        rezultatiMap[r.Ekipa].TotalDrugoKolo = r.Total;
-                    }
+                    rezultatiMap[r.Ekipa].ParterDrugoKolo = r.Parter;
+                    rezultatiMap[r.Ekipa].KonjDrugoKolo = r.Konj;
+                    rezultatiMap[r.Ekipa].KarikeDrugoKolo = r.Karike;
+                    rezultatiMap[r.Ekipa].PreskokDrugoKolo = r.Preskok;
+                    rezultatiMap[r.Ekipa].RazbojDrugoKolo = r.Razboj;
+                    rezultatiMap[r.Ekipa].VratiloDrugoKolo = r.Vratilo;
+                    rezultatiMap[r.Ekipa].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
+                    rezultatiMap[r.Ekipa].GredaDrugoKolo = r.Greda;
+                    rezultatiMap[r.Ekipa].TotalDrugoKolo = r.Total;
                 }
             }
-
-            if (poredakTreceKolo != null)
+            if (rezTak3 != null)
             {
-                foreach (RezultatEkipno r in poredakTreceKolo.Rezultati)
+                foreach (RezultatEkipno r in rezTak3.Takmicenje1.PoredakEkipno.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Ekipa))
                     {
@@ -100,10 +92,9 @@ namespace Bilten.Domain
                     }
                 }
             }
-
-            if (poredakCetvrtoKolo != null)
+            if (rezTak4 != null)
             {
-                foreach (RezultatEkipno r in poredakCetvrtoKolo.Rezultati)
+                foreach (RezultatEkipno r in rezTak4.Takmicenje1.PoredakEkipno.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Ekipa))
                     {

@@ -77,7 +77,9 @@ namespace Bilten.Domain
         public virtual Takmicenje1 Takmicenje1
         {
             get { return _takmicenje1; }
-            protected set { _takmicenje1 = value; }
+            // NOTE: Postavio sam na public jer mi je trebalo u VersionUpdater.updateVersion13, da ispravim
+            // neregularnost u jednom finalu kupa.
+            /*protected*/ set { _takmicenje1 = value; }
         }
 
         private Takmicenje2 _takmicenje2;

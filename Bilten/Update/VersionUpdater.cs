@@ -287,32 +287,35 @@ public class VersionUpdater
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        PoredakEkipno poredak1
-                            = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
-                        PoredakEkipno poredak2;
+                        RezultatskoTakmicenje rezTak1 = Takmicenje.getRezTakmicenje(
+                            rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
+                        RezultatskoTakmicenje rezTak2;
                         if (rt.Id != 654)
-                            poredak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
+                            rezTak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
                         else
-                            poredak2 = new PoredakEkipno();
-                        
-                        PoredakEkipno poredak3 = null;
-                        PoredakEkipno poredak4 = null;
+                        {
+                            rezTak2 = new RezultatskoTakmicenje();
+                            rezTak2.Takmicenje1 = new Takmicenje1();
+                        }
+
+                        RezultatskoTakmicenje rezTak3 = null;
+                        RezultatskoTakmicenje rezTak4 = null;
                         if (takmicenje.TreceKolo != null)
-                            poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
+                            rezTak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija);
                         if (takmicenje.CetvrtoKolo != null)
-                            poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
+                            rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
 
                         if (takmicenje.FinaleKupa)
                         {
                             if (rt.Takmicenje1.PoredakEkipnoFinaleKupa == null)
                                 rt.Takmicenje1.PoredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();
-                            rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, poredak1, poredak2);
+                            rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, rezTak1, rezTak2);
                         }
                         else if (takmicenje.ZbirViseKola)
                         {
                             if (rt.Takmicenje1.PoredakEkipnoZbirViseKola == null)
                                 rt.Takmicenje1.PoredakEkipnoZbirViseKola = new PoredakEkipnoZbirViseKola();
-                            rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
+                            rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
                         }
                     }
 

@@ -235,22 +235,17 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
-                    IList<RezultatskoTakmicenje> rezTakmicenja1
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
-                    IList<RezultatskoTakmicenje> rezTakmicenja2
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
+                    RezultatskoTakmicenje rezTak1
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        takmicenje.PrvoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
+                    RezultatskoTakmicenje rezTak2
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        takmicenje.DrugoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
 
-                    PoredakEkipno poredak1
-                        = Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakEkipno;
-                    PoredakEkipno poredak2
-                        = Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakEkipno;
+                    ActiveTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.create(ActiveTakmicenje, rezTak1, rezTak2);
 
-                    ActiveTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.create(ActiveTakmicenje, poredak1, poredak2);
-
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja1)
-                        rezultatskoTakmicenjeDAO.Evict(rt);
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
-                        rezultatskoTakmicenjeDAO.Evict(rt);
+                    rezultatskoTakmicenjeDAO.Evict(rezTak1);
+                    rezultatskoTakmicenjeDAO.Evict(rezTak2);
 
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoFinaleKupaDAO()
                         .Update(ActiveTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa);

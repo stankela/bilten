@@ -225,57 +225,32 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
-                    IList<RezultatskoTakmicenje> rezTakmicenja1
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
-                    IList<RezultatskoTakmicenje> rezTakmicenja2
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
-                    IList<RezultatskoTakmicenje> rezTakmicenja3 = null;
+                    RezultatskoTakmicenje rezTak1 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari
+                        (takmicenje.PrvoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
+                    RezultatskoTakmicenje rezTak2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        takmicenje.DrugoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
+                    RezultatskoTakmicenje rezTak3 = null;
                     if (takmicenje.TreceKolo != null)
                     {
-                        rezTakmicenja3 = rezultatskoTakmicenjeDAO
-                            .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.TreceKolo.Id);
+                        rezTak3 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                            takmicenje.TreceKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     }
-                    IList<RezultatskoTakmicenje> rezTakmicenja4 = null;
+                    RezultatskoTakmicenje rezTak4 = null;
                     if (takmicenje.CetvrtoKolo != null)
                     {
-                        rezTakmicenja4 = rezultatskoTakmicenjeDAO
-                            .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.CetvrtoKolo.Id);
-                    }
-
-                    PoredakEkipno poredak1
-                        = Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakEkipno;
-                    PoredakEkipno poredak2
-                        = Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, ActiveTakmicenje.Kategorija).Takmicenje1.PoredakEkipno;
-                    PoredakEkipno poredak3 = null;
-                    if (takmicenje.TreceKolo != null)
-                    {
-                        poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenja3, 0, ActiveTakmicenje.Kategorija)
-                            .Takmicenje1.PoredakEkipno;
-                    }
-                    PoredakEkipno poredak4 = null;
-                    if (takmicenje.CetvrtoKolo != null)
-                    {
-                        poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenja4, 0, ActiveTakmicenje.Kategorija)
-                            .Takmicenje1.PoredakEkipno;
+                        rezTak4 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                            takmicenje.CetvrtoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     }
 
                     ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola.create(ActiveTakmicenje,
-                        poredak1, poredak2, poredak3, poredak4);
+                        rezTak1, rezTak2, rezTak3, rezTak4);
 
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja1)
-                        rezultatskoTakmicenjeDAO.Evict(rt);
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
-                        rezultatskoTakmicenjeDAO.Evict(rt);
-                    if (takmicenje.TreceKolo != null)
-                    {
-                        foreach (RezultatskoTakmicenje rt in rezTakmicenja3)
-                            rezultatskoTakmicenjeDAO.Evict(rt);
-                    }
-                    if (takmicenje.CetvrtoKolo != null)
-                    {
-                        foreach (RezultatskoTakmicenje rt in rezTakmicenja4)
-                            rezultatskoTakmicenjeDAO.Evict(rt);
-                    }
+                    rezultatskoTakmicenjeDAO.Evict(rezTak1);
+                    rezultatskoTakmicenjeDAO.Evict(rezTak2);
+                    if (rezTak3 != null)
+                        rezultatskoTakmicenjeDAO.Evict(rezTak3);
+                    if (rezTak4 != null)
+                        rezultatskoTakmicenjeDAO.Evict(rezTak4);
 
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoZbirViseKolaDAO()
                         .Update(ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola);

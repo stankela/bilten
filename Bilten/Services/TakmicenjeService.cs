@@ -458,21 +458,21 @@ namespace Bilten.Services
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja (na svim mestima gde se racuna).
-                PoredakEkipno poredak1
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
-                PoredakEkipno poredak2
-                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
-                PoredakEkipno poredak3 = null;
-                PoredakEkipno poredak4 = null;
+                RezultatskoTakmicenje rezTak1
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
+                RezultatskoTakmicenje rezTak2
+                    = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
+                RezultatskoTakmicenje rezTak3 = null;
+                RezultatskoTakmicenje rezTak4 = null;
                 if (takmicenje.TreceKolo != null)
-                    poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
+                    rezTak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija);
                 if (takmicenje.CetvrtoKolo != null)
-                    poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija).Takmicenje1.PoredakEkipno;
+                    rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
 
                 if (takmicenje.FinaleKupa)
-                    rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, poredak1, poredak2);
+                    rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, rezTak1, rezTak2);
                 else if (takmicenje.ZbirViseKola)
-                    rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, poredak1, poredak2, poredak3, poredak4);
+                    rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
             }
 
             foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
