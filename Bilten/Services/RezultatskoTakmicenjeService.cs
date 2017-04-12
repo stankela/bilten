@@ -19,35 +19,27 @@ namespace Bilten.Services
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             Takmicenje takmicenje = takmicenjeDAO.FindById(rezTak.Takmicenje.Id);
 
-            IList<RezultatskoTakmicenje> rezTakmicenja1 = null;
-            IList<RezultatskoTakmicenje> rezTakmicenja2 = null;
-            IList<RezultatskoTakmicenje> rezTakmicenja3 = null;
-            IList<RezultatskoTakmicenje> rezTakmicenja4 = null;
-            PoredakUkupno poredak1 = null;
-            PoredakUkupno poredak2 = null;
-            PoredakUkupno poredak3 = null;
-            PoredakUkupno poredak4 = null;
+            RezultatskoTakmicenje rezTak1 = null;
+            RezultatskoTakmicenje rezTak2 = null;
+            RezultatskoTakmicenje rezTak3 = null;
+            RezultatskoTakmicenje rezTak4 = null;
             if (takmicenje.FinaleKupa || takmicenje.ZbirViseKola)
             {
-                rezTakmicenja1 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.PrvoKolo.Id);
-                rezTakmicenja2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.DrugoKolo.Id);
-                poredak1 = Takmicenje.getRezTakmicenje(rezTakmicenja1, 0, rezTak.Kategorija).Takmicenje1.PoredakUkupno;
-                poredak2 = Takmicenje.getRezTakmicenje(rezTakmicenja2, 0, rezTak.Kategorija).Takmicenje1.PoredakUkupno;
+                rezTak1 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                    takmicenje.PrvoKolo.Id, rezTak.Kategorija.Naziv, 0);
+                rezTak2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                    takmicenje.DrugoKolo.Id, rezTak.Kategorija.Naziv, 0);
                 if (takmicenje.ZbirViseKola)
                 {
                     if (takmicenje.TreceKolo != null)
                     {
-                        rezTakmicenja3 = rezultatskoTakmicenjeDAO
-                            .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.TreceKolo.Id);
-                        poredak3 = Takmicenje.getRezTakmicenje(rezTakmicenja3, 0, rezTak.Kategorija)
-                            .Takmicenje1.PoredakUkupno;
+                        rezTak3 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                            takmicenje.TreceKolo.Id, rezTak.Kategorija.Naziv, 0);
                     }
                     if (takmicenje.CetvrtoKolo != null)
                     {
-                        rezTakmicenja4 = rezultatskoTakmicenjeDAO
-                            .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenje.CetvrtoKolo.Id);
-                        poredak4 = Takmicenje.getRezTakmicenje(rezTakmicenja4, 0, rezTak.Kategorija)
-                            .Takmicenje1.PoredakUkupno;
+                        rezTak4 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                            takmicenje.CetvrtoKolo.Id, rezTak.Kategorija.Naziv, 0);
                     }
                 }
             }
@@ -59,10 +51,10 @@ namespace Bilten.Services
                 {
                     IList<Ocena> ocene = ocenaDAO.FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
                     if (takmicenje.ZbirViseKola)
-                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, poredak1, poredak2,
-                            poredak3, poredak4);
+                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, rezTak1, rezTak2,
+                            rezTak3, rezTak4);
                     else if (takmicenje.FinaleKupa)
-                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, poredak1, poredak2);
+                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, rezTak1, rezTak2);
                     else
                         rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak);
 
@@ -74,13 +66,14 @@ namespace Bilten.Services
             }
 
             takmicenjeDAO.Evict(takmicenje);
-            if (takmicenje.FinaleKupa)
-            {
-                foreach (RezultatskoTakmicenje rt in rezTakmicenja1)
-                    rezultatskoTakmicenjeDAO.Evict(rt);
-                foreach (RezultatskoTakmicenje rt in rezTakmicenja2)
-                    rezultatskoTakmicenjeDAO.Evict(rt);
-            }
+            if (rezTak1 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak1);
+            if (rezTak2 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak2);
+            if (rezTak3 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak3);
+            if (rezTak4 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak4);
             
             if (addedGimnasticari.Count > 0)
                 DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);

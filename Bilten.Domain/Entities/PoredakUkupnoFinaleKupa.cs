@@ -220,12 +220,12 @@ namespace Bilten.Domain
         }
 
         public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
-            PoredakUkupno p1, PoredakUkupno p2)
+            RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
         {
             RezultatUkupnoFinaleKupa rezultat = new RezultatUkupnoFinaleKupa();
             rezultat.Gimnasticar = g;
 
-            foreach (RezultatUkupno r in p1.Rezultati)
+            foreach (RezultatUkupno r in rezTak1.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
@@ -233,7 +233,7 @@ namespace Bilten.Domain
                     break;
                 }
             }
-            foreach (RezultatUkupno r in p2.Rezultati)
+            foreach (RezultatUkupno r in rezTak2.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {

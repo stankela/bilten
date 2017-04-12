@@ -127,12 +127,13 @@ namespace Bilten.Domain
         }
 
         public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
-            PoredakUkupno p1, PoredakUkupno p2, PoredakUkupno p3, PoredakUkupno p4)
+            RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3,
+            RezultatskoTakmicenje rezTak4)
         {
             RezultatUkupnoZbirViseKola rezultat = new RezultatUkupnoZbirViseKola();
             rezultat.Gimnasticar = g;
 
-            foreach (RezultatUkupno r in p1.Rezultati)
+            foreach (RezultatUkupno r in rezTak1.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
@@ -140,7 +141,7 @@ namespace Bilten.Domain
                     break;
                 }
             }
-            foreach (RezultatUkupno r in p2.Rezultati)
+            foreach (RezultatUkupno r in rezTak2.Takmicenje1.PoredakUkupno.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
@@ -148,9 +149,9 @@ namespace Bilten.Domain
                     break;
                 }
             }
-            if (p3 != null)
+            if (rezTak3 != null)
             {
-                foreach (RezultatUkupno r in p3.Rezultati)
+                foreach (RezultatUkupno r in rezTak3.Takmicenje1.PoredakUkupno.Rezultati)
                 {
                     if (r.Gimnasticar.Equals(g))
                     {
@@ -159,9 +160,9 @@ namespace Bilten.Domain
                     }
                 }
             }
-            if (p4 != null)
+            if (rezTak4 != null)
             {
-                foreach (RezultatUkupno r in p4.Rezultati)
+                foreach (RezultatUkupno r in rezTak4.Takmicenje1.PoredakUkupno.Rezultati)
                 {
                     if (r.Gimnasticar.Equals(g))
                     {

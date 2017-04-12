@@ -260,9 +260,9 @@ namespace Bilten.Domain
         }
 
         public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
-            RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2)
+            RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
         {
-            PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, p1, p2);
+            PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, rezTak1, rezTak2);
             
             if (rezTak.odvojenoTak2())
                 PoredakUkupno.addGimnasticar(g, ocene, rezTak);
@@ -279,9 +279,10 @@ namespace Bilten.Domain
         }
 
         public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
-            RezultatskoTakmicenje rezTak, PoredakUkupno p1, PoredakUkupno p2, PoredakUkupno p3, PoredakUkupno p4)
+            RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2,
+            RezultatskoTakmicenje rezTak3, RezultatskoTakmicenje rezTak4)
         {
-            PoredakUkupnoZbirViseKola.addGimnasticar(g, rezTak, p1, p2, p3, p4);
+            PoredakUkupnoZbirViseKola.addGimnasticar(g, rezTak, rezTak1, rezTak2, rezTak3, rezTak4);
         }
 
         public virtual void updateRezultatiOnGimnasticarDeleted(GimnasticarUcesnik g, IList<Ocena> ocene,
