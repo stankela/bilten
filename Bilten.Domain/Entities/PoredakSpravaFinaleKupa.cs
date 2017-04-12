@@ -318,10 +318,10 @@ namespace Bilten.Domain
             int rezCount = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
-                RezultatSpravaFinaleKupa rezulat = rezultati[i];
-                if (rezulat.Total == null)
+                RezultatSpravaFinaleKupa rezultat = rezultati[i];
+                if (rezultat.Total == null)
                 {
-                    rezulat.KvalStatus = KvalifikacioniStatus.None;
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                     continue;
                 }
 
@@ -330,27 +330,27 @@ namespace Bilten.Domain
 
                 if (maxBrojTakmicaraVaziZaDrzavu)
                 {
-                    if (rezulat.Gimnasticar.DrzavaUcesnik != null)
+                    if (rezultat.Gimnasticar.DrzavaUcesnik != null)
                     {
-                        id = rezulat.Gimnasticar.DrzavaUcesnik.Id;
+                        id = rezultat.Gimnasticar.DrzavaUcesnik.Id;
                         brojTakmicaraMap = brojTakmicaraDrzavaMap;
                     }
                     else
                     {
-                        id = rezulat.Gimnasticar.KlubUcesnik.Id;
+                        id = rezultat.Gimnasticar.KlubUcesnik.Id;
                         brojTakmicaraMap = brojTakmicaraKlubMap;
                     }
                 }
                 else
                 {
-                    if (rezulat.Gimnasticar.KlubUcesnik != null)
+                    if (rezultat.Gimnasticar.KlubUcesnik != null)
                     {
-                        id = rezulat.Gimnasticar.KlubUcesnik.Id;
+                        id = rezultat.Gimnasticar.KlubUcesnik.Id;
                         brojTakmicaraMap = brojTakmicaraKlubMap;
                     }
                     else
                     {
-                        id = rezulat.Gimnasticar.DrzavaUcesnik.Id;
+                        id = rezultat.Gimnasticar.DrzavaUcesnik.Id;
                         brojTakmicaraMap = brojTakmicaraDrzavaMap;
                     }
                 }
@@ -363,7 +363,7 @@ namespace Bilten.Domain
                     if (neogranicenBrojTakmicaraIzKluba)
                     {
                         finCount++;
-                        rezulat.KvalStatus = KvalifikacioniStatus.Q;
+                        rezultat.KvalStatus = KvalifikacioniStatus.Q;
                     }
                     else
                     {
@@ -371,7 +371,7 @@ namespace Bilten.Domain
                         {
                             finCount++;
                             brojTakmicaraMap[id]++;
-                            rezulat.KvalStatus = KvalifikacioniStatus.Q;
+                            rezultat.KvalStatus = KvalifikacioniStatus.Q;
                         }
                         else
                         {
@@ -379,10 +379,10 @@ namespace Bilten.Domain
                             && rezCount < brojRezervi)
                             {
                                 rezCount++;
-                                rezulat.KvalStatus = KvalifikacioniStatus.R;
+                                rezultat.KvalStatus = KvalifikacioniStatus.R;
                             }
                             else
-                                rezulat.KvalStatus = KvalifikacioniStatus.None;
+                                rezultat.KvalStatus = KvalifikacioniStatus.None;
                         }
                     }
                 }
@@ -391,7 +391,7 @@ namespace Bilten.Domain
                     if (neogranicenBrojTakmicaraIzKluba)
                     {
                         rezCount++;
-                        rezulat.KvalStatus = KvalifikacioniStatus.R;
+                        rezultat.KvalStatus = KvalifikacioniStatus.R;
                     }
                     else
                     {
@@ -399,7 +399,7 @@ namespace Bilten.Domain
                         {
                             rezCount++;
                             brojTakmicaraMap[id]++;
-                            rezulat.KvalStatus = KvalifikacioniStatus.R;
+                            rezultat.KvalStatus = KvalifikacioniStatus.R;
                         }
                         else
                         {
@@ -407,16 +407,16 @@ namespace Bilten.Domain
                             && rezCount < brojRezervi)
                             {
                                 rezCount++;
-                                rezulat.KvalStatus = KvalifikacioniStatus.R;
+                                rezultat.KvalStatus = KvalifikacioniStatus.R;
                             }
                             else
-                                rezulat.KvalStatus = KvalifikacioniStatus.None;
+                                rezultat.KvalStatus = KvalifikacioniStatus.None;
                         }
                     }
                 }
                 else
                 {
-                    rezulat.KvalStatus = KvalifikacioniStatus.None;
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                 }
             }
         }

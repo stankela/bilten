@@ -172,26 +172,26 @@ namespace Bilten.Domain
             int rezCount = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
-                Rezultat rezulat = rezultati[i];
-                if (rezulat.Total == null)
+                Rezultat rezultat = rezultati[i];
+                if (rezultat.Total == null)
                 {
-                    rezulat.KvalStatus = KvalifikacioniStatus.None;
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                     continue;
                 }
 
                 if (finCount < brojFinalista)
                 {
                     finCount++;
-                    rezulat.KvalStatus = KvalifikacioniStatus.Q;
+                    rezultat.KvalStatus = KvalifikacioniStatus.Q;
                 }
                 else if (rezCount < brojRezervi)
                 {
                     rezCount++;
-                    rezulat.KvalStatus = KvalifikacioniStatus.R;
+                    rezultat.KvalStatus = KvalifikacioniStatus.R;
                 }
                 else
                 {
-                    rezulat.KvalStatus = KvalifikacioniStatus.None;
+                    rezultat.KvalStatus = KvalifikacioniStatus.None;
                 }
             }
         }
