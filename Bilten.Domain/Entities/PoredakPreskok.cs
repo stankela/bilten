@@ -41,7 +41,7 @@ namespace Bilten.Domain
             this._sprava = Sprava.Preskok;
         }
 
-        public virtual void initRezultati(IList<GimnasticarUcesnik> gimnasticari)
+        public virtual void initRezultati(IList<GimnasticarUcesnik> gimnasticari, RezultatskoTakmicenje rezTak)
         {
             Rezultati.Clear();
             foreach (GimnasticarUcesnik g in gimnasticari)
@@ -53,7 +53,7 @@ namespace Bilten.Domain
 
             // posto nepostoje ocene, sledeci poziv samo sortira po prezimenu i na
             // osnovu toga dodeljuje RedBroj
-            rankRezultati();
+            rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
         }
 
         public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene)
@@ -82,14 +82,73 @@ namespace Bilten.Domain
             foreach (RezultatPreskok r in rezultatiMap.Values)
                 Rezultati.Add(r);
 
-            rankRezultati();
+            rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
             updateKvalStatus(rezTak.Propozicije);
         }
 
-        private void rankRezultati()
+        private void rankRezultati(Propozicije propozicije, bool finaleKupa)
         {
-            List<RezultatPreskok> rezultati = new List<RezultatPreskok>(Rezultati);
+            bool obaPreskoka = propozicije.racunajObaPreskoka(DeoTakmicenjaKod, finaleKupa);
+            if (!obaPreskoka)
+            {
+                List<RezultatPreskok> rezultati = new List<RezultatPreskok>(Rezultati);
+                rankByPrviPreskok(rezultati, 0);
+            }
+            else
+            {
+                List<RezultatPreskok> rezultatiObaPreskoka = new List<RezultatPreskok>();
+                List<RezultatPreskok> rezultatiPrviPreskok = new List<RezultatPreskok>();
+                foreach (RezultatPreskok r in Rezultati)
+                {
+                    if (r.TotalObeOcene != null)
+                        rezultatiObaPreskoka.Add(r);
+                    else
+                        rezultatiPrviPreskok.Add(r);
+                }
 
+                // Ovakav nacin rangiranja rezultata (da se prvo rangiraju takmicari sa dva preskoka pa zatim sa jednim)
+                // obezbedjuje da i u situaciji kada je u propozicijama navedeno da se preskok racuna na osnovu obe ocene,
+                // a zatim se kod unosenja ocena unese samo prva ocena za sve takmicare, da ce i tada takmicari biti
+                // ispravno rangirani (rezultatiObaPreskoka ce tada biti prazni)
+                rankByObaPreskoka(rezultatiObaPreskoka);
+                rankByPrviPreskok(rezultatiPrviPreskok, rezultatiObaPreskoka.Count);
+            }
+        }
+
+        private void rankByObaPreskoka(List<RezultatPreskok> rezultati)
+        {
+            PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["TotalObeOcene"],
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["EObeOcene"],
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["PrezimeIme"]
+            };
+            ListSortDirection[] sortDir = new ListSortDirection[] {
+                ListSortDirection.Descending,
+                ListSortDirection.Descending,
+                ListSortDirection.Ascending
+            };
+            rezultati.Sort(new SortComparer<RezultatPreskok>(propDesc, sortDir));
+
+            RezultatPreskok prevRezultat = null;
+            short prevRank = 0;
+            for (int i = 0; i < rezultati.Count; i++)
+            {
+                rezultati[i].KvalStatus = KvalifikacioniStatus.None;
+                rezultati[i].RedBroj = (short)(i + 1);
+
+                // TotalObeOcene != null za sve rezultate
+                if (!resultsAreEqual(rezultati[i], prevRezultat, true))
+                    rezultati[i].Rank = rezultati[i].RedBroj;
+                else
+                    rezultati[i].Rank = prevRank;
+
+                prevRezultat = rezultati[i];
+                prevRank = rezultati[i].Rank.Value;
+            }
+        }
+
+        private void rankByPrviPreskok(List<RezultatPreskok> rezultati, int redBrojOffset)
+        {
             PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
                 TypeDescriptor.GetProperties(typeof(RezultatPreskok))["Total"],
                 TypeDescriptor.GetProperties(typeof(RezultatPreskok))["E"],
@@ -107,49 +166,19 @@ namespace Bilten.Domain
             for (int i = 0; i < rezultati.Count; i++)
             {
                 rezultati[i].KvalStatus = KvalifikacioniStatus.None;
-                rezultati[i].RedBroj = (short)(i + 1);
+                rezultati[i].RedBroj = (short)(i + 1 + redBrojOffset);
 
                 if (rezultati[i].Total == null)
-                {
                     rezultati[i].Rank = null;
-                }
                 else
                 {
                     if (!resultsAreEqual(rezultati[i], prevRezultat, false))
-                        rezultati[i].Rank = (short)(i + 1);
+                        rezultati[i].Rank = rezultati[i].RedBroj;
                     else
                         rezultati[i].Rank = prevRank;
 
                     prevRezultat = rezultati[i];
                     prevRank = rezultati[i].Rank.Value;
-                }
-            }
-
-            propDesc = new PropertyDescriptor[] {
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["TotalObeOcene"],
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["EObeOcene"],
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["PrezimeIme"]
-            };
-            rezultati.Sort(new SortComparer<RezultatPreskok>(propDesc, sortDir));
-
-            prevRezultat = null;
-            prevRank = 0;
-            for (int i = 0; i < rezultati.Count; i++)
-            {
-                rezultati[i].RedBroj2 = (short)(i + 1);
-                if (rezultati[i].TotalObeOcene == null)
-                {
-                    rezultati[i].Rank2 = null;
-                }
-                else
-                {
-                    if (!resultsAreEqual(rezultati[i], prevRezultat, true))
-                        rezultati[i].Rank2 = (short)(i + 1);
-                    else
-                        rezultati[i].Rank2 = prevRank;
-
-                    prevRezultat = rezultati[i];
-                    prevRank = rezultati[i].Rank2.Value;
                 }
             }
         }
@@ -172,6 +201,15 @@ namespace Bilten.Domain
             return result;
         }
 
+        // TODO4: Kada je u propozicijama stavljeno da se kvalifikanti racunaju na osnovu oba skoka, a u takmicenju 1 je
+        // unesen samo prvi skok, tada nijedan gimnasticar nece biti oznacen sa Q. Promeni da oznacava na osnovu
+        // prvog skoka. Takodje, i kod takmicenja 3, ako je u propozicijama navedeno da se racuna na osnovu oba
+        // preskoka a unesen je samo prvi, racunaj poredak na osnovu prvog skoka. (Ovde uvek treba gledati da li je
+        // unesena bar jedna ocena sa oba preskoka - ako jeste racuna se normalno; ako nije, racuna se samo prvi skok.)
+
+        // TODO4: Kod ranijih takmicenja (recimo iz 2013 i ranije), na nekim mestima je tadasnja verzija programa pogresno
+        // oznacila sve takmicare kao kvalifikante. Proveri sva takva mesta i eventualno probaj da ispravis.
+
         private void updateKvalStatus(Propozicije propozicije)
         {
             if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.PostojiTak3 || !propozicije.OdvojenoTak3)
@@ -183,9 +221,8 @@ namespace Bilten.Domain
 
             List<RezultatPreskok> rezultati = new List<RezultatPreskok>(Rezultati);
 
-            string propName = propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka ? "RedBroj2" : "RedBroj";
             PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[propName];
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj"];
             rezultati.Sort(new SortComparer<RezultatPreskok>(propDesc,
                 ListSortDirection.Ascending));
 
@@ -380,26 +417,14 @@ namespace Bilten.Domain
             return false;
         }
 
-        public virtual List<RezultatPreskok> getRezultatiDvaPreskoka()
-        {
-            List<RezultatPreskok> result = new List<RezultatPreskok>();
-            foreach (RezultatPreskok rez in Rezultati)
-            {
-                if (rez.Rank2 != null)
-                    result.Add(rez);
-            }
-            return result;
-        }
-
         // TODO: Ima dosta ponavljanja istog koda u klasama PoredakSprava i PoredakPreskok. Probaj da generalizujes.
 
-        public virtual List<RezultatPreskok> getRezultati(bool obaPreskoka)
+        public virtual List<RezultatPreskok> getRezultati()
         {
             List<RezultatPreskok> result = new List<RezultatPreskok>(Rezultati);
 
-            string sortColumn = obaPreskoka ? "RedBroj2" : "RedBroj";
             PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[sortColumn];
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj"];
             result.Sort(new SortComparer<RezultatPreskok>(propDesc,
                 ListSortDirection.Ascending));
 
@@ -409,12 +434,12 @@ namespace Bilten.Domain
         public virtual List<RezultatPreskok> getKvalifikantiIRezerve(bool obaPreskoka)
         {
             List<RezultatPreskok> result = new List<RezultatPreskok>();
-            foreach (RezultatPreskok r in getRezultati(obaPreskoka))
+            foreach (RezultatPreskok r in getRezultati())
             {
                 if (r.KvalStatus == KvalifikacioniStatus.Q)
                     result.Add(r);
             }
-            foreach (RezultatPreskok r in getRezultati(obaPreskoka))
+            foreach (RezultatPreskok r in getRezultati())
             {
                 if (r.KvalStatus == KvalifikacioniStatus.R)
                     result.Add(r);
@@ -441,7 +466,7 @@ namespace Bilten.Domain
             if (rezultat != null)
             {
                 rezultat.setOcena(o);
-                rankRezultati();
+                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
                 updateKvalStatus(rezTak.Propozicije);
             }
         }
@@ -457,7 +482,7 @@ namespace Bilten.Domain
                 else
                     r.clearOcena(o);
 
-                rankRezultati();
+                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
                 updateKvalStatus(rezTak.Propozicije);
             }
         }
@@ -478,7 +503,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 r.setOcena(o);
-                rankRezultati();
+                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
                 updateKvalStatus(rezTak.Propozicije);
             }
         }
@@ -491,7 +516,7 @@ namespace Bilten.Domain
             r.setOcena(o);
             Rezultati.Add(r);
 
-            rankRezultati();
+            rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
             updateKvalStatus(rezTak.Propozicije);
         }
 
@@ -502,7 +527,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati();
+                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
                 updateKvalStatus(rezTak.Propozicije);
             }
         }

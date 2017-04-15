@@ -14,7 +14,7 @@ namespace Bilten.UI
         List<RezultatSprava> istiRezultati;
         List<RezultatUkupno> istiRezultatiUkupno;
         Takmicenje takmicenje;
-        bool obaPreskoka;
+        Sprava sprava;
 
         List<int> poredak;
         public List<int> Poredak
@@ -22,14 +22,14 @@ namespace Bilten.UI
             get { return poredak; }
         }
 
-        public RazresiIsteOceneForm(List<RezultatSprava> istiRezultati, Takmicenje takmicenje, bool obaPreskoka)
+        public RazresiIsteOceneForm(List<RezultatSprava> istiRezultati, Takmicenje takmicenje, Sprava sprava)
         {
             InitializeComponent();
             this.istiRezultati = istiRezultati;
             this.takmicenje = takmicenje;
-            this.obaPreskoka = obaPreskoka;
+            this.sprava = sprava;
             initUI();
-            if (!obaPreskoka)
+            if (sprava != Sprava.Preskok)
                 dataGridViewUserControl1.setItems<RezultatSprava>(istiRezultati);
             else
             {
@@ -52,7 +52,7 @@ namespace Bilten.UI
         private void initUI()
         {
             Text = "Promeni poredak za iste ocene";
-            if (obaPreskoka)
+            if (sprava == Sprava.Preskok)
                 this.ClientSize = new Size(ClientSize.Width + 150, ClientSize.Height);
             else if (istiRezultatiUkupno != null)
                 this.ClientSize = new Size(ClientSize.Width + 75, ClientSize.Height);
@@ -64,7 +64,7 @@ namespace Bilten.UI
             else
             {
                 GridColumnsInitializer.initRezultatiSprava(
-                   dataGridViewUserControl1, takmicenje, /*kvalColumnVisible*/false, obaPreskoka);
+                   dataGridViewUserControl1, takmicenje, /*kvalColumnVisible*/false, sprava);
             }
         }
 
@@ -92,7 +92,6 @@ namespace Bilten.UI
                 this.DialogResult = DialogResult.None;
                 return;
             }
-
         }
 
         private bool checkPoredak()
@@ -112,11 +111,7 @@ namespace Bilten.UI
             List<int> sortedPoredak = new List<int>(poredak);
             sortedPoredak.Sort();
 
-            int rank;
-            if (!obaPreskoka)
-                rank = rezultati[0].Rank.Value;
-            else
-                rank = (rezultati[0] as RezultatPreskok).Rank2.Value;
+            int rank = rezultati[0].Rank.Value;
             int prevPoredak = rank;
             int count = 0;
 

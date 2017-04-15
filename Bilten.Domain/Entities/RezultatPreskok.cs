@@ -7,6 +7,7 @@ namespace Bilten.Domain
 {
     public class RezultatPreskok : RezultatSprava
     {
+        // TODO4: Ukloni RedBroj2 i Rank2 (i iz baze) nakon sto apdejtujes sve rezultate za preskok.
         private Nullable<short> redBroj2;
         public virtual Nullable<short> RedBroj2
         {
@@ -72,7 +73,6 @@ namespace Bilten.Domain
         public override void setOcena(Ocena o)
         {
             base.setOcena(o);
-
             if (o != null && o.Ocena2 != null)
             {
                 D_2 = o.Ocena2.D;

@@ -162,7 +162,7 @@ namespace Bilten.UI
                 RezultatPreskok selResult = (RezultatPreskok)form.SelectedResult;
                 bool obaPreskoka = rezTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
                 Nullable<float> qualScore = obaPreskoka ? selResult.TotalObeOcene : selResult.Total;
-                Nullable<short> qualRank = obaPreskoka ? selResult.Rank2 : selResult.Rank;
+                Nullable<short> qualRank = selResult.Rank;
 
                 newKvalifikant = rezTakmicenje.Takmicenje3.addKvalifikant(selResult.Gimnasticar, sprava,
                         qualScore, qualRank);

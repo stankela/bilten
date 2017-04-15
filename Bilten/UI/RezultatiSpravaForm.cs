@@ -267,9 +267,8 @@ namespace Bilten.UI
             }
             else
             {
-                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
                 spravaGridUserControl1.DataGridViewUserControl
-                    .setItems<RezultatPreskok>(ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka));
+                    .setItems<RezultatPreskok>(ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati());
             }
             spravaGridUserControl1.DataGridViewUserControl.clearSelection();
         }
@@ -281,19 +280,16 @@ namespace Bilten.UI
             DataGridViewUserControl dgw = spravaGridUserControl1.DataGridViewUserControl;
             // TODO: Indexi kolona bi trebali da budu konstante
 
-            bool obaPreskoka = sprava == Sprava.Preskok
-                && ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
-
             if (dgw.DataGridView.Columns.Count == 0)
             {
-                GridColumnsInitializer.initRezultatiSprava(dgw, takmicenje, kvalColumnVisible(), obaPreskoka);
+                GridColumnsInitializer.initRezultatiSprava(dgw, takmicenje, kvalColumnVisible(), sprava);
                 GridColumnsInitializer.maximizeColumnsRezultatiSprava(dgw, deoTakKod, rezTakmicenja, takmicenje.FinaleKupa);
             }
             else
             {
                 // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
                 GridColumnsInitializer.reinitRezultatiSpravaKeepColumnWidths(dgw,
-                    takmicenje, kvalColumnVisible(), obaPreskoka);
+                    takmicenje, kvalColumnVisible(), sprava);
             }
         }
 
@@ -408,7 +404,7 @@ namespace Bilten.UI
                         if (s != Sprava.Preskok)
                             rezultatiSprave.Add(ActiveTakmicenje.getPoredakSprava(deoTakKod, s).getRezultati());
                         else
-                            rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka);
+                            rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati();
                     }
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
                         obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
@@ -431,12 +427,12 @@ namespace Bilten.UI
                     else
                     {
                         List<RezultatPreskok> rezultati =
-                            ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka);
+                            ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati();
                         p.setIzvestaj(new SpravaIzvestaj(obaPreskoka, rezultati,
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                             /*markFirstRows*/!kvalColumnVisible(),
-                            /*numRowsToMark*/getNumMedalists(rezultati, obaPreskoka)));
+                            /*numRowsToMark*/getNumMedalists(rezultati)));
                     }
                 }
 
@@ -482,21 +478,13 @@ namespace Bilten.UI
             return result;
         }
 
-        private int getNumMedalists(List<RezultatPreskok> rezultati, bool obaPreskoka)
+        private int getNumMedalists(List<RezultatPreskok> rezultati)
         {
             int result = 0;
             foreach (RezultatPreskok r in rezultati)
             {
-                if (obaPreskoka)
-                {
-                    if (r.Rank2 >= 1 && r.Rank2 <= 3)
-                        ++result;
-                }
-                else
-                {
-                    if (r.Rank >= 1 && r.Rank <= 3)
-                        ++result;
-                }
+                if (r.Rank >= 1 && r.Rank <= 3)
+                    ++result;
             }
             return result;
         }
@@ -543,11 +531,10 @@ namespace Bilten.UI
             if (rez == null)
                 return;
 
-            bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
-
-            if ((ActiveSprava != Sprava.Preskok || !obaPreskoka) && rez.Total == null)
+            if (ActiveSprava != Sprava.Preskok && rez.Total == null)
                 return;
-            if ((ActiveSprava == Sprava.Preskok && obaPreskoka) && (rez as RezultatPreskok).TotalObeOcene == null)
+            if (ActiveSprava == Sprava.Preskok
+                && (rez as RezultatPreskok).TotalObeOcene == null && (rez as RezultatPreskok).Total == null)
                 return;
 
             bool addedPrviSledeci = false;
@@ -564,10 +551,12 @@ namespace Bilten.UI
                     }
                 }
             }
-            else if (!obaPreskoka)
+            else if ((rez as RezultatPreskok).TotalObeOcene == null)
             {
-                foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka))
+                foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati())
                 {
+                    if (r.TotalObeOcene != null)
+                        continue;
                     if (r.Total == rez.Total)
                         istiRezultati.Add(r);
                     else if (istiRezultati.Count > 1 && !addedPrviSledeci)
@@ -579,7 +568,7 @@ namespace Bilten.UI
             }
             else
             {
-                foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati(obaPreskoka))
+                foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati())
                 {
                     if (r.TotalObeOcene == (rez as RezultatPreskok).TotalObeOcene)
                         istiRezultati.Add(r);
@@ -686,9 +675,10 @@ namespace Bilten.UI
                 promeniPoredakPreskok();
         }
 
+        // TODO4: Trebalo bi uvesti neko persistent svojstvo koje oznacava da je poredak rucno promenjen
         private void promeniPoredakSprava()
         {
-            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, false);
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, ActiveSprava);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
@@ -746,22 +736,15 @@ namespace Bilten.UI
 
         private void promeniPoredakPreskok()
         {
-            bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
-            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, obaPreskoka);
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, Sprava.Preskok);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
             for (int i = 0; i < istiRezultati.Count; ++i)
-            {
-                if (!obaPreskoka)
-                    istiRezultati[i].Rank = (short)form.Poredak[i];
-                else
-                    (istiRezultati[i] as RezultatPreskok).Rank2 = (short)form.Poredak[i];
-            }
+                istiRezultati[i].Rank = (short)form.Poredak[i];
 
-            string rank = (!obaPreskoka) ? "Rank" : "Rank2";
             PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
-                TypeDescriptor.GetProperties(typeof(RezultatPreskok))[rank],
+                TypeDescriptor.GetProperties(typeof(RezultatPreskok))["Rank"],
                 TypeDescriptor.GetProperties(typeof(RezultatPreskok))["PrezimeIme"]
             };
             ListSortDirection[] sortDir = new ListSortDirection[] {
@@ -769,15 +752,10 @@ namespace Bilten.UI
                 ListSortDirection.Ascending
             };
 
-            short redBroj = (!obaPreskoka) ? istiRezultati[0].RedBroj : (istiRezultati[0] as RezultatPreskok).RedBroj2.Value;
+            short redBroj = istiRezultati[0].RedBroj;
             istiRezultati.Sort(new SortComparer<RezultatSprava>(propDesc, sortDir));
             foreach (RezultatPreskok r in istiRezultati)
-            {
-                if (!obaPreskoka)
-                    r.RedBroj = redBroj++;
-                else
-                    r.RedBroj2 = redBroj++;
-            }
+                r.RedBroj = redBroj++;
 
             ISession session = null;
             try
@@ -804,13 +782,23 @@ namespace Bilten.UI
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
-            string redBrojStr = (!obaPreskoka) ? "RedBroj" : "RedBroj2";
             spravaGridUserControl1.DataGridViewUserControl
-                .sort<RezultatPreskok>(redBrojStr, ListSortDirection.Ascending);
+                .sort<RezultatPreskok>("RedBroj", ListSortDirection.Ascending);
             //spravaGridUserControl1.DataGridViewUserControl.refreshItems();
             spravaGridUserControl1.DataGridViewUserControl.setSelectedItem<RezultatPreskok>(
                 istiRezultati[0] as RezultatPreskok);
         }
+
+        // TODO4: Ispitaj i ispravi gresku koja je nastala na takmicenju "ZSG - I KOLO PGL SRBIJE ZSG, NOVI SAD, 18.5.2013".
+        // Nije unesena nijedna ocena u takmicenju 3, ali poredak postoji i to sa ocenama iz takmicenja 1. Poredak
+        // za preskok je ispravljen sa apdejtom koji je ponovo racunao poredak preskok za sva takmicenja. Trebalo bi
+        // ispraviti poretke i za ostale sprave. Takodje bi trebalo proveriti da li se ista stvar desila i na
+        // nekom drugom takmicenju (na bilo kojoj spravi). Pretpostavljam da treba gledati samo takmicenja koja imaju
+        // odvojeno takmicenje 3, tj gde je ZavrsenoTak1 == true. Za proveru kakvo je bilo stanje ranije koristi
+        // "Bilten - Copy 15.03.2017"
+        // Slicna greska u "Bilten - Copy 15.03.2017" postoji i u "MEMORIJAL 2015" gde u takmicenju 3 u V kategoriji za
+        // Octavian Tomescu postoji rezultat za preskok (sa ocenom koja nije kao u takmicenju 1), a u takmicenju 3 nije
+        // uneta nijedana ocena za Octavian Tomescu. Proveri kako je ovo moglo da se desi.
 
         private void btnIzracunaj_Click(object sender, EventArgs e)
         {

@@ -117,8 +117,7 @@ namespace Bilten.Domain
             List<RezultatPreskok> rezultatiPreskok = new List<RezultatPreskok>(
                 takmicenje1.PoredakPreskok.Rezultati);
 
-            string propName = obaPreskoka ? "RedBroj2" : "RedBroj";
-            propDesc = TypeDescriptor.GetProperties(typeof(RezultatPreskok))[propName];
+            propDesc = TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj"];
             rezultatiPreskok.Sort(new SortComparer<RezultatPreskok>(propDesc,
                 ListSortDirection.Ascending));
 
@@ -128,7 +127,7 @@ namespace Bilten.Domain
                 if (rez.KvalStatus == KvalifikacioniStatus.Q)
                 {
                     Nullable<float> qualScore = obaPreskoka ? rez.TotalObeOcene : rez.Total;
-                    short qualRank = obaPreskoka ? rez.Rank2.Value : rez.Rank.Value;
+                    short qualRank = rez.Rank.Value;
                     UcesnikTakmicenja3 u = new UcesnikTakmicenja3(
                         rez.Gimnasticar, Sprava.Preskok, (short)(++qualOrder), 
                         qualScore, qualRank, rez.KvalStatus);
@@ -141,14 +140,13 @@ namespace Bilten.Domain
                 if (rez.KvalStatus == KvalifikacioniStatus.R)
                 {
                     Nullable<float> qualScore = obaPreskoka ? rez.TotalObeOcene : rez.Total;
-                    short qualRank = obaPreskoka ? rez.Rank2.Value : rez.Rank.Value;
+                    short qualRank = rez.Rank.Value;
                     UcesnikTakmicenja3 u = new UcesnikTakmicenja3(
                         rez.Gimnasticar, Sprava.Preskok, (short)(qualOrder + (++rezOrder)),
                         qualScore, qualRank, rez.KvalStatus);
                     addUcesnik(u);
                 }
             }
-
         }
 
         private Iesi.Collections.Generic.ISet<PoredakSprava> _poredak = new HashedSet<PoredakSprava>();

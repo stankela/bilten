@@ -153,11 +153,11 @@ namespace Bilten.UI
 
         public override void OnSetActive()
         {
-            updateUIFromPropizicije(propozicije);
+            updateUIFromPropozicije(propozicije);
             dirty = false;
         }
 
-        private void updateUIFromPropizicije(Propozicije propozicije)
+        private void updateUIFromPropozicije(Propozicije propozicije)
         {
             disableHandlers();
             clearUI();

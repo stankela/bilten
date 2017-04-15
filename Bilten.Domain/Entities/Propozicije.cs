@@ -150,6 +150,11 @@ namespace Bilten.Domain
             set { jednoTak4ZaSveKategorije = value; }
         }
 
+        // TODO4: Preimenuj KvalifikantiTak3PreskokNaOsnovuObaPreskoka u Tak1PreskokNaOsnovuObaPreskoka, i nek to
+        // svojstvo uvek predstavlja takmicenje 1. Preimenuj PoredakTak3PreskokNaOsnovuObaPreskoka u
+        // Tak3PreskokNaOsnovuObaPreskoka, i nek to svojstvo uvek predstavlja takmicenje 3. Nakon toga, argument
+        // finaleKupa nije potreban i treba ga izbrisati, a grana "if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)"
+        // treba da sadrzi samo "return Tak1PreskokNaOsnovuObaPreskoka".
         public virtual bool racunajObaPreskoka(DeoTakmicenjaKod deoTakKod, bool finaleKupa)
         {
             if (!PostojiTak3)

@@ -201,11 +201,11 @@ namespace Bilten.Report
                 if (obaPreskoka)
                 {
                     if (prikaziPenal)
-                        result.Add(new object[] { rez.Rank2, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
+                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
                             rez.D, rez.D_2, rez.E, rez.E_2, rez.Penalty, rez.Penalty_2, rez.Total, rez.Total_2,
                             rez.TotalObeOcene, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() });
                     else
-                        result.Add(new object[] { rez.Rank2, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
+                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
                             rez.D, rez.D_2, rez.E, rez.E_2, rez.Total, rez.Total_2, 
                             rez.TotalObeOcene, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() });
                 }

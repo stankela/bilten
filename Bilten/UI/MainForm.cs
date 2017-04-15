@@ -45,10 +45,20 @@ namespace Bilten.UI
 
         // TODO: Remember to call ISessionFactory.Close() when you’re done using 
         // NHibernate. You’ll usually do it while closing the application.
+
+        private StatusBar statusBar;
         
         public MainForm()
         {
             InitializeComponent();
+
+            statusBar = new StatusBar();
+            statusBar.Parent = this;
+            statusBar.ShowPanels = true;
+            StatusBarPanel sbPanel1 = new StatusBarPanel();
+            sbPanel1.Width = statusBar.Width - 100;
+            statusBar.Panels.Add(sbPanel1);
+
             mnSave.Visible = false;
             mnSaveAs.Visible = false;
             mnKategorijeITakmicenja.Enabled = false;
@@ -354,7 +364,6 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-
         }
 
         private void loadBrojDecimalaUOpcije(Takmicenje t)
@@ -881,7 +890,8 @@ namespace Bilten.UI
                             rt.Takmicenje3.createUcesnici(rt.Takmicenje1, rt.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
                             foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
                                 p.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(p.Sprava));
-                            rt.Takmicenje3.PoredakPreskok.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(Sprava.Preskok));
+                            rt.Takmicenje3.PoredakPreskok.initRezultati(
+                                rt.Takmicenje3.getUcesniciGimKvalifikanti(Sprava.Preskok), rt);
                         }
                         if (rt.odvojenoTak4())
                         {

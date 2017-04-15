@@ -3,12 +3,15 @@ using Bilten.Dao;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using Bilten.Util;
 using NHibernate;
 using NHibernate.Context;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlServerCe;
+using System.IO;
 
 public class VersionUpdater
 {
@@ -25,8 +28,6 @@ public class VersionUpdater
 
                 foreach (Takmicenje t in takmicenja)
                 {
-                    if (!t.ZavrsenoTak1)
-                        throw new Exception("GRESKA");
                     IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenjeFetch_Tak1_PoredakUkupno_KlubDrzava(t.Id);
                     foreach (RezultatskoTakmicenje tak in rezTakmicenja)
@@ -117,6 +118,8 @@ public class VersionUpdater
 
     public void updateVersion13()
     {
+        updatePreskok();
+
         SqlCeCommand cmd = new SqlCeCommand("SELECT * FROM rezultati_sprava_finale_kupa_update");
         SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
 
@@ -285,5 +288,220 @@ public class VersionUpdater
         {
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
         }
+    }
+
+    private void updatePreskok()
+    {
+        IList<int> takmicenjaId = new List<int>();
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+                foreach (Takmicenje t in DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAll())
+                    takmicenjaId.Add(t.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
+
+        StreamWriter logStreamWriter = File.CreateText("log_update_preskok.txt");
+        try
+        {
+            for (int i = 0; i < takmicenjaId.Count; ++i)
+                updatePreskok(takmicenjaId[i], i, logStreamWriter);
+        }
+        finally
+        {
+            logStreamWriter.Close();
+        }
+    }
+
+    private void updatePreskok(int takmicenjeId, int i, StreamWriter logStreamWriter)
+    {
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+
+                OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                if (t.ZbirViseKola)
+                    return;
+
+                string takmicenjeHeader = i.ToString() + ". " + t.ToString();
+                if (t.FinaleKupa)
+                    takmicenjeHeader += " - FINALE KUPA";
+                takmicenjeHeader += " (" + t.Id + ")";
+
+                IList<Ocena> ocene1 = ocenaDAO.FindOceneByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje1);
+                IList<Ocena> ocene3 = ocenaDAO.FindOceneByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje3);
+                IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(t.Id);
+
+                if (t.FinaleKupa)
+                {
+                    bool postojiOdvojenoTak3 = false;
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        if (rt.Propozicije.odvojenoTak3())
+                            postojiOdvojenoTak3 = true;
+                    }
+                    if (!postojiOdvojenoTak3 && ocene1.Count > 0)
+                        throw new InfrastructureException("Greska1");
+                    if (!postojiOdvojenoTak3 || ocene1.Count == 0)
+                        return;
+                }
+
+                bool takmicenjeHeaderAdded = false;
+                bool deoTakmicenjaHeaderAdded = false;
+                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                {
+                    bool obaPreskoka;
+                    if (!rt.Propozicije.PostojiTak3)
+                        obaPreskoka = false;
+                    else if (!rt.Propozicije.odvojenoTak3() || t.FinaleKupa)
+                        obaPreskoka = rt.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                    else
+                        obaPreskoka = rt.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+                    createPoredakPreskok(rt, DeoTakmicenjaKod.Takmicenje1, ocene1, obaPreskoka, logStreamWriter,
+                        takmicenjeHeader, ref takmicenjeHeaderAdded, ref deoTakmicenjaHeaderAdded);
+                }
+                deoTakmicenjaHeaderAdded = false;
+                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                {
+                    if (rt.odvojenoTak3() && t.ZavrsenoTak1)
+                    {
+                        bool obaPreskoka = rt.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                        createPoredakPreskok(rt, DeoTakmicenjaKod.Takmicenje3, ocene3, obaPreskoka, logStreamWriter,
+                          takmicenjeHeader, ref takmicenjeHeaderAdded, ref deoTakmicenjaHeaderAdded);
+                    }
+                }
+                foreach (Ocena o in ocene1)
+                    ocenaDAO.Evict(o);
+                foreach (Ocena o in ocene3)
+                    ocenaDAO.Evict(o);
+                session.Transaction.Commit();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
+    }
+
+    private void createPoredakPreskok(RezultatskoTakmicenje rt,
+        DeoTakmicenjaKod deoTakmicenjaKod, IList<Ocena> ocene, bool obaPreskoka, StreamWriter logStreamWriter,
+        string takmicenjeHeader, ref bool takmicenjeHeaderAdded, ref bool deoTakmicenjaHeaderAdded)
+    {
+        bool rezTakHeaderAdded = false;
+
+        PoredakPreskok p = rt.getPoredakPreskok(deoTakmicenjaKod);
+
+        IDictionary<int, short?> rezultatiMap = new Dictionary<int, short?>();
+        bool hasDrugaOcena = false;
+
+        foreach (RezultatPreskok r in p.Rezultati)
+        {
+            if (r.Rank2 != null)
+                hasDrugaOcena = true;
+
+            if (obaPreskoka)
+                rezultatiMap.Add(r.Gimnasticar.Id, r.Rank2);
+            else
+                rezultatiMap.Add(r.Gimnasticar.Id, r.Rank);
+        }
+        if (!hasDrugaOcena && obaPreskoka)
+        {
+            rezultatiMap.Clear();
+            foreach (RezultatPreskok r in p.Rezultati)
+            {
+                rezultatiMap.Add(r.Gimnasticar.Id, r.Rank);
+            }
+        }
+
+        p.create(rt, ocene);
+
+        List<RezultatPreskok> changedRezultati = new List<RezultatPreskok>();
+        foreach (RezultatPreskok r in p.Rezultati)
+        {
+            if (rezultatiMap[r.Gimnasticar.Id] != r.Rank)
+                changedRezultati.Add(r);
+        }
+        PropertyDescriptor propDesc =
+            TypeDescriptor.GetProperties(typeof(RezultatPreskok))["Rank"];
+        changedRezultati.Sort(new SortComparer<RezultatPreskok>(propDesc,
+            ListSortDirection.Ascending));
+
+        bool uvekUzimajNew = false;
+        foreach (RezultatPreskok r in changedRezultati)
+        {
+            // ako je bar jedan novi rank null to znaci da raniji poredak nije bio dobro izracunat (greska je da
+            // je iz nekog razloga postojao rezultat a nisu postojale ocene) i da treba uzimati novoizracunat rank
+            if (r.Rank == null)
+                uvekUzimajNew = true;
+        }
+
+        foreach (RezultatPreskok r in changedRezultati)
+        {
+            if (!takmicenjeHeaderAdded)
+            {
+                logStreamWriter.WriteLine("\n");
+                logStreamWriter.WriteLine("\n");
+                logStreamWriter.WriteLine(takmicenjeHeader);
+                logStreamWriter.WriteLine("================================================");
+                takmicenjeHeaderAdded = true;
+            }
+            if (!deoTakmicenjaHeaderAdded)
+            {
+                logStreamWriter.WriteLine("\n");
+                if (deoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1)
+                    logStreamWriter.WriteLine("TAKMICENJE 1");
+                else
+                    logStreamWriter.WriteLine("TAKMICENJE 3");
+                deoTakmicenjaHeaderAdded = true;
+            }
+            if (!rezTakHeaderAdded)
+            {
+                logStreamWriter.WriteLine("\n");
+                logStreamWriter.WriteLine(rt.ToString());
+                logStreamWriter.WriteLine("------------------------------------------------");
+                rezTakHeaderAdded = true;
+            }
+            string gimnasticarStr = r.Gimnasticar.ToString();
+            logStreamWriter.Write(gimnasticarStr);
+            for (int j = 0; j < 30 - gimnasticarStr.Length; ++j)
+                logStreamWriter.Write(" ");
+
+            short? old = rezultatiMap[r.Gimnasticar.Id];
+            short? _new = r.Rank;
+            if (!uvekUzimajNew && old != null)
+            {
+                r.Rank = old;
+            }
+            logStreamWriter.WriteLine("old: " + old + "\tnew: " + _new + "\tfinal: " + r.Rank);
+        }
+
+        DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO().Update(p);
     }
 }
