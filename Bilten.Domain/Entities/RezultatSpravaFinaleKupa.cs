@@ -70,6 +70,35 @@ namespace Bilten.Domain
             TotalDrugoKolo = r.Total;
         }
 
+        public virtual void initPrvoKolo(RezultatPreskok r, bool naOsnovuObaPreskoka, bool postojeObaPreskoka)
+        {
+            if (!naOsnovuObaPreskoka || !postojeObaPreskoka)
+                // Ovo takodje obradjuje situaciju kada je u propozicijama za prvo kolo stavljeno
+                // da se preskok racuna na osnovu oba preskoka, ali ni za jednog gimnasticara ne
+                // postoji ocena za oba preskoka. Ova situacija najverovatnije nastaje kada se u
+                // prvom kolu kao prvi preskok unosila konacna ocena za oba preskoka.
+                // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
+                initPrvoKolo(r);
+            else
+            {
+                D_PrvoKolo = null;
+                E_PrvoKolo = null;
+                TotalPrvoKolo = r.TotalObeOcene;
+            }
+        }
+
+        public virtual void initDrugoKolo(RezultatPreskok r, bool naOsnovuObaPreskoka, bool postojeObaPreskoka)
+        {
+            if (!naOsnovuObaPreskoka || !postojeObaPreskoka)
+                initDrugoKolo(r);
+            else
+            {
+                D_DrugoKolo = null;
+                E_DrugoKolo = null;
+                TotalDrugoKolo = r.TotalObeOcene;
+            }
+        }
+
         public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin, bool neRacunajProsekAkoNemaOceneIzObaKola)
         {
             if (TotalPrvoKolo == null && TotalDrugoKolo == null)

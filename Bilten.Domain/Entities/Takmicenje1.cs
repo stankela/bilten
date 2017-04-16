@@ -304,6 +304,9 @@ namespace Bilten.Domain
 
             if (PoredakUkupnoFinaleKupa != null)
                 PoredakUkupnoFinaleKupa.deleteGimnasticar(g, rezTak);
+            foreach (Sprava s in Sprave.getSprave(rezTak.Gimnastika))
+                getPoredakSpravaFinaleKupa(s).deleteGimnasticar(g, rezTak);
+
             if (PoredakUkupnoZbirViseKola != null)
                 PoredakUkupnoZbirViseKola.deleteGimnasticar(g, rezTak);
         }

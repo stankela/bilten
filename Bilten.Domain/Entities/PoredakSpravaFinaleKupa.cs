@@ -90,66 +90,28 @@ namespace Bilten.Domain
             // deo takmicara ima obe ocene za preskok a deo ima samo jednu (ili se kao i do sada oslanjati na to kako je
             // to specifikovano u propozicijama za 1. i 2. kolo, sto mislim da je bolja varijanta)
 
-            bool postojiTotalObeOcene = false;
+            bool postojeObaPreskoka = rezTak1.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
             foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
                     // TODO4: Koriscenje opcije PoredakTak3PreskokNaOsnovuObaPreskoka ce raditi samo ako u prvom kolu
                     // nije bilo odvojenog takmicena 3; ako je bilo odvojenog takmicenja 3, tada nam umesto
                     // PoredakTak3PreskokNaOsnovuObaPreskoka treba KvalifikantiTak3PreskokNaOsnovuObaPreskoka.
                     // Postoji vec jedan TODO4 da se resi ovaj problem i da vrednost koja se odnosi na takmicenje 1 uvek
                     // bude u samo jednoj opciji.
-                    if (!rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka)
-                        r2.initPrvoKolo(r);
-                    else
-                    {
-                        r2.D_PrvoKolo = null;
-                        r2.E_PrvoKolo = null;
-                        r2.TotalPrvoKolo = r.TotalObeOcene;
-                        postojiTotalObeOcene |= (r.TotalObeOcene != null);
-                    }
-                }
-            }
-            if (rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka && !postojiTotalObeOcene)
-            {
-                // U propozicijama za prvo kolo je stavljeno da se preskok racuna na osnovu
-                // oba preskoka, ali ni za jednog gimnasticara ne postoji ocena za oba preskoka.
-                // Ova situacija najverovatnije nastaje kada se u prvom kolu kao prvi preskok
-                // unosila konacna ocena za oba preskoka.
-                // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
-                foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
-                {
-                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                        rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
+                    rezultatiMap[r.Gimnasticar].initPrvoKolo(r, rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                        postojeObaPreskoka);
                 }
             }
 
-            postojiTotalObeOcene = false;
+            postojeObaPreskoka = rezTak2.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
             foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    RezultatSpravaFinaleKupa r2 = rezultatiMap[r.Gimnasticar];
-                    if (!rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka)
-                        r2.initDrugoKolo(r);
-                    else
-                    {
-                        r2.D_DrugoKolo = null;
-                        r2.E_DrugoKolo = null;
-                        r2.TotalDrugoKolo = r.TotalObeOcene;
-                        postojiTotalObeOcene |= (r.TotalObeOcene != null);
-                    }
-                }
-            }
-            if (rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka && !postojiTotalObeOcene)
-            {
-                // Isti komentar kao za prvo kolo.
-                foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
-                {
-                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
-                        rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
+                    rezultatiMap[r.Gimnasticar].initDrugoKolo(r, rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                        postojeObaPreskoka);
                 }
             }
 
@@ -357,7 +319,27 @@ namespace Bilten.Domain
             }
             else
             {
- 
+                bool postojeObaPreskoka = rezTak1.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+                foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
+                {
+                    if (r.Gimnasticar.Equals(g))
+                    {
+                        rezultat.initPrvoKolo(r, rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                            postojeObaPreskoka);
+                        break;
+                    }
+                }
+
+                postojeObaPreskoka = rezTak2.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+                foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
+                {
+                    if (r.Gimnasticar.Equals(g))
+                    {
+                        rezultat.initDrugoKolo(r, rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                            postojeObaPreskoka);
+                        break;
+                    }
+                }
             }
 
             rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak3,
@@ -366,6 +348,27 @@ namespace Bilten.Domain
 
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
+        }
+
+        public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
+        {
+            RezultatSpravaFinaleKupa r = getRezultat(g);
+            if (r != null)
+            {
+                Rezultati.Remove(r);
+                rankRezultati();
+                updateKvalStatus(rezTak.Propozicije);
+            }
+        }
+
+        private RezultatSpravaFinaleKupa getRezultat(GimnasticarUcesnik g)
+        {
+            foreach (RezultatSpravaFinaleKupa r in Rezultati)
+            {
+                if (r.Gimnasticar.Equals(g))
+                    return r;
+            }
+            return null;
         }
 
         public virtual List<RezultatSpravaFinaleKupa> getRezultati()

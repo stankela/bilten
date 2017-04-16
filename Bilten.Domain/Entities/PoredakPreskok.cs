@@ -431,6 +431,16 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual bool postojeObaPreskoka()
+        {
+            foreach (RezultatPreskok r in Rezultati)
+            {
+                if (r.TotalObeOcene != null)
+                    return true;
+            }
+            return false;
+        }
+
         public virtual List<RezultatPreskok> getKvalifikantiIRezerve(bool obaPreskoka)
         {
             List<RezultatPreskok> result = new List<RezultatPreskok>();

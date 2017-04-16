@@ -760,8 +760,6 @@ public class VersionUpdater
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        // Poredak za takmicenje 1 je mozda rucno promenjen, pa ga ne treba ponovo kreirati.
-
                         if (rt.odvojenoTak2())
                         {
                             rt.Takmicenje2.clearUcesnici();
@@ -786,7 +784,6 @@ public class VersionUpdater
                             DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
                         if (rt.odvojenoTak4())
                             DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rt.Takmicenje4);
-
                     }
                     takmicenjeDAO.Update(t);
                     logStreamWriter.WriteLine(takmicenjeHeader);

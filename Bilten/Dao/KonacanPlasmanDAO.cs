@@ -127,7 +127,7 @@ namespace Bilten.Dao
 
         private string findPreskokTak1SQL = @"
             select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank, r.rank2,
+            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank,
             pr.postoji_tak3, pr.odvojeno_tak3
             from gimnasticari_ucesnici g
             join rezultati_preskok r
@@ -174,7 +174,7 @@ namespace Bilten.Dao
 
         private string findPreskokTak3SQL = @"
             select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank, r.rank2
+            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank
             from gimnasticari_ucesnici g
             join rezultati_preskok r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -243,15 +243,6 @@ namespace Bilten.Dao
                     kp.Greda = rank;
                     break;
             }
-        }
-
-        private void loadPreskok(KonacanPlasman kp, SqlCeDataReader rdr)
-        {
-            Nullable<short> rank2 = Convert.IsDBNull(rdr["rank2"]) ? null : (Nullable<short>)rdr["rank2"];
-            if (rank2 != null)
-                kp.Preskok = rank2;
-            else
-                kp.Preskok = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
         }
 
         // can throw InfrastructureException
@@ -338,7 +329,7 @@ namespace Bilten.Dao
                 {
                     KonacanPlasman kp = new KonacanPlasman();
                     loadCommonData(kp, rdr);
-                    loadPreskok(kp, rdr);
+                    kp.Preskok = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
                     result.Add(kp);
                 }
             }
@@ -379,7 +370,7 @@ namespace Bilten.Dao
             {
                 KonacanPlasman kp = new KonacanPlasman();
                 loadCommonData(kp, rdr);
-                loadPreskok(kp, rdr);
+                kp.Preskok = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
                 result.Add(kp);
             }
 
