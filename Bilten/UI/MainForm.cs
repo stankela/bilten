@@ -840,9 +840,8 @@ namespace Bilten.UI
 
         private void mnKreirajTakmicenja234_Click(object sender, EventArgs e)
         {
-            // TODO4: Ova komanda bi trebalo da moze da se ponovljeno izvrsava (kada se klikne drugi put, trebalo
-            // bi obavestiti korisnika da ce prethodno dejstvo biti ponisteno i da ce se ponovo kreirati takmicenja
-            // 2, 3 i 4.)
+            // Ova komanda moze da se ponovljeno izvrsava (kada se klikne drugi put, prethodno dejstvo ce biti ponisteno
+            // i ponovo ce se kreirati ucesnici takmicenja 2, 3 i 4. Ocene u takmicenjima 2, 3 i 4 nece biti izbrisane.
 
             string msg = "Da li zelite da kreirate takmicenja II, III i IV?";
             if (!MessageDialogs.queryConfirmation(msg, "Kreiraj takmicenja II, III i IV"))
@@ -858,27 +857,29 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenjeFetch_Tak1_PoredakUkupno_KlubDrzava(takmicenjeId.Value);
+                        .FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenjeId.Value);
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
-                    foreach (RezultatskoTakmicenje tak in rezTakmicenja)
+
+                    bool postojiOdvojeno = false;
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        NHibernateUtil.Initialize(tak.Takmicenje1.PoredakUkupno.Rezultati);
-
-                        // potrebno u Poredak.create
-                        NHibernateUtil.Initialize(tak.Propozicije);
+                        if (rt.odvojenoTak2() || rt.odvojenoTak3() || rt.odvojenoTak4())
+                        {
+                            postojiOdvojeno = true;
+                            break;
+                        }
                     }
+                    if (!postojiOdvojeno)
+                        throw new BusinessException("Ne postoji odvojeno takmicenje II, III ili IV ni za jednu kategoriju.");
 
-                    IList<Ocena> ocene = loadOcene(takmicenjeId.Value, DeoTakmicenjaKod.Takmicenje1);
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    Takmicenje t = takmicenjeDAO.FindById(takmicenjeId.Value);
+                    t.ZavrsenoTak1 = true;
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        // Ovo je zakomentarisano zato sto je moguce da je poredak rucno promenjen, pa ga ne treba ponovo
-                        // kreirati.
-                        /*rt.Takmicenje1.PoredakUkupno.create(rt, ocene);
-                        foreach (PoredakSprava p in rt.Takmicenje1.PoredakSprava)
-                            p.create(rt, ocene);
-                        rt.Takmicenje1.PoredakPreskok.create(rt, ocene);*/
+                        // Poredak za takmicenje 1 je mozda rucno promenjen, pa ga ne treba ponovo kreirati.
 
                         if (rt.odvojenoTak2())
                         {
@@ -900,23 +901,18 @@ namespace Bilten.UI
                             //rt.Takmicenje4.Poredak.initRezultati(rt.Takmicenje4.getUcesnici());
                         }
 
-                        DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);
-                        if (rt.Propozicije.PostojiTak2)
+                        if (rt.odvojenoTak2())
                             DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
-                        if (rt.Propozicije.PostojiTak3)
+                        if (rt.odvojenoTak3())
                             DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
-                        //if (rt.Propozicije.PostojiTak4)
+                        //if (rt.odvojenoTak4())
                         //  DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rt.Takmicenje4);
-
-                        TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
-                        Takmicenje t = takmicenjeDAO.FindById(takmicenjeId.Value);
-                        t.ZavrsenoTak1 = true;
-                        takmicenjeDAO.Update(t);
 
                         mnTakmicenje2.Visible = true;
                         mnTakmicenje3.Visible = true;
                         mnTakmicenje4.Visible = true;
                     }
+                    takmicenjeDAO.Update(t);
 
                     session.Transaction.Commit();
                 }
@@ -944,31 +940,6 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
-        }
-
-        private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.FindOceneByDeoTakmicenja(takmicenjeId, deoTakKod);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
             }
         }
 

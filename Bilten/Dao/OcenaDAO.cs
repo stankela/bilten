@@ -9,7 +9,7 @@ namespace Bilten.Dao
     {
         IList<Ocena> FindByGimnasticar(GimnasticarUcesnik gim, DeoTakmicenjaKod deoTakKod);
         IList<Ocena> FindByTakmicenje(int takmicenjeId);
-        IList<Ocena> FindOceneByDeoTakmicenja(int takmicenjeId, DeoTakmicenjaKod deoTakKod);
+        IList<Ocena> FindByDeoTakmicenja(int takmicenjeId, DeoTakmicenjaKod deoTakKod);
         IList<Ocena> FindByKatSpravaDeoTak(TakmicarskaKategorija kategorija, Sprava sprava,
             DeoTakmicenjaKod deoTakKod);
         Ocena FindByIdFetch(int id);

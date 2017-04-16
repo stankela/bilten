@@ -622,7 +622,7 @@ namespace Bilten.Test
                 .FindByTakmicenje(takmicenje.Id)[0];
             RezultatskoTakmicenje rezTak = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByKategorija(seniori)[0];
-            IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindOceneByDeoTakmicenja(takmicenje.Id, deoTakKod);
+            IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
 
             GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -676,7 +676,7 @@ namespace Bilten.Test
             RezultatskoTakmicenje rezTak = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByKategorija(seniori)[0];
             IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
-                .FindOceneByDeoTakmicenja(takmicenje.Id, deoTakKod);
+                .FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
 
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {

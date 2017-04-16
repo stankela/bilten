@@ -12,9 +12,196 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlServerCe;
 using System.IO;
+using System.Windows.Forms;
 
 public class VersionUpdater
 {
+    public void update()
+    {
+        int verzijaBaze = SqlCeUtilities.getDatabaseVersionNumber();
+        if (verzijaBaze != Program.VERZIJA_PROGRAMA)
+        {
+            if (verzijaBaze == 0)
+            {
+                string msg = "Bazu podataka je nemoguce konvertovati da radi sa trenutnom verzijom programa.";
+                MessageBox.Show(msg, "Bilten");
+                return;
+            }
+            if (verzijaBaze > Program.VERZIJA_PROGRAMA)
+            {
+                string msg = "Greska u programu. Verzija baze je veca od verzije programa.";
+                MessageBox.Show(msg, "Bilten");
+                return;
+            }
+
+            bool converted = false;
+            if (verzijaBaze == 1 && Program.VERZIJA_PROGRAMA > 1)
+            {
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version2.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(2);
+                verzijaBaze = 2;
+                converted = true;
+            }
+
+            // Precica
+            if (verzijaBaze == 2 && Program.VERZIJA_PROGRAMA == 13)
+            {
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version4.sql", true);
+
+                SqlCeUtilities.dropReferentialConstraint("ekipe", "klubovi_ucesnici");
+                SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version5.sql", true);
+
+                SqlCeUtilities.dropReferentialConstraint("gimnasticari_ucesnici", "takmicenja");
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version6.sql", true);
+
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version8.sql", true);
+
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version9.sql", true);
+
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version10.sql", true);
+
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version11.sql", true);
+
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version12.sql", true);
+
+                updateVersion3();
+                updateVersion7();
+                updateVersion13();
+
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version13.sql", true);
+
+                SqlCeUtilities.updateDatabaseVersionNumber(13);
+                verzijaBaze = 13;
+                converted = true;
+            }
+
+            if (verzijaBaze == 2 && Program.VERZIJA_PROGRAMA > 2)
+            {
+                // TODO4: Dodati prozor koji prikazuje da se baza apdejtuje, posto apdejt traje desetak sekundi.
+                updateVersion3();
+                SqlCeUtilities.updateDatabaseVersionNumber(3);
+                verzijaBaze = 3;
+                converted = true;
+            }
+
+            if (verzijaBaze == 3 && Program.VERZIJA_PROGRAMA > 3)
+            {
+                // TODO: Ove dve naredbe bi trebalo izvrsavati u okviru jedne transakcije. Isto i za ostale verzije.
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version4.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(4);
+                verzijaBaze = 4;
+                converted = true;
+            }
+
+            if (verzijaBaze == 4 && Program.VERZIJA_PROGRAMA > 4)
+            {
+                SqlCeUtilities.dropReferentialConstraint("ekipe", "klubovi_ucesnici");
+                SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version5.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(5);
+                verzijaBaze = 5;
+                converted = true;
+            }
+
+            if (verzijaBaze == 5 && Program.VERZIJA_PROGRAMA > 5)
+            {
+                SqlCeUtilities.dropReferentialConstraint("gimnasticari_ucesnici", "takmicenja");
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version6.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(6);
+                verzijaBaze = 6;
+                converted = true;
+            }
+
+            if (verzijaBaze == 6 && Program.VERZIJA_PROGRAMA > 6)
+            {
+                updateVersion7();
+                SqlCeUtilities.updateDatabaseVersionNumber(7);
+                verzijaBaze = 7;
+                converted = true;
+            }
+
+            if (verzijaBaze == 7 && Program.VERZIJA_PROGRAMA > 7)
+            {
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version8.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(8);
+                verzijaBaze = 8;
+                converted = true;
+            }
+
+            if (verzijaBaze == 8 && Program.VERZIJA_PROGRAMA > 8)
+            {
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version9.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(9);
+                verzijaBaze = 9;
+                converted = true;
+            }
+
+            if (verzijaBaze == 9 && Program.VERZIJA_PROGRAMA > 9)
+            {
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version10.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(10);
+                verzijaBaze = 10;
+                converted = true;
+            }
+
+            if (verzijaBaze == 10 && Program.VERZIJA_PROGRAMA > 10)
+            {
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version11.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(11);
+                verzijaBaze = 11;
+                converted = true;
+            }
+
+            if (verzijaBaze == 11 && Program.VERZIJA_PROGRAMA > 11)
+            {
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version12.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(12);
+                verzijaBaze = 12;
+                converted = true;
+            }
+
+            if (verzijaBaze == 12 && Program.VERZIJA_PROGRAMA > 12)
+            {
+                updateVersion13();
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.Update.DatabaseUpdate_version13.sql", true);
+                SqlCeUtilities.updateDatabaseVersionNumber(13);
+                verzijaBaze = 13;
+                converted = true;
+            }
+
+            if (converted)
+            {
+                string msg = String.Format("Baza podataka je konvertovana u verziju {0}.", verzijaBaze);
+                MessageBox.Show(msg, "Bilten");
+
+                if (File.Exists("NHibernateConfig"))
+                {
+                    File.Delete("NHibernateConfig");
+                }
+            }
+        }
+    }
+    
     public void updateVersion3()
     {
         ISession session = null;
@@ -29,7 +216,7 @@ public class VersionUpdater
                 foreach (Takmicenje t in takmicenja)
                 {
                     IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenjeFetch_Tak1_PoredakUkupno_KlubDrzava(t.Id);
+                        .FindByTakmicenje(t.Id);
                     foreach (RezultatskoTakmicenje tak in rezTakmicenja)
                     {
                         NHibernateUtil.Initialize(tak.Takmicenje1.PoredakUkupno.Rezultati);
@@ -119,7 +306,12 @@ public class VersionUpdater
     public void updateVersion13()
     {
         updatePreskok();
+        updatePoredakViseKola();
+        updateZavrsenoTak1();
+    }
 
+    private void updatePoredakViseKola()
+    {
         SqlCeCommand cmd = new SqlCeCommand("SELECT * FROM rezultati_sprava_finale_kupa_update");
         SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
 
@@ -290,9 +482,9 @@ public class VersionUpdater
         }
     }
 
-    private void updatePreskok()
+    private IList<int> getTakmicenjaId()
     {
-        IList<int> takmicenjaId = new List<int>();
+        IList<int> result = new List<int>();
         ISession session = null;
         try
         {
@@ -301,7 +493,7 @@ public class VersionUpdater
             {
                 CurrentSessionContext.Bind(session);
                 foreach (Takmicenje t in DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAll())
-                    takmicenjaId.Add(t.Id);
+                    result.Add(t.Id);
             }
         }
         catch (Exception ex)
@@ -314,7 +506,12 @@ public class VersionUpdater
         {
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
         }
+        return result;
+    }
 
+    private void updatePreskok()
+    {
+        IList<int> takmicenjaId = getTakmicenjaId();
         StreamWriter logStreamWriter = File.CreateText("log_update_preskok.txt");
         try
         {
@@ -349,8 +546,8 @@ public class VersionUpdater
                     takmicenjeHeader += " - FINALE KUPA";
                 takmicenjeHeader += " (" + t.Id + ")";
 
-                IList<Ocena> ocene1 = ocenaDAO.FindOceneByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje1);
-                IList<Ocena> ocene3 = ocenaDAO.FindOceneByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje3);
+                IList<Ocena> ocene1 = ocenaDAO.FindByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje1);
+                IList<Ocena> ocene3 = ocenaDAO.FindByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje3);
                 IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(t.Id);
 
                 if (t.FinaleKupa)
@@ -503,5 +700,111 @@ public class VersionUpdater
         }
 
         DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO().Update(p);
+    }
+
+    // Ponisti ZavrsenoTak1 na svim mestima gde je ZavrsenoTak1 a nije odvojenoTak3 ni za jedno rez. takmicenje.
+    public void updateZavrsenoTak1()
+    {
+        IList<int> takmicenjaId = getTakmicenjaId();
+        StreamWriter logStreamWriter = File.CreateText("log_update_ZavrsenoTak1.txt");
+
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+                int numUpdated = 0;
+                for (int i = 0; i < takmicenjaId.Count; ++i)
+                {
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    Takmicenje t = takmicenjeDAO.FindById(takmicenjaId[i]);
+                    if (!t.ZavrsenoTak1)
+                    {
+                        takmicenjeDAO.Evict(t);
+                        continue;
+                    }
+
+                    string takmicenjeHeader = i.ToString() + ". " + t.ToString();
+                    takmicenjeHeader += " (" + t.Id + ")";
+
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(t.Id);
+
+                    bool postojiOdvojeno = false;
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        if (rt.odvojenoTak2() || rt.odvojenoTak3() || rt.odvojenoTak4())
+                        {
+                            postojiOdvojeno = true;
+                            break;
+                        }
+                    }
+                    if (postojiOdvojeno)
+                        continue;
+
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    IList<Ocena> ocene2 = ocenaDAO.FindByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje2);
+                    IList<Ocena> ocene3 = ocenaDAO.FindByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje3);
+                    IList<Ocena> ocene4 = ocenaDAO.FindByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje4);
+
+                    if (ocene2.Count > 0 || ocene3.Count > 0 || ocene4.Count > 0)
+                    {
+                        logStreamWriter.WriteLine("Preskacem " + takmicenjeHeader + ", postoje ocene");
+                        continue;
+                    }
+
+                    ++numUpdated;
+                    t.ZavrsenoTak1 = false;
+
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        // Poredak za takmicenje 1 je mozda rucno promenjen, pa ga ne treba ponovo kreirati.
+
+                        if (rt.odvojenoTak2())
+                        {
+                            rt.Takmicenje2.clearUcesnici();
+                            rt.Takmicenje2.Poredak.Rezultati.Clear();
+                        }
+                        if (rt.odvojenoTak3())
+                        {
+                            rt.Takmicenje3.clearUcesnici();
+                            foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
+                                p.Rezultati.Clear();
+                            rt.Takmicenje3.PoredakPreskok.Rezultati.Clear();
+                        }
+                        if (rt.odvojenoTak4())
+                        {
+                            rt.Takmicenje4.clearUcesnici();
+                            rt.Takmicenje4.Poredak.Rezultati.Clear();
+                        }
+
+                        if (rt.odvojenoTak2())
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
+                        if (rt.odvojenoTak3())
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
+                        if (rt.odvojenoTak4())
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rt.Takmicenje4);
+
+                    }
+                    takmicenjeDAO.Update(t);
+                    logStreamWriter.WriteLine(takmicenjeHeader);
+                }
+                if (numUpdated > 0)
+                    session.Transaction.Commit();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
+            logStreamWriter.Close();
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
     }
 }

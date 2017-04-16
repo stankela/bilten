@@ -173,6 +173,7 @@
     <Compile Include="Data\NHibernate\PersistentConfigurationBuilder.cs" />
     <Compile Include="Misc\ConfigurationParameters.cs" />
     <Compile Include="Misc\Language.cs" />
+    <Compile Include="Misc\RazneProvere.cs" />
     <Compile Include="Misc\Sesija.cs" />
     <Compile Include="Misc\SingleInstanceApplication.cs" />
     <Compile Include="Misc\SlikeSprava.cs" />

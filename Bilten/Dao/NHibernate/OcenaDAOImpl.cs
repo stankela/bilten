@@ -44,7 +44,7 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public IList<Ocena> FindOceneByDeoTakmicenja(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
+        public IList<Ocena> FindByDeoTakmicenja(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {
             try
             {

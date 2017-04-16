@@ -299,6 +299,7 @@ namespace Bilten.UI
             }
         }
 
+        // TODO4: Ukloni sve ovakve metode gde se ocene ucitavaju u posebnoj sesiji. Koristi Evict.
         private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {
             ISession session = null;
@@ -309,7 +310,7 @@ namespace Bilten.UI
                 {
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
                     ocenaDAO.Session = session;
-                    return ocenaDAO.FindOceneByDeoTakmicenja(takmicenjeId, deoTakKod);
+                    return ocenaDAO.FindByDeoTakmicenja(takmicenjeId, deoTakKod);
                 }
             }
             catch (Exception ex)

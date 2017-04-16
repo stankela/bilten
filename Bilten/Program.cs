@@ -41,7 +41,7 @@ namespace Bilten
         // - Stampanje gimnasticara iz Registra.
         // - Uvoz takmicenja.
 
-        static int VERZIJA_PROGRAMA = 13;
+        public static int VERZIJA_PROGRAMA = 13;
 
         /// <summary>
         /// The main entry point for the application.
@@ -98,196 +98,29 @@ namespace Bilten
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             try
             {
-                int verzijaBaze = SqlCeUtilities.getDatabaseVersionNumber();
-                if (verzijaBaze != VERZIJA_PROGRAMA)
-                {
-                    if (verzijaBaze == 0)
-                    {
-                        string msg = "Bazu podataka je nemoguce konvertovati da radi sa trenutnom verzijom programa.";
-                        MessageBox.Show(msg, "Bilten");
-                        return;
-                    }
-                    if (verzijaBaze > VERZIJA_PROGRAMA)
-                    {
-                        string msg = "Greska u programu. Verzija baze je veca od verzije programa.";
-                        MessageBox.Show(msg, "Bilten");
-                        return;
-                    }
-
-                    bool converted = false;
-                    if (verzijaBaze == 1 && VERZIJA_PROGRAMA > 1)
-                    {
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version2.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(2);
-                        verzijaBaze = 2;
-                        converted = true;
-                    }
-
-                    // Precica
-                    if (verzijaBaze == 2 && VERZIJA_PROGRAMA == 13)
-                    {
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version4.sql", true);
-
-                        SqlCeUtilities.dropReferentialConstraint("ekipe", "klubovi_ucesnici");
-                        SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version5.sql", true);
-
-                        SqlCeUtilities.dropReferentialConstraint("gimnasticari_ucesnici", "takmicenja");
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version6.sql", true);
-
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version8.sql", true);
-
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version9.sql", true);
-
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version10.sql", true);
-
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version11.sql", true);
-
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version12.sql", true);
-
-                        new VersionUpdater().updateVersion3();
-                        new VersionUpdater().updateVersion7();
-                        new VersionUpdater().updateVersion13();
-
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version13.sql", true);
-
-                        SqlCeUtilities.updateDatabaseVersionNumber(13);
-                        verzijaBaze = 13;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 2 && VERZIJA_PROGRAMA > 2)
-                    {
-                        // TODO4: Dodati prozor koji prikazuje da se baza apdejtuje, posto apdejt traje desetak sekundi.
-                        new VersionUpdater().updateVersion3();
-                        SqlCeUtilities.updateDatabaseVersionNumber(3);
-                        verzijaBaze = 3;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 3 && VERZIJA_PROGRAMA > 3)
-                    {
-                        // TODO: Ove dve naredbe bi trebalo izvrsavati u okviru jedne transakcije. Isto i za ostale verzije.
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version4.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(4);
-                        verzijaBaze = 4;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 4 && VERZIJA_PROGRAMA > 4)
-                    {
-                        SqlCeUtilities.dropReferentialConstraint("ekipe", "klubovi_ucesnici");
-                        SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version5.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(5);
-                        verzijaBaze = 5;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 5 && VERZIJA_PROGRAMA > 5)
-                    {
-                        SqlCeUtilities.dropReferentialConstraint("gimnasticari_ucesnici", "takmicenja");
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version6.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(6);
-                        verzijaBaze = 6;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 6 && VERZIJA_PROGRAMA > 6)
-                    {
-                        new VersionUpdater().updateVersion7();
-                        SqlCeUtilities.updateDatabaseVersionNumber(7);
-                        verzijaBaze = 7;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 7 && VERZIJA_PROGRAMA > 7)
-                    {
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version8.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(8);
-                        verzijaBaze = 8;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 8 && VERZIJA_PROGRAMA > 8)
-                    {
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version9.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(9);
-                        verzijaBaze = 9;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 9 && VERZIJA_PROGRAMA > 9)
-                    {
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version10.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(10);
-                        verzijaBaze = 10;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 10 && VERZIJA_PROGRAMA > 10)
-                    {
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version11.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(11);
-                        verzijaBaze = 11;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 11 && VERZIJA_PROGRAMA > 11)
-                    {
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version12.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(12);
-                        verzijaBaze = 12;
-                        converted = true;
-                    }
-
-                    if (verzijaBaze == 12 && VERZIJA_PROGRAMA > 12)
-                    {
-                        new VersionUpdater().updateVersion13();
-                        SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                            "Bilten.Update.DatabaseUpdate_version13.sql", true);
-                        SqlCeUtilities.updateDatabaseVersionNumber(13);
-                        verzijaBaze = 13;
-                        converted = true;
-                    }
-
-                    if (converted)
-                    {
-                        string msg = String.Format("Baza podataka je konvertovana u verziju {0}.", verzijaBaze);
-                        MessageBox.Show(msg, "Bilten");
-
-                        if (File.Exists("NHibernateConfig"))
-                        {
-                            File.Delete("NHibernateConfig");
-                        }
-                    }
-                }
+                new VersionUpdater().update();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
+
+
+            RazneProvere rp = new RazneProvere();
+            // rp.proveriPrvaDvaKola();   // OK
+            rp.proveriRezultateIOcene();
+            rp.proveriKvalifikante();
+
 
             Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Latn-CS");

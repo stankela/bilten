@@ -78,6 +78,8 @@ namespace Bilten.Domain
 
         public virtual void createUcesnici(Takmicenje1 takmicenje1)
         {
+            clearUcesnici();
+
             List<RezultatUkupno> rezultati = 
                 new List<RezultatUkupno>(takmicenje1.PoredakUkupno.Rezultati);
             PropertyDescriptor propDesc =
@@ -85,7 +87,6 @@ namespace Bilten.Domain
             rezultati.Sort(new SortComparer<RezultatUkupno>(propDesc,
                 ListSortDirection.Ascending));
 
-            clearUcesnici();
             int qualOrder = 0;
             foreach (RezultatUkupno rez in rezultati)
             {
