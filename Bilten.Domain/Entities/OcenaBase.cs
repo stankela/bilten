@@ -166,8 +166,6 @@ namespace Bilten.Domain
                       //  prefix + "Penalty", "Penalizacija ne sme da bude veca od E ocene.");
                 }
             }
-
-            // TODO: Fali validacija za L, T, O i Vreme
         }
 
         private void validateEOcena(Notification notification, Nullable<float> eOcena,

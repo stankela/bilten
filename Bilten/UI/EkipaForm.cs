@@ -301,15 +301,10 @@ namespace Bilten.UI
             List<GimnasticarUcesnik> illegalGimnasticari = new List<GimnasticarUcesnik>();
             foreach (GimnasticarUcesnik g in form.SelectedEntities)
             {
-                if (canAddGimnasticar(ekipa, g))
-                {
-                    ekipa.addGimnasticar(g);
+                if (ekipa.addGimnasticar(g))
                     okGimnasticari.Add(g);
-                }
                 else
-                {
                     illegalGimnasticari.Add(g);
-                }
 
             }
             if (okGimnasticari.Count > 0)
@@ -325,15 +320,6 @@ namespace Bilten.UI
                 msg += StringUtil.getListString(illegalGimnasticari.ToArray());
                 //       MessageDialogs.showMessage(msg, this.Text);
             }
-        }
-
-        private bool canAddGimnasticar(Ekipa ekipa, GimnasticarUcesnik gimnasticar)
-        {
-            // TODO: Najpre proveri da li ekipa vec ima max broj clanova. Takodje, 
-            // razmisli da li clan ekipe mora da bude i ucesnik rez. takmicenja
-            // u kome se ekipa takmici.
-
-            return !ekipa.Gimnasticari.Contains(gimnasticar);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

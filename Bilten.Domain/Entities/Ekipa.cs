@@ -50,10 +50,10 @@ namespace Bilten.Domain
             protected set { gimnasticari = value; }
         }
 
-        public virtual void addGimnasticar(GimnasticarUcesnik gimnasticar)
+        public virtual bool addGimnasticar(GimnasticarUcesnik gimnasticar)
         {
             // TODO: Add business rules
-            Gimnasticari.Add(gimnasticar);
+            return Gimnasticari.Add(gimnasticar);
         }
 
         public virtual void removeGimnasticar(GimnasticarUcesnik gimnasticar)

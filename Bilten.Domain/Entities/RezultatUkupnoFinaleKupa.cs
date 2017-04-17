@@ -140,12 +140,6 @@ namespace Bilten.Domain
             set { _totalDrugoKolo = value; }
         }
 
-        // moram ovako jer je set accessor za Total protected u klasi Rezultat
-        public virtual void setTotal(Nullable<float> value)
-        {
-            Total = value;
-        }
-
         public RezultatUkupnoFinaleKupa()
         { 
         
@@ -181,7 +175,7 @@ namespace Bilten.Domain
         {
             if (TotalPrvoKolo == null && TotalDrugoKolo == null)
             {
-                setTotal(null);
+                Total = null;
                 return;
             }
             float total1 = TotalPrvoKolo == null ? 0 : TotalPrvoKolo.Value;
@@ -198,7 +192,7 @@ namespace Bilten.Domain
                 if (neRacunajProsekAkoNemaOceneIzObaKola && (TotalPrvoKolo == null || TotalDrugoKolo == null))
                     total = total1 + total2;
             }
-            setTotal(total);
+            Total = total;
         }
 
         public virtual string PrezimeIme

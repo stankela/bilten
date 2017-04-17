@@ -26,7 +26,7 @@ namespace Bilten.UI
         {
             // TODO: Dodaj strelice umesto "Pomeri gore" i "Pomeri dole"
 
-            // TODO3: Probaj da se prvo definisu takmicenja, pa zatim kategorije, i da
+            // TODO4: Probaj da se prvo definisu takmicenja, pa zatim kategorije, i da
             // bude moguce da se za dato takmicenje menjaju kategorije, tj. da ne vazi
             // da sva takmicenja imaju sve kategorije.
 

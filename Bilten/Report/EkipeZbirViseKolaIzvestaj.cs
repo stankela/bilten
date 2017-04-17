@@ -184,9 +184,6 @@ namespace Bilten.Report
             xRazbojTot += delta;
             xVratiloTot += delta;
 
-            // TODO3: Za klubove ucesnike definise novo svojstvo koje ce sluziti samo za stampanje. Dodaj form gde ce
-            // to moci da se podesava.
-
             float spravaDWidth = dWidth;
             float spravaEWidth = dWidth;
             float spravaTotWidth = xKonj - xParter - 2 * dWidth;

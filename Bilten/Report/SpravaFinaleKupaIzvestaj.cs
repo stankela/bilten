@@ -140,7 +140,7 @@ namespace Bilten.Report
             // TODO3: Ne bi trebalo pristupati kolonama po fixnom indexu (kao u sledecoj liniji) zato sto je moguce da se
             // index promeni (ako npr. dodam novu kolonu).
 
-            // TODO3: Trenutno se velice svih kolona za ocene podesavaju prema velicini prve kolone (D). Promeni da se
+            // TODO3: Trenutno se velicine svih kolona za ocene podesavaju prema velicini prve kolone (D). Promeni da se
             // svaka podesava odvojeno. (i u ostalim izvestajima)
 
             // kolo i kval sam podesio kao polovinu Rank kolone.
