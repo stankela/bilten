@@ -96,12 +96,5 @@ namespace Bilten
         {
             // TODO4
         }
-
-        // Proveri u kojim sve takmicenjima su svi gimnasticari oznaceni sa Q, sto je bila greska u jednoj od
-        // prethodnih verzija programa.
-        public void proveriKvalifikante()
-        {
-            // TODO4
-        }
     }
 }

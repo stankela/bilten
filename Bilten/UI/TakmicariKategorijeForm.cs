@@ -625,21 +625,21 @@ namespace Bilten.UI
             // potrebno je jos jednom pregledati sva mesta na kojima se nesto brise
             // i proveriti da li se brise sve sto treba da se brise
 
-            if (ucesnikTakmicenja2(g))
+            if (DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().isGimnasticarUcesnik(g.Id))
             {
                 string msg = "Nije dozvoljeno brisanje takmicara koji ucestvuje u takmicenju II.";
                 MessageDialogs.showMessage(msg, this.Text);
                 return false;
             }
 
-            if (ucesnikTakmicenja3(g))
+            if (DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().isGimnasticarUcesnik(g.Id))
             {
                 string msg = "Nije dozvoljeno brisanje takmicara koji ucestvuje u takmicenju III.";
                 MessageDialogs.showMessage(msg, this.Text);
                 return false;
             }
 
-            if (hasEkipa(g))
+            if (DAOFactoryFactory.DAOFactory.GetEkipaDAO().existsEkipaForGimnasticar(g.Id))
             {
                 string msg = "Nije dozvoljeno brisanje takmicara koji je clan ekipe.\n Morate najpre da izbrisete " +
                     "takmicara iz ekipe.";
@@ -647,7 +647,7 @@ namespace Bilten.UI
                 return false;
             }
 
-            if (hasNastup(g))
+            if (DAOFactoryFactory.DAOFactory.GetNastupNaSpraviDAO().existsNastupForGimnasticar(g.Id))
             {
                 string msg = "Nije dozvoljeno brisanje takmicara koji je u start listi.\n Morate najpre da izbrisete " +
                     "takmicara iz svih start listi.";
@@ -658,7 +658,7 @@ namespace Bilten.UI
             // TODO: Proveri i eventualne ostale klase koje imaju asocijaciju prema GimnasticarUcesniku
             // (osim TakmicenjaI)
 
-            if (hasOcene(g))
+            if (DAOFactoryFactory.DAOFactory.GetOcenaDAO().existsOcenaForGimnasticar(g.Id))
             {
                 string msg = "Nije dozvoljeno brisanje takmicara za koga postoje unete ocene.";
                 MessageDialogs.showMessage(msg, this.Text);
@@ -666,141 +666,6 @@ namespace Bilten.UI
             }
 
             return true;
-        }
-
-        private bool hasEkipa(GimnasticarUcesnik g)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
-                    ekipaDAO.Session = session;
-                    return ekipaDAO.existsEkipaForGimnasticar(g.Id);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
-        }
-
-        private bool hasNastup(GimnasticarUcesnik g)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    NastupNaSpraviDAO nastupDAO = DAOFactoryFactory.DAOFactory.GetNastupNaSpraviDAO();
-                    nastupDAO.Session = session;
-                    return nastupDAO.existsNastupForGimnasticar(g.Id);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                // TODO: Izgleda da se ovaj izuzetak nigde ne hendluje.
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
-        }
-
-        private bool hasOcene(GimnasticarUcesnik g)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.existsOcenaForGimnasticar(g.Id);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
-        }
-
-        // TODO: Nije moguce izbrisati takmicara zato sto se uvek vodi kao ucesnik takmicenja II, cak i ako ne postoji
-        // odvojeno takmicenje II, verovatno zbog greske koja postoji u tom slucaju da kada ne postoji odvojeno
-        // takmicenje II svi gimnasticari se oznace kao kvalifikovani. Ispravi ovo, tj. kada ne postoji odvojeno 
-        // takmicenje II verovatno ne bi niko trebalo da bude oznacen kao kvalifikovan.
-        // Druga mogucnost je da nije moguce brisati takmicara zato sto postoje njegovi rezultati u takmicenju II, cak i 
-        // ako ne postoji odvojeno takmicenje II.
-        // Mozda bi najbolje bilo da se ne dozvoli brisanje takmicara koji je ucesnik takmicenja II i III (zato sam gore
-        // stavio da se prvo ispituje da li je gimnasticar ucesnik takmicenja II ili III)
-
-        private bool ucesnikTakmicenja2(GimnasticarUcesnik g)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    Takmicenje2DAO takmicenje2DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO();
-                    takmicenje2DAO.Session = session;
-                    return takmicenje2DAO.isGimnasticarUcesnik(g.Id);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
-        }
-
-        private bool ucesnikTakmicenja3(GimnasticarUcesnik g)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    Takmicenje3DAO takmicenje3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
-                    takmicenje3DAO.Session = session;
-                    return takmicenje3DAO.isGimnasticarUcesnik(g.Id);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
         }
 
         private string deleteConfirmationMessage(GimnasticarUcesnik gimnasticar)

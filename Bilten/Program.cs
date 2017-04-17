@@ -39,7 +39,6 @@ namespace Bilten
         // - Ekipni poredak za Memorijal da se izracuna za sve ekipe, bez obzira na to da li ekipa ima gimnasticare
         //   u svim kategorijama.
         // - Stampanje gimnasticara iz Registra.
-        // - Uvoz takmicenja.
 
         public static int VERZIJA_PROGRAMA = 13;
 
@@ -119,7 +118,6 @@ namespace Bilten
             RazneProvere rp = new RazneProvere();
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
-            rp.proveriKvalifikante();
 
 
             Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);

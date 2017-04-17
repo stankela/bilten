@@ -308,6 +308,7 @@ public class VersionUpdater
         updatePreskok();
         updatePoredakViseKola();
         updateZavrsenoTak1();
+        updateKvalifikanti();
     }
 
     private void updatePoredakViseKola()
@@ -802,6 +803,72 @@ public class VersionUpdater
         {
             logStreamWriter.Close();
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
+    }
+
+    // Ponisti Q ako nema odvojenog takmicenja 2, 3 ili 4.
+    public void updateKvalifikanti()
+    {
+        IList<int> takmicenjaId = getTakmicenjaId();
+        for (int i = 0; i < takmicenjaId.Count; ++i)
+        {
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjaId[i]);
+
+                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                        .FindByTakmicenje(t.Id);
+
+                    PoredakUkupnoDAO poredakUkupnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO();
+                    PoredakSpravaDAO poredakSpravaDAO = DAOFactoryFactory.DAOFactory.GetPoredakSpravaDAO();
+                    PoredakPreskokDAO poredakPreskokDAO = DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO();
+                    PoredakEkipnoDAO poredakEkipnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO();
+
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        if (!rt.odvojenoTak2())
+                        {
+                            foreach (RezultatUkupno r in rt.Takmicenje1.PoredakUkupno.Rezultati)
+                                r.KvalStatus = KvalifikacioniStatus.None;
+                            poredakUkupnoDAO.Update(rt.Takmicenje1.PoredakUkupno);
+                        }
+                        if (!rt.odvojenoTak3())
+                        {
+                            foreach (PoredakSprava p in rt.Takmicenje1.PoredakSprava)
+                            {
+                                foreach (RezultatSprava r in p.Rezultati)
+                                    r.KvalStatus = KvalifikacioniStatus.None;
+                                poredakSpravaDAO.Update(p);
+                            }
+                            foreach (RezultatPreskok r in rt.Takmicenje1.PoredakPreskok.Rezultati)
+                                r.KvalStatus = KvalifikacioniStatus.None;
+                            poredakPreskokDAO.Update(rt.Takmicenje1.PoredakPreskok);
+                        }
+                        if (!rt.odvojenoTak4())
+                        {
+                            foreach (RezultatEkipno r in rt.Takmicenje1.PoredakEkipno.Rezultati)
+                                r.KvalStatus = KvalifikacioniStatus.None;
+                            poredakEkipnoDAO.Update(rt.Takmicenje1.PoredakEkipno);
+                        }
+                    }
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
         }
     }
 }
