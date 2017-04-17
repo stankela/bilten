@@ -342,6 +342,15 @@ namespace Bilten.Domain
                     "Mesto", "Mesto odrzavanja moze da sadrzi maksimalno "
                     + MESTO_MAX_LENGTH + " znakova.");
             }
+
+            if (PrvoKolo != null && PrvoKolo.Gimnastika != Gimnastika
+                || DrugoKolo != null && DrugoKolo.Gimnastika != Gimnastika
+                || TreceKolo != null && TreceKolo.Gimnastika != Gimnastika
+                || CetvrtoKolo != null && CetvrtoKolo.Gimnastika != Gimnastika)
+            {
+                notification.RegisterMessage(
+                    "Gimnastika", "Gimnastika mora da bude ista kao u prethodnim kolima.");
+            }
         }
 
         public override bool Equals(object other)

@@ -12,6 +12,8 @@ using Iesi.Collections.Generic;
 using System.Collections;
 using Bilten.Util;
 using Bilten.Dao;
+using Bilten.Misc;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -24,11 +26,13 @@ namespace Bilten.UI
         private string oldNaziv;
         private string oldKod;
         private bool clanoviSorted;
+        private bool enableAdd;
 
-        public EkipaForm(Nullable<int> ekipaId, int rezTakmicenjeId)
+        public EkipaForm(Nullable<int> ekipaId, int rezTakmicenjeId, bool enableAdd)
         {
             InitializeComponent();
             this.rezTakmicenjeId = rezTakmicenjeId;
+            this.enableAdd = enableAdd;
             initialize(ekipaId, true);
         }
 
@@ -92,6 +96,9 @@ namespace Bilten.UI
 
             dgwUserControlClanovi.DataGridView.MultiSelect = false;
             addClanoviColumns();
+
+            btnAdd.Enabled = enableAdd;
+            btnBrisi.Enabled = enableAdd;
         }
 
         private void addClanoviColumns()
@@ -241,10 +248,7 @@ namespace Bilten.UI
 
         protected override void addEntity(DomainObject entity)
         {
-            Ekipa ekipa = (Ekipa)entity;
-            rezTakmicenje.Takmicenje1.addEkipa(ekipa);
-            DAOFactoryFactory.DAOFactory.GetEkipaDAO().Add(ekipa);
-            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTakmicenje.Takmicenje1);
+            RezultatskoTakmicenjeService.addEkipaToRezTak((Ekipa)entity, rezTakmicenje);
         }
 
         protected override void updateEntity(DomainObject entity)

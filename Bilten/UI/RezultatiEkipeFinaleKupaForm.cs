@@ -236,10 +236,10 @@ namespace Bilten.UI
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
                     RezultatskoTakmicenje rezTak1
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
                         takmicenje.PrvoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     RezultatskoTakmicenje rezTak2
-                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
                         takmicenje.DrugoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
 
                     ActiveTakmicenje.Takmicenje1.PoredakEkipnoFinaleKupa.create(ActiveTakmicenje, rezTak1, rezTak2);

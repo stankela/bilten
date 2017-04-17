@@ -225,20 +225,20 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
-                    RezultatskoTakmicenje rezTak1 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari
-                        (takmicenje.PrvoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
-                    RezultatskoTakmicenje rezTak2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                    RezultatskoTakmicenje rezTak1 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
+                        takmicenje.PrvoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
+                    RezultatskoTakmicenje rezTak2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
                         takmicenje.DrugoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     RezultatskoTakmicenje rezTak3 = null;
                     if (takmicenje.TreceKolo != null)
                     {
-                        rezTak3 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        rezTak3 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
                             takmicenje.TreceKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     }
                     RezultatskoTakmicenje rezTak4 = null;
                     if (takmicenje.CetvrtoKolo != null)
                     {
-                        rezTak4 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
+                        rezTak4 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
                             takmicenje.CetvrtoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     }
 

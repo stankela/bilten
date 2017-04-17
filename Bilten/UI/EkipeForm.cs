@@ -14,6 +14,7 @@ using Bilten.Dao;
 using Bilten.Dao.NHibernate;
 using NHibernate.Context;
 using Bilten.Misc;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -22,6 +23,7 @@ namespace Bilten.UI
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private bool[] tabOpened;
         private bool[] clanoviSorted;
+        private bool viseKola;
 
         public EkipeForm(int takmicenjeId)
         {
@@ -48,6 +50,9 @@ namespace Bilten.UI
                     }
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoje ekipna takmicenja ni za jednu kategoriju.");
+
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    viseKola = t.FinaleKupa || t.ZbirViseKola;
 
                     initUI();
                     tabOpened = new bool[rezTakmicenja.Count];
@@ -261,7 +266,7 @@ namespace Bilten.UI
             EkipaForm form;
             try
             {
-                form = new EkipaForm(null, ActiveRezTakmicenje.Id);
+                form = new EkipaForm(null, ActiveRezTakmicenje.Id, !viseKola);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -283,32 +288,7 @@ namespace Bilten.UI
                     // ponovo ucitaj takmicenje zato sto je dodata ekipa
                     rezTakmicenja[tabControl1.SelectedIndex] =
                         loadRezTakmicenje(ActiveRezTakmicenje.Id);
-
-                    Ekipa e = (Ekipa)form.Entity;
-
-                    List<Ocena> ocene = new List<Ocena>();
-                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
-                    {
-                        ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
-                    }
-                    
-                    ActiveRezTakmicenje.Takmicenje1.ekipaAdded(e, ocene, ActiveRezTakmicenje);
-
-                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveRezTakmicenje.Takmicenje1.PoredakEkipno);
-                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
-                    {
-                        DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Evict(g);
-                    }
-                    session.Transaction.Commit();
                 }
-            }
-            catch (InfrastructureException ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                Close();
-                return;
             }
             catch (Exception ex)
             {
@@ -342,7 +322,7 @@ namespace Bilten.UI
             EkipaForm form;
             try
             {
-                form = new EkipaForm(selEkipa.Id, ActiveRezTakmicenje.Id);
+                form = new EkipaForm(selEkipa.Id, ActiveRezTakmicenje.Id, !viseKola);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -497,6 +477,7 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(String.Format(msgFmt, selEkipa), this.Text))
                 return;
 
+            int index = getSelectedEkipaIndex();
             ISession session = null;
             try
             {
@@ -504,20 +485,9 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    int index = getSelectedEkipaIndex();
 
-                    delete(selEkipa);
+                    RezultatskoTakmicenjeService.deleteEkipaFromRezTak(selEkipa, ActiveRezTakmicenje);
                     session.Transaction.Commit();
-
-                    setEkipe(ActiveRezTakmicenje.Takmicenje1.Ekipe);
-
-                    if (index < ActiveRezTakmicenje.Takmicenje1.Ekipe.Count)
-                        setSelectedEkipaIndex(index);
-                    else if (ActiveRezTakmicenje.Takmicenje1.Ekipe.Count > 0)
-                        setSelectedEkipaIndex(ActiveRezTakmicenje.Takmicenje1.Ekipe.Count - 1);
-                    else
-                        getActiveClanoviDataGridViewUserControl().clearItems();
-                    onEkipeCellMouseClick();
                 }
             }
             catch (Exception ex)
@@ -532,14 +502,15 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private void delete(Ekipa ekipa)
-        {
-            ActiveRezTakmicenje.Takmicenje1.removeEkipa(ekipa);
-            ActiveRezTakmicenje.Takmicenje1.ekipaDeleted(ekipa, ActiveRezTakmicenje);
-            DAOFactoryFactory.DAOFactory.GetEkipaDAO().Delete(ekipa);
-            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(ActiveRezTakmicenje.Takmicenje1);
+        
+            setEkipe(ActiveRezTakmicenje.Takmicenje1.Ekipe);
+            if (index < ActiveRezTakmicenje.Takmicenje1.Ekipe.Count)
+                setSelectedEkipaIndex(index);
+            else if (ActiveRezTakmicenje.Takmicenje1.Ekipe.Count > 0)
+                setSelectedEkipaIndex(ActiveRezTakmicenje.Takmicenje1.Ekipe.Count - 1);
+            else
+                getActiveClanoviDataGridViewUserControl().clearItems();
+            onEkipeCellMouseClick();
         }
 
         private void btnClose_Click(object sender, EventArgs e)

@@ -104,7 +104,7 @@ namespace Bilten.UI
             IList<RezultatskoTakmicenje> result;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                    .FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupno_KlubDrzava(takmicenjeId);
+                    .FindByTakmicenjeFetch_Tak1_PoredakUkupno_Gimnasticari(takmicenjeId);
             else
                 result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                     .FindByTakmicenjeFetchTakmicenje2(takmicenjeId);

@@ -1,5 +1,6 @@
 ﻿using Bilten.Dao;
 using Bilten.Domain;
+using Bilten.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,10 +54,7 @@ namespace Bilten.Services
                     if (takmicenje.FinaleKupa)
                         rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, rezTak1, rezTak2);
                     else if (takmicenje.ZbirViseKola)
-                    {
-                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak, rezTak1, rezTak2,
-                            rezTak3, rezTak4);
-                    }
+                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, rezTak, rezTak1, rezTak2, rezTak3, rezTak4);
                     else
                         rezTak.Takmicenje1.updateRezultatiOnGimnasticarAdded(g, ocene, rezTak);
 
@@ -95,6 +93,86 @@ namespace Bilten.Services
                     ocenaDAO.Evict(o);
             }
 
+            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
+        }
+
+        public static void addEkipaToRezTak(Ekipa ekipa, RezultatskoTakmicenje rezTak)
+        {
+            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            rezultatskoTakmicenjeDAO.Attach(rezTak, false);
+
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+            Takmicenje takmicenje = takmicenjeDAO.FindById(rezTak.Takmicenje.Id);
+
+            RezultatskoTakmicenje rezTak1 = null;
+            RezultatskoTakmicenje rezTak2 = null;
+            RezultatskoTakmicenje rezTak3 = null;
+            RezultatskoTakmicenje rezTak4 = null;
+            if (takmicenje.FinaleKupa || takmicenje.ZbirViseKola)
+            {
+                rezTak1 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
+                    takmicenje.PrvoKolo.Id, rezTak.Kategorija.Naziv, 0);
+                rezTak2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
+                    takmicenje.DrugoKolo.Id, rezTak.Kategorija.Naziv, 0);
+                if (takmicenje.ZbirViseKola)
+                {
+                    if (takmicenje.TreceKolo != null)
+                    {
+                        rezTak3 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
+                            takmicenje.TreceKolo.Id, rezTak.Kategorija.Naziv, 0);
+                    }
+                    if (takmicenje.CetvrtoKolo != null)
+                    {
+                        rezTak4 = rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_PoredakEkipno_Ekipe(
+                            takmicenje.CetvrtoKolo.Id, rezTak.Kategorija.Naziv, 0);
+                    }
+                }
+            }
+
+            if (rezTak.Takmicenje1.addEkipa(ekipa))
+            {
+                DAOFactoryFactory.DAOFactory.GetEkipaDAO().Add(ekipa);
+
+                List<Ocena> ocene = new List<Ocena>();
+                if (!takmicenje.ZbirViseKola)
+                {
+                    foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
+                        // TODO4: Razmisli da izbacis cuvanje ocena u sesiji.
+                        ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
+                }
+
+                if (takmicenje.FinaleKupa)
+                    rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa, ocene, rezTak, rezTak1, rezTak2);
+                else if (takmicenje.ZbirViseKola)
+                    rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa, rezTak, rezTak1, rezTak2, rezTak3, rezTak4);
+                else
+                    rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa, ocene, rezTak);
+
+                // snimi ekipe i poredak ekipno
+                DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
+            }
+
+            takmicenjeDAO.Evict(takmicenje);
+            if (rezTak1 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak1);
+            if (rezTak2 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak2);
+            if (rezTak3 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak3);
+            if (rezTak4 != null)
+                rezultatskoTakmicenjeDAO.Evict(rezTak4);
+        }
+
+        public static void deleteEkipaFromRezTak(Ekipa e, RezultatskoTakmicenje rezTak)
+        {
+            DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Attach(rezTak, false);
+
+            EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
+            ekipaDAO.Attach(e, false);
+            
+            rezTak.Takmicenje1.removeEkipa(e);
+            rezTak.Takmicenje1.updateRezultatiOnEkipaDeleted(e, rezTak);
+            ekipaDAO.Delete(e);
             DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
         }
     }

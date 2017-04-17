@@ -327,9 +327,7 @@ namespace Bilten.UI
                 List<RezultatEkipno> rezultatiEkipno =
                     ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati();
 
-                bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1
-                && ActiveTakmicenje.Propozicije.PostojiTak4
-                && ActiveTakmicenje.Propozicije.OdvojenoTak4;
+                bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak4();
 
                 p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, sviRezultatiUkupno,
                     ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName));

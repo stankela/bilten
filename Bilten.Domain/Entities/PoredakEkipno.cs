@@ -178,7 +178,7 @@ namespace Bilten.Domain
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.PostojiTak4 || !propozicije.OdvojenoTak4)
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.odvojenoTak4())
             {
                 foreach (RezultatEkipno r in Rezultati)
                     r.KvalStatus = KvalifikacioniStatus.None;

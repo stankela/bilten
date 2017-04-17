@@ -195,11 +195,8 @@ namespace Bilten.Domain
             else
             {
                 total = (total1 + total2) / 2;
-                if (neRacunajProsekAkoNemaOceneIzObaKola
-                    && (TotalPrvoKolo == null || TotalDrugoKolo == null))
-                {
+                if (neRacunajProsekAkoNemaOceneIzObaKola && (TotalPrvoKolo == null || TotalDrugoKolo == null))
                     total = total1 + total2;
-                }
             }
             setTotal(total);
         }

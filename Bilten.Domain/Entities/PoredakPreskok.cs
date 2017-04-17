@@ -212,7 +212,7 @@ namespace Bilten.Domain
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.PostojiTak3 || !propozicije.OdvojenoTak3)
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.odvojenoTak3())
             {
                 foreach (RezultatPreskok r in Rezultati)
                     r.KvalStatus = KvalifikacioniStatus.None;

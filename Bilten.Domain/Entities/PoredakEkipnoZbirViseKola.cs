@@ -31,13 +31,11 @@ namespace Bilten.Domain
         public virtual void create(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
             RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3, RezultatskoTakmicenje rezTak4)
         {
-            IList<Ekipa> ekipe = new List<Ekipa>(rezTak.Takmicenje1.Ekipe);
-
             // NOTE: Da bi Ekipa mogla da se koristi kao key u Dictionary, mora da implementira
             // interfejs IEquatable<Ekipa>.
             IDictionary<Ekipa, RezultatEkipnoZbirViseKola> rezultatiMap =
                 new Dictionary<Ekipa, RezultatEkipnoZbirViseKola>();
-            foreach (Ekipa e in ekipe)
+            foreach (Ekipa e in rezTak.Takmicenje1.Ekipe)
             {
                 RezultatEkipnoZbirViseKola rezultat = new RezultatEkipnoZbirViseKola();
                 rezultat.Ekipa = e;
@@ -47,49 +45,19 @@ namespace Bilten.Domain
             foreach (RezultatEkipno r in rezTak1.Takmicenje1.PoredakEkipno.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Ekipa))
-                {
-                    rezultatiMap[r.Ekipa].ParterPrvoKolo = r.Parter;
-                    rezultatiMap[r.Ekipa].KonjPrvoKolo = r.Konj;
-                    rezultatiMap[r.Ekipa].KarikePrvoKolo = r.Karike;
-                    rezultatiMap[r.Ekipa].PreskokPrvoKolo = r.Preskok;
-                    rezultatiMap[r.Ekipa].RazbojPrvoKolo = r.Razboj;
-                    rezultatiMap[r.Ekipa].VratiloPrvoKolo = r.Vratilo;
-                    rezultatiMap[r.Ekipa].DvovisinskiRazbojPrvoKolo = r.DvovisinskiRazboj;
-                    rezultatiMap[r.Ekipa].GredaPrvoKolo = r.Greda;
-                    rezultatiMap[r.Ekipa].TotalPrvoKolo = r.Total;
-                }
+                    rezultatiMap[r.Ekipa].initPrvoKolo(r);
             }
             foreach (RezultatEkipno r in rezTak2.Takmicenje1.PoredakEkipno.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Ekipa))
-                {
-                    rezultatiMap[r.Ekipa].ParterDrugoKolo = r.Parter;
-                    rezultatiMap[r.Ekipa].KonjDrugoKolo = r.Konj;
-                    rezultatiMap[r.Ekipa].KarikeDrugoKolo = r.Karike;
-                    rezultatiMap[r.Ekipa].PreskokDrugoKolo = r.Preskok;
-                    rezultatiMap[r.Ekipa].RazbojDrugoKolo = r.Razboj;
-                    rezultatiMap[r.Ekipa].VratiloDrugoKolo = r.Vratilo;
-                    rezultatiMap[r.Ekipa].DvovisinskiRazbojDrugoKolo = r.DvovisinskiRazboj;
-                    rezultatiMap[r.Ekipa].GredaDrugoKolo = r.Greda;
-                    rezultatiMap[r.Ekipa].TotalDrugoKolo = r.Total;
-                }
+                    rezultatiMap[r.Ekipa].initDrugoKolo(r);
             }
             if (rezTak3 != null)
             {
                 foreach (RezultatEkipno r in rezTak3.Takmicenje1.PoredakEkipno.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Ekipa))
-                    {
-                        rezultatiMap[r.Ekipa].ParterTreceKolo = r.Parter;
-                        rezultatiMap[r.Ekipa].KonjTreceKolo = r.Konj;
-                        rezultatiMap[r.Ekipa].KarikeTreceKolo = r.Karike;
-                        rezultatiMap[r.Ekipa].PreskokTreceKolo = r.Preskok;
-                        rezultatiMap[r.Ekipa].RazbojTreceKolo = r.Razboj;
-                        rezultatiMap[r.Ekipa].VratiloTreceKolo = r.Vratilo;
-                        rezultatiMap[r.Ekipa].DvovisinskiRazbojTreceKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Ekipa].GredaTreceKolo = r.Greda;
-                        rezultatiMap[r.Ekipa].TotalTreceKolo = r.Total;
-                    }
+                        rezultatiMap[r.Ekipa].initTreceKolo(r);
                 }
             }
             if (rezTak4 != null)
@@ -97,58 +65,16 @@ namespace Bilten.Domain
                 foreach (RezultatEkipno r in rezTak4.Takmicenje1.PoredakEkipno.Rezultati)
                 {
                     if (rezultatiMap.ContainsKey(r.Ekipa))
-                    {
-                        rezultatiMap[r.Ekipa].ParterCetvrtoKolo = r.Parter;
-                        rezultatiMap[r.Ekipa].KonjCetvrtoKolo = r.Konj;
-                        rezultatiMap[r.Ekipa].KarikeCetvrtoKolo = r.Karike;
-                        rezultatiMap[r.Ekipa].PreskokCetvrtoKolo = r.Preskok;
-                        rezultatiMap[r.Ekipa].RazbojCetvrtoKolo = r.Razboj;
-                        rezultatiMap[r.Ekipa].VratiloCetvrtoKolo = r.Vratilo;
-                        rezultatiMap[r.Ekipa].DvovisinskiRazbojCetvrtoKolo = r.DvovisinskiRazboj;
-                        rezultatiMap[r.Ekipa].GredaCetvrtoKolo = r.Greda;
-                        rezultatiMap[r.Ekipa].TotalCetvrtoKolo = r.Total;
-                    }
+                        rezultatiMap[r.Ekipa].initCetvrtoKolo(r);
                 }
             }
 
-            List<RezultatEkipnoZbirViseKola> rezultati = new List<RezultatEkipnoZbirViseKola>(rezultatiMap.Values);
             Rezultati.Clear();
-            foreach (RezultatEkipnoZbirViseKola rez in rezultati)
-                Rezultati.Add(rez);
-
-            // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
-            // na isti nacin.
-            foreach (RezultatEkipnoZbirViseKola rez in Rezultati)
+            foreach (RezultatEkipnoZbirViseKola r in rezultatiMap.Values)
             {
-                if (rez.TotalPrvoKolo == null && rez.TotalDrugoKolo == null
-                    && rez.TotalTreceKolo == null && rez.TotalCetvrtoKolo == null)
-                {
-                    rez.setTotal(null);
-                    continue;
-                }
-                float total1 = rez.TotalPrvoKolo == null ? 0 : rez.TotalPrvoKolo.Value;
-                float total2 = rez.TotalDrugoKolo == null ? 0 : rez.TotalDrugoKolo.Value;
-                float total3 = rez.TotalTreceKolo == null ? 0 : rez.TotalTreceKolo.Value;
-                float total4 = rez.TotalCetvrtoKolo == null ? 0 : rez.TotalCetvrtoKolo.Value;
-                float total;
-
-                /*if (rezTak.Propozicije.Tak4FinalnaOcenaJeZbirObaKola)
-                    total = total1 + total2;
-                else if (rezTak.Propozicije.Tak4FinalnaOcenaJeMaxObaKola)
-                    total = total1 > total2 ? total1 : total2;
-                else
-                {
-                    total = (total1 + total2) / 2;
-                    if (rezTak.Propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola
-                        && (rez.TotalPrvoKolo == null || rez.TotalDrugoKolo == null))
-                    {
-                        total = total1 + total2;
-                    }
-                }*/
-                total = total1 + total2 + total3 + total4;
-                rez.setTotal(total);
+                r.calculateTotal();
+                Rezultati.Add(r);
             }
-
             rankRezultati();
         }
 
@@ -199,6 +125,77 @@ namespace Bilten.Domain
             result.Sort(new SortComparer<RezultatEkipnoZbirViseKola>(propDesc, ListSortDirection.Ascending));
 
             return result;
+        }
+
+        public virtual void addEkipa(Ekipa e, RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
+            RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3, RezultatskoTakmicenje rezTak4)
+        {
+            RezultatEkipnoZbirViseKola rezultat = new RezultatEkipnoZbirViseKola();
+            rezultat.Ekipa = e;
+
+            foreach (RezultatEkipno r in rezTak1.Takmicenje1.PoredakEkipno.Rezultati)
+            {
+                if (r.Ekipa.Equals(e))
+                {
+                    rezultat.initPrvoKolo(r);
+                    break;
+                }
+            }
+            foreach (RezultatEkipno r in rezTak2.Takmicenje1.PoredakEkipno.Rezultati)
+            {
+                if (r.Ekipa.Equals(e))
+                {
+                    rezultat.initDrugoKolo(r);
+                    break;
+                }
+            }
+            if (rezTak3 != null)
+            {
+                foreach (RezultatEkipno r in rezTak3.Takmicenje1.PoredakEkipno.Rezultati)
+                {
+                    if (r.Ekipa.Equals(e))
+                    {
+                        rezultat.initTreceKolo(r);
+                        break;
+                    }
+                }
+            }
+            if (rezTak4 != null)
+            {
+                foreach (RezultatEkipno r in rezTak4.Takmicenje1.PoredakEkipno.Rezultati)
+                {
+                    if (r.Ekipa.Equals(e))
+                    {
+                        rezultat.initCetvrtoKolo(r);
+                        break;
+                    }
+                }
+            }
+
+            rezultat.calculateTotal();
+            Rezultati.Add(rezultat);
+
+            rankRezultati();
+        }
+
+        public virtual void deleteEkipa(Ekipa e, RezultatskoTakmicenje rezTak)
+        {
+            RezultatEkipnoZbirViseKola r = getRezultat(e);
+            if (r != null)
+            {
+                Rezultati.Remove(r);
+                rankRezultati();
+            }
+        }
+
+        private RezultatEkipnoZbirViseKola getRezultat(Ekipa e)
+        {
+            foreach (RezultatEkipnoZbirViseKola r in Rezultati)
+            {
+                if (r.Ekipa.Equals(e))
+                    return r;
+            }
+            return null;
         }
 
         public virtual void dump(StringBuilder strBuilder)

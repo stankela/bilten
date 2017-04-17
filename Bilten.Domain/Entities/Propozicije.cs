@@ -122,11 +122,11 @@ namespace Bilten.Domain
             set { postojiTak4 = value; }
         }
 
-        private bool odvojenoTak4;
+        private bool _odvojenoTak4;
         public virtual bool OdvojenoTak4
         {
-            get { return odvojenoTak4; }
-            set { odvojenoTak4 = value; }
+            get { return _odvojenoTak4; }
+            set { _odvojenoTak4 = value; }
         }
 
         private byte brojRezultataKojiSeBodujuZaEkipu;
@@ -199,7 +199,7 @@ namespace Bilten.Domain
             }
         }
 
-        private bool tak2FinalnaOcenaJeZbirObaKola;
+        private bool tak2FinalnaOcenaJeZbirObaKola = true;
         public virtual bool Tak2FinalnaOcenaJeZbirObaKola
         {
             get { return tak2FinalnaOcenaJeZbirObaKola; }
@@ -251,7 +251,7 @@ namespace Bilten.Domain
             set { tak3FinalnaOcenaJeZbirObaKola = value; }
         }
 
-        private bool tak3FinalnaOcenaJeMaxObaKola;
+        private bool tak3FinalnaOcenaJeMaxObaKola = true;
         public virtual bool Tak3FinalnaOcenaJeMaxObaKola
         {
             get { return tak3FinalnaOcenaJeMaxObaKola; }
@@ -274,7 +274,22 @@ namespace Bilten.Domain
 
         // Takmicenje 4
 
-        private bool tak4FinalnaOcenaJeZbirObaKola;
+        public virtual NacinRacunanjaOceneFinaleKupa NacinRacunanjaOceneFinaleKupaTak4
+        {
+            get
+            {
+                if (Tak4FinalnaOcenaJeZbirObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Zbir;
+                else if (Tak4FinalnaOcenaJeMaxObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Max;
+                else if (Tak4FinalnaOcenaJeProsekObaKola)
+                    return NacinRacunanjaOceneFinaleKupa.Prosek;
+                else
+                    return NacinRacunanjaOceneFinaleKupa.Undefined;
+            }
+        }
+
+        private bool tak4FinalnaOcenaJeZbirObaKola = true;
         public virtual bool Tak4FinalnaOcenaJeZbirObaKola
         {
             get { return tak4FinalnaOcenaJeZbirObaKola; }
@@ -312,6 +327,11 @@ namespace Bilten.Domain
             return PostojiTak3 && OdvojenoTak3;
         }
 
+        public virtual bool odvojenoTak4()
+        {
+            return PostojiTak4 && OdvojenoTak4;
+        }
+
         public virtual void validateTakmicenje2(Notification notification)
         {
             if (!odvojenoTak2())
@@ -339,7 +359,7 @@ namespace Bilten.Domain
 
         public virtual void validateTakmicenje3(Notification notification)
         {
-            if (!PostojiTak3 || !OdvojenoTak3)
+            if (!odvojenoTak3())
                 return;
 
             if (BrojFinalistaTak3 < 1)
@@ -373,7 +393,7 @@ namespace Bilten.Domain
                     "BrojRezultataKojiSeBodujuZaEkipu", "Neispravna vrednost za broj rezultata koji se vrednuju za ekipu.");
             }
 
-            if (odvojenoTak4 && BrojEkipaUFinalu < 1)
+            if (OdvojenoTak4 && BrojEkipaUFinalu < 1)
             {
                 throw new BusinessException(
                     "BrojEkipaUFinalu", "Neispravna vrednost za broj ekipa u finalu.");
@@ -407,7 +427,7 @@ namespace Bilten.Domain
 
         public virtual void validateTakmicenje3FinaleKupa(Notification notification)
         {
-            if (!PostojiTak3 || !OdvojenoTak3)
+            if (!odvojenoTak3())
                 return;
 
             if (BrojFinalistaTak3 < 1)
@@ -432,7 +452,7 @@ namespace Bilten.Domain
 
         public virtual void validateTakmicenje4FinaleKupa(Notification notification)
         {
-            if (!PostojiTak4 || !OdvojenoTak4)
+            if (!odvojenoTak4())
                 return;
 
             if (BrojEkipaUFinalu < 1)

@@ -36,28 +36,11 @@ namespace Bilten.Domain
             protected set { ekipe = value; }
         }
 
-        public virtual void addEkipa(Ekipa ekipa)
+        public virtual bool addEkipa(Ekipa ekipa)
         {
-            checkAdd(ekipa);
-            Ekipe.Add(ekipa);
-        }
-
-        private void checkAdd(Ekipa ekipa)
-        {
-            if (existsEkipaNaziv(ekipa.Naziv))
-                throw new BusinessException("Naziv", "Ekipa sa datim nazivom vec postoji.");
             if (existsEkipaKod(ekipa.Kod))
                 throw new BusinessException("Kod", "Ekipa sa datim kodom vec postoji.");
-        }
-
-        private bool existsEkipaNaziv(string naziv)
-        {
-            foreach (Ekipa e in Ekipe)
-            {
-                if (e.Naziv.ToUpper() == naziv.ToUpper())
-                    return true;
-            }
-            return false;
+            return Ekipe.Add(ekipa);
         }
 
         private bool existsEkipaKod(string kod)
@@ -68,19 +51,6 @@ namespace Bilten.Domain
                     return true;
             }
             return false;
-        }
-
-        public virtual bool canAddEkipa(Ekipa ekipa)
-        {
-            try
-            {
-                checkAdd(ekipa);
-                return true;
-            }
-            catch (BusinessException)
-            {
-                return false;
-            }
         }
 
         public virtual void removeEkipa(Ekipa ekipa)
@@ -259,6 +229,7 @@ namespace Bilten.Domain
             }
         }
 
+        // Za finale kupa
         public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
             RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
         {
@@ -281,9 +252,10 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
-            RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2,
-            RezultatskoTakmicenje rezTak3, RezultatskoTakmicenje rezTak4)
+        // Za zbir vise kola
+        public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
+            RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3,
+            RezultatskoTakmicenje rezTak4)
         {
             PoredakUkupnoZbirViseKola.addGimnasticar(g, rezTak, rezTak1, rezTak2, rezTak3, rezTak4);
         }
@@ -300,8 +272,6 @@ namespace Bilten.Domain
                     getPoredakSprava(o.Sprava).deleteGimnasticar(g, rezTak);
             }
 
-            // TODO4: I poredak ekipno treba da se azurira.
-
             if (PoredakUkupnoFinaleKupa != null)
                 PoredakUkupnoFinaleKupa.deleteGimnasticar(g, rezTak);
             foreach (Sprava s in Sprave.getSprave(rezTak.Gimnastika))
@@ -311,15 +281,37 @@ namespace Bilten.Domain
                 PoredakUkupnoZbirViseKola.deleteGimnasticar(g, rezTak);
         }
 
-        public virtual void ekipaAdded(Ekipa e, IList<Ocena> ocene,
+        public virtual void updateRezultatiOnEkipaAdded(Ekipa e, IList<Ocena> ocene,
             RezultatskoTakmicenje rezTak)
         {
             PoredakEkipno.addEkipa(e, ocene, rezTak);
         }
 
-        public virtual void ekipaDeleted(Ekipa e, RezultatskoTakmicenje rezTak)
+        // Za finale kupa
+        public virtual void updateRezultatiOnEkipaAdded(Ekipa e, IList<Ocena> ocene,
+            RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
+        {
+            PoredakEkipnoFinaleKupa.addEkipa(e, rezTak, rezTak1, rezTak2);
+
+            if (rezTak.odvojenoTak4())
+                PoredakEkipno.addEkipa(e, ocene, rezTak);
+        }
+
+        // Za zbir vise kola
+        public virtual void updateRezultatiOnEkipaAdded(Ekipa e, RezultatskoTakmicenje rezTak,
+            RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3,
+            RezultatskoTakmicenje rezTak4)
+        {
+            PoredakEkipnoZbirViseKola.addEkipa(e, rezTak, rezTak1, rezTak2, rezTak3, rezTak4);
+        }
+
+        public virtual void updateRezultatiOnEkipaDeleted(Ekipa e, RezultatskoTakmicenje rezTak)
         {
             PoredakEkipno.deleteEkipa(e, rezTak);
+            if (PoredakEkipnoFinaleKupa != null)
+                PoredakEkipnoFinaleKupa.deleteEkipa(e, rezTak);
+            if (PoredakEkipnoZbirViseKola != null)
+                PoredakEkipnoZbirViseKola.deleteEkipa(e, rezTak);
         }
 
         public virtual void gimnasticarAddedToEkipa(GimnasticarUcesnik g, Ekipa e, 

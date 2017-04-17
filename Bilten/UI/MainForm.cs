@@ -326,6 +326,8 @@ namespace Bilten.UI
                 using (session = NHibernateHelper.Instance.OpenSession())
                 using (session.BeginTransaction())
                 {
+                    string viseKolaMsg =
+                        "Takmicenje je uspesno napravljeno, sa svim gimnasticarima i ekipama iz prethodnih kola.";
                     CurrentSessionContext.Bind(session);
                     if (t.StandardnoTakmicenje && form.copyFromTakmicenje != null)
                     {
@@ -338,15 +340,14 @@ namespace Bilten.UI
                     {
                         TakmicenjeService.kreirajNaOsnovuViseKola(t);
                         session.Transaction.Commit();
-                        string msg = "Takmicenje je kreirano, sa svim ocenama. Podesite u propozicijama " + 
-                            "nacin kako se racuna finalna ocena na osnovu ocena iz 1. i 2. kola.";
-                        MessageDialogs.showMessage(msg, strProgName);
+                        MessageDialogs.showMessage(viseKolaMsg, strProgName);
                         onTakmicenjeCreated(t);
                     }
                     else // ZbirViseKola
                     {
                         TakmicenjeService.kreirajNaOsnovuViseKola(t);
                         session.Transaction.Commit();
+                        MessageDialogs.showMessage(viseKolaMsg, strProgName);
                         onTakmicenjeCreated(t);
                     }
                 }
