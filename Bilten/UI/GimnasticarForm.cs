@@ -553,6 +553,9 @@ namespace Bilten.UI
             }
         }
 
+        // TODO4: Kada se iz komboa za klub ili kategoriju bira pomocu auto complete, i kada se izabere pritiskom na enter,
+        // odmah se zatvara prozor.
+
         protected override void discardChanges()
         {
             // TODO: Razmotri da li bi trebalo da se brisu entiteti dodati

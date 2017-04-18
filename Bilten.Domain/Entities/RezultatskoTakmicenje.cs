@@ -165,7 +165,7 @@ namespace Bilten.Domain
             {
                 string result = String.Empty;
                 if (Kategorija != null)
-                    result += Kategorija.NazivPol;
+                    result += Kategorija.Naziv;
                 if (TakmicenjeDescription != null)
                 {
                     if (result != String.Empty)

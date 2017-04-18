@@ -13,6 +13,7 @@ using Bilten.Util;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -69,6 +70,7 @@ namespace Bilten.UI
         {
             Text = "Takmicarske kategorije";
 
+            lstKategorije.DisplayMember = "Naziv";
             setKategorije(takmicenje.Kategorije);
             SelectedKategorija = null;
 
@@ -161,14 +163,11 @@ namespace Bilten.UI
 
         private void btnAddKategorija_Click(object sender, EventArgs e)
         {
-            string msg = "Izaberite kategorije gimnasticara";
-            IList<TakmicarskaKategorija> katList =
-                new List<TakmicarskaKategorija>(takmicenje.Kategorije);
             DialogResult dlgResult = DialogResult.None;
-            SelectKategorijaForm form = null;
+            TakmicarskaKategorijaForm form = null;
             try
             {
-                form = new SelectKategorijaForm(-1, takmicenje.Gimnastika, katList, msg);
+                form = new TakmicarskaKategorijaForm(takmicenje.Gimnastika);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -176,8 +175,7 @@ namespace Bilten.UI
                 MessageDialogs.showError(ex.Message, this.Text);
                 return;
             }
-
-            if (dlgResult != DialogResult.OK || form.SelektovaneKategorije.Count == 0)
+            if (dlgResult != DialogResult.OK)
                 return;
 
             ISession session = null;
@@ -187,11 +185,11 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    foreach (TakmicarskaKategorija k in form.SelektovaneKategorije)
-                        takmicenje.addKategorija(k);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
-
-                    session.Transaction.Commit();
+                    if (takmicenje.addKategorija(new TakmicarskaKategorija(form.NazivKategorije, takmicenje.Gimnastika)))
+                    {
+                        DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+                        session.Transaction.Commit();
+                    }
                 }
             }
             catch (Exception ex)
@@ -449,25 +447,89 @@ namespace Bilten.UI
             rezTakDAO.Delete(rezTakDAO.FindByKatDesc(kat, desc));
         }
 
-        private void btnEditKategorija_Click(object sender, EventArgs e)
+        private void btnDodajIzPrethTak_Click(object sender, EventArgs e)
         {
-            if (SelectedKategorija == null)
-                return;
+            OtvoriTakmicenjeForm form = null;
+            DialogResult result;
             try
             {
-                TakmicarskaKategorijaForm form =
-                    new TakmicarskaKategorijaForm(SelectedKategorija, takmicenje);
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    // refresh
-                    setKategorije(takmicenje.Kategorije);
-                    SelectedKategorija = (TakmicarskaKategorija)form.Entity;
-                }
+                form = new OtvoriTakmicenjeForm(null, true, 1, false);
+                result = form.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
+                return;
             }
+            if (result != DialogResult.OK)
+                return;
+
+            IList<TakmicarskaKategorija> kategorije = null;
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                        .FindByTakmicenje(form.SelTakmicenja[0].Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+            IList<string> kategorijeStr = new List<string>();
+            foreach (TakmicarskaKategorija k in kategorije)
+                kategorijeStr.Add(k.Naziv);
+
+            CheckListForm form2;
+            try
+            {
+                form2 = new CheckListForm(kategorijeStr, "Izaberite kategorije", "Izaberite kategorije");
+                result = form2.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            if (result != DialogResult.OK)
+                return;
+
+            session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    foreach (int index in form2.CheckedIndices)
+                        takmicenje.addKategorija(kategorije[index]);
+                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+            setKategorije(takmicenje.Kategorije);
         }
     }
 }

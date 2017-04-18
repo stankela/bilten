@@ -79,22 +79,9 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual string NazivPol
-        {
-            get
-            {
-                string result = Naziv;
-                if (Gimnastika == Gimnastika.MSG)
-                    result += " (M)";
-                else
-                    result += " (Z)";
-                return result;
-            }
-        }
-
         public override string ToString()
         {
-            return NazivPol;
+            return Naziv;
         }
 
         public override bool Equals(object other)

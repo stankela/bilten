@@ -8,115 +8,76 @@ using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Exceptions;
 using Bilten.Util;
+using NHibernate;
+using Bilten.Data;
+using NHibernate.Context;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
-    public partial class TakmicarskaKategorijaForm : EntityDetailForm
+    public partial class TakmicarskaKategorijaForm : Form
     {
         private Takmicenje takmicenje;
-        private string oldNaziv;
+        public string NazivKategorije;
 
-        public TakmicarskaKategorijaForm(TakmicarskaKategorija kat, Takmicenje takmicenje)
+        public TakmicarskaKategorijaForm(Gimnastika gimnastika)
         {
             InitializeComponent();
-            this.takmicenje = takmicenje;
-            initialize2(kat, false);
-        }
+            this.Text = "Izaberite kategoriju";
 
-        protected override void initUI()
-        {
-            base.initUI();
-            this.Text = "Kategorija";
-
-            txtNaziv.Text = String.Empty;
-        }
-
-        protected override void saveOriginalData(DomainObject entity)
-        {
-            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
-            oldNaziv = kat.Naziv;
-        }
-
-        protected override void updateUIFromEntity(DomainObject entity)
-        {
-            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
-            txtNaziv.Text = kat.Naziv;
-        }
-
-        protected override void requiredFieldsAndFormatValidation(Notification notification)
-        {
-            if (txtNaziv.Text.Trim() == String.Empty)
+            IList<KategorijaGimnasticara> kategorije;
+            ISession session = null;
+            try
             {
-                notification.RegisterMessage(
-                    "Naziv", "Naziv kategorije je obavezan.");
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    kategorije = DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindByGimnastika(gimnastika);
+                }
             }
-        }
-
-        protected override void setFocus(string propertyName)
-        {
-            switch (propertyName)
+            catch (Exception ex)
             {
-                case "Naziv":
-                    txtNaziv.Focus();
-                    break;
-
-                default:
-                    throw new ArgumentException();
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+                Close();
+                return;
             }
-        }
-
-        protected override void updateEntityFromUI(DomainObject entity)
-        {
-            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
-            kat.Naziv = txtNaziv.Text.Trim();
-        }
-
-        protected override void checkBusinessRulesOnAdd(DomainObject entity)
-        {
-            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
-            Notification notification = new Notification();
-
-            if (existsKategorijaNaziv(kat))
+            finally
             {
-                notification.RegisterMessage("Naziv", "Kategorija sa datim nazivom vec postoji.");
-                throw new BusinessException(notification);
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+
+            cmbKategorija.DropDownStyle = ComboBoxStyle.DropDown;
+            setKategorije(kategorije);
+            SelectedKategorija = null;
+            cmbKategorija.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbKategorija.AutoCompleteSource = AutoCompleteSource.ListItems;
         }
 
-        private bool existsKategorijaNaziv(TakmicarskaKategorija k)
+        private void setKategorije(IList<KategorijaGimnasticara> kategorije)
         {
-            foreach (TakmicarskaKategorija k2 in takmicenje.Kategorije)
-            {
-                if (!object.ReferenceEquals(k2, k) && k2.Naziv.ToUpper() == k.Naziv.ToUpper())
-                    return true;
-            }
-            return false;
+            cmbKategorija.DisplayMember = "Naziv";
+            cmbKategorija.DataSource = kategorije;
         }
 
-        protected override void checkBusinessRulesOnUpdate(DomainObject entity)
+        private KategorijaGimnasticara SelectedKategorija
         {
-            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
-            Notification notification = new Notification();
-
-            bool nazivChanged = (kat.Naziv.ToUpper() != oldNaziv.ToUpper()) ? true : false;
-            if (nazivChanged && existsKategorijaNaziv(kat))
-            {
-                notification.RegisterMessage("Naziv", "Kategorija sa datim nazivom vec postoji.");
-                throw new BusinessException(notification);
-            }
+            get { return cmbKategorija.SelectedItem as KategorijaGimnasticara; }
+            set { cmbKategorija.SelectedItem = value; }
         }
 
-        protected override void discardChanges()
+        private void btnOK_Click(object sender, EventArgs e)
         {
-            if (editMode)
+            if (cmbKategorija.Text == String.Empty)
             {
-                // TODO: Za sva nova svojstva koja dodam u klasu 
-                // RezultatskoTakmicenjeDescription, 
-                // moraju biti vracene stare vrednosti
-                TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
-                kat.Naziv = oldNaziv;
+                MessageDialogs.showMessage("Izaberite ili unesite kategoriju", this.Text);
+                DialogResult = DialogResult.None;
+                return;
             }
+            NazivKategorije = cmbKategorija.Text;
         }
-
     }
 }

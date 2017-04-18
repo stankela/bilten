@@ -224,13 +224,15 @@ namespace Bilten.Domain
 
         // NOTE: Metodi addKategorija i removeKategorija upravljaju dvosmernom 
         // asocijacijom izmedju Takmicenja i TakmicarskeKategorije
-        public virtual void addKategorija(TakmicarskaKategorija kat)
+        public virtual bool addKategorija(TakmicarskaKategorija kat)
         {
             if (Kategorije.Add(kat))
             {
                 kat.setTakmicenjeInternal(this);
                 kat.RedBroj = (byte)(Kategorije.Count - 1);
+                return true;
             }
+            return false;
         }
 
         public virtual void removeKategorija(TakmicarskaKategorija kat)

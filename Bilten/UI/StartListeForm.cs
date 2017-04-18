@@ -693,6 +693,7 @@ namespace Bilten.UI
             SelectKategorijaForm form = null;
             try
             {
+                // TODO4: Izbrisi SelectKategorijaForm i zameni ga sa CheckListForm
                 form = new SelectKategorijaForm(takmicenje.Id, takmicenje.Gimnastika, dodeljeneKategorije, msg);
                 dlgResult = form.ShowDialog();
             }
