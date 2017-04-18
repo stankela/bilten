@@ -284,11 +284,11 @@ namespace Bilten.Domain
             return true;
         }
 
-        public virtual TakmicarskaKategorija getKategorija(int redBroj)
+        public virtual TakmicarskaKategorija getKategorija(string naziv)
         {
             foreach (TakmicarskaKategorija k in Kategorije)
             {
-                if (k.RedBroj == redBroj)
+                if (k.Naziv == naziv)
                     return k;
             }
             return null;

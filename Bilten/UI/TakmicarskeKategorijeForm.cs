@@ -19,16 +19,11 @@ namespace Bilten.UI
     public partial class TakmicarskeKategorijeForm : Form
     {
         private Takmicenje takmicenje;
-        private List<TakmicarskaKategorija> originalKategorije;        
-        private List<RezultatskoTakmicenjeDescription> originalTakmicenja;
+        private IList<RezultatskoTakmicenje> rezTakmicenja;
 
         public TakmicarskeKategorijeForm(int takmicenjeId)
         {
             // TODO: Dodaj strelice umesto "Pomeri gore" i "Pomeri dole"
-
-            // TODO4: Probaj da se prvo definisu takmicenja, pa zatim kategorije, i da
-            // bude moguce da se za dato takmicenje menjaju kategorije, tj. da ne vazi
-            // da sva takmicenja imaju sve kategorije.
 
             InitializeComponent();
             btnDeleteKategorija.Enabled = false;
@@ -40,22 +35,20 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindByIdFetch_Kat_Desc(takmicenjeId);
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    takmicenje = takmicenjeDAO.FindByIdFetch_Kat_Desc(takmicenjeId);
+                    rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                        .FindByTakmicenjeFetch_KatDesc(takmicenje.Id);
                     if (takmicenje.TakmicenjeDescriptions.Count == 0)
                     {
-                        // za novo takmicenje, automatski se dodaje takmicenje sa nazivom
-                        // kao glavno takmicenje
+                        // za novo takmicenje, automatski se dodaje takmicenje sa nazivom kao glavno takmicenje
                         RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
                         desc.Naziv = takmicenje.Naziv;
                         desc.Propozicije = new Propozicije();
                         takmicenje.addTakmicenjeDescription(desc);
+                        //takmicenjeDAO.Update(takmicenje);
+                        //session.Transaction.Commit();
                     }
-
-                    originalKategorije = new List<TakmicarskaKategorija>(takmicenje.Kategorije);
-                    originalTakmicenja =
-                        new List<RezultatskoTakmicenjeDescription>(takmicenje.TakmicenjeDescriptions);
-
-                    initUI();
                 }
             }
             catch (Exception ex)
@@ -68,6 +61,8 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        
+            initUI();
         }
 
         private void initUI()
@@ -79,6 +74,37 @@ namespace Bilten.UI
 
             setTakmicenja(takmicenje.TakmicenjeDescriptions);
             SelectedTakmicenje = null;
+        }
+
+        private void setTakmicenja(Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenja)
+        {
+            List<RezultatskoTakmicenjeDescription> takList = new List<RezultatskoTakmicenjeDescription>(takmicenja);
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
+            takList.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
+                propDesc, ListSortDirection.Ascending));
+
+            treeViewTakmicenja.Nodes.Clear();
+
+            const string BEZVEZE = "__BEZVEZE__";
+
+            string lastDescription = BEZVEZE;
+            TreeNode descNode = null;
+            foreach (RezultatskoTakmicenjeDescription desc in takList)
+            {
+                descNode = addTakmicenje(desc, new List<TakmicarskaKategorija>(takmicenje.Kategorije));
+            }
+            /*foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.TakmicenjeDescription.Naziv != lastDescription)
+                {
+                    lastDescription = rt.TakmicenjeDescription.Naziv;
+                    descNode = treeViewTakmicenja.Nodes.Add(rt.TakmicenjeDescription.Naziv);
+                }
+                TreeNode katNode = descNode.Nodes.Add(rt.Kategorija.Naziv);
+                katNode.Tag = rt;
+            }*/
         }
 
         private void setKategorije(Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije)
@@ -103,23 +129,34 @@ namespace Bilten.UI
             set { lstKategorije.SelectedItem = value; }
         }
 
-        private void setTakmicenja(Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenja)
-        {
-            List<RezultatskoTakmicenjeDescription> takList = new List<RezultatskoTakmicenjeDescription>(takmicenja);
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
-            takList.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
-                propDesc, ListSortDirection.Ascending));
-
-            lstTakmicenja.DataSource = takList;
-            lstTakmicenja.DisplayMember = "Naziv";
-        }
-
         private RezultatskoTakmicenjeDescription SelectedTakmicenje
         {
-            get { return lstTakmicenja.SelectedItem as RezultatskoTakmicenjeDescription; }
-            set { lstTakmicenja.SelectedItem = value; }
+            get
+            {
+                foreach (TreeNode n in treeViewTakmicenja.Nodes)
+                {
+                    if (n.IsSelected)
+                        return n.Tag as RezultatskoTakmicenjeDescription;
+                }
+                return null;
+            }
+            set
+            {
+                TreeNode node = null;
+                if (value != null)
+                {
+                    foreach (TreeNode n in treeViewTakmicenja.Nodes)
+                    {
+                        if (n.Text == value.Naziv)
+                        {
+                            node = n;
+                            break;
+                        }
+                    }
+                }
+                treeViewTakmicenja.SelectedNode = node;
+                treeViewTakmicenja.Focus();
+            }
         }
 
         private void btnAddKategorija_Click(object sender, EventArgs e)
@@ -142,9 +179,33 @@ namespace Bilten.UI
 
             if (dlgResult != DialogResult.OK || form.SelektovaneKategorije.Count == 0)
                 return;
-            
-            foreach (TakmicarskaKategorija k in form.SelektovaneKategorije)
-                takmicenje.addKategorija(k);
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    foreach (TakmicarskaKategorija k in form.SelektovaneKategorije)
+                        takmicenje.addKategorija(k);
+                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
             setKategorije(takmicenje.Kategorije);
         }
 
@@ -193,23 +254,67 @@ namespace Bilten.UI
 
         private void btnAddTakmicenje_Click(object sender, EventArgs e)
         {
+            RezultatskoTakmicenjeDescriptionForm form = new RezultatskoTakmicenjeDescriptionForm(takmicenje);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            RezultatskoTakmicenjeDescription d = (RezultatskoTakmicenjeDescription)form.Entity;
+            ISession session = null;
             try
             {
-                RezultatskoTakmicenjeDescriptionForm form =
-                    new RezultatskoTakmicenjeDescriptionForm(takmicenje);
-                if (form.ShowDialog() == DialogResult.OK)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    RezultatskoTakmicenjeDescription d = 
-                        (RezultatskoTakmicenjeDescription)form.Entity;
+                    CurrentSessionContext.Bind(session);
                     takmicenje.addTakmicenjeDescription(d);
-                    setTakmicenja(takmicenje.TakmicenjeDescriptions);
-                    SelectedTakmicenje = d;
+                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    int redBroj = rezTakmicenja[rezTakmicenja.Count - 1].RedBroj + 1;
+                    foreach (TakmicarskaKategorija k in form.Kategorije)
+                        rezTakDAO.Add(createRezultatskoTakmicenje(takmicenje, k, d, redBroj++));
+
+                    session.Transaction.Commit();
                 }
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
-                MessageDialogs.showError(ex.Message, this.Text);
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
             }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            TreeNode n = addTakmicenje(d, form.Kategorije);
+            n.Expand();
+            SelectedTakmicenje = d;
+        }
+
+        private TreeNode addTakmicenje(RezultatskoTakmicenjeDescription desc, IList<TakmicarskaKategorija> kategorije)
+        {
+            TreeNode descNode = treeViewTakmicenja.Nodes.Add(desc.Naziv);
+            descNode.Tag = desc;
+            foreach (TakmicarskaKategorija kat in kategorije)
+                descNode.Nodes.Add(kat.Naziv);
+            return descNode;
+        }
+
+        private TreeNode updateTakmicenje(RezultatskoTakmicenjeDescription desc, IList<TakmicarskaKategorija> kategorije)
+        {
+            foreach (TreeNode n in treeViewTakmicenja.Nodes)
+            {
+                if (n.Text != desc.Naziv)
+                    continue;
+                n.Nodes.Clear();
+                foreach (TakmicarskaKategorija k in kategorije)
+                    n.Nodes.Add(k.Naziv);
+                return n;
+            }
+            return null;
         }
 
         private void btnEditTakmicenje_Click(object sender, EventArgs e)
@@ -218,13 +323,15 @@ namespace Bilten.UI
                 return;
             try
             {
-                RezultatskoTakmicenjeDescriptionForm form =
-                    new RezultatskoTakmicenjeDescriptionForm(SelectedTakmicenje, takmicenje);
+                RezultatskoTakmicenjeDescriptionForm form = new RezultatskoTakmicenjeDescriptionForm(
+                    SelectedTakmicenje, getKategorije(SelectedTakmicenje), takmicenje);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     // refresh
-                    setTakmicenja(takmicenje.TakmicenjeDescriptions);
-                    SelectedTakmicenje = (RezultatskoTakmicenjeDescription)form.Entity;
+                    RezultatskoTakmicenjeDescription desc = (RezultatskoTakmicenjeDescription)form.Entity;
+                    TreeNode n = updateTakmicenje(desc, form.Kategorije);
+                    n.Expand();
+                    SelectedTakmicenje = desc;
                 }
             }
             catch (InfrastructureException ex)
@@ -233,20 +340,56 @@ namespace Bilten.UI
             }
         }
 
+        private IList<TakmicarskaKategorija> getKategorije(RezultatskoTakmicenjeDescription desc)
+        {
+            IList<TakmicarskaKategorija> result = new List<TakmicarskaKategorija>();
+            foreach (TreeNode n in treeViewTakmicenja.Nodes)
+            {
+                if (n.Text != desc.Naziv)
+                    continue;
+                foreach (TreeNode n2 in n.Nodes)
+                    result.Add(takmicenje.getKategorija(n2.Text));
+            }
+            return result;
+        }
+
         private void btnDeleteTakmicenje_Click(object sender, EventArgs e)
         {
-            RezultatskoTakmicenjeDescription takmicenjeDesc =
+            RezultatskoTakmicenjeDescription desc =
                 SelectedTakmicenje;
-            if (takmicenjeDesc == null)
+            if (desc == null)
                 return;
 
             string msgFmt = "Da li zelite da izbrisete takmicenje '{0}'?";
             if (!MessageDialogs.queryConfirmation(
-                String.Format(msgFmt, takmicenjeDesc.Naziv), this.Text))
+                String.Format(msgFmt, desc.Naziv), this.Text))
                 return;
 
-            takmicenje.removeTakmicenjeDescription(takmicenjeDesc);
-            setTakmicenja(takmicenje.TakmicenjeDescriptions);
+            /*foreach (TakmicarskaKategorija kat in deletedKat)
+            {
+                foreach (RezultatskoTakmicenjeDescription desc in deletedTak)
+                {
+                    deleteRezultatskoTakmicenje(kat, desc);
+                }
+            }
+
+            foreach (RezultatskoTakmicenjeDescription t in deletedTak)
+                DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO().Delete(t);
+            foreach (TakmicarskaKategorija k in deletedKat)
+                deleteKategorija(k);
+
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+
+            session.Transaction.Commit();*/
+
+            takmicenje.removeTakmicenjeDescription(desc);
+            foreach (TreeNode n in treeViewTakmicenja.Nodes)
+            {
+                if (n.Text != desc.Naziv)
+                    continue;
+                treeViewTakmicenja.Nodes.Remove(n);
+                break;
+            }
         }
 
         private void btnMoveUpTakmicenje_Click(object sender, EventArgs e)
@@ -277,171 +420,17 @@ namespace Bilten.UI
             }
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void btnZatvori_Click(object sender, EventArgs e)
         {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    // TODO: Prvo proveri da li je nesto menjano
-
-                    Notification notification = new Notification();
-                    validate(notification);
-                    if (!notification.IsValid())
-                        throw new BusinessException(notification);
-
-                    List<TakmicarskaKategorija> addedKat = new List<TakmicarskaKategorija>();
-                    List<TakmicarskaKategorija> updatedKat = new List<TakmicarskaKategorija>();
-                    List<TakmicarskaKategorija> deletedKat = new List<TakmicarskaKategorija>();
-                    diff(new List<TakmicarskaKategorija>(takmicenje.Kategorije),
-                        originalKategorije, addedKat, updatedKat, deletedKat);
-
-                    List<RezultatskoTakmicenjeDescription> addedTak =
-                        new List<RezultatskoTakmicenjeDescription>();
-                    List<RezultatskoTakmicenjeDescription> updatedTak =
-                        new List<RezultatskoTakmicenjeDescription>();
-                    List<RezultatskoTakmicenjeDescription> deletedTak =
-                        new List<RezultatskoTakmicenjeDescription>();
-                    diff(new List<RezultatskoTakmicenjeDescription>(takmicenje.TakmicenjeDescriptions),
-                        originalTakmicenja, addedTak, updatedTak, deletedTak);
-
-                    foreach (TakmicarskaKategorija kat in deletedKat)
-                    {
-                        foreach (RezultatskoTakmicenjeDescription desc in updatedTak)
-                        {
-                            deleteRezultatskoTakmicenje(kat, desc);
-                        }
-                        foreach (RezultatskoTakmicenjeDescription desc in deletedTak)
-                        {
-                            deleteRezultatskoTakmicenje(kat, desc);
-                        }
-                    }
-                    foreach (RezultatskoTakmicenjeDescription desc in deletedTak)
-                    {
-                        foreach (TakmicarskaKategorija kat in updatedKat)
-                        {
-                            deleteRezultatskoTakmicenje(kat, desc);
-                        }
-                    }
-
-                    foreach (RezultatskoTakmicenjeDescription t in deletedTak)
-                        DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO().Delete(t);
-                    foreach (TakmicarskaKategorija k in deletedKat)
-                        deleteKategorija(k);
-
-                    foreach (RezultatskoTakmicenjeDescription d in addedTak)
-                        d.Propozicije = new Propozicije();
-
-                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
-
-                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-                    foreach (TakmicarskaKategorija k in addedKat)
-                    {
-                        foreach (RezultatskoTakmicenjeDescription d in addedTak)
-                        {
-                            rezTakDAO.Add(createRezultatskoTakmicenje(takmicenje, k, d));
-                        }
-                        foreach (RezultatskoTakmicenjeDescription d in updatedTak)
-                        {
-                            rezTakDAO.Add(createRezultatskoTakmicenje(takmicenje, k, d));
-                        }
-                    }
-                    foreach (RezultatskoTakmicenjeDescription d in addedTak)
-                    {
-                        foreach (TakmicarskaKategorija k in updatedKat)
-                        {
-                            rezTakDAO.Add(createRezultatskoTakmicenje(takmicenje, k, d));
-                        }
-                    }
-
-                    // kreiraj redni broj
-                    PropertyDescriptor[] propDesc = {
-                        TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenje))["TakmicenjeDescriptionRedBroj"],
-                        TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenje))["KategorijaRedBroj"]
-                    };
-                    ListSortDirection[] direction = {
-                        ListSortDirection.Ascending,
-                        ListSortDirection.Ascending
-                    };
-                    List<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>(
-                        DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByTakmicenje(takmicenje.Id));
-                    rezTakmicenja.Sort(new SortComparer<RezultatskoTakmicenje>(propDesc, direction));
-                    for (int i = 0; i < rezTakmicenja.Count; i++)
-                        rezTakmicenja[i].RedBroj = (byte)(i + 1);
-
-                    session.Transaction.Commit();
-                }
-            }
-            catch (BusinessException ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                if (ex.Notification != null)
-                {
-                    NotificationMessage msg = ex.Notification.FirstMessage;
-                    MessageDialogs.showMessage(msg.Message, this.Text);
-                    setFocus(msg.FieldName);
-                }
-                else
-                {
-                    MessageDialogs.showMessage(ex.Message, this.Text);
-                }
-                this.DialogResult = DialogResult.None;
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                this.DialogResult = DialogResult.Cancel;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            Close();
         }
 
-        private void validate(Notification notification)
-        {
-            if (takmicenje.Kategorije.Count == 0)
-            {
-                notification.RegisterMessage("Kategorije",
-                    "Kategorije su obavezne.");
-            }
-            if (takmicenje.TakmicenjeDescriptions.Count == 0)
-            {
-                notification.RegisterMessage("TakmicenjeDescriptions",
-                    "Takmicenja su obavezna.");
-            }
-        }
-
-        private void setFocus(string propertyName)
-        {
-            switch (propertyName)
-            {
-                case "TakmicenjeDescriptions":
-                    lstTakmicenja.Focus();
-                    break;
-
-                case "Kategorije":
-                    lstKategorije.Focus();
-                    break;
-
-                default:
-                    throw new ArgumentException();
-            }
-        }
-
-        private RezultatskoTakmicenje createRezultatskoTakmicenje(
-            Takmicenje takmicenje, TakmicarskaKategorija k,
-            RezultatskoTakmicenjeDescription d)
+        private RezultatskoTakmicenje createRezultatskoTakmicenje(Takmicenje takmicenje, TakmicarskaKategorija k,
+            RezultatskoTakmicenjeDescription d, int redBroj)
         {
             RezultatskoTakmicenje result = new RezultatskoTakmicenje(takmicenje,
                 k, d, new Propozicije());
+            result.RedBroj = (byte)redBroj;
             return result;
         }
 
@@ -458,33 +447,6 @@ namespace Bilten.UI
         {
             RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
             rezTakDAO.Delete(rezTakDAO.FindByKatDesc(kat, desc));
-        }
-
-        private void diff<T>(IList<T> current, IList<T> original, IList<T> added,
-            IList<T> updated, IList<T> deleted)
-        {
-            foreach (T t in current)
-            {
-                if (!containsRef(original, t))
-                    added.Add(t);
-                else
-                    updated.Add(t);
-            }
-            foreach (T t in original)
-            {
-                if (!containsRef(current, t))
-                    deleted.Add(t);
-            }
-        }
-
-        private bool containsRef<T>(IList<T> list, T t)
-        {
-            foreach (T t2 in list)
-            {
-                if (object.ReferenceEquals(t2, t))
-                    return true;
-            }
-            return false;
         }
 
         private void btnEditKategorija_Click(object sender, EventArgs e)

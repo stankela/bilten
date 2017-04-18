@@ -96,5 +96,12 @@ namespace Bilten
         {
             // TODO4
         }
+
+        // Proveri da li uvek vazi da je RezultatskoTakmicenje.Takmicenje2 == null kada je odvojenoTak2() == false.
+        // Isto i za takmicenja 3 i 4.
+        public void proveriTakmicenja234()
+        {
+            // TODO4
+        }
     }
 }

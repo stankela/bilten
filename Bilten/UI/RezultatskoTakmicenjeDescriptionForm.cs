@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Bilten.Domain;
 using Bilten.Exceptions;
 using Bilten.Util;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -15,6 +16,7 @@ namespace Bilten.UI
     {
         private Takmicenje takmicenje;
         private string oldNaziv;
+        public List<TakmicarskaKategorija> Kategorije = new List<TakmicarskaKategorija>();
 
         public RezultatskoTakmicenjeDescriptionForm(Takmicenje takmicenje)
         {
@@ -24,10 +26,11 @@ namespace Bilten.UI
         }
 
         public RezultatskoTakmicenjeDescriptionForm(
-            RezultatskoTakmicenjeDescription desc, Takmicenje takmicenje)
+            RezultatskoTakmicenjeDescription desc, IList<TakmicarskaKategorija> kategorije, Takmicenje takmicenje)
         {
             InitializeComponent();
             this.takmicenje = takmicenje;
+            Kategorije.AddRange(kategorije);
             initialize2(desc, false);
         }
 
@@ -37,12 +40,20 @@ namespace Bilten.UI
             this.Text = "Takmicenje";
 
             txtNaziv.Text = String.Empty;
+            checkedListBoxKategorije.CheckOnClick = true;
+
+            checkedListBoxKategorije.Items.Clear();
+            foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
+            {
+                checkedListBoxKategorije.Items.Add(k);
+                if (editMode && Kategorije.Contains(k))
+                    checkedListBoxKategorije.SetItemChecked(checkedListBoxKategorije.Items.Count - 1, true);
+            }
         }
 
         protected override DomainObject createNewEntity()
         {
-            RezultatskoTakmicenjeDescription result = 
-                new RezultatskoTakmicenjeDescription();
+            RezultatskoTakmicenjeDescription result = new RezultatskoTakmicenjeDescription();
             result.Propozicije = new Propozicije();
             return result;
         }
@@ -66,6 +77,11 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "Naziv", "Naziv takmicenja je obavezan.");
             }
+            if (checkedListBoxKategorije.Items.Count > 0 && checkedListBoxKategorije.CheckedItems.Count == 0)
+            {
+                notification.RegisterMessage(
+                    "Kategorije", "Izaberite kategorije za takmicenje.");
+            }
         }
 
         protected override void setFocus(string propertyName)
@@ -74,6 +90,10 @@ namespace Bilten.UI
             {
                 case "Naziv":
                     txtNaziv.Focus();
+                    break;
+
+                case "Kategorije":
+                    checkedListBoxKategorije.Focus();
                     break;
 
                 default:
@@ -85,6 +105,11 @@ namespace Bilten.UI
         {
             RezultatskoTakmicenjeDescription d = (RezultatskoTakmicenjeDescription)entity;
             d.Naziv = txtNaziv.Text.Trim();
+            Kategorije.Clear();
+            foreach (object item in checkedListBoxKategorije.CheckedItems)
+            {
+                Kategorije.Add(item as TakmicarskaKategorija);
+            }
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
@@ -126,8 +151,7 @@ namespace Bilten.UI
         {
             if (editMode)
             {
-                // TODO: Za sva nova svojstva koja dodam u klasu 
-                // RezultatskoTakmicenjeDescription, 
+                // TODO: Za sva nova svojstva koja dodam u klasu RezultatskoTakmicenjeDescription, 
                 // moraju biti vracene stare vrednosti
                 RezultatskoTakmicenjeDescription d = (RezultatskoTakmicenjeDescription)entity;
                 d.Naziv = oldNaziv;

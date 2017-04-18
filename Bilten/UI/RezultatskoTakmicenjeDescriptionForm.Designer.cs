@@ -30,15 +30,16 @@ namespace Bilten.UI
         {
             this.lblNaziv = new System.Windows.Forms.Label();
             this.txtNaziv = new System.Windows.Forms.TextBox();
+            this.checkedListBoxKategorije = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(205, 83);
+            this.btnOk.Location = new System.Drawing.Point(246, 228);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(297, 83);
+            this.btnCancel.Location = new System.Drawing.Point(338, 228);
             // 
             // lblNaziv
             // 
@@ -56,11 +57,20 @@ namespace Bilten.UI
             this.txtNaziv.Size = new System.Drawing.Size(344, 20);
             this.txtNaziv.TabIndex = 3;
             // 
+            // checkedListBoxKategorije
+            // 
+            this.checkedListBoxKategorije.FormattingEnabled = true;
+            this.checkedListBoxKategorije.Location = new System.Drawing.Point(28, 82);
+            this.checkedListBoxKategorije.Name = "checkedListBoxKategorije";
+            this.checkedListBoxKategorije.Size = new System.Drawing.Size(196, 169);
+            this.checkedListBoxKategorije.TabIndex = 4;
+            // 
             // RezultatskoTakmicenjeDescriptionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(396, 119);
+            this.ClientSize = new System.Drawing.Size(428, 274);
+            this.Controls.Add(this.checkedListBoxKategorije);
             this.Controls.Add(this.txtNaziv);
             this.Controls.Add(this.lblNaziv);
             this.Name = "RezultatskoTakmicenjeDescriptionForm";
@@ -70,6 +80,7 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.lblNaziv, 0);
             this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.txtNaziv, 0);
+            this.Controls.SetChildIndex(this.checkedListBoxKategorije, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -79,5 +90,6 @@ namespace Bilten.UI
 
         private System.Windows.Forms.Label lblNaziv;
         private System.Windows.Forms.TextBox txtNaziv;
+        private System.Windows.Forms.CheckedListBox checkedListBoxKategorije;
     }
 }

@@ -181,17 +181,6 @@ namespace Bilten.Domain
             return Naziv;
         }
 
-        // sledeca dva svojstva omogucuju da se sortiranjem kreira RedBroj
-        public virtual byte KategorijaRedBroj
-        {
-            get { return Kategorija.RedBroj; }
-        }
-
-        public virtual byte TakmicenjeDescriptionRedBroj
-        {
-            get { return TakmicenjeDescription.RedBroj; }
-        }
-
         public virtual string NazivEkipnog
         {
             get

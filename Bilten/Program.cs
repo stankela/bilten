@@ -118,6 +118,7 @@ namespace Bilten
             RazneProvere rp = new RazneProvere();
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
+            rp.proveriTakmicenja234();
 
 
             Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
