@@ -36,6 +36,28 @@ namespace Bilten.UI
         public IList<RezultatskoTakmicenje> rezTakmicenja;
         public IDictionary<int, List<GimnasticarUcesnik>> rezTakToGimnasticarMap;
 
+        private Gimnastika SelectedGimnastika
+        {
+            get
+            {
+                if (cmbGimnastika.SelectedIndex == 0)
+                    return Gimnastika.MSG;
+                else if (cmbGimnastika.SelectedIndex == 1)
+                    return Gimnastika.ZSG;
+                else
+                    return Gimnastika.Undefined;
+            }
+            set
+            {
+                if (value == Gimnastika.MSG)
+                    cmbGimnastika.SelectedIndex = 0;
+                else if (value == Gimnastika.ZSG)
+                    cmbGimnastika.SelectedIndex = 1;
+                else
+                    cmbGimnastika.SelectedIndex = -1;
+            }
+        }
+
         public TakmicenjeForm()
         {
             InitializeComponent();
@@ -49,10 +71,7 @@ namespace Bilten.UI
             initialize(null, false);
                         
             txtNaziv.Text = naziv;
-            if (gimnastika == Gimnastika.MSG)
-                cmbGimnastika.SelectedItem = MSG;
-            else if (gimnastika == Gimnastika.ZSG)
-                cmbGimnastika.SelectedItem = ZSG;
+            SelectedGimnastika = gimnastika;
             txtDatum.Text = datum.ToShortDateString();
             txtMesto.Text = mesto;
             if (tipTakmicenja == TipTakmicenja.StandardnoTakmicenje)
@@ -86,7 +105,7 @@ namespace Bilten.UI
 
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbGimnastika.Items.AddRange(new string[] { MSG, ZSG });
-            cmbGimnastika.SelectedIndex = -1;
+            SelectedGimnastika = Gimnastika.Undefined;
 
             cmbTipTakmicenja.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTipTakmicenja.Items.AddRange(new string[] { STANDARDNO_TAKMICENJE, FINALE_KUPA, ZBIR_VISE_KOLA });
@@ -188,7 +207,7 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "Naziv", "Naziv takmicenja je obavezan.");
             }
-            if (cmbGimnastika.SelectedIndex == -1)
+            if (SelectedGimnastika == Gimnastika.Undefined)
             {
                 notification.RegisterMessage(
                     "Gimnastika", "Gimnastika je obavezna.");
@@ -292,17 +311,17 @@ namespace Bilten.UI
             return new Takmicenje();
         }
 
+        // TODO4: Kada se kreira na osnovu prethodnog kola, gimnastika mora da se poklapa sa gimnastikom novog takmicenja.
+        // TODO4: Kada budes testirao sve skorasnje izmene, proveri da li postoji neka greska slicna onoj koju sam imao kod
+        // kopiranja kategorija iz prethodnog takmicenja - da je kopiranje pokvarilo prethodno takmicenje.
+
         protected override void updateEntityFromUI(DomainObject entity)
         {
             Takmicenje takmicenje = (Takmicenje)entity;
             takmicenje.Naziv = txtNaziv.Text.Trim();
+            takmicenje.Gimnastika = SelectedGimnastika;
             takmicenje.Datum = Datum.Parse(txtDatum.Text).ToDateTime();
             takmicenje.Mesto = txtMesto.Text.Trim();
-
-            if (cmbGimnastika.SelectedIndex == 0)
-                takmicenje.Gimnastika = Gimnastika.MSG;
-            else if (cmbGimnastika.SelectedIndex == 1)
-                takmicenje.Gimnastika = Gimnastika.ZSG;
 
             if (!uzmiOsnovnePodatke)
             {
@@ -358,15 +377,20 @@ namespace Bilten.UI
         {
             if (uzmiOsnovnePodatke)
                 return;
+            if (SelectedGimnastika == Gimnastika.Undefined)
+            {
+                MessageDialogs.showMessage("Unesite najpre gimnstiku", this.Text);
+                return;
+            }
 
             OtvoriTakmicenjeForm form = null;
             DialogResult result;
             try
             {
                 if (finaleKupa())
-                    form = new OtvoriTakmicenjeForm(null, true, 2, false);
+                    form = new OtvoriTakmicenjeForm(null, true, 2, false, SelectedGimnastika);
                 else if (zbirViseKola())
-                    form = new OtvoriTakmicenjeForm(null, true, MAX_KOLA, true);
+                    form = new OtvoriTakmicenjeForm(null, true, MAX_KOLA, true, SelectedGimnastika);
                 result = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -430,7 +454,7 @@ namespace Bilten.UI
             DialogResult result;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1, false);
+                form = new OtvoriTakmicenjeForm(null, true, 1, false, SelectedGimnastika);
                 result = form.ShowDialog();
             }
             catch (Exception ex)

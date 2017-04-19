@@ -20,11 +20,16 @@ namespace Bilten.UI
         private string noSelectMsg;
         public List<int> CheckedIndices = new List<int>();
 
-        public CheckListForm(IList<string> items, string caption, string noSelectMsg)
+        public CheckListForm(IList<string> items, string header, string caption, string noSelectMsg)
         {
             InitializeComponent();
             Text = caption;
+            lblHeader.Text = header;
             this.noSelectMsg = noSelectMsg;
+
+            int margin = lblHeader.Location.X;
+            if (lblHeader.Right + margin > ClientSize.Width)
+                ClientSize = new Size(lblHeader.Right + margin, ClientSize.Height);
 
             checkedListBox1.CheckOnClick = true;
             checkedListBox1.Items.Clear();

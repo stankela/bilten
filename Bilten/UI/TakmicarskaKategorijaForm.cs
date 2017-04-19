@@ -15,40 +15,40 @@ using Bilten.Dao;
 
 namespace Bilten.UI
 {
-    public partial class TakmicarskaKategorijaForm : Form
+    public partial class TakmicarskaKategorijaForm : EntityDetailForm
     {
-        private Takmicenje takmicenje;
-        public string NazivKategorije;
+        private int takmicenjeId;
+        List<string> kategorije;
+        private string oldNaziv;
+        private Gimnastika gimnastika;
 
-        public TakmicarskaKategorijaForm(Gimnastika gimnastika)
+        public TakmicarskaKategorijaForm(Nullable<int> kategorijaId, int takmicenjeId)
         {
             InitializeComponent();
-            this.Text = "Izaberite kategoriju";
+            this.takmicenjeId = takmicenjeId;
+            initialize(kategorijaId, true);
+        }
 
-            IList<KategorijaGimnasticara> kategorije;
-            ISession session = null;
-            try
+        protected override void loadData()
+        {
+            Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            gimnastika = t.Gimnastika;
+            ISet<string> kategorijeSet = new HashSet<string>();
+            foreach (KategorijaGimnasticara k in DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO()
+                .FindByGimnastika(gimnastika))
             {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    kategorije = DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindByGimnastika(gimnastika);
-                }
+                kategorijeSet.Add(k.Naziv);
             }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(
-                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            foreach (TakmicarskaKategorija k in t.Kategorije)
+                kategorijeSet.Add(k.Naziv);
+            kategorije = new List<string>(kategorijeSet);
+            kategorije.Sort();
+        }
+
+        protected override void initUI()
+        {
+            base.initUI();
+            this.Text = "Izaberite kategoriju";
 
             cmbKategorija.DropDownStyle = ComboBoxStyle.DropDown;
             setKategorije(kategorije);
@@ -57,27 +57,111 @@ namespace Bilten.UI
             cmbKategorija.AutoCompleteSource = AutoCompleteSource.ListItems;
         }
 
-        private void setKategorije(IList<KategorijaGimnasticara> kategorije)
+        private void setKategorije(IList<string> kategorije)
         {
-            cmbKategorija.DisplayMember = "Naziv";
             cmbKategorija.DataSource = kategorije;
         }
 
-        private KategorijaGimnasticara SelectedKategorija
+        private string SelectedKategorija
         {
-            get { return cmbKategorija.SelectedItem as KategorijaGimnasticara; }
+            get { return cmbKategorija.SelectedItem.ToString(); }
             set { cmbKategorija.SelectedItem = value; }
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        protected override DomainObject getEntityById(int id)
         {
-            if (cmbKategorija.Text == String.Empty)
+            return DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindById(id);
+        }
+
+        protected override void saveOriginalData(DomainObject entity)
+        {
+            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
+            oldNaziv = kat.Naziv;
+        }
+
+        protected override void updateUIFromEntity(DomainObject entity)
+        {
+            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
+            SelectedKategorija = kat.Naziv;
+        }
+
+        protected override void requiredFieldsAndFormatValidation(Notification notification)
+        {
+            if (cmbKategorija.Text.Trim() == String.Empty)
+                notification.RegisterMessage("Naziv", "Naziv kategorije je obavezan.");
+        }
+
+        protected override void setFocus(string propertyName)
+        {
+            switch (propertyName)
             {
-                MessageDialogs.showMessage("Izaberite ili unesite kategoriju", this.Text);
-                DialogResult = DialogResult.None;
-                return;
+                case "Naziv":
+                    cmbKategorija.Focus();
+                    break;
+
+                default:
+                    throw new ArgumentException();
             }
-            NazivKategorije = cmbKategorija.Text;
+        }
+
+        protected override DomainObject createNewEntity()
+        {
+            return new TakmicarskaKategorija();
+        }
+
+        protected override void updateEntityFromUI(DomainObject entity)
+        {
+            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
+            kat.Naziv = cmbKategorija.Text.Trim();
+            kat.Gimnastika = gimnastika;
+        }
+
+        protected override void updateEntity(DomainObject entity)
+        {
+            Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().Update((TakmicarskaKategorija)entity);
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(t);
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            t.addKategorija((TakmicarskaKategorija)entity);
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(t);
+        }
+
+        protected override void checkBusinessRulesOnAdd(DomainObject entity)
+        {
+            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
+            Notification notification = new Notification();
+
+            if (DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().existsKategorijaNaziv(kat.Naziv, takmicenjeId))
+            {
+                notification.RegisterMessage("Naziv", "Kategorija sa datim nazivom vec postoji.");
+                throw new BusinessException(notification);
+            }
+        }
+
+        protected override void checkBusinessRulesOnUpdate(DomainObject entity)
+        {
+            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
+            Notification notification = new Notification();
+
+            bool nazivChanged = (kat.Naziv.ToUpper() != oldNaziv.ToUpper()) ? true : false;
+            if (nazivChanged
+            && DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().existsKategorijaNaziv(kat.Naziv, takmicenjeId))
+            {
+                notification.RegisterMessage("Naziv", "Kategorija sa datim nazivom vec postoji.");
+                throw new BusinessException(notification);
+            }
+        }
+
+        private void TakmicarskaKategorijaForm_Shown(object sender, EventArgs e)
+        {
+            if (!editMode)
+                cmbKategorija.Focus();
+            else
+                btnCancel.Focus();
         }
     }
 }

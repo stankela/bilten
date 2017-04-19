@@ -44,7 +44,7 @@ namespace Bilten.UI
 
                     IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje);
                     if (svaRezTakmicenja.Count == 0)
-                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                        throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
                     rezTakmicenja = takmicenje.getRezTakmicenjaViseboj(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
                     if (rezTakmicenja.Count == 0)

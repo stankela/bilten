@@ -55,7 +55,7 @@ namespace Bilten.UI
                     kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
                         .FindByTakmicenje(takmicenjeId);
                     if (kategorije.Count == 0)
-                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                        throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
                     ocene = new Dictionary<int, List<Ocena>>();

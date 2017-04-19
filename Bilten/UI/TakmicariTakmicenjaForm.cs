@@ -40,7 +40,7 @@ namespace Bilten.UI
                     rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenjeFetch_Tak1_Gimnasticari(takmicenjeId);
                     if (rezTakmicenja.Count == 0)
-                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                        throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
                     initUI();
                     tabOpened = new bool[rezTakmicenja.Count];

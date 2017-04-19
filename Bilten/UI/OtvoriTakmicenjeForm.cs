@@ -38,7 +38,8 @@ namespace Bilten.UI
             get { return selTakmicenja; }
         }
 
-        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId, bool selectMode, int broj, bool gornjaGranica)
+        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId, bool selectMode, int broj, bool gornjaGranica,
+            Gimnastika gimnastika)
         {
             InitializeComponent();
             ClientSize = new System.Drawing.Size(ClientSize.Width, Screen.PrimaryScreen.WorkingArea.Height - 100);
@@ -55,7 +56,13 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     initUI();
-                    takmicenja = new List<Takmicenje>(DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAll());
+                    if (gimnastika != Gimnastika.Undefined)
+                    {
+                        takmicenja = new List<Takmicenje>(DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                            .FindByGimnastika(gimnastika));
+                    }
+                    else
+                        takmicenja = new List<Takmicenje>(DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAll());
                     setTakmicenja(takmicenja);
                     if (!selectMode)
                         updateTakmicenjaCount();

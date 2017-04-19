@@ -40,16 +40,6 @@ namespace Bilten.UI
                     takmicenje = takmicenjeDAO.FindByIdFetch_Kat_Desc(takmicenjeId);
                     rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenjeFetch_KatDesc(takmicenje.Id);
-                    if (takmicenje.TakmicenjeDescriptions.Count == 0)
-                    {
-                        // za novo takmicenje, automatski se dodaje takmicenje sa nazivom kao glavno takmicenje
-                        RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
-                        desc.Naziv = takmicenje.Naziv;
-                        desc.Propozicije = new Propozicije();
-                        takmicenje.addTakmicenjeDescription(desc);
-                        //takmicenjeDAO.Update(takmicenje);
-                        //session.Transaction.Commit();
-                    }
                 }
             }
             catch (Exception ex)
@@ -167,7 +157,7 @@ namespace Bilten.UI
             TakmicarskaKategorijaForm form = null;
             try
             {
-                form = new TakmicarskaKategorijaForm(takmicenje.Gimnastika);
+                form = new TakmicarskaKategorijaForm(null, takmicenje.Id);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -185,11 +175,11 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    if (takmicenje.addKategorija(new TakmicarskaKategorija(form.NazivKategorije, takmicenje.Gimnastika)))
-                    {
-                        DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
-                        session.Transaction.Commit();
-                    }
+                    // reload takmicenje
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    // ova naredba mora unutar sesije da bi se ucitale kategorije
+                    setKategorije(takmicenje.Kategorije);
+                    SelectedKategorija = (TakmicarskaKategorija)form.Entity;
                 }
             }
             catch (Exception ex)
@@ -203,8 +193,54 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        }
 
-            setKategorije(takmicenje.Kategorije);
+
+        private void btnEditKategorija_Click(object sender, EventArgs e)
+        {
+            if (SelectedKategorija == null)
+                return;
+
+            DialogResult dlgResult = DialogResult.None;
+            TakmicarskaKategorijaForm form = null;
+            try
+            {
+                form = new TakmicarskaKategorijaForm(SelectedKategorija.Id, takmicenje.Id);
+                dlgResult = form.ShowDialog();
+            }
+            catch (InfrastructureException ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            if (dlgResult != DialogResult.OK)
+                return;
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    // reload takmicenje
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    // ova naredba mora unutar sesije da bi se ucitale kategorije
+                    setKategorije(takmicenje.Kategorije);
+                    SelectedKategorija = (TakmicarskaKategorija)form.Entity;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
         }
 
         private void btnDeleteKategorija_Click(object sender, EventArgs e)
@@ -252,6 +288,12 @@ namespace Bilten.UI
 
         private void btnAddTakmicenje_Click(object sender, EventArgs e)
         {
+            if (takmicenje.Kategorije.Count == 0)
+            {
+                MessageDialogs.showMessage("Morate najpre da unesete kategorije.", this.Text);
+                return;
+            }
+
             RezultatskoTakmicenjeDescriptionForm form = new RezultatskoTakmicenjeDescriptionForm(takmicenje);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
@@ -453,7 +495,7 @@ namespace Bilten.UI
             DialogResult result;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1, false);
+                form = new OtvoriTakmicenjeForm(null, true, 1, false, takmicenje.Gimnastika);
                 result = form.ShowDialog();
             }
             catch (Exception ex)
@@ -494,7 +536,8 @@ namespace Bilten.UI
             CheckListForm form2;
             try
             {
-                form2 = new CheckListForm(kategorijeStr, "Izaberite kategorije", "Izaberite kategorije");
+                form2 = new CheckListForm(
+                    kategorijeStr, form.SelTakmicenja[0].ToString(), "Izaberite kategorije", "Izaberite kategorije");
                 result = form2.ShowDialog();
             }
             catch (Exception ex)
@@ -513,7 +556,7 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     foreach (int index in form2.CheckedIndices)
-                        takmicenje.addKategorija(kategorije[index]);
+                        takmicenje.addKategorija(new TakmicarskaKategorija(kategorijeStr[index], takmicenje.Gimnastika));
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
                     session.Transaction.Commit();
                 }

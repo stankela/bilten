@@ -446,7 +446,7 @@ namespace Bilten.UI
                 return;
             try
             {
-                OtvoriTakmicenjeForm form = new OtvoriTakmicenjeForm(takmicenjeId, false, 0, false);
+                OtvoriTakmicenjeForm form = new OtvoriTakmicenjeForm(takmicenjeId, false, 0, false, Gimnastika.Undefined);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     onTakmicenjeOpened(form.Takmicenje);
@@ -866,7 +866,7 @@ namespace Bilten.UI
                     IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenjeId.Value);
                     if (rezTakmicenja.Count == 0)
-                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                        throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
                     bool postojiOdvojeno = false;
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
@@ -1215,7 +1215,7 @@ namespace Bilten.UI
             DialogResult result;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1, false);
+                form = new OtvoriTakmicenjeForm(null, true, 1, false, Gimnastika.Undefined);
                 result = form.ShowDialog();
             }
             catch (InfrastructureException ex)

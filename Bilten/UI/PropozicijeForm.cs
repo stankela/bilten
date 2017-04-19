@@ -43,7 +43,7 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindByIdFetch_Prop_Kat_Desc(takmicenjeId);
                     if (takmicenje.Kategorije.Count == 0)
-                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                        throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
                     rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenjeFetchTak_2_3_4(takmicenjeId);
 

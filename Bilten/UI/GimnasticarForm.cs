@@ -82,7 +82,7 @@ namespace Bilten.UI
             txtDatumPoslReg.Text = String.Empty;
 
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
-            setGimnastike();
+            cmbGimnastika.Items.AddRange(new string[] { "MSG", "ZSG" });
             SelectedGimnastika = Gimnastika.Undefined;
 
             cmbKategorija.DropDownStyle = ComboBoxStyle.DropDown;
@@ -112,11 +112,6 @@ namespace Bilten.UI
                     return d;
             }
             return null;
-        }
-
-        private void setGimnastike()
-        {
-            cmbGimnastika.Items.AddRange(new string[] { "MSG", "ZSG" });
         }
 
         private Gimnastika SelectedGimnastika

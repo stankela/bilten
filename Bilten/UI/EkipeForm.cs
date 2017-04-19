@@ -40,7 +40,7 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     IList<RezultatskoTakmicenje> rezTak = loadRezTakmicenja(takmicenjeId);
                     if (rezTak.Count == 0)
-                        throw new BusinessException("Morate najpre da unesete takmicarske kategorije.");
+                        throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
                     rezTakmicenja = new List<RezultatskoTakmicenje>();
                     foreach (RezultatskoTakmicenje tak in rezTak)

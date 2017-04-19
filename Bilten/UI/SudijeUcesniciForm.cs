@@ -246,7 +246,7 @@ namespace Bilten.UI
                 SqlCeCommand cmd = new SqlCeCommand(findSQL);
                 cmd.Parameters.Add("@sudija_id", SqlDbType.Int).Value = s.Id;
 
-                SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+                SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG);
                 bool result = false;
                 if (rdr.Read())
                     result = true;

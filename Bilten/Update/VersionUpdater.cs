@@ -314,7 +314,7 @@ public class VersionUpdater
     private void updatePoredakViseKola()
     {
         SqlCeCommand cmd = new SqlCeCommand("SELECT * FROM rezultati_sprava_finale_kupa_update");
-        SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage);
+        SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG);
 
         IDictionary<int, List<RezultatSpravaFinaleKupaUpdate>> rezultatiUpdate
             = new Dictionary<int, List<RezultatSpravaFinaleKupaUpdate>>();

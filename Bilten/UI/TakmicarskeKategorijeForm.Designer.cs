@@ -44,6 +44,7 @@ namespace Bilten.UI
             this.btnEditTakmicenje = new System.Windows.Forms.Button();
             this.treeViewTakmicenja = new System.Windows.Forms.TreeView();
             this.btnDodajIzPrethTak = new System.Windows.Forms.Button();
+            this.btnEditKategorija = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lstKategorije
@@ -51,7 +52,7 @@ namespace Bilten.UI
             this.lstKategorije.FormattingEnabled = true;
             this.lstKategorije.Location = new System.Drawing.Point(12, 25);
             this.lstKategorije.Name = "lstKategorije";
-            this.lstKategorije.Size = new System.Drawing.Size(120, 173);
+            this.lstKategorije.Size = new System.Drawing.Size(120, 199);
             this.lstKategorije.TabIndex = 0;
             // 
             // btnAddKategorija
@@ -66,7 +67,7 @@ namespace Bilten.UI
             // 
             // btnDeleteKategorija
             // 
-            this.btnDeleteKategorija.Location = new System.Drawing.Point(138, 114);
+            this.btnDeleteKategorija.Location = new System.Drawing.Point(138, 142);
             this.btnDeleteKategorija.Name = "btnDeleteKategorija";
             this.btnDeleteKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteKategorija.TabIndex = 2;
@@ -76,7 +77,7 @@ namespace Bilten.UI
             // 
             // btnMoveUpKategorija
             // 
-            this.btnMoveUpKategorija.Location = new System.Drawing.Point(138, 143);
+            this.btnMoveUpKategorija.Location = new System.Drawing.Point(138, 171);
             this.btnMoveUpKategorija.Name = "btnMoveUpKategorija";
             this.btnMoveUpKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnMoveUpKategorija.TabIndex = 3;
@@ -86,7 +87,7 @@ namespace Bilten.UI
             // 
             // btnMoveDownKategorija
             // 
-            this.btnMoveDownKategorija.Location = new System.Drawing.Point(138, 172);
+            this.btnMoveDownKategorija.Location = new System.Drawing.Point(138, 200);
             this.btnMoveDownKategorija.Name = "btnMoveDownKategorija";
             this.btnMoveDownKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnMoveDownKategorija.TabIndex = 4;
@@ -198,11 +199,22 @@ namespace Bilten.UI
             this.btnDodajIzPrethTak.UseVisualStyleBackColor = true;
             this.btnDodajIzPrethTak.Click += new System.EventHandler(this.btnDodajIzPrethTak_Click);
             // 
+            // btnEditKategorija
+            // 
+            this.btnEditKategorija.Location = new System.Drawing.Point(138, 114);
+            this.btnEditKategorija.Name = "btnEditKategorija";
+            this.btnEditKategorija.Size = new System.Drawing.Size(75, 23);
+            this.btnEditKategorija.TabIndex = 19;
+            this.btnEditKategorija.Text = "Promeni";
+            this.btnEditKategorija.UseVisualStyleBackColor = true;
+            this.btnEditKategorija.Click += new System.EventHandler(this.btnEditKategorija_Click);
+            // 
             // TakmicarskeKategorijeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(833, 366);
+            this.Controls.Add(this.btnEditKategorija);
             this.Controls.Add(this.btnDodajIzPrethTak);
             this.Controls.Add(this.treeViewTakmicenja);
             this.Controls.Add(this.btnEditTakmicenje);
@@ -249,5 +261,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnEditTakmicenje;
         private System.Windows.Forms.TreeView treeViewTakmicenja;
         private System.Windows.Forms.Button btnDodajIzPrethTak;
+        private System.Windows.Forms.Button btnEditKategorija;
     }
 }

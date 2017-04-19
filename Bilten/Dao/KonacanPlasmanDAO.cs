@@ -251,7 +251,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findVisebojTak1SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -274,7 +274,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findVisebojTak2SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -294,7 +294,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findSpraveTak1SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -320,7 +320,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findPreskokTak1SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -343,7 +343,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findSpraveTak3SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
@@ -363,7 +363,7 @@ namespace Bilten.Dao
             SqlCeCommand cmd = new SqlCeCommand(findPreskokTak3SQL);
             cmd.Parameters.Add("@ime", SqlDbType.NVarChar).Value = ime;
             cmd.Parameters.Add("@prezime", SqlDbType.NVarChar).Value = prezime;
-            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DatabaseAccessExceptionMessage, ConnectionString);
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
 
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())

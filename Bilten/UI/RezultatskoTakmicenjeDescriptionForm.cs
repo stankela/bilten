@@ -40,6 +40,12 @@ namespace Bilten.UI
             this.Text = "Takmicenje";
 
             txtNaziv.Text = String.Empty;
+            if (!editMode && takmicenje.TakmicenjeDescriptions.Count == 0)
+            {
+                // za prvo takmicenje, ponudi naziv kao glavno takmicenje
+                txtNaziv.Text = takmicenje.Naziv;
+            }
+
             checkedListBoxKategorije.CheckOnClick = true;
 
             checkedListBoxKategorije.Items.Clear();
