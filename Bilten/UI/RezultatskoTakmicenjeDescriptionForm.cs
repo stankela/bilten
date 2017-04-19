@@ -15,23 +15,27 @@ namespace Bilten.UI
     public partial class RezultatskoTakmicenjeDescriptionForm : EntityDetailForm
     {
         private Takmicenje takmicenje;
+        private int takmicenjeId;
         private string oldNaziv;
-        public List<TakmicarskaKategorija> Kategorije = new List<TakmicarskaKategorija>();
+        private IList<TakmicarskaKategorija> sveKategorije;
+        private IList<TakmicarskaKategorija> kategorije;
+        public List<TakmicarskaKategorija> SelKategorije = new List<TakmicarskaKategorija>();
 
-        public RezultatskoTakmicenjeDescriptionForm(Takmicenje takmicenje)
+        public RezultatskoTakmicenjeDescriptionForm(Nullable<int> descId, int takmicenjeId)
         {
             InitializeComponent();
-            this.takmicenje = takmicenje;
-            initialize(null, false);
+            this.takmicenjeId = takmicenjeId;
+            initialize(descId, true);
         }
 
-        public RezultatskoTakmicenjeDescriptionForm(
-            RezultatskoTakmicenjeDescription desc, IList<TakmicarskaKategorija> kategorije, Takmicenje takmicenje)
+        protected override void loadData()
         {
-            InitializeComponent();
-            this.takmicenje = takmicenje;
-            Kategorije.AddRange(kategorije);
-            initialize2(desc, false);
+            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            sveKategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
+
+            IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByTakmicenje(takmicenjeId);
+            kategorije = Takmicenje.getKategorije(rezTakmicenja, (RezultatskoTakmicenjeDescription)entity);
         }
 
         protected override void initUI()
@@ -49,12 +53,17 @@ namespace Bilten.UI
             checkedListBoxKategorije.CheckOnClick = true;
 
             checkedListBoxKategorije.Items.Clear();
-            foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
+            foreach (TakmicarskaKategorija k in sveKategorije)
             {
                 checkedListBoxKategorije.Items.Add(k);
-                if (editMode && Kategorije.Contains(k))
+                if (editMode && kategorije.Contains(k))
                     checkedListBoxKategorije.SetItemChecked(checkedListBoxKategorije.Items.Count - 1, true);
             }
+        }
+
+        protected override DomainObject getEntityById(int id)
+        {
+            return DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO().FindById(id);
         }
 
         protected override DomainObject createNewEntity()
@@ -74,6 +83,7 @@ namespace Bilten.UI
         {
             RezultatskoTakmicenjeDescription d = (RezultatskoTakmicenjeDescription)entity;
             txtNaziv.Text = d.Naziv;
+            // kategorije su checkirane u initUI
         }
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
@@ -111,11 +121,42 @@ namespace Bilten.UI
         {
             RezultatskoTakmicenjeDescription d = (RezultatskoTakmicenjeDescription)entity;
             d.Naziv = txtNaziv.Text.Trim();
-            Kategorije.Clear();
+            SelKategorije.Clear();
             foreach (object item in checkedListBoxKategorije.CheckedItems)
             {
-                Kategorije.Add(item as TakmicarskaKategorija);
+                SelKategorije.Add(item as TakmicarskaKategorija);
             }
+        }
+
+        protected override void updateEntity(DomainObject entity)
+        {
+            RezultatskoTakmicenjeDescription desc = (RezultatskoTakmicenjeDescription)entity;
+            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO().Update(desc);
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+
+            // TODO4: Obradi promenjene kategorije.            
+        }
+
+        protected override void addEntity(DomainObject entity)
+        {
+            RezultatskoTakmicenjeDescription desc = (RezultatskoTakmicenjeDescription)entity;
+            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            takmicenje.addTakmicenjeDescription(desc);
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            int redBroj = rezTakDAO.FindMaxRedBroj(takmicenjeId) + 1;
+            foreach (TakmicarskaKategorija k in SelKategorije)
+                rezTakDAO.Add(createRezultatskoTakmicenje(takmicenje, k, desc, redBroj++));
+        }
+
+        private RezultatskoTakmicenje createRezultatskoTakmicenje(Takmicenje takmicenje, TakmicarskaKategorija k,
+            RezultatskoTakmicenjeDescription d, int redBroj)
+        {
+            RezultatskoTakmicenje result = new RezultatskoTakmicenje(takmicenje, k, d, new Propozicije());
+            result.RedBroj = (byte)redBroj;
+            return result;
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
@@ -153,22 +194,12 @@ namespace Bilten.UI
             }
         }
 
-        protected override void discardChanges()
-        {
-            if (editMode)
-            {
-                // TODO: Za sva nova svojstva koja dodam u klasu RezultatskoTakmicenjeDescription, 
-                // moraju biti vracene stare vrednosti
-                RezultatskoTakmicenjeDescription d = (RezultatskoTakmicenjeDescription)entity;
-                d.Naziv = oldNaziv;
-            }
-        }
-
         private void RezultatskoTakmicenjeDescriptionForm_Shown(object sender, EventArgs e)
         {
             if (!editMode)
                 txtNaziv.Focus();
+            else
+                btnCancel.Focus();
         }
-
     }
 }

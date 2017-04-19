@@ -68,7 +68,7 @@ namespace Bilten.UI
             // objekat ekipe se nalazi unutar kolekcije Takmicenje1.Ekipe objekta 
             // rezTakmicenje jer se sve obavlja unutar iste sesije. To znaci da u edit 
             // modu rezTakmicenje "vidi" sve promene na ekipi.
-            rezTakmicenje = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().loadRezTakmicenje(rezTakmicenjeId);
+            rezTakmicenje = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByIdFetch_Ekipe(rezTakmicenjeId);
             klubovi = new List<KlubUcesnik>(
                 DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(rezTakmicenje.Takmicenje.Id));
             drzave = new List<DrzavaUcesnik>(

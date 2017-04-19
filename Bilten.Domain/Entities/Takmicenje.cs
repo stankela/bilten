@@ -477,6 +477,18 @@ namespace Bilten.Domain
             return null;
         }
 
+        public static IList<TakmicarskaKategorija> getKategorije(IList<RezultatskoTakmicenje> rezTakmicenja,
+            RezultatskoTakmicenjeDescription desc)
+        {
+            IList<TakmicarskaKategorija> result = new List<TakmicarskaKategorija>();
+            foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+            {
+                if (rezTak.TakmicenjeDescription.Equals(desc))
+                    result.Add(rezTak.Kategorija);
+            }
+            return result;
+        }
+
         public virtual IList<RezultatUkupno> createRezultatiUkupnoZaSveEkipe(
             IList<RezultatskoTakmicenje> rezTakmicenja, IList<Ocena> ocene, DeoTakmicenjaKod deoTakKod)
         {

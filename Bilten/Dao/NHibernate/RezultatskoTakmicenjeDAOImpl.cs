@@ -10,7 +10,7 @@ namespace Bilten.Dao.NHibernate
     {
         #region RezultatskoTakmicenjeDAO Members
 
-        public RezultatskoTakmicenje loadRezTakmicenje(int rezTakmicenjeId)
+        public RezultatskoTakmicenje FindByIdFetch_Ekipe(int rezTakmicenjeId)
         {
             try
             {
@@ -659,6 +659,22 @@ namespace Bilten.Dao.NHibernate
             {
                 throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
             }                                 
+        }
+
+        public int FindMaxRedBroj(int takmicenjeId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select max(r.RedBroj)
+                    from RezultatskoTakmicenje r
+                    where r.Takmicenje.Id = :takmicenjeId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                return (byte)q.UniqueResult();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
         }
 
         #endregion

@@ -20,14 +20,13 @@ namespace Bilten.UI
     public partial class TakmicarskeKategorijeForm : Form
     {
         private Takmicenje takmicenje;
-        private IList<RezultatskoTakmicenje> rezTakmicenja;
-
+        private int takmicenjeId;
+        
         public TakmicarskeKategorijeForm(int takmicenjeId)
         {
             // TODO: Dodaj strelice umesto "Pomeri gore" i "Pomeri dole"
-
             InitializeComponent();
-            btnDeleteKategorija.Enabled = false;
+            this.takmicenjeId = takmicenjeId;
 
             ISession session = null;
             try
@@ -36,10 +35,11 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
-                    takmicenje = takmicenjeDAO.FindByIdFetch_Kat_Desc(takmicenjeId);
-                    rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenjeFetch_KatDesc(takmicenje.Id);
+                    IList<TakmicarskaKategorija> kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                        .FindByTakmicenje(takmicenjeId);
+                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                        .FindByTakmicenje(takmicenjeId);
+                    initUI(kategorije, rezTakmicenja);
                 }
             }
             catch (Exception ex)
@@ -52,53 +52,46 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        
-            initUI();
         }
 
-        private void initUI()
+        private void initUI(IList<TakmicarskaKategorija> kategorije, IList<RezultatskoTakmicenje> rezTakmicenja)
         {
             Text = "Takmicarske kategorije";
 
             lstKategorije.DisplayMember = "Naziv";
-            setKategorije(takmicenje.Kategorije);
+            setKategorije(kategorije);
             SelectedKategorija = null;
 
-            setTakmicenja(takmicenje.TakmicenjeDescriptions);
+            setTakmicenja(rezTakmicenja);
             SelectedTakmicenje = null;
         }
 
-        private void setTakmicenja(Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenja)
+        private void setTakmicenja(IList<RezultatskoTakmicenje> rezTakmicenja)
         {
-            List<RezultatskoTakmicenjeDescription> takList = new List<RezultatskoTakmicenjeDescription>(takmicenja);
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatskoTakmicenjeDescription))["RedBroj"];
-            takList.Sort(new SortComparer<RezultatskoTakmicenjeDescription>(
-                propDesc, ListSortDirection.Ascending));
-
             treeViewTakmicenja.Nodes.Clear();
-
             const string BEZVEZE = "__BEZVEZE__";
 
             string lastDescription = BEZVEZE;
             TreeNode descNode = null;
-            foreach (RezultatskoTakmicenjeDescription desc in takList)
-            {
-                descNode = addTakmicenje(desc, new List<TakmicarskaKategorija>(takmicenje.Kategorije));
-            }
-            /*foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (rt.TakmicenjeDescription.Naziv != lastDescription)
                 {
-                    lastDescription = rt.TakmicenjeDescription.Naziv;
                     descNode = treeViewTakmicenja.Nodes.Add(rt.TakmicenjeDescription.Naziv);
+                    lastDescription = rt.TakmicenjeDescription.Naziv;
                 }
                 TreeNode katNode = descNode.Nodes.Add(rt.Kategorija.Naziv);
                 katNode.Tag = rt;
-            }*/
+            }
+            treeViewTakmicenja.ExpandAll();
         }
 
+        private void setKategorije(IList<TakmicarskaKategorija> kategorije)
+        {
+            lstKategorije.DataSource = kategorije;
+        }
+
+        // TOOD4: Ukloni ovo
         private void setKategorije(Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije)
         {
             List<TakmicarskaKategorija> katList = new List<TakmicarskaKategorija>(kategorije);
@@ -157,7 +150,7 @@ namespace Bilten.UI
             TakmicarskaKategorijaForm form = null;
             try
             {
-                form = new TakmicarskaKategorijaForm(null, takmicenje.Id);
+                form = new TakmicarskaKategorijaForm(null, takmicenjeId);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -175,10 +168,8 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    // reload takmicenje
-                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
-                    // ova naredba mora unutar sesije da bi se ucitale kategorije
-                    setKategorije(takmicenje.Kategorije);
+                    // reload kategorije
+                    setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
                     SelectedKategorija = (TakmicarskaKategorija)form.Entity;
                 }
             }
@@ -205,7 +196,7 @@ namespace Bilten.UI
             TakmicarskaKategorijaForm form = null;
             try
             {
-                form = new TakmicarskaKategorijaForm(SelectedKategorija.Id, takmicenje.Id);
+                form = new TakmicarskaKategorijaForm(SelectedKategorija.Id, takmicenjeId);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -223,10 +214,8 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    // reload takmicenje
-                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
-                    // ova naredba mora unutar sesije da bi se ucitale kategorije
-                    setKategorije(takmicenje.Kategorije);
+                    // reload kategorije
+                    setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
                     SelectedKategorija = (TakmicarskaKategorija)form.Entity;
                 }
             }
@@ -245,19 +234,60 @@ namespace Bilten.UI
 
         private void btnDeleteKategorija_Click(object sender, EventArgs e)
         {
-            // TODO: Uradi brisanje kategorija
             if (SelectedKategorija == null)
                 return;
             string msgFmt = "Da li zelite da izbrisete kategoriju '{0}'?";
             if (!MessageDialogs.queryConfirmation(String.Format(msgFmt, SelectedKategorija), this.Text))
                 return;
 
-            // TODO: Prikazi dijalog za potvrdu da ce biti izbrisane sve ocene,
-            // rasporedi nastupa, rasporedi sudija, ekipe i gimnasticari za datu
-            // kategoriju
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    deleteKategorija(SelectedKategorija);
+                    session.Transaction.Commit();
 
-            takmicenje.removeKategorija(SelectedKategorija);
-            setKategorije(takmicenje.Kategorije);
+                    // reload kategorije
+                    setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        }
+
+        private void deleteKategorija(TakmicarskaKategorija k)
+        {
+            TakmicarskaKategorijaDAO takKatDAO = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO();
+            takKatDAO.Attach(k, false);
+
+            IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByKategorija(k);
+            if (rezTakmicenja.Count > 0)
+                throw new BusinessException("Morate najpre da izbrisete kategoriju iz svih takmicenja.");
+            
+            IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
+                .FindByKategorija(k);
+            if (gimnasticari.Count > 0)
+                throw new BusinessException("Morate najpre da izbrisete sve gimnasticare za datu kategoriju.");
+
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+            Takmicenje t = takmicenjeDAO.FindById(takmicenjeId);
+            t.removeKategorija(SelectedKategorija);
+
+            takKatDAO.Delete(k);
+            takmicenjeDAO.Update(t);
         }
 
         private void btnMoveUpKategorija_Click(object sender, EventArgs e)
@@ -288,13 +318,13 @@ namespace Bilten.UI
 
         private void btnAddTakmicenje_Click(object sender, EventArgs e)
         {
-            if (takmicenje.Kategorije.Count == 0)
+            if (lstKategorije.Items.Count == 0)
             {
                 MessageDialogs.showMessage("Morate najpre da unesete kategorije.", this.Text);
                 return;
             }
 
-            RezultatskoTakmicenjeDescriptionForm form = new RezultatskoTakmicenjeDescriptionForm(takmicenje);
+            RezultatskoTakmicenjeDescriptionForm form = new RezultatskoTakmicenjeDescriptionForm(null, takmicenjeId);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
@@ -306,15 +336,10 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    takmicenje.addTakmicenjeDescription(d);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
-
+                    // reload rez. takmicenja
                     RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-                    int redBroj = rezTakmicenja[rezTakmicenja.Count - 1].RedBroj + 1;
-                    foreach (TakmicarskaKategorija k in form.Kategorije)
-                        rezTakDAO.Add(createRezultatskoTakmicenje(takmicenje, k, d, redBroj++));
-
-                    session.Transaction.Commit();
+                    setTakmicenja(rezTakDAO.FindByTakmicenje(takmicenjeId));
+                    SelectedTakmicenje = (RezultatskoTakmicenjeDescription)form.Entity;
                 }
             }
             catch (Exception ex)
@@ -328,33 +353,6 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-
-            TreeNode n = addTakmicenje(d, form.Kategorije);
-            n.Expand();
-            SelectedTakmicenje = d;
-        }
-
-        private TreeNode addTakmicenje(RezultatskoTakmicenjeDescription desc, IList<TakmicarskaKategorija> kategorije)
-        {
-            TreeNode descNode = treeViewTakmicenja.Nodes.Add(desc.Naziv);
-            descNode.Tag = desc;
-            foreach (TakmicarskaKategorija kat in kategorije)
-                descNode.Nodes.Add(kat.Naziv);
-            return descNode;
-        }
-
-        private TreeNode updateTakmicenje(RezultatskoTakmicenjeDescription desc, IList<TakmicarskaKategorija> kategorije)
-        {
-            foreach (TreeNode n in treeViewTakmicenja.Nodes)
-            {
-                if (n.Text != desc.Naziv)
-                    continue;
-                n.Nodes.Clear();
-                foreach (TakmicarskaKategorija k in kategorije)
-                    n.Nodes.Add(k.Naziv);
-                return n;
-            }
-            return null;
         }
 
         private void btnEditTakmicenje_Click(object sender, EventArgs e)
@@ -364,33 +362,19 @@ namespace Bilten.UI
             try
             {
                 RezultatskoTakmicenjeDescriptionForm form = new RezultatskoTakmicenjeDescriptionForm(
-                    SelectedTakmicenje, getKategorije(SelectedTakmicenje), takmicenje);
+                    SelectedTakmicenje.Id, takmicenjeId);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    // refresh
-                    RezultatskoTakmicenjeDescription desc = (RezultatskoTakmicenjeDescription)form.Entity;
-                    TreeNode n = updateTakmicenje(desc, form.Kategorije);
-                    n.Expand();
-                    SelectedTakmicenje = desc;
+                    // reload rez. takmicenja
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    setTakmicenja(rezTakDAO.FindByTakmicenje(takmicenjeId));
+                    SelectedTakmicenje = (RezultatskoTakmicenjeDescription)form.Entity;
                 }
             }
             catch (InfrastructureException ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }
-        }
-
-        private IList<TakmicarskaKategorija> getKategorije(RezultatskoTakmicenjeDescription desc)
-        {
-            IList<TakmicarskaKategorija> result = new List<TakmicarskaKategorija>();
-            foreach (TreeNode n in treeViewTakmicenja.Nodes)
-            {
-                if (n.Text != desc.Naziv)
-                    continue;
-                foreach (TreeNode n2 in n.Nodes)
-                    result.Add(takmicenje.getKategorija(n2.Text));
-            }
-            return result;
         }
 
         private void btnDeleteTakmicenje_Click(object sender, EventArgs e)
@@ -434,52 +418,73 @@ namespace Bilten.UI
 
         private void btnMoveUpTakmicenje_Click(object sender, EventArgs e)
         {
-            RezultatskoTakmicenjeDescription takmicenjeDesc =
-                SelectedTakmicenje;
+            RezultatskoTakmicenjeDescription takmicenjeDesc = SelectedTakmicenje;
             if (takmicenjeDesc == null)
                 return;
+            if (!takmicenje.moveTakmicenjeDescriptionUp(takmicenjeDesc))
+                return;
 
-            if (takmicenje.moveTakmicenjeDescriptionUp(takmicenjeDesc))
+            ISession session = null;
+            try
             {
-                setTakmicenja(takmicenje.TakmicenjeDescriptions);
-                SelectedTakmicenje = takmicenjeDesc;
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                        .FindByTakmicenjeFetch_KatDesc(takmicenjeId);
+                    setTakmicenja(rezTakmicenja);
+                    SelectedTakmicenje = takmicenjeDesc;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
         private void btnMoveDownTakmicenje_Click(object sender, EventArgs e)
         {
-            RezultatskoTakmicenjeDescription takmicenjeDesc =
-                SelectedTakmicenje;
+            RezultatskoTakmicenjeDescription takmicenjeDesc = SelectedTakmicenje;
             if (takmicenjeDesc == null)
                 return;
+            if (!takmicenje.moveTakmicenjeDescriptionDown(takmicenjeDesc))
+                return;
 
-            if (takmicenje.moveTakmicenjeDescriptionDown(takmicenjeDesc))
+            ISession session = null;
+            try
             {
-                setTakmicenja(takmicenje.TakmicenjeDescriptions);
-                SelectedTakmicenje = takmicenjeDesc;
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                        .FindByTakmicenjeFetch_KatDesc(takmicenjeId);
+                    setTakmicenja(rezTakmicenja);
+                    SelectedTakmicenje = takmicenjeDesc;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
         private void btnZatvori_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private RezultatskoTakmicenje createRezultatskoTakmicenje(Takmicenje takmicenje, TakmicarskaKategorija k,
-            RezultatskoTakmicenjeDescription d, int redBroj)
-        {
-            RezultatskoTakmicenje result = new RezultatskoTakmicenje(takmicenje,
-                k, d, new Propozicije());
-            result.RedBroj = (byte)redBroj;
-            return result;
-        }
-
-        private void deleteKategorija(TakmicarskaKategorija k)
-        {
-            // TODO2: Treba obrisati sve ocene, rasporede nastupa, rasporede sudija, 
-            // ekipe i gimnasticari za datu kategoriju
-            
-            DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().Delete(k);
         }
 
         private void deleteRezultatskoTakmicenje(TakmicarskaKategorija kat,
