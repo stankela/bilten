@@ -580,27 +580,6 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public RezultatskoTakmicenje FindByKatDesc(TakmicarskaKategorija kat, RezultatskoTakmicenjeDescription desc)
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"
-                    from RezultatskoTakmicenje r
-                    where r.Kategorija = :kat
-                    and r.TakmicenjeDescription = :desc");
-                q.SetEntity("kat", kat);
-                q.SetEntity("desc", desc);
-                IList<RezultatskoTakmicenje> result = q.List<RezultatskoTakmicenje>();
-                if (result.Count > 0)
-                    return result[0];
-                return null;
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
         public IList<RezultatskoTakmicenje> FindByKategorija(TakmicarskaKategorija kat)
         {
             try
@@ -628,6 +607,27 @@ namespace Bilten.Dao.NHibernate
                     order by r.RedBroj");
                 q.SetEntity("desc", desc);
                 return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public RezultatskoTakmicenje FindByKatDesc(TakmicarskaKategorija kat, RezultatskoTakmicenjeDescription desc)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from RezultatskoTakmicenje r
+                    where r.Kategorija = :kat
+                    and r.TakmicenjeDescription = :desc");
+                q.SetEntity("kat", kat);
+                q.SetEntity("desc", desc);
+                IList<RezultatskoTakmicenje> result = q.List<RezultatskoTakmicenje>();
+                if (result.Count > 0)
+                    return result[0];
+                return null;
             }
             catch (HibernateException ex)
             {

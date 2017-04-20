@@ -16,6 +16,8 @@ namespace Bilten.UI
     {
         private int takmicenjeId;
         private string oldNaziv;
+        private IList<TakmicarskaKategorija> oldKategorije;
+        private IList<TakmicarskaKategorija> sveKategorije;
         public List<TakmicarskaKategorija> SelKategorije = new List<TakmicarskaKategorija>();
 
         public RezultatskoTakmicenjeDescriptionForm(Nullable<int> descId, int takmicenjeId)
@@ -43,21 +45,18 @@ namespace Bilten.UI
 
             checkedListBoxKategorije.CheckOnClick = true;
 
-            IList<TakmicarskaKategorija> sveKategorije
-                = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
-            IList<TakmicarskaKategorija> kategorije = null;
+            sveKategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
             if (editMode)
             {
-                IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                    .FindByTakmicenje(takmicenjeId);
-                kategorije = Takmicenje.getKategorije(rezTakmicenja, (RezultatskoTakmicenjeDescription)entity);
+                oldKategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
+                    .FindByTakmicenjeDesc(takmicenjeId, (RezultatskoTakmicenjeDescription)entity);
             }
 
             checkedListBoxKategorije.Items.Clear();
             foreach (TakmicarskaKategorija k in sveKategorije)
             {
                 checkedListBoxKategorije.Items.Add(k);
-                if (!editMode || kategorije.Contains(k))
+                if (!editMode || oldKategorije.Contains(k))
                     checkedListBoxKategorije.SetItemChecked(checkedListBoxKategorije.Items.Count - 1, true);
             }
         }
@@ -134,7 +133,51 @@ namespace Bilten.UI
             RezultatskoTakmicenjeDescription desc = (RezultatskoTakmicenjeDescription)entity;
             DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO().Update(desc);
 
-            // TODO4: Obradi promenjene kategorije.            
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(takmicenjeId);
+
+            TakmicarskaKategorijaDAO takKatDAO = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO();
+
+            IList<RezultatskoTakmicenje> istaRezTakmicenja = new List<RezultatskoTakmicenje>();
+            IList<RezultatskoTakmicenje> vecaRezTakmicenja = new List<RezultatskoTakmicenje>();
+            int redBroj = 0;
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.TakmicenjeDescription.RedBroj < desc.RedBroj)
+                {
+                    if (rt.RedBroj > redBroj)
+                        redBroj = rt.RedBroj;
+                }
+                else if (rt.TakmicenjeDescription.RedBroj > desc.RedBroj)
+                    vecaRezTakmicenja.Add(rt);
+            }
+
+            foreach (TakmicarskaKategorija k in sveKategorije)
+            {
+                if (SelKategorije.Contains(k) && oldKategorije.Contains(k))
+                {
+                    RezultatskoTakmicenje rt = rezTakDAO.FindByKatDesc(k, desc);
+                    rt.RedBroj = (byte)++redBroj;
+                    rezTakDAO.Update(rt);
+                }
+                else if (SelKategorije.Contains(k) && !oldKategorije.Contains(k))
+                {
+                    takKatDAO.Attach(k, false);
+                    rezTakDAO.Add(createRezultatskoTakmicenje(takmicenje, k, desc, ++redBroj));
+                }
+                else if (!SelKategorije.Contains(k) && oldKategorije.Contains(k))
+                {
+                    RezultatskoTakmicenje rt = rezTakDAO.FindByKatDesc(k, desc);
+                    rezTakDAO.Delete(rt);
+                }
+            }
+
+            foreach (RezultatskoTakmicenje rt in vecaRezTakmicenja)
+            {
+                rt.RedBroj = (byte)++redBroj;
+                rezTakDAO.Update(rt);
+            }
         }
 
         protected override void addEntity(DomainObject entity)

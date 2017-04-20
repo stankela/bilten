@@ -606,6 +606,8 @@ namespace Bilten.UI
             foreach (RezultatskoTakmicenje rt in rezTakDAO.FindByDescription(desc))
                 rezTakDAO.Delete(rt);
 
+            // Ne apdejtujem redne brojeve za preostala rez. takmicenja zato sto je redosled nepromenjen
+
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             Takmicenje takmicenje = takmicenjeDAO.FindById(takmicenjeId);
             takmicenje.removeTakmicenjeDescription(desc);
