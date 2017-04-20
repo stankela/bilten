@@ -57,7 +57,7 @@ namespace Bilten.UI
             foreach (TakmicarskaKategorija k in sveKategorije)
             {
                 checkedListBoxKategorije.Items.Add(k);
-                if (editMode && kategorije.Contains(k))
+                if (!editMode || kategorije.Contains(k))
                     checkedListBoxKategorije.SetItemChecked(checkedListBoxKategorije.Items.Count - 1, true);
             }
         }
