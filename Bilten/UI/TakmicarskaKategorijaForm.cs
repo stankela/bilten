@@ -12,6 +12,7 @@ using NHibernate;
 using Bilten.Data;
 using NHibernate.Context;
 using Bilten.Dao;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -118,28 +119,12 @@ namespace Bilten.UI
 
         protected override void updateEntity(DomainObject entity)
         {
-            Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
             DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().Update((TakmicarskaKategorija)entity);
-            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(t);
         }
 
         protected override void addEntity(DomainObject entity)
         {
-            Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
-            t.addKategorija((TakmicarskaKategorija)entity);
-            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(t);
-        }
-
-        protected override void checkBusinessRulesOnAdd(DomainObject entity)
-        {
-            TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
-            Notification notification = new Notification();
-
-            if (DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().existsKategorijaNaziv(kat.Naziv, takmicenjeId))
-            {
-                notification.RegisterMessage("Naziv", "Kategorija sa datim nazivom vec postoji.");
-                throw new BusinessException(notification);
-            }
+            TakmicenjeService.addTakmicarskaKategorija((TakmicarskaKategorija)entity, takmicenjeId);
         }
 
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)

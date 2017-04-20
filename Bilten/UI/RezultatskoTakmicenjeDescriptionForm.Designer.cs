@@ -31,15 +31,16 @@ namespace Bilten.UI
             this.lblNaziv = new System.Windows.Forms.Label();
             this.txtNaziv = new System.Windows.Forms.TextBox();
             this.checkedListBoxKategorije = new System.Windows.Forms.CheckedListBox();
+            this.lblKategorije = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(246, 228);
+            this.btnOk.Location = new System.Drawing.Point(320, 228);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(338, 228);
+            this.btnCancel.Location = new System.Drawing.Point(412, 228);
             // 
             // lblNaziv
             // 
@@ -54,7 +55,7 @@ namespace Bilten.UI
             // 
             this.txtNaziv.Location = new System.Drawing.Point(28, 34);
             this.txtNaziv.Name = "txtNaziv";
-            this.txtNaziv.Size = new System.Drawing.Size(344, 20);
+            this.txtNaziv.Size = new System.Drawing.Size(459, 20);
             this.txtNaziv.TabIndex = 3;
             // 
             // checkedListBoxKategorije
@@ -65,11 +66,21 @@ namespace Bilten.UI
             this.checkedListBoxKategorije.Size = new System.Drawing.Size(196, 169);
             this.checkedListBoxKategorije.TabIndex = 4;
             // 
+            // lblKategorije
+            // 
+            this.lblKategorije.AutoSize = true;
+            this.lblKategorije.Location = new System.Drawing.Point(25, 66);
+            this.lblKategorije.Name = "lblKategorije";
+            this.lblKategorije.Size = new System.Drawing.Size(54, 13);
+            this.lblKategorije.TabIndex = 5;
+            this.lblKategorije.Text = "Kategorije";
+            // 
             // RezultatskoTakmicenjeDescriptionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(428, 274);
+            this.ClientSize = new System.Drawing.Size(508, 274);
+            this.Controls.Add(this.lblKategorije);
             this.Controls.Add(this.checkedListBoxKategorije);
             this.Controls.Add(this.txtNaziv);
             this.Controls.Add(this.lblNaziv);
@@ -81,6 +92,7 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.txtNaziv, 0);
             this.Controls.SetChildIndex(this.checkedListBoxKategorije, 0);
+            this.Controls.SetChildIndex(this.lblKategorije, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -91,5 +103,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Label lblNaziv;
         private System.Windows.Forms.TextBox txtNaziv;
         private System.Windows.Forms.CheckedListBox checkedListBoxKategorije;
+        private System.Windows.Forms.Label lblKategorije;
     }
 }

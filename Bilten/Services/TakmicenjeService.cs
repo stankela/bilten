@@ -2,6 +2,7 @@
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using Bilten.Util;
 using NHibernate;
 using System;
 using System.Collections.Generic;
@@ -452,6 +453,25 @@ namespace Bilten.Services
             {
                 gimnasticarUcesnikDAO.Add(g);
             }
+        }
+
+        public static void addTakmicarskaKategorija(TakmicarskaKategorija kat, int takmicenjeId)
+        {
+            Notification notification = new Notification();
+            kat.validate(notification);
+            if (!notification.IsValid())
+                throw new BusinessException(notification);
+
+            if (DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().existsKategorijaNaziv(kat.Naziv, takmicenjeId))
+            {
+                notification.RegisterMessage("Naziv", "Kategorija sa datim nazivom vec postoji.");
+                throw new BusinessException(notification);
+            }
+
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+            Takmicenje t = takmicenjeDAO.FindById(takmicenjeId);
+            t.addKategorija(kat);
+            takmicenjeDAO.Update(t);
         }
     }
 }

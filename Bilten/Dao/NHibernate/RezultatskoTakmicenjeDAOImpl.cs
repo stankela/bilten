@@ -638,6 +638,23 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<RezultatskoTakmicenje> FindByDescription(RezultatskoTakmicenjeDescription desc)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from RezultatskoTakmicenje r
+                    where r.TakmicenjeDescription = :desc
+                    order by r.RedBroj");
+                q.SetEntity("desc", desc);
+                return q.List<RezultatskoTakmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public IList<RezultatskoTakmicenje> FindEkipnaTakmicenja(int takmicenjeId)
         {
             try
@@ -665,11 +682,15 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select max(r.RedBroj)
+                IQuery q = Session.CreateQuery(@"
+                    select max(r.RedBroj)
                     from RezultatskoTakmicenje r
                     where r.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
-                return (byte)q.UniqueResult();
+                object result = q.UniqueResult();
+                if (result != null)
+                    return (byte)q.UniqueResult();
+                return 0;
             }
             catch (HibernateException ex)
             {

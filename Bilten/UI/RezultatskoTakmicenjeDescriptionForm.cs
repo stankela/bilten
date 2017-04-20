@@ -14,11 +14,8 @@ namespace Bilten.UI
 {
     public partial class RezultatskoTakmicenjeDescriptionForm : EntityDetailForm
     {
-        private Takmicenje takmicenje;
         private int takmicenjeId;
         private string oldNaziv;
-        private IList<TakmicarskaKategorija> sveKategorije;
-        private IList<TakmicarskaKategorija> kategorije;
         public List<TakmicarskaKategorija> SelKategorije = new List<TakmicarskaKategorija>();
 
         public RezultatskoTakmicenjeDescriptionForm(Nullable<int> descId, int takmicenjeId)
@@ -28,29 +25,33 @@ namespace Bilten.UI
             initialize(descId, true);
         }
 
-        protected override void loadData()
-        {
-            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
-            sveKategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
-
-            IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                .FindByTakmicenje(takmicenjeId);
-            kategorije = Takmicenje.getKategorije(rezTakmicenja, (RezultatskoTakmicenjeDescription)entity);
-        }
-
         protected override void initUI()
         {
             base.initUI();
             this.Text = "Takmicenje";
 
             txtNaziv.Text = String.Empty;
-            if (!editMode && takmicenje.TakmicenjeDescriptions.Count == 0)
+            if (!editMode)
             {
-                // za prvo takmicenje, ponudi naziv kao glavno takmicenje
-                txtNaziv.Text = takmicenje.Naziv;
+                Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                if (takmicenje.TakmicenjeDescriptions.Count == 0)
+                {
+                    // za prvo takmicenje, ponudi naziv kao glavno takmicenje
+                    txtNaziv.Text = takmicenje.Naziv;
+                }
             }
 
             checkedListBoxKategorije.CheckOnClick = true;
+
+            IList<TakmicarskaKategorija> sveKategorije
+                = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
+            IList<TakmicarskaKategorija> kategorije = null;
+            if (editMode)
+            {
+                IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                    .FindByTakmicenje(takmicenjeId);
+                kategorije = Takmicenje.getKategorije(rezTakmicenja, (RezultatskoTakmicenjeDescription)entity);
+            }
 
             checkedListBoxKategorije.Items.Clear();
             foreach (TakmicarskaKategorija k in sveKategorije)
@@ -131,9 +132,7 @@ namespace Bilten.UI
         protected override void updateEntity(DomainObject entity)
         {
             RezultatskoTakmicenjeDescription desc = (RezultatskoTakmicenjeDescription)entity;
-            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
             DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO().Update(desc);
-            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
 
             // TODO4: Obradi promenjene kategorije.            
         }
@@ -141,7 +140,7 @@ namespace Bilten.UI
         protected override void addEntity(DomainObject entity)
         {
             RezultatskoTakmicenjeDescription desc = (RezultatskoTakmicenjeDescription)entity;
-            takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
             takmicenje.addTakmicenjeDescription(desc);
             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
 
@@ -164,21 +163,12 @@ namespace Bilten.UI
             RezultatskoTakmicenjeDescription d = (RezultatskoTakmicenjeDescription)entity;
             Notification notification = new Notification();
 
-            if (existsTakmicenjeNaziv(d))
+            if (DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO()
+                .existsDescriptionNaziv(d.Naziv, takmicenjeId))
             {
                 notification.RegisterMessage("Naziv", "Takmicenje sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);
             }
-        }
-
-        private bool existsTakmicenjeNaziv(RezultatskoTakmicenjeDescription d)
-        {
-            foreach (RezultatskoTakmicenjeDescription d2 in takmicenje.TakmicenjeDescriptions)
-            {
-                if (!object.ReferenceEquals(d2, d) && d2.Naziv.ToUpper() == d.Naziv.ToUpper())
-                    return true;
-            }
-            return false;
         }
 
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
@@ -187,7 +177,8 @@ namespace Bilten.UI
             Notification notification = new Notification();
 
             bool nazivChanged = (d.Naziv.ToUpper() != oldNaziv.ToUpper()) ? true : false;
-            if (nazivChanged && existsTakmicenjeNaziv(d))
+            if (nazivChanged && DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO()
+                .existsDescriptionNaziv(d.Naziv, takmicenjeId))
             {
                 notification.RegisterMessage("Naziv", "Takmicenje sa datim nazivom vec postoji.");
                 throw new BusinessException(notification);

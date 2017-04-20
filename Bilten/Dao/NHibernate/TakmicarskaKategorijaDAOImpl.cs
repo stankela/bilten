@@ -14,7 +14,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from TakmicarskaKategorija k
+                IQuery q = Session.CreateQuery(@"
+                    from TakmicarskaKategorija k
                     where k.Takmicenje.Id = :takmicenjeId
                     order by k.RedBroj asc");
                 q.SetInt32("takmicenjeId", takmicenjeId);
@@ -30,7 +31,9 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select count(*) from TakmicarskaKategorija k
+                IQuery q = Session.CreateQuery(@"
+                    select count(*)
+                    from TakmicarskaKategorija k
                     where k.Takmicenje.Id = :takmicenjeId
                     and k.Naziv = :naziv");
                 q.SetInt32("takmicenjeId", takmicenjeId);
@@ -48,7 +51,8 @@ namespace Bilten.Dao.NHibernate
             try
             {
                 IQuery q = Session.CreateQuery(@"
-                    select count(*) from TakmicarskaKategorija k
+                    select count(*)
+                    from TakmicarskaKategorija k
                     where k.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return (int)(long)q.UniqueResult();
