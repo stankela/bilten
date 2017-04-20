@@ -39,8 +39,6 @@ namespace Bilten.UI
             this.lblTakmicenja = new System.Windows.Forms.Label();
             this.btnAddTakmicenje = new System.Windows.Forms.Button();
             this.btnDeleteTakmicenje = new System.Windows.Forms.Button();
-            this.btnMoveUpTakmicenje = new System.Windows.Forms.Button();
-            this.btnMoveDownTakmicenje = new System.Windows.Forms.Button();
             this.btnEditTakmicenje = new System.Windows.Forms.Button();
             this.treeViewTakmicenja = new System.Windows.Forms.TreeView();
             this.btnDodajIzPrethTak = new System.Windows.Forms.Button();
@@ -111,8 +109,8 @@ namespace Bilten.UI
             this.lblNapomena.Name = "lblNapomena";
             this.lblNapomena.Size = new System.Drawing.Size(260, 30);
             this.lblNapomena.TabIndex = 6;
-            this.lblNapomena.Text = "Napomena: Redosled kategorija i takmicenja u listi odredjuje i redosled u drugim " +
-    "delovima programa.";
+            this.lblNapomena.Text = "Napomena: Redosled kategorija u listi odredjuje i redosled u drugim delovima prog" +
+    "rama.";
             // 
             // lblKategorija
             // 
@@ -151,26 +149,6 @@ namespace Bilten.UI
             this.btnDeleteTakmicenje.Text = "Brisi";
             this.btnDeleteTakmicenje.UseVisualStyleBackColor = true;
             this.btnDeleteTakmicenje.Click += new System.EventHandler(this.btnDeleteTakmicenje_Click);
-            // 
-            // btnMoveUpTakmicenje
-            // 
-            this.btnMoveUpTakmicenje.Location = new System.Drawing.Point(737, 110);
-            this.btnMoveUpTakmicenje.Name = "btnMoveUpTakmicenje";
-            this.btnMoveUpTakmicenje.Size = new System.Drawing.Size(75, 23);
-            this.btnMoveUpTakmicenje.TabIndex = 13;
-            this.btnMoveUpTakmicenje.Text = "Pomeri gore";
-            this.btnMoveUpTakmicenje.UseVisualStyleBackColor = true;
-            this.btnMoveUpTakmicenje.Click += new System.EventHandler(this.btnMoveUpTakmicenje_Click);
-            // 
-            // btnMoveDownTakmicenje
-            // 
-            this.btnMoveDownTakmicenje.Location = new System.Drawing.Point(737, 140);
-            this.btnMoveDownTakmicenje.Name = "btnMoveDownTakmicenje";
-            this.btnMoveDownTakmicenje.Size = new System.Drawing.Size(75, 23);
-            this.btnMoveDownTakmicenje.TabIndex = 14;
-            this.btnMoveDownTakmicenje.Text = "Pomeri dole";
-            this.btnMoveDownTakmicenje.UseVisualStyleBackColor = true;
-            this.btnMoveDownTakmicenje.Click += new System.EventHandler(this.btnMoveDownTakmicenje_Click);
             // 
             // btnEditTakmicenje
             // 
@@ -218,8 +196,6 @@ namespace Bilten.UI
             this.Controls.Add(this.btnDodajIzPrethTak);
             this.Controls.Add(this.treeViewTakmicenja);
             this.Controls.Add(this.btnEditTakmicenje);
-            this.Controls.Add(this.btnMoveDownTakmicenje);
-            this.Controls.Add(this.btnMoveUpTakmicenje);
             this.Controls.Add(this.btnDeleteTakmicenje);
             this.Controls.Add(this.btnAddTakmicenje);
             this.Controls.Add(this.lblTakmicenja);
@@ -256,8 +232,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Label lblTakmicenja;
         private System.Windows.Forms.Button btnAddTakmicenje;
         private System.Windows.Forms.Button btnDeleteTakmicenje;
-        private System.Windows.Forms.Button btnMoveUpTakmicenje;
-        private System.Windows.Forms.Button btnMoveDownTakmicenje;
         private System.Windows.Forms.Button btnEditTakmicenje;
         private System.Windows.Forms.TreeView treeViewTakmicenja;
         private System.Windows.Forms.Button btnDodajIzPrethTak;

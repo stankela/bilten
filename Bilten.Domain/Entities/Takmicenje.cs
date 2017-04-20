@@ -178,42 +178,6 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual bool moveTakmicenjeDescriptionUp(
-            RezultatskoTakmicenjeDescription desc)
-        {
-            if (desc.RedBroj == 0)
-                return false;
-
-            foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
-            {
-                if (d.RedBroj == desc.RedBroj - 1)
-                {
-                    d.RedBroj++;
-                    break;
-                }
-            }
-            desc.RedBroj--;
-            return true;
-        }
-
-        public virtual bool moveTakmicenjeDescriptionDown(
-            RezultatskoTakmicenjeDescription desc)
-        {
-            if (desc.RedBroj == TakmicenjeDescriptions.Count - 1)
-                return false;
-
-            foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
-            {
-                if (d.RedBroj == desc.RedBroj + 1)
-                {
-                    d.RedBroj--;
-                    break;
-                }
-            }
-            desc.RedBroj++;
-            return true;
-        }
-
         private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije =
             new HashedSet<TakmicarskaKategorija>();
         public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
@@ -250,8 +214,6 @@ namespace Bilten.Domain
 
         public virtual bool moveKategorijaUp(TakmicarskaKategorija kat)
         {
-            //if (redBroj < 1 || redBroj > Kategorije.Count - 1)
-            //    return false;
             if (kat.RedBroj == 0)
                 return false;
 
@@ -269,8 +231,6 @@ namespace Bilten.Domain
 
         public virtual bool moveKategorijaDown(TakmicarskaKategorija kat)
         {
-            //if (redBroj < 0 || redBroj >= Kategorije.Count - 1)
-            //    return false;
             if (kat.RedBroj == Kategorije.Count - 1)
                 return false;
 

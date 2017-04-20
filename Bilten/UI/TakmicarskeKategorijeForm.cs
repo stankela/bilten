@@ -88,24 +88,16 @@ namespace Bilten.UI
             treeViewTakmicenja.ExpandAll();
         }
 
-        private void setKategorije(IList<TakmicarskaKategorija> kategorije)
-        {
-            lstKategorije.DataSource = kategorije;
-        }
+        // TODO: Kreiraj metod u klasi TakmicarskaKategorija koji vraca kategorije sortirane po rednom broju.
+        // Pronadji sva mesta na kojima sortiram kategorije po rednom broju, i zameni ih pozivom novog metoda.
+        // Uradi isto i za klasu RezultatskoTakmicenjeDescription, a i za druge ako postoje.
 
-        // TOOD4: Ukloni ovo
-        private void setKategorije(Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije)
+        private void setKategorije(IList<TakmicarskaKategorija> kategorije)
         {
             List<TakmicarskaKategorija> katList = new List<TakmicarskaKategorija>(kategorije);
 
-            // TODO: Kreiraj metod u klasi TakmicarskaKategorija koji vraca kategorije sortirane po rednom broju.
-            // Pronadji sva mesta na kojima sortiram kategorije po rednom broju, i zameni ih pozivom novog metoda.
-            // Uradi isto i za klasu RezultatskoTakmicenjeDescription, a i za druge ako postoje.
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
-            katList.Sort(new SortComparer<TakmicarskaKategorija>(
-                propDesc, ListSortDirection.Ascending));
+            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
+            katList.Sort(new SortComparer<TakmicarskaKategorija>(propDesc, ListSortDirection.Ascending));
 
             lstKategorije.DataSource = katList;
         }
@@ -393,13 +385,42 @@ namespace Bilten.UI
             TakmicarskaKategorija k = SelectedKategorija;
             if (k == null)
                 return;
-
-            // TODO4
-            Takmicenje takmicenje = null;
-            if (takmicenje.moveKategorijaUp(k))
+            if (treeViewTakmicenja.Nodes.Count > 0)
             {
-                setKategorije(takmicenje.Kategorije);
-                SelectedKategorija = k;
+                MessageDialogs.showMessage("Kategorije je moguce pomerati pre nego sto se dodaju takmicenja.", this.Text);
+                return;
+            }
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().Attach(k, false);
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    Takmicenje takmicenje = takmicenjeDAO.FindById(takmicenjeId);
+                    if (takmicenje.moveKategorijaUp(k))
+                    {
+                        takmicenjeDAO.Update(takmicenje);
+                        session.Transaction.Commit();
+                        // reload kategorije
+                        setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
+                        SelectedKategorija = k;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -408,13 +429,42 @@ namespace Bilten.UI
             TakmicarskaKategorija k = SelectedKategorija;
             if (k == null)
                 return;
-
-            // TODO4
-            Takmicenje takmicenje = null;
-            if (takmicenje.moveKategorijaDown(k))
+            if (treeViewTakmicenja.Nodes.Count > 0)
             {
-                setKategorije(takmicenje.Kategorije);
-                SelectedKategorija = k;
+                MessageDialogs.showMessage("Kategorije je moguce pomerati pre nego sto se dodaju takmicenja.", this.Text);
+                return;
+            }
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().Attach(k, false);
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    Takmicenje takmicenje = takmicenjeDAO.FindById(takmicenjeId);
+                    if (takmicenje.moveKategorijaDown(k))
+                    {
+                        takmicenjeDAO.Update(takmicenje);
+                        session.Transaction.Commit();
+                        // reload kategorije
+                        setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
+                        SelectedKategorija = k;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 
@@ -562,76 +612,6 @@ namespace Bilten.UI
             takmicenjeDAO.Update(takmicenje);
 
             rezTakDescDAO.Delete(desc);
-        }
-
-        private void btnMoveUpTakmicenje_Click(object sender, EventArgs e)
-        {
-            RezultatskoTakmicenjeDescription takmicenjeDesc = SelectedTakmicenje;
-            if (takmicenjeDesc == null)
-                return;
-            // TODO4
-            Takmicenje takmicenje = null;
-            if (!takmicenje.moveTakmicenjeDescriptionUp(takmicenjeDesc))
-                return;
-
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenjeFetch_KatDesc(takmicenjeId);
-                    setTakmicenja(rezTakmicenja);
-                    SelectedTakmicenje = takmicenjeDesc;
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
-        }
-
-        private void btnMoveDownTakmicenje_Click(object sender, EventArgs e)
-        {
-            RezultatskoTakmicenjeDescription takmicenjeDesc = SelectedTakmicenje;
-            if (takmicenjeDesc == null)
-                return;
-            // TODO4
-            Takmicenje takmicenje = null;
-            if (!takmicenje.moveTakmicenjeDescriptionDown(takmicenjeDesc))
-                return;
-
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenjeFetch_KatDesc(takmicenjeId);
-                    setTakmicenja(rezTakmicenja);
-                    SelectedTakmicenje = takmicenjeDesc;
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
         }
 
         private void btnZatvori_Click(object sender, EventArgs e)

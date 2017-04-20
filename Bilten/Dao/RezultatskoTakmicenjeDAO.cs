@@ -8,7 +8,6 @@ namespace Bilten.Dao
     public interface RezultatskoTakmicenjeDAO : GenericDAO<RezultatskoTakmicenje, int>
     {
         RezultatskoTakmicenje FindByIdFetch_Ekipe(int rezTakmicenjeId);
-        IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_KatDesc(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindRezTakmicenjaForGimnasticar(GimnasticarUcesnik g);
         IList<RezultatskoTakmicenje> FindByTakmicenje(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Gimnasticari(int takmicenjeId);
