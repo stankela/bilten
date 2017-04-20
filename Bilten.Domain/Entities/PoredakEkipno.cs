@@ -77,14 +77,18 @@ namespace Bilten.Domain
             result.Ekipa = e;
 
             Sprava[] sprave = Sprave.getSprave(gimnastika);
+            IList<Sprava> spraveKojeSeBoduju = e.getSpraveKojeSeBoduju(gimnastika);
             foreach (Sprava s in sprave)
             {
+                if (!spraveKojeSeBoduju.Contains(s))
+                  continue;
+
                 PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
                         TypeDescriptor.GetProperties(typeof(RezultatEkipno))[s.ToString()]
-                    };
+                };
                 ListSortDirection[] sortDir = new ListSortDirection[] {
                         ListSortDirection.Descending
-                    };
+                };
                 rezultatiUkupno.Sort(new SortComparer<RezultatUkupno>(propDesc, sortDir));
 
                 for (int i = 0; i < rezultatiUkupno.Count; i++)

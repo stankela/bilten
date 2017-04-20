@@ -33,6 +33,13 @@ namespace Bilten.Domain
             set { penalty = value; }
         }
 
+        private int spraveMask = 0;
+        public virtual int SpraveMask
+        {
+            get { return spraveMask; }
+            set { spraveMask = value; }
+        }
+
         public Ekipa()
         { 
         
@@ -59,6 +66,31 @@ namespace Bilten.Domain
         public virtual void removeGimnasticar(GimnasticarUcesnik gimnasticar)
         {
             Gimnasticari.Remove(gimnasticar);
+        }
+
+        public virtual IList<Sprava> getSpraveKojeSeBoduju(Gimnastika gimnastika)
+        {
+            IList<Sprava> sprave = new List<Sprava>(Sprave.getSprave(gimnastika));
+            if (SpraveMask == 0)
+                return sprave;
+
+            List<Sprava> result = new List<Sprava>();
+            foreach (Sprava s in sprave)
+            {
+                if (((1 << (int)s) & SpraveMask) != 0)
+                    result.Add(s);
+            }
+            return result;
+        }
+
+        public virtual void setSpraveKojeSeBoduju(IList<Sprava> sprave, Gimnastika gimnastika)
+        {
+            SpraveMask = 0;
+            if (Sprave.hasAllSprave(sprave, gimnastika))
+                return;
+
+            foreach (Sprava s in sprave)
+                SpraveMask |= (1 << (int)s);
         }
 
         public override void validate(Notification notification)

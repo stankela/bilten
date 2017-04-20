@@ -24,6 +24,7 @@ namespace Bilten.UI
         private Takmicenje takmicenje;
         private IList<RezultatUkupno> sviRezultatiUkupno;
         private IList<Ocena> ocene;
+        private Gimnastika gimnastika;
 
         private RezultatskoTakmicenje ActiveTakmicenje
         {
@@ -47,6 +48,8 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
                     NHibernateUtil.Initialize(takmicenje);
+
+                    gimnastika = takmicenje.Gimnastika;
 
                     IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
                     if (svaRezTakmicenja.Count == 0)
@@ -491,5 +494,60 @@ namespace Bilten.UI
             onEkipeCellMouseClick();
         }
 
+        private void mnSpraveKojeSeBoduju_Click(object sender, EventArgs e)
+        {
+            IList<RezultatEkipno> rezultatiEkipe = dataGridViewUserControl1.getSelectedItems<RezultatEkipno>();
+            if (rezultatiEkipe.Count != 1)
+                return;
+            RezultatEkipno rezultat = rezultatiEkipe[0];
+
+            List<int> checkedItems = new List<int>();
+            foreach (Sprava s in rezultat.Ekipa.getSpraveKojeSeBoduju(gimnastika))
+                checkedItems.Add(Sprave.indexOf(s, gimnastika));
+
+            CheckListForm form = new CheckListForm(
+                new List<string>(Sprave.getSpraveNazivi(gimnastika)), checkedItems,
+                "Sprave koje se boduju", "Izaberite sprave koje se boduju", "Izaberite sprave");
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            Sprava[] sprave = Sprave.getSprave(gimnastika);
+            IList<Sprava> spraveKojeSeBoduju = new List<Sprava>();
+            foreach (int i in form.CheckedIndices)
+                spraveKojeSeBoduju.Add(sprave[i]);
+            rezultat.Ekipa.setSpraveKojeSeBoduju(spraveKojeSeBoduju, gimnastika);
+
+            PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
+            p.create(ActiveTakmicenje, loadOcene(takmicenje.Id, deoTakKod));
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(rezultat.Ekipa);
+                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(p);
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            dataGridViewUserControl1.setItems<RezultatEkipno>(
+                ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
+            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(rezultat);
+        }
     }
 }

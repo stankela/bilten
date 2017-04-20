@@ -177,23 +177,18 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+       
             IList<string> kategorijeStr = new List<string>();
             foreach (TakmicarskaKategorija k in kategorije)
                 kategorijeStr.Add(k.Naziv);
+            IList<int> checkedItems = new List<int>();
+            for (int i = 0; i < kategorijeStr.Count; ++i)
+                checkedItems.Add(i);
 
-            CheckListForm form2;
-            try
-            {
-                form2 = new CheckListForm(
-                    kategorijeStr, form.SelTakmicenja[0].ToString(), "Izaberite kategorije", "Izaberite kategorije");
-                if (form2.ShowDialog() != DialogResult.OK)
-                    return;
-            }
-            catch (Exception ex)
-            {
-                MessageDialogs.showError(ex.Message, this.Text);
+            CheckListForm form2 = new CheckListForm(
+                kategorijeStr, checkedItems, form.SelTakmicenja[0].ToString(), "Izaberite kategorije", "Izaberite kategorije");
+            if (form2.ShowDialog() != DialogResult.OK)
                 return;
-            }
 
             session = null;
             try

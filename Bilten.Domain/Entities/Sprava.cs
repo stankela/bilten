@@ -8,15 +8,16 @@ namespace Bilten.Domain
 {
     public enum Sprava : byte
     {
+        // NOTE: Vrednosti se ne smeju menjati jer se koriste za maske za sprave kod racunanja ekipnog poretka.
         Undefined = 0,
-        Parter,
-        Konj,
-        Karike,
-        Preskok,
-        Razboj,
-        Vratilo,
-        DvovisinskiRazboj,
-        Greda,
+        Parter = 1,
+        Konj = 2,
+        Karike = 3,
+        Preskok = 4,
+        Razboj = 5,
+        Vratilo = 6,
+        DvovisinskiRazboj = 7,
+        Greda = 8,
         Max = Greda
     }
 
@@ -145,6 +146,17 @@ namespace Bilten.Domain
             if (gim == Gimnastika.ZSG)
                 sprave = new List<Sprava>(ZenskeSprave);
             return sprave.IndexOf(sprava);
+        }
+
+        public static bool hasAllSprave(IList<Sprava> sprave, Gimnastika gimnastika)
+        {
+            ISet<Sprava> spraveSet = new HashSet<Sprava>(sprave);
+            foreach (Sprava s in getSprave(gimnastika))
+            {
+                if (!spraveSet.Contains(s))
+                    return false;
+            }
+            return true;
         }
     }
 }

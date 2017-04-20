@@ -20,7 +20,7 @@ namespace Bilten.UI
         private string noSelectMsg;
         public List<int> CheckedIndices = new List<int>();
 
-        public CheckListForm(IList<string> items, string header, string caption, string noSelectMsg)
+        public CheckListForm(IList<string> items, IList<int> checkedItems, string header, string caption, string noSelectMsg)
         {
             InitializeComponent();
             Text = caption;
@@ -34,8 +34,11 @@ namespace Bilten.UI
             checkedListBox1.CheckOnClick = true;
             checkedListBox1.Items.Clear();
 
-            foreach (string item in items)
-                checkedListBox1.Items.Add(item, true);
+            for (int i = 0; i < items.Count; ++i)
+            {
+                string item = items[i];
+                checkedListBox1.Items.Add(item, checkedItems.Contains(i));
+            }
         }
 
         private void btnOk_Click(object sender, EventArgs e)
