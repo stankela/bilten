@@ -10,6 +10,7 @@
     <property name="Naziv" column="naziv" type="String" not-null="false" length="32"/>
     <property name="Kod" />
     <property name="Penalty" column="penalty" />
+    <property name="SpraveMask" column="sprave_mask" />
     <set name="Gimnasticari" table="ekipa_gimnasticar" lazy="true">
       <key column="ekipa_id" />
       <many-to-many class="GimnasticarUcesnik" column="gimnasticar_id"/>

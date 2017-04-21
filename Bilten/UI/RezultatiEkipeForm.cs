@@ -418,7 +418,7 @@ namespace Bilten.UI
             Nullable<float> penalty = null;
             if (form.Penalizacija.Trim() != String.Empty)
                 penalty = float.Parse(form.Penalizacija);
-            ActiveTakmicenje.getPoredakEkipno(deoTakKod).dodajEkipnuPenalizaciju(rezultat.Ekipa, penalty, ActiveTakmicenje);
+            ActiveTakmicenje.getPoredakEkipno(deoTakKod).promeniEkipnuPenalizaciju(rezultat, penalty, ActiveTakmicenje);
 
             ISession session = null;
             try
@@ -502,8 +502,11 @@ namespace Bilten.UI
             RezultatEkipno rezultat = rezultatiEkipe[0];
 
             List<int> checkedItems = new List<int>();
-            foreach (Sprava s in rezultat.Ekipa.getSpraveKojeSeBoduju(gimnastika))
-                checkedItems.Add(Sprave.indexOf(s, gimnastika));
+            foreach (Sprava s in Sprave.getSprave(gimnastika))
+            {
+                if (rezultat.Ekipa.getSpravaSeBoduje(s))
+                    checkedItems.Add(Sprave.indexOf(s, gimnastika));
+            }
 
             CheckListForm form = new CheckListForm(
                 new List<string>(Sprave.getSpraveNazivi(gimnastika)), checkedItems,
@@ -513,9 +516,9 @@ namespace Bilten.UI
 
             Sprava[] sprave = Sprave.getSprave(gimnastika);
             IList<Sprava> spraveKojeSeBoduju = new List<Sprava>();
+            rezultat.Ekipa.clearSpraveKojeSeBoduju();
             foreach (int i in form.CheckedIndices)
-                spraveKojeSeBoduju.Add(sprave[i]);
-            rezultat.Ekipa.setSpraveKojeSeBoduju(spraveKojeSeBoduju, gimnastika);
+                rezultat.Ekipa.setSpravaSeBoduje(sprave[i]);
 
             PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
             p.create(ActiveTakmicenje, loadOcene(takmicenje.Id, deoTakKod));
@@ -547,7 +550,8 @@ namespace Bilten.UI
 
             dataGridViewUserControl1.setItems<RezultatEkipno>(
                 ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
-            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(rezultat);
+            // posto je poredak ponovo kreiran, i rezultat za ekipu je nov objekat pa moram da ga iznova potrazim
+            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(p.getRezultat(rezultat.Ekipa));
         }
     }
 }

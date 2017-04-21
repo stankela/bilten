@@ -137,7 +137,9 @@ namespace Bilten.Services
                 if (!takmicenje.ZbirViseKola)
                 {
                     foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
-                        // TODO4: Razmisli da izbacis cuvanje ocena u sesiji.
+                        // TODO4: Razmisli da izbacis cuvanje ocena u sesiji i da u klasi ocena uvedes asocijaciju
+                        // prema takmicenju da bi se ocene brze dobavljale iz baze (ili da u GimnasticarUcesnik vratis
+                        // asocijaciju prema takmicenju.)
                         ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
                 }
 

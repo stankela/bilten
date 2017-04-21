@@ -14,59 +14,53 @@ namespace Bilten.Domain
             set { _ekipa = value; }
         }
 
-        private Nullable<float> penalty;
-        public virtual Nullable<float> Penalty
-        {
-            get { return penalty; }
-            protected set { penalty = value; }
-        }
-
         public virtual string NazivEkipe
         {
             get
             {
                 if (Ekipa != null)
                     return Ekipa.Naziv;
-                else
-                    return String.Empty;
+                return String.Empty;
             }
         }
 
-        public virtual void addPenalty(Nullable<float> value)
+        public virtual Nullable<float> Penalty
         {
-            if (value == null || value == 0)
+            get
             {
-                // remove penalty
-                if (Penalty == null || Penalty == 0)
-                    return;
-                Total = (float)((decimal)Total + (decimal)Penalty);
-                Penalty = null;
-                return;
+                if (Ekipa != null)
+                    return Ekipa.Penalty;
+                return null;
             }
+        }
 
-            if (Penalty == null)
+        public virtual void addPenalty(float value)
+        {
+            if (Total == null)
+                Total = -value;
+            else
+                Total = (float)((decimal)Total - (decimal)value);
+        }
+
+        public virtual void changePenalty(Nullable<float> newPenalty)
+        {
+            Nullable<float> oldPenalty = Ekipa.Penalty;
+            if (oldPenalty != null)
+                Total = (float)((decimal)Total + (decimal)oldPenalty);
+            if (newPenalty != null)
             {
                 if (Total == null)
-                {
-                    Total = -value;
-                }
+                    Total = -newPenalty;
                 else
-                {
-                    Total = (float)((decimal)Total - (decimal)value);
-                }
+                    Total = (float)((decimal)Total - (decimal)newPenalty);
             }
-            else
-            {
-                Total = (float)((decimal)Total + (decimal)Penalty - (decimal)value);
-            }
-            Penalty = value;
+            Ekipa.Penalty = newPenalty;
         }
 
         public override void dump(StringBuilder strBuilder)
         {
             base.dump(strBuilder);
             strBuilder.AppendLine(Ekipa != null ? Ekipa.Id.ToString() : NULL);
-            strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
         }
 
         public override void loadFromDump(StringReader reader, IdMap map)
@@ -75,9 +69,6 @@ namespace Bilten.Domain
 
             string ekipaId = reader.ReadLine();
             Ekipa = ekipaId != NULL ? map.ekipeMap[int.Parse(ekipaId)] : null;
-
-            string penalty = reader.ReadLine();
-            Penalty = penalty != NULL ? float.Parse(penalty) : (float?)null;
         }
     }
 }

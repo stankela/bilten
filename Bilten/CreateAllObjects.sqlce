@@ -221,6 +221,8 @@ create table ekipe (
 	ekipa_id int identity(1,1) primary key,
 	naziv nvarchar(64),
 	kod nvarchar(7),
+	penalty real,
+	sprave_mask int,
 	takmicenje1_id int references takmicenje1(takmicenje1_id)
 );
 

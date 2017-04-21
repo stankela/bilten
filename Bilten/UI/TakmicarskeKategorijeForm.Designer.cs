@@ -51,12 +51,12 @@ namespace Bilten.UI
             this.lstKategorije.FormattingEnabled = true;
             this.lstKategorije.Location = new System.Drawing.Point(12, 25);
             this.lstKategorije.Name = "lstKategorije";
-            this.lstKategorije.Size = new System.Drawing.Size(120, 199);
+            this.lstKategorije.Size = new System.Drawing.Size(153, 199);
             this.lstKategorije.TabIndex = 0;
             // 
             // btnAddKategorija
             // 
-            this.btnAddKategorija.Location = new System.Drawing.Point(138, 85);
+            this.btnAddKategorija.Location = new System.Drawing.Point(171, 86);
             this.btnAddKategorija.Name = "btnAddKategorija";
             this.btnAddKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnAddKategorija.TabIndex = 1;
@@ -66,7 +66,7 @@ namespace Bilten.UI
             // 
             // btnDeleteKategorija
             // 
-            this.btnDeleteKategorija.Location = new System.Drawing.Point(138, 142);
+            this.btnDeleteKategorija.Location = new System.Drawing.Point(171, 143);
             this.btnDeleteKategorija.Name = "btnDeleteKategorija";
             this.btnDeleteKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteKategorija.TabIndex = 2;
@@ -76,7 +76,7 @@ namespace Bilten.UI
             // 
             // btnMoveUpKategorija
             // 
-            this.btnMoveUpKategorija.Location = new System.Drawing.Point(138, 171);
+            this.btnMoveUpKategorija.Location = new System.Drawing.Point(171, 172);
             this.btnMoveUpKategorija.Name = "btnMoveUpKategorija";
             this.btnMoveUpKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnMoveUpKategorija.TabIndex = 3;
@@ -86,7 +86,7 @@ namespace Bilten.UI
             // 
             // btnMoveDownKategorija
             // 
-            this.btnMoveDownKategorija.Location = new System.Drawing.Point(138, 200);
+            this.btnMoveDownKategorija.Location = new System.Drawing.Point(171, 201);
             this.btnMoveDownKategorija.Name = "btnMoveDownKategorija";
             this.btnMoveDownKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnMoveDownKategorija.TabIndex = 4;
@@ -170,7 +170,7 @@ namespace Bilten.UI
             // 
             // btnDodajIzPrethTak
             // 
-            this.btnDodajIzPrethTak.Location = new System.Drawing.Point(138, 25);
+            this.btnDodajIzPrethTak.Location = new System.Drawing.Point(171, 26);
             this.btnDodajIzPrethTak.Name = "btnDodajIzPrethTak";
             this.btnDodajIzPrethTak.Size = new System.Drawing.Size(75, 55);
             this.btnDodajIzPrethTak.TabIndex = 18;
@@ -180,7 +180,7 @@ namespace Bilten.UI
             // 
             // btnEditKategorija
             // 
-            this.btnEditKategorija.Location = new System.Drawing.Point(138, 114);
+            this.btnEditKategorija.Location = new System.Drawing.Point(171, 115);
             this.btnEditKategorija.Name = "btnEditKategorija";
             this.btnEditKategorija.Size = new System.Drawing.Size(75, 23);
             this.btnEditKategorija.TabIndex = 19;

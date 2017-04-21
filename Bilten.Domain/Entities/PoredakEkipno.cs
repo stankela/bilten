@@ -76,11 +76,9 @@ namespace Bilten.Domain
             RezultatEkipno result = new RezultatEkipno();
             result.Ekipa = e;
 
-            Sprava[] sprave = Sprave.getSprave(gimnastika);
-            IList<Sprava> spraveKojeSeBoduju = e.getSpraveKojeSeBoduju(gimnastika);
-            foreach (Sprava s in sprave)
+            foreach (Sprava s in Sprave.getSprave(gimnastika))
             {
-                if (!spraveKojeSeBoduju.Contains(s))
+                if (!e.getSpravaSeBoduje(s))
                   continue;
 
                 PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
@@ -103,7 +101,7 @@ namespace Bilten.Domain
             }
 
             if (e.Penalty != null)
-                result.addPenalty(e.Penalty);
+                result.addPenalty(e.Penalty.Value);
             return result;
         }
 
@@ -313,7 +311,7 @@ namespace Bilten.Domain
             }             
         }
 
-        private RezultatEkipno getRezultat(Ekipa e)
+        public virtual RezultatEkipno getRezultat(Ekipa e)
         {
             foreach (RezultatEkipno r in Rezultati)
             {
@@ -350,19 +348,12 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void dodajEkipnuPenalizaciju(Ekipa e, float? penalty, RezultatskoTakmicenje rezTak)
+        public virtual void promeniEkipnuPenalizaciju(RezultatEkipno r, float? penalty, RezultatskoTakmicenje rezTak)
         {
-            RezultatEkipno r = getRezultat(e);
-            if (r != null)
-            {
-                r.addPenalty(penalty);
-                // Posto se ekipni poredak svaki put iznova kreira iz ocena, moram
-                // da zapamtim penalizaciju u ekipi (metod Poredak.create koristi Ekipa.Penalty)
-                r.Ekipa.Penalty = penalty;
+            r.changePenalty(penalty);
 
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
-            }
+            rankRezultati();
+            updateKvalStatus(rezTak.Propozicije);
         }
 
         public virtual void dump(StringBuilder strBuilder)

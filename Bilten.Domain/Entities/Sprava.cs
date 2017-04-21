@@ -142,10 +142,52 @@ namespace Bilten.Domain
 
         public static int indexOf(Sprava sprava, Gimnastika gim)
         {
-            List<Sprava> sprave = new List<Sprava>(MuskeSprave);
-            if (gim == Gimnastika.ZSG)
-                sprave = new List<Sprava>(ZenskeSprave);
-            return sprave.IndexOf(sprava);
+            if (gim == Gimnastika.MSG)
+            {
+                switch (sprava)
+                {
+                    case Sprava.Parter:
+                        return 0;
+
+                    case Sprava.Konj:
+                        return 1;
+
+                    case Sprava.Karike:
+                        return 2;
+
+                    case Sprava.Preskok:
+                        return 3;
+
+                    case Sprava.Razboj:
+                        return 4;
+
+                    case Sprava.Vratilo:
+                        return 5;
+
+                    default:
+                        throw new ArgumentException("Nedozvoljena vrednost za spravu.");
+                }
+            }
+            else
+            {
+                switch (sprava)
+                {
+                    case Sprava.Preskok:
+                        return 0;
+
+                    case Sprava.DvovisinskiRazboj:
+                        return 1;
+
+                    case Sprava.Greda:
+                        return 2;
+
+                    case Sprava.Parter:
+                        return 3;
+
+                    default:
+                        throw new ArgumentException("Nedozvoljena vrednost za spravu.");
+                }
+            }
         }
 
         public static bool hasAllSprave(IList<Sprava> sprave, Gimnastika gimnastika)

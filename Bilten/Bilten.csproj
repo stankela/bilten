@@ -184,6 +184,7 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version14.sql" />
     <EmbeddedResource Include="UI\CheckListForm.resx">
       <DependentUpon>CheckListForm.cs</DependentUpon>
     </EmbeddedResource>

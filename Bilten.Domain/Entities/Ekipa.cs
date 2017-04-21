@@ -33,7 +33,7 @@ namespace Bilten.Domain
             set { penalty = value; }
         }
 
-        private int spraveMask = 0;
+        private int spraveMask = 510; // 0b111111110
         public virtual int SpraveMask
         {
             get { return spraveMask; }
@@ -68,29 +68,19 @@ namespace Bilten.Domain
             Gimnasticari.Remove(gimnasticar);
         }
 
-        public virtual IList<Sprava> getSpraveKojeSeBoduju(Gimnastika gimnastika)
+        public virtual bool getSpravaSeBoduje(Sprava sprava)
         {
-            IList<Sprava> sprave = new List<Sprava>(Sprave.getSprave(gimnastika));
-            if (SpraveMask == 0)
-                return sprave;
-
-            List<Sprava> result = new List<Sprava>();
-            foreach (Sprava s in sprave)
-            {
-                if (((1 << (int)s) & SpraveMask) != 0)
-                    result.Add(s);
-            }
-            return result;
+            return ((1 << (int)sprava) & SpraveMask) != 0;
         }
 
-        public virtual void setSpraveKojeSeBoduju(IList<Sprava> sprave, Gimnastika gimnastika)
+        public virtual void setSpravaSeBoduje(Sprava sprava)
+        {
+            SpraveMask |= (1 << (int)sprava);
+        }
+
+        public virtual void clearSpraveKojeSeBoduju()
         {
             SpraveMask = 0;
-            if (Sprave.hasAllSprave(sprave, gimnastika))
-                return;
-
-            foreach (Sprava s in sprave)
-                SpraveMask |= (1 << (int)s);
         }
 
         public override void validate(Notification notification)
@@ -169,6 +159,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
             strBuilder.AppendLine(Kod != null ? Kod : NULL);
             strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
+            strBuilder.AppendLine(SpraveMask.ToString());
 
             // gimnasticari
             strBuilder.AppendLine(Gimnasticari.Count.ToString());
@@ -184,6 +175,7 @@ namespace Bilten.Domain
             Kod = kod != NULL ? kod : null;
             string penalty = reader.ReadLine();
             Penalty = penalty != NULL ? float.Parse(penalty) : (float?)null;
+            SpraveMask = int.Parse(reader.ReadLine());
 
             int brojGimnasticara = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojGimnasticara; ++i)
