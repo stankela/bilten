@@ -342,11 +342,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     // ponovo ucitaj takmicenje zato sto je promenjena ekipa
-                    rezTakmicenja[tabControl1.SelectedIndex] =
-                        loadRezTakmicenje(ActiveRezTakmicenje.Id);
+                    rezTakmicenja[tabControl1.SelectedIndex] = loadRezTakmicenje(ActiveRezTakmicenje.Id);
 
-                    List<GimnasticarUcesnik> orig = new List<GimnasticarUcesnik>(
-                        selEkipa.Gimnasticari);
+                    List<GimnasticarUcesnik> orig = new List<GimnasticarUcesnik>(selEkipa.Gimnasticari);
 
                     List<Ekipa> ekipe = new List<Ekipa>(ActiveRezTakmicenje.Takmicenje1.Ekipe);
                     Ekipa ekipa = null;
@@ -359,35 +357,24 @@ namespace Bilten.UI
                         }
                     }
                     if (ekipa == null)
-                    {
                         throw new Exception("Greska u programu.");
-                    }
 
-                    List<GimnasticarUcesnik> curr = new List<GimnasticarUcesnik>(
-                        ekipa.Gimnasticari);
+                    List<GimnasticarUcesnik> curr = new List<GimnasticarUcesnik>(ekipa.Gimnasticari);
 
                     List<GimnasticarUcesnik> added = new List<GimnasticarUcesnik>();
                     List<GimnasticarUcesnik> updated = new List<GimnasticarUcesnik>();
                     List<GimnasticarUcesnik> deleted = new List<GimnasticarUcesnik>();
                     diff(curr, orig, added, updated, deleted);
 
-                    // potrebne su sve ocene za gimnasticare u ekipi jer rezultat za ekipu mora ponovo da se racuna kada
-                    // se gimnasticar dodaje ili brise iz ekipe.
-                    List<Ocena> ocene = new List<Ocena>();
-                    foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
+                    if (added.Count > 0 || deleted.Count > 0)
                     {
-                        ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
-                    }
-
-                    foreach (GimnasticarUcesnik g in deleted)
-                    {
-                        ActiveRezTakmicenje.Takmicenje1.gimnasticarDeletedFromEkipa(
-                            g, ekipa, ocene, ActiveRezTakmicenje);
-                    }
-                    foreach (GimnasticarUcesnik g in added)
-                    {
-                        ActiveRezTakmicenje.Takmicenje1.gimnasticarAddedToEkipa(
-                            g, ekipa, ocene, ActiveRezTakmicenje);
+                        // potrebne su sve ocene za gimnasticare u ekipi jer rezultat za ekipu mora ponovo da se racuna kada
+                        // se gimnasticar dodaje ili brise iz ekipe.
+                        List<Ocena> ocene = new List<Ocena>();
+                        foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
+                            ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
+                        ActiveRezTakmicenje.Takmicenje1.PoredakEkipno.recreateRezultForEkipa(
+                            ekipa, ocene, ActiveRezTakmicenje);
                     }
 
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveRezTakmicenje.Takmicenje1.PoredakEkipno);

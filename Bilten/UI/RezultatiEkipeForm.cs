@@ -23,7 +23,6 @@ namespace Bilten.UI
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
         private IList<RezultatUkupno> sviRezultatiUkupno;
-        private IList<Ocena> ocene;
         private Gimnastika gimnastika;
 
         private RezultatskoTakmicenje ActiveTakmicenje
@@ -59,8 +58,8 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
 
-                    ocene = loadOcene(takmicenjeId, deoTakKod);
-                    sviRezultatiUkupno = takmicenje.createRezultatiUkupnoZaSveEkipe(rezTakmicenja, ocene, deoTakKod);
+                    sviRezultatiUkupno
+                        = Takmicenje.getRezultatiUkupnoZaClanoveSvihEkipa(rezTakmicenja, svaRezTakmicenja, deoTakKod);
 
                     initUI();
                     takmicenjeOpened = new bool[rezTakmicenja.Count];
@@ -121,31 +120,6 @@ namespace Bilten.UI
 
             }
             return result;
-        }
-
-        private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.FindByDeoTakmicenja(takmicenjeId, deoTakKod);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }                        
         }
 
         private void initUI()
@@ -469,9 +443,18 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
+                    PoredakEkipnoDAO poredakEkipnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO();
+
+                    // TODO: Mozda bi na svim ovakvim mestima ipak bilo bolje da se ponovo ucitava poredak iz baze.
+                    // Ako se, recimo, ocene unose (i poredak azurira) na posebnom tredu, tada ce ovaj objekat za
+                    // ekipni poredak sadrzavati zastarele podatke.
                     PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
-                    p.create(ActiveTakmicenje, loadOcene(takmicenje.Id, deoTakKod));
-                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(p);
+                    poredakEkipnoDAO.Attach(p, false);
+
+                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje.Id);
+                    p.create(ActiveTakmicenje, svaRezTakmicenja);
+
+                    poredakEkipnoDAO.Update(p);
                     session.Transaction.Commit();
                 }
             }
@@ -520,9 +503,8 @@ namespace Bilten.UI
             foreach (int i in form.CheckedIndices)
                 rezultat.Ekipa.setSpravaSeBoduje(sprave[i]);
 
-            PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
-            p.create(ActiveTakmicenje, loadOcene(takmicenje.Id, deoTakKod));
-
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             ISession session = null;
             try
             {
@@ -531,7 +513,18 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(rezultat.Ekipa);
-                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(p);
+
+                    PoredakEkipnoDAO poredakEkipnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO();
+
+                    PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
+                    poredakEkipnoDAO.Attach(p, false);
+
+                    // TODO4: Ovde ne bi trebalo ponovo kreirati ceo poredak nego promeniti samo jedan rezultat i ponovo
+                    // rangirati rezultate.
+                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje.Id);
+                    p.create(ActiveTakmicenje, svaRezTakmicenja);                    
+                    
+                    poredakEkipnoDAO.Update(p);
                     session.Transaction.Commit();
                 }
             }
@@ -545,13 +538,16 @@ namespace Bilten.UI
             }
             finally
             {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
             dataGridViewUserControl1.setItems<RezultatEkipno>(
                 ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
             // posto je poredak ponovo kreiran, i rezultat za ekipu je nov objekat pa moram da ga iznova potrazim
-            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(p.getRezultat(rezultat.Ekipa));
+            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(
+                ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultat(rezultat.Ekipa));
         }
     }
 }

@@ -33,22 +33,7 @@ namespace Bilten.Domain
             this.deoTakKod = deoTakKod;
         }
 
-        public virtual void initRezultati(IList<Ekipa> ekipe)
-        {
-            Rezultati.Clear();
-            foreach (Ekipa e in ekipe)
-            {
-                RezultatEkipno r = new RezultatEkipno();
-                r.Ekipa = e;
-                Rezultati.Add(r);
-            }
-
-            // posto nepostoje ocene, sledeci poziv samo sortira po prezimenu i na
-            // osnovu toga dodeljuje RedBroj
-            rankRezultati();
-        }
-
-        public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene)
+        public virtual void create(RezultatskoTakmicenje rezTak, IList<RezultatskoTakmicenje> svaRezTakmicenja)
         {
             IList<Ekipa> ekipe;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -56,8 +41,7 @@ namespace Bilten.Domain
             else
                 ekipe = new List<Ekipa>(rezTak.Takmicenje4.getUcesnici());
 
-            IDictionary<int, List<RezultatUkupno>> ekipaRezUkupnoMap = 
-                createEkipaRezultatiUkupnoMap(ekipe, ocene);
+            IDictionary<int, List<RezultatUkupno>> ekipaRezUkupnoMap = createEkipaRezultatiUkupnoMap(ekipe, svaRezTakmicenja);
 
             Rezultati.Clear();
             foreach (Ekipa e in ekipe)
@@ -105,8 +89,21 @@ namespace Bilten.Domain
             return result;
         }
 
-        private IDictionary<int, List<RezultatUkupno>> createEkipaRezultatiUkupnoMap(
-            IList<Ekipa> ekipe, IList<Ocena> ocene)
+        private IDictionary<int, List<RezultatUkupno>> createEkipaRezultatiUkupnoMap(IList<Ekipa> ekipe,
+            IList<RezultatskoTakmicenje> svaRezTakmicenja)
+        {
+            // Najpre napravi mapu svih rezultata ukupno
+            IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> sviRezultatiMap
+                = Takmicenje.getRezultatiUkupnoMap(svaRezTakmicenja, deoTakKod);
+            
+            IDictionary<int, List<RezultatUkupno>> ekipaRezultatiMap = new Dictionary<int, List<RezultatUkupno>>();
+            foreach (Ekipa e in ekipe)
+                ekipaRezultatiMap.Add(e.Id, Takmicenje.getRezultatiUkupnoZaClanoveEkipe(e, sviRezultatiMap));
+            return ekipaRezultatiMap;
+        }
+
+        private IDictionary<int, List<RezultatUkupno>> createEkipaRezultatiUkupnoMap(IList<Ekipa> ekipe,
+            IList<Ocena> ocene)
         {
             IDictionary<int, RezultatUkupno> gimRezUkupnoMap = new Dictionary<int, RezultatUkupno>();
             foreach (Ekipa e in ekipe)
@@ -124,7 +121,7 @@ namespace Bilten.Domain
             foreach (Ocena o in ocene)
             {
                 if (gimRezUkupnoMap.ContainsKey(o.Gimnasticar.Id))
-                    gimRezUkupnoMap[o.Gimnasticar.Id].addOcena(o);
+                    gimRezUkupnoMap[o.Gimnasticar.Id].addOcena(o, /*TODO4*/false);
             }
 
             IDictionary<int, List<RezultatUkupno>> ekipaRezultatiMap = new Dictionary<int, List<RezultatUkupno>>();
@@ -160,9 +157,7 @@ namespace Bilten.Domain
                 rezultati[i].RedBroj = (short)(i + 1);
 
                 if (rezultati[i].Total == null)
-                {
                     rezultati[i].Rank = null;
-                }
                 else
                 {
                     if (rezultati[i].Total != prevTotal)
@@ -213,9 +208,7 @@ namespace Bilten.Domain
                     rezultat.KvalStatus = KvalifikacioniStatus.R;
                 }
                 else
-                {
                     rezultat.KvalStatus = KvalifikacioniStatus.None;
-                }
             }
         }
 
@@ -319,19 +312,7 @@ namespace Bilten.Domain
             return null;
         }
 
-        public virtual void gimnasticarAddedToEkipa(GimnasticarUcesnik g, Ekipa e, 
-            IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
-        {
-            onClanoviEkipeChanged(e, ocene, rezTak);
-        }
-
-        public virtual void gimnasticarDeletedFromEkipa(GimnasticarUcesnik g, Ekipa e,
-            IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
-        {
-            onClanoviEkipeChanged(e, ocene, rezTak);
-        }
-
-        private void onClanoviEkipeChanged(Ekipa e, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
+        public virtual void recreateRezultForEkipa(Ekipa e, IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
         {
             RezultatEkipno r = getRezultat(e);
             if (r != null)

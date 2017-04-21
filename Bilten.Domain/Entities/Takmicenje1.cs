@@ -314,20 +314,6 @@ namespace Bilten.Domain
                 PoredakEkipnoZbirViseKola.deleteEkipa(e, rezTak);
         }
 
-        public virtual void gimnasticarAddedToEkipa(GimnasticarUcesnik g, Ekipa e, 
-            IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
-        {
-            if (Ekipe.Contains(e))
-                PoredakEkipno.gimnasticarAddedToEkipa(g, e, ocene, rezTak);
-        }
-
-        public virtual void gimnasticarDeletedFromEkipa(GimnasticarUcesnik g, Ekipa e,
-            IList<Ocena> ocene, RezultatskoTakmicenje rezTak)
-        {
-            if (Ekipe.Contains(e))
-                PoredakEkipno.gimnasticarDeletedFromEkipa(g, e, ocene, rezTak);
-        }
-
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
