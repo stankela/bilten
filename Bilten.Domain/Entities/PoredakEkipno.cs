@@ -133,9 +133,7 @@ namespace Bilten.Domain
                 List<RezultatUkupno> rezultati = new List<RezultatUkupno>();
                 ekipaRezultatiMap.Add(e.Id, rezultati);
                 foreach (GimnasticarUcesnik g in e.Gimnasticari)
-                {
                     rezultati.Add(gimRezUkupnoMap[g.Id]);
-                }
             }
             return ekipaRezultatiMap;
         }

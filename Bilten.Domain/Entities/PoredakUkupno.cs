@@ -67,7 +67,7 @@ namespace Bilten.Domain
             foreach (Ocena o in ocene)
             {
                 if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
-                    rezultatiMap[o.Gimnasticar.Id].addOcena(o);
+                    rezultatiMap[o.Gimnasticar.Id].addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
             }
 
             Rezultati.Clear();
@@ -287,7 +287,7 @@ namespace Bilten.Domain
             RezultatUkupno r = getRezultat(o.Gimnasticar);
             if (r != null)
             {
-                r.addOcena(o);
+                r.addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
@@ -320,7 +320,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 r.removeOcena(old);
-                r.addOcena(o);
+                r.addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
@@ -333,7 +333,7 @@ namespace Bilten.Domain
             if (ocene.Count > 0)
             {
                 foreach (Ocena o in ocene)
-                    r.addOcena(o);
+                    r.addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
             }
             Rezultati.Add(r);
 

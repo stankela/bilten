@@ -108,7 +108,7 @@ namespace Bilten.Domain
             }
         }
 
-        private void setOcena(Sprava sprava, Nullable<float> value)
+        protected void setOcena(Sprava sprava, Nullable<float> value)
         {
             switch (sprava)
             {
@@ -149,29 +149,19 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void addOcena(Ocena o)
+        public virtual void addOcena(Ocena o, bool zaPreskokVisebojRacunajBoljuOcenu)
         {
-            Nullable<float> ocena = getOcena(o.Sprava);
-            if (ocena == null)
-                setOcena(o.Sprava, o.Total);
+            float? value;
+            if (o.Sprava != Sprava.Preskok || !zaPreskokVisebojRacunajBoljuOcenu)
+                value = o.Total;
             else
-                // za ekipni rezultat se za istu spravu sabira vise ocena
-                setOcena(o.Sprava, (float)((decimal)ocena + (decimal)o.Total));
-
-            if (Total == null)
-                Total = o.Total;
-            else
-                Total = (float)((decimal)Total + (decimal)o.Total);
-        }
-
-        public virtual void addOcena(Sprava sprava, Nullable<float> value)
-        {
-            Nullable<float> ocena = getOcena(sprava);
-            if (ocena == null)
-                setOcena(sprava, value);
-            else
-                // za ekipni rezultat se za istu spravu sabira vise ocena
-                setOcena(sprava, (float)((decimal)ocena + (decimal)value));
+            {
+                if (o.Ocena2 == null)
+                    value = o.Total;
+                else
+                    value = Math.Max(o.Total.Value, o.Ocena2.Total.Value);
+            }
+            setOcena(o.Sprava, value);
 
             if (Total == null)
                 Total = value;
@@ -181,45 +171,20 @@ namespace Bilten.Domain
 
         public virtual void removeOcena(Ocena o)
         {
-            setOcena(o.Sprava, (float)((decimal)getOcena(o.Sprava) - (decimal)o.Total));
-            if (getOcena(o.Sprava) == 0)
-                setOcena(o.Sprava, null);
+            float? value = getOcena(o.Sprava);
+            if (value == null)
+                return;
+            setOcena(o.Sprava, null);
 
-            Total = (float)((decimal)Total - (decimal)o.Total);
-            if (Total == 0 && emptyOcene())
+            if (isEmpty())
                 Total = null;
+            else
+                Total = (float)((decimal)Total - (decimal)value);
         }
 
-        public virtual void calculateTotal()
+        private bool isEmpty()
         {
-            decimal result = 0;
-            if (Parter != null)
-                result += (decimal)Parter.Value;
-            if (Konj != null)
-                result += (decimal)Konj.Value;
-            if (Karike != null)
-                result += (decimal)Karike.Value;
-            if (Preskok != null)
-                result += (decimal)Preskok.Value;
-            if (Razboj != null)
-                result += (decimal)Razboj.Value;
-            if (Vratilo != null)
-                result += (decimal)Vratilo.Value;
-            if (Greda != null)
-                result += (decimal)Greda.Value;
-            if (DvovisinskiRazboj != null)
-                result += (decimal)DvovisinskiRazboj.Value;
-
-            // ne treba da se zaokruzuje jer zbir uvek sadrzi isti broj decimala kao
-            // i sabirci
-            Total = (float)result;
-
-            if (Total == 0 && emptyOcene())
-                Total = null;
-        }
-
-        private bool emptyOcene()
-        {
+            // TODO4: Apdejtuj ovo ako dodajes penalizaciju za gimnasticara za viseboj.
             return Parter == null && Konj == null && Karike == null
             && Preskok == null && Razboj == null && Vratilo == null
             && Greda == null && DvovisinskiRazboj == null;

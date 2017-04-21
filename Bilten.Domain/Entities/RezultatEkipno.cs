@@ -34,6 +34,21 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void addOcena(Sprava sprava, Nullable<float> value)
+        {
+            Nullable<float> ocena = getOcena(sprava);
+            if (ocena == null)
+                setOcena(sprava, value);
+            else
+                // za ekipni rezultat se za istu spravu sabira vise ocena
+                setOcena(sprava, (float)((decimal)ocena + (decimal)value));
+
+            if (Total == null)
+                Total = value;
+            else
+                Total = (float)((decimal)Total + (decimal)value);
+        }
+
         public virtual void addPenalty(float value)
         {
             if (Total == null)

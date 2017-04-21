@@ -24,6 +24,13 @@ namespace Bilten.Domain
             set { _odvojenoTak2 = value; }
         }
 
+        private bool zaPreskokVisebojRacunajBoljuOcenu;
+        public virtual bool ZaPreskokVisebojRacunajBoljuOcenu
+        {
+            get { return zaPreskokVisebojRacunajBoljuOcenu; }
+            set { zaPreskokVisebojRacunajBoljuOcenu = value; }
+        }
+
         private bool neogranicenBrojTakmicaraIzKlubaTak2;
         public virtual bool NeogranicenBrojTakmicaraIzKlubaTak2
         {
@@ -477,6 +484,7 @@ namespace Bilten.Domain
             {
                 p.PostojiTak2 = this.PostojiTak2;
                 p.OdvojenoTak2 = this.OdvojenoTak2;
+                p.ZaPreskokVisebojRacunajBoljuOcenu = this.ZaPreskokVisebojRacunajBoljuOcenu;
                 p.BrojFinalistaTak2 = this.BrojFinalistaTak2;
                 p.BrojRezerviTak2 = this.BrojRezerviTak2;
                 p.NeogranicenBrojTakmicaraIzKlubaTak2 = this.NeogranicenBrojTakmicaraIzKlubaTak2;
@@ -594,6 +602,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Id.ToString());
             
             strBuilder.AppendLine(PostojiTak2.ToString());
+            strBuilder.AppendLine(ZaPreskokVisebojRacunajBoljuOcenu.ToString());
             strBuilder.AppendLine(OdvojenoTak2.ToString());
             strBuilder.AppendLine(NeogranicenBrojTakmicaraIzKlubaTak2.ToString());
             strBuilder.AppendLine(MaxBrojTakmicaraIzKlubaTak2.ToString());
@@ -636,6 +645,7 @@ namespace Bilten.Domain
         {
             PostojiTak2 = bool.Parse(reader.ReadLine());
             OdvojenoTak2 = bool.Parse(reader.ReadLine());
+            ZaPreskokVisebojRacunajBoljuOcenu = bool.Parse(reader.ReadLine());
             NeogranicenBrojTakmicaraIzKlubaTak2 = bool.Parse(reader.ReadLine());
             MaxBrojTakmicaraIzKlubaTak2 = byte.Parse(reader.ReadLine());
             BrojFinalistaTak2 = byte.Parse(reader.ReadLine());
