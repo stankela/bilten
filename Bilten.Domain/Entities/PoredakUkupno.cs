@@ -33,21 +33,6 @@ namespace Bilten.Domain
             this.deoTakKod = deoTakKod;
         }
 
-        public virtual void initRezultati(IList<GimnasticarUcesnik> gimnasticari)
-        {
-            Rezultati.Clear();
-            foreach (GimnasticarUcesnik g in gimnasticari)
-            {
-                RezultatUkupno r = new RezultatUkupno();
-                r.Gimnasticar = g;
-                Rezultati.Add(r);
-            }
-
-            // posto nepostoje ocene, sledeci poziv samo sortira po prezimenu i na
-            // osnovu toga dodeljuje RedBroj
-            rankRezultati();
-        }
-
         public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene)
         {
             IList<GimnasticarUcesnik> gimnasticari;
@@ -59,9 +44,9 @@ namespace Bilten.Domain
             IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
             foreach (GimnasticarUcesnik g in gimnasticari)
             {
-                RezultatUkupno rezultat = new RezultatUkupno();
-                rezultat.Gimnasticar = g;
-                rezultatiMap.Add(g.Id, rezultat);
+                RezultatUkupno r = new RezultatUkupno();
+                r.Gimnasticar = g;
+                rezultatiMap.Add(g.Id, r);
             }
 
             foreach (Ocena o in ocene)
@@ -72,7 +57,11 @@ namespace Bilten.Domain
 
             Rezultati.Clear();
             foreach (RezultatUkupno r in rezultatiMap.Values)
+            {
+                if (r.Gimnasticar.PenaltyViseboj != null)
+                    r.addPenalty(r.Gimnasticar.PenaltyViseboj.Value);
                 Rezultati.Add(r);
+            }
 
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);
@@ -236,22 +225,21 @@ namespace Bilten.Domain
         {
             List<RezultatUkupno> result = new List<RezultatUkupno>(Rezultati);
 
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatUkupno))["RedBroj"];
-            result.Sort(new SortComparer<RezultatUkupno>(propDesc,
-                ListSortDirection.Ascending));
+            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatUkupno))["RedBroj"];
+            result.Sort(new SortComparer<RezultatUkupno>(propDesc, ListSortDirection.Ascending));
 
             return result;
         }
 
-        public virtual List<RezultatUkupnoExtended> getRezultatiExtended(IList<Ocena> ocene, bool prikaziDEOcene)
+        public virtual List<RezultatUkupnoExtended> getRezultatiExtended(IList<Ocena> ocene, bool prikaziDEOcene,
+            bool zaPreskokVisebojRacunajBoljuOcenu)
         {
             if (prikaziDEOcene)
             {
                 IDictionary<int, RezultatUkupnoExtended> rezultatiMap = new Dictionary<int, RezultatUkupnoExtended>();
-                foreach (RezultatUkupno rez in Rezultati)
+                foreach (RezultatUkupno r in Rezultati)
                 {
-                    RezultatUkupnoExtended rezEx = new RezultatUkupnoExtended(rez);
+                    RezultatUkupnoExtended rezEx = new RezultatUkupnoExtended(r);
                     rezultatiMap.Add(rezEx.Gimnasticar.Id, rezEx);
                 }
 
@@ -259,17 +247,29 @@ namespace Bilten.Domain
                 {
                     if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
                     {
-                        rezultatiMap[o.Gimnasticar.Id].setDOcena(o.Sprava, o.D);
-                        rezultatiMap[o.Gimnasticar.Id].setEOcena(o.Sprava, o.E);
+                        float? d;
+                        float? e;
+                        if (o.Sprava != Sprava.Preskok || !zaPreskokVisebojRacunajBoljuOcenu || o.Ocena2 == null
+                            || Math.Max(o.Total.Value, o.Ocena2.Total.Value) == o.Total.Value)
+                        {
+                            d = o.D;
+                            e = o.E;
+                        }
+                        else
+                        {
+                            d = o.Ocena2.D;
+                            e = o.Ocena2.E;
+                        }
+                        RezultatUkupnoExtended r = rezultatiMap[o.Gimnasticar.Id];
+                        r.setDOcena(o.Sprava, d);
+                        r.setEOcena(o.Sprava, e);
                     }
                 }
 
                 List<RezultatUkupnoExtended> result = new List<RezultatUkupnoExtended>(rezultatiMap.Values);
 
-                PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(RezultatUkupnoExtended))["RedBroj"];
-                result.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc,
-                    ListSortDirection.Ascending));
+                PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatUkupnoExtended))["RedBroj"];
+                result.Sort(new SortComparer<RezultatUkupnoExtended>(propDesc, ListSortDirection.Ascending));
 
                 return result;
             }
@@ -333,8 +333,13 @@ namespace Bilten.Domain
             if (ocene.Count > 0)
             {
                 foreach (Ocena o in ocene)
-                    r.addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                {
+                    if (o.Gimnasticar.Id == g.Id)
+                        r.addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                }
             }
+            if (g.PenaltyViseboj != null)
+                r.addPenalty(g.PenaltyViseboj.Value);
             Rezultati.Add(r);
 
             rankRezultati();
@@ -350,6 +355,14 @@ namespace Bilten.Domain
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
+        }
+
+        public virtual void promeniPenalizaciju(RezultatUkupno r, float? penalty, RezultatskoTakmicenje rezTak)
+        {
+            r.promeniPenalizacijuZaViseboj(penalty);
+
+            rankRezultati();
+            updateKvalStatus(rezTak.Propozicije);
         }
 
         public virtual void dump(StringBuilder strBuilder)

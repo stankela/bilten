@@ -75,6 +75,16 @@ namespace Bilten.Domain
         
         }
 
+        public virtual Nullable<float> Penalty
+        {
+            get
+            {
+                if (Gimnasticar != null)
+                    return Gimnasticar.PenaltyViseboj;
+                return null;
+            }
+        }
+
         public virtual Nullable<float> getSprava(Sprava sprava)
         {
             switch (sprava)
@@ -152,15 +162,10 @@ namespace Bilten.Domain
         public virtual void addSprava(Ocena o, bool zaPreskokVisebojRacunajBoljuOcenu)
         {
             float? value;
-            if (o.Sprava != Sprava.Preskok || !zaPreskokVisebojRacunajBoljuOcenu)
+            if (o.Sprava != Sprava.Preskok || !zaPreskokVisebojRacunajBoljuOcenu || o.Ocena2 == null)
                 value = o.Total;
             else
-            {
-                if (o.Ocena2 == null)
-                    value = o.Total;
-                else
-                    value = Math.Max(o.Total.Value, o.Ocena2.Total.Value);
-            }
+                value = Math.Max(o.Total.Value, o.Ocena2.Total.Value);
             setSprava(o.Sprava, value);
 
             if (Total == null)
@@ -182,12 +187,19 @@ namespace Bilten.Domain
                 Total = (float)((decimal)Total - (decimal)value);
         }
 
+        public virtual void addPenalty(float value)
+        {
+            if (Total == null)
+                Total = -value;
+            else
+                Total = (float)((decimal)Total - (decimal)value);
+        }
+
         private bool isEmpty()
         {
-            // TODO4: Apdejtuj ovo ako dodajes penalizaciju za gimnasticara za viseboj.
             return Parter == null && Konj == null && Karike == null
             && Preskok == null && Razboj == null && Vratilo == null
-            && Greda == null && DvovisinskiRazboj == null;
+            && Greda == null && DvovisinskiRazboj == null && Penalty == null;
         }
 
         public virtual string PrezimeIme
@@ -210,6 +222,21 @@ namespace Bilten.Domain
                 else
                     return String.Empty;
             }
+        }
+
+        public virtual void promeniPenalizacijuZaViseboj(Nullable<float> newPenalty)
+        {
+            Nullable<float> oldPenalty = Gimnasticar.PenaltyViseboj;
+            if (oldPenalty != null)
+                Total = (float)((decimal)Total + (decimal)oldPenalty);
+            if (newPenalty != null)
+            {
+                if (Total == null)
+                    Total = -newPenalty;
+                else
+                    Total = (float)((decimal)Total - (decimal)newPenalty);
+            }
+            Gimnasticar.PenaltyViseboj = newPenalty;
         }
 
         public override void dump(StringBuilder strBuilder)

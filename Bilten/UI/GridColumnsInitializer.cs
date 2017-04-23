@@ -206,7 +206,7 @@ namespace Bilten.UI
         }
 
         public static void initRezultatiUkupno(DataGridViewUserControl dgw, 
-            Takmicenje takmicenje, bool kvalColumn)
+            Takmicenje takmicenje, bool kvalColumn, bool penalty)
         {
             dgw.DataGridView.Columns.Clear();
 
@@ -234,6 +234,9 @@ namespace Bilten.UI
                 dgw.AddColumn(columnName, propName, width, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             }
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+
+            if (penalty)
+                dgw.AddColumn("Pen.", "Penalty", 50, "{0:F" + takmicenje.BrojDecimalaPen + "}");
             
             if (kvalColumn)
                 dgw.AddColumn("", "KvalStatus", 30);
@@ -261,12 +264,12 @@ namespace Bilten.UI
         }
 
         public static void reinitRezultatiUkupnoKeepColumnWidths(DataGridViewUserControl dgw, Takmicenje takmicenje, 
-            bool kvalColumn)
+            bool kvalColumn, bool penalty)
         {
             int oldImeWidth = dgw.DataGridView.Columns[1].Width;
             int oldKlubWidth = dgw.DataGridView.Columns[2].Width;
 
-            GridColumnsInitializer.initRezultatiUkupno(dgw, takmicenje, kvalColumn);
+            GridColumnsInitializer.initRezultatiUkupno(dgw, takmicenje, kvalColumn, penalty);
 
             dgw.DataGridView.Columns[1].Width = oldImeWidth;
             dgw.DataGridView.Columns[2].Width = oldKlubWidth;

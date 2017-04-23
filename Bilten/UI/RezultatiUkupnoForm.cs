@@ -206,10 +206,12 @@ namespace Bilten.UI
 
         private void onSelectedTakmicenjeChanged()
         {
+            // TODO4: Kolonu za penalizaciju treba prikazivati samo ako postoji penalizacija za nekog gimnasticara.
+            // Isto i za ekipnu penalizaciju.
             if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
             {
                 GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
-                    takmicenje, kvalColumnVisible());
+                    takmicenje, kvalColumnVisible(), true);
                 GridColumnsInitializer.maximizeColumnsRezultatiUkupno(dataGridViewUserControl1,
                     deoTakKod, rezTakmicenja);
             }
@@ -217,7 +219,7 @@ namespace Bilten.UI
             {
                 // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
                 GridColumnsInitializer.reinitRezultatiUkupnoKeepColumnWidths(dataGridViewUserControl1,
-                    takmicenje, kvalColumnVisible());
+                    takmicenje, kvalColumnVisible(), true);
             }
             
             if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
@@ -280,9 +282,9 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                List<RezultatUkupnoExtended> rezultati =
-                    ActiveTakmicenje.getPoredakUkupno(deoTakKod).getRezultatiExtended(loadOcene(takmicenje.Id, deoTakKod),
-                                                                                      Opcije.Instance.PrikaziDEOcene);
+                List<RezultatUkupnoExtended> rezultati = ActiveTakmicenje.getPoredakUkupno(deoTakKod)
+                    .getRezultatiExtended(loadOcene(takmicenje.Id, deoTakKod), Opcije.Instance.PrikaziDEOcene,
+                        ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
 
                 p.setIzvestaj(new UkupnoIzvestaj(rezultati, ActiveTakmicenje.Gimnastika, Opcije.Instance.PrikaziDEOcene,
                     kvalColumnVisible(), dataGridViewUserControl1.DataGridView, documentName));
@@ -565,6 +567,51 @@ namespace Bilten.UI
             dataGridViewUserControl1.sort<RezultatUkupno>("RedBroj", ListSortDirection.Ascending);
             //dataGridViewUserControl1.refreshItems();
             dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(istiRezultati[0]);
+        }
+
+        private void mnPenalizacija_Click(object sender, EventArgs e)
+        {
+            IList<RezultatUkupno> rezultati = dataGridViewUserControl1.getSelectedItems<RezultatUkupno>();
+            if (rezultati.Count != 1)
+                return;
+            RezultatUkupno r = rezultati[0];
+
+            PenalizacijaForm form = new PenalizacijaForm(r.Penalty, takmicenje);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            Nullable<float> penalty = null;
+            if (form.Penalizacija.Trim() != String.Empty)
+                penalty = float.Parse(form.Penalizacija);
+            PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
+            p.promeniPenalizaciju(r, penalty, ActiveTakmicenje);
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Update(r.Gimnasticar);
+                    DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO().Update(p);
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            dataGridViewUserControl1.setItems<RezultatUkupno>(p.getRezultati());
+            dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(r);
         }
 
     }

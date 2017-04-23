@@ -14,7 +14,9 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select o from Ocena o
+                IQuery q = Session.CreateQuery(@"
+                    select o
+                    from Ocena o
                     left join fetch o.Ocena2
                     join o.Gimnasticar g
                     where g = :gim
@@ -33,8 +35,9 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Ocena o
-	                       where o.Gimnasticar.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId");
+                IQuery q = Session.CreateQuery(@"
+                    from Ocena o
+                    where o.Gimnasticar.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<Ocena>();
             }
@@ -48,7 +51,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select o
+                IQuery q = Session.CreateQuery(@"
+                    select o
                     from Ocena o
                     left join fetch o.Ocena2
                     join o.Gimnasticar g
@@ -69,7 +73,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select o
+                IQuery q = Session.CreateQuery(@"
+                    select o
                     from Ocena o
                     left join fetch o.Ocena2
                     join fetch o.Gimnasticar g
@@ -144,8 +149,10 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select count(*) from Ocena o
-	                       where o.Gimnasticar.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId");
+                IQuery q = Session.CreateQuery(@"
+                    select count(*)
+                    from Ocena o
+                    where o.Gimnasticar.TakmicarskaKategorija.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return (long)q.UniqueResult() > 0;
             }

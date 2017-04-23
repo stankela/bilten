@@ -38,9 +38,10 @@ namespace Bilten.UI
             this.mnQ = new System.Windows.Forms.ToolStripMenuItem();
             this.mnR = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrazno = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPromeniPoredakZaIsteOcene = new System.Windows.Forms.ToolStripMenuItem();
             this.btnIzracunaj = new System.Windows.Forms.Button();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
-            this.mnPromeniPoredakZaIsteOcene = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPenalizacija = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,9 +82,10 @@ namespace Bilten.UI
             this.mnQ,
             this.mnR,
             this.mnPrazno,
-            this.mnPromeniPoredakZaIsteOcene});
+            this.mnPromeniPoredakZaIsteOcene,
+            this.mnPenalizacija});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(236, 158);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(236, 180);
             // 
             // prikaziKlubToolStripMenuItem
             // 
@@ -120,6 +122,13 @@ namespace Bilten.UI
             this.mnPrazno.Text = "Prazno";
             this.mnPrazno.Click += new System.EventHandler(this.mnPrazno_Click);
             // 
+            // mnPromeniPoredakZaIsteOcene
+            // 
+            this.mnPromeniPoredakZaIsteOcene.Name = "mnPromeniPoredakZaIsteOcene";
+            this.mnPromeniPoredakZaIsteOcene.Size = new System.Drawing.Size(235, 22);
+            this.mnPromeniPoredakZaIsteOcene.Text = "Promeni poredak za iste ocene";
+            this.mnPromeniPoredakZaIsteOcene.Click += new System.EventHandler(this.mnPromeniPoredakZaIsteOcene_Click);
+            // 
             // btnIzracunaj
             // 
             this.btnIzracunaj.Location = new System.Drawing.Point(480, 10);
@@ -132,21 +141,21 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl1
             // 
-            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(12, 58);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
             this.dataGridViewUserControl1.Size = new System.Drawing.Size(688, 287);
             this.dataGridViewUserControl1.TabIndex = 0;
             // 
-            // mnPromeniPoredakZaIsteOcene
+            // mnPenalizacija
             // 
-            this.mnPromeniPoredakZaIsteOcene.Name = "mnPromeniPoredakZaIsteOcene";
-            this.mnPromeniPoredakZaIsteOcene.Size = new System.Drawing.Size(235, 22);
-            this.mnPromeniPoredakZaIsteOcene.Text = "Promeni poredak za iste ocene";
-            this.mnPromeniPoredakZaIsteOcene.Click += new System.EventHandler(this.mnPromeniPoredakZaIsteOcene_Click);
+            this.mnPenalizacija.Name = "mnPenalizacija";
+            this.mnPenalizacija.Size = new System.Drawing.Size(235, 22);
+            this.mnPenalizacija.Text = "Penalizacija";
+            this.mnPenalizacija.Click += new System.EventHandler(this.mnPenalizacija_Click);
             // 
             // RezultatiUkupnoForm
             // 
@@ -181,5 +190,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem prikaziDrzavuToolStripMenuItem;
         private System.Windows.Forms.Button btnIzracunaj;
         private System.Windows.Forms.ToolStripMenuItem mnPromeniPoredakZaIsteOcene;
+        private System.Windows.Forms.ToolStripMenuItem mnPenalizacija;
     }
 }

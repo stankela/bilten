@@ -6,23 +6,23 @@ namespace Bilten.Domain
 {
     public class RezultatUkupnoExtended : RezultatUkupno
     {
-        public RezultatUkupnoExtended(RezultatUkupno rez)
+        public RezultatUkupnoExtended(RezultatUkupno r)
         {
-            RedBroj = rez.RedBroj;
-            Rank = rez.Rank;
-            KvalStatus = rez.KvalStatus;
-            Total = rez.Total;
+            RedBroj = r.RedBroj;
+            Rank = r.Rank;
+            KvalStatus = r.KvalStatus;
+            Total = r.Total;
 
-            Parter = rez.Parter;
-            Konj = rez.Konj;
-            Karike = rez.Karike;
-            Preskok = rez.Preskok;
-            Razboj = rez.Razboj;
-            Vratilo = rez.Vratilo;
-            Greda = rez.Greda;
-            DvovisinskiRazboj = rez.DvovisinskiRazboj;
+            Parter = r.Parter;
+            Konj = r.Konj;
+            Karike = r.Karike;
+            Preskok = r.Preskok;
+            Razboj = r.Razboj;
+            Vratilo = r.Vratilo;
+            Greda = r.Greda;
+            DvovisinskiRazboj = r.DvovisinskiRazboj;
 
-            Gimnasticar = rez.Gimnasticar;
+            Gimnasticar = r.Gimnasticar;
         }
 
         private Nullable<float> _parterD;

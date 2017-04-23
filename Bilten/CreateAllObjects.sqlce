@@ -189,6 +189,7 @@ create table gimnasticari_ucesnici (
 	mesec_rodj tinyint,
 	god_rodj smallint,
 	nastupa_za_drzavu bit,
+	penalty_viseboj real,
 	kategorija_id int references takmicarske_kategorije(kategorija_id),
 	klub_id int references klubovi_ucesnici(klub_id),
 	drzava_id int references drzave_ucesnici(drzava_id),

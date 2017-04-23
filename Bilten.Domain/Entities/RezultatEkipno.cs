@@ -49,15 +49,7 @@ namespace Bilten.Domain
                 Total = (float)((decimal)Total + (decimal)value);
         }
 
-        public virtual void addPenalty(float value)
-        {
-            if (Total == null)
-                Total = -value;
-            else
-                Total = (float)((decimal)Total - (decimal)value);
-        }
-
-        public virtual void changePenalty(Nullable<float> newPenalty)
+        public virtual void promeniPenalizacijuZaEkipu(Nullable<float> newPenalty)
         {
             Nullable<float> oldPenalty = Ekipa.Penalty;
             if (oldPenalty != null)

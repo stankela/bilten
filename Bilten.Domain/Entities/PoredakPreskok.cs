@@ -41,21 +41,6 @@ namespace Bilten.Domain
             this._sprava = Sprava.Preskok;
         }
 
-        public virtual void initRezultati(IList<GimnasticarUcesnik> gimnasticari, RezultatskoTakmicenje rezTak)
-        {
-            Rezultati.Clear();
-            foreach (GimnasticarUcesnik g in gimnasticari)
-            {
-                RezultatPreskok r = new RezultatPreskok();
-                r.Gimnasticar = g;
-                Rezultati.Add(r);
-            }
-
-            // posto nepostoje ocene, sledeci poziv samo sortira po prezimenu i na
-            // osnovu toga dodeljuje RedBroj
-            rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
-        }
-
         public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene)
         {
             IList<GimnasticarUcesnik> gimnasticari;
@@ -67,9 +52,9 @@ namespace Bilten.Domain
             IDictionary<int, RezultatPreskok> rezultatiMap = new Dictionary<int, RezultatPreskok>();
             foreach (GimnasticarUcesnik g in gimnasticari)
             {
-                RezultatPreskok rezultat = new RezultatPreskok();
-                rezultat.Gimnasticar = g;
-                rezultatiMap.Add(g.Id, rezultat);
+                RezultatPreskok r = new RezultatPreskok();
+                r.Gimnasticar = g;
+                rezultatiMap.Add(g.Id, r);
             }
 
             foreach (Ocena o in ocene)

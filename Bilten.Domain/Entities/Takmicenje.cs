@@ -545,9 +545,6 @@ namespace Bilten.Domain
 
                 result = rezultati[0].Second;
             }
-            // TODO4: Kada budes implementirao penalizaciju za viseboj, proveri da li treba da 
-            // bude ukljucena u ekipni rezultat (verovatno ne treba, tako da je treba iskljuciti iz
-            // rezultata)
             return result;
         }
 

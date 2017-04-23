@@ -157,10 +157,13 @@ namespace Bilten.Domain
         {
             string naziv = reader.ReadLine();
             Naziv = naziv != NULL ? naziv : null;
+
             string kod = reader.ReadLine();
             Kod = kod != NULL ? kod : null;
+            
             string penalty = reader.ReadLine();
             Penalty = penalty != NULL ? float.Parse(penalty) : (float?)null;
+            
             SpraveMask = int.Parse(reader.ReadLine());
 
             int brojGimnasticara = int.Parse(reader.ReadLine());

@@ -65,6 +65,13 @@ namespace Bilten.Domain
             set { nastupaZaDrzavu = value; }
         }
 
+        private Nullable<float> penaltyViseboj;
+        public virtual Nullable<float> PenaltyViseboj
+        {
+            get { return penaltyViseboj; }
+            set { penaltyViseboj = value; }
+        }
+
         public GimnasticarUcesnik()
         { 
         
@@ -226,6 +233,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(DrzavaUcesnik != null ? DrzavaUcesnik.Id.ToString() : NULL);
             strBuilder.AppendLine(TakmicarskaKategorija != null ? TakmicarskaKategorija.Id.ToString() : NULL);
             strBuilder.AppendLine(NastupaZaDrzavu.ToString());
+            strBuilder.AppendLine(PenaltyViseboj != null ? PenaltyViseboj.Value.ToString() : NULL);
         }
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
@@ -252,6 +260,9 @@ namespace Bilten.Domain
             TakmicarskaKategorija = line != NULL ? map.kategorijeMap[int.Parse(line)] : null;
 
             NastupaZaDrzavu = bool.Parse(reader.ReadLine());
+
+            string penalty = reader.ReadLine();
+            PenaltyViseboj = penalty != NULL ? float.Parse(penalty) : (float?)null;
         }
     }
 }

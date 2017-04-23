@@ -219,9 +219,9 @@ namespace Bilten.Domain
             return null;
         }
 
-        public virtual void promeniEkipnuPenalizaciju(RezultatEkipno r, float? penalty, RezultatskoTakmicenje rezTak)
+        public virtual void promeniPenalizaciju(RezultatEkipno r, float? penalty, RezultatskoTakmicenje rezTak)
         {
-            r.changePenalty(penalty);
+            r.promeniPenalizacijuZaEkipu(penalty);
 
             rankRezultati();
             updateKvalStatus(rezTak.Propozicije);

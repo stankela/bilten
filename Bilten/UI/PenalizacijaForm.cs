@@ -48,14 +48,14 @@ namespace Bilten.UI
                 return true;
         }
 
-        public PenalizacijaForm(RezultatEkipno rezultat, Takmicenje takmicenje)
+        public PenalizacijaForm(float? penalty, Takmicenje takmicenje)
         {
             InitializeComponent();
             this.takmicenje = takmicenje;
 
             txtPenalizacija.Text = String.Empty;
-            if (rezultat.Penalty != null)
-                txtPenalizacija.Text = rezultat.Penalty.Value.ToString("F" + takmicenje.BrojDecimalaPen);
+            if (penalty != null)
+                txtPenalizacija.Text = penalty.Value.ToString("F" + takmicenje.BrojDecimalaPen);
         }
 
         private void btnOK_Click(object sender, EventArgs e)

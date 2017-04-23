@@ -387,16 +387,17 @@ namespace Bilten.UI
             IList<RezultatEkipno> rezultatiEkipe = dataGridViewUserControl1.getSelectedItems<RezultatEkipno>();
             if (rezultatiEkipe.Count != 1)
                 return;
-            RezultatEkipno rezultat = rezultatiEkipe[0];
+            RezultatEkipno r = rezultatiEkipe[0];
 
-            PenalizacijaForm form = new PenalizacijaForm(rezultat, takmicenje);
+            PenalizacijaForm form = new PenalizacijaForm(r.Penalty, takmicenje);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
             Nullable<float> penalty = null;
             if (form.Penalizacija.Trim() != String.Empty)
                 penalty = float.Parse(form.Penalizacija);
-            ActiveTakmicenje.getPoredakEkipno(deoTakKod).promeniEkipnuPenalizaciju(rezultat, penalty, ActiveTakmicenje);
+            PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
+            p.promeniPenalizaciju(r, penalty, ActiveTakmicenje);
 
             ISession session = null;
             try
@@ -405,8 +406,8 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(rezultat.Ekipa);
-                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveTakmicenje.getPoredakEkipno(deoTakKod));
+                    DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(r.Ekipa);
+                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(p);
                     session.Transaction.Commit();
                 }
             }
@@ -415,7 +416,6 @@ namespace Bilten.UI
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
                 MessageDialogs.showError(ex.Message, this.Text);
-                Close();
                 return;
             }
             finally
@@ -423,9 +423,8 @@ namespace Bilten.UI
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
-            dataGridViewUserControl1.setItems<RezultatEkipno>(
-                ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
-            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(rezultat);
+            dataGridViewUserControl1.setItems<RezultatEkipno>(p.getRezultati());
+            dataGridViewUserControl1.setSelectedItem<RezultatEkipno>(r);
         }
 
         private void btnIzracunaj_Click(object sender, EventArgs e)

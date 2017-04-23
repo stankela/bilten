@@ -884,6 +884,10 @@ namespace Bilten.UI
                     Takmicenje t = takmicenjeDAO.FindById(takmicenjeId.Value);
                     t.ZavrsenoTak1 = true;
 
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    IList<Ocena> ocene2 = ocenaDAO.FindByDeoTakmicenja(takmicenjeId.Value, DeoTakmicenjaKod.Takmicenje2);
+                    IList<Ocena> ocene3 = ocenaDAO.FindByDeoTakmicenja(takmicenjeId.Value, DeoTakmicenjaKod.Takmicenje3);
+
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
                         // Poredak za takmicenje 1 je mozda rucno promenjen, pa ga ne treba ponovo kreirati.
@@ -891,21 +895,27 @@ namespace Bilten.UI
                         if (rt.odvojenoTak2())
                         {
                             rt.Takmicenje2.createUcesnici(rt.Takmicenje1);
-                            rt.Takmicenje2.Poredak.initRezultati(rt.Takmicenje2.getUcesniciGimKvalifikanti());
+                            // Ako ne postoje ocene, sledeci poziv samo sortira po prezimenu i na
+                            // osnovu toga dodeljuje RedBroj
+                            rt.Takmicenje2.Poredak.create(rt, ocene2);
                         }
                         if (rt.odvojenoTak3())
                         {
-                            rt.Takmicenje3.createUcesnici(rt.Takmicenje1, rt.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
+                            rt.Takmicenje3.createUcesnici(rt.Takmicenje1,
+                                rt.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
                             foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
-                                p.initRezultati(rt.Takmicenje3.getUcesniciGimKvalifikanti(p.Sprava));
-                            rt.Takmicenje3.PoredakPreskok.initRezultati(
-                                rt.Takmicenje3.getUcesniciGimKvalifikanti(Sprava.Preskok), rt);
+                                p.create(rt, ocene3);
+                            rt.Takmicenje3.PoredakPreskok.create(rt, ocene3);
                         }
                         if (rt.odvojenoTak4())
                         {
                             // TODO: Proveri zasto je ovo i ono dole zakomentarisano
-                            //rt.Takmicenje4.createUcesnici(rt.Takmicenje1);
-                            //rt.Takmicenje4.Poredak.initRezultati(rt.Takmicenje4.getUcesnici());
+                            /*rt.Takmicenje4.createUcesnici(rt.Takmicenje1);
+                            IList<RezultatskoTakmicenje> list = new List<RezultatskoTakmicenje>();
+                            list.Add(rt);
+                            IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap
+                                = Takmicenje.getEkipaRezultatiUkupnoMap(rezTakmicenja, list, DeoTakmicenjaKod.Takmicenje4);
+                            rt.Takmicenje4.Poredak.create(rt, ekipaRezultatiUkupnoMap);*/
                         }
 
                         if (rt.odvojenoTak2())
@@ -919,6 +929,12 @@ namespace Bilten.UI
                         mnTakmicenje3.Visible = true;
                         mnTakmicenje4.Visible = true;
                     }
+
+                    foreach (Ocena o in ocene2)
+                        ocenaDAO.Evict(o);
+                    foreach (Ocena o in ocene3)
+                        ocenaDAO.Evict(o);
+                    
                     takmicenjeDAO.Update(t);
 
                     session.Transaction.Commit();

@@ -59,7 +59,7 @@ namespace Bilten.UI
             if (istiRezultatiUkupno != null)
             {
                 GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1, takmicenje,
-                    /*kvalColumnVisible*/false);
+                    /*kvalColumnVisible*/false, /*penalty*/true);
             }
             else
             {
