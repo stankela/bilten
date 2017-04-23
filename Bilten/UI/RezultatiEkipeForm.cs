@@ -13,6 +13,7 @@ using Bilten.Report;
 using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -22,7 +23,7 @@ namespace Bilten.UI
         private bool[] takmicenjeOpened;
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
-        private IList<RezultatUkupno> sviRezultatiUkupno;
+        private IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap;
         private Gimnastika gimnastika;
 
         private RezultatskoTakmicenje ActiveTakmicenje
@@ -58,8 +59,8 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
 
-                    sviRezultatiUkupno
-                        = Takmicenje.getRezultatiUkupnoZaClanoveSvihEkipa(rezTakmicenja, svaRezTakmicenja, deoTakKod);
+                    ekipaRezultatiUkupnoMap
+                        = Takmicenje.getEkipaRezultatiUkupnoMap(rezTakmicenja, svaRezTakmicenja, deoTakKod);
 
                     initUI();
                     takmicenjeOpened = new bool[rezTakmicenja.Count];
@@ -173,7 +174,7 @@ namespace Bilten.UI
 
         private void setRezultatiUkupno(Ekipa e)
         {
-            dataGridViewUserControl2.setItems<RezultatUkupno>(e.getRezultatiUkupno(sviRezultatiUkupno));
+            dataGridViewUserControl2.setItems<RezultatUkupno>(ekipaRezultatiUkupnoMap[e.Id]);
             dataGridViewUserControl2.sort<RezultatUkupno>("PrezimeIme", ListSortDirection.Ascending);
         }
 
@@ -205,10 +206,13 @@ namespace Bilten.UI
             GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2, takmicenje);
             List<string> imena = new List<string>();
             List<string> klubovi = new List<string>();
-            foreach (RezultatUkupno r in sviRezultatiUkupno)
+            foreach (List<RezultatUkupno> rezultati in ekipaRezultatiUkupnoMap.Values)
             {
-                imena.Add(r.Gimnasticar.PrezimeIme);
-                klubovi.Add(r.Gimnasticar.KlubDrzava);
+                foreach (RezultatUkupno r in rezultati)
+                {
+                    imena.Add(r.Gimnasticar.PrezimeIme);
+                    klubovi.Add(r.Gimnasticar.KlubDrzava);
+                }
             }
             // TODO: Indexi kolona bi trebali da budu konstante
             if (imena.Count > 0)
@@ -306,7 +310,7 @@ namespace Bilten.UI
 
                 bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak4();
 
-                p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, sviRezultatiUkupno,
+                p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, ekipaRezultatiUkupnoMap,
                     ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName));
                 p.ShowDialog();
             }
@@ -434,6 +438,8 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             ISession session = null;
@@ -445,14 +451,13 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     PoredakEkipnoDAO poredakEkipnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO();
 
-                    // TODO: Mozda bi na svim ovakvim mestima ipak bilo bolje da se ponovo ucitava poredak iz baze.
+                    // TODO4: Mozda bi na svim ovakvim mestima ipak bilo bolje da se ponovo ucitava poredak iz baze.
                     // Ako se, recimo, ocene unose (i poredak azurira) na posebnom tredu, tada ce ovaj objekat za
                     // ekipni poredak sadrzavati zastarele podatke.
                     PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
                     poredakEkipnoDAO.Attach(p, false);
 
-                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje.Id);
-                    p.create(ActiveTakmicenje, svaRezTakmicenja);
+                    p.create(ActiveTakmicenje, ekipaRezultatiUkupnoMap);
 
                     poredakEkipnoDAO.Update(p);
                     session.Transaction.Commit();
@@ -471,6 +476,8 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+            sw.Stop();
+            MessageBox.Show(sw.Elapsed.ToString());
 
             dataGridViewUserControl1.setItems<RezultatEkipno>(
                 ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
@@ -519,10 +526,8 @@ namespace Bilten.UI
                     PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
                     poredakEkipnoDAO.Attach(p, false);
 
-                    // TODO4: Ovde ne bi trebalo ponovo kreirati ceo poredak nego promeniti samo jedan rezultat i ponovo
-                    // rangirati rezultate.
-                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenje.Id);
-                    p.create(ActiveTakmicenje, svaRezTakmicenja);                    
+                    p.recreateRezultat(rezultat.Ekipa, ActiveTakmicenje,
+                        RezultatskoTakmicenjeService.findRezultatiUkupnoForEkipa(takmicenje.Id, rezultat.Ekipa));
                     
                     poredakEkipnoDAO.Update(p);
                     session.Transaction.Commit();

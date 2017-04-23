@@ -79,20 +79,10 @@ namespace Bilten.Domain
             _poredak = new PoredakEkipno(DeoTakmicenjaKod.Takmicenje4);
         }
 
-        public virtual void ocenaAdded(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak4)
+        public virtual void updateRezultatEkipe(Ekipa e, RezultatskoTakmicenje rezTak, List<RezultatUkupno> rezultati)
         {
             if (rezTak.ImaEkipnoTakmicenje)
-                Poredak.addOcena(o, rezTak, sveOceneTak4);
-        }
-
-        public virtual void ocenaDeleted(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak4)
-        {
-            Poredak.deleteOcena(o, rezTak, sveOceneTak4);
-        }
-
-        public virtual void ocenaEdited(Ocena o, Ocena old, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak4)
-        {
-            Poredak.editOcena(o, old, rezTak, sveOceneTak4);
+                Poredak.recreateRezultat(e, rezTak, rezultati);
         }
 
         public virtual void dump(StringBuilder strBuilder)

@@ -253,7 +253,7 @@ namespace Bilten.UI
 
         protected override void updateEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update((Ekipa)entity);
+            RezultatskoTakmicenjeService.updateEkipa((Ekipa)entity, rezTakmicenje);
         }
 
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)

@@ -139,20 +139,6 @@ namespace Bilten.Domain
 
         #endregion
 
-        public virtual IList<RezultatUkupno> getRezultatiUkupno(IList<RezultatUkupno> sviRezultatiUkupno)
-        {
-            IList<RezultatUkupno> result = new List<RezultatUkupno>();
-            foreach (GimnasticarUcesnik g in this.Gimnasticari)
-            {
-                foreach (RezultatUkupno rez in sviRezultatiUkupno)
-                {
-                    if (g.Equals(rez.Gimnasticar))
-                        result.Add(rez);
-                }
-            }
-            return result;
-        }
-
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

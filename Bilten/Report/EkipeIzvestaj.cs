@@ -13,7 +13,7 @@ namespace Bilten.Report
     {
    		private EkipeLista lista;
 
-		public EkipeIzvestaj(List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno,
+        public EkipeIzvestaj(List<RezultatEkipno> rezultati, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap,
             Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName)
 		{
             DocumentName = documentName;
@@ -23,7 +23,7 @@ namespace Bilten.Report
             Font nazivEkipeFont = new Font("Arial", 10, FontStyle.Bold);
 
             lista = new EkipeLista(this, 1, 0f, itemFont, itemsHeaderFont, nazivEkipeFont,
-                rezultati, rezultatiUkupno, gim, kvalColumn, formGrid);
+                rezultati, ekipaRezultatiUkupnoMap, gim, kvalColumn, formGrid);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -53,7 +53,7 @@ namespace Bilten.Report
 
         public EkipeLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, Font nazivEkipeFont,
-            List<RezultatEkipno> rezultati, IList<RezultatUkupno> rezultatiUkupno,
+            List<RezultatEkipno> rezultati, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap,
             Gimnastika gim, bool kvalColumn, DataGridView formGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
@@ -64,18 +64,18 @@ namespace Bilten.Report
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
 
-            fetchItems(rezultati, rezultatiUkupno, gim);
+            fetchItems(rezultati, ekipaRezultatiUkupnoMap, gim);
         }
 
-        private void fetchItems(List<RezultatEkipno> rezultatiEkipno, 
-            IList<RezultatUkupno> rezultatiUkupno, Gimnastika gim)
+        private void fetchItems(List<RezultatEkipno> rezultatiEkipno,
+            IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap, Gimnastika gim)
         {
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(RezultatEkipno))["RedBroj"];
             rezultatiEkipno.Sort(new SortComparer<RezultatEkipno>(propDesc,
                 ListSortDirection.Ascending));
 
-            items = getEkipeReportItems(rezultatiEkipno, rezultatiUkupno, gim);
+            items = getEkipeReportItems(rezultatiEkipno, ekipaRezultatiUkupnoMap, gim);
 
             groups = new List<ReportGrupa>();
             int start = 0;
@@ -104,10 +104,9 @@ namespace Bilten.Report
         }
 
         private List<object[]> getEkipeReportItems(List<RezultatEkipno> rezultatiEkipe,
-            IList<RezultatUkupno> rezultatiUkupno, Gimnastika gim)
+            IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap, Gimnastika gim)
         {
-            IList<RezultatUkupno> rezUkupnoSorted = getRezultatiUkupnoSorted(
-                rezultatiEkipe, rezultatiUkupno);
+            IList<RezultatUkupno> rezUkupnoSorted = getRezultatiUkupnoSorted(rezultatiEkipe, ekipaRezultatiUkupnoMap);
 
             List<object[]> result = new List<object[]>();
             for (int i = 0; i < rezUkupnoSorted.Count; ++i)
@@ -150,33 +149,16 @@ namespace Bilten.Report
         }
 
         private IList<RezultatUkupno> getRezultatiUkupnoSorted(
-            List<RezultatEkipno> rezultatiEkipno, IList<RezultatUkupno> rezultatiUkupno)
+            List<RezultatEkipno> rezultatiEkipno, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap)
         {
             List<RezultatUkupno> result = new List<RezultatUkupno>();
             foreach (RezultatEkipno r in rezultatiEkipno)
             {
-                result.AddRange(getRezultatiClanovaSorted(r.Ekipa, rezultatiUkupno));
+                List<RezultatUkupno> rezultati = ekipaRezultatiUkupnoMap[r.Ekipa.Id];
+                PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatUkupno))["PrezimeIme"];
+                rezultati.Sort(new SortComparer<RezultatUkupno>(propDesc,ListSortDirection.Ascending));
+                result.AddRange(rezultati);
             }
-            return result;
-        }
-
-        private List<RezultatUkupno> getRezultatiClanovaSorted(
-            Ekipa e, IList<RezultatUkupno> rezultatiUkupno)
-        {
-            List<RezultatUkupno> result = new List<RezultatUkupno>();
-            foreach (GimnasticarUcesnik g in e.Gimnasticari)
-            {
-                foreach (RezultatUkupno rez in rezultatiUkupno)
-                {
-                    if (g.Equals(rez.Gimnasticar))
-                        result.Add(rez);
-                }
-            }
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatUkupno))["PrezimeIme"];
-            result.Sort(new SortComparer<RezultatUkupno>(propDesc,
-                ListSortDirection.Ascending));
             return result;
         }
 

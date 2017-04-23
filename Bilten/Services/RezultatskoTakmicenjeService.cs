@@ -133,22 +133,18 @@ namespace Bilten.Services
             {
                 DAOFactoryFactory.DAOFactory.GetEkipaDAO().Add(ekipa);
 
-                List<Ocena> ocene = new List<Ocena>();
-                if (!takmicenje.ZbirViseKola)
-                {
-                    foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
-                        // TODO4: Razmisli da izbacis cuvanje ocena u sesiji i da u klasi ocena uvedes asocijaciju
-                        // prema takmicenju da bi se ocene brze dobavljale iz baze (ili da u GimnasticarUcesnik vratis
-                        // asocijaciju prema takmicenju.)
-                        ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
-                }
-
                 if (takmicenje.FinaleKupa)
-                    rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa, ocene, rezTak, rezTak1, rezTak2);
+                {
+                    rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa,
+                        findRezultatiUkupnoForEkipa(takmicenje.Id, ekipa), rezTak, rezTak1, rezTak2);
+                }
                 else if (takmicenje.ZbirViseKola)
                     rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa, rezTak, rezTak1, rezTak2, rezTak3, rezTak4);
                 else
-                    rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa, ocene, rezTak);
+                {
+                    rezTak.Takmicenje1.updateRezultatiOnEkipaAdded(ekipa, rezTak,
+                        findRezultatiUkupnoForEkipa(takmicenje.Id, ekipa));
+                }
 
                 // snimi ekipe i poredak ekipno
                 DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
@@ -165,6 +161,19 @@ namespace Bilten.Services
                 rezultatskoTakmicenjeDAO.Evict(rezTak4);
         }
 
+        public static void updateEkipa(Ekipa ekipa, RezultatskoTakmicenje rezTakmicenje)
+        {
+            RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            rezultatskoTakmicenjeDAO.Attach(rezTakmicenje, false);
+
+            DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(ekipa);
+
+            rezTakmicenje.Takmicenje1.updateRezultatiOnEkipaUpdated(ekipa, rezTakmicenje,
+                findRezultatiUkupnoForEkipa(rezTakmicenje.Takmicenje.Id, ekipa));
+
+            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTakmicenje.Takmicenje1);
+        }
+
         public static void deleteEkipaFromRezTak(Ekipa e, RezultatskoTakmicenje rezTak)
         {
             DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Attach(rezTak, false);
@@ -176,6 +185,18 @@ namespace Bilten.Services
             rezTak.Takmicenje1.updateRezultatiOnEkipaDeleted(e, rezTak);
             ekipaDAO.Delete(e);
             DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
+        }
+
+        public static List<RezultatUkupno> findRezultatiUkupnoForEkipa(int takmicenjeId, Ekipa e)
+        {
+            List<RezultatUkupno> result = new List<RezultatUkupno>();
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            foreach (GimnasticarUcesnik g in e.Gimnasticari)
+            {
+                result.Add(Takmicenje.getRezultatUkupnoForEkipniRezultat(
+                    g, rezTakDAO.FindRezultatiUkupnoForGimnasticar(takmicenjeId, g.Id)));
+            }
+            return result;
         }
     }
 }

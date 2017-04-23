@@ -382,16 +382,16 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual bool ucestvujeEkipno(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod)
+        public virtual Ekipa findEkipa(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod)
         {
             if (!ImaEkipnoTakmicenje)
-                return false;
+                return null;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 foreach (Ekipa e in Takmicenje1.Ekipe)
                 {
                     if (e.Gimnasticari.Contains(g))
-                        return true;
+                        return e;
                 }
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
@@ -399,10 +399,10 @@ namespace Bilten.Domain
                 foreach (UcesnikTakmicenja4 u in Takmicenje4.Ucesnici)
                 {
                     if (u.Ekipa.Gimnasticari.Contains(g))
-                        return true;
+                        return u.Ekipa;
                 }
             }
-            return false;
+            return null;
         }
 
         public virtual void dump(StringBuilder strBuilder)

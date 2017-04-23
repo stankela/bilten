@@ -171,7 +171,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void ocenaAdded(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak1)
+        public virtual void updateRezultatiOnOcenaAdded(Ocena o, RezultatskoTakmicenje rezTak)
         {
             if (Gimnasticari.Contains(o.Gimnasticar))
             {
@@ -181,14 +181,20 @@ namespace Bilten.Domain
                 else
                     getPoredakSprava(o.Sprava).addOcena(o, rezTak, true);
             }
+        }
+
+        public virtual void updateRezultatEkipe(Ekipa e, RezultatskoTakmicenje rezTak, List<RezultatUkupno> rezultati)
+        {
+            // TODO4: Razmisli da li treba uvoditi ogranicenje da clanovi ekipe mogu da budu samo ucesnici istog
+            // takmicenja (tj. takmicenja description).
 
             // Ova naredba treba da bude unutar if izraza ako clanovi ekipe
             // mogu da budu samo gimnasticari ucesnici istog rez. takmicenja
             if (rezTak.ImaEkipnoTakmicenje)
-                PoredakEkipno.addOcena(o, rezTak, sveOceneTak1);
+                PoredakEkipno.recreateRezultat(e, rezTak, rezultati);
         }
 
-        public virtual void ocenaDeleted(Ocena o, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak1)
+        public virtual void updateRezultatiOnOcenaDeleted(Ocena o, RezultatskoTakmicenje rezTak)
         {
             if (Gimnasticari.Contains(o.Gimnasticar))
             {
@@ -198,11 +204,9 @@ namespace Bilten.Domain
                 else
                     getPoredakSprava(o.Sprava).deleteOcena(o, rezTak, true);
             }
-
-            PoredakEkipno.deleteOcena(o, rezTak, sveOceneTak1);
         }
 
-        public virtual void ocenaEdited(Ocena o, Ocena old, RezultatskoTakmicenje rezTak, List<Ocena> sveOceneTak1)
+        public virtual void updateRezultatiOnOcenaEdited(Ocena o, Ocena old, RezultatskoTakmicenje rezTak)
         {
             if (Gimnasticari.Contains(o.Gimnasticar))
             {
@@ -212,8 +216,6 @@ namespace Bilten.Domain
                 else
                     getPoredakSprava(o.Sprava).editOcena(o, rezTak);
             }
-
-            PoredakEkipno.editOcena(o, old, rezTak, sveOceneTak1);
         }
 
         public virtual void updateRezultatiOnGimnasticarAdded(GimnasticarUcesnik g, IList<Ocena> ocene,
@@ -281,20 +283,20 @@ namespace Bilten.Domain
                 PoredakUkupnoZbirViseKola.deleteGimnasticar(g, rezTak);
         }
 
-        public virtual void updateRezultatiOnEkipaAdded(Ekipa e, IList<Ocena> ocene,
-            RezultatskoTakmicenje rezTak)
+        public virtual void updateRezultatiOnEkipaAdded(Ekipa e, RezultatskoTakmicenje rezTak,
+            List<RezultatUkupno> rezultati)
         {
-            PoredakEkipno.addEkipa(e, ocene, rezTak);
+            PoredakEkipno.addEkipa(e, rezTak, rezultati);
         }
 
         // Za finale kupa
-        public virtual void updateRezultatiOnEkipaAdded(Ekipa e, IList<Ocena> ocene,
+        public virtual void updateRezultatiOnEkipaAdded(Ekipa e, List<RezultatUkupno> rezultati,
             RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
         {
             PoredakEkipnoFinaleKupa.addEkipa(e, rezTak, rezTak1, rezTak2);
 
             if (rezTak.odvojenoTak4())
-                PoredakEkipno.addEkipa(e, ocene, rezTak);
+                PoredakEkipno.addEkipa(e, rezTak, rezultati);
         }
 
         // Za zbir vise kola
@@ -303,6 +305,12 @@ namespace Bilten.Domain
             RezultatskoTakmicenje rezTak4)
         {
             PoredakEkipnoZbirViseKola.addEkipa(e, rezTak, rezTak1, rezTak2, rezTak3, rezTak4);
+        }
+
+        public virtual void updateRezultatiOnEkipaUpdated(Ekipa e, RezultatskoTakmicenje rezTak,
+            List<RezultatUkupno> rezultati)
+        {
+            PoredakEkipno.recreateRezultat(e, rezTak, rezultati);
         }
 
         public virtual void updateRezultatiOnEkipaDeleted(Ekipa e, RezultatskoTakmicenje rezTak)

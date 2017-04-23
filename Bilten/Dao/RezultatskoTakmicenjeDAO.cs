@@ -36,5 +36,7 @@ namespace Bilten.Dao
         RezultatskoTakmicenje FindByKatDesc(TakmicarskaKategorija kat, RezultatskoTakmicenjeDescription desc);
         IList<RezultatskoTakmicenje> FindEkipnaTakmicenja(int takmicenjeId);
         int FindMaxRedBroj(int takmicenjeId);
+        IList<Pair<RezultatskoTakmicenje, RezultatUkupno>> FindRezultatiUkupnoForGimnasticar(int takmicenjeId,
+            int gimnasticarId);
     }
 }

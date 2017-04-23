@@ -241,13 +241,6 @@ namespace Bilten.UI
             }
             finally
             {
-                if (this is OcenaForm)
-                {
-                    // HACK TODO4: Ovaj kod pripada u OcenaForm (u metode OcenaForm.addEntity i OcenaForm.updateEntity), ali
-                    // ne mogu da ga smestim tamo jer sam try otvorio ovde. Mozda da izmenim da OcenaForm ne nasledjuje
-                    // EntityDetailForm?
-                    Sesija.Instance.clearOcene();
-                }
                 if (showWaitCursor)
                 {
                     Cursor.Hide();

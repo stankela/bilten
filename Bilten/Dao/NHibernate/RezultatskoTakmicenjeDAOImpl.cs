@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NHibernate;
 using Bilten.Exceptions;
 using Bilten.Domain;
+using System.Collections;
 
 namespace Bilten.Dao.NHibernate
 {
@@ -671,6 +672,39 @@ namespace Bilten.Dao.NHibernate
                 if (result != null)
                     return (byte)q.UniqueResult();
                 return 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<Pair<RezultatskoTakmicenje, RezultatUkupno>> FindRezultatiUkupnoForGimnasticar(
+            int takmicenjeId, int gimnasticarId)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r, rez
+                    from RezultatskoTakmicenje r
+                    join r.Takmicenje1 t
+                    join t.PoredakUkupno p
+                    join p.Rezultati rez
+                    where r.Takmicenje.Id = :takmicenjeId
+                    and rez.Gimnasticar.Id = :gimnasticarId");
+                q.SetInt32("takmicenjeId", takmicenjeId);
+                q.SetInt32("gimnasticarId", gimnasticarId);
+                IList result = q.List();
+                IList<Pair<RezultatskoTakmicenje, RezultatUkupno>> result2
+                    = new List<Pair<RezultatskoTakmicenje, RezultatUkupno>>();
+                foreach (object[] o in result)
+                {
+                    Pair<RezultatskoTakmicenje, RezultatUkupno> p = new Pair<RezultatskoTakmicenje, RezultatUkupno>();
+                    p.First = o[0] as RezultatskoTakmicenje;
+                    p.Second = o[1] as RezultatUkupno;
+                    result2.Add(p);
+                }
+                return result2;
             }
             catch (HibernateException ex)
             {

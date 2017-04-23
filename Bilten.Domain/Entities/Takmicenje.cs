@@ -427,7 +427,7 @@ namespace Bilten.Domain
             return null;
         }
 
-        public static IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> getRezultatiUkupnoMap(
+        public static IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> getGimRezUkupnoMap(
         IList<RezultatskoTakmicenje> rezTakmicenja, DeoTakmicenjaKod deoTakKod)
         {
             IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> result
@@ -457,24 +457,15 @@ namespace Bilten.Domain
             return result;
         }
 
-        public static IList<RezultatUkupno> getRezultatiUkupnoZaClanoveSvihEkipa(
+        public static IDictionary<int, List<RezultatUkupno>> getEkipaRezultatiUkupnoMap(
             IList<RezultatskoTakmicenje> rezTakmicenja, IList<RezultatskoTakmicenje> svaRezTakmicenja,
             DeoTakmicenjaKod deoTakKod)
         {
-            // Obradi najpre specijalne slucajeve
-            if (brojClanovaEkipa == 0)
-                sviRezultatiUkupno = new List<RezultatUkupno>();
-            else if (brojOcena == 0)
-            {
-                // kreiran prazan rezultat za svakog gimnaticara
-            }
+            IDictionary<int, List<RezultatUkupno>> result = new Dictionary<int, List<RezultatUkupno>>();
 
-            // Najpre napravi mapu svih rezultata ukupno
-            IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> sviRezultatiMap
-                = getRezultatiUkupnoMap(svaRezTakmicenja, deoTakKod);
+            // Obradi najpre cest specijalan slucaj gde postoje ekipe ali ne postoje clanovi ekipe
 
-            // Zatim filtriraj samo one gimnasticare koji su clanovi ekipa.
-            IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
+            bool postojeClanovi = false;
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 IList<Ekipa> ekipe;
@@ -485,65 +476,78 @@ namespace Bilten.Domain
 
                 foreach (Ekipa e in ekipe)
                 {
-                    foreach (GimnasticarUcesnik g in e.Gimnasticari)
+                    if (e.Gimnasticari.Count == 0)
+                        result.Add(e.Id, new List<RezultatUkupno>());
+                    else
                     {
-                        if (!rezultatiMap.ContainsKey(g.Id))
-                        {
-                            IList<Pair<RezultatskoTakmicenje, RezultatUkupno>> rezList = sviRezultatiMap[g.Id];
-                            if (rezList.Count == 0)
-                            {
-                                RezultatUkupno r = new RezultatUkupno();
-                                r.Gimnasticar = g;
-                                rezultatiMap.Add(g.Id, r);
-                            }
-                            else if (rezList.Count == 1)
-                                // TODO4: Kada budes implementirao penalizaciju za viseboj, proveri da li treba da 
-                                // bude ukljucena u ekipni rezultat
-                                rezultatiMap.Add(g.Id, rezList[0].Second);
-                            else
-                            {
-                                // TODO: Gimnasticar je ucestvovao na vise rez. takmicenja. Ovde bi najpre trebalo
-                                // proveriti da li su propozicije za sva ta rez. takmicenja ista, sto se tice viseboja
-                                // (npr. treba proveriti da li se preskok racuna na osnovu prvog ili boljeg skoka).
-                                // Ako su propozicije iste, moze se uzeti bilo koji RezultatUkupno. Ako propozicije nisu
-                                // iste, treba uzeti rezultate (ako postoje) iz rez. takmicenja rt (ciju ekipu trenutno
-                                // gledamo), ili iz rez. takmicenja ciji description je isti kao i za rt. Ako ni to nije
-                                // moguce, treba uzeti bilo koje rezultate (ako postoje), uz eventualno obavestenje
-                                // korsniku da je gimnasticar clan ekipe a nije ucestvovao u tom takmicenje descriptionu.
-
-                                rezultatiMap.Add(g.Id, rezList[0].Second);
-                            }
-                        }
-                        else
-                        {
-                            // TODO: Gimnasticar je clan vise ekipa. Videti gornji TODO
-                        }
+                        postojeClanovi = true;
+                        break;
                     }
                 }
+                if (postojeClanovi)
+                    break;
+            }
+            if (!postojeClanovi)
+                return result;
+
+            // Obradi generalan slucaj
+
+            result.Clear();
+            
+            // Napravi mapu svih rezultata ukupno
+            IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> gimRezUkupnoMap
+                = getGimRezUkupnoMap(svaRezTakmicenja, deoTakKod);
+
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                IList<Ekipa> ekipe;
+                if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                    ekipe = new List<Ekipa>(rt.Takmicenje1.Ekipe);
+                else
+                    ekipe = rt.Takmicenje4.getUcesnici();
+
+                foreach (Ekipa e in ekipe)
+                    result.Add(e.Id, findRezultatiUkupnoForEkipa(e, gimRezUkupnoMap));
             }       
-            List<RezultatUkupno> result = new List<RezultatUkupno>(rezultatiMap.Values);
             return result;
         }
 
-        public static List<RezultatUkupno> getRezultatiUkupnoZaClanoveEkipe(Ekipa e,
-            IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> sviRezultatiMap)
+        public static List<RezultatUkupno> findRezultatiUkupnoForEkipa(Ekipa e,
+            IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> gimRezUkupnoMap)
         {
             List<RezultatUkupno> result = new List<RezultatUkupno>();
             foreach (GimnasticarUcesnik g in e.Gimnasticari)
+                result.Add(getRezultatUkupnoForEkipniRezultat(g, gimRezUkupnoMap[g.Id]));
+            return result;
+        }
+
+        public static RezultatUkupno getRezultatUkupnoForEkipniRezultat(GimnasticarUcesnik g,
+            IList<Pair<RezultatskoTakmicenje, RezultatUkupno>> rezultati)
+        {
+            RezultatUkupno result;
+            if (rezultati.Count == 0)
             {
-                // Isti TODO komentari kao u metodu getRezultatiUkupnoZaClanoveSvihEkipa.
-                IList<Pair<RezultatskoTakmicenje, RezultatUkupno>> rezList = sviRezultatiMap[g.Id];
-                if (rezList.Count == 0)
-                {
-                    RezultatUkupno r = new RezultatUkupno();
-                    r.Gimnasticar = g;
-                    result.Add(r);
-                }
-                else if (rezList.Count == 1)
-                    result.Add(rezList[0].Second);
-                else
-                    result.Add(rezList[0].Second);
+                result = new RezultatUkupno();
+                result.Gimnasticar = g;
             }
+            else if (rezultati.Count == 1)
+                result = rezultati[0].Second;
+            else
+            {
+                // TODO4: Gimnasticar je ucestvovao na vise rez. takmicenja. Ovde bi najpre trebalo
+                // proveriti da li su propozicije za sva ta rez. takmicenja ista, sto se tice viseboja
+                // (npr. treba proveriti da li se preskok racuna na osnovu prvog ili boljeg skoka).
+                // Ako su propozicije iste, moze se uzeti bilo koji RezultatUkupno. Ako propozicije nisu
+                // iste, treba uzeti rezultate (ako postoje) iz rez. takmicenja rt (ciju ekipu trenutno
+                // gledamo), ili iz rez. takmicenja ciji description je isti kao i za rt. Ako ni to nije
+                // moguce, treba uzeti bilo koje rezultate (ako postoje), uz eventualno obavestenje
+                // korsniku da je gimnasticar clan ekipe a nije ucestvovao u tom takmicenje descriptionu.
+
+                result = rezultati[0].Second;
+            }
+            // TODO4: Kada budes implementirao penalizaciju za viseboj, proveri da li treba da 
+            // bude ukljucena u ekipni rezultat (verovatno ne treba, tako da je treba iskljuciti iz
+            // rezultata)
             return result;
         }
 

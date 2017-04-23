@@ -262,21 +262,18 @@ namespace Bilten.UI
 
         private void addEkipaCmd()
         {
-            DialogResult dlgResult;
             EkipaForm form;
             try
             {
                 form = new EkipaForm(null, ActiveRezTakmicenje.Id, !viseKola);
-                dlgResult = form.ShowDialog();
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
             }
             catch (InfrastructureException ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
                 return;
             }
-
-            if (dlgResult != DialogResult.OK)
-                return;
 
             ISession session = null;
             try
@@ -286,8 +283,7 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     // ponovo ucitaj takmicenje zato sto je dodata ekipa
-                    rezTakmicenja[tabControl1.SelectedIndex] =
-                        loadRezTakmicenje(ActiveRezTakmicenje.Id);
+                    rezTakmicenja[tabControl1.SelectedIndex] = loadRezTakmicenje(ActiveRezTakmicenje.Id);
                 }
             }
             catch (Exception ex)
@@ -295,7 +291,6 @@ namespace Bilten.UI
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
                 MessageDialogs.showMessage(ex.Message, this.Text);
-                Close();
                 return;
             }
             finally
@@ -318,21 +313,18 @@ namespace Bilten.UI
             Ekipa selEkipa = getSelectedEkipa();
             if (selEkipa == null)
                 return;
-            DialogResult dlgResult;
             EkipaForm form;
             try
             {
                 form = new EkipaForm(selEkipa.Id, ActiveRezTakmicenje.Id, !viseKola);
-                dlgResult = form.ShowDialog();
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
             }
             catch (InfrastructureException ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
                 return;
             }
-
-            if (dlgResult != DialogResult.OK)
-                return;
 
             ISession session = null;
             try
@@ -343,46 +335,6 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     // ponovo ucitaj takmicenje zato sto je promenjena ekipa
                     rezTakmicenja[tabControl1.SelectedIndex] = loadRezTakmicenje(ActiveRezTakmicenje.Id);
-
-                    List<GimnasticarUcesnik> orig = new List<GimnasticarUcesnik>(selEkipa.Gimnasticari);
-
-                    List<Ekipa> ekipe = new List<Ekipa>(ActiveRezTakmicenje.Takmicenje1.Ekipe);
-                    Ekipa ekipa = null;
-                    foreach (Ekipa e in ekipe)
-                    {
-                        if (e.Id == selEkipa.Id)
-                        {
-                            ekipa = e;
-                            break;
-                        }
-                    }
-                    if (ekipa == null)
-                        throw new Exception("Greska u programu.");
-
-                    List<GimnasticarUcesnik> curr = new List<GimnasticarUcesnik>(ekipa.Gimnasticari);
-
-                    List<GimnasticarUcesnik> added = new List<GimnasticarUcesnik>();
-                    List<GimnasticarUcesnik> updated = new List<GimnasticarUcesnik>();
-                    List<GimnasticarUcesnik> deleted = new List<GimnasticarUcesnik>();
-                    diff(curr, orig, added, updated, deleted);
-
-                    if (added.Count > 0 || deleted.Count > 0)
-                    {
-                        // potrebne su sve ocene za gimnasticare u ekipi jer rezultat za ekipu mora ponovo da se racuna kada
-                        // se gimnasticar dodaje ili brise iz ekipe.
-                        List<Ocena> ocene = new List<Ocena>();
-                        foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
-                            ocene.AddRange(Sesija.Instance.getOcene(g, DeoTakmicenjaKod.Takmicenje1));
-                        ActiveRezTakmicenje.Takmicenje1.PoredakEkipno.recreateRezultForEkipa(
-                            ekipa, ocene, ActiveRezTakmicenje);
-                    }
-
-                    DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(ActiveRezTakmicenje.Takmicenje1.PoredakEkipno);
-                    foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
-                    {
-                        DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Evict(g);
-                    }
-                    session.Transaction.Commit();
                 }
             }
             catch (Exception ex)
@@ -390,7 +342,6 @@ namespace Bilten.UI
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
                 MessageDialogs.showError(ex.Message, this.Text);
-                Close();
                 return;
             }
             finally
@@ -403,33 +354,6 @@ namespace Bilten.UI
             onEkipeCellMouseClick();
         }
 
-        private void diff<T>(IList<T> current, IList<T> original, IList<T> added,
-            IList<T> updated, IList<T> deleted)
-        {
-            foreach (T t in current)
-            {
-                if (!contains(original, t))
-                    added.Add(t);
-                else
-                    updated.Add(t);
-            }
-            foreach (T t in original)
-            {
-                if (!contains(current, t))
-                    deleted.Add(t);
-            }
-        }
-
-        private bool contains<T>(IList<T> list, T t)
-        {
-            foreach (T t2 in list)
-            {
-                if (t2.Equals(t))
-                    return true;
-            }
-            return false;
-        }
-        
         Ekipa getSelectedEkipa()
         {
             return getActiveEkipeDataGridViewUserControl().getSelectedItem<Ekipa>();

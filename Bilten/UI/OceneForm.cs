@@ -13,6 +13,7 @@ using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
 using Bilten.Misc;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -430,40 +431,46 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
 
                     DAOFactoryFactory.DAOFactory.GetOcenaDAO().Delete(ocena);
-                    Sesija.Instance.deleteOcena(ocena);
 
-                    ISet<RezultatskoTakmicenje> rezTakSet
-                        = findRezTakmicenjaForGimnasticar(ocena.Gimnasticar, takmicenje.Id, deoTakKod);
-                    foreach (RezultatskoTakmicenje rezTak in rezTakSet)
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                    IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindRezTakmicenjaForGimnasticar(ocena.Gimnasticar);
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
                         if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                         {
-                            rezTak.Takmicenje1.ocenaDeleted(ocena, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje1));
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
+                            rt.Takmicenje1.updateRezultatiOnOcenaDeleted(ocena, rt);
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);
                         }
-                        else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
+                        else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2 && rt.Propozicije.OdvojenoTak2)
                         {
-                            if (rezTak.Propozicije.OdvojenoTak2)
-                            {
-                                rezTak.Takmicenje2.ocenaDeleted(ocena, rezTak);
-                                DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rezTak.Takmicenje2);
-                            }
+                            rt.Takmicenje2.ocenaDeleted(ocena, rt);
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
                         }
-                        else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+                        else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 && rt.Propozicije.OdvojenoTak3)
                         {
-                            if (rezTak.Propozicije.OdvojenoTak3)
-                            {
-                                rezTak.Takmicenje3.ocenaDeleted(ocena, rezTak);
-                                DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rezTak.Takmicenje3);
-                            }
+                            rt.Takmicenje3.ocenaDeleted(ocena, rt);
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
                         }
-                        else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4)
+                    }
+
+                    IList<RezultatskoTakmicenje> ekipnaRezTakmicenja = rezTakDAO.FindEkipnaTakmicenja(takmicenje.Id);
+                    foreach (RezultatskoTakmicenje rt in ekipnaRezTakmicenja)
+                    {
+                        Ekipa ekipa = rt.findEkipa(ocena.Gimnasticar, deoTakKod);
+                        if (ekipa == null)
+                            continue;
+                        List<RezultatUkupno> rezultati = RezultatskoTakmicenjeService
+                            .findRezultatiUkupnoForEkipa(takmicenje.Id, ekipa);
+                        if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                         {
-                            if (rezTak.Propozicije.OdvojenoTak4)
-                            {
-                                rezTak.Takmicenje4.ocenaDeleted(ocena, rezTak, Sesija.Instance.getOcene(DeoTakmicenjaKod.Takmicenje4));
-                                DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rezTak.Takmicenje4);
-                            }
+                            rt.Takmicenje1.updateRezultatEkipe(ekipa, rt, rezultati);
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);
+                        }
+                        else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4 && rt.Propozicije.OdvojenoTak4)
+                        {
+                            rt.Takmicenje4.updateRezultatEkipe(ekipa, rt, rezultati);
+                            DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rt.Takmicenje4);
                         }
                     }
 
@@ -471,6 +478,12 @@ namespace Bilten.UI
                     UcesnikTakmicenja2DAO ucTak2DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja2DAO();
                     UcesnikTakmicenja3DAO ucTak3DAO = DAOFactoryFactory.DAOFactory.GetUcesnikTakmicenja3DAO();
 
+                    ISet<RezultatskoTakmicenje> rezTakSet = new HashSet<RezultatskoTakmicenje>();
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                        rezTakSet.Add(rt);
+                    foreach (RezultatskoTakmicenje rt in ekipnaRezTakmicenja)
+                        rezTakSet.Add(rt);
+                    
                     foreach (RezultatskoTakmicenje rezTak in rezTakSet)
                     {
                         if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -514,7 +527,6 @@ namespace Bilten.UI
             }
             finally
             {
-                Sesija.Instance.clearOcene();
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
@@ -524,20 +536,6 @@ namespace Bilten.UI
             activeOcene.Remove(ocena);
 
             setOcene(activeOcene);
-        }
-
-        private ISet<RezultatskoTakmicenje> findRezTakmicenjaForGimnasticar(GimnasticarUcesnik g, int takmicenjeId,
-            DeoTakmicenjaKod deoTakKod)
-        {
-            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            ISet<RezultatskoTakmicenje> result
-                = new HashSet<RezultatskoTakmicenje>(rezTakDAO.FindRezTakmicenjaForGimnasticar(g));
-            foreach (RezultatskoTakmicenje rt in rezTakDAO.FindEkipnaTakmicenja(takmicenjeId))
-            {
-                if (rt.ucestvujeEkipno(g, deoTakKod))
-                    result.Add(rt);
-            }
-            return result;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
