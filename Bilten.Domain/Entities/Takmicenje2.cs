@@ -133,10 +133,10 @@ namespace Bilten.Domain
                 Poredak.deleteOcena(o, rezTak);
         }
 
-        public virtual void ocenaEdited(Ocena o, Ocena old, RezultatskoTakmicenje rezTak)
+        public virtual void ocenaEdited(Ocena o, RezultatskoTakmicenje rezTak)
         {
             if (getUcesnikKvalifikant(o.Gimnasticar) != null)
-                Poredak.editOcena(o, old, rezTak);
+                Poredak.editOcena(o, rezTak);
         }
 
         public virtual void dump(StringBuilder strBuilder)

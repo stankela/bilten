@@ -42,6 +42,9 @@ namespace Bilten.UI
             {
                 rbtOdvojenoTak2.Enabled = false;
                 rbtNaOsnovuTak1.Enabled = false;
+                lblPreskokViseboj.Enabled = false;
+                rbtPrviPreskok.Enabled = false;
+                rbtBoljiPreskok.Enabled = false;
                 lblBrojFinalista.Enabled = false;
                 txtBrojFinalista.Enabled = false;
                 lblBrojRezervi.Enabled = false;
@@ -72,8 +75,23 @@ namespace Bilten.UI
                 setEnabledOdvojenoTak2();
         }
 
+        private void rbtPrviPreskok_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtBoljiPreskok_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
         private void setEnabledOdvojenoTak2()
         {
+            bool postojiTak2 = rbtOdvojenoTak2.Enabled && (rbtOdvojenoTak2.Checked || rbtNaOsnovuTak1.Checked);
+            lblPreskokViseboj.Enabled = postojiTak2;
+            rbtPrviPreskok.Enabled = postojiTak2;
+            rbtBoljiPreskok.Enabled = postojiTak2;
+            
             bool odvojenoTak2 = rbtOdvojenoTak2.Enabled && rbtOdvojenoTak2.Checked;
             lblBrojFinalista.Enabled = odvojenoTak2;
             txtBrojFinalista.Enabled = odvojenoTak2;
@@ -127,6 +145,10 @@ namespace Bilten.UI
             {
                 rbtOdvojenoTak2.Checked = propozicije.OdvojenoTak2;
                 rbtNaOsnovuTak1.Checked = !propozicije.OdvojenoTak2;
+
+                rbtPrviPreskok.Checked = !propozicije.ZaPreskokVisebojRacunajBoljuOcenu;
+                rbtBoljiPreskok.Checked = propozicije.ZaPreskokVisebojRacunajBoljuOcenu;
+
                 if (propozicije.OdvojenoTak2)
                 {
                     txtBrojFinalista.Text = propozicije.BrojFinalistaTak2.ToString();
@@ -146,6 +168,8 @@ namespace Bilten.UI
             ckbPostojiTak2.CheckedChanged -= ckbPostojiTak2_CheckedChanged;
             rbtOdvojenoTak2.CheckedChanged -= rbtOdvojenoTak2_CheckedChanged;
             rbtNaOsnovuTak1.CheckedChanged -= rbtNaOsnovuTak1_CheckedChanged;
+            rbtPrviPreskok.CheckedChanged -= rbtPrviPreskok_CheckedChanged;
+            rbtBoljiPreskok.CheckedChanged -= rbtBoljiPreskok_CheckedChanged;
             ckbNeogranicenBrojTak.CheckedChanged -= ckbNeogranicenBrojTak_CheckedChanged;
         }
 
@@ -154,6 +178,8 @@ namespace Bilten.UI
             ckbPostojiTak2.CheckedChanged += ckbPostojiTak2_CheckedChanged;
             rbtOdvojenoTak2.CheckedChanged += rbtOdvojenoTak2_CheckedChanged;
             rbtNaOsnovuTak1.CheckedChanged += rbtNaOsnovuTak1_CheckedChanged;
+            rbtPrviPreskok.CheckedChanged += rbtPrviPreskok_CheckedChanged;
+            rbtBoljiPreskok.CheckedChanged += rbtBoljiPreskok_CheckedChanged;
             ckbNeogranicenBrojTak.CheckedChanged += ckbNeogranicenBrojTak_CheckedChanged;
         }
 
@@ -162,6 +188,8 @@ namespace Bilten.UI
             ckbPostojiTak2.Checked = false;
             rbtOdvojenoTak2.Checked = false;
             rbtNaOsnovuTak1.Checked = false;
+            rbtPrviPreskok.Checked = true;
+            rbtBoljiPreskok.Checked = false;
             ckbNeogranicenBrojTak.Checked = false;
             txtMaxTak.Text = String.Empty;
             txtBrojFinalista.Text = String.Empty;
@@ -198,6 +226,12 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "OdvojenoTak2", "Izaberite da li se takmicenje II posebno odrzava, " +
                     "ili se racuna na osnovu rezultata takmicenja I.");
+            }
+            if (!rbtPrviPreskok.Checked && ! rbtBoljiPreskok.Checked)
+            {
+                notification.RegisterMessage(
+                    "ZaPreskokVisebojRacunajBoljuOcenu",
+                    "Izaberite da li se za preskok viseboja racuna prvi preskok ili bolji preskok.");
             }
 
             if (txtBrojFinalista.Enabled)
@@ -254,6 +288,7 @@ namespace Bilten.UI
             if (propozicije.PostojiTak2)
             {
                 propozicije.OdvojenoTak2 = rbtOdvojenoTak2.Checked;
+                propozicije.ZaPreskokVisebojRacunajBoljuOcenu = rbtBoljiPreskok.Checked;
                 if (propozicije.OdvojenoTak2)
                 {
                     propozicije.BrojFinalistaTak2 = byte.Parse(txtBrojFinalista.Text);

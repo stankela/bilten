@@ -156,7 +156,7 @@ namespace Bilten.Report
             {
                 List<RezultatUkupno> rezultati = ekipaRezultatiUkupnoMap[r.Ekipa.Id];
                 PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(RezultatUkupno))["PrezimeIme"];
-                rezultati.Sort(new SortComparer<RezultatUkupno>(propDesc,ListSortDirection.Ascending));
+                rezultati.Sort(new SortComparer<RezultatUkupno>(propDesc, ListSortDirection.Ascending));
                 result.AddRange(rezultati);
             }
             return result;

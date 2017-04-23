@@ -50,6 +50,7 @@ create table propozicije (
 	propozicije_id int identity (1,1) primary key,
 	postoji_tak2 bit,
 	odvojeno_tak2 bit,
+	preskok_tak2_bolja_ocena bit,
 	neogr_broj_tak_tak2 bit,
 	max_tak_tak2 tinyint,
 	broj_finalista_tak2 tinyint,

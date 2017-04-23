@@ -75,9 +75,9 @@ namespace Bilten.Domain
                 {
                     if (i < brojRezultata)
                     {
-                        Nullable<float> ocena = rezultatiUkupno[i].getOcena(s);
+                        Nullable<float> ocena = rezultatiUkupno[i].getSprava(s);
                         if (ocena != null)
-                            result.addOcena(s, ocena);
+                            result.addOcena(s, ocena.Value);
                     }
                 }
             }

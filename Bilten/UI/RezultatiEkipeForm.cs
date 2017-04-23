@@ -438,8 +438,6 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             ISession session = null;
@@ -476,8 +474,6 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-            sw.Stop();
-            MessageBox.Show(sw.Elapsed.ToString());
 
             dataGridViewUserControl1.setItems<RezultatEkipno>(
                 ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());

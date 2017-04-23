@@ -537,6 +537,9 @@ namespace Bilten.Domain
 
             foreach (Propozicije p in propozicije)
             {
+                // TODO: Da li ovde treba kopirati ZaPreskokVisebojRacunajBoljuOcenu. I generalno, za obicno odvojeno
+                // takmicenje 2 (tj. koje nije finale kupa), da li mi treba posebno svojstvo kako se racuna
+                // preskok za odvojeno finale.
                 p.PostojiTak2 = this.PostojiTak2;
                 p.OdvojenoTak2 = this.OdvojenoTak2;
                 p.Tak2FinalnaOcenaJeMaxObaKola = this.Tak2FinalnaOcenaJeMaxObaKola;
@@ -602,8 +605,8 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Id.ToString());
             
             strBuilder.AppendLine(PostojiTak2.ToString());
-            strBuilder.AppendLine(ZaPreskokVisebojRacunajBoljuOcenu.ToString());
             strBuilder.AppendLine(OdvojenoTak2.ToString());
+            strBuilder.AppendLine(ZaPreskokVisebojRacunajBoljuOcenu.ToString());
             strBuilder.AppendLine(NeogranicenBrojTakmicaraIzKlubaTak2.ToString());
             strBuilder.AppendLine(MaxBrojTakmicaraIzKlubaTak2.ToString());
             strBuilder.AppendLine(BrojFinalistaTak2.ToString());

@@ -9,8 +9,8 @@
     </id>
     <property name="PostojiTak2" column="postoji_tak2" type="Boolean" />
     <property name="OdvojenoTak2" column="odvojeno_tak2" type="Boolean" />
-    <property name="NeogranicenBrojTakmicaraIzKlubaTak2" 
-              column="neogr_broj_tak_tak2" type="Boolean" />
+    <property name="ZaPreskokVisebojRacunajBoljuOcenu" column="preskok_tak2_bolja_ocena" type="Boolean" />
+    <property name="NeogranicenBrojTakmicaraIzKlubaTak2" column="neogr_broj_tak_tak2" type="Boolean" />
     <property name="MaxBrojTakmicaraIzKlubaTak2" column="max_tak_tak2" type="Byte" />
     <property name="BrojFinalistaTak2" column="broj_finalista_tak2" type="Byte" />
     <property name="BrojRezerviTak2" column="broj_rezervi_tak2" type="Byte" />

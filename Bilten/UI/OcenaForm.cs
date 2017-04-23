@@ -31,7 +31,6 @@ namespace Bilten.UI
         private DrugaOcena origOcena2;
         private bool izracunato;
         private bool textBoxHandlersDisabled;
-        private Ocena original;
         private int takmicenjeId;
 
         public OcenaForm(Nullable<int> ocenaId, GimnasticarUcesnik g, 
@@ -59,10 +58,6 @@ namespace Bilten.UI
             Ocena result = DAOFactoryFactory.DAOFactory.GetOcenaDAO().FindById(id);
             origOcena2 = result.Ocena2;
 
-            original = (Ocena)result.shallowCopy();
-            if (result.Ocena2 != null)
-                original.Ocena2 = (DrugaOcena)result.Ocena2.shallowCopy();
-            
             return result;
         }
 
@@ -1089,6 +1084,10 @@ namespace Bilten.UI
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Add(o);
 
             RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            Takmicenje1DAO tak1DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO();
+            Takmicenje2DAO tak2DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO();
+            Takmicenje3DAO tak3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
+            Takmicenje4DAO tak4DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO();
 
             IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar);            
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
@@ -1096,17 +1095,17 @@ namespace Bilten.UI
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
                     rt.Takmicenje1.updateRezultatiOnOcenaAdded(o, rt);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);
+                    tak1DAO.Update(rt.Takmicenje1);
                 }
-                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2 && rt.Propozicije.OdvojenoTak2)
+                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2 && rt.odvojenoTak2())
                 {
                     rt.Takmicenje2.ocenaAdded(o, rt);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
+                    tak2DAO.Update(rt.Takmicenje2);
                 }
-                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 && rt.Propozicije.OdvojenoTak3)
+                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 && rt.odvojenoTak3())
                 {
                     rt.Takmicenje3.ocenaAdded(o, rt);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
+                    tak3DAO.Update(rt.Takmicenje3);
                 }
             }
 
@@ -1120,18 +1119,20 @@ namespace Bilten.UI
                     continue;
                 // TODO4: Metod RezultatskoTakmicenjeService.findRezultatiUkupnoForEkipa treba da
                 // dobija argument deoTakKod. Takodje, treba praviti poseban objekat klase Ekipa za takmicenje 4, da bi se
-                // dopustila mogucnost da clanovi ekipe u takmicenju 4 budu razliciti od onih u takmicenju 1. To znaci
-                // da Ekipa takodje treba da ima svojstvo deoTakKod.
+                // dopustila mogucnost da clanovi ekipe u takmicenju 4 budu razliciti od onih u takmicenju 1.
                 List<RezultatUkupno> rezultati = RezultatskoTakmicenjeService.findRezultatiUkupnoForEkipa(takmicenjeId, e);
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
+                    // NOTE: Mora ponovo da se izracuna rezultat zato sto npr. ako ekipa ima 4 gimnasticara a racunaju se
+                    // 3 ocene, i trenutno su unesene 3 ocene, i ocena koja se dodaje nije najlosija, mora jedna ocena da
+                    // se izbaci, a posto ne vodim racuna o tome koja je najlosija ocena moram ponovo da racunam rezultat.
                     rt.Takmicenje1.updateRezultatEkipe(e, rt, rezultati);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);
+                    tak1DAO.Update(rt.Takmicenje1);
                 }
-                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4 && rt.Propozicije.OdvojenoTak4)
+                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4 && rt.odvojenoTak4())
                 {
                     rt.Takmicenje4.updateRezultatEkipe(e, rt, rezultati);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rt.Takmicenje4);
+                    tak4DAO.Update(rt.Takmicenje4);
                 }
             }
 
@@ -1184,24 +1185,28 @@ namespace Bilten.UI
             DAOFactoryFactory.DAOFactory.GetOcenaDAO().Update(o);
 
             RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            
+            Takmicenje1DAO tak1DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO();
+            Takmicenje2DAO tak2DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO();
+            Takmicenje3DAO tak3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
+            Takmicenje4DAO tak4DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO();
+        
             IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
-                    rt.Takmicenje1.updateRezultatiOnOcenaEdited(o, original, rt);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);
+                    rt.Takmicenje1.updateRezultatiOnOcenaEdited(o, rt);
+                    tak1DAO.Update(rt.Takmicenje1);
                 }
-                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2 && rt.Propozicije.OdvojenoTak2)
+                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2 && rt.odvojenoTak2())
                 {
-                    rt.Takmicenje2.ocenaEdited(o, original, rt);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
+                    rt.Takmicenje2.ocenaEdited(o, rt);
+                    tak2DAO.Update(rt.Takmicenje2);
                 }
-                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 && rt.Propozicije.OdvojenoTak3)
+                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 && rt.odvojenoTak3())
                 {
                     rt.Takmicenje3.ocenaEdited(o, rt);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
+                    tak3DAO.Update(rt.Takmicenje3);
                 }
             }
 
@@ -1215,12 +1220,12 @@ namespace Bilten.UI
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
                     rt.Takmicenje1.updateRezultatEkipe(e, rt, rezultati);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rt.Takmicenje1);
+                    tak1DAO.Update(rt.Takmicenje1);
                 }
-                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4 && rt.Propozicije.OdvojenoTak4)
+                else if (deoTakKod == DeoTakmicenjaKod.Takmicenje4 && rt.odvojenoTak4())
                 {
                     rt.Takmicenje4.updateRezultatEkipe(e, rt, rezultati);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rt.Takmicenje4);
+                    tak4DAO.Update(rt.Takmicenje4);
                 }
             }
 

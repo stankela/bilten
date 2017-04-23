@@ -700,8 +700,8 @@ namespace Bilten.Dao.NHibernate
                 foreach (object[] o in result)
                 {
                     Pair<RezultatskoTakmicenje, RezultatUkupno> p = new Pair<RezultatskoTakmicenje, RezultatUkupno>();
-                    p.First = o[0] as RezultatskoTakmicenje;
-                    p.Second = o[1] as RezultatUkupno;
+                    p.First = (RezultatskoTakmicenje)o[0];
+                    p.Second = (RezultatUkupno)o[1];
                     result2.Add(p);
                 }
                 return result2;

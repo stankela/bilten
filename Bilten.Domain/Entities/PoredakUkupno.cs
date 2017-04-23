@@ -67,7 +67,7 @@ namespace Bilten.Domain
             foreach (Ocena o in ocene)
             {
                 if (rezultatiMap.ContainsKey(o.Gimnasticar.Id))
-                    rezultatiMap[o.Gimnasticar.Id].addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                    rezultatiMap[o.Gimnasticar.Id].addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
             }
 
             Rezultati.Clear();
@@ -287,7 +287,7 @@ namespace Bilten.Domain
             RezultatUkupno r = getRezultat(o.Gimnasticar);
             if (r != null)
             {
-                r.addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                r.addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
@@ -308,19 +308,19 @@ namespace Bilten.Domain
             RezultatUkupno r = getRezultat(o.Gimnasticar);
             if (r != null)
             {
-                r.removeOcena(o);
+                r.clearSprava(o.Sprava);
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
         }
 
-        public virtual void editOcena(Ocena o, Ocena old, RezultatskoTakmicenje rezTak)
+        public virtual void editOcena(Ocena o, RezultatskoTakmicenje rezTak)
         {
             RezultatUkupno r = getRezultat(o.Gimnasticar);
             if (r != null)
             {
-                r.removeOcena(old);
-                r.addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                r.clearSprava(o.Sprava);
+                r.addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
                 rankRezultati();
                 updateKvalStatus(rezTak.Propozicije);
             }
@@ -333,7 +333,7 @@ namespace Bilten.Domain
             if (ocene.Count > 0)
             {
                 foreach (Ocena o in ocene)
-                    r.addOcena(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                    r.addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
             }
             Rezultati.Add(r);
 

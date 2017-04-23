@@ -75,7 +75,7 @@ namespace Bilten.Domain
         
         }
 
-        public virtual Nullable<float> getOcena(Sprava sprava)
+        public virtual Nullable<float> getSprava(Sprava sprava)
         {
             switch (sprava)
             {
@@ -108,7 +108,7 @@ namespace Bilten.Domain
             }
         }
 
-        protected void setOcena(Sprava sprava, Nullable<float> value)
+        protected void setSprava(Sprava sprava, Nullable<float> value)
         {
             switch (sprava)
             {
@@ -149,7 +149,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void addOcena(Ocena o, bool zaPreskokVisebojRacunajBoljuOcenu)
+        public virtual void addSprava(Ocena o, bool zaPreskokVisebojRacunajBoljuOcenu)
         {
             float? value;
             if (o.Sprava != Sprava.Preskok || !zaPreskokVisebojRacunajBoljuOcenu)
@@ -161,7 +161,7 @@ namespace Bilten.Domain
                 else
                     value = Math.Max(o.Total.Value, o.Ocena2.Total.Value);
             }
-            setOcena(o.Sprava, value);
+            setSprava(o.Sprava, value);
 
             if (Total == null)
                 Total = value;
@@ -169,13 +169,13 @@ namespace Bilten.Domain
                 Total = (float)((decimal)Total + (decimal)value);
         }
 
-        public virtual void removeOcena(Ocena o)
+        public virtual void clearSprava(Sprava s)
         {
-            float? value = getOcena(o.Sprava);
+            float? value = getSprava(s);
             if (value == null)
                 return;
-            setOcena(o.Sprava, null);
 
+            setSprava(s, null);
             if (isEmpty())
                 Total = null;
             else
