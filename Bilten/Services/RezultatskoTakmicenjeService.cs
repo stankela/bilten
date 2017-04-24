@@ -216,10 +216,11 @@ namespace Bilten.Services
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                if (!rt.Propozicije.Equals(origPropozicije[rt.Id]))
+                object diff = rt.Propozicije.getDiff(origPropozicije[rt.Id], null, null);
+                if (diff != null)
                 {
                     rezTakDAO.Update(rt); // mora update a ne attach da bi se snimile promenjene propozicije
-                    rt.updateTakmicenjaFromChangedPropozicije();
+                    rt.updateTakmicenjaFromChangedPropozicije(diff);
                     RezultatskoTakmicenjeService.izracunajSveRezultate(rt);
                     //rezTakDAO.Update(rt); // da li je potreban ovaj drugi update
                 }

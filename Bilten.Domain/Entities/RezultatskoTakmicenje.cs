@@ -130,33 +130,9 @@ namespace Bilten.Domain
                 _takmicenje4 = new Takmicenje4();
         }
 
-        public virtual void updateTakmicenjaFromChangedPropozicije()
+        public virtual void updateTakmicenjaFromChangedPropozicije(object diff)
         {
-            if (odvojenoTak2() != (Takmicenje2 != null))
-            {
-                if (Takmicenje2 != null)
-                    // postojalo je odvojeno takmicenje II, ali je u novim propozicijama
-                    // OdvojenoTak2 postavljeno na false
-                    Takmicenje2 = null;
-                else
-                    // nije postojalo odvojeno takmicenje II, a u novim propozicijama je
-                    // OdvojenoTak2 postavljeno na true
-                    Takmicenje2 = new Takmicenje2();
-            }
-            if (odvojenoTak3() != (Takmicenje3 != null))
-            {
-                if (Takmicenje3 != null)
-                    Takmicenje3 = null;
-                else
-                    Takmicenje3 = new Takmicenje3(this.Gimnastika);
-            }
-            if (odvojenoTak4() != (Takmicenje4 != null))
-            {
-                if (Takmicenje4 != null)
-                    Takmicenje4 = null;
-                else
-                    Takmicenje4 = new Takmicenje4();
-            }
+            // TODO4
         }
 
         public virtual string Naziv

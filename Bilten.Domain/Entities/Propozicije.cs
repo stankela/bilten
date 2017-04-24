@@ -644,50 +644,193 @@ namespace Bilten.Domain
             return result;
         }
 
-        public override bool Equals(object other)
+        public virtual object getDiff(Propozicije _base, Takmicenje takmicenje, RezultatskoTakmicenje rt)
         {
-            if (object.ReferenceEquals(this, other)) return true;
-            if (!(other is Propozicije)) return false;
-            Propozicije that = (Propozicije)other;
+            if (this.PostojiTak2 != _base.PostojiTak2)
+            {
+                // ignorisi, posto Takmicenje 2 uvek postoji, da bi se videli rezultati
+            }
+            else if (this.OdvojenoTak2 != _base.OdvojenoTak2)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                {
+                    // ignorisi
+                }
+                else if (this.OdvojenoTak2)
+                {
+                    // nije postojalo odvojeno takmicenje II, a u novim propozicijama je OdvojenoTak2 postavljeno na true
+                    //rt.Takmicenje2 = new Takmicenje2();
+                }
+                else
+                {
+                    // postojalo je odvojeno takmicenje II, ali je u novim propozicijama OdvojenoTak2 postavljeno na false
+                    //rt.Takmicenje2 = null;
+                }
+            }
+            else if (this.ZaPreskokVisebojRacunajBoljuOcenu != _base.ZaPreskokVisebojRacunajBoljuOcenu)
+            { 
+                // kreirati poredak ukupno za takmicenje1
+                // kreirati poredak ekipno za takmicenje1
+            }
+            else if (this.NeogranicenBrojTakmicaraIzKlubaTak2 != _base.NeogranicenBrojTakmicaraIzKlubaTak2)
+            {
+                // kreirati poredak ukupno za takmicenje1
+            }
+            else if (this.MaxBrojTakmicaraIzKlubaTak2 != _base.MaxBrojTakmicaraIzKlubaTak2)
+            {
+                // kreirati poredak ukupno za takmicenje1
+            }
+            else if (this.BrojFinalistaTak2 != _base.BrojFinalistaTak2)
+            {
+                // kreirati poredak ukupno za takmicenje1
+            }
+            else if (this.BrojRezerviTak2 != _base.BrojRezerviTak2)
+            {
+                // kreirati poredak ukupno za takmicenje1
+            }
 
-            return this.PostojiTak2 == that.PostojiTak2
-            && this.OdvojenoTak2 == that.OdvojenoTak2
-            && this.ZaPreskokVisebojRacunajBoljuOcenu == that.ZaPreskokVisebojRacunajBoljuOcenu
-            && this.NeogranicenBrojTakmicaraIzKlubaTak2 == that.NeogranicenBrojTakmicaraIzKlubaTak2
-            && this.MaxBrojTakmicaraIzKlubaTak2 == that.MaxBrojTakmicaraIzKlubaTak2
-            && this.BrojFinalistaTak2 == that.BrojFinalistaTak2
-            && this.BrojRezerviTak2 == that.BrojRezerviTak2
+            else if (this.PostojiTak3 != _base.PostojiTak3)
+            {
+                // ignorisi, posto Takmicenje 3 uvek postoji, da bi se videli rezultati
+            }
+            else if (this.OdvojenoTak3 != _base.OdvojenoTak3)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                { 
+                    // ignorisi
+                }
+                else if (this.OdvojenoTak3)
+                {
+                     //rt.Takmicenje3 = new Takmicenje3(takmicenje.Gimnastika);
+                }
+                else
+                {
+                    //rt.Takmicenje3 = null;                
+                }
+            }
+            else if (this.NeogranicenBrojTakmicaraIzKlubaTak3 != _base.NeogranicenBrojTakmicaraIzKlubaTak3)
+            {
+                // kreirati poredak sprave za takmicenje1
+            }
+            else if (this.MaxBrojTakmicaraIzKlubaTak3 != _base.MaxBrojTakmicaraIzKlubaTak3)
+            {
+                // kreirati poredak sprave za takmicenje1
+            }
+            else if (this.MaxBrojTakmicaraTak3VaziZaDrzavu != _base.MaxBrojTakmicaraTak3VaziZaDrzavu)
+            {
+                // kreirati poredak sprave za takmicenje1
+            }
+            else if (this.BrojFinalistaTak3 != _base.BrojFinalistaTak3)
+            {
+                // kreirati poredak sprave za takmicenje1
+            }
+            else if (this.BrojRezerviTak3 != _base.BrojRezerviTak3)
+            {
+                // kreirati poredak sprave za takmicenje1
+            }
+            else if (this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka != _base.KvalifikantiTak3PreskokNaOsnovuObaPreskoka)
+            {
+                // kreirati poredak sprave za takmicenje1
+            }
+            else if (this.PoredakTak3PreskokNaOsnovuObaPreskoka != _base.PoredakTak3PreskokNaOsnovuObaPreskoka)
+            {
+                // kreirati poredak sprave za takmicenje1
+            }
 
-            && this.PostojiTak3 == that.PostojiTak3
-            && this.OdvojenoTak3 == that.OdvojenoTak3
-            && this.NeogranicenBrojTakmicaraIzKlubaTak3 == that.NeogranicenBrojTakmicaraIzKlubaTak3
-            && this.MaxBrojTakmicaraIzKlubaTak3 == that.MaxBrojTakmicaraIzKlubaTak3
-            && this.MaxBrojTakmicaraTak3VaziZaDrzavu == that.MaxBrojTakmicaraTak3VaziZaDrzavu
-            && this.BrojFinalistaTak3 == that.BrojFinalistaTak3
-            && this.BrojRezerviTak3 == that.BrojRezerviTak3
-            && this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka == that.KvalifikantiTak3PreskokNaOsnovuObaPreskoka
-            && this.PoredakTak3PreskokNaOsnovuObaPreskoka == that.PoredakTak3PreskokNaOsnovuObaPreskoka
+            else if (this.PostojiTak4 != _base.PostojiTak4)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                {
+                    // ignorisi
+                }
+                else if (this.PostojiTak4)
+                {
+                    // ignorisi, posto se PoredakEkipno za takmicenje 1 uvek kreira
+                }
+                else
+                {
+                    // prvo pitati korisnika za potvrdu, za zatim izbrisati ekipe i poredak ekipno.
+                }
+            }
+            else if (this.OdvojenoTak4 != _base.OdvojenoTak4)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                {
+                    // ignorisi
+                }
+                else if (this.OdvojenoTak4)
+                {
+                    //rt.Takmicenje4 = new Takmicenje4();
+                }
+                else
+                {
+                    //rt.Takmicenje4 = null;                
+                }
+            }
+            else if (this.BrojRezultataKojiSeBodujuZaEkipu != _base.BrojRezultataKojiSeBodujuZaEkipu)
+            {
+                // kreirati poredak ekipe za takmicenje1
+            }
+            else if (this.BrojEkipaUFinalu != _base.BrojEkipaUFinalu)
+            {
+                // kreirati poredak ekipe za takmicenje1
+            }
+            else if (this.JednoTak4ZaSveKategorije != _base.JednoTak4ZaSveKategorije)
+            {
+                // ajpdejtuje se u updateImaEkipnoTakmicenje
+            }
 
-            && this.PostojiTak4 == that.PostojiTak4
-            && this.OdvojenoTak4 == that.OdvojenoTak4
-            && this.BrojRezultataKojiSeBodujuZaEkipu == that.BrojRezultataKojiSeBodujuZaEkipu
-            && this.BrojEkipaUFinalu == that.BrojEkipaUFinalu
-            && this.JednoTak4ZaSveKategorije == that.JednoTak4ZaSveKategorije
+            else if (this.Tak2FinalnaOcenaJeZbirObaKola != _base.Tak2FinalnaOcenaJeZbirObaKola)
+            {    
+                // izracunaj ponovo PoredakUkupnoFinaleKupa ili PoredakUkupnoZbirViseKola
+            }
+            else if (this.Tak2FinalnaOcenaJeMaxObaKola != _base.Tak2FinalnaOcenaJeMaxObaKola)
+            {
+                // izracunaj ponovo PoredakUkupnoFinaleKupa ili PoredakUkupnoZbirViseKola
+            }
+            else if (this.Tak2FinalnaOcenaJeProsekObaKola != _base.Tak2FinalnaOcenaJeProsekObaKola)
+            {
+                // izracunaj ponovo PoredakUkupnoFinaleKupa ili PoredakUkupnoZbirViseKola
+            }
+            else if (this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola != _base.Tak2NeRacunajProsekAkoNemaOceneIzObaKola)
+            {
+                // izracunaj ponovo PoredakUkupnoFinaleKupa ili PoredakUkupnoZbirViseKola
+            }
 
-            && this.Tak2FinalnaOcenaJeZbirObaKola == that.Tak2FinalnaOcenaJeZbirObaKola
-            && this.Tak2FinalnaOcenaJeMaxObaKola == that.Tak2FinalnaOcenaJeMaxObaKola
-            && this.Tak2FinalnaOcenaJeProsekObaKola == that.Tak2FinalnaOcenaJeProsekObaKola
-            && this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak2NeRacunajProsekAkoNemaOceneIzObaKola
+            else if (this.Tak3FinalnaOcenaJeZbirObaKola != _base.Tak3FinalnaOcenaJeZbirObaKola)
+            {   
+                // izracunaj ponovo PoredakSpravaFinaleKupa
+            }
+            else if (this.Tak3FinalnaOcenaJeMaxObaKola != _base.Tak3FinalnaOcenaJeMaxObaKola)
+            {
+                // izracunaj ponovo PoredakSpravaFinaleKupa
+            }
+            else if (this.Tak3FinalnaOcenaJeProsekObaKola != _base.Tak3FinalnaOcenaJeProsekObaKola)
+            {
+                // izracunaj ponovo PoredakSpravaFinaleKupa
+            }
+            else if (this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola != _base.Tak3NeRacunajProsekAkoNemaOceneIzObaKola)
+            {
+                // izracunaj ponovo PoredakSpravaFinaleKupa
+            }
 
-            && this.Tak3FinalnaOcenaJeZbirObaKola == that.Tak3FinalnaOcenaJeZbirObaKola
-            && this.Tak3FinalnaOcenaJeMaxObaKola == that.Tak3FinalnaOcenaJeMaxObaKola
-            && this.Tak3FinalnaOcenaJeProsekObaKola == that.Tak3FinalnaOcenaJeProsekObaKola
-            && this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak3NeRacunajProsekAkoNemaOceneIzObaKola
-
-            && this.Tak4FinalnaOcenaJeZbirObaKola == that.Tak4FinalnaOcenaJeZbirObaKola
-            && this.Tak4FinalnaOcenaJeMaxObaKola == that.Tak4FinalnaOcenaJeMaxObaKola
-            && this.Tak4FinalnaOcenaJeProsekObaKola == that.Tak4FinalnaOcenaJeProsekObaKola
-            && this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
+            else if (this.Tak4FinalnaOcenaJeZbirObaKola != _base.Tak4FinalnaOcenaJeZbirObaKola)
+            {
+                // izracunaj ponovo PoredakEkipnoFinaleKupa ili PoredakEkipnoZbirViseKola
+            }
+            else if (this.Tak4FinalnaOcenaJeMaxObaKola != _base.Tak4FinalnaOcenaJeMaxObaKola)
+            {
+                // izracunaj ponovo PoredakEkipnoFinaleKupa ili PoredakEkipnoZbirViseKola
+            }
+            else if (this.Tak4FinalnaOcenaJeProsekObaKola != _base.Tak4FinalnaOcenaJeProsekObaKola)
+            {
+                // izracunaj ponovo PoredakEkipnoFinaleKupa ili PoredakEkipnoZbirViseKola
+            }
+            else if(this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola != _base.Tak4NeRacunajProsekAkoNemaOceneIzObaKola)
+            {
+                // izracunaj ponovo PoredakEkipnoFinaleKupa ili PoredakEkipnoZbirViseKola
+            }
+            return null;
         }
 
         public override int GetHashCode()
