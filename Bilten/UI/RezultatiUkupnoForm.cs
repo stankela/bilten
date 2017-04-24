@@ -109,21 +109,21 @@ namespace Bilten.UI
                 result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                     .FindByTakmicenjeFetchTakmicenje2(takmicenjeId);
 
-            foreach (RezultatskoTakmicenje tak in result)
+            foreach (RezultatskoTakmicenje rt in result)
             {
                 // potrebno u Poredak.create
-                NHibernateUtil.Initialize(tak.Propozicije);
+                NHibernateUtil.Initialize(rt.Propozicije);
 
                 // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
                 // fetch u queriju, jako se sporo izvrsava (verovato
                 // zato sto se dobavljaju dve kolekcije - Gimnasticari i 
                 // Rezultati).
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                    NHibernateUtil.Initialize(tak.Takmicenje1.PoredakUkupno.Rezultati);
+                    NHibernateUtil.Initialize(rt.Takmicenje1.PoredakUkupno.Rezultati);
                 else
                 {
-                    if (tak.Propozicije.PostojiTak2)
-                        NHibernateUtil.Initialize(tak.Takmicenje2.Poredak.Rezultati);
+                    if (rt.odvojenoTak2())
+                        NHibernateUtil.Initialize(rt.Takmicenje2.Poredak.Rezultati);
                 }
 
             }
@@ -280,15 +280,15 @@ namespace Bilten.UI
             Cursor.Show();
             try
             {
-                PreviewDialog p = new PreviewDialog();
+                PreviewDialog form2 = new PreviewDialog();
 
-                List<RezultatUkupnoExtended> rezultati = ActiveTakmicenje.getPoredakUkupno(deoTakKod)
-                    .getRezultatiExtended(loadOcene(takmicenje.Id, deoTakKod), Opcije.Instance.PrikaziDEOcene,
-                        ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
+                List<RezultatUkupnoExtended> rezultati = p.getRezultatiExtended(loadOcene(takmicenje.Id, deoTakKod),
+                    Opcije.Instance.PrikaziDEOcene, ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
 
-                p.setIzvestaj(new UkupnoIzvestaj(rezultati, ActiveTakmicenje.Gimnastika, Opcije.Instance.PrikaziDEOcene,
-                    kvalColumnVisible(), dataGridViewUserControl1.DataGridView, documentName));
-                p.ShowDialog();
+                form2.setIzvestaj(new UkupnoIzvestaj(rezultati, ActiveTakmicenje.Gimnastika, Opcije.Instance.PrikaziDEOcene,
+                    kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName));
+                form2.ShowDialog();
             }
             catch (InfrastructureException ex)
             {

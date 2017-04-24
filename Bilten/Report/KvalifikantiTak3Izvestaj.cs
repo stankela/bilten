@@ -287,9 +287,9 @@ namespace Bilten.Report
             float rankWidthCm = 0.7f;
 
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-            float imeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
-            float ocenaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
             if (this.praznaLista)
             {
                 // Kada je lista prazna, namerno biram male vrednosti da bih sprecio da velicina kolona prazne liste
@@ -312,7 +312,7 @@ namespace Bilten.Report
 
             float rankWidthCm = 0.7f;
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-            float ocenaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
 
             doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth, ocenaWidth);
         }

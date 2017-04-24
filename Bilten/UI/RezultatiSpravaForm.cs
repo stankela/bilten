@@ -130,24 +130,24 @@ namespace Bilten.UI
                 result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                     .FindByTakmicenjeFetch_Tak3_Poredak(takmicenjeId);
 
-            foreach (RezultatskoTakmicenje tak in result)
+            foreach (RezultatskoTakmicenje rt in result)
             {
                 // potrebno u Poredak.create
-                NHibernateUtil.Initialize(tak.Propozicije);
+                NHibernateUtil.Initialize(rt.Propozicije);
 
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
-                    foreach (PoredakSprava p in tak.Takmicenje1.PoredakSprava)
+                    foreach (PoredakSprava p in rt.Takmicenje1.PoredakSprava)
                         NHibernateUtil.Initialize(p.Rezultati);
-                    NHibernateUtil.Initialize(tak.Takmicenje1.PoredakPreskok.Rezultati);
+                    NHibernateUtil.Initialize(rt.Takmicenje1.PoredakPreskok.Rezultati);
                 }
                 else
                 {
-                    if (tak.Propozicije.PostojiTak3)
+                    if (rt.odvojenoTak3())
                     {
-                        foreach (PoredakSprava p in tak.Takmicenje3.Poredak)
+                        foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
                             NHibernateUtil.Initialize(p.Rezultati);
-                        NHibernateUtil.Initialize(tak.Takmicenje3.PoredakPreskok.Rezultati);
+                        NHibernateUtil.Initialize(rt.Takmicenje3.PoredakPreskok.Rezultati);
                     }
                 }
             }

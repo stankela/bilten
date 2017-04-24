@@ -26,7 +26,8 @@ namespace Bilten.Report
 		private float x;
 		private float width;
 		
-        protected int itemsIndex;
+        public int itemsIndex;
+
         protected int itemsSpan = 1;
 
         private string format;

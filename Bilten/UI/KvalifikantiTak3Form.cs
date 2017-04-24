@@ -101,15 +101,15 @@ namespace Bilten.UI
         {
             IList<RezultatskoTakmicenje> result
                 = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByTakmicenjeFetchTakmicenje3(takmicenjeId);
-            foreach (RezultatskoTakmicenje tak in result)
+            foreach (RezultatskoTakmicenje rt in result)
             {
-                NHibernateUtil.Initialize(tak.Propozicije);
-                NHibernateUtil.Initialize(tak.Takmicenje);
-                if (tak.Propozicije.PostojiTak3)
+                NHibernateUtil.Initialize(rt.Propozicije);
+                NHibernateUtil.Initialize(rt.Takmicenje);
+                if (rt.odvojenoTak3())
                 {
-                    foreach (PoredakSprava p in tak.Takmicenje3.Poredak)
+                    foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
                         NHibernateUtil.Initialize(p.Rezultati);
-                    NHibernateUtil.Initialize(tak.Takmicenje3.PoredakPreskok.Rezultati);
+                    NHibernateUtil.Initialize(rt.Takmicenje3.PoredakPreskok.Rezultati);
                 }
             }
             return result;

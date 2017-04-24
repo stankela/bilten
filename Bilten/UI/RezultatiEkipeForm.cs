@@ -102,21 +102,21 @@ namespace Bilten.UI
                 result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                     .FindByTakmicenjeFetch_Tak4_Gimnasticari_Poredak(takmicenjeId);
 
-            foreach (RezultatskoTakmicenje tak in result)
+            foreach (RezultatskoTakmicenje rt in result)
             {
                 // potrebno u Poredak.create
-                NHibernateUtil.Initialize(tak.Propozicije);
+                NHibernateUtil.Initialize(rt.Propozicije);
 
                 // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
                 // fetch u queriju, jako se sporo izvrsava (verovato
                 // zato sto se dobavljaju dve kolekcije - Gimnasticari i 
                 // Rezultati).
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-                    NHibernateUtil.Initialize(tak.Takmicenje1.PoredakEkipno.Rezultati);
+                    NHibernateUtil.Initialize(rt.Takmicenje1.PoredakEkipno.Rezultati);
                 else
                 {
-                    if (tak.Propozicije.PostojiTak4)
-                        NHibernateUtil.Initialize(tak.Takmicenje4.Poredak.Rezultati);
+                    if (rt.odvojenoTak4())
+                        NHibernateUtil.Initialize(rt.Takmicenje4.Poredak.Rezultati);
                 }
 
             }
@@ -305,8 +305,7 @@ namespace Bilten.UI
 
                 string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
-                List<RezultatEkipno> rezultatiEkipno =
-                    ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati();
+                List<RezultatEkipno> rezultatiEkipno = ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati();
 
                 bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak4();
 

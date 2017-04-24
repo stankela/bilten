@@ -152,11 +152,11 @@ namespace Bilten.Report
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
             float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
-            float imeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float koloWidth = rankWidth / 2;
 
-            float spravaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float spravaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
             float totalWidth = spravaWidth;
             if (extended)
             {

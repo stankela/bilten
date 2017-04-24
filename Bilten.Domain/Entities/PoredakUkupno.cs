@@ -365,6 +365,16 @@ namespace Bilten.Domain
             updateKvalStatus(rezTak.Propozicije);
         }
 
+        public virtual bool hasPenalty()
+        {
+            foreach (RezultatUkupno r in Rezultati)
+            {
+                if (r.Penalty != null)
+                    return true;
+            }
+            return false;
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

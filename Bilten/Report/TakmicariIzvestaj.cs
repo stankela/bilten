@@ -103,8 +103,8 @@ namespace Bilten.Report
             float imeWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
             float prezimeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float godinaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[5].Width * printWidth / gridWidth;
-            float drzavaWidth = this.formGrid.Columns[6].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            float drzavaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
 
 
 			float xRank = contentBounds.X;

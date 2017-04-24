@@ -145,10 +145,10 @@ namespace Bilten.Report
 
             // kolo i kval sam podesio kao polovinu Rank kolone.
             float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
-            float imeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float koloWidth = rankWidth / 2;
-            float ocenaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
             float kvalWidth = rankWidth / 2;
 
             int brojOcena = 3;

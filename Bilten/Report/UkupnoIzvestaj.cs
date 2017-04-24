@@ -14,7 +14,7 @@ namespace Bilten.Report
 		private UkupnoLista lista;
 
 		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
-            bool extended, bool kvalColumn, DataGridView formGrid, string documentName)
+            bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, string documentName)
 		{
             DocumentName = documentName;
 
@@ -28,7 +28,7 @@ namespace Bilten.Report
                 Margins = new Margins(75, 75, 75, 75);
 
             lista = new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, kvalColumn, formGrid);
+                gim, extended, kvalColumn, penalty, formGrid);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -51,16 +51,17 @@ namespace Bilten.Report
 
         private bool extended;
         private bool kvalColumn;
+        private bool penalty;
         private Gimnastika gimnastika;
 
 		public UkupnoLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoExtended> rezultati,
-            Gimnastika gim, bool extended, bool kvalColumn, DataGridView formGrid)
-            : base(izvestaj, pageNum, y, itemFont,
-            itemsHeaderFont, formGrid)
+            Gimnastika gim, bool extended, bool kvalColumn, bool penalty, DataGridView formGrid)
+            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.extended = extended;
             this.kvalColumn = kvalColumn;
+            this.penalty = penalty;
             this.gimnastika = gim;
 
             totalBrush = Brushes.White;
@@ -82,44 +83,44 @@ namespace Bilten.Report
             Gimnastika gim, bool extended)
         {
             List<object[]> result = new List<object[]>();
-            foreach (RezultatUkupnoExtended rez in rezultati)
+            foreach (RezultatUkupnoExtended r in rezultati)
             {
                 if (gim == Gimnastika.MSG)
                 {
                     if (extended)
                     {
-                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.ParterD, rez.ParterE, rez.Parter, 
-                            rez.KonjD, rez.KonjE, rez.Konj, 
-                            rez.KarikeD, rez.KarikeE, rez.Karike, 
-                            rez.PreskokD, rez.PreskokE, rez.Preskok, 
-                            rez.RazbojD, rez.RazbojE, rez.Razboj, 
-                            rez.VratiloD, rez.VratiloE, rez.Vratilo, 
-                            rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                            r.ParterD, r.ParterE, r.Parter, 
+                            r.KonjD, r.KonjE, r.Konj, 
+                            r.KarikeD, r.KarikeE, r.Karike, 
+                            r.PreskokD, r.PreskokE, r.Preskok, 
+                            r.RazbojD, r.RazbojE, r.Razboj, 
+                            r.VratiloD, r.VratiloE, r.Vratilo, 
+                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
                     }
                     else
                     {
-                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.Parter, rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, 
-                            rez.Vratilo, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                            r.Parter, r.Konj, r.Karike, r.Preskok, r.Razboj, 
+                            r.Vratilo, r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
                     }
                 }
                 else
                 {
                     if (extended)
                     {
-                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.PreskokD, rez.PreskokE, rez.Preskok, 
-                            rez.DvovisinskiRazbojD, rez.DvovisinskiRazbojE, rez.DvovisinskiRazboj, 
-                            rez.GredaD, rez.GredaE, rez.Greda, 
-                            rez.ParterD, rez.ParterE, rez.Parter, 
-                            rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                            r.PreskokD, r.PreskokE, r.Preskok, 
+                            r.DvovisinskiRazbojD, r.DvovisinskiRazbojE, r.DvovisinskiRazboj, 
+                            r.GredaD, r.GredaE, r.Greda, 
+                            r.ParterD, r.ParterE, r.Parter, 
+                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
                     }
                     else
                     {
-                        result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
-                            rez.Preskok, rez.DvovisinskiRazboj, rez.Greda, rez.Parter, 
-                            rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                            r.Preskok, r.DvovisinskiRazboj, r.Greda, r.Parter, 
+                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
                     }
                 }
             }
@@ -148,15 +149,14 @@ namespace Bilten.Report
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
             float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
-            float imeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+            float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
 
-            float spravaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float spravaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            float penaltyWidth = spravaWidth * (2.0f / 3);
             float totalWidth = spravaWidth;
             if (extended)
-            {
                 spravaWidth = spravaWidth * 2.3f;
-            }
             float kvalWidth = rankWidth / 2;
 
 			float xRank = contentBounds.X;
@@ -171,6 +171,10 @@ namespace Bilten.Report
             float xTotal = xVratilo + spravaWidth;
             if (gimnastika == Gimnastika.ZSG)
                 xTotal = xRazboj;
+
+            float xPenalty = xTotal;
+            if (penalty)
+                xTotal += penaltyWidth;
 
             float xKval = xTotal + totalWidth;
             
@@ -205,6 +209,7 @@ namespace Bilten.Report
             xPreskok += delta;
             xRazboj += delta;
             xVratilo += delta;
+            xPenalty += delta;
             xTotal += delta;
             xKval += delta;
             xRightEnd += delta;
@@ -264,6 +269,7 @@ namespace Bilten.Report
 
             string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
             string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
+            string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
             Sprava[] sprave = Sprave.getSprave(gimnastika);
@@ -312,6 +318,17 @@ namespace Bilten.Report
                 column = addColumn(xKval, kvalWidth, kvalFormat, kvalTitle);
                 column.DrawHeaderRect = false;
                 column.DrawItemRect = false;
+            }
+            if (penalty)
+            {
+                column = addColumn(xPenalty, penaltyWidth, fmtPen, totalFormat, "Pen.", totalHeaderFormat);
+                if (!kvalColumn)
+                {
+                    // Posto se kvalifikacioni status uvek dodaje u report items, cak i ako ne postoji kolona za
+                    // kval. status, moram da azuriram report item index za penalty ako nije dodata kolona za
+                    // kvalifikacioni status.
+                    column.itemsIndex += 1;
+                }
             }
         }
 		

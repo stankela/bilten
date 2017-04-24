@@ -90,12 +90,12 @@ namespace Bilten.UI
         {
             IList<RezultatskoTakmicenje> result 
                 = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByTakmicenjeFetchTakmicenje2(takmicenjeId);
-            foreach (RezultatskoTakmicenje tak in result)
+            foreach (RezultatskoTakmicenje rt in result)
             {
-                NHibernateUtil.Initialize(tak.Propozicije);
-                NHibernateUtil.Initialize(tak.Takmicenje);
-                if (tak.Propozicije.PostojiTak2)
-                    NHibernateUtil.Initialize(tak.Takmicenje2.Poredak.Rezultati);
+                NHibernateUtil.Initialize(rt.Propozicije);
+                NHibernateUtil.Initialize(rt.Takmicenje);
+                if (rt.odvojenoTak2())
+                    NHibernateUtil.Initialize(rt.Takmicenje2.Poredak.Rezultati);
             }
             return result;
         }
