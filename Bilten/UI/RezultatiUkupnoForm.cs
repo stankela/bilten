@@ -206,8 +206,6 @@ namespace Bilten.UI
 
         private void onSelectedTakmicenjeChanged()
         {
-            // TODO4: Kolonu za penalizaciju treba prikazivati samo ako postoji penalizacija za nekog gimnasticara.
-            // Isto i za ekipnu penalizaciju.
             if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
             {
                 GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
@@ -301,6 +299,8 @@ namespace Bilten.UI
             }
         }
 
+        // TODO3: Svi metodi koji otvaraju svoju posebnu sesiju bi trebali nekako da budu oznaceni, npr. da im se u
+        // nazivu metoda stavi rec Query ili nesto slicno.
         // TODO4: Ukloni sve ovakve metode gde se ocene ucitavaju u posebnoj sesiji. Koristi Evict.
         private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {

@@ -344,9 +344,7 @@ namespace Bilten.Domain
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (rezTakMap.ContainsKey(rt.TakmicenjeDescription.Id))
-                {
                     rezTakMap[rt.TakmicenjeDescription.Id].Add(rt);
-                }
                 else
                 {
                     List<RezultatskoTakmicenje> rezTakList = new List<RezultatskoTakmicenje>();

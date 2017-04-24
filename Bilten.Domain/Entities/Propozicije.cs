@@ -600,6 +600,101 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual Propozicije clonePropozicije()
+        {
+            Propozicije result = new Propozicije();
+            result.PostojiTak2 = this.PostojiTak2;
+            result.OdvojenoTak2 = this.OdvojenoTak2;
+            result.ZaPreskokVisebojRacunajBoljuOcenu = this.ZaPreskokVisebojRacunajBoljuOcenu;
+            result.NeogranicenBrojTakmicaraIzKlubaTak2 = this.NeogranicenBrojTakmicaraIzKlubaTak2;
+            result.MaxBrojTakmicaraIzKlubaTak2 = this.MaxBrojTakmicaraIzKlubaTak2;
+            result.BrojFinalistaTak2 = this.BrojFinalistaTak2;
+            result.BrojRezerviTak2 = this.BrojRezerviTak2;
+
+            result.PostojiTak3 = this.PostojiTak3;
+            result.OdvojenoTak3 = this.OdvojenoTak3;
+            result.NeogranicenBrojTakmicaraIzKlubaTak3 = this.NeogranicenBrojTakmicaraIzKlubaTak3;
+            result.MaxBrojTakmicaraIzKlubaTak3 = this.MaxBrojTakmicaraIzKlubaTak3;
+            result.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
+            result.BrojFinalistaTak3 = this.BrojFinalistaTak3;
+            result.BrojRezerviTak3 = this.BrojRezerviTak3;
+            result.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+            result.PoredakTak3PreskokNaOsnovuObaPreskoka = this.PoredakTak3PreskokNaOsnovuObaPreskoka;
+
+            result.PostojiTak4 = this.PostojiTak4;
+            result.OdvojenoTak4 = this.OdvojenoTak4;
+            result.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
+            result.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
+            result.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
+
+            result.Tak2FinalnaOcenaJeZbirObaKola = this.Tak2FinalnaOcenaJeZbirObaKola;
+            result.Tak2FinalnaOcenaJeMaxObaKola = this.Tak2FinalnaOcenaJeMaxObaKola;
+            result.Tak2FinalnaOcenaJeProsekObaKola = this.Tak2FinalnaOcenaJeProsekObaKola;
+            result.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
+
+            result.Tak3FinalnaOcenaJeZbirObaKola = this.Tak3FinalnaOcenaJeZbirObaKola;
+            result.Tak3FinalnaOcenaJeMaxObaKola = this.Tak3FinalnaOcenaJeMaxObaKola;
+            result.Tak3FinalnaOcenaJeProsekObaKola = this.Tak3FinalnaOcenaJeProsekObaKola;
+            result.Tak3NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola;
+
+            result.Tak4FinalnaOcenaJeZbirObaKola = this.Tak4FinalnaOcenaJeZbirObaKola;
+            result.Tak4FinalnaOcenaJeMaxObaKola = this.Tak4FinalnaOcenaJeMaxObaKola;
+            result.Tak4FinalnaOcenaJeProsekObaKola = this.Tak4FinalnaOcenaJeProsekObaKola;
+            result.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
+            return result;
+        }
+
+        public override bool Equals(object other)
+        {
+            if (object.ReferenceEquals(this, other)) return true;
+            if (!(other is Propozicije)) return false;
+            Propozicije that = (Propozicije)other;
+
+            return this.PostojiTak2 == that.PostojiTak2
+            && this.OdvojenoTak2 == that.OdvojenoTak2
+            && this.ZaPreskokVisebojRacunajBoljuOcenu == that.ZaPreskokVisebojRacunajBoljuOcenu
+            && this.NeogranicenBrojTakmicaraIzKlubaTak2 == that.NeogranicenBrojTakmicaraIzKlubaTak2
+            && this.MaxBrojTakmicaraIzKlubaTak2 == that.MaxBrojTakmicaraIzKlubaTak2
+            && this.BrojFinalistaTak2 == that.BrojFinalistaTak2
+            && this.BrojRezerviTak2 == that.BrojRezerviTak2
+
+            && this.PostojiTak3 == that.PostojiTak3
+            && this.OdvojenoTak3 == that.OdvojenoTak3
+            && this.NeogranicenBrojTakmicaraIzKlubaTak3 == that.NeogranicenBrojTakmicaraIzKlubaTak3
+            && this.MaxBrojTakmicaraIzKlubaTak3 == that.MaxBrojTakmicaraIzKlubaTak3
+            && this.MaxBrojTakmicaraTak3VaziZaDrzavu == that.MaxBrojTakmicaraTak3VaziZaDrzavu
+            && this.BrojFinalistaTak3 == that.BrojFinalistaTak3
+            && this.BrojRezerviTak3 == that.BrojRezerviTak3
+            && this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka == that.KvalifikantiTak3PreskokNaOsnovuObaPreskoka
+            && this.PoredakTak3PreskokNaOsnovuObaPreskoka == that.PoredakTak3PreskokNaOsnovuObaPreskoka
+
+            && this.PostojiTak4 == that.PostojiTak4
+            && this.OdvojenoTak4 == that.OdvojenoTak4
+            && this.BrojRezultataKojiSeBodujuZaEkipu == that.BrojRezultataKojiSeBodujuZaEkipu
+            && this.BrojEkipaUFinalu == that.BrojEkipaUFinalu
+            && this.JednoTak4ZaSveKategorije == that.JednoTak4ZaSveKategorije
+
+            && this.Tak2FinalnaOcenaJeZbirObaKola == that.Tak2FinalnaOcenaJeZbirObaKola
+            && this.Tak2FinalnaOcenaJeMaxObaKola == that.Tak2FinalnaOcenaJeMaxObaKola
+            && this.Tak2FinalnaOcenaJeProsekObaKola == that.Tak2FinalnaOcenaJeProsekObaKola
+            && this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak2NeRacunajProsekAkoNemaOceneIzObaKola
+
+            && this.Tak3FinalnaOcenaJeZbirObaKola == that.Tak3FinalnaOcenaJeZbirObaKola
+            && this.Tak3FinalnaOcenaJeMaxObaKola == that.Tak3FinalnaOcenaJeMaxObaKola
+            && this.Tak3FinalnaOcenaJeProsekObaKola == that.Tak3FinalnaOcenaJeProsekObaKola
+            && this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak3NeRacunajProsekAkoNemaOceneIzObaKola
+
+            && this.Tak4FinalnaOcenaJeZbirObaKola == that.Tak4FinalnaOcenaJeZbirObaKola
+            && this.Tak4FinalnaOcenaJeMaxObaKola == that.Tak4FinalnaOcenaJeMaxObaKola
+            && this.Tak4FinalnaOcenaJeProsekObaKola == that.Tak4FinalnaOcenaJeProsekObaKola
+            && this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
+        }
+
+        public override int GetHashCode()
+        {
+            throw new Exception("TODO: Da li je ovo potrebno?");
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

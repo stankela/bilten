@@ -198,5 +198,75 @@ namespace Bilten.Services
             }
             return result;
         }
+
+        public static void updateRezTakmicenjaFromChangedPropozicije(IList<RezultatskoTakmicenje> rezTakmicenja,
+            IDictionary<int, Propozicije> origPropozicije)
+        {
+            // TODO4: Posto ova naredba moze da npr. izbrise celo takmicenje III (ako je postojalo
+            // odvojeno takmicenje III, a u novim propozicijama je navedeno da ne postoji odvojeno
+            // takmicenje III), mozda bi trebalo dati mogucnost korisniku da odustane od operacije.
+            // Obratiti paznju i na ekipno takmicenje - sta ako je ranije bilo kombinovano a sad nije i obratno.
+            // Takodje obratiti paznju da se za takmicenje 1 rezultati i poredak uvek racunaju za sprave i viseboj,
+            // cak i ako su PostojiTak2 ili PostojiTak3 false (da bi bilo moguce pregledati rezultate).
+
+            RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
+
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+            PropozicijeDAO propozicijeDAO = DAOFactoryFactory.DAOFactory.GetPropozicijeDAO();
+
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (!rt.Propozicije.Equals(origPropozicije[rt.Id]))
+                {
+                    rezTakDAO.Update(rt); // mora update a ne attach da bi se snimile promenjene propozicije
+                    rt.updateTakmicenjaFromChangedPropozicije();
+                    RezultatskoTakmicenjeService.izracunajSveRezultate(rt);
+                    //rezTakDAO.Update(rt); // da li je potreban ovaj drugi update
+                }
+            }
+        }
+
+        private static void izracunajSveRezultate(RezultatskoTakmicenje rt)
+        {
+            OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+            IList<Ocena> ocene1 = ocenaDAO.FindByDeoTakmicenja(rt.Takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
+            
+            IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap = null;
+
+            PoredakUkupnoDAO poredakUkupnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO();
+            PoredakSpravaDAO poredakSpravaDAO = DAOFactoryFactory.DAOFactory.GetPoredakSpravaDAO();
+            PoredakPreskokDAO poredakPreskokDAO = DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO();
+            PoredakEkipnoDAO poredakEkipnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO();
+
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+            PoredakUkupno pu = rt.getPoredakUkupno(DeoTakmicenjaKod.Takmicenje1);
+            pu.create(rt, ocene1);
+            poredakUkupnoDAO.Update(pu);
+
+            foreach (PoredakSprava ps in rt.Takmicenje1.PoredakSprava)
+            {
+                ps.create(rt, ocene1);
+                poredakSpravaDAO.Update(ps);
+            }
+            PoredakPreskok pp = rt.getPoredakPreskok(DeoTakmicenjaKod.Takmicenje1);
+            pp.create(rt, ocene1);
+            poredakPreskokDAO.Update(pp);
+
+            if (rt.ImaEkipnoTakmicenje)
+            {
+                PoredakEkipno pe = rt.getPoredakEkipno(DeoTakmicenjaKod.Takmicenje1);
+                IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(rt.Takmicenje.Id);
+                IList<RezultatskoTakmicenje> list = new List<RezultatskoTakmicenje>();
+                list.Add(rt);
+                ekipaRezultatiUkupnoMap
+                    = Takmicenje.getEkipaRezultatiUkupnoMap(list, rezTakmicenja, DeoTakmicenjaKod.Takmicenje1);
+                pe.create(rt, ekipaRezultatiUkupnoMap);
+                poredakEkipnoDAO.Update(pe);
+            }
+
+            foreach (Ocena o in ocene1)
+                ocenaDAO.Evict(o);
+        }
     }
 }

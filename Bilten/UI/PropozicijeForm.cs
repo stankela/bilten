@@ -12,6 +12,7 @@ using Bilten.Util;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -26,6 +27,8 @@ namespace Bilten.UI
         {
             get { return _pages; }
         }
+
+        private IDictionary<int, Propozicije> origPropozicije = new Dictionary<int, Propozicije>();
 
         public PropozicijeForm(int takmicenjeId)
         {
@@ -45,7 +48,9 @@ namespace Bilten.UI
                     if (takmicenje.Kategorije.Count == 0)
                         throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
                     rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenjeFetchTak_2_3_4(takmicenjeId);
+                        .FindByTakmicenje(takmicenjeId);
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                        origPropozicije.Add(rt.Id, rt.Propozicije.clonePropozicije());
 
                     addPages();
                 }
@@ -163,48 +168,26 @@ namespace Bilten.UI
 
         private void okButton_Click(object sender, System.EventArgs e)
         {
-          /*  foreach (PropertyPage page in _pages)
-            {
-                page.OnApply();
-            }*/
+            /*foreach (PropertyPage page in _pages)
+                page.OnApply();*/
 
+            if (_activePage != null && !applyPage(_activePage))
+            {
+                DialogResult = DialogResult.None;
+                return;
+            }
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             ISession session = null;
             try
             {
-                if (_activePage != null && !applyPage(_activePage))
-                {
-                    DialogResult = DialogResult.None;
-                    return;
-                }
-
                 using (session = NHibernateHelper.Instance.OpenSession())
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
-
-                    // TODO4: Potrebno je ponovo izracunati poretke i ucesnike zato
-                    // sto su se mozda promenili brojevi finalista, rezervi, nacin
-                    // racunanja preskoka itd.
-                    // Takodje, posto ova naredba moze da npr. izbrise celo takmicenje III (ako je postojalo
-                    // odvojeno takmicenje III, a u novim propozicijama je navedeno da ne postoji odvojeno
-                    // takmicenje III), mozda bi trebalo dati mogucnost korisniku da odustane od operacije.
-                    // Obratiti paznju i na ekipno takmicenje - sta ako je ranije bilo kombinovano a sad nije i obratno.
-                    // Takodje obratiti paznju da se za takmicenje 1 rezultati i poredak uvek racunaju za sprave i viseboj,
-                    // cak i ako su PostojiTak2 ili PostojiTak3 false (da bi bilo moguce pregledati rezultate).
-
-                    RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                    {
-                        rt.updateTakmicenjaFromChangedPropozicije();
-                    }
-
-                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                    {
-                        DAOFactoryFactory.DAOFactory.GetPropozicijeDAO().Update(rt.Propozicije);
-                        DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Update(rt);
-                    }
+                    RezultatskoTakmicenjeService.updateRezTakmicenjaFromChangedPropozicije(rezTakmicenja, origPropozicije);
                     session.Transaction.Commit();
                 }
             }
@@ -224,6 +207,8 @@ namespace Bilten.UI
             }
             finally
             {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }

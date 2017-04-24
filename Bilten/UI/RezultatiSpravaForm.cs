@@ -819,7 +819,9 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    IList<Ocena> ocene = loadOcene(takmicenje.Id, deoTakKod);
+
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
                     if (ActiveSprava != Sprava.Preskok)
                     {
                         PoredakSprava p = ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava);
@@ -832,6 +834,8 @@ namespace Bilten.UI
                         p.create(ActiveTakmicenje, ocene);
                         DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO().Update(p);
                     }
+                    foreach (Ocena o in ocene)
+                        ocenaDAO.Evict(o);
                     session.Transaction.Commit();
                 }
             }
@@ -850,33 +854,6 @@ namespace Bilten.UI
             }
 
             setItems();
-        }
-
-        // TODO3: Svi metodi koji otvaraju svoju posebnu sesiju bi trebali nekako da budu oznaceni, npr. da im se u
-        // nazivu metoda stavi rec Query ili nesto slicno.
-        private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.FindByDeoTakmicenja(takmicenjeId, deoTakKod);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
         }
 
         private void prikaziKlubToolStripMenuItem_Click(object sender, EventArgs e)
