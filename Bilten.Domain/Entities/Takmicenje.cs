@@ -458,6 +458,14 @@ namespace Bilten.Domain
         }
 
         public static IDictionary<int, List<RezultatUkupno>> getEkipaRezultatiUkupnoMap(
+            RezultatskoTakmicenje rt, IList<RezultatskoTakmicenje> svaRezTakmicenja, DeoTakmicenjaKod deoTakKod)
+        {
+            IList<RezultatskoTakmicenje> list = new List<RezultatskoTakmicenje>();
+            list.Add(rt);
+            return getEkipaRezultatiUkupnoMap(list, svaRezTakmicenja, deoTakKod);
+        }
+
+        public static IDictionary<int, List<RezultatUkupno>> getEkipaRezultatiUkupnoMap(
             IList<RezultatskoTakmicenje> rezTakmicenja, IList<RezultatskoTakmicenje> svaRezTakmicenja,
             DeoTakmicenjaKod deoTakKod)
         {

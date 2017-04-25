@@ -39,6 +39,8 @@ namespace Bilten.UI
         {
             InitializeComponent();
 
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             ISession session = null;
             try
             {
@@ -93,6 +95,8 @@ namespace Bilten.UI
             }
             finally
             {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }

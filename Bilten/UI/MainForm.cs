@@ -840,7 +840,6 @@ namespace Bilten.UI
         }
 
         // TODO4: Kod racunanja preskoka za viseboj uvedi da se bira da li se racuna prvi preskok ili bolji.
-        // TODO4: Uvedi da moze da se bira koje sprave ulaze u ekipni rezultat.
         // TODO4: Kod stampanja, kolonu sa nazivom ekipa stampaj u dva reda ako je naziv dugacak
         // TODO4: Na pocetku damp fajla neka se nalazi broj verzije programa. Uvozi samo ako se verzije poklapaju.
         // TODO4: Kod stampanja rezultata za ekipe promeni da cela ekipa uvek bude na istoj strani
@@ -863,8 +862,8 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenjeFetch_Tak1_PoredakSprava(takmicenjeId.Value);
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(takmicenjeId.Value);
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
@@ -890,44 +889,20 @@ namespace Bilten.UI
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        // Poredak za takmicenje 1 je mozda rucno promenjen, pa ga ne treba ponovo kreirati.
+                        // Poredak za takmicenje 1 ne treba ponovo kreirati (mozda je rucno promenjen, izmedju ostalog).
 
                         if (rt.odvojenoTak2())
-                        {
-                            rt.Takmicenje2.createUcesnici(rt.Takmicenje1);
-                            // Ako ne postoje ocene, sledeci poziv samo sortira po prezimenu i na
-                            // osnovu toga dodeljuje RedBroj
-                            rt.Takmicenje2.Poredak.create(rt, ocene2);
-                        }
+                            rt.createTakmicenje2(ocene2);
                         if (rt.odvojenoTak3())
-                        {
-                            rt.Takmicenje3.createUcesnici(rt.Takmicenje1,
-                                rt.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
-                            foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
-                                p.create(rt, ocene3);
-                            rt.Takmicenje3.PoredakPreskok.create(rt, ocene3);
-                        }
+                            rt.createTakmicenje3(ocene3);
                         if (rt.odvojenoTak4())
                         {
-                            // TODO: Proveri zasto je ovo i ono dole zakomentarisano
-                            /*rt.Takmicenje4.createUcesnici(rt.Takmicenje1);
-                            IList<RezultatskoTakmicenje> list = new List<RezultatskoTakmicenje>();
-                            list.Add(rt);
-                            IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap
-                                = Takmicenje.getEkipaRezultatiUkupnoMap(rezTakmicenja, list, DeoTakmicenjaKod.Takmicenje4);
-                            rt.Takmicenje4.Poredak.create(rt, ekipaRezultatiUkupnoMap);*/
+                            // TODO: Proveri zasto je ovo zakomentarisano
+                            /*rt.createTakmicenje4(Takmicenje.getEkipaRezultatiUkupnoMap(rt, rezTakmicenja,
+                                DeoTakmicenjaKod.Takmicenje4));*/
                         }
-
-                        if (rt.odvojenoTak2())
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
-                        if (rt.odvojenoTak3())
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
-                        //if (rt.odvojenoTak4())
-                        //  DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO().Update(rt.Takmicenje4);
-
-                        mnTakmicenje2.Visible = true;
-                        mnTakmicenje3.Visible = true;
-                        mnTakmicenje4.Visible = true;
+                        if (rt.odvojenoTak2() || rt.odvojenoTak3() || rt.odvojenoTak4())
+                            rezTakDAO.Update(rt);
                     }
 
                     foreach (Ocena o in ocene2)
@@ -936,8 +911,11 @@ namespace Bilten.UI
                         ocenaDAO.Evict(o);
                     
                     takmicenjeDAO.Update(t);
-
                     session.Transaction.Commit();
+
+                    mnTakmicenje2.Visible = true;
+                    mnTakmicenje3.Visible = true;
+                    mnTakmicenje4.Visible = true;
                 }
             }
             catch (BusinessException ex)

@@ -24,7 +24,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual Nullable<float> Penalty
+        public override Nullable<float> Penalty
         {
             get
             {

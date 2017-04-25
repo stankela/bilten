@@ -28,7 +28,7 @@ namespace Bilten.UI
             get { return _pages; }
         }
 
-        private IDictionary<int, Propozicije> origPropozicije = new Dictionary<int, Propozicije>();
+        private IDictionary<int, Propozicije> origPropozicijeMap = new Dictionary<int, Propozicije>();
 
         public PropozicijeForm(int takmicenjeId)
         {
@@ -50,7 +50,7 @@ namespace Bilten.UI
                     rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenje(takmicenjeId);
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
-                        origPropozicije.Add(rt.Id, rt.Propozicije.clonePropozicije());
+                        origPropozicijeMap.Add(rt.Id, rt.Propozicije.clonePropozicije());
 
                     addPages();
                 }
@@ -186,8 +186,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
-                    RezultatskoTakmicenjeService.updateRezTakmicenjaOnChangedPropozicije(rezTakmicenja, origPropozicije,
+                    RezultatskoTakmicenjeService.updateTakmicenjeOnChangedPropozicije(rezTakmicenja, origPropozicijeMap,
                         takmicenje);
                     session.Transaction.Commit();
                 }
