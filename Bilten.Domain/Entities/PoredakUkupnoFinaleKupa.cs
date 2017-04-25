@@ -62,12 +62,10 @@ namespace Bilten.Domain
                     rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
                 Rezultati.Add(r);
             }
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
-        private void rankRezultati()
+        public virtual void rankRezultati(Propozicije propozicije)
         {
             List<RezultatUkupnoFinaleKupa> rezultati = new List<RezultatUkupnoFinaleKupa>(Rezultati);
 
@@ -105,6 +103,7 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
+            updateKvalStatus(propozicije);
         }
 
         private void updateKvalStatus(Propozicije propozicije)
@@ -243,9 +242,7 @@ namespace Bilten.Domain
             rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2,
                 rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
             Rezultati.Add(rezultat);
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
@@ -254,8 +251,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 

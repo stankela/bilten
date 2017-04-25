@@ -82,11 +82,10 @@ namespace Bilten.Domain
                 r.calculateTotal();
                 Rezultati.Add(r);
             }
-
             rankRezultati();
         }
 
-        private void rankRezultati()
+        public virtual void rankRezultati()
         {
             List<RezultatUkupnoZbirViseKola> rezultati = new List<RezultatUkupnoZbirViseKola>(Rezultati);
 
@@ -174,7 +173,6 @@ namespace Bilten.Domain
 
             rezultat.calculateTotal();
             Rezultati.Add(rezultat);
-
             rankRezultati();
         }
 

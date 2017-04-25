@@ -68,12 +68,10 @@ namespace Bilten.Domain
             Rezultati.Clear();
             foreach (RezultatSprava r in rezultatiMap.Values)
                 Rezultati.Add(r);
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
-        private void rankRezultati()
+        public virtual void rankRezultati(Propozicije propozicije)
         {
             // TODO3: I u klasi PoredakSpravaFinaleKupa treba razresiti situaciju kada dva gimnasticara imaju iste ocene.
             // Pretpostavljam da i tamo treba gledati E ocene, tj. ko ima vecu taj je u prednosti.
@@ -114,6 +112,7 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
+            updateKvalStatus(propozicije);
         }
 
         private IList<GimnasticarUcesnik> getGimnasticari(IList<Ocena> ocene,
@@ -382,8 +381,7 @@ namespace Bilten.Domain
             if (rezultat != null)
             {
                 rezultat.setOcena(o);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -397,9 +395,7 @@ namespace Bilten.Domain
                     Rezultati.Remove(r);
                 else
                     r.clearOcena(o);
-
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -419,8 +415,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 r.setOcena(o);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -432,9 +427,7 @@ namespace Bilten.Domain
             r.Gimnasticar = g;
             r.setOcena(o);
             Rezultati.Add(r);
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void deleteGimnasticar(GimnasticarUcesnik g, 
@@ -444,8 +437,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 

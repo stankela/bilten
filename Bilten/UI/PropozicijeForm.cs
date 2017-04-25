@@ -187,7 +187,8 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
-                    RezultatskoTakmicenjeService.updateRezTakmicenjaFromChangedPropozicije(rezTakmicenja, origPropozicije);
+                    RezultatskoTakmicenjeService.updateRezTakmicenjaOnChangedPropozicije(rezTakmicenja, origPropozicije,
+                        takmicenje);
                     session.Transaction.Commit();
                 }
             }

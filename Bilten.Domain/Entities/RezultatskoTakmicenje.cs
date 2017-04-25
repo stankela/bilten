@@ -130,9 +130,241 @@ namespace Bilten.Domain
                 _takmicenje4 = new Takmicenje4();
         }
 
-        public virtual void updateTakmicenjaFromChangedPropozicije(object diff)
+        public virtual bool updateRezultatiOnChangedPropozicije(Propozicije origPropozicije, Takmicenje takmicenje)
         {
-            // TODO4
+            bool changedPoredakUkupnoTak1 = false;
+            if (Propozicije.PostojiTak2 != origPropozicije.PostojiTak2)
+            {
+                // ignorisi, posto Takmicenje 2 uvek postoji, da bi se videli rezultati
+            }
+            else if (Propozicije.OdvojenoTak2 != origPropozicije.OdvojenoTak2)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                {
+                    // ignorisi
+                }
+                else if (Propozicije.OdvojenoTak2)
+                {
+                    // nije postojalo odvojeno takmicenje II, a u novim propozicijama je OdvojenoTak2 postavljeno na true
+                    //rt.Takmicenje2 = new Takmicenje2();
+                }
+                else
+                {
+                    // postojalo je odvojeno takmicenje II, ali je u novim propozicijama OdvojenoTak2 postavljeno na false
+                    //rt.Takmicenje2 = null;
+                }
+            }
+            else if (Propozicije.ZaPreskokVisebojRacunajBoljuOcenu != origPropozicije.ZaPreskokVisebojRacunajBoljuOcenu
+                || Propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 != origPropozicije.NeogranicenBrojTakmicaraIzKlubaTak2
+                || Propozicije.MaxBrojTakmicaraIzKlubaTak2 != origPropozicije.MaxBrojTakmicaraIzKlubaTak2
+                || Propozicije.BrojFinalistaTak2 != origPropozicije.BrojFinalistaTak2
+                || Propozicije.BrojRezerviTak2 != origPropozicije.BrojRezerviTak2)
+            {
+                // TODO: Fali kod za odvojeno takmicenje 2 finale kupa
+                if (!changedPoredakUkupnoTak1)
+                {
+                    Takmicenje1.PoredakUkupno.rankRezultati(Propozicije);
+                    changedPoredakUkupnoTak1 = true;
+                }
+
+                if (Propozicije.ZaPreskokVisebojRacunajBoljuOcenu != origPropozicije.ZaPreskokVisebojRacunajBoljuOcenu)
+                {
+                    // kreirati poredak ekipno za takmicenje1
+                }
+
+            }
+
+            bool changedPoredakSpravaTak1 = false;
+            bool changedPoredakPreskokTak1 = false;
+            bool changedPoredakPreskokTak3 = false;
+            bool changedPoredakEkipeTak1 = false;
+            bool changedPoredakUkupnoFinaleKupa = false;
+            bool changedPoredakUkupnoZbirViseKola = false;
+            bool changedPoredakSpravaFinaleKupa = false;
+            bool changedPoredakEkipnoFinaleKupa = false;
+            bool changedPoredakEkipnoZbirViseKola = false;
+            if (Propozicije.PostojiTak3 != origPropozicije.PostojiTak3)
+            {
+                // ignorisi, posto Takmicenje 3 uvek postoji, da bi se videli rezultati
+            }
+            else if (Propozicije.OdvojenoTak3 != origPropozicije.OdvojenoTak3)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                {
+                    // ignorisi
+                }
+                else if (Propozicije.OdvojenoTak3)
+                {
+                    //rt.Takmicenje3 = new Takmicenje3(takmicenje.Gimnastika);
+                }
+                else
+                {
+                    //rt.Takmicenje3 = null;
+                }
+            }
+            else if (Propozicije.NeogranicenBrojTakmicaraIzKlubaTak3 != origPropozicije.NeogranicenBrojTakmicaraIzKlubaTak3
+                || Propozicije.MaxBrojTakmicaraIzKlubaTak3 != origPropozicije.MaxBrojTakmicaraIzKlubaTak3
+                || Propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu != origPropozicije.MaxBrojTakmicaraTak3VaziZaDrzavu
+                || Propozicije.BrojFinalistaTak3 != origPropozicije.BrojFinalistaTak3
+                || Propozicije.BrojRezerviTak3 != origPropozicije.BrojRezerviTak3)
+            {
+                if (takmicenje.StandardnoTakmicenje)
+                {
+                    if (!changedPoredakSpravaTak1)
+                    {
+                        foreach (PoredakSprava ps in Takmicenje1.PoredakSprava)
+                            ps.rankRezultati(Propozicije);
+                        changedPoredakSpravaTak1 = true;
+                    }
+                    if (!changedPoredakPreskokTak1)
+                    {
+                        Takmicenje1.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
+                        changedPoredakPreskokTak1 = true;
+                    }
+                }
+                else if (takmicenje.FinaleKupa && !changedPoredakSpravaFinaleKupa)
+                {
+                    foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
+                        p.rankRezultati(Propozicije);
+                    changedPoredakSpravaFinaleKupa = true;
+                }
+            }
+            else if (Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka != origPropozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka)
+            {
+                if (!changedPoredakPreskokTak1)
+                {
+                    Takmicenje1.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
+                    changedPoredakPreskokTak1 = true;
+                }
+            }
+            else if (Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka != origPropozicije.PoredakTak3PreskokNaOsnovuObaPreskoka)
+            {
+                if (takmicenje.StandardnoTakmicenje)
+                {
+                    if (!changedPoredakPreskokTak1)
+                    {
+                        Takmicenje1.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
+                        changedPoredakPreskokTak1 = true;
+                    }
+                    if (takmicenje.ZavrsenoTak1 && odvojenoTak3())
+                    {
+                        if (!changedPoredakPreskokTak3)
+                        {
+                            Takmicenje3.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
+                            changedPoredakPreskokTak3 = true;
+                        }
+                    }
+                }
+                else if (takmicenje.FinaleKupa)
+                {
+                    if (!changedPoredakPreskokTak1)
+                    {
+                        Takmicenje1.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
+                        changedPoredakPreskokTak1 = true;
+                    }
+                }
+            }
+
+            // TODO: Fali kod za odvojeno ekipno finale kupa
+
+            if (Propozicije.PostojiTak4 != origPropozicije.PostojiTak4)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                {
+                    // ignorisi
+                }
+                else if (Propozicije.PostojiTak4)
+                {
+                    // ignorisi, posto se PoredakEkipno za takmicenje 1 uvek kreira
+                }
+                else
+                {
+                    // prvo pitati korisnika za potvrdu, pa zatim izbrisati ekipe i poredak ekipno.
+                }
+            }
+            else if (Propozicije.OdvojenoTak4 != origPropozicije.OdvojenoTak4)
+            {
+                if (takmicenje.ZavrsenoTak1)
+                {
+                    // ignorisi
+                }
+                else if (Propozicije.OdvojenoTak4)
+                {
+                    //rt.Takmicenje4 = new Takmicenje4();
+                }
+                else
+                {
+                    //rt.Takmicenje4 = null;                
+                }
+            }
+            else if (Propozicije.BrojRezultataKojiSeBodujuZaEkipu != origPropozicije.BrojRezultataKojiSeBodujuZaEkipu)
+            {
+                // kreirati poredak ekipe za takmicenje1
+            }
+            else if (Propozicije.BrojEkipaUFinalu != origPropozicije.BrojEkipaUFinalu)
+            {
+                if (!changedPoredakEkipeTak1)
+                {
+                    Takmicenje1.PoredakEkipno.rankRezultati(Propozicije);
+                    changedPoredakEkipeTak1 = true;
+                }
+            }
+            else if (Propozicije.JednoTak4ZaSveKategorije != origPropozicije.JednoTak4ZaSveKategorije)
+            {
+                // ajpdejtuje se u updateImaEkipnoTakmicenje
+            }
+
+            if (Propozicije.Tak2FinalnaOcenaJeZbirObaKola != origPropozicije.Tak2FinalnaOcenaJeZbirObaKola
+                || Propozicije.Tak2FinalnaOcenaJeMaxObaKola != origPropozicije.Tak2FinalnaOcenaJeMaxObaKola
+                || Propozicije.Tak2FinalnaOcenaJeProsekObaKola != origPropozicije.Tak2FinalnaOcenaJeProsekObaKola
+                || Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola)
+            {
+                if (takmicenje.FinaleKupa && !changedPoredakUkupnoFinaleKupa)
+                {
+                    Takmicenje1.PoredakUkupnoFinaleKupa.rankRezultati(Propozicije);
+                    changedPoredakUkupnoFinaleKupa = true;
+                }
+                else if (takmicenje.ZbirViseKola && !changedPoredakUkupnoZbirViseKola)
+                {
+                    Takmicenje1.PoredakUkupnoZbirViseKola.rankRezultati();
+                    changedPoredakUkupnoZbirViseKola = true;
+                }
+            }
+
+            if (Propozicije.Tak3FinalnaOcenaJeZbirObaKola != origPropozicije.Tak3FinalnaOcenaJeZbirObaKola
+                || Propozicije.Tak3FinalnaOcenaJeMaxObaKola != origPropozicije.Tak3FinalnaOcenaJeMaxObaKola
+                || Propozicije.Tak3FinalnaOcenaJeProsekObaKola != origPropozicije.Tak3FinalnaOcenaJeProsekObaKola
+                || Propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola)
+            {
+                if (takmicenje.FinaleKupa && !changedPoredakSpravaFinaleKupa)
+                {
+                    foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
+                        p.rankRezultati(Propozicije);
+                    changedPoredakSpravaFinaleKupa = true;
+                }
+            }
+
+            if (Propozicije.Tak4FinalnaOcenaJeZbirObaKola != origPropozicije.Tak4FinalnaOcenaJeZbirObaKola
+                || Propozicije.Tak4FinalnaOcenaJeMaxObaKola != origPropozicije.Tak4FinalnaOcenaJeMaxObaKola
+                || Propozicije.Tak4FinalnaOcenaJeProsekObaKola != origPropozicije.Tak4FinalnaOcenaJeProsekObaKola
+                || Propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola)
+            {
+                if (takmicenje.FinaleKupa && !changedPoredakEkipnoFinaleKupa)
+                {
+                    Takmicenje1.PoredakEkipnoFinaleKupa.rankRezultati(Propozicije);
+                    changedPoredakEkipnoFinaleKupa = true;
+                }
+                else if (takmicenje.ZbirViseKola && !changedPoredakEkipnoZbirViseKola)
+                {
+                    Takmicenje1.PoredakEkipnoZbirViseKola.rankRezultati();
+                    changedPoredakEkipnoZbirViseKola = true;
+                }
+            }
+
+            return changedPoredakUkupnoTak1 || changedPoredakSpravaTak1 || changedPoredakPreskokTak1
+                || changedPoredakPreskokTak3 || changedPoredakEkipeTak1 || changedPoredakUkupnoFinaleKupa
+                || changedPoredakUkupnoZbirViseKola || changedPoredakSpravaFinaleKupa || changedPoredakEkipnoFinaleKupa
+                || changedPoredakEkipnoZbirViseKola;
         }
 
         public virtual string Naziv

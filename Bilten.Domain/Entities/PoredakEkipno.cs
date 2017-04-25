@@ -47,9 +47,7 @@ namespace Bilten.Domain
                 Rezultati.Add(createRezultatEkipno(e, ekipaRezUkupnoMap[e.Id],
                     rezTak.Propozicije.BrojRezultataKojiSeBodujuZaEkipu, rezTak.Gimnastika));
             }
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         private RezultatEkipno createRezultatEkipno(Ekipa e, List<RezultatUkupno> rezultatiUkupno, int brojRezultata,
@@ -87,7 +85,7 @@ namespace Bilten.Domain
             return result;
         }
 
-        private void rankRezultati()
+        public virtual void rankRezultati(Propozicije propozicije)
         {
             List<RezultatEkipno> rezultati = new List<RezultatEkipno>(Rezultati);
 
@@ -121,6 +119,7 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
+            updateKvalStatus(propozicije);
         }
 
         private void updateKvalStatus(Propozicije propozicije)
@@ -185,17 +184,14 @@ namespace Bilten.Domain
             Rezultati.Remove(r);
             Rezultati.Add(createRezultatEkipno(e, rezultati, rezTak.Propozicije.BrojRezultataKojiSeBodujuZaEkipu,
                 rezTak.Gimnastika));
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void addEkipa(Ekipa e, RezultatskoTakmicenje rezTak, List<RezultatUkupno> rezultati)
         {
             Rezultati.Add(createRezultatEkipno(e, rezultati, rezTak.Propozicije.BrojRezultataKojiSeBodujuZaEkipu,
                     rezTak.Gimnastika));
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void deleteEkipa(Ekipa e, RezultatskoTakmicenje rezTak)
@@ -204,8 +200,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }             
         }
 
@@ -222,9 +217,7 @@ namespace Bilten.Domain
         public virtual void promeniPenalizaciju(RezultatEkipno r, float? penalty, RezultatskoTakmicenje rezTak)
         {
             r.promeniPenalizacijuZaEkipu(penalty);
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void dump(StringBuilder strBuilder)

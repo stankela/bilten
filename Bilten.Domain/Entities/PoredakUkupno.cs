@@ -62,12 +62,10 @@ namespace Bilten.Domain
                     r.addPenalty(r.Gimnasticar.PenaltyViseboj.Value);
                 Rezultati.Add(r);
             }
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
-        private void rankRezultati()
+        public virtual void rankRezultati(Propozicije propozicije)
         {
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>(Rezultati);
 
@@ -105,6 +103,7 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
+            updateKvalStatus(propozicije);
         }
 
         private void updateKvalStatus(Propozicije propozicije)
@@ -288,8 +287,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 r.addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -309,8 +307,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 r.clearSprava(o.Sprava);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -321,8 +318,7 @@ namespace Bilten.Domain
             {
                 r.clearSprava(o.Sprava);
                 r.addSprava(o, rezTak.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -341,9 +337,7 @@ namespace Bilten.Domain
             if (g.PenaltyViseboj != null)
                 r.addPenalty(g.PenaltyViseboj.Value);
             Rezultati.Add(r);
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
@@ -352,17 +346,14 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
         public virtual void promeniPenalizaciju(RezultatUkupno r, float? penalty, RezultatskoTakmicenje rezTak)
         {
             r.promeniPenalizacijuZaViseboj(penalty);
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual bool hasPenalty()

@@ -66,9 +66,7 @@ namespace Bilten.Domain
                     rezTak.Propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola);
                 Rezultati.Add(r);
             }
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         // TODO3: Za sve poretke (ukupno, sprava, ekipno, kako za finale kupa, tako i za obicna takmicenja) specifikuj
@@ -122,12 +120,10 @@ namespace Bilten.Domain
                     rezTak.Propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola);
                 Rezultati.Add(r);
             }
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
-        private void rankRezultati()
+        public virtual void rankRezultati(Propozicije propozicije)
         {
             List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(Rezultati);
 
@@ -163,6 +159,7 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
+            updateKvalStatus(propozicije);
         }
 
         private void updateKvalStatus(Propozicije propozicije)
@@ -345,9 +342,7 @@ namespace Bilten.Domain
             rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak3,
                 rezTak.Propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola);
             Rezultati.Add(rezultat);
-
-            rankRezultati();
-            updateKvalStatus(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
@@ -356,8 +351,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati();
-                updateKvalStatus(rezTak.Propozicije);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 

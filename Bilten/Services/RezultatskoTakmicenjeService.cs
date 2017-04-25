@@ -199,8 +199,8 @@ namespace Bilten.Services
             return result;
         }
 
-        public static void updateRezTakmicenjaFromChangedPropozicije(IList<RezultatskoTakmicenje> rezTakmicenja,
-            IDictionary<int, Propozicije> origPropozicije)
+        public static void updateRezTakmicenjaOnChangedPropozicije(IList<RezultatskoTakmicenje> rezTakmicenja,
+            IDictionary<int, Propozicije> origPropozicije, Takmicenje takmicenje)
         {
             // TODO4: Posto ova naredba moze da npr. izbrise celo takmicenje III (ako je postojalo
             // odvojeno takmicenje III, a u novim propozicijama je navedeno da ne postoji odvojeno
@@ -209,20 +209,21 @@ namespace Bilten.Services
             // Takodje obratiti paznju da se za takmicenje 1 rezultati i poredak uvek racunaju za sprave i viseboj,
             // cak i ako su PostojiTak2 ili PostojiTak3 false (da bi bilo moguce pregledati rezultate).
 
-            RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
-
-            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
             PropozicijeDAO propozicijeDAO = DAOFactoryFactory.DAOFactory.GetPropozicijeDAO();
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
+            RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                object diff = rt.Propozicije.getDiff(origPropozicije[rt.Id], null, null);
-                if (diff != null)
+                // TODO4: Implementiraj Propozicije.Equals
+                if (!rt.Propozicije.Equals(origPropozicije[rt.Id]))
                 {
-                    rezTakDAO.Update(rt); // mora update a ne attach da bi se snimile promenjene propozicije
-                    rt.updateTakmicenjaFromChangedPropozicije(diff);
-                    RezultatskoTakmicenjeService.izracunajSveRezultate(rt);
-                    //rezTakDAO.Update(rt); // da li je potreban ovaj drugi update
+                    propozicijeDAO.Update(rt.Propozicije);
+                    if (rt.updateRezultatiOnChangedPropozicije(origPropozicije[rt.Id], takmicenje))
+                    {
+                        // TODO4: Ne snimaj celo rez. takmicenje vec samo stvari koje su se promenile.
+                        rezTakDAO.Update(rt);
+                    }
                 }
             }
         }
@@ -242,7 +243,6 @@ namespace Bilten.Services
             RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
             PoredakUkupno pu = rt.getPoredakUkupno(DeoTakmicenjaKod.Takmicenje1);
-            pu.create(rt, ocene1);
             poredakUkupnoDAO.Update(pu);
 
             foreach (PoredakSprava ps in rt.Takmicenje1.PoredakSprava)
