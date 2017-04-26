@@ -125,6 +125,13 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void calculateTotal()
+        {
+            foreach (RezultatUkupnoZbirViseKola r in Rezultati)
+                r.calculateTotal();
+            rankRezultati();
+        }
+
         public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
             RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2, RezultatskoTakmicenje rezTak3,
             RezultatskoTakmicenje rezTak4)

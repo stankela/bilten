@@ -116,6 +116,13 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void calculateTotal()
+        {
+            foreach (RezultatEkipnoZbirViseKola r in Rezultati)
+                r.calculateTotal();
+            rankRezultati();
+        }
+
         public virtual List<RezultatEkipnoZbirViseKola> getRezultati()
         {
             List<RezultatEkipnoZbirViseKola> result = new List<RezultatEkipnoZbirViseKola>(Rezultati);

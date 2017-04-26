@@ -485,21 +485,23 @@ namespace Bilten.Domain
         }
 
         public virtual int updateRezultatiOnChangedPropozicije(IDictionary<int, Domain.Propozicije> origPropozicijeMap,
-            Takmicenje takmicenje, IList<RezultatskoTakmicenje> rezTakmicenja)
+            Takmicenje takmicenje, IList<RezultatskoTakmicenje> rezTakmicenja, IList<Ocena> oceneTak1)
         {
             Propozicije origPropozicije = origPropozicijeMap[Id];
 
             bool rankPoredakUkupnoTak1 = false;
+            bool createPoredakUkupnoTak1 = false;
             bool rankPoredakSpravaTak1 = false;
             bool rankPoredakPreskokTak1 = false;
             bool rankPoredakPreskokTak3 = false;
             bool rankPoredakEkipeTak1 = false;
-            bool rankPoredakUkupnoFinaleKupa = false;
-            bool rankPoredakUkupnoZbirViseKola = false;
-            bool rankPoredakSpravaFinaleKupa = false;
-            bool rankPoredakEkipnoFinaleKupa = false;
-            bool rankPoredakEkipnoZbirViseKola = false;
             bool createPoredakEkipeTak1 = false;
+            bool calculatePoredakUkupnoFinaleKupa = false;
+            bool calculatePoredakUkupnoZbirViseKola = false;
+            bool rankPoredakSpravaFinaleKupa = false;
+            bool calculatePoredakSpravaFinaleKupa = false;
+            bool calculatePoredakEkipnoFinaleKupa = false;
+            bool calculatePoredakEkipnoZbirViseKola = false;
             bool updateRezTak = false;
 
             // TODO: Fali kod za odvojeno takmicenje 2 finale kupa
@@ -513,8 +515,9 @@ namespace Bilten.Domain
                 // Rangiraj ponovo rezultate jer se kval. status promenio.
                 rankPoredakUkupnoTak1 = true;
             }
-            if (Propozicije.ZaPreskokVisebojRacunajBoljuOcenu != origPropozicije.ZaPreskokVisebojRacunajBoljuOcenu
-                || Propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 != origPropozicije.NeogranicenBrojTakmicaraIzKlubaTak2
+            if (Propozicije.ZaPreskokVisebojRacunajBoljuOcenu != origPropozicije.ZaPreskokVisebojRacunajBoljuOcenu)
+                createPoredakUkupnoTak1 = true;
+            if (Propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 != origPropozicije.NeogranicenBrojTakmicaraIzKlubaTak2
                 || Propozicije.MaxBrojTakmicaraIzKlubaTak2 != origPropozicije.MaxBrojTakmicaraIzKlubaTak2
                 || Propozicije.BrojFinalistaTak2 != origPropozicije.BrojFinalistaTak2
                 || Propozicije.BrojRezerviTak2 != origPropozicije.BrojRezerviTak2)
@@ -642,9 +645,9 @@ namespace Bilten.Domain
                 || Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola)
             {
                 if (takmicenje.FinaleKupa)
-                    rankPoredakUkupnoFinaleKupa = true;
+                    calculatePoredakUkupnoFinaleKupa = true;
                 else if (takmicenje.ZbirViseKola)
-                    rankPoredakUkupnoZbirViseKola = true;
+                    calculatePoredakUkupnoZbirViseKola = true;
             }
 
             if (Propozicije.Tak3FinalnaOcenaJeZbirObaKola != origPropozicije.Tak3FinalnaOcenaJeZbirObaKola
@@ -653,7 +656,7 @@ namespace Bilten.Domain
                 || Propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola)
             {
                 if (takmicenje.FinaleKupa)
-                    rankPoredakSpravaFinaleKupa = true;
+                    calculatePoredakSpravaFinaleKupa = true;
             }
 
             if (Propozicije.Tak4FinalnaOcenaJeZbirObaKola != origPropozicije.Tak4FinalnaOcenaJeZbirObaKola
@@ -662,9 +665,9 @@ namespace Bilten.Domain
                 || Propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola)
             {
                 if (takmicenje.FinaleKupa)
-                    rankPoredakEkipnoFinaleKupa = true;
+                    calculatePoredakEkipnoFinaleKupa = true;
                 else if (takmicenje.ZbirViseKola)
-                    rankPoredakEkipnoZbirViseKola = true;
+                    calculatePoredakEkipnoZbirViseKola = true;
             }
 
             int updateMask = 0;
@@ -672,7 +675,12 @@ namespace Bilten.Domain
             {
                 UpdateKindUtil.setUpdateKind(UpdateKind.RezTak, ref updateMask);
             }
-            if (rankPoredakUkupnoTak1)
+            if (createPoredakUkupnoTak1)
+            {
+                Takmicenje1.PoredakUkupno.create(this, oceneTak1);
+                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoTak1, ref updateMask);
+            }
+            else if (rankPoredakUkupnoTak1)
             {
                 Takmicenje1.PoredakUkupno.rankRezultati(Propozicije);
                 UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoTak1, ref updateMask);
@@ -706,30 +714,36 @@ namespace Bilten.Domain
                 Takmicenje1.PoredakEkipno.rankRezultati(Propozicije);
                 UpdateKindUtil.setUpdateKind(UpdateKind.PoredakEkipeTak1, ref updateMask);
             }
-            if (rankPoredakUkupnoFinaleKupa)
+            if (calculatePoredakUkupnoFinaleKupa)
             {
-                Takmicenje1.PoredakUkupnoFinaleKupa.rankRezultati(Propozicije);
+                Takmicenje1.PoredakUkupnoFinaleKupa.calculateTotal(Propozicije);
                 UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoFinaleKupa, ref updateMask);
             }
-            if (rankPoredakUkupnoZbirViseKola)
+            if (calculatePoredakUkupnoZbirViseKola)
             {
-                Takmicenje1.PoredakUkupnoZbirViseKola.rankRezultati();
+                Takmicenje1.PoredakUkupnoZbirViseKola.calculateTotal();
                 UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoZbirViseKola, ref updateMask);
             }
-            if (rankPoredakSpravaFinaleKupa)
+            if (calculatePoredakSpravaFinaleKupa)
+            {
+                foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
+                    p.calculateTotal(Propozicije);
+                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakSpravaFinaleKupa, ref updateMask);
+            }
+            else if (rankPoredakSpravaFinaleKupa)
             {
                 foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
                     p.rankRezultati(Propozicije);
                 UpdateKindUtil.setUpdateKind(UpdateKind.PoredakSpravaFinaleKupa, ref updateMask);
             }
-            if (rankPoredakEkipnoFinaleKupa)
+            if (calculatePoredakEkipnoFinaleKupa)
             {
-                Takmicenje1.PoredakEkipnoFinaleKupa.rankRezultati(Propozicije);
+                Takmicenje1.PoredakEkipnoFinaleKupa.calculateTotal(Propozicije);
                 UpdateKindUtil.setUpdateKind(UpdateKind.PoredakEkipnoFinaleKupa, ref updateMask);
             }
-            if (rankPoredakEkipnoZbirViseKola)
+            if (calculatePoredakEkipnoZbirViseKola)
             {
-                Takmicenje1.PoredakEkipnoZbirViseKola.rankRezultati();
+                Takmicenje1.PoredakEkipnoZbirViseKola.calculateTotal();
                 UpdateKindUtil.setUpdateKind(UpdateKind.PoredakEkipnoZbirViseKola, ref updateMask);
             }
             return updateMask;

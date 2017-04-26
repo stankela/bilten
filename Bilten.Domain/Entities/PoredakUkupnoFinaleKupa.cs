@@ -217,6 +217,16 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void calculateTotal(Propozicije propozicije)
+        {
+            foreach (RezultatUkupnoFinaleKupa r in Rezultati)
+            {
+                r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak2,
+                    propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
+            }
+            rankRezultati(propozicije);
+        }
+
         public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
             RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
         {

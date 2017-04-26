@@ -30,6 +30,12 @@ namespace Bilten.UI
 
         private IDictionary<int, Propozicije> origPropozicijeMap = new Dictionary<int, Propozicije>();
 
+        // TODO4: Oznaci crvenom bojom u propozicijama za description ona svojstva gde je vrednost u nekom od
+        // propozicija za rez. takmicenje razlicita od vrednosti za description. Takodje, osmisli kako da se na
+        // jednostavan nacin vrednost za sva rez. takmicenja vrati na vrednost koja postoji u descriptionu. (Trenutno
+        // je najjednostavniji nacin da se promeni vrednost u descriptionu pa da se ponovo promeni, tj. vrati na staru
+        // vrednost; ali da li ce korisnik znati za taj nacin)
+
         public PropozicijeForm(int takmicenjeId)
         {
             InitializeComponent();

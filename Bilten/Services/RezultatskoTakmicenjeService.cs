@@ -203,18 +203,39 @@ namespace Bilten.Services
             IDictionary<int, Propozicije> origPropozicijeMap, Takmicenje takmicenje)
         {
             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje); // ovo snima i propozicije za descriptions
-            
+
+            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
             PropozicijeDAO propozicijeDAO = DAOFactoryFactory.DAOFactory.GetPropozicijeDAO();
+            OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+            IList<Ocena> oceneTak1 = null;
+
+            // Moram da attachujem (ili da apdejtujem) sva rez. takmicenja zato sto se koriste u izracunavanju
+            // ekipnog poretka.
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (!rt.Propozicije.Equals(origPropozicijeMap[rt.Id]))
+                    rezTakDAO.Update(rt); // ovo snima i propozicije
+                else
+                    rezTakDAO.Attach(rt, false);
+            }
 
             RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (!rt.Propozicije.Equals(origPropozicijeMap[rt.Id]))
                 {
-                    propozicijeDAO.Update(rt.Propozicije);
-                    int updateMask = rt.updateRezultatiOnChangedPropozicije(origPropozicijeMap, takmicenje, rezTakmicenja);
+                    if (oceneTak1 == null)
+                        oceneTak1 = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
+                    int updateMask = rt.updateRezultatiOnChangedPropozicije(origPropozicijeMap, takmicenje, rezTakmicenja,
+                        oceneTak1);
                     updateRezTakmicenje(rt, updateMask);
                 }
+            }
+
+            if (oceneTak1 != null)
+            { 
+                foreach (Ocena o in oceneTak1)
+                    ocenaDAO.Evict(o);
             }
         }
 
