@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\NacinRacunanjaOceneFinaleKupa.cs" />
+    <Compile Include="Entities\UpdateKind.cs" />
     <Compile Include="IdMap.cs" />
     <Compile Include="Entities\Datum.cs" />
     <Compile Include="Entities\DeoTakmicenjaKod.cs" />
