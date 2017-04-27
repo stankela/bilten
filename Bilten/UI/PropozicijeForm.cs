@@ -29,6 +29,7 @@ namespace Bilten.UI
         }
 
         private IDictionary<int, Propozicije> origPropozicijeMap = new Dictionary<int, Propozicije>();
+        private IDictionary<int, Propozicije> origDescPropozicijeMap = new Dictionary<int, Propozicije>();
 
         // TODO4: Oznaci crvenom bojom u propozicijama za description ona svojstva gde je vrednost u nekom od
         // propozicija za rez. takmicenje razlicita od vrednosti za description. Takodje, osmisli kako da se na
@@ -56,8 +57,12 @@ namespace Bilten.UI
                     rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                         .FindByTakmicenje(takmicenjeId);
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
                         origPropozicijeMap.Add(rt.Id, rt.Propozicije.clonePropozicije());
-
+                        if (!origDescPropozicijeMap.ContainsKey(rt.TakmicenjeDescription.Id))
+                            origDescPropozicijeMap.Add(rt.TakmicenjeDescription.Id,
+                                                       rt.TakmicenjeDescription.Propozicije.clonePropozicije());
+                    }
                     addPages();
                 }
             }
@@ -193,7 +198,7 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeService.updateTakmicenjeOnChangedPropozicije(rezTakmicenja, origPropozicijeMap,
-                        takmicenje);
+                        origDescPropozicijeMap, takmicenje);
                     session.Transaction.Commit();
                 }
             }

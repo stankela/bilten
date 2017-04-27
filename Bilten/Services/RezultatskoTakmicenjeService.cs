@@ -200,7 +200,8 @@ namespace Bilten.Services
         }
 
         public static void updateTakmicenjeOnChangedPropozicije(IList<RezultatskoTakmicenje> rezTakmicenja,
-            IDictionary<int, Propozicije> origPropozicijeMap, Takmicenje takmicenje)
+            IDictionary<int, Propozicije> origPropozicijeMap, IDictionary<int, Propozicije> origDescPropozicijeMap,
+            Takmicenje takmicenje)
         {
             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje); // ovo snima i propozicije za descriptions
 
@@ -218,15 +219,30 @@ namespace Bilten.Services
                                                   // sto se koriste u izracunavanju ekipnog poretka.
             }
 
-            RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
+            foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
+            {
+                if (d.Propozicije.JednoTak4ZaSveKategorije != origDescPropozicijeMap[d.Id].JednoTak4ZaSveKategorije)
+                {
+                    // Posto je opcija JednoTak4ZaSveKategorije onemogucena u propozicijama za konkretna rez. takmicenja,
+                    // moguce je da se promena u propozicijama za description ne prenosi na propozicije na konkretna
+                    // rez. takmicenja. Zato ponovo radim Update za sva rez. takmicenja, da bih bio siguran da ce promene
+                    // koje ce biti izvrsene u metodu updateImaEkipnoTakmicenje biti snimljene u bazu.
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        if (rt.TakmicenjeDescription.Equals(d))
+                            rezTakDAO.Update(rt);
+                    }
+                    RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja, d);
+                }
+            }
+
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (!rt.Propozicije.Equals(origPropozicijeMap[rt.Id]))
                 {
                     if (oceneTak1 == null)
                         oceneTak1 = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
-                    rt.updateRezultatiOnChangedPropozicije(origPropozicijeMap, takmicenje, rezTakmicenja,
-                        oceneTak1);
+                    rt.updateRezultatiOnChangedPropozicije(origPropozicijeMap, takmicenje, rezTakmicenja, oceneTak1);
                 }
             }
 

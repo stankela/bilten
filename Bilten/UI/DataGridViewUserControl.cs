@@ -180,6 +180,11 @@ namespace Bilten.UI
             return DataGridView.DataSource as List<T>;
         }
 
+        public int getItemCount<T>()
+        {
+            return (DataGridView.DataSource as List<T>).Count;
+        }
+
         public void setItems<T>(List<T> items)
         {
             DataGridView.DataSource = new List<T>(items);

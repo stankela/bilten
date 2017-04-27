@@ -227,7 +227,8 @@ namespace Bilten.Services
                 rezTakmicenja.Add(rt);
             }
 
-            RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
+            foreach (RezultatskoTakmicenjeDescription d in takmicenje.TakmicenjeDescriptions)
+                RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja, d);
 
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             takmicenjeDAO.Add(takmicenje);

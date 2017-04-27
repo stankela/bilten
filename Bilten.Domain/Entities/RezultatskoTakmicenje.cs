@@ -330,50 +330,35 @@ namespace Bilten.Domain
             return result;
         }
 
-        public static void updateImaEkipnoTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja)
+        public static void updateImaEkipnoTakmicenje(IList<RezultatskoTakmicenje> rezTakmicenja,
+            RezultatskoTakmicenjeDescription desc)
         {
-            IDictionary<int, List<RezultatskoTakmicenje>> rezTakMap = new Dictionary<int, List<RezultatskoTakmicenje>>();
+            List<RezultatskoTakmicenje> rezTakDesc = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                if (rezTakMap.ContainsKey(rt.TakmicenjeDescription.Id))
-                    rezTakMap[rt.TakmicenjeDescription.Id].Add(rt);
+                if (rt.TakmicenjeDescription.Equals(desc))
+                    rezTakDesc.Add(rt);
+            }
+            bool kombAdded = false;
+            foreach (RezultatskoTakmicenje rt in rezTakDesc)
+            {
+                if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
+                {
+                    rt.ImaEkipnoTakmicenje = true;
+                    rt.KombinovanoEkipnoTak = false;
+                }
                 else
                 {
-                    List<RezultatskoTakmicenje> rezTakList = new List<RezultatskoTakmicenje>();
-                    rezTakList.Add(rt);
-                    rezTakMap.Add(rt.TakmicenjeDescription.Id, rezTakList);
-                }
-            }
-            foreach (List<RezultatskoTakmicenje> rezTakList in rezTakMap.Values)
-            {
-                bool kombAdded = false;
-                foreach (RezultatskoTakmicenje rt in rezTakList)
-                {
-                    if (!rt.Propozicije.PostojiTak4)
-                    {
-                        rt.ImaEkipnoTakmicenje = false;
-                        rt.KombinovanoEkipnoTak = false;
-                        continue;
-                    }
-
-                    if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
+                    if (!kombAdded)
                     {
                         rt.ImaEkipnoTakmicenje = true;
-                        rt.KombinovanoEkipnoTak = false;
+                        rt.KombinovanoEkipnoTak = true;
+                        kombAdded = true;
                     }
                     else
                     {
-                        if (!kombAdded)
-                        {
-                            rt.ImaEkipnoTakmicenje = true;
-                            rt.KombinovanoEkipnoTak = true;
-                            kombAdded = true;
-                        }
-                        else
-                        {
-                            rt.ImaEkipnoTakmicenje = false;
-                            rt.KombinovanoEkipnoTak = false;
-                        }
+                        rt.ImaEkipnoTakmicenje = false;
+                        rt.KombinovanoEkipnoTak = false;
                     }
                 }
             }
@@ -585,15 +570,19 @@ namespace Bilten.Domain
                 if (takmicenje.ZavrsenoTak1)
                 {
                     // ignorisi
+                    // TODO: Da li treba vracati originalnu vrednost za PostojiTak4 (isto i za PostojiTak2 i PostojiTak3)
                 }
                 else if (Propozicije.PostojiTak4)
                 {
                     // ignorisi, posto se PoredakEkipno za takmicenje 1 uvek kreira
+                    ImaEkipnoTakmicenje = true;
                 }
                 else
                 {
                     // TODO: Razmisli da li treba pitati korisnika za potvrdu, pa zatim izbrisati ekipe i poredak ekipno.
+                    ImaEkipnoTakmicenje = false;
                 }
+                // KombinovanoEkipnoTak se podesava u updateImaEkipnoTakmicenje.
             }
             if (Propozicije.OdvojenoTak4 != origPropozicije.OdvojenoTak4)
             {

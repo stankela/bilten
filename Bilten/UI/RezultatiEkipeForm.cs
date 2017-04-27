@@ -170,6 +170,8 @@ namespace Bilten.UI
             RezultatEkipno rez = dataGridViewUserControl1.getSelectedItem<RezultatEkipno>();
             if (rez != null)
                 setRezultatiUkupno(rez.Ekipa);
+            else if (dataGridViewUserControl1.getItemCount<RezultatEkipno>() == 0)
+                dataGridViewUserControl2.clearItems();
         }
 
         private void setRezultatiUkupno(Ekipa e)
