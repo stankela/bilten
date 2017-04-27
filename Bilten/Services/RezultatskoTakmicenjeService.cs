@@ -209,14 +209,13 @@ namespace Bilten.Services
             OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
             IList<Ocena> oceneTak1 = null;
 
-            // Moram da attachujem (ili da apdejtujem) sva rez. takmicenja zato sto se koriste u izracunavanju
-            // ekipnog poretka.
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (!rt.Propozicije.Equals(origPropozicijeMap[rt.Id]))
-                    rezTakDAO.Update(rt); // ovo snima i propozicije
+                    rezTakDAO.Update(rt); // ovo snima i propozicije i sve promene rezultata
                 else
-                    rezTakDAO.Attach(rt, false);
+                    rezTakDAO.Attach(rt, false);  // moram da attachujem (ili da apdejtujem) sva rez. takmicenja zato
+                                                  // sto se koriste u izracunavanju ekipnog poretka.
             }
 
             RezultatskoTakmicenje.updateImaEkipnoTakmicenje(rezTakmicenja);
@@ -226,9 +225,8 @@ namespace Bilten.Services
                 {
                     if (oceneTak1 == null)
                         oceneTak1 = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
-                    int updateMask = rt.updateRezultatiOnChangedPropozicije(origPropozicijeMap, takmicenje, rezTakmicenja,
+                    rt.updateRezultatiOnChangedPropozicije(origPropozicijeMap, takmicenje, rezTakmicenja,
                         oceneTak1);
-                    updateRezTakmicenje(rt, updateMask);
                 }
             }
 
@@ -237,54 +235,6 @@ namespace Bilten.Services
                 foreach (Ocena o in oceneTak1)
                     ocenaDAO.Evict(o);
             }
-        }
-
-        private static void updateRezTakmicenje(RezultatskoTakmicenje rt, int updateMask)
-        {
-            RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
-            PoredakUkupnoDAO poredakUkupnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO();
-            PoredakSpravaDAO poredakSpravaDAO = DAOFactoryFactory.DAOFactory.GetPoredakSpravaDAO();
-            PoredakPreskokDAO poredakPreskokDAO = DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO();
-            PoredakEkipnoDAO poredakEkipnoDAO = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO();
-            PoredakUkupnoFinaleKupaDAO poredakUkupnoFinaleKupaDAO
-                = DAOFactoryFactory.DAOFactory.GetPoredakUkupnoFinaleKupaDAO();
-            PoredakSpravaFinaleKupaDAO poredakSpravaFinaleKupaDAO
-                = DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO();
-            PoredakEkipnoFinaleKupaDAO poredakEkipnoFinaleKupaDAO
-                = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoFinaleKupaDAO();
-            PoredakUkupnoZbirViseKolaDAO poredakUkupnoZbirViseKolaDAO
-                = DAOFactoryFactory.DAOFactory.GetPoredakUkupnoZbirViseKolaDAO();
-            PoredakEkipnoZbirViseKolaDAO poredakEkipnoZbirViseKolaDAO
-                = DAOFactoryFactory.DAOFactory.GetPoredakEkipnoZbirViseKolaDAO();
-
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.RezTak, updateMask))
-                rezTakDAO.Update(rt);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakUkupnoTak1, updateMask))
-                poredakUkupnoDAO.Update(rt.Takmicenje1.PoredakUkupno);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakSpravaTak1, updateMask))
-            {
-                foreach (PoredakSprava ps in rt.Takmicenje1.PoredakSprava)
-                    poredakSpravaDAO.Update(ps);
-            }
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakPreskokTak1, updateMask))
-                poredakPreskokDAO.Update(rt.Takmicenje1.PoredakPreskok);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakPreskokTak3, updateMask))
-                poredakPreskokDAO.Update(rt.Takmicenje3.PoredakPreskok);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakEkipeTak1, updateMask))
-                poredakEkipnoDAO.Update(rt.Takmicenje1.PoredakEkipno);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakUkupnoFinaleKupa, updateMask))
-                poredakUkupnoFinaleKupaDAO.Update(rt.Takmicenje1.PoredakUkupnoFinaleKupa);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakUkupnoZbirViseKola, updateMask))
-                poredakUkupnoZbirViseKolaDAO.Update(rt.Takmicenje1.PoredakUkupnoZbirViseKola);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakSpravaFinaleKupa, updateMask))
-            {
-                foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
-                    poredakSpravaFinaleKupaDAO.Update(p);
-            }
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakEkipnoFinaleKupa, updateMask))
-                poredakEkipnoFinaleKupaDAO.Update(rt.Takmicenje1.PoredakEkipnoFinaleKupa);
-            if (UpdateKindUtil.shouldUpdate(UpdateKind.PoredakEkipnoZbirViseKola, updateMask))
-                poredakEkipnoZbirViseKolaDAO.Update(rt.Takmicenje1.PoredakEkipnoZbirViseKola);
         }
     }
 }

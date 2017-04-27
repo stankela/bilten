@@ -393,15 +393,19 @@ namespace Bilten.UI
             if (rez.Total == null)
                 return;
 
-            bool addedPrviSledeci = false;
             foreach (RezultatUkupno r in ActiveTakmicenje.getPoredakUkupno(deoTakKod).getRezultati())
             {
                 if (r.Total == rez.Total)
                     istiRezultati.Add(r);
-                else if (istiRezultati.Count > 1 && !addedPrviSledeci)
+                else if (istiRezultati.Count == 0)
+                    continue;
+                else
                 {
-                    istiRezultati.Add(r);
-                    addedPrviSledeci = true;
+                    if (istiRezultati.Count == 1)
+                        istiRezultati.Clear();
+                    else
+                        istiRezultati.Add(r); // dodaj i prvog sledeceg sa razlicitom ocenom
+                    break;
                 }
             }
         }

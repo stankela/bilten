@@ -280,16 +280,17 @@ namespace Bilten.UI
             DataGridViewUserControl dgw = spravaGridUserControl1.DataGridViewUserControl;
             // TODO: Indexi kolona bi trebali da budu konstante
 
+            bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
             if (dgw.DataGridView.Columns.Count == 0)
             {
-                GridColumnsInitializer.initRezultatiSprava(dgw, takmicenje, kvalColumnVisible(), sprava);
+                GridColumnsInitializer.initRezultatiSprava(dgw, takmicenje, kvalColumnVisible(), sprava, obaPreskoka);
                 GridColumnsInitializer.maximizeColumnsRezultatiSprava(dgw, deoTakKod, rezTakmicenja, takmicenje.FinaleKupa);
             }
             else
             {
                 // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
-                GridColumnsInitializer.reinitRezultatiSpravaKeepColumnWidths(dgw,
-                    takmicenje, kvalColumnVisible(), sprava);
+                GridColumnsInitializer.reinitRezultatiSpravaKeepColumnWidths(dgw, takmicenje, kvalColumnVisible(), sprava,
+                    obaPreskoka);
             }
         }
 
@@ -531,51 +532,45 @@ namespace Bilten.UI
             if (rez == null)
                 return;
 
-            if (ActiveSprava != Sprava.Preskok && rez.Total == null)
-                return;
-            if (ActiveSprava == Sprava.Preskok
-                && (rez as RezultatPreskok).TotalObeOcene == null && (rez as RezultatPreskok).Total == null)
-                return;
-
-            bool addedPrviSledeci = false;
             if (ActiveSprava != Sprava.Preskok)
             {
+                if (rez.Total == null)
+                    return;
                 foreach (RezultatSprava r in ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getRezultati())
                 {
                     if (r.Total == rez.Total)
                         istiRezultati.Add(r);
-                    else if (istiRezultati.Count > 1 && !addedPrviSledeci)
-                    {
-                        istiRezultati.Add(r);
-                        addedPrviSledeci = true;
-                    }
-                }
-            }
-            else if ((rez as RezultatPreskok).TotalObeOcene == null)
-            {
-                foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati())
-                {
-                    if (r.TotalObeOcene != null)
+                    else if (istiRezultati.Count == 0)
                         continue;
-                    if (r.Total == rez.Total)
-                        istiRezultati.Add(r);
-                    else if (istiRezultati.Count > 1 && !addedPrviSledeci)
+                    else
                     {
-                        istiRezultati.Add(r);
-                        addedPrviSledeci = true;
+                        if (istiRezultati.Count == 1)
+                            istiRezultati.Clear();
+                        else
+                            istiRezultati.Add(r); // dodaj i prvog sledeceg sa razlicitom ocenom
+                        break;
                     }
                 }
             }
             else
             {
+                RezultatPreskok rp = (RezultatPreskok)rez;
+                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
+                if (obaPreskoka && (rp.TotalObeOcene == null) || !obaPreskoka && (rp.Total == null))
+                    return;
                 foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati())
                 {
-                    if (r.TotalObeOcene == (rez as RezultatPreskok).TotalObeOcene)
+                    if (obaPreskoka && (r.TotalObeOcene == rp.TotalObeOcene) || !obaPreskoka && (r.Total == rp.Total))
                         istiRezultati.Add(r);
-                    else if (istiRezultati.Count > 1 && !addedPrviSledeci)
+                    else if (istiRezultati.Count == 0)
+                        continue;
+                    else
                     {
-                        istiRezultati.Add(r);
-                        addedPrviSledeci = true;
+                        if (istiRezultati.Count == 1)
+                            istiRezultati.Clear();
+                        else
+                            istiRezultati.Add(r); // dodaj i prvog sledeceg sa razlicitom ocenom
+                        break;
                     }
                 }
             }
@@ -678,7 +673,7 @@ namespace Bilten.UI
         // TODO4: Trebalo bi uvesti neko persistent svojstvo koje oznacava da je poredak rucno promenjen
         private void promeniPoredakSprava()
         {
-            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, ActiveSprava);
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, ActiveSprava, false);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
@@ -736,7 +731,8 @@ namespace Bilten.UI
 
         private void promeniPoredakPreskok()
         {
-            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, Sprava.Preskok);
+            RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, Sprava.Preskok,
+                ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa));
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 

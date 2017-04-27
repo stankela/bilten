@@ -276,7 +276,7 @@ namespace Bilten.UI
         }
 
         public static void initRezultatiSprava(DataGridViewUserControl dgw,
-            Takmicenje takmicenje, bool kvalColumn, Sprava sprava)
+            Takmicenje takmicenje, bool kvalColumn, Sprava sprava, bool obaPreskoka)
         {
             dgw.DataGridView.Columns.Clear();
             
@@ -284,19 +284,24 @@ namespace Bilten.UI
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
 
+            Color preskokColor = Color.LightGreen;
             if (sprava == Sprava.Preskok)
             {
                 dgw.AddColumn("D", "D", 50, "{0:F" + takmicenje.BrojDecimalaD + "}");
                 dgw.AddColumn("E", "E", 50, "{0:F" + takmicenje.BrojDecimalaE + "}");
                 dgw.AddColumn("Pen.", "Penalty", 50, "{0:F" + takmicenje.BrojDecimalaPen + "}");
-                dgw.AddColumn("Total 1", "Total", 65, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+                DataGridViewColumn col = dgw.AddColumn("Total 1", "Total", 65, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+                if (!obaPreskoka)
+                    col.DefaultCellStyle.BackColor = preskokColor;
 
                 dgw.AddColumn("D", "D_2", 50, "{0:F" + takmicenje.BrojDecimalaD + "}");
                 dgw.AddColumn("E", "E_2", 50, "{0:F" + takmicenje.BrojDecimalaE + "}");
                 dgw.AddColumn("Pen.", "Penalty_2", 50, "{0:F" + takmicenje.BrojDecimalaPen + "}");
                 dgw.AddColumn("Total 2", "Total_2", 65, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
 
-                dgw.AddColumn("Konacna ocena", "TotalObeOcene", 60, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+                col = dgw.AddColumn("Konacna ocena", "TotalObeOcene", 60, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+                if (obaPreskoka)
+                    col.DefaultCellStyle.BackColor = preskokColor;
             }
             else
             {
@@ -344,12 +349,13 @@ namespace Bilten.UI
         }
 
         public static void reinitRezultatiSpravaKeepColumnWidths(DataGridViewUserControl dataGridViewUserControl,
-            Takmicenje takmicenje, bool kvalColumnVisible, Sprava sprava)
+            Takmicenje takmicenje, bool kvalColumnVisible, Sprava sprava, bool obaPreskoka)
         {
             DataGridView dgw = dataGridViewUserControl.DataGridView;
             int oldImeWidth = dgw.Columns[1].Width;
             int oldKlubWidth = dgw.Columns[2].Width;
-            GridColumnsInitializer.initRezultatiSprava(dataGridViewUserControl, takmicenje, kvalColumnVisible, sprava);
+            GridColumnsInitializer.initRezultatiSprava(dataGridViewUserControl, takmicenje, kvalColumnVisible, sprava,
+                obaPreskoka);
             dgw.Columns[1].Width = oldImeWidth;
             dgw.Columns[2].Width = oldKlubWidth;
         }

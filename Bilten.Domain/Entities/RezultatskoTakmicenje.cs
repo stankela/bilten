@@ -349,6 +349,13 @@ namespace Bilten.Domain
                 bool kombAdded = false;
                 foreach (RezultatskoTakmicenje rt in rezTakList)
                 {
+                    if (!rt.Propozicije.PostojiTak4)
+                    {
+                        rt.ImaEkipnoTakmicenje = false;
+                        rt.KombinovanoEkipnoTak = false;
+                        continue;
+                    }
+
                     if (!rt.TakmicenjeDescription.Propozicije.JednoTak4ZaSveKategorije)
                     {
                         rt.ImaEkipnoTakmicenje = true;
@@ -484,7 +491,7 @@ namespace Bilten.Domain
             Takmicenje4 = t4;
         }
 
-        public virtual int updateRezultatiOnChangedPropozicije(IDictionary<int, Domain.Propozicije> origPropozicijeMap,
+        public virtual void updateRezultatiOnChangedPropozicije(IDictionary<int, Domain.Propozicije> origPropozicijeMap,
             Takmicenje takmicenje, IList<RezultatskoTakmicenje> rezTakmicenja, IList<Ocena> oceneTak1)
         {
             Propozicije origPropozicije = origPropozicijeMap[Id];
@@ -670,83 +677,48 @@ namespace Bilten.Domain
                     calculatePoredakEkipnoZbirViseKola = true;
             }
 
-            int updateMask = 0;
             if (updateRezTak)
             {
-                UpdateKindUtil.setUpdateKind(UpdateKind.RezTak, ref updateMask);
+
             }
             if (createPoredakUkupnoTak1)
-            {
                 Takmicenje1.PoredakUkupno.create(this, oceneTak1);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoTak1, ref updateMask);
-            }
             else if (rankPoredakUkupnoTak1)
-            {
                 Takmicenje1.PoredakUkupno.rankRezultati(Propozicije);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoTak1, ref updateMask);
-            }
             if (rankPoredakSpravaTak1)
             {
                 foreach (PoredakSprava ps in Takmicenje1.PoredakSprava)
-                {
                     ps.rankRezultati(Propozicije);
-                }
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakSpravaTak1, ref updateMask);
             }
             if (rankPoredakPreskokTak1)
-            {
                 Takmicenje1.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakPreskokTak1, ref updateMask);
-            }
             if (rankPoredakPreskokTak3)
-            {
                 Takmicenje3.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakPreskokTak3, ref updateMask);
-            }
             if (createPoredakEkipeTak1)
             {
                 Takmicenje1.PoredakEkipno.create(this,
                     Takmicenje.getEkipaRezultatiUkupnoMap(this, rezTakmicenja, DeoTakmicenjaKod.Takmicenje1));
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakEkipeTak1, ref updateMask);
             }
             else if (rankPoredakEkipeTak1)
-            {
                 Takmicenje1.PoredakEkipno.rankRezultati(Propozicije);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakEkipeTak1, ref updateMask);
-            }
             if (calculatePoredakUkupnoFinaleKupa)
-            {
                 Takmicenje1.PoredakUkupnoFinaleKupa.calculateTotal(Propozicije);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoFinaleKupa, ref updateMask);
-            }
             if (calculatePoredakUkupnoZbirViseKola)
-            {
                 Takmicenje1.PoredakUkupnoZbirViseKola.calculateTotal();
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakUkupnoZbirViseKola, ref updateMask);
-            }
             if (calculatePoredakSpravaFinaleKupa)
             {
                 foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
                     p.calculateTotal(Propozicije);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakSpravaFinaleKupa, ref updateMask);
             }
             else if (rankPoredakSpravaFinaleKupa)
             {
                 foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
                     p.rankRezultati(Propozicije);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakSpravaFinaleKupa, ref updateMask);
             }
             if (calculatePoredakEkipnoFinaleKupa)
-            {
                 Takmicenje1.PoredakEkipnoFinaleKupa.calculateTotal(Propozicije);
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakEkipnoFinaleKupa, ref updateMask);
-            }
             if (calculatePoredakEkipnoZbirViseKola)
-            {
                 Takmicenje1.PoredakEkipnoZbirViseKola.calculateTotal();
-                UpdateKindUtil.setUpdateKind(UpdateKind.PoredakEkipnoZbirViseKola, ref updateMask);
-            }
-            return updateMask;
         }
     }
 }

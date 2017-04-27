@@ -119,7 +119,7 @@ namespace Bilten
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
             rp.proveriTakmicenja234();
-
+            // TODO4: Ako je Propozicije.PostojiTak4 false, mora i RezultatskoTakmicenje.ImaEkipnoTakmicenje da bude false.
 
             Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Latn-CS");

@@ -76,8 +76,8 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl1
             // 
-            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(15, 21);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
@@ -103,6 +103,7 @@ namespace Bilten.UI
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RazresiIsteOceneForm";
+            this.Shown += new System.EventHandler(this.RazresiIsteOceneForm_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

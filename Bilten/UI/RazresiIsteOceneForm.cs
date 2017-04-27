@@ -11,23 +11,26 @@ namespace Bilten.UI
 {
     public partial class RazresiIsteOceneForm : Form
     {
-        List<RezultatSprava> istiRezultati;
-        List<RezultatUkupno> istiRezultatiUkupno;
-        Takmicenje takmicenje;
-        Sprava sprava;
+        private List<RezultatSprava> istiRezultati;
+        private List<RezultatUkupno> istiRezultatiUkupno;
+        private Takmicenje takmicenje;
+        private Sprava sprava;
+        private bool obaPreskoka;
 
-        List<int> poredak;
+        private List<int> poredak;
         public List<int> Poredak
         {
             get { return poredak; }
         }
 
-        public RazresiIsteOceneForm(List<RezultatSprava> istiRezultati, Takmicenje takmicenje, Sprava sprava)
+        public RazresiIsteOceneForm(List<RezultatSprava> istiRezultati, Takmicenje takmicenje, Sprava sprava,
+            bool obaPreskoka)
         {
             InitializeComponent();
             this.istiRezultati = istiRezultati;
             this.takmicenje = takmicenje;
             this.sprava = sprava;
+            this.obaPreskoka = obaPreskoka;
             initUI();
             if (sprava != Sprava.Preskok)
                 dataGridViewUserControl1.setItems<RezultatSprava>(istiRezultati);
@@ -64,7 +67,7 @@ namespace Bilten.UI
             else
             {
                 GridColumnsInitializer.initRezultatiSprava(
-                   dataGridViewUserControl1, takmicenje, /*kvalColumnVisible*/false, sprava);
+                   dataGridViewUserControl1, takmicenje, /*kvalColumnVisible*/false, sprava, obaPreskoka);
             }
         }
 
@@ -129,6 +132,11 @@ namespace Bilten.UI
                 ++rank;
             }
             return count == rezultati.Count;
+        }
+
+        private void RazresiIsteOceneForm_Shown(object sender, EventArgs e)
+        {
+            dataGridViewUserControl1.clearSelection();
         }
     }
 }
