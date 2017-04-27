@@ -549,7 +549,7 @@ namespace Bilten.UI
         }
 
         // TODO4: Kada se iz komboa za klub ili kategoriju bira pomocu auto complete, i kada se izabere pritiskom na enter,
-        // odmah se zatvara prozor.
+        // odmah se zatvara prozor. Proveri ovo na svim mestima gde se koristi auto complete.
 
         protected override void discardChanges()
         {

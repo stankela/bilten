@@ -33,6 +33,7 @@ namespace Bilten.UI
             InitializeComponent();
             this.rezTakmicenjeId = rezTakmicenjeId;
             this.enableAdd = enableAdd;
+            this.updateLastModified = true;
             initialize(ekipaId, true);
         }
 

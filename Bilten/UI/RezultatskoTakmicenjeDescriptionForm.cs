@@ -23,6 +23,7 @@ namespace Bilten.UI
         public RezultatskoTakmicenjeDescriptionForm(Nullable<int> descId, int takmicenjeId)
         {
             InitializeComponent();
+            this.updateLastModified = true;
             this.takmicenjeId = takmicenjeId;
             initialize(descId, true);
         }

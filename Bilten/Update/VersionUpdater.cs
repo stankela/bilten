@@ -309,6 +309,7 @@ public class VersionUpdater
         updatePoredakViseKola();
         updateZavrsenoTak1();
         updateKvalifikanti();
+        updateLastModified();
     }
 
     private void updatePoredakViseKola()
@@ -856,6 +857,44 @@ public class VersionUpdater
                             poredakEkipnoDAO.Update(rt.Takmicenje1.PoredakEkipno);
                         }
                     }
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        }
+    }
+
+    private void updateLastModified()
+    {
+        IList<int> takmicenjaId = getTakmicenjaId();
+        for (int i = 0; i < takmicenjaId.Count; ++i)
+        {
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjaId[i]);
+                    if (t.PrvoKolo != null && t.PrvoKolo.Datum > t.Datum)
+                        throw new Exception("Prvo kolo je kasnije od takmicenja - " + t.ToString());
+                    if (t.DrugoKolo != null && t.DrugoKolo.Datum > t.Datum)
+                        throw new Exception("Drugo kolo je kasnije od takmicenja - " + t.ToString());
+                    if (t.TreceKolo != null && t.TreceKolo.Datum > t.Datum)
+                        throw new Exception("Trece kolo je kasnije od takmicenja - " + t.ToString());
+                    if (t.CetvrtoKolo != null && t.CetvrtoKolo.Datum > t.Datum)
+                        throw new Exception("Cetvrto kolo je kasnije od takmicenja - " + t.ToString());
+                    t.LastModified = t.Datum;
                     session.Transaction.Commit();
                 }
             }

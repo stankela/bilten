@@ -26,6 +26,7 @@ namespace Bilten.UI
         public TakmicarskaKategorijaForm(Nullable<int> kategorijaId, int takmicenjeId)
         {
             InitializeComponent();
+            this.updateLastModified = true;
             this.takmicenjeId = takmicenjeId;
             initialize(kategorijaId, true);
         }

@@ -38,6 +38,7 @@ namespace Bilten.UI
             int takmicenjeId)
         {
             InitializeComponent();
+            this.updateLastModified = true;
             this.gimnasticar = g;
             this.sprava = sprava;
             this.deoTakKod = deoTakKod;

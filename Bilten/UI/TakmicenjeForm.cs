@@ -61,6 +61,7 @@ namespace Bilten.UI
         public TakmicenjeForm()
         {
             InitializeComponent();
+            this.updateLastModified = true;
             initialize(null, true);
         }
 
@@ -351,6 +352,7 @@ namespace Bilten.UI
                 {
                     takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
                 }
+                takmicenje.LastModified = DateTime.Now;
             }
         }
 

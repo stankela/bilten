@@ -20,6 +20,7 @@
     <property name="BrojDecimalaTotal" column="broj_decimala_total" type="Byte" />
     <property name="ZavrsenoTak1" column="zavrseno_tak1" type="Boolean" />
     <property name="ZrebZaFinalePoSpravama" column="zreb_za_finale_tak3" type="String" length="128"/>
+    <property name="LastModified" column="last_modified" />
     <set name="Kategorije" lazy="true" cascade="save-update"
       inverse="true" >
       <key column="takmicenje_id" />

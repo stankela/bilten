@@ -47,6 +47,8 @@ namespace Bilten.UI
                 throw new ArgumentException("GimnasticarUcesnikForm only works in edit mode.");
             InitializeComponent();
 
+            this.updateLastModified = true;
+
             emptyKlub = new KlubUcesnik();
             emptyKlub.Naziv = PRAZNO;
             emptyDrzava = new DrzavaUcesnik();

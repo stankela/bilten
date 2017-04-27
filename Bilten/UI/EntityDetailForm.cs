@@ -12,6 +12,7 @@ using Bilten.Util;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Misc;
+using Bilten.Dao;
 
 namespace Bilten.UI
 {
@@ -24,6 +25,7 @@ namespace Bilten.UI
         protected bool closedByOK;
         private bool closedByCancel;
         protected bool showWaitCursor;
+        protected bool updateLastModified = false;
 
         public DomainObject Entity
         {
@@ -192,7 +194,18 @@ namespace Bilten.UI
                         add();
 
                     if (persistEntity)
+                    {
+                        if (updateLastModified)
+                        {
+                            Takmicenje t;
+                            if (Sesija.Instance.TakmicenjeId != -1)
+                                t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(Sesija.Instance.TakmicenjeId);
+                            else
+                                t = entity as Takmicenje;
+                            t.LastModified = DateTime.Now;
+                        }
                         session.Transaction.Commit();
+                    }
                     closedByOK = true;
                 }
             }

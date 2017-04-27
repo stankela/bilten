@@ -24,10 +24,12 @@ namespace Bilten.UI
         private bool[] tabOpened;
         private bool[] clanoviSorted;
         private bool viseKola;
+        private int takmicenjeId;
 
         public EkipeForm(int takmicenjeId)
         {
             InitializeComponent();
+            this.takmicenjeId = takmicenjeId;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -398,6 +400,8 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
 
                     RezultatskoTakmicenjeService.deleteEkipaFromRezTak(selEkipa, ActiveRezTakmicenje);
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    t.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

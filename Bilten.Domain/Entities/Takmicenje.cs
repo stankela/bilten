@@ -152,6 +152,13 @@ namespace Bilten.Domain
             set { zrebZaFinalePoSpravama = value; }
         }
 
+        private DateTime lastModified;
+        public virtual DateTime LastModified
+        {
+            get { return lastModified; }
+            set { lastModified = value; }
+        }
+
         private Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenjeDescriptions = 
             new HashedSet<RezultatskoTakmicenjeDescription>();
         public virtual Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> TakmicenjeDescriptions
@@ -577,6 +584,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(BrojDecimalaTotal.ToString());
             strBuilder.AppendLine(ZavrsenoTak1.ToString());
             strBuilder.AppendLine(ZrebZaFinalePoSpravama != null ? ZrebZaFinalePoSpravama : NULL);
+            strBuilder.AppendLine(LastModified.ToString());
 
             strBuilder.AppendLine(TakmicenjeDescriptions.Count.ToString());
             foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
@@ -618,6 +626,8 @@ namespace Bilten.Domain
 
             string zreb = reader.ReadLine();
             ZrebZaFinalePoSpravama = zreb != NULL ? zreb : null;
+
+            LastModified = DateTime.Parse(reader.ReadLine());
 
             int brojTakmicenja = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojTakmicenja; ++i)

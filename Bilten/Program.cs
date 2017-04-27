@@ -61,6 +61,12 @@ namespace Bilten
             //dfs.createGraphFromExportSqlCeStript(schemaFile);
             //dfs.doDFS();
 
+            Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Latn-CS");
+            // ili
+            // Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Cyrl-CS");
+            //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
+
 
             // NOTE: Prebacio sam ovde inicijalizaciju opcija jer se opcije koriste u nekim od update metoda.
 
@@ -114,19 +120,12 @@ namespace Bilten
                 Cursor.Current = Cursors.Arrow;
             }
 
-
             RazneProvere rp = new RazneProvere();
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
             rp.proveriTakmicenja234();
             // TODO4: Ako je Propozicije.PostojiTak4 false, mora i RezultatskoTakmicenje.ImaEkipnoTakmicenje da bude false.
 
-            Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Latn-CS");
-            // ili
-            // Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Cyrl-CS");
-            //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
-            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
