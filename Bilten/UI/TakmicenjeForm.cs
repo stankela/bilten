@@ -12,6 +12,7 @@ using Bilten.Util;
 using Bilten.Dao;
 using NHibernate;
 using NHibernate.Context;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -32,9 +33,9 @@ namespace Bilten.UI
 
         private IList<RezultatskoTakmicenje> svaRezTakmicenja;
 
-        public Takmicenje copyFromTakmicenje;
-        public IList<RezultatskoTakmicenje> rezTakmicenja;
-        public IDictionary<int, List<GimnasticarUcesnik>> rezTakToGimnasticarMap;
+        private Takmicenje copyFromTakmicenje;
+        private IList<RezultatskoTakmicenje> rezTakmicenja;
+        private IDictionary<int, List<GimnasticarUcesnik>> rezTakToGimnasticarMap;
 
         private Gimnastika SelectedGimnastika
         {
@@ -62,6 +63,7 @@ namespace Bilten.UI
         {
             InitializeComponent();
             this.updateLastModified = true;
+            this.showWaitCursor = true;
             initialize(null, true);
         }
 
@@ -358,7 +360,28 @@ namespace Bilten.UI
 
         protected override void addEntity(DomainObject entity)
         {
-            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Add((Takmicenje)entity);
+            Takmicenje t = (Takmicenje)entity;
+            DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Add(t);
+            if (t.StandardnoTakmicenje && copyFromTakmicenje == null)
+                return;
+
+            string viseKolaMsg =
+                "Takmicenje je uspesno napravljeno, sa svim gimnasticarima i ekipama iz prethodnih kola.";
+            if (t.StandardnoTakmicenje && copyFromTakmicenje != null)
+            {
+                TakmicenjeService.createFromPrevTakmicenje(t, copyFromTakmicenje, rezTakmicenja,
+                    rezTakToGimnasticarMap);
+            }
+            else if (t.FinaleKupa)
+            {
+                TakmicenjeService.kreirajNaOsnovuViseKola(t);
+                afterCommitMsg = viseKolaMsg;
+            }
+            else // ZbirViseKola
+            {
+                TakmicenjeService.kreirajNaOsnovuViseKola(t);
+                afterCommitMsg = viseKolaMsg;
+            }
         }
 
         protected override void checkBusinessRulesOnAdd(DomainObject entity)
@@ -447,7 +470,6 @@ namespace Bilten.UI
             txtPrethTak.Clear();
             treeView1.Nodes.Clear();
             copyFromTakmicenje = null;
-
         }
 
         private void btnIzaberiPrethTak_Click(object sender, EventArgs e)

@@ -23,15 +23,15 @@ namespace Bilten.UI
     public partial class MainForm : Form
     {
         private Rectangle rectNormal;
-        protected string strProgName;
-        protected string strFileName;
+        public static string strProgName;
+        private string strFileName;
 
         // TODO: Zameni ove tri promenljive sa promenljivom tipa Takmicenje (problem moze da bude to sto je takmicenjeId
         // tipa Nullable<int>, a takmicenje.Id je tipa int. Proveri sva mesta gde se koristi takmicenjeId)
         private string nazivTakmicenja;
         private Gimnastika gimnastika;
         private Nullable<int> takmicenjeId;
-        Takmicenje takmicenje;
+        private Takmicenje takmicenje;
 
         //string strRegKey = "Software\\Sasa\\";
         const string strWinState = "WindowState";
@@ -295,75 +295,20 @@ namespace Bilten.UI
             if (!OkToTrash())
                 return;
 
-            DialogResult result = DialogResult.None;
-            TakmicenjeForm form = null;
+            TakmicenjeForm form;
             try
             {
                 form = new TakmicenjeForm();
-                result = form.ShowDialog();
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
             }
             catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, strProgName);
-            }
-
-            if (result != DialogResult.OK)
-                return;
-
-            Takmicenje t = (Takmicenje)form.Entity;
-            if (t.StandardnoTakmicenje && form.copyFromTakmicenje == null)
-            {
-                onTakmicenjeCreated(t);
                 return;
             }
 
-            Cursor.Current = Cursors.WaitCursor;
-            Cursor.Show();
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    string viseKolaMsg =
-                        "Takmicenje je uspesno napravljeno, sa svim gimnasticarima i ekipama iz prethodnih kola.";
-                    CurrentSessionContext.Bind(session);
-                    if (t.StandardnoTakmicenje && form.copyFromTakmicenje != null)
-                    {
-                        TakmicenjeService.createFromPrevTakmicenje(t, form.copyFromTakmicenje, form.rezTakmicenja,
-                            form.rezTakToGimnasticarMap);
-                        session.Transaction.Commit();
-                        onTakmicenjeCreated(t);
-                    }
-                    else if (t.FinaleKupa)
-                    {
-                        TakmicenjeService.kreirajNaOsnovuViseKola(t);
-                        session.Transaction.Commit();
-                        MessageDialogs.showMessage(viseKolaMsg, strProgName);
-                        onTakmicenjeCreated(t);
-                    }
-                    else // ZbirViseKola
-                    {
-                        TakmicenjeService.kreirajNaOsnovuViseKola(t);
-                        session.Transaction.Commit();
-                        MessageDialogs.showMessage(viseKolaMsg, strProgName);
-                        onTakmicenjeCreated(t);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                return;
-            }
-            finally
-            {
-                Cursor.Hide();
-                Cursor.Current = Cursors.Arrow;
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onTakmicenjeCreated((Takmicenje)form.Entity);
         }
 
         private void loadBrojDecimalaUOpcije(Takmicenje t)
@@ -443,17 +388,69 @@ namespace Bilten.UI
 
             if (!OkToTrash())
                 return;
+            OtvoriTakmicenjeForm form;
             try
             {
-                OtvoriTakmicenjeForm form = new OtvoriTakmicenjeForm(takmicenjeId, false, 0, false, Gimnastika.Undefined);
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    onTakmicenjeOpened(form.Takmicenje);
-                }
+                form = new OtvoriTakmicenjeForm(takmicenjeId, false, 0, false, Gimnastika.Undefined);
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, strProgName);
+                return;
+            }
+
+            Takmicenje t = form.Takmicenje;
+            try
+            {
+                tryUpdate(t);
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+                return;
+            }
+            
+            onTakmicenjeOpened(t);
+        }
+
+        private void tryUpdate(Takmicenje t)
+        {
+            if (t.StandardnoTakmicenje)
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    takmicenjeDAO.Attach(t, false);
+                    bool shouldUpdate = t.PrvoKolo != null && t.PrvoKolo.LastModified > t.LastModified
+                        || t.DrugoKolo != null && t.DrugoKolo.LastModified > t.LastModified
+                        || t.TreceKolo != null && t.TreceKolo.LastModified > t.LastModified
+                        || t.CetvrtoKolo != null && t.CetvrtoKolo.LastModified > t.LastModified;
+                    if (!shouldUpdate)
+                        return;
+
+                }
+            }
+            catch (Exception)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 

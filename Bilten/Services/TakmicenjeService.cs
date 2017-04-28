@@ -1,4 +1,5 @@
-﻿using Bilten.Dao;
+﻿using Bilten;
+using Bilten.Dao;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
@@ -295,27 +296,18 @@ namespace Bilten.Services
             takmicenjeDAO.Attach(takmicenje, false);
 
             List<Takmicenje> prethodnaKola = new List<Takmicenje>();
-            takmicenjeDAO.Attach(takmicenje.PrvoKolo, false);
-            takmicenjeDAO.Attach(takmicenje.DrugoKolo, false);
-
             prethodnaKola.Add(takmicenje.PrvoKolo);
             prethodnaKola.Add(takmicenje.DrugoKolo);
             if (takmicenje.TreceKolo != null)
-            {
-                takmicenjeDAO.Attach(takmicenje.TreceKolo, false);
                 prethodnaKola.Add(takmicenje.TreceKolo);
-            }
             if (takmicenje.CetvrtoKolo != null)
-            {
-                takmicenjeDAO.Attach(takmicenje.CetvrtoKolo, false);
                 prethodnaKola.Add(takmicenje.CetvrtoKolo);
-            }
 
             RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
             List<IList<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<IList<RezultatskoTakmicenje>>();
             foreach (Takmicenje prethKolo in prethodnaKola)
-                rezTakmicenjaPrethodnaKola.Add(rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(prethKolo.Id));
+                rezTakmicenjaPrethodnaKola.Add(rezultatskoTakmicenjeDAO.FindByTakmicenje(prethKolo.Id));
 
             takmicenje.Kategorije.Clear();
             foreach (RezultatskoTakmicenje rt in rezTakmicenjaPrethodnaKola[0])
@@ -366,25 +358,63 @@ namespace Bilten.Services
                 rezTakmicenja.Add(rt);
             }
 
-            IDictionary<GimnasticarUcesnik, GimnasticarUcesnik> gimnasticariMap =
-                new Dictionary<GimnasticarUcesnik, GimnasticarUcesnik>();
+            // Za svakog gimnasticara, zapamti u kojim kategorijama je ucestvovao u prethodnim kolima
+            IDictionary<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>> mapaUcestvovanja
+                = new Dictionary<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>>();
+
+            IDictionary<TakmicarskaKategorija, RezultatskoTakmicenje> katToRezTakMap
+                = new Dictionary<TakmicarskaKategorija, RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
+                katToRezTakMap.Add(rt.Kategorija, rt);
+                for (int i = 0; i < rezTakmicenjaPrethodnaKola.Count; ++i)
                 {
+                    IList<RezultatskoTakmicenje> rezTakmicenjaPrethKolo = rezTakmicenjaPrethodnaKola[i];
                     RezultatskoTakmicenje rtFrom = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethKolo, 0, rt.Kategorija);
+
+                    Pair<int, TakmicarskaKategorija> koloKatPair = new Pair<int, TakmicarskaKategorija>(i, rt.Kategorija);
+
                     foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
                     {
-                        GimnasticarUcesnik g2;
-                        if (!gimnasticariMap.ContainsKey(g))
+                        if (!mapaUcestvovanja.ContainsKey(g))
                         {
-                            g2 = GimnasticarUcesnikService.createGimnasticarUcesnik(g, rt.Kategorija);
-                            gimnasticariMap.Add(g2, g2);
+                            // Koriscenje IDictionary obezbedjuje da je svaki gimnasticar dodat u samo jednu kategoriju.
+                            GimnasticarUcesnik g2 = GimnasticarUcesnikService.createGimnasticarUcesnik(g, rt.Kategorija);
+                            IList<Pair<int, TakmicarskaKategorija>> pairList = new List<Pair<int, TakmicarskaKategorija>>();
+                            pairList.Add(koloKatPair);
+                            mapaUcestvovanja.Add(g2, pairList);
                         }
                         else
-                            g2 = gimnasticariMap[g];
-                        rt.Takmicenje1.addGimnasticar(g2);
+                            mapaUcestvovanja[g].Add(koloKatPair);
                     }
+                }
+            }
+
+            foreach (KeyValuePair<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>> entry in mapaUcestvovanja)
+            {
+                GimnasticarUcesnik g = entry.Key;
+                TakmicarskaKategorija prevKat = null;
+                bool ok = true;
+                foreach (Pair<int, TakmicarskaKategorija> koloKatPair in entry.Value)
+                {
+                    TakmicarskaKategorija kat = koloKatPair.Second;
+                    if (prevKat == null)
+                        prevKat = kat;
+                    else if (!kat.Equals(prevKat))
+                        ok = false;
+
+                    RezultatskoTakmicenje rt = katToRezTakMap[kat];
+                    rt.Takmicenje1.addGimnasticar(g);
+                }
+                if (!ok)
+                {
+                    string ucestvovaoStr = takmicenje.Gimnastika == Gimnastika.MSG ? "ucestvovao" : "ucestvovala";
+                    string msg = g.ImeSrednjeImePrezimeDatumRodjenja + " je " +
+                        ucestvovaoStr + " u razlicitim kategorijama u prethodnim kolima:\n\n";
+                    foreach (Pair<int, TakmicarskaKategorija> koloKatPair in entry.Value)
+                        msg += (koloKatPair.First + 1).ToString() + ". kolo - " + koloKatPair.Second.Naziv + "\n";
+
+                    System.Windows.Forms.MessageBox.Show(msg);
                 }
             }
 
@@ -450,10 +480,8 @@ namespace Bilten.Services
                 foreach (Ekipa e in rt.Takmicenje1.Ekipe)
                     ekipaDAO.Add(e);
             }
-            foreach (GimnasticarUcesnik g in gimnasticariMap.Values)
-            {
+            foreach (GimnasticarUcesnik g in mapaUcestvovanja.Keys)
                 gimnasticarUcesnikDAO.Add(g);
-            }
         }
 
         public static void addTakmicarskaKategorija(TakmicarskaKategorija kat, int takmicenjeId)

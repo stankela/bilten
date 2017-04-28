@@ -26,6 +26,7 @@ namespace Bilten.UI
         private bool closedByCancel;
         protected bool showWaitCursor;
         protected bool updateLastModified = false;
+        protected string afterCommitMsg;
 
         public DomainObject Entity
         {
@@ -205,6 +206,8 @@ namespace Bilten.UI
                             t.LastModified = DateTime.Now;
                         }
                         session.Transaction.Commit();
+                        if (!String.IsNullOrEmpty(afterCommitMsg))
+                            MessageDialogs.showMessage(afterCommitMsg, MainForm.strProgName);
                     }
                     closedByOK = true;
                 }
