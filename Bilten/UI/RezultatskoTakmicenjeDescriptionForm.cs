@@ -25,6 +25,7 @@ namespace Bilten.UI
             InitializeComponent();
             this.updateLastModified = true;
             this.takmicenjeId = takmicenjeId;
+            this.showWaitCursor = true;
             initialize(descId, true);
         }
 

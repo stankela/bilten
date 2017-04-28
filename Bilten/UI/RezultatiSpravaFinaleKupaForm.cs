@@ -264,9 +264,7 @@ namespace Bilten.UI
                     List<List<RezultatSpravaFinaleKupa>> rezultatiSprave = new List<List<RezultatSpravaFinaleKupa>>();
 
                     foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
-                    {
                         rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
-                    }
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, ActiveTakmicenje.Gimnastika,
                         kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
                         spravaGridUserControl1.DataGridViewUserControl.DataGridView));
@@ -359,6 +357,9 @@ namespace Bilten.UI
                     rez.KvalStatus = kvalStatus;
                     DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(
                         ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava));
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -412,6 +413,9 @@ namespace Bilten.UI
                     rezultatskoTakmicenjeDAO.Evict(rezTak2);
                     
                     DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(p);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

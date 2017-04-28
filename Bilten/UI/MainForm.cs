@@ -78,7 +78,6 @@ namespace Bilten.UI
 
             mnTakmicenje1RasporedSudija.Visible = true;
             mnTakmicenje1StartListe.Visible = true;
-            mnOpcije.Visible = false;
         }
 
         protected override void OnMove(EventArgs ea)
@@ -784,12 +783,6 @@ namespace Bilten.UI
             }
         }
 
-        private void mnOpcijeOpcije_Click(object sender, EventArgs e)
-        {
-            OpcijeForm f = new OpcijeForm(takmicenjeId);
-            f.ShowDialog();
-        }
-
         private void mnZatvoriTakmicenje_Click(object sender, EventArgs e)
         {
             // TODO: 
@@ -909,7 +902,8 @@ namespace Bilten.UI
                         ocenaDAO.Evict(o);
                     foreach (Ocena o in ocene3)
                         ocenaDAO.Evict(o);
-                    
+
+                    t.LastModified = DateTime.Now;
                     takmicenjeDAO.Update(t);
                     session.Transaction.Commit();
 

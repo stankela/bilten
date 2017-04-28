@@ -259,6 +259,9 @@ namespace Bilten.UI
 
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoFinaleKupaDAO()
                         .Update(ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

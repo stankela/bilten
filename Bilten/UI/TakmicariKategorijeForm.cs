@@ -321,6 +321,9 @@ namespace Bilten.UI
                     GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                     foreach (GimnasticarUcesnik g in okGimnasticari)
                         gimUcesnikDAO.Add(g);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     added = true;
                 }
@@ -564,9 +567,6 @@ namespace Bilten.UI
 
         private bool deleteGimnasticar(GimnasticarUcesnik g)
         {
-            if (!canDeleteGimnasticar(g))
-                return false;
-
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             ISession session = null;
@@ -576,6 +576,9 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
+                    if (!canDeleteGimnasticar(g))
+                        return false;
+
                     GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                     gimUcesnikDAO.Attach(g, false);
                     IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
@@ -595,6 +598,9 @@ namespace Bilten.UI
                     }
 
                     gimUcesnikDAO.Delete(g);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     return true;
                 }

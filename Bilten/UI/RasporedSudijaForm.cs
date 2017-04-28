@@ -397,6 +397,8 @@ namespace Bilten.UI
                     newRaspored = new RasporedSudija(form.SelektovaneKategorije, deoTakKod, takmicenje);
                     DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO().Add(newRaspored);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     added = true;
                 }
@@ -456,6 +458,8 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO().Delete(ActiveRaspored);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     deleted = true;
                 }
@@ -518,6 +522,9 @@ namespace Bilten.UI
                         s.NastupaZaDrzavu = !prikaziKlub;
                         sudijaUcesnikDAO.Update(s);
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

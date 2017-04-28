@@ -362,6 +362,9 @@ namespace Bilten.UI
                         g.NastupaZaDrzavu = !prikaziKlub;
                         gimnasticarUcesnikDAO.Update(g);
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -409,6 +412,9 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(r.Ekipa);
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoDAO().Update(p);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -456,8 +462,10 @@ namespace Bilten.UI
                     poredakEkipnoDAO.Attach(p, false);
 
                     p.create(ActiveTakmicenje, ekipaRezultatiUkupnoMap);
-
                     poredakEkipnoDAO.Update(p);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -523,9 +531,11 @@ namespace Bilten.UI
                     poredakEkipnoDAO.Attach(p, false);
 
                     p.recreateRezultat(rezultat.Ekipa, ActiveTakmicenje,
-                        RezultatskoTakmicenjeService.findRezultatiUkupnoForEkipa(takmicenje.Id, rezultat.Ekipa));
-                    
+                        RezultatskoTakmicenjeService.findRezultatiUkupnoForEkipa(takmicenje.Id, rezultat.Ekipa));                    
                     poredakEkipnoDAO.Update(p);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

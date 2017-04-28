@@ -62,7 +62,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     takmicenje.ZrebZaFinalePoSpravama = textBox1.Text.Trim();
+
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Update(takmicenje);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

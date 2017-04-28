@@ -445,12 +445,6 @@
     <Compile Include="UI\OceneForm.Designer.cs">
       <DependentUpon>OceneForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\OpcijeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\OpcijeForm.Designer.cs">
-      <DependentUpon>OpcijeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\OtvoriTakmicenjeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -857,10 +851,6 @@
     <EmbeddedResource Include="UI\OceneForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>OceneForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\OpcijeForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>OpcijeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\OtvoriTakmicenjeForm.resx">
       <SubType>Designer</SubType>

@@ -885,15 +885,32 @@ public class VersionUpdater
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjaId[i]);
-                    if (t.PrvoKolo != null && t.PrvoKolo.Datum > t.Datum)
-                        throw new Exception("Prvo kolo je kasnije od takmicenja - " + t.ToString());
-                    if (t.DrugoKolo != null && t.DrugoKolo.Datum > t.Datum)
-                        throw new Exception("Drugo kolo je kasnije od takmicenja - " + t.ToString());
-                    if (t.TreceKolo != null && t.TreceKolo.Datum > t.Datum)
-                        throw new Exception("Trece kolo je kasnije od takmicenja - " + t.ToString());
-                    if (t.CetvrtoKolo != null && t.CetvrtoKolo.Datum > t.Datum)
-                        throw new Exception("Cetvrto kolo je kasnije od takmicenja - " + t.ToString());
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    Takmicenje t = takmicenjeDAO.FindById(takmicenjaId[i]);
+                    if (t.PrvoKolo != null)
+                    {
+                        if (t.PrvoKolo.Datum > t.Datum)
+                            throw new Exception("Prvo kolo je kasnije od takmicenja - " + t.ToString());
+                        takmicenjeDAO.Evict(t.PrvoKolo);
+                    }
+                    if (t.DrugoKolo != null)
+                    {
+                        if (t.DrugoKolo.Datum > t.Datum)
+                            throw new Exception("Drugo kolo je kasnije od takmicenja - " + t.ToString());
+                        takmicenjeDAO.Evict(t.DrugoKolo);
+                    }
+                    if (t.TreceKolo != null)
+                    {
+                        if (t.TreceKolo.Datum > t.Datum)
+                            throw new Exception("Trece kolo je kasnije od takmicenja - " + t.ToString());
+                        takmicenjeDAO.Evict(t.TreceKolo);
+                    }
+                    if (t.CetvrtoKolo != null)
+                    {
+                        if (t.CetvrtoKolo.Datum > t.Datum)
+                            throw new Exception("Cetvrto kolo je kasnije od takmicenja - " + t.ToString());
+                        takmicenjeDAO.Evict(t.CetvrtoKolo);
+                    }
                     t.LastModified = t.Datum;
                     session.Transaction.Commit();
                 }

@@ -10,12 +10,15 @@ using Bilten.Exceptions;
 using Bilten.Domain;
 using NHibernate;
 using NHibernate.Context;
+using Bilten.Dao;
+using Bilten.Misc;
 
 namespace Bilten.UI
 {
     public partial class SingleEntityListForm<T> : BaseEntityListForm where T : DomainObject, new()
     {
         protected FilterForm filterForm;
+        protected bool updateLastModified = false;
 
         private StatusBar statusBar;
         public StatusBar StatusPanel
@@ -167,6 +170,11 @@ namespace Bilten.UI
                     if (refIntegrityDeleteDlg(SelectedItem))
                     {
                         delete(SelectedItem);
+                        if (updateLastModified)
+                        {
+                            Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(Sesija.Instance.TakmicenjeId);
+                            t.LastModified = DateTime.Now;
+                        }
                         session.Transaction.Commit();
                         ok = true;
                     }

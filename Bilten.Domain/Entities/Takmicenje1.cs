@@ -235,8 +235,8 @@ namespace Bilten.Domain
         {
             PoredakUkupnoFinaleKupa.addGimnasticar(g, rezTak, rezTak1, rezTak2);
 
-            foreach (Sprava s in Sprave.getSprave(rezTak.Gimnastika))
-                getPoredakSpravaFinaleKupa(s).addGimnasticar(g, rezTak, rezTak1, rezTak2);
+            foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
+                p.addGimnasticar(g, rezTak, rezTak1, rezTak2);
             
             if (rezTak.odvojenoTak2())
                 PoredakUkupno.addGimnasticar(g, ocene, rezTak);
@@ -274,8 +274,8 @@ namespace Bilten.Domain
 
             if (PoredakUkupnoFinaleKupa != null)
                 PoredakUkupnoFinaleKupa.deleteGimnasticar(g, rezTak);
-            foreach (Sprava s in Sprave.getSprave(rezTak.Gimnastika))
-                getPoredakSpravaFinaleKupa(s).deleteGimnasticar(g, rezTak);
+            foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
+                p.deleteGimnasticar(g, rezTak);
 
             if (PoredakUkupnoZbirViseKola != null)
                 PoredakUkupnoZbirViseKola.deleteGimnasticar(g, rezTak);

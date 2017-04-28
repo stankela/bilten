@@ -268,6 +268,9 @@ namespace Bilten.UI
                     }
 
                     DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(origTakmicenje.Takmicenje3);
+
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    t.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

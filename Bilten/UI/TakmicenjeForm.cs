@@ -521,6 +521,8 @@ namespace Bilten.UI
                             gimNode.Checked = true;
                         }
                     }
+                    foreach (TreeNode n in treeView1.Nodes)
+                        n.Expand();
                 }
             }
             catch (Exception ex)

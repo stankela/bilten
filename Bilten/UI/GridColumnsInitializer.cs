@@ -546,9 +546,9 @@ namespace Bilten.UI
             List<string> klubovi = new List<string>();
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                foreach (Sprava s in Sprave.getSprave(rt.Gimnastika))
+                foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
                 {
-                    foreach (RezultatSpravaFinaleKupa r in rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati())
+                    foreach (RezultatSpravaFinaleKupa r in p.getRezultati())
                     {
                         imena.Add(r.Gimnasticar.PrezimeIme);
                         klubovi.Add(r.Gimnasticar.KlubDrzava);

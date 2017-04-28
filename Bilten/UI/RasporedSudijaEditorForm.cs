@@ -196,6 +196,9 @@ namespace Bilten.UI
 
                     // TODO: Prvo proveri da li je nesto menjano
                     DAOFactoryFactory.DAOFactory.GetSudijskiOdborNaSpraviDAO().Update(sudijskiOdbor);
+
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    t.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

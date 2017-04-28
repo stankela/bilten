@@ -518,6 +518,12 @@ namespace Bilten.UI
                         }
                     }
 
+                    // NOTE: Ovde nisam mogao da koristim takmicenjeDAO.Update(takmicenje) jer mi prijavljuje gresku
+                    // da u sesiji vec postoji drugi objekat sa istim Id-om (verovatno je dobavljen u nekom od metoda
+                    // gore). Zato uvek koristim takmicenjeDAO.FindById(takmicenje.Id) kada apdejtujem LastModified da
+                    // bih bio siguran da mi se ovakve greske nece pojavljivati.
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

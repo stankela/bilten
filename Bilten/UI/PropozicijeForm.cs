@@ -199,6 +199,9 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeService.updateTakmicenjeOnChangedPropozicije(rezTakmicenja, origPropozicijeMap,
                         origDescPropozicijeMap, takmicenje);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

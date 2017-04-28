@@ -215,7 +215,10 @@ namespace Bilten.UI
                     }
                     if (numAdded > 0)
                     {
+                        Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                        t.LastModified = DateTime.Now;
                         session.Transaction.Commit();
+
                         // reload kategorije
                         setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
                     }
@@ -333,6 +336,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     deleteKategorija(SelectedKategorija);
+
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    t.LastModified = DateTime.Now;
                     session.Transaction.Commit();
 
                     // reload kategorije
@@ -399,7 +405,10 @@ namespace Bilten.UI
                     if (takmicenje.moveKategorijaUp(k))
                     {
                         takmicenjeDAO.Update(takmicenje);
+
+                        takmicenje.LastModified = DateTime.Now;
                         session.Transaction.Commit();
+
                         // reload kategorije
                         setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
                         SelectedKategorija = k;
@@ -443,7 +452,10 @@ namespace Bilten.UI
                     if (takmicenje.moveKategorijaDown(k))
                     {
                         takmicenjeDAO.Update(takmicenje);
+
+                        takmicenje.LastModified = DateTime.Now;
                         session.Transaction.Commit();
+
                         // reload kategorije
                         setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
                         SelectedKategorija = k;
@@ -564,6 +576,8 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(String.Format(msgFmt, desc.Naziv), this.Text))
                 return;
 
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             ISession session = null;
             try
             {
@@ -572,6 +586,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     deleteTakmicenje(desc);
+
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    t.LastModified = DateTime.Now;
                     session.Transaction.Commit();
 
                     // reload rez. takmicenja
@@ -587,6 +604,8 @@ namespace Bilten.UI
             }
             finally
             {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }

@@ -208,6 +208,9 @@ namespace Bilten.UI
             Close();
         }
 
+        // TODO4: Kod zbira vise kola, prikazuj u prozorima i prilikom stampe samo ona kola koja postoje
+        // (i kod viseboja i kod ekipno)
+
         private void btnIzracunaj_Click(object sender, EventArgs e)
         {
             string msg = "Da li zelite da izracunate poredak?";
@@ -255,6 +258,8 @@ namespace Bilten.UI
                     DAOFactoryFactory.DAOFactory.GetPoredakEkipnoZbirViseKolaDAO()
                         .Update(ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

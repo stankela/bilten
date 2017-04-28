@@ -28,6 +28,7 @@ namespace Bilten.UI
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
+            this.updateLastModified = true;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -121,6 +122,9 @@ namespace Bilten.UI
                         }
 
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
 
                     if (okSudije.Count > 0)

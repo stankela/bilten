@@ -271,6 +271,8 @@ namespace Bilten.UI
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoZbirViseKolaDAO()
                         .Update(ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

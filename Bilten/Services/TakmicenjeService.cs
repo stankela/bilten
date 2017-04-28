@@ -424,8 +424,8 @@ namespace Bilten.Services
                     rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
 
                     rt.Takmicenje1.initPoredakSpravaFinaleKupa(takmicenje.Gimnastika);
-                    foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
-                        rt.Takmicenje1.getPoredakSpravaFinaleKupa(s).create(rt, rezTak1, rezTak2);
+                    foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
+                        p.create(rt, rezTak1, rezTak2);
 
                     // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja (na svim mestima gde se racuna).
                     rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, rezTak1, rezTak2);

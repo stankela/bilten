@@ -80,8 +80,6 @@ namespace Bilten.UI
             this.mnKvalifikantiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOceneTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnOpcije = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnOpcijeOpcije = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -94,8 +92,7 @@ namespace Bilten.UI
             this.mnTakmicenje1,
             this.mnTakmicenje2,
             this.mnTakmicenje3,
-            this.mnTakmicenje4,
-            this.mnOpcije});
+            this.mnTakmicenje4});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(698, 24);
@@ -113,7 +110,7 @@ namespace Bilten.UI
             // datotekaZatvoriMenu
             // 
             this.datotekaZatvoriMenu.Name = "datotekaZatvoriMenu";
-            this.datotekaZatvoriMenu.Size = new System.Drawing.Size(111, 22);
+            this.datotekaZatvoriMenu.Size = new System.Drawing.Size(152, 22);
             this.datotekaZatvoriMenu.Text = "Zatvori";
             this.datotekaZatvoriMenu.Click += new System.EventHandler(this.datotekaZatvoriMenu_Click);
             // 
@@ -498,21 +495,6 @@ namespace Bilten.UI
             this.mnRezultatiTak4.Size = new System.Drawing.Size(132, 22);
             this.mnRezultatiTak4.Text = "Rezultati";
             // 
-            // mnOpcije
-            // 
-            this.mnOpcije.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnOpcijeOpcije});
-            this.mnOpcije.Name = "mnOpcije";
-            this.mnOpcije.Size = new System.Drawing.Size(53, 20);
-            this.mnOpcije.Text = "Opcije";
-            // 
-            // mnOpcijeOpcije
-            // 
-            this.mnOpcijeOpcije.Name = "mnOpcijeOpcije";
-            this.mnOpcijeOpcije.Size = new System.Drawing.Size(108, 22);
-            this.mnOpcijeOpcije.Text = "Opcije";
-            this.mnOpcijeOpcije.Click += new System.EventHandler(this.mnOpcijeOpcije_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -556,8 +538,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnTakmicenje1RasporedSudija;
         private System.Windows.Forms.ToolStripMenuItem mnTakmicenje1StartListe;
         private System.Windows.Forms.ToolStripMenuItem mnTakmicenje1Ocene;
-        private System.Windows.Forms.ToolStripMenuItem mnOpcije;
-        private System.Windows.Forms.ToolStripMenuItem mnOpcijeOpcije;
         private System.Windows.Forms.ToolStripMenuItem mnTakmicariTakmicenja;
         private System.Windows.Forms.ToolStripMenuItem mnZatvoriTakmicenje;
         private System.Windows.Forms.ToolStripMenuItem mnKategorijeITakmicenja;

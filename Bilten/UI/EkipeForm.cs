@@ -400,6 +400,7 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
 
                     RezultatskoTakmicenjeService.deleteEkipaFromRezTak(selEkipa, ActiveRezTakmicenje);
+
                     Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
                     t.LastModified = DateTime.Now;
                     session.Transaction.Commit();

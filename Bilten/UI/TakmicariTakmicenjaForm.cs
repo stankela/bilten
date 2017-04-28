@@ -23,10 +23,12 @@ namespace Bilten.UI
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private bool[] tabOpened;
         private StatusBar statusBar;
+        private int takmicenjeId;
         
         public TakmicariTakmicenjaForm(int takmicenjeId)
         {
             InitializeComponent();
+            this.takmicenjeId = takmicenjeId;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -246,7 +248,11 @@ namespace Bilten.UI
                     RezultatskoTakmicenjeService.addGimnasticariToRezTak(selGimnasticari, ActiveRezTakmicenje,
                         addedGimnasticari);
                     if (addedGimnasticari.Count > 0)
+                    {
+                        Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                        t.LastModified = DateTime.Now;
                         session.Transaction.Commit();
+                    }
                 }
             }
             catch (InfrastructureException ex)
@@ -308,6 +314,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeService.deleteGimnasticariFromRezTak(selItems, ActiveRezTakmicenje);
+
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    t.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     
                     setGimnasticari(ActiveRezTakmicenje.Takmicenje1.Gimnasticari);

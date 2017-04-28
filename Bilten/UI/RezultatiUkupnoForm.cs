@@ -363,6 +363,9 @@ namespace Bilten.UI
                         g.NastupaZaDrzavu = !prikaziKlub;
                         gimUcesnikDAO.Update(g);
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -454,6 +457,9 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     rez.KvalStatus = kvalStatus;
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO().Update(ActiveTakmicenje.getPoredakUkupno(deoTakKod));
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -496,6 +502,9 @@ namespace Bilten.UI
                     PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
                     p.create(ActiveTakmicenje, loadOcene(takmicenje.Id, deoTakKod));
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO().Update(p);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -552,6 +561,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO().Update(ActiveTakmicenje.getPoredakUkupno(deoTakKod));
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -599,6 +611,9 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Update(r.Gimnasticar);
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO().Update(p);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }

@@ -650,6 +650,8 @@ namespace Bilten.UI
                     ActiveRaspored.addNewGrupa();
                     DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Update(ActiveRaspored);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     added = true;
                 }
@@ -718,6 +720,8 @@ namespace Bilten.UI
                     newRaspored = new RasporedNastupa(form.SelektovaneKategorije, deoTakKod);
                     DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Add(newRaspored);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     added = true;
                 }
@@ -780,6 +784,8 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Delete(ActiveRaspored);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     deleted = true;
                 }
@@ -1094,6 +1100,9 @@ namespace Bilten.UI
                             DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
                         }
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
 
                     if (ActiveRotacija != 1)
@@ -1226,7 +1235,6 @@ namespace Bilten.UI
             return result;
         }
 
-
         // TODO: Ceo ovaj deo gde se kreira na osnovu kvalifikanata je radjen na brzinu, gde je jedino bilo bitno da moze da
         // se primeni na Memorijal. Trebalo bi ga temeljno proveriti i uciniti robustnijim.
         private void kreirajNaOsnovuKvalifikanata()
@@ -1312,6 +1320,9 @@ namespace Bilten.UI
                         }
                         DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
 
                     setStartListe(ActiveRaspored, ActiveGrupa, 1 /*ActiveRotacija*/);
@@ -1515,6 +1526,9 @@ namespace Bilten.UI
                         }
                         DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
 
                     setStartListe(ActiveRaspored, ActiveGrupa, 1 /*ActiveRotacija*/);
@@ -1575,24 +1589,21 @@ namespace Bilten.UI
 
         private RezultatskoTakmicenje doLoadRezTakmicenje(int takmicenjeId, TakmicarskaKategorija kat)
         {
+            List<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
+
             IList<RezultatskoTakmicenje> svaRezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByTakmicenjeKatFetch_Tak3_Poredak(takmicenjeId, kat);
 
-            foreach (RezultatskoTakmicenje tak in svaRezTakmicenja)
-            {
-                NHibernateUtil.Initialize(tak.Propozicije);
-                if (tak.Propozicije.PostojiTak3)
-                {
-                    foreach (PoredakSprava p in tak.Takmicenje3.Poredak)
-                        NHibernateUtil.Initialize(p.Rezultati);
-                    NHibernateUtil.Initialize(tak.Takmicenje3.PoredakPreskok.Rezultati);
-                }
-            }
-            List<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
             {
+                NHibernateUtil.Initialize(rt.Propozicije);
                 if (rt.odvojenoTak3())
+                {
+                    foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
+                        NHibernateUtil.Initialize(p.Rezultati);
+                    NHibernateUtil.Initialize(rt.Takmicenje3.PoredakPreskok.Rezultati);
                     result.Add(rt);
+                }
             }
             return result[0];
         }
@@ -1826,6 +1837,9 @@ namespace Bilten.UI
                         g.NastupaZaDrzavu = !prikaziKlub;
                         gimUcesnikDAO.Update(g);
                     }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -1972,6 +1986,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
@@ -2081,6 +2098,9 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
             }
