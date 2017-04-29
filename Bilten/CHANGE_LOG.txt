@@ -8,5 +8,10 @@ Promene od r22:
 - Dodata AcceptButton funkcionalnost u GimnasticarForm
 - Dodato prikazivanje rezultata u prozoru za konacne plasmane
 
-28-Mar-2018
+28-Mar-2017
 - Prikazuj plasmane za sprave i viseboj cak i ako je izabrano da ne postoji odvojeno takmicenje 2 ili 3
+
+29-Apr-2017
+- Finale kupa se automatski pravi na osnovu prvog i drugog kola, slicno kao zbir vise kola.
+- Kod pravljenja finala kupa ili zbira vise kola, prikazuje se obavestenje ako je gimnasticar u prethodnim kolima
+ucestvovao u razlicitim kategorijama.

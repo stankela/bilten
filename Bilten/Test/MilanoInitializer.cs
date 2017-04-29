@@ -28,19 +28,19 @@ namespace Bilten.Test
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    insertTakmicenje();
-                    insertGimnasticariAndDrzaveUcesniciAndAddRezTakmicenjaUcesnici();
-                    insertSudijeUcesnici();
+                    Takmicenje t = insertTakmicenje();
+                    insertGimnasticariAndDrzaveUcesniciAndAddRezTakmicenjaUcesnici(t);
+                    insertSudijeUcesnici(t);
 
-                    insertRasporedSudija();
-                    insertStartListe();
-                    insertOcene();
+                    insertRasporedSudija(t);
+                    insertStartListe(t);
+                    insertOcene(t);
 
-                    insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje1);
-                    insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje2);
+                    insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje1, t);
+                    insertRezultatiUkupno(DeoTakmicenjaKod.Takmicenje2, t);
 
-                    insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje1);
-                    insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje3);
+                    insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje1, t);
+                    insertRezultatiSprava(DeoTakmicenjaKod.Takmicenje3, t);
 
                     session.Transaction.Commit();
                 }
@@ -57,7 +57,7 @@ namespace Bilten.Test
             }
         }
 
-        private void insertTakmicenje()
+        private Takmicenje insertTakmicenje()
         {
             Takmicenje takmicenje = new Takmicenje();
             takmicenje.Naziv = "3rd European Artistic Gymnastics Individual Championships";
@@ -88,6 +88,7 @@ namespace Bilten.Test
             RezultatskoTakmicenje rezTak = new RezultatskoTakmicenje(takmicenje,
                 takKategorija, desc, createPropozicije());
             DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().Add(rezTak);
+            return takmicenje;
         }
 
         private Propozicije createPropozicije()
@@ -119,10 +120,8 @@ namespace Bilten.Test
             return result;
         }
 
-        private void insertGimnasticariAndDrzaveUcesniciAndAddRezTakmicenjaUcesnici()
+        private void insertGimnasticariAndDrzaveUcesniciAndAddRezTakmicenjaUcesnici(Takmicenje takmicenje)
         {
-            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByMestoGimnastika("Milano", gimnastika);
             TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenje.Id)[0];
 
             RezultatskoTakmicenjeDAO rezTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
@@ -198,10 +197,8 @@ namespace Bilten.Test
             return null;
         }
 
-        private void insertSudijeUcesnici()
+        private void insertSudijeUcesnici(Takmicenje takmicenje)
         {
-            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByMestoGimnastika("Milano", gimnastika);
             IList<DrzavaUcesnik> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().FindByTakmicenje(takmicenje.Id);
 
             ISet<SudijaUcesnik> sudije = new HashSet<SudijaUcesnik>();
@@ -260,10 +257,8 @@ namespace Bilten.Test
                 dataContext.Evict(d);*/
         }
 
-        private void insertRasporedSudija()
+        private void insertRasporedSudija(Takmicenje takmicenje)
         {
-            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByMestoGimnastika("Milano", gimnastika);
             TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
                 .FindByTakmicenje(takmicenje.Id)[0];
             IList<SudijaUcesnik> sudije_ucesnici = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindByTakmicenje(takmicenje.Id);
@@ -360,10 +355,8 @@ namespace Bilten.Test
             return null;
         }
 
-        private void insertStartListe()
+        private void insertStartListe(Takmicenje takmicenje)
         {
-            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByMestoGimnastika("Milano", gimnastika);
             TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
                 .FindByTakmicenje(takmicenje.Id)[0];
 
@@ -431,10 +424,8 @@ namespace Bilten.Test
             }
         }
 
-        private void insertOcene()
+        private void insertOcene(Takmicenje takmicenje)
         {
-            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByMestoGimnastika("Milano", gimnastika);
             TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
                 .FindByTakmicenje(takmicenje.Id)[0];
             IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
@@ -614,10 +605,8 @@ namespace Bilten.Test
             return s.Replace('.', ',');
         }
 
-        private void insertRezultatiUkupno(DeoTakmicenjaKod deoTakKod)
+        private void insertRezultatiUkupno(DeoTakmicenjaKod deoTakKod, Takmicenje takmicenje)
         {
-            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByMestoGimnastika("Milano", gimnastika);
             TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
                 .FindByTakmicenje(takmicenje.Id)[0];
             RezultatskoTakmicenje rezTak = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
@@ -667,10 +656,8 @@ namespace Bilten.Test
                 DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rezTak.Takmicenje2);
         }
 
-        private void insertRezultatiSprava(DeoTakmicenjaKod deoTakKod)
+        private void insertRezultatiSprava(DeoTakmicenjaKod deoTakKod, Takmicenje takmicenje)
         {
-            Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByMestoGimnastika("Milano", gimnastika);
             TakmicarskaKategorija seniori = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO()
                 .FindByTakmicenje(takmicenje.Id)[0];
             RezultatskoTakmicenje rezTak = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()

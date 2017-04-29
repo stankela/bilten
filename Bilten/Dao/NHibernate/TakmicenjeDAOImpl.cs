@@ -83,62 +83,6 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public IList<Takmicenje> FindAllOdvojenoFinale()
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"select distinct t
-                    from Takmicenje t
-                    where t.ZavrsenoTak1 = true");
-                return q.List<Takmicenje>();
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
-        public IList<Takmicenje> FindViseKola()
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"select distinct t
-                    from Takmicenje t                
-                    where t.TipTakmicenja = :finale_kupa
-                    or t.TipTakmicenja = :zbir_vise_kola
-                    order by t.Datum");
-                q.SetByte("finale_kupa", (byte)TipTakmicenja.FinaleKupa);
-                q.SetByte("zbir_vise_kola", (byte)TipTakmicenja.ZbirViseKola);
-                return q.List<Takmicenje>();
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
-        // Ovaj metod mi je trebao u MilanoInitalizer, inace nema neku upotrebnu vrednost.
-        public Takmicenje FindByMestoGimnastika(string mesto, Gimnastika gim)
-        {
-            try
-            {
-                IQuery q = Session.CreateQuery(@"select distinct t
-                    from Takmicenje t
-                    where t.Mesto = :mesto
-                    and t.Gimnastika = :gim");
-                q.SetString("mesto", mesto);
-                q.SetByte("gim", (byte)gim);
-                IList<Takmicenje> result = q.List<Takmicenje>();
-                if (result.Count > 0)
-                    return result[0];
-                return null;
-            }
-            catch (HibernateException ex)
-            {
-                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
-            }
-        }
-
         public Takmicenje FindByNazivGimnastikaDatum(string naziv, Gimnastika gim, DateTime datum)
         {
             try

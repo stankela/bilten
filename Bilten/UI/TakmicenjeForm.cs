@@ -341,46 +341,60 @@ namespace Bilten.UI
                 else if (zbirViseKola())
                 {
                     takmicenje.TipTakmicenja = TipTakmicenja.ZbirViseKola;
-                    if (prethodnaKola.Count > 0)
-                        takmicenje.PrvoKolo = prethodnaKola[0];
-                    if (prethodnaKola.Count > 1)
-                        takmicenje.DrugoKolo = prethodnaKola[1];
+                    takmicenje.PrvoKolo = prethodnaKola[0];
+                    takmicenje.DrugoKolo = prethodnaKola[1];
                     if (prethodnaKola.Count > 2)
                         takmicenje.TreceKolo = prethodnaKola[2];
                     if (prethodnaKola.Count > 3)
                         takmicenje.CetvrtoKolo = prethodnaKola[3];
                 }
                 else
-                {
                     takmicenje.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
-                }
                 takmicenje.LastModified = DateTime.Now;
             }
         }
 
         protected override void addEntity(DomainObject entity)
         {
+            if (uzmiOsnovnePodatke)
+                return;
+
             Takmicenje t = (Takmicenje)entity;
             DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().Add(t);
             if (t.StandardnoTakmicenje && copyFromTakmicenje == null)
                 return;
 
-            string viseKolaMsg =
-                "Takmicenje je uspesno napravljeno, sa svim gimnasticarima i ekipama iz prethodnih kola.";
             if (t.StandardnoTakmicenje && copyFromTakmicenje != null)
             {
                 TakmicenjeService.createFromPrevTakmicenje(t, copyFromTakmicenje, rezTakmicenja,
                     rezTakToGimnasticarMap);
             }
-            else if (t.FinaleKupa)
+            else // FinaleKupa ili ZbirViseKola
             {
-                TakmicenjeService.kreirajNaOsnovuViseKola(t);
-                afterCommitMsg = viseKolaMsg;
-            }
-            else // ZbirViseKola
-            {
-                TakmicenjeService.kreirajNaOsnovuViseKola(t);
-                afterCommitMsg = viseKolaMsg;
+                IList<KeyValuePair<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>>> razlicitaKola =
+                    new List<KeyValuePair<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>>>();
+                TakmicenjeService.kreirajNaOsnovuViseKola(t, razlicitaKola);
+
+                string msg = "Takmicenje je uspesno napravljeno, sa svim gimnasticarima i ekipama iz prethodnih kola.";
+                if (razlicitaKola.Count > 0)
+                {
+                    msg += "\n\nSledeci gimnasticari su ucestvovali u razlicitim kategorijama u prethodnim kolima, " +
+                        "i rezultat u finalu ce im biti raspodeljen po kategorijama na sledeci nacin:\n";
+                    foreach (KeyValuePair<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>> entry
+                        in razlicitaKola)
+                    {
+                        msg += "\n" + entry.Key.ImeSrednjeImePrezimeDatumRodjenja + ":\n";
+                        foreach (Pair<int, TakmicarskaKategorija> koloKatPair in entry.Value)
+                            msg += (koloKatPair.First + 1).ToString() + ". kolo - " + koloKatPair.Second.Naziv + "\n";
+                    }
+
+                    msg += "\nUkoliko zelite da se rezultat u finalu pojavljuje u samo jednoj kategoriji, " +
+                        "promenite prethodna kola i smestite gimnasticara u odgovarajucu kategoriju. Rezultat " +
+                        "za finale ce automatski biti azuriran kada sledeci put budete otvorili takmicenje za finale.";
+                }
+                // TODO4: Treba proveriti broj linija i ako je veliki prikazivati poruku u necemu sto moze da se
+                // skroluje.
+                afterCommitMsg = msg;
             }
         }
 
@@ -413,9 +427,9 @@ namespace Bilten.UI
             try
             {
                 if (finaleKupa())
-                    form = new OtvoriTakmicenjeForm(null, true, 2, false, SelectedGimnastika);
+                    form = new OtvoriTakmicenjeForm(2, SelectedGimnastika);
                 else if (zbirViseKola())
-                    form = new OtvoriTakmicenjeForm(null, true, MAX_KOLA, true, SelectedGimnastika);
+                    form = new OtvoriTakmicenjeForm(2, MAX_KOLA, SelectedGimnastika);
                 result = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -459,10 +473,7 @@ namespace Bilten.UI
         {
             setEnabledKopirajPrethTak();
             if (!ckbKopirajPrethTak.Checked)
-            {
                 clearPrethodnoTakmicenje();
-            }
-            persistEntity = standardnoTakmicenje() && !ckbKopirajPrethTak.Checked;
         }
 
         private void clearPrethodnoTakmicenje()
@@ -478,7 +489,7 @@ namespace Bilten.UI
             DialogResult result;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1, false, SelectedGimnastika);
+                form = new OtvoriTakmicenjeForm(1, SelectedGimnastika);
                 result = form.ShowDialog();
             }
             catch (Exception ex)
@@ -583,7 +594,6 @@ namespace Bilten.UI
 
         protected override void handleOkClick()
         {
-            base.handleOkClick();
             if (DialogResult == DialogResult.OK && ckbKopirajPrethTak.Enabled && ckbKopirajPrethTak.Checked)
             {
                 collectCheckedItems();
@@ -593,6 +603,7 @@ namespace Bilten.UI
                     DialogResult = DialogResult.None;
                 }
             }
+            base.handleOkClick();
         }
 
         private void collectCheckedItems()

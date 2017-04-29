@@ -74,6 +74,7 @@ public class VersionUpdater
                 SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                     "Bilten.Update.DatabaseUpdate_version12.sql", true);
 
+                updateLastModified();
                 updateVersion3();
                 updateVersion7();
                 updateVersion13();
@@ -201,22 +202,29 @@ public class VersionUpdater
             }
         }
     }
-    
+
     public void updateVersion3()
     {
-        ISession session = null;
-        try
+        IList<int> takmicenjaId = getTakmicenjaId();
+        for (int i = 0; i < takmicenjaId.Count; ++i)
         {
-            using (session = NHibernateHelper.Instance.OpenSession())
-            using (session.BeginTransaction())
+            ISession session = null;
+            try
             {
-                CurrentSessionContext.Bind(session);
-                IList<Takmicenje> takmicenja = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindAllOdvojenoFinale();
-
-                foreach (Takmicenje t in takmicenja)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindByTakmicenje(t.Id);
+                    CurrentSessionContext.Bind(session);
+                    
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    Takmicenje2DAO tak2DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO();
+                    Takmicenje3DAO tak3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
+
+                    Takmicenje t = takmicenjeDAO.FindById(takmicenjaId[i]);
+                    if (!t.ZavrsenoTak1)
+                        continue;
+                    IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(t.Id);
                     foreach (RezultatskoTakmicenje tak in rezTakmicenja)
                     {
                         NHibernateUtil.Initialize(tak.Takmicenje1.PoredakUkupno.Rezultati);
@@ -230,7 +238,7 @@ public class VersionUpdater
                         {
                             rt.Takmicenje2.clearUcesnici();
                             rt.Takmicenje2.Poredak.Rezultati.Clear();
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().Update(rt.Takmicenje2);
+                            tak2DAO.Update(rt.Takmicenje2);
                         }
                         if (rt.Propozicije.PostojiTak3 && !rt.Propozicije.OdvojenoTak3)
                         {
@@ -240,26 +248,22 @@ public class VersionUpdater
                                 p.Rezultati.Clear();
                             }
                             rt.Takmicenje3.PoredakPreskok.Rezultati.Clear();
-                            DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().Update(rt.Takmicenje3);
+                            tak3DAO.Update(rt.Takmicenje3);
                         }
                     }
-                }
-
-                if (takmicenja.Count > 0)
-                {
                     session.Transaction.Commit();
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                session.Transaction.Rollback();
-            throw new InfrastructureException(ex.Message, ex);
-        }
-        finally
-        {
-            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
         }
     }
     
@@ -309,7 +313,6 @@ public class VersionUpdater
         updatePoredakViseKola();
         updateZavrsenoTak1();
         updateKvalifikanti();
-        updateLastModified();
     }
 
     private void updatePoredakViseKola()
@@ -338,20 +341,23 @@ public class VersionUpdater
         }
         rdr.Close(); // obavezno, da bi se zatvorila konekcija otvorena u executeReader
                
-        ISession session = null;
-        try
+        IList<int> takmicenjaId = getTakmicenjaId();
+        for (int i = 0; i < takmicenjaId.Count; ++i)
         {
-            using (session = NHibernateHelper.Instance.OpenSession())
-            using (session.BeginTransaction())
+            ISession session = null;
+            try
             {
-                CurrentSessionContext.Bind(session);
-
-                ISet<string> rezTakmicenjaSet = new HashSet<string>();
-
-                IList<Takmicenje> takmicenja = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindViseKola();
-
-                foreach (Takmicenje takmicenje in takmicenja)
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
+                    CurrentSessionContext.Bind(session);
+
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+
+                    Takmicenje takmicenje = takmicenjeDAO.FindById(takmicenjaId[i]);
+                    if (!takmicenje.FinaleKupa && !takmicenje.ZbirViseKola)
+                        continue;
+
                     List<Takmicenje> prethodnaKola = new List<Takmicenje>();
                     prethodnaKola.Add(takmicenje.PrvoKolo);
                     prethodnaKola.Add(takmicenje.DrugoKolo);
@@ -362,12 +368,12 @@ public class VersionUpdater
 
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
                     IList<RezultatskoTakmicenje> svaRezTakmicenja = rezultatskoTakmicenjeDAO.FindByTakmicenje(takmicenje.Id);
-                    
+
                     List<IList<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<IList<RezultatskoTakmicenje>>();
                     foreach (Takmicenje prethKolo in prethodnaKola)
                     {
                         rezTakmicenjaPrethodnaKola.Add(
-                            rezultatskoTakmicenjeDAO.FindByTakmicenjeFetch_Tak1_Gimnasticari(prethKolo.Id));
+                            rezultatskoTakmicenjeDAO.FindByTakmicenje(prethKolo.Id));
                     }
 
                     IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
@@ -388,6 +394,8 @@ public class VersionUpdater
                         else
                             preskociRezTakmicenja.Add(rt);
                     }
+
+                    ISet<string> rezTakmicenjaSet = new HashSet<string>();
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
@@ -459,28 +467,28 @@ public class VersionUpdater
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                         takmicenje1DAO.Update(rt.Takmicenje1);
 
+                    EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
                     foreach (RezultatskoTakmicenje rt in preskociRezTakmicenja)
                     {
                         // brisi rezultatska takmicenja i ekipe
-                        EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
                         foreach (Ekipa e in rt.Takmicenje1.Ekipe)
                             ekipaDAO.Delete(e);
                         rezultatskoTakmicenjeDAO.Delete(rt);
                     }
-                }
 
-                session.Transaction.Commit();
+                    session.Transaction.Commit();
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                session.Transaction.Rollback();
-            throw new InfrastructureException(ex.Message, ex);
-        }
-        finally
-        {
-            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
         }
     }
 

@@ -144,7 +144,7 @@ namespace Bilten.UI
             OtvoriTakmicenjeForm form = null;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1, false, gimnastika);
+                form = new OtvoriTakmicenjeForm(1, gimnastika);
                 if (form.ShowDialog() != DialogResult.OK)
                     return;
             }

@@ -23,7 +23,7 @@ namespace Bilten.UI
     public partial class MainForm : Form
     {
         private Rectangle rectNormal;
-        public static string strProgName;
+        private string strProgName;
         private string strFileName;
 
         // TODO: Zameni ove tri promenljive sa promenljivom tipa Takmicenje (problem moze da bude to sto je takmicenjeId
@@ -391,7 +391,7 @@ namespace Bilten.UI
             OtvoriTakmicenjeForm form;
             try
             {
-                form = new OtvoriTakmicenjeForm(takmicenjeId, false, 0, false, Gimnastika.Undefined);
+                form = new OtvoriTakmicenjeForm(takmicenjeId);
                 if (form.ShowDialog() != DialogResult.OK)
                     return;
             }
@@ -1200,7 +1200,7 @@ namespace Bilten.UI
             DialogResult result;
             try
             {
-                form = new OtvoriTakmicenjeForm(null, true, 1, false, Gimnastika.Undefined);
+                form = new OtvoriTakmicenjeForm(1, Gimnastika.Undefined);
                 result = form.ShowDialog();
             }
             catch (InfrastructureException ex)

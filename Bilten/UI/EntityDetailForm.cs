@@ -207,7 +207,7 @@ namespace Bilten.UI
                         }
                         session.Transaction.Commit();
                         if (!String.IsNullOrEmpty(afterCommitMsg))
-                            MessageDialogs.showMessage(afterCommitMsg, MainForm.strProgName);
+                            MessageDialogs.showMessage(afterCommitMsg, "");
                     }
                     closedByOK = true;
                 }

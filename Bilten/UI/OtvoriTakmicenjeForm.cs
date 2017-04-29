@@ -20,11 +20,10 @@ namespace Bilten.UI
     {
         private Nullable<int> currTakmicenjeId;
         private List<Takmicenje> takmicenja;
-        bool selectMode;
-        int broj;
-        bool gornjaGranica;
+        private bool selectMode;
+        private int donjaGranica;
+        private int gornjaGranica;
         private StatusBar statusBar;
-
 
         private Takmicenje takmicenje;
         public Takmicenje Takmicenje
@@ -38,16 +37,38 @@ namespace Bilten.UI
             get { return selTakmicenja; }
         }
 
-        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId, bool selectMode, int broj, bool gornjaGranica,
-            Gimnastika gimnastika)
+        public OtvoriTakmicenjeForm(Nullable<int> currTakmicenjeId)
         {
             InitializeComponent();
-            ClientSize = new System.Drawing.Size(ClientSize.Width, Screen.PrimaryScreen.WorkingArea.Height - 100);
             this.currTakmicenjeId = currTakmicenjeId;
-            this.selectMode = selectMode;
-            this.broj = broj;
-            this.gornjaGranica = gornjaGranica;
+            this.selectMode = false;
+            this.donjaGranica = -1;
+            this.gornjaGranica = -1;
+            init(Gimnastika.Undefined);
+        }
 
+        public OtvoriTakmicenjeForm(int broj, Gimnastika gimnastika)
+        {
+            InitializeComponent();
+            this.currTakmicenjeId = null;
+            this.selectMode = true;
+            this.donjaGranica = broj;
+            this.gornjaGranica = broj;
+            init(gimnastika);
+        }
+
+        public OtvoriTakmicenjeForm(int donjaGranica, int gornjaGranica, Gimnastika gimnastika)
+        {
+            InitializeComponent();
+            this.currTakmicenjeId = null;
+            this.selectMode = true;
+            this.donjaGranica = donjaGranica;
+            this.gornjaGranica = gornjaGranica;
+            init(gimnastika);
+        }
+
+        private void init(Gimnastika gimnastika)
+        {
             ISession session = null;
             try
             {
@@ -82,6 +103,7 @@ namespace Bilten.UI
 
         private void initUI()
         {
+            ClientSize = new System.Drawing.Size(ClientSize.Width, Screen.PrimaryScreen.WorkingArea.Height - 100);
             if (!selectMode)
             {
                 this.Text = "Otvori takmicenje";
@@ -109,10 +131,7 @@ namespace Bilten.UI
         void DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                otvoriTakmicenje();
-                DialogResult = DialogResult.OK;
-            }
+                handleOkClick();
         }
 
         private void setTakmicenja(List<Takmicenje> takmicenja)
@@ -122,34 +141,39 @@ namespace Bilten.UI
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            otvoriTakmicenje();
+            handleOkClick();
         }
 
-        private void otvoriTakmicenje()
+        private void handleOkClick()
         {
             if (!selectMode)
             {
                 Takmicenje selTakmicenje = dataGridViewUserControl1.getSelectedItem<Takmicenje>();
                 if (selTakmicenje != null)
+                {
                     takmicenje = selTakmicenje;
+                    DialogResult = DialogResult.OK;
+                }
                 else
                     DialogResult = DialogResult.None;
             }
             else
             {
                 IList<Takmicenje> selItems = dataGridViewUserControl1.getSelectedItems<Takmicenje>();
-                if ((!gornjaGranica && selItems.Count == broj) ||
-                    (gornjaGranica && selItems.Count > 1 && selItems.Count <= broj))
+                if (selItems.Count >= donjaGranica && selItems.Count <= gornjaGranica)
+                {
                     selTakmicenja = selItems;
+                    DialogResult = DialogResult.OK;
+                }
                 else
                 {
                     string msg;
-                    if (broj == 1)
+                    if (donjaGranica == gornjaGranica && donjaGranica == 1)
                         msg = "Izaberite jedno takmicenje.";
-                    else if (!gornjaGranica)
-                        msg = String.Format("Izaberite {0} takmicenja.", broj);
+                    else if (donjaGranica == gornjaGranica && donjaGranica > 1)
+                        msg = String.Format("Izaberite {0} takmicenja.", donjaGranica);
                     else
-                        msg = String.Format("Izaberite do {0} takmicenja (minimalno 2).", broj);
+                        msg = String.Format("Izaberite do {0} takmicenja (minimalno {1}).", gornjaGranica, donjaGranica);
                     MessageDialogs.showMessage(msg, this.Text);
                     DialogResult = DialogResult.None;
                 }

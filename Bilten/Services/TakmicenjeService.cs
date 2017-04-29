@@ -290,7 +290,8 @@ namespace Bilten.Services
             }
         }
 
-        public static void kreirajNaOsnovuViseKola(Takmicenje takmicenje)
+        public static void kreirajNaOsnovuViseKola(Takmicenje takmicenje,
+            IList<KeyValuePair<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>>> razlicitaKola)
         {
             TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
             takmicenjeDAO.Attach(takmicenje, false);
@@ -407,15 +408,7 @@ namespace Bilten.Services
                     rt.Takmicenje1.addGimnasticar(g);
                 }
                 if (!ok)
-                {
-                    string ucestvovaoStr = takmicenje.Gimnastika == Gimnastika.MSG ? "ucestvovao" : "ucestvovala";
-                    string msg = g.ImeSrednjeImePrezimeDatumRodjenja + " je " +
-                        ucestvovaoStr + " u razlicitim kategorijama u prethodnim kolima:\n\n";
-                    foreach (Pair<int, TakmicarskaKategorija> koloKatPair in entry.Value)
-                        msg += (koloKatPair.First + 1).ToString() + ". kolo - " + koloKatPair.Second.Naziv + "\n";
-
-                    System.Windows.Forms.MessageBox.Show(msg);
-                }
+                    razlicitaKola.Add(entry);
             }
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)

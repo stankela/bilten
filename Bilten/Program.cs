@@ -5,7 +5,6 @@ using System.Threading;
 using System.Globalization;
 using Bilten.Test;
 using Bilten.Domain;
-using System.Diagnostics;
 using System.IO;
 using Bilten.Dao;
 using Bilten.Exceptions;
