@@ -563,6 +563,39 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual void kreirajRezultateViseKola(IList<RezultatskoTakmicenje> rezTakmicenja,
+            List<IList<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola)
+        {
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                RezultatskoTakmicenje rezTak1 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[0], 0, rt.Kategorija);
+                RezultatskoTakmicenje rezTak2 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[1], 0, rt.Kategorija);
+                RezultatskoTakmicenje rezTak3 = null;
+                RezultatskoTakmicenje rezTak4 = null;
+                if (TreceKolo != null)
+                    rezTak3 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[2], 0, rt.Kategorija);
+                if (CetvrtoKolo != null)
+                    rezTak4 = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethodnaKola[3], 0, rt.Kategorija);
+
+                if (FinaleKupa)
+                {
+                    rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
+
+                    rt.Takmicenje1.initPoredakSpravaFinaleKupa(Gimnastika);
+                    foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
+                        p.create(rt, rezTak1, rezTak2);
+
+                    // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja (na svim mestima gde se racuna).
+                    rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, rezTak1, rezTak2);
+                }
+                else if (ZbirViseKola)
+                {
+                    rt.Takmicenje1.PoredakUkupnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
+                    rt.Takmicenje1.PoredakEkipnoZbirViseKola.create(rt, rezTak1, rezTak2, rezTak3, rezTak4);
+                }
+            }
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

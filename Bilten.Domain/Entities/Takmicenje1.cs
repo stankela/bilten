@@ -39,7 +39,12 @@ namespace Bilten.Domain
         public virtual bool addEkipa(Ekipa ekipa)
         {
             if (existsEkipaKod(ekipa.Kod))
-                throw new BusinessException("Kod", "Ekipa sa datim kodom vec postoji.");
+            {
+                string msg = "Ekipa sa datim kodom vec postoji.\n\n";
+                msg += "Ekipa: " + ekipa.Naziv;
+                msg += "\nKod: " + ekipa.Kod;
+                throw new BusinessException("Kod", msg);
+            }
             return Ekipe.Add(ekipa);
         }
 

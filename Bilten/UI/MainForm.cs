@@ -435,9 +435,13 @@ namespace Bilten.UI
                         || t.DrugoKolo != null && t.DrugoKolo.LastModified > t.LastModified
                         || t.TreceKolo != null && t.TreceKolo.LastModified > t.LastModified
                         || t.CetvrtoKolo != null && t.CetvrtoKolo.LastModified > t.LastModified;
-                    if (!shouldUpdate)
-                        return;
 
+                    if (shouldUpdate)
+                    {
+                        TakmicenjeService.updateViseKola(t);
+                        t.LastModified = DateTime.Now;
+                        session.Transaction.Commit();
+                    }
                 }
             }
             catch (Exception)
