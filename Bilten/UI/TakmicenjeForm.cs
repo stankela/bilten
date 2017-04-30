@@ -384,7 +384,11 @@ namespace Bilten.UI
                         in razlicitaKola)
                     {
                         msg += "\n" + entry.Key.ImeSrednjeImePrezimeDatumRodjenja + ":\n";
-                        foreach (Pair<int, TakmicarskaKategorija> koloKatPair in entry.Value)
+
+                        List<Pair<int, TakmicarskaKategorija>> pairList
+                            = new List<Pair<int, TakmicarskaKategorija>>(entry.Value);
+                        pairList.Sort((x, y) => x.First.CompareTo(y.First));
+                        foreach (Pair<int, TakmicarskaKategorija> koloKatPair in pairList)
                             msg += (koloKatPair.First + 1).ToString() + ". kolo - " + koloKatPair.Second.Naziv + "\n";
                     }
 

@@ -32,7 +32,7 @@ namespace Bilten.UI
         public RasporedSudijaForm(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
         {
             InitializeComponent();
-            this.ClientSize = new System.Drawing.Size(1150, 540);
+            this.ClientSize = new Size(1150, 540);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.deoTakKod = deoTakKod;
 

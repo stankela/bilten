@@ -2,6 +2,7 @@
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using Bilten.Services;
 using NHibernate;
 using NHibernate.Context;
 using System;
@@ -102,6 +103,112 @@ namespace Bilten
         public void proveriTakmicenja234()
         {
             // TODO4
+        }
+
+        // Proveri za sva finala kupa i zbir vise kola, da li postoje gimnasticari koji su nastupali u razlicitim
+        // kategorijama u prethodnim kolima.
+        public void proveriViseKola()
+        {
+            IList<int> takmicenjaId = getTakmicenjaId();
+            string takmicenjeHeader = String.Empty;
+            for (int j = 0; j < takmicenjaId.Count; ++j)
+            {
+                ISession session = null;
+                try
+                {
+                    using (session = NHibernateHelper.Instance.OpenSession())
+                    using (session.BeginTransaction())
+                    {
+                        CurrentSessionContext.Bind(session);
+                        TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                        Takmicenje t = takmicenjeDAO.FindById(takmicenjaId[j]);
+                        if (!t.FinaleKupa && !t.ZbirViseKola)
+                            continue;
+
+                        takmicenjeHeader = j.ToString() + ". " + t.ToString();
+                        if (t.FinaleKupa)
+                            takmicenjeHeader += " - FINALE KUPA";
+                        else
+                            takmicenjeHeader += " - ZBIR VISE KOLA";
+                        takmicenjeHeader += " (" + t.Id + ")";
+
+                        List<Takmicenje> prethodnaKola = new List<Takmicenje>();
+                        prethodnaKola.Add(t.PrvoKolo);
+                        prethodnaKola.Add(t.DrugoKolo);
+                        if (t.TreceKolo != null)
+                            prethodnaKola.Add(t.TreceKolo);
+                        if (t.CetvrtoKolo != null)
+                            prethodnaKola.Add(t.CetvrtoKolo);
+
+                        RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                        List<IList<RezultatskoTakmicenje>> rezTakmicenjaPrethodnaKola = new List<IList<RezultatskoTakmicenje>>();
+                        foreach (Takmicenje prethKolo in prethodnaKola)
+                            rezTakmicenjaPrethodnaKola.Add(rezTakDAO.FindByTakmicenje(prethKolo.Id));
+
+                        IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(t.Id);
+
+                        // Za svakog gimnasticara, zapamti u kojim kategorijama je ucestvovao u prethodnim kolima
+                        IDictionary<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>> mapaUcestvovanja
+                            = new Dictionary<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>>();
+
+                        foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                        {
+                            for (int i = 0; i < rezTakmicenjaPrethodnaKola.Count; ++i)
+                            {
+                                IList<RezultatskoTakmicenje> rezTakmicenjaPrethKolo = rezTakmicenjaPrethodnaKola[i];
+                                RezultatskoTakmicenje rtFrom = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethKolo, 0, rt.Kategorija);
+                                if (rtFrom == null)
+                                {
+                                    // Ovo se pojavljuje kod takmicenja ciji je id 226.
+                                    continue;
+                                }
+
+                                Pair<int, TakmicarskaKategorija> koloKatPair = new Pair<int, TakmicarskaKategorija>(i, rt.Kategorija);
+
+                                foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
+                                {
+                                    if (!mapaUcestvovanja.ContainsKey(g))
+                                    {
+                                        IList<Pair<int, TakmicarskaKategorija>> pairList = new List<Pair<int, TakmicarskaKategorija>>();
+                                        pairList.Add(koloKatPair);
+                                        mapaUcestvovanja.Add(g, pairList);
+                                    }
+                                    else
+                                        mapaUcestvovanja[g].Add(koloKatPair);
+                                }
+                            }
+                        }
+
+                        foreach (KeyValuePair<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>> entry in mapaUcestvovanja)
+                        {
+                            GimnasticarUcesnik g = entry.Key;
+                            TakmicarskaKategorija prevKat = null;
+                            bool ok = true;
+                            foreach (Pair<int, TakmicarskaKategorija> koloKatPair in entry.Value)
+                            {
+                                TakmicarskaKategorija kat = koloKatPair.Second;
+                                if (prevKat == null)
+                                    prevKat = kat;
+                                else if (!kat.Equals(prevKat))
+                                    ok = false;
+                            }
+                            if (!ok)
+                                MessageBox.Show(takmicenjeHeader + "\n\n" + g.ImeSrednjeImePrezimeDatumRodjenja);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                        session.Transaction.Rollback();
+                    MessageBox.Show(takmicenjeHeader);
+                }
+                finally
+                {
+                    CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+                }
+            }
         }
     }
 }

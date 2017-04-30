@@ -19,7 +19,7 @@ namespace Bilten.UI
         public GimnasticariForm()
         {
             this.Text = "Gimnasticari";
-            this.ClientSize = new System.Drawing.Size(Screen.PrimaryScreen.WorkingArea.Width - 20, 540);
+            this.ClientSize = new Size(Screen.PrimaryScreen.WorkingArea.Width - 20, 540);
             this.btnPrintPreview.Visible = true;
             this.btnPrintPreview.Text = "Rezultati";
             this.btnPrintPreview.Click += btnRezultati_Click;

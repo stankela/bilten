@@ -19,7 +19,7 @@ namespace Bilten.UI
         public SudijeForm()
         {
             this.Text = "Sudije";
-            this.ClientSize = new System.Drawing.Size(800, 540);
+            this.ClientSize = new Size(800, 540);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();

@@ -23,7 +23,7 @@ namespace Bilten.UI
         public SudijeUcesniciForm(int takmicenjeId)
         {
             this.Text = "Sudije na takmicenju";
-            this.ClientSize = new System.Drawing.Size(800, 540);
+            this.ClientSize = new Size(800, 540);
             btnEditItem.Enabled = false;
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);

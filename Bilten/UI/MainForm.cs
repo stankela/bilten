@@ -1293,6 +1293,30 @@ namespace Bilten.UI
             TakmicenjeDump takDump = new TakmicenjeDump();
             takDump.loadFromFile(fileName);
 
+            List<string> items = new List<string>();
+            items.Add("Uvezi start liste");
+            items.Add("Uvezi sudije i raspored sudija po spravama");
+            List<int> checkedItems = new List<int>();
+            CheckListForm form2 = new CheckListForm(items, checkedItems,
+                "Izaberite da li zelite da uvezete start liste i sudije", "Uvezi start liste i sudije",
+                false, "", false);
+            if (form2.ShowDialog() != DialogResult.OK)
+            {
+                t = null;
+                return false;
+            }
+
+            IList<RasporedNastupa> rasporediNastupa = null;
+            if (form2.CheckedIndices.Contains(0))
+                rasporediNastupa = takDump.rasporediNastupa;
+            IList<SudijaUcesnik> sudije = null;
+            IList<RasporedSudija> rasporediSudija = null;
+            if (form2.CheckedIndices.Contains(1))
+            {
+                sudije = takDump.sudije;
+                rasporediSudija = takDump.rasporediSudija;
+            }
+
             t = takDump.takmicenje;
             if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
             {
@@ -1302,8 +1326,7 @@ namespace Bilten.UI
                 try
                 {
                     TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                        takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
-                        takDump.ocene);
+                        takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
                 }
                 finally
                 {
@@ -1330,8 +1353,7 @@ namespace Bilten.UI
                     if (TakmicenjeService.deleteTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
                     {
                         TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                            takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
-                            takDump.ocene);
+                            takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
                         return true;
                     }
                     else
@@ -1362,8 +1384,7 @@ namespace Bilten.UI
                 try
                 {
                     TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                        takDump.rezTakmicenja, takDump.sudije, takDump.rasporediSudija, takDump.rasporediNastupa,
-                        takDump.ocene);
+                        takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
                 }
                 finally
                 {

@@ -116,7 +116,7 @@ namespace Bilten.UI
         {
             Text = "Start liste - " +
                 DeoTakmicenjaKodovi.toString(deoTakKod);
-            this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, 540);
+            this.ClientSize = new Size(this.ClientSize.Width, 540);
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 || takmicenje.FinaleKupa)
             {
                 cmbRotacija.Enabled = false;

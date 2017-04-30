@@ -186,7 +186,8 @@ namespace Bilten.UI
                 checkedItems.Add(i);
 
             CheckListForm form2 = new CheckListForm(
-                kategorijeStr, checkedItems, form.SelTakmicenja[0].ToString(), "Izaberite kategorije", "Izaberite kategorije");
+                kategorijeStr, checkedItems, form.SelTakmicenja[0].ToString(), "Izaberite kategorije",
+                true, "Izaberite kategorije", true);
             if (form2.ShowDialog() != DialogResult.OK)
                 return;
 

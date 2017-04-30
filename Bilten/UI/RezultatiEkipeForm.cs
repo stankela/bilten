@@ -504,7 +504,7 @@ namespace Bilten.UI
 
             CheckListForm form = new CheckListForm(
                 new List<string>(Sprave.getSpraveNazivi(gimnastika)), checkedItems,
-                "Sprave koje se boduju", "Izaberite sprave koje se boduju", "Izaberite sprave");
+                "Izaberite sprave koje se boduju", "Sprave koje se boduju", true, "Izaberite sprave", true);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 

@@ -123,7 +123,15 @@ namespace Bilten
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
             rp.proveriTakmicenja234();
+            // rp.proveriViseKola();  // Postoji nekoliko takmicenja gde ova provera ne prolazi, ali mislim da je bolje
+                                      // nista me menjam. 
+
             // TODO4: Ako je Propozicije.PostojiTak4 false, mora i RezultatskoTakmicenje.ImaEkipnoTakmicenje da bude false.
+
+            // TODO4: Proveri sva finala kupa, tako sto ces ponovo kreirati finale (
+            // pozivom TakmicenjeService.kreirajNaOsnovuViseKola) i uporediti rezultate sa postojecim finalima (gde su
+            // gimnasticari rucno dodavani). Razmisli da li treba menjati rezultate tamo gde se ne poklapaju (uradi to samo
+            // u takmicenjima gde ne postoji odvojeno takmicenje 3.)
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

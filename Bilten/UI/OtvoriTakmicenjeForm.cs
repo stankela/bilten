@@ -103,7 +103,7 @@ namespace Bilten.UI
 
         private void initUI()
         {
-            ClientSize = new System.Drawing.Size(ClientSize.Width, Screen.PrimaryScreen.WorkingArea.Height - 100);
+            ClientSize = new Size(ClientSize.Width, Screen.PrimaryScreen.WorkingArea.Height - 100);
             if (!selectMode)
             {
                 this.Text = "Otvori takmicenje";

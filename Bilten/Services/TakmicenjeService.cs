@@ -52,19 +52,28 @@ namespace Bilten.Services
             }
 
             // dodaj sudije ucesnike
-            SudijaUcesnikDAO sudijaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO();
-            foreach (SudijaUcesnik s in sudije)
-                sudijaUcesnikDAO.Add(s);
+            if (sudije != null)
+            {
+                SudijaUcesnikDAO sudijaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO();
+                foreach (SudijaUcesnik s in sudije)
+                    sudijaUcesnikDAO.Add(s);
+            }
 
             // dodaj rasporede sudija
-            RasporedSudijaDAO rasporedSudijaDAO = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO();
-            foreach (RasporedSudija r in rasporediSudija)
-                rasporedSudijaDAO.Add(r);
+            if (rasporediSudija != null)
+            {
+                RasporedSudijaDAO rasporedSudijaDAO = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO();
+                foreach (RasporedSudija r in rasporediSudija)
+                    rasporedSudijaDAO.Add(r);
+            }
 
             // dodaj rasporede nastupa
-            RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
-            foreach (RasporedNastupa r in rasporediNastupa)
-                rasporedNastupaDAO.Add(r);
+            if (rasporediNastupa != null)
+            {
+                RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
+                foreach (RasporedNastupa r in rasporediNastupa)
+                    rasporedNastupaDAO.Add(r);
+            }
 
             // dodaj ocene
             OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
