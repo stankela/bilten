@@ -242,16 +242,17 @@ namespace Bilten.UI
 
                     foreach (UcesnikTakmicenja3 u in updated)
                     {
-                        UcesnikTakmicenja3 origUcesnik = origTakmicenje.Takmicenje3.getUcesnikKvalifikant(u.Gimnasticar, sprava);
-                        if (origUcesnik == null)
-                            throw new Exception("Greska u programu.");
+                        UcesnikTakmicenja3 origUcesnik
+                            = origTakmicenje.Takmicenje3.getUcesnikKvalifikant(u.Gimnasticar, sprava);
                         origUcesnik.QualOrder = u.QualOrder;
                     }
+
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
 
                     foreach (UcesnikTakmicenja3 u in added)
                     {
                         origTakmicenje.Takmicenje3.addUcesnik(u);
-                        Ocena o = loadOcena(u.Gimnasticar, DeoTakmicenjaKod.Takmicenje3, sprava);
+                        Ocena o = ocenaDAO.FindOcena(u.Gimnasticar, DeoTakmicenjaKod.Takmicenje3, sprava);
                         if (sprava != Sprava.Preskok)
                             origTakmicenje.Takmicenje3.getPoredak(sprava).addGimnasticar(u.Gimnasticar, o, origTakmicenje);
                         else
@@ -319,42 +320,6 @@ namespace Bilten.UI
                     return true;
             }
             return false;
-        }
-
-        private Ocena loadOcena(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod, Sprava spava)
-        {
-            IList<Ocena> ocene = loadOcene(g, deoTakKod);
-            foreach (Ocena o in ocene)
-            {
-                if (o.Sprava == spava)
-                    return o;
-            }
-            return null;
-        }
-
-        private IList<Ocena> loadOcene(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.FindByGimnasticar(g, deoTakKod);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
-            }
         }
     }
 }

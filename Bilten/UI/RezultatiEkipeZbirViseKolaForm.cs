@@ -192,7 +192,7 @@ namespace Bilten.UI
                     nazivIzvestaja));
                 p.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }

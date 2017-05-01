@@ -763,7 +763,7 @@ namespace Bilten.UI
                     takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView, nazivIzvestaja));
                 p.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }

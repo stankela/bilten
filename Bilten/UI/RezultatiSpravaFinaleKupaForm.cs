@@ -280,7 +280,7 @@ namespace Bilten.UI
 
                 p.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }

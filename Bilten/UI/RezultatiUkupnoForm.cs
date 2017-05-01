@@ -274,21 +274,48 @@ namespace Bilten.UI
             FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
+            PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
+            List<RezultatUkupnoExtended> rezultatiEx = null;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
+                        .FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
+                    rezultatiEx = p.getRezultatiExtended(ocene, Opcije.Instance.PrikaziDEOcene,
+                        ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             try
             {
                 PreviewDialog form2 = new PreviewDialog();
-
-                PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
-                List<RezultatUkupnoExtended> rezultati = p.getRezultatiExtended(loadOcene(takmicenje.Id, deoTakKod),
-                    Opcije.Instance.PrikaziDEOcene, ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
-
-                form2.setIzvestaj(new UkupnoIzvestaj(rezultati, ActiveTakmicenje.Gimnastika, Opcije.Instance.PrikaziDEOcene,
+                form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, Opcije.Instance.PrikaziDEOcene,
                     kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName));
                 form2.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }
@@ -296,34 +323,6 @@ namespace Bilten.UI
             {
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
-            }
-        }
-
-        // TODO3: Svi metodi koji otvaraju svoju posebnu sesiju bi trebali nekako da budu oznaceni, npr. da im se u
-        // nazivu metoda stavi rec Query ili nesto slicno.
-        // TODO4: Ukloni sve ovakve metode gde se ocene ucitavaju u posebnoj sesiji. Koristi Evict.
-        private IList<Ocena> loadOcene(int takmicenjeId, DeoTakmicenjaKod deoTakKod)
-        {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    ocenaDAO.Session = session;
-                    return ocenaDAO.FindByDeoTakmicenja(takmicenjeId, deoTakKod);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-
             }
         }
 
@@ -499,9 +498,16 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
+
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
+
                     PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
-                    p.create(ActiveTakmicenje, loadOcene(takmicenje.Id, deoTakKod));
+                    p.create(ActiveTakmicenje, ocene);
                     DAOFactoryFactory.DAOFactory.GetPoredakUkupnoDAO().Update(p);
+
+                    foreach (Ocena o in ocene)
+                        ocenaDAO.Evict(o);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
                     takmicenje.LastModified = DateTime.Now;

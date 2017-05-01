@@ -1015,7 +1015,7 @@ namespace Bilten.UI
                 // TODO2: Dodaj godiste u start liste.
 
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }
@@ -1793,7 +1793,7 @@ namespace Bilten.UI
                 p.ShowDialog();
 
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }

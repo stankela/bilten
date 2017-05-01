@@ -833,7 +833,6 @@ namespace Bilten.UI
             }
         }
 
-        // TODO4: Kod racunanja preskoka za viseboj uvedi da se bira da li se racuna prvi preskok ili bolji.
         // TODO4: Kod stampanja, kolonu sa nazivom ekipa stampaj u dva reda ako je naziv dugacak
         // TODO4: Na pocetku damp fajla neka se nalazi broj verzije programa. Uvozi samo ako se verzije poklapaju.
         // TODO4: Kod stampanja rezultata za ekipe promeni da cela ekipa uvek bude na istoj strani

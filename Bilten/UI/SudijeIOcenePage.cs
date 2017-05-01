@@ -98,6 +98,9 @@ namespace Bilten.UI
 
         public override void OnApply()
         {
+            // TODO4: Izuzeci koji ce bacaju unutar ovog metoda mogu biti uhvaceni kada je u PropozicijeForm
+            // predjeno na neku drugu stranu. Treba ponovo prikazati ovu stranu i oznaciti svojstvo koje je problematicno.
+
             if (!dirty)
                 return;
 

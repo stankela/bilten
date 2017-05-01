@@ -376,13 +376,11 @@ namespace Bilten.UI
                 return;
             FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
-    
+
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             try
             {
-                PreviewDialog p = new PreviewDialog();
-
                 string documentName;
                 if (form.StampajSveSprave)
                 {
@@ -395,6 +393,7 @@ namespace Bilten.UI
                 }
                 bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
 
+                PreviewDialog p = new PreviewDialog();
                 if (form.StampajSveSprave)
                 {
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();
@@ -450,14 +449,10 @@ namespace Bilten.UI
                 // TODO2: Uvedi opciju da li se zeli stampanje izvestaja sa ili bez
                 // linija
 
-                // TODO2: Proveri zasto u PropozicijeForm ne prikazuje takmicenja
-                // po onom redosledu kojim su zadata.
-
                 // TODO2: U izvestajima uvedi opciju da grupa koja ne moze da stane
                 // cela na jednu stranu pocinje na vrhu sledece strane
-
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }
@@ -1022,7 +1017,7 @@ namespace Bilten.UI
 
                 p.ShowDialog();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, this.Text);
             }
