@@ -46,11 +46,13 @@ namespace Bilten.UI
         // TODO: Remember to call ISessionFactory.Close() when you’re done using 
         // NHibernate. You’ll usually do it while closing the application.
 
+        private string initError;
         private StatusBar statusBar;
         
-        public MainForm()
+        public MainForm(string initError)
         {
             InitializeComponent();
+            this.initError = initError;
 
             statusBar = new StatusBar();
             statusBar.Parent = this;
@@ -1391,6 +1393,15 @@ namespace Bilten.UI
                     Cursor.Current = Cursors.Arrow;
                 }
                 return true;
+            }
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(initError))
+            {
+                MessageDialogs.showError(initError, "");
+                Close();
             }
         }
     }

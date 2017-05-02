@@ -46,31 +46,28 @@ namespace Bilten
         [STAThread]
         static void Main(string[] args)
         {
-            // Export schema from BiltenPodaci.sdf using the ExportSqlCe.exe tool.
-            // For usage information, just run "ExportSqlCe.exe" without any arguments.            
-            //string schemaFile = "BiltenPodaciScript.sql";
-            //ProcessStartInfo startInfo = new ProcessStartInfo();
-            //startInfo.FileName = @"..\..\..\..\Bilten\Libs\ExportSqlCe.exe";
-            //startInfo.Arguments = String.Format("\"Data Source=BiltenPodaci.sdf\" {0} schemaonly", schemaFile);
-            //var process = Process.Start(startInfo);
-            //process.WaitForExit();
-
-            //Bilten.Util.DFS dfs = new Bilten.Util.DFS();
-            //dfs.createGraphFromExportSqlCeStript(schemaFile);
-            //dfs.doDFS();
-
             Language.SetKeyboardLanguage(Language.acKeyboardLanguage.hklSerbianLatin);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Latn-CS");
             // ili
             // Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("sr-Cyrl-CS");
             //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
+            // init() zovem u SingleInstanceApplication.OnCreateMainForm
 
-            // NOTE: Prebacio sam ovde inicijalizaciju opcija jer se opcije koriste u nekim od update metoda.
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+                   
+            //MainForm mainForm = new MainForm();
+            //Application.Run(mainForm);
+            SingleInstanceApplication.Application.Run(args);
+        }
 
+        public static void init()
+        {
             Sesija.Instance.InitSession();
 
-            // TODO: Can throw InfrastructureException. Verovatno bi trebalo prekinuti program.
+            // NOTE: Najpre inicijalizujem opcije jer se koriste u nekim od update metoda.
+
             ISession session = null;
             try
             {
@@ -107,11 +104,6 @@ namespace Bilten
             {
                 new VersionUpdater().update();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
             finally
             {
                 Cursor.Hide();
@@ -123,7 +115,7 @@ namespace Bilten
             rp.proveriRezultateIOcene();
             rp.proveriTakmicenja234();
             // rp.proveriViseKola();  // Postoji nekoliko takmicenja gde ova provera ne prolazi, ali mislim da je bolje
-                                      // nista me menjam. 
+            // nista me menjam. 
 
             // TODO4: Ako je Propozicije.PostojiTak4 false, mora i RezultatskoTakmicenje.ImaEkipnoTakmicenje da bude false.
 
@@ -132,22 +124,24 @@ namespace Bilten
             // gimnasticari rucno dodavani). Razmisli da li treba menjati rezultate tamo gde se ne poklapaju (uradi to samo
             // u takmicenjima gde ne postoji odvojeno takmicenje 3.)
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
 
-      //      new RegistarInitializer().insert();
-      //      new MilanoInitializer(Gimnastika.MSG).insert();
-      //      new MilanoInitializer(Gimnastika.ZSG).insert();
+            // Export schema from BiltenPodaci.sdf using the ExportSqlCe.exe tool.
+            // For usage information, just run "ExportSqlCe.exe" without any arguments.            
+            //string schemaFile = "BiltenPodaciScript.sql";
+            //ProcessStartInfo startInfo = new ProcessStartInfo();
+            //startInfo.FileName = @"..\..\..\..\Bilten\Libs\ExportSqlCe.exe";
+            //startInfo.Arguments = String.Format("\"Data Source=BiltenPodaci.sdf\" {0} schemaonly", schemaFile);
+            //var process = Process.Start(startInfo);
+            //process.WaitForExit();
 
-            
+            //Bilten.Util.DFS dfs = new Bilten.Util.DFS();
+            //dfs.createGraphFromExportSqlCeStript(schemaFile);
+            //dfs.doDFS();
+
             // Kreiranje prazne baze
             //new SqlCeUtilities().CreateDatabase(@"..\..\clanovi_podaci2.sdf", "sdv");
-            
+
             //new DatabaseUpdater().updateDatabase();
-       
-            //MainForm mainForm = new MainForm();
-            //Application.Run(mainForm);
-            SingleInstanceApplication.Application.Run(args);
         }
     }
 }

@@ -39,15 +39,32 @@ namespace Bilten
 
         protected override void OnCreateSplashScreen()
         {
-            this.SplashScreen = new SplashScreenForm();
+            if (VersionUpdater.hasUpdates())
+            {
+                WaitForm wf = new WaitForm();
+                wf.Message = "Azuriram bazu podataka. Sacekajte ...";
+                this.SplashScreen = wf;
+            }
+            else
+                this.SplashScreen = new SplashScreenForm();
         }
 
         protected override void OnCreateMainForm()
         {
             // Do your initialization here
 
+            string initError = String.Empty;
+            try
+            {
+                Program.init();
+            }
+            catch (Exception ex)
+            {
+                initError = ex.Message;
+            }
+
             // Then create the main form, the splash screen will automatically close
-            this.MainForm = new MainForm();
+            this.MainForm = new MainForm(initError);
         }
     }
 }

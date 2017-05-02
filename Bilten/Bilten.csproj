@@ -190,6 +190,9 @@
     <EmbeddedResource Include="UI\TakmicarskaKategorijaForm.resx">
       <DependentUpon>TakmicarskaKategorijaForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\WaitForm.resx">
+      <DependentUpon>WaitForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Update\DatabaseUpdate_version13.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version12.sql" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version11.sql" />
@@ -741,6 +744,12 @@
     </Compile>
     <Compile Include="UI\TakmicenjeForm.Designer.cs">
       <DependentUpon>TakmicenjeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WaitForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\WaitForm.Designer.cs">
+      <DependentUpon>WaitForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ZrebForm.cs">
       <SubType>Form</SubType>

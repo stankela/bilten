@@ -110,7 +110,7 @@ namespace Bilten.UI
             // datotekaZatvoriMenu
             // 
             this.datotekaZatvoriMenu.Name = "datotekaZatvoriMenu";
-            this.datotekaZatvoriMenu.Size = new System.Drawing.Size(152, 22);
+            this.datotekaZatvoriMenu.Size = new System.Drawing.Size(111, 22);
             this.datotekaZatvoriMenu.Text = "Zatvori";
             this.datotekaZatvoriMenu.Click += new System.EventHandler(this.datotekaZatvoriMenu_Click);
             // 
@@ -505,6 +505,7 @@ namespace Bilten.UI
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
