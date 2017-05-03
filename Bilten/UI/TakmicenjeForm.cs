@@ -392,9 +392,9 @@ namespace Bilten.UI
                             msg += (koloKatPair.First + 1).ToString() + ". kolo - " + koloKatPair.Second.Naziv + "\n";
                     }
 
-                    msg += "\nUkoliko zelite da se rezultat u finalu pojavljuje u samo jednoj kategoriji, " +
+                    /*msg += "\nUkoliko zelite da se rezultat u finalu pojavljuje u samo jednoj kategoriji, " +
                         "promenite prethodna kola i smestite gimnasticara u odgovarajucu kategoriju. Rezultat " +
-                        "za finale ce automatski biti azuriran kada sledeci put budete otvorili takmicenje za finale.";
+                        "za finale ce automatski biti azuriran kada sledeci put budete otvorili takmicenje za finale.";*/
                 }
                 // TODO4: Treba proveriti broj linija i ako je veliki prikazivati poruku u necemu sto moze da se
                 // skroluje.

@@ -354,51 +354,39 @@ namespace Bilten.UI
 
             List<KonacanPlasman> visebojTak1 = kpDAO.findVisebojTak1(SelectedItem.Ime, SelectedItem.Prezime);
             List<KonacanPlasman> visebojTak2 = kpDAO.findVisebojTak2(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> visebojFinaleKupa = kpDAO.findVisebojFinaleKupa(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> visebojZbirViseKola = kpDAO.findVisebojZbirViseKola(SelectedItem.Ime, SelectedItem.Prezime);
             List<KonacanPlasman> spraveTak1 = kpDAO.findSpraveTak1(SelectedItem.Ime, SelectedItem.Prezime);
             List<KonacanPlasman> spraveTak3 = kpDAO.findSpraveTak3(SelectedItem.Ime, SelectedItem.Prezime);
             List<KonacanPlasman> preskokTak1 = kpDAO.findPreskokTak1(SelectedItem.Ime, SelectedItem.Prezime);
             List<KonacanPlasman> preskokTak3 = kpDAO.findPreskokTak3(SelectedItem.Ime, SelectedItem.Prezime);
+            List<KonacanPlasman> spraveFinaleKupa = kpDAO.findSpraveFinaleKupa(SelectedItem.Ime, SelectedItem.Prezime);
+
+            List<KonacanPlasman> viseboj = new List<KonacanPlasman>();
+            viseboj.AddRange(visebojTak1);
+            viseboj.AddRange(visebojTak2);
+            viseboj.AddRange(visebojFinaleKupa);
+            viseboj.AddRange(visebojZbirViseKola);
+
+            List<KonacanPlasman> sprave = new List<KonacanPlasman>();
+            sprave.AddRange(spraveTak1);
+            sprave.AddRange(spraveTak3);
+            sprave.AddRange(preskokTak1);
+            sprave.AddRange(preskokTak3);
+            sprave.AddRange(spraveFinaleKupa);
 
             Dictionary<int, KonacanPlasman> plasmaniMap = new Dictionary<int, KonacanPlasman>();
-            foreach (KonacanPlasman kp in visebojTak1)
+            foreach (KonacanPlasman kp in viseboj)
             {
                 if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
                     plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
                 else
                     plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
             }
-            foreach (KonacanPlasman kp in visebojTak2)
-            {
-                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
-                    plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
-                else
-                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
-            }
-            foreach (KonacanPlasman kp in spraveTak1)
+            foreach (KonacanPlasman kp in sprave)
             {
                 if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
                     updatePlasmanSprava(plasmaniMap[kp.RezultatskoTakmicenjeId], kp);
-                else
-                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
-            }
-            foreach (KonacanPlasman kp in spraveTak3)
-            {
-                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
-                    updatePlasmanSprava(plasmaniMap[kp.RezultatskoTakmicenjeId], kp);
-                else
-                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
-            }
-            foreach (KonacanPlasman kp in preskokTak1)
-            {
-                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
-                    plasmaniMap[kp.RezultatskoTakmicenjeId].Preskok = kp.Preskok;
-                else
-                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
-            }
-            foreach (KonacanPlasman kp in preskokTak3)
-            {
-                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
-                    plasmaniMap[kp.RezultatskoTakmicenjeId].Preskok = kp.Preskok;
                 else
                     plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
             }
@@ -429,7 +417,7 @@ namespace Bilten.UI
             else if (kp.Karike != null)
                 totalPlasman.Karike = kp.Karike;
             else if (kp.Preskok != null)
-                throw new Exception("Greska u programu");
+                totalPlasman.Preskok = kp.Preskok;
             else if (kp.Razboj != null)
                 totalPlasman.Razboj = kp.Razboj;
             else if (kp.Vratilo != null)

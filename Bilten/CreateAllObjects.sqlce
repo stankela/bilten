@@ -458,15 +458,6 @@ create table rezultati_ekipno (
 	poredak_id int references poredak_ekipno(poredak_id)
 );
 
-create table rezultati_sprava_finale_kupa_update (
-	rez_takmicenje_id int references rezultatsko_takmicenje(rez_takmicenje_id),
-	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
-	sprava tinyint,
-	kval_status tinyint,
-	constraint PK_rezultati_sprava_finale_kupa_update 
-		primary key (rez_takmicenje_id, gimnasticar_id, sprava)
-);
-
 create table poredak_ukupno_zbir_vise_kola (
 	poredak_id int identity(1,1) primary key,
 	deo_takmicenja_kod tinyint

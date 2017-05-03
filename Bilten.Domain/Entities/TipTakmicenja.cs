@@ -4,6 +4,7 @@
     {
         StandardnoTakmicenje = 0,
         FinaleKupa,
-        ZbirViseKola
+        ZbirViseKola,
+        Undefined  // TODO4: Ovo treba da bude broj 0
     }
 }
