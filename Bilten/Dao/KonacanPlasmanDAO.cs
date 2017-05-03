@@ -14,7 +14,6 @@ namespace Bilten.Dao
         public string NazivTakmicenja { get; set; }
         public string MestoTakmicenja { get; set; }
         public DateTime DatumTakmicenja { get; set; }
-        public TipTakmicenja TipTakmicenja { get; set; }
         public string NazivKategorije { get; set; }
 
         public string Ime { get; set; }
