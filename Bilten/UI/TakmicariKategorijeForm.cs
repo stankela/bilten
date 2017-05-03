@@ -15,6 +15,7 @@ using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Dao.NHibernate;
 using Bilten.Util;
+using Bilten.Services;
 
 namespace Bilten.UI
 {
@@ -531,32 +532,41 @@ namespace Bilten.UI
 
         private void deleteCmd()
         {
-            IList<GimnasticarUcesnik> selItems = getActiveDataGridViewUserControl()
-                .getSelectedItems<GimnasticarUcesnik>();
+            IList<GimnasticarUcesnik> selItems = getActiveDataGridViewUserControl().getSelectedItems<GimnasticarUcesnik>();
             if (selItems.Count == 0)
                 return;
 
-            bool delete;
+            string msg;
+            if (selItems.Count == 1)
+                msg = deleteConfirmationMessage(selItems[0].ImeSrednjeImePrezimeDatumRodjenja);
+            else
+                msg = deleteConfirmationMessage();
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
             if (selItems.Count == 1)
             {
-                delete = MessageDialogs.queryConfirmation(
-                    deleteConfirmationMessage(selItems[0]), this.Text);
+                msg = String.Format("Bice izbrisane sve ocene za gimnasticara \"{0}\".",
+                    selItems[0].ImeSrednjeImePrezimeDatumRodjenja);
             }
             else
-            {
-                delete = MessageDialogs.queryConfirmation(
-                    deleteConfirmationMessage(), this.Text);
-            }
-            if (!delete)
+                msg = "Bice izbrisane sve ocene za selektovane gimnasticare.";
+            msg += " Da li zelite da nastavite?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
             List<GimnasticarUcesnik> activeGimnasticari = gimnasticari[tabControl1.SelectedIndex];
             foreach (GimnasticarUcesnik g in selItems)
             {
-                // TODO: Kada se brise vise takmicara, kursor u obliku pescanika se naizmenicno aktivira i deaktivira za
-                // svakog gimnasticara. Izmeni da se pescanik kursor neprekidno prikazuje.
-                if (deleteGimnasticar(g))
+                try
+                {
+                    deleteGimnasticar(g);
                     activeGimnasticari.Remove(g);
+                }
+                catch (Exception ex)
+                {
+                    MessageDialogs.showError(ex.Message, this.Text);
+                }
             }
 
             setGimnasticari(activeGimnasticari);
@@ -565,7 +575,7 @@ namespace Bilten.UI
             updateGimnasticariCount();
         }
 
-        private bool deleteGimnasticar(GimnasticarUcesnik g)
+        private void deleteGimnasticar(GimnasticarUcesnik g)
         {
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -576,43 +586,67 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    if (!canDeleteGimnasticar(g))
-                        return false;
 
                     GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                     gimUcesnikDAO.Attach(g, false);
-                    IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                        .FindRezTakmicenjaForGimnasticar(g);
-                    foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
+
+                    StartListaNaSpraviDAO startListaDAO = DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO();
+                    EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    Takmicenje1DAO tak1DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO();
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+
+                    // Izbaci gimnasticara iz start lista
+                    foreach (StartListaNaSpravi s in startListaDAO.FindByGimnasticar(g))
                     {
-                        rezTak.Takmicenje1.removeGimnasticar(g);
+                        s.removeNastup(g);
+                        startListaDAO.Update(s);
+                    }
+
+                    // Izbaci gimnasticara iz ekipa
+                    foreach (Ekipa e in ekipaDAO.FindByGimnasticar(g))
+                    {
+                        e.removeGimnasticar(g);
+                        ekipaDAO.Update(e);
+
+                        RezultatskoTakmicenje rt = rezTakDAO.FindByEkipa(e);
+                        rt.Takmicenje1.updateRezultatiOnEkipaUpdated(e, rt,
+                            RezultatskoTakmicenjeService.findRezultatiUkupnoForEkipa(rt.Takmicenje.Id, e));
+                        tak1DAO.Update(rt.Takmicenje1);
+                    }
+
+                    IList<Ocena> ocene = ocenaDAO.FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
+
+                    // Izbaci gimnasticara iz rez. takmicenja
+                    foreach (RezultatskoTakmicenje rt in rezTakDAO.FindByGimnasticar(g))
+                    {
+                        rt.Takmicenje1.removeGimnasticar(g);
 
                         // Izbaci gimnasticara iz svih poredaka na kojima je vezbao.
-                        IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
-                            .FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
-                        rezTak.Takmicenje1.updateRezultatiOnGimnasticarDeleted(g, ocene, rezTak);
+                        rt.Takmicenje1.updateRezultatiOnGimnasticarDeleted(g, ocene, rt);
 
-                        DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO().Update(rezTak.Takmicenje1);
-                        foreach (GimnasticarUcesnik g2 in rezTak.Takmicenje1.Gimnasticari)
+                        tak1DAO.Update(rt.Takmicenje1);
+                        foreach (GimnasticarUcesnik g2 in rt.Takmicenje1.Gimnasticari)
                             gimUcesnikDAO.Evict(g2);
                     }
 
+                    foreach (Ocena o in ocene)
+                        ocenaDAO.Delete(o);
+                    
+                    // TODO4: Brisi takmicara iz takmicenja II i III.
+                    
                     gimUcesnikDAO.Delete(g);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
                     takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
-                    return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
-                MessageDialogs.showError(
-                    String.Format("{0} \n\n{1}", deleteErrorMessage(), ex.Message),
-                    this.Text);
-                return false;
+                throw;
             }
             finally
             {
@@ -622,59 +656,7 @@ namespace Bilten.UI
             }
         }
 
-        private bool canDeleteGimnasticar(GimnasticarUcesnik g)
-        {
-            // TODO: Potrebno je brisati gimnasticara i iz ekipa, rezultatskih
-            // takmicenja, nastupa na spravi, ocena (i svih drugih mesta ako postoje). 
-            // Takodje je potrebno obavestiti korisnika sta ce sve biti brisano.            
-            // Generalno, kada zavrsis program (tj. kada model bude stabilizovan), 
-            // potrebno je jos jednom pregledati sva mesta na kojima se nesto brise
-            // i proveriti da li se brise sve sto treba da se brise
-
-            if (DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO().isGimnasticarUcesnik(g.Id))
-            {
-                string msg = "Nije dozvoljeno brisanje takmicara koji ucestvuje u takmicenju II.";
-                MessageDialogs.showMessage(msg, this.Text);
-                return false;
-            }
-
-            if (DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO().isGimnasticarUcesnik(g.Id))
-            {
-                string msg = "Nije dozvoljeno brisanje takmicara koji ucestvuje u takmicenju III.";
-                MessageDialogs.showMessage(msg, this.Text);
-                return false;
-            }
-
-            if (DAOFactoryFactory.DAOFactory.GetEkipaDAO().existsEkipaForGimnasticar(g.Id))
-            {
-                string msg = "Nije dozvoljeno brisanje takmicara koji je clan ekipe.\n Morate najpre da izbrisete " +
-                    "takmicara iz ekipe.";
-                MessageDialogs.showMessage(msg, this.Text);
-                return false;
-            }
-
-            if (DAOFactoryFactory.DAOFactory.GetNastupNaSpraviDAO().existsNastupForGimnasticar(g.Id))
-            {
-                string msg = "Nije dozvoljeno brisanje takmicara koji je u start listi.\n Morate najpre da izbrisete " +
-                    "takmicara iz svih start listi.";
-                MessageDialogs.showMessage(msg, this.Text);
-                return false;
-            }
-
-            // TODO: Proveri i eventualne ostale klase koje imaju asocijaciju prema GimnasticarUcesniku
-            // (osim TakmicenjaI)
-
-            if (DAOFactoryFactory.DAOFactory.GetOcenaDAO().existsOcenaForGimnasticar(g.Id))
-            {
-                string msg = "Nije dozvoljeno brisanje takmicara za koga postoje unete ocene.";
-                MessageDialogs.showMessage(msg, this.Text);
-                return false;
-            }
-
-            return true;
-        }
-
-        private string deleteConfirmationMessage(GimnasticarUcesnik gimnasticar)
+        private string deleteConfirmationMessage(string gimnasticar)
         {
             return String.Format("Da li zelite da izbrisete gimnasticara \"{0}\"?", gimnasticar);
         }
@@ -682,11 +664,6 @@ namespace Bilten.UI
         private string deleteConfirmationMessage()
         {
             return String.Format("Da li zelite da izbrisete selektovane gimnasticare?");
-        }
-
-        private string deleteErrorMessage()
-        {
-            return "Neuspesno brisanje gimnasticara.";
         }
 
         private void btnClose_Click(object sender, EventArgs e)

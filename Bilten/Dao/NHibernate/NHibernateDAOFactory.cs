@@ -173,11 +173,6 @@ namespace Bilten.Dao.NHibernate
             return new PoredakUkupnoDAOImpl();
         }
 
-        public override NastupNaSpraviDAO GetNastupNaSpraviDAO()
-        {
-            return new NastupNaSpraviDAOImpl();
-        }
-
         public override PoredakSpravaFinaleKupaDAO GetPoredakSpravaFinaleKupaDAO()
         {
             return new PoredakSpravaFinaleKupaDAOImpl();

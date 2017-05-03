@@ -21,6 +21,7 @@ namespace Bilten.UI
         private int takmicenjeId;
         private int rotacija;
         private Color[] bojeZaEkipe;
+        private bool dirty = false;
 
         private RasporedNastupa raspored;
         public RasporedNastupa RasporedNastupa
@@ -142,43 +143,18 @@ namespace Bilten.UI
             if (dlgResult != DialogResult.OK || form.SelectedEntities.Count == 0)
                 return;
 
-            List<GimnasticarUcesnik> okGimnasticari = new List<GimnasticarUcesnik>();
-            List<GimnasticarUcesnik> illegalGimnasticari = new List<GimnasticarUcesnik>();
+            bool added = false;
             foreach (GimnasticarUcesnik g in form.SelectedEntities)
             {
-                if (startLista.canAddGimnasticar(g))
-                    okGimnasticari.Add(g);
-                else
-                    illegalGimnasticari.Add(g);
+                if (startLista.addGimnasticar(g))
+                    added = true;
             }
 
-            /*for (int i = okGimnasticari.Count - 1; i >= 0; i--)
+            if (added)
             {
-                GimnasticarUcesnik g = okGimnasticari[i];
-                if (!raspored.Kategorije.Contains(g.TakmicarskaKategorija))
-                {
-                    okGimnasticari.RemoveAt(i);
-                    illegalGimnasticari.Add(g);
-                }
-            }*/
-
-            foreach (GimnasticarUcesnik g in okGimnasticari)
-            {
-                startLista.addGimnasticar(g);
-            }
-
-            if (okGimnasticari.Count > 0)
-            {
+                dirty = true;
                 spravaGridUserControl1.setItems(startLista.Nastupi);
                 spravaGridUserControl1.clearSelection();
-            }
-
-            if (illegalGimnasticari.Count > 0)
-            {
-                string msg = "Sledeci gimnasticari nisu dodati, zato sto ili vec " +
-                    "postoje na start listi, ili im kategorija nije odgovarajuca: \n\n";
-                msg += StringUtil.getListString(illegalGimnasticari.ToArray());
-                //       MessageDialogs.showMessage(msg, this.Text);
             }
         }
 
@@ -195,6 +171,7 @@ namespace Bilten.UI
                 return;
 
             startLista.removeNastup(nastup);
+            dirty = true;
             spravaGridUserControl1.setItems(startLista.Nastupi);
             spravaGridUserControl1.clearSelection();
         }
@@ -209,6 +186,7 @@ namespace Bilten.UI
                 return;
 
             startLista.clear();
+            dirty = true;
             spravaGridUserControl1.setItems(startLista.Nastupi);
         }
 
@@ -221,6 +199,7 @@ namespace Bilten.UI
 
             if (startLista.moveNastupUp(nastup))
             {
+                dirty = true;
                 spravaGridUserControl1.setItems(startLista.Nastupi);
                 spravaGridUserControl1.setSelectedItem<NastupNaSpravi>(nastup);
             }
@@ -235,6 +214,7 @@ namespace Bilten.UI
 
             if (startLista.moveNastupDown(nastup))
             {
+                dirty = true;
                 spravaGridUserControl1.setItems(startLista.Nastupi);
                 spravaGridUserControl1.setSelectedItem<NastupNaSpravi>(nastup);
             }
@@ -242,6 +222,9 @@ namespace Bilten.UI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            if (!dirty)
+                return;
+
             ISession session = null;
             try
             {
@@ -249,20 +232,6 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    // TODO: Prvo proveri da li je nesto menjano
-
-                    // Proveri da li se sve ekipe sastoje od uzastopnih gimnsticara. Ako ne, sve gimnasticare koji se nalaze
-                    // izmedju dva clana neke ekipe proglasi za clanove te iste ekipe.
-                    if (rotacija == 1)
-                    {
-                        byte ekipa = findFragmentedEkipa(startLista);
-                        while (ekipa > 0)
-                        {
-                            kompaktujEkipu(ekipa, startLista);
-                            ekipa = findFragmentedEkipa(startLista);
-                        }
-                    }
-
                     DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
 
                     Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
@@ -282,54 +251,5 @@ namespace Bilten.UI
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
-
-        private byte findFragmentedEkipa(StartListaNaSpravi startLista)
-        {
-            List<byte> ekipe = new List<byte>();
-            byte prevEkipa = 0;
-            for (int i = 0; i < startLista.Nastupi.Count; ++i)
-            {
-                NastupNaSpravi n = startLista.Nastupi[i];
-                if (n.Ekipa != prevEkipa)
-                {
-                    // Nasli smo novu ekipu (ili pojedinca) n.Ekipa, sto znaci da se time zavrsava prevEkipa.
-                    if (prevEkipa > 0)
-                        ekipe.Add(prevEkipa);
-
-                    // Proveri da li je nova ekipa n.Ekipa ranije vec pronadjena.
-                    if (n.Ekipa > 0 && ekipe.IndexOf(n.Ekipa) != -1)
-                    {
-                        // Clanovi ekipe n.Ekipa nisu uzastopni.
-                        return n.Ekipa;
-                    }
-
-                    prevEkipa = n.Ekipa;
-                }
-            }
-            return 0;
-        }
-
-        private void kompaktujEkipu(byte ekipa, StartListaNaSpravi startLista)
-        {
-            int start = -1;
-            int end = -1;
-            for (int i = 0; i < startLista.Nastupi.Count; ++i)
-            {
-                NastupNaSpravi n = startLista.Nastupi[i];
-                if (n.Ekipa == ekipa)
-                {
-                    if (start == -1)
-                        start = i;
-                    end = i;
-                }
-            }
-
-            for (int i = start; i <= end; ++i)
-            {
-                NastupNaSpravi n = startLista.Nastupi[i];
-                n.Ekipa = ekipa;
-            }
-        }
-
     }
 }

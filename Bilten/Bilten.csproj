@@ -99,7 +99,6 @@
     <Compile Include="Dao\KlubUcesnikDAO.cs" />
     <Compile Include="Dao\KonacanPlasmanDAO.cs" />
     <Compile Include="Dao\MestoDAO.cs" />
-    <Compile Include="Dao\NastupNaSpraviDAO.cs" />
     <Compile Include="Dao\NHibernate\DrugaOcenaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\DrzavaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\DrzavaUcesnikDAOImpl.cs" />
@@ -111,7 +110,6 @@
     <Compile Include="Dao\NHibernate\KlubDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KlubUcesnikDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\MestoDAOImpl.cs" />
-    <Compile Include="Dao\NHibernate\NastupNaSpraviDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\NHibernateDAOFactory.cs" />
     <Compile Include="Dao\NHibernate\OcenaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\OpcijeDAOImpl.cs" />

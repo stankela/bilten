@@ -1090,7 +1090,7 @@ namespace Bilten.UI
             Takmicenje3DAO tak3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
             Takmicenje4DAO tak4DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO();
 
-            IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar);            
+            IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByGimnasticar(o.Gimnasticar);            
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -1190,8 +1190,8 @@ namespace Bilten.UI
             Takmicenje2DAO tak2DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje2DAO();
             Takmicenje3DAO tak3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
             Takmicenje4DAO tak4DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje4DAO();
-        
-            IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindRezTakmicenjaForGimnasticar(o.Gimnasticar);
+
+            IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByGimnasticar(o.Gimnasticar);
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)

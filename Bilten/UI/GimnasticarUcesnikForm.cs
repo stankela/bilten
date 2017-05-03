@@ -18,7 +18,6 @@ namespace Bilten.UI
         private TakmicarskaKategorija kategorija;
         private List<KlubUcesnik> klubovi;
         private List<DrzavaUcesnik> drzave;
-        private IList<RezultatskoTakmicenje> rezTakmicenja;
 
         private KlubUcesnik emptyKlub;
         private DrzavaUcesnik emptyDrzava;
@@ -62,8 +61,6 @@ namespace Bilten.UI
         {
             loadKlubovi(kategorija.Takmicenje.Id);
             loadDrzave(kategorija.Takmicenje.Id);
-            rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                                            .FindRezTakmicenjaForGimnasticar((GimnasticarUcesnik)entity);
         }
 
         private void loadKlubovi(int takmicenjeId)
@@ -164,6 +161,8 @@ namespace Bilten.UI
             SelectedDrzava = gimnasticar.DrzavaUcesnik;
             txtTakKategorija.Text = kategorija.ToString();
 
+            IList<RezultatskoTakmicenje> rezTakmicenja
+                = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByGimnasticar(gimnasticar);
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                 lstTakmicenja.Items.Add(rt.Naziv);
 

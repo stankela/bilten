@@ -82,19 +82,27 @@ namespace Bilten.Domain
             Nastupi.Remove(nastup);
         }
 
-        public virtual bool canAddGimnasticar(GimnasticarUcesnik g)
+        public virtual void removeNastup(GimnasticarUcesnik g)
         {
-            return !gimnasticarExists(g);
+            for (int i = 0; i < Nastupi.Count; ++i)
+            {
+                NastupNaSpravi n = Nastupi[i];
+                if (n.Gimnasticar.Equals(g))
+                {
+                    Nastupi.Remove(n);
+                    return;
+                }
+            }
         }
 
-        public virtual void addGimnasticar(GimnasticarUcesnik g)
+        public virtual bool addGimnasticar(GimnasticarUcesnik g)
         {
             if (gimnasticarExists(g))
-                throw new BusinessException(
-                    String.Format("Gimnasticar {0} je vec na start listi.", g));
+                return false;
 
             NastupNaSpravi nastup = new NastupNaSpravi(g, 0);
             addNastup(nastup);
+            return true;
         }
 
         private bool gimnasticarExists(GimnasticarUcesnik g)
@@ -127,6 +135,11 @@ namespace Bilten.Domain
 
             Nastupi.Remove(nastup);
             Nastupi.Insert(index - 1, nastup);
+            if (Nastupi[index].Ekipa != Nastupi[index - 1].Ekipa)
+            {
+                // Promenili smo redosled gimnasticara koji nisu clanovi iste ekipe.
+                ponistiEkipe();
+            }
             return true;
         }
 
@@ -138,7 +151,15 @@ namespace Bilten.Domain
 
             Nastupi.Remove(nastup);
             Nastupi.Insert(index + 1, nastup);
+            if (Nastupi[index].Ekipa != Nastupi[index + 1].Ekipa)
+                ponistiEkipe();
             return true;
+        }
+
+        private void ponistiEkipe()
+        {
+            foreach (NastupNaSpravi n in Nastupi)
+                n.Ekipa = 0;
         }
 
         public virtual void dump(StringBuilder strBuilder)

@@ -15,6 +15,5 @@ namespace Bilten.Dao
         Ocena FindByIdFetch(int id);
         Ocena FindOcena(GimnasticarUcesnik g, DeoTakmicenjaKod deoTakKod, Sprava sprava);
         bool existsOcene(int takmicenjeId);
-        bool existsOcenaForGimnasticar(int gimnasticarId);
     }
 }
