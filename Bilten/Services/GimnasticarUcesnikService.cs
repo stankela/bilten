@@ -14,45 +14,85 @@ namespace Bilten.Services
 {
     public class GimnasticarUcesnikService
     {
-        // TODO4: Ovaj metod je prekopiran iz klase TakmicariKategorijeForm. Probaj da oba metoda
-        // spojis u jedan.
         public static GimnasticarUcesnik createGimnasticarUcesnik(GimnasticarUcesnik g, TakmicarskaKategorija kategorija)
         {
+            string nazivDrzave = null;
+            string kodDrzave = null;
+            if (g.DrzavaUcesnik != null)
+            {
+                nazivDrzave = g.DrzavaUcesnik.Naziv;
+                kodDrzave = g.DrzavaUcesnik.Kod;
+            }
+            string nazivKluba = null;
+            string kodKluba = null;
+            if (g.KlubUcesnik != null)
+            {
+                nazivKluba = g.KlubUcesnik.Naziv;
+                kodKluba = g.KlubUcesnik.Kod;
+            }
+            return createGimnasticarUcesnik(g.Ime, g.SrednjeIme, g.Prezime, g.DatumRodjenja, kategorija, nazivDrzave,
+                kodDrzave, nazivKluba, kodKluba);
+        }
+
+        public static GimnasticarUcesnik createGimnasticarUcesnik(Gimnasticar g, TakmicarskaKategorija kategorija)
+        {
+            string nazivDrzave = null;
+            string kodDrzave = null;
+            if (g.Drzava != null)
+            {
+                nazivDrzave = g.Drzava.Naziv;
+                kodDrzave = g.Drzava.Kod;
+            }
+            string nazivKluba = null;
+            string kodKluba = null;
+            if (g.Klub != null)
+            {
+                nazivKluba = g.Klub.Naziv;
+                kodKluba = g.Klub.Kod;
+            }
+            return createGimnasticarUcesnik(g.Ime, g.SrednjeIme, g.Prezime, g.DatumRodjenja, kategorija, nazivDrzave,
+                kodDrzave, nazivKluba, kodKluba);
+        }
+
+        private static GimnasticarUcesnik createGimnasticarUcesnik(string ime, string srednjeIme, string prezime,
+            Datum datumRodjenja, TakmicarskaKategorija kategorija, string nazivDrzave, string kodDrzave, string nazivKluba,
+            string kodKluba)
+        {
             GimnasticarUcesnik result = new GimnasticarUcesnik();
-            result.Ime = g.Ime;
-            result.SrednjeIme = g.SrednjeIme;
-            result.Prezime = g.Prezime;
-            result.DatumRodjenja = g.DatumRodjenja;
+            result.Ime = ime;
+            result.SrednjeIme = srednjeIme;
+            result.Prezime = prezime;
+            result.DatumRodjenja = datumRodjenja;
             result.TakmicarskaKategorija = kategorija;
-            if (g.DrzavaUcesnik == null)
+            if (String.IsNullOrEmpty(nazivDrzave))
                 result.DrzavaUcesnik = null;
             else
             {
-                DrzavaUcesnik drzavaUcesnik = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO()
-                    .FindDrzavaUcesnik(kategorija.Takmicenje.Id, g.DrzavaUcesnik.Naziv);
+                DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
+                DrzavaUcesnik drzavaUcesnik = drzavaUcesnikDAO.FindDrzavaUcesnik(kategorija.Takmicenje.Id, nazivDrzave);
                 if (drzavaUcesnik == null)
                 {
                     drzavaUcesnik = new DrzavaUcesnik();
-                    drzavaUcesnik.Naziv = g.DrzavaUcesnik.Naziv;
-                    drzavaUcesnik.Kod = g.DrzavaUcesnik.Kod;
+                    drzavaUcesnik.Naziv = nazivDrzave;
+                    drzavaUcesnik.Kod = kodDrzave;
                     drzavaUcesnik.Takmicenje = kategorija.Takmicenje;
-                    DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO().Add(drzavaUcesnik);
+                    drzavaUcesnikDAO.Add(drzavaUcesnik);
                 }
                 result.DrzavaUcesnik = drzavaUcesnik;
             }
-            if (g.KlubUcesnik == null)
+            if (String.IsNullOrEmpty(nazivKluba))
                 result.KlubUcesnik = null;
             else
             {
-                KlubUcesnik klubUcesnik = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO()
-                    .FindKlubUcesnik(kategorija.Takmicenje.Id, g.KlubUcesnik.Naziv);
+                KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
+                KlubUcesnik klubUcesnik = klubUcesnikDAO.FindKlubUcesnik(kategorija.Takmicenje.Id, nazivKluba);
                 if (klubUcesnik == null)
                 {
                     klubUcesnik = new KlubUcesnik();
-                    klubUcesnik.Naziv = g.KlubUcesnik.Naziv;
-                    klubUcesnik.Kod = g.KlubUcesnik.Kod;
+                    klubUcesnik.Naziv = nazivKluba;
+                    klubUcesnik.Kod = kodKluba;
                     klubUcesnik.Takmicenje = kategorija.Takmicenje;
-                    DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().Add(klubUcesnik);
+                    klubUcesnikDAO.Add(klubUcesnik);
                 }
                 result.KlubUcesnik = klubUcesnik;
             }

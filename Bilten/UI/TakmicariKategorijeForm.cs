@@ -295,26 +295,18 @@ namespace Bilten.UI
                     if (form2.IzPrethodnogTakmicenja)
                     {
                         foreach (GimnasticarUcesnik g in form3.SelectedGimnasticari)
-                        {
-                            selGimnasticari.Add(createGimnasticarUcesnik(
-                                g, ActiveKategorija));
-                        }
+                            selGimnasticari.Add(GimnasticarUcesnikService.createGimnasticarUcesnik(g, ActiveKategorija));
                     }
                     else
                     {
                         foreach (Gimnasticar g in form.SelectedEntities)
-                        {
-                            selGimnasticari.Add(createGimnasticarUcesnik(
-                                g, ActiveKategorija));
-                        }
+                            selGimnasticari.Add(GimnasticarUcesnikService.createGimnasticarUcesnik(g, ActiveKategorija));
                     }
 
                     foreach (GimnasticarUcesnik g in selGimnasticari)
                     {
-                        //GimnasticarUcesnik gimnasticar = createGimnasticarUcesnik(
-                        //    g, ActiveKategorija);
-                        if (canAddGimnasticar(g/*imnasticar*/, ActiveKategorija))
-                            okGimnasticari.Add(g/*imnasticar*/);
+                        if (canAddGimnasticar(g, ActiveKategorija))
+                            okGimnasticari.Add(g);
                         else
                             illegalGimnasticari.Add(g);
                     }
@@ -350,9 +342,7 @@ namespace Bilten.UI
             {
                 List<GimnasticarUcesnik> activeGimnasticari = gimnasticari[tabControl1.SelectedIndex];
                 foreach (GimnasticarUcesnik g in okGimnasticari)
-                {
                     activeGimnasticari.Add(g);
-                }
 
                 setGimnasticari(activeGimnasticari);
 
@@ -395,96 +385,7 @@ namespace Bilten.UI
             return true;
         }
 
-        private GimnasticarUcesnik createGimnasticarUcesnik(Gimnasticar g,
-            TakmicarskaKategorija kategorija)
-        {
-            GimnasticarUcesnik result = new GimnasticarUcesnik();
-            result.Ime = g.Ime;
-            result.SrednjeIme = g.SrednjeIme;
-            result.Prezime = g.Prezime;
-            result.DatumRodjenja = g.DatumRodjenja;
-            result.TakmicarskaKategorija = kategorija;
-            if (g.Drzava == null)
-                result.DrzavaUcesnik = null;
-            else
-            {
-                DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
-                DrzavaUcesnik drzavaUcesnik = drzavaUcesnikDAO.FindDrzavaUcesnik(kategorija.Takmicenje.Id, g.Drzava.Naziv);
-                if (drzavaUcesnik == null)
-                {
-                    drzavaUcesnik = new DrzavaUcesnik();
-                    drzavaUcesnik.Naziv = g.Drzava.Naziv;
-                    drzavaUcesnik.Kod = g.Drzava.Kod;
-                    drzavaUcesnik.Takmicenje = kategorija.Takmicenje;
-                    drzavaUcesnikDAO.Add(drzavaUcesnik);
-                }
-                result.DrzavaUcesnik = drzavaUcesnik;
-            }
-            if (g.Klub == null)
-                result.KlubUcesnik = null;
-            else
-            {
-                KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
-                KlubUcesnik klubUcesnik = klubUcesnikDAO.FindKlubUcesnik(kategorija.Takmicenje.Id, g.Klub.Naziv);
-                if (klubUcesnik == null)
-                {
-                    klubUcesnik = new KlubUcesnik();
-                    klubUcesnik.Naziv = g.Klub.Naziv;
-                    klubUcesnik.Kod = g.Klub.Kod;
-                    klubUcesnik.Takmicenje = kategorija.Takmicenje;
-                    klubUcesnikDAO.Add(klubUcesnik);
-                }
-                result.KlubUcesnik = klubUcesnik;
-            }
-            return result;
-        }
-
         // TODO4: Dodati srednje ime u tabelama za gimnasticare ucesnike
-
-        private GimnasticarUcesnik createGimnasticarUcesnik(GimnasticarUcesnik g,
-            TakmicarskaKategorija kategorija)
-        {
-            GimnasticarUcesnik result = new GimnasticarUcesnik();
-            result.Ime = g.Ime;
-            result.SrednjeIme = g.SrednjeIme;
-            result.Prezime = g.Prezime;
-            result.DatumRodjenja = g.DatumRodjenja;
-            result.TakmicarskaKategorija = kategorija;
-            if (g.DrzavaUcesnik == null)
-                result.DrzavaUcesnik = null;
-            else
-            {
-                DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
-                DrzavaUcesnik drzavaUcesnik = drzavaUcesnikDAO.FindDrzavaUcesnik(kategorija.Takmicenje.Id,
-                    g.DrzavaUcesnik.Naziv);
-                if (drzavaUcesnik == null)
-                {
-                    drzavaUcesnik = new DrzavaUcesnik();
-                    drzavaUcesnik.Naziv = g.DrzavaUcesnik.Naziv;
-                    drzavaUcesnik.Kod = g.DrzavaUcesnik.Kod;
-                    drzavaUcesnik.Takmicenje = kategorija.Takmicenje;
-                    drzavaUcesnikDAO.Add(drzavaUcesnik);
-                }
-                result.DrzavaUcesnik = drzavaUcesnik;
-            }
-            if (g.KlubUcesnik == null)
-                result.KlubUcesnik = null;
-            else
-            {
-                KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
-                KlubUcesnik klubUcesnik = klubUcesnikDAO.FindKlubUcesnik(kategorija.Takmicenje.Id, g.KlubUcesnik.Naziv);
-                if (klubUcesnik == null)
-                {
-                    klubUcesnik = new KlubUcesnik();
-                    klubUcesnik.Naziv = g.KlubUcesnik.Naziv;
-                    klubUcesnik.Kod = g.KlubUcesnik.Kod;
-                    klubUcesnik.Takmicenje = kategorija.Takmicenje;
-                    klubUcesnikDAO.Add(klubUcesnik);
-                }
-                result.KlubUcesnik = klubUcesnik;
-            }
-            return result;
-        }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
