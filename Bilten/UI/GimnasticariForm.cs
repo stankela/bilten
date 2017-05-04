@@ -351,56 +351,51 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
-
-            List<KonacanPlasman> visebojTak1 = kpDAO.findVisebojTak1(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> visebojTak2 = kpDAO.findVisebojTak2(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> visebojFinaleKupa = kpDAO.findVisebojFinaleKupa(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> visebojZbirViseKola = kpDAO.findVisebojZbirViseKola(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> spraveTak1 = kpDAO.findSpraveTak1(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> spraveTak3 = kpDAO.findSpraveTak3(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> preskokTak1 = kpDAO.findPreskokTak1(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> preskokTak3 = kpDAO.findPreskokTak3(SelectedItem.Ime, SelectedItem.Prezime);
-            List<KonacanPlasman> spraveFinaleKupa = kpDAO.findSpraveFinaleKupa(SelectedItem.Ime, SelectedItem.Prezime);
-
-            List<KonacanPlasman> viseboj = new List<KonacanPlasman>();
-            viseboj.AddRange(visebojFinaleKupa);
-            viseboj.AddRange(visebojZbirViseKola);
-            viseboj.AddRange(visebojTak1);
-            viseboj.AddRange(visebojTak2);
-
-            List<KonacanPlasman> sprave = new List<KonacanPlasman>();
-            // Dodajem najpre finale kupa da bi, ako je postojalo odvojeno takmicenje 3 finale kupa, rezultati prebrisali
-            // ove rezultate (za one gimnasticare koji su ucestvovali u odvojenom finalu kupa). Iz istog razloga najpre
-            // dodajem spraveTak1 pa spraveTak3.
-            sprave.AddRange(spraveFinaleKupa);
-            sprave.AddRange(spraveTak1);
-            sprave.AddRange(spraveTak3);
-            sprave.AddRange(preskokTak1);
-            sprave.AddRange(preskokTak3);
-
-            Dictionary<int, KonacanPlasman> plasmaniMap = new Dictionary<int, KonacanPlasman>();
-            foreach (KonacanPlasman kp in viseboj)
+            List<KonacanPlasman> plasmani;
+            try
             {
-                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                List<KonacanPlasman> viseboj = new List<KonacanPlasman>();
+                viseboj.AddRange(kpDAO.findVisebojFinaleKupa(SelectedItem.Ime, SelectedItem.Prezime));
+                viseboj.AddRange(kpDAO.findVisebojZbirViseKola(SelectedItem.Ime, SelectedItem.Prezime));
+                viseboj.AddRange(kpDAO.findVisebojTak1(SelectedItem.Ime, SelectedItem.Prezime));
+                viseboj.AddRange(kpDAO.findVisebojTak2(SelectedItem.Ime, SelectedItem.Prezime));
+
+                List<KonacanPlasman> sprave = new List<KonacanPlasman>();
+                // Dodajem najpre finale kupa da bi, ako je postojalo odvojeno takmicenje 3 finale kupa, rezultati prebrisali
+                // ove rezultate (za one gimnasticare koji su ucestvovali u odvojenom finalu kupa). Iz istog razloga najpre
+                // dodajem spraveTak1 pa spraveTak3.
+                sprave.AddRange(kpDAO.findSpraveFinaleKupa(SelectedItem.Ime, SelectedItem.Prezime));
+                sprave.AddRange(kpDAO.findSpraveTak1(SelectedItem.Ime, SelectedItem.Prezime));
+                sprave.AddRange(kpDAO.findSpraveTak3(SelectedItem.Ime, SelectedItem.Prezime));
+                sprave.AddRange(kpDAO.findPreskokTak1(SelectedItem.Ime, SelectedItem.Prezime));
+                sprave.AddRange(kpDAO.findPreskokTak3(SelectedItem.Ime, SelectedItem.Prezime));
+
+                Dictionary<int, KonacanPlasman> plasmaniMap = new Dictionary<int, KonacanPlasman>();
+                foreach (KonacanPlasman kp in viseboj)
                 {
-                    if (kp.Viseboj != null)
-                        plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
+                    if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                    {
+                        if (kp.Viseboj != null)
+                            plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
+                    }
+                    else
+                        plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
                 }
-                else
-                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+                foreach (KonacanPlasman kp in sprave)
+                {
+                    if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
+                        updatePlasmanSprava(plasmaniMap[kp.RezultatskoTakmicenjeId], kp);
+                    else
+                        plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+                }
+
+                plasmani = new List<KonacanPlasman>(plasmaniMap.Values);
             }
-            foreach (KonacanPlasman kp in sprave)
+            finally
             {
-                if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
-                    updatePlasmanSprava(plasmaniMap[kp.RezultatskoTakmicenjeId], kp);
-                else
-                    plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
-
-            List<KonacanPlasman> plasmani = new List<KonacanPlasman>(plasmaniMap.Values);
-
-            Cursor.Hide();
-            Cursor.Current = Cursors.Arrow;
 
             if (plasmani.Count == 0)
             {
