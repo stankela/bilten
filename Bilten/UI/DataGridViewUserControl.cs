@@ -361,6 +361,11 @@ namespace Bilten.UI
             return result;
         }
 
+        public int getSelectedItemCount()
+        {
+            return DataGridView.SelectedRows.Count;
+        }
+
         public void clearSelection()
         {
             foreach (DataGridViewRow row in DataGridView.SelectedRows)

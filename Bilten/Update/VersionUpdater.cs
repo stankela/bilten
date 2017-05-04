@@ -53,7 +53,6 @@ public class VersionUpdater
 
         if (verzijaBaze == 2 && Program.VERZIJA_PROGRAMA > 2)
         {
-            // TODO4: Dodati prozor koji prikazuje da se baza apdejtuje, posto apdejt traje desetak sekundi.
             // TODO: Ove dve naredbe bi trebalo izvrsavati u okviru jedne transakcije. Isto i za ostale verzije.
 
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",

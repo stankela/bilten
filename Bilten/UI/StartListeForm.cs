@@ -1641,16 +1641,53 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenje.Id, deoTakKod, -1, false);
+                RezultatiUkupnoForm form = new RezultatiUkupnoForm(takmicenje.Id, deoTakKod,
+                    findRezTakmicenjeForRezultati(), false);
                 form.ShowDialog();
             }
-            catch (BusinessException ex)
-            {
-                MessageDialogs.showMessage(ex.Message, "Greska");
-            }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, "Greska");
+            }
+        }
+
+        int findRezTakmicenjeForRezultati()
+        {
+            // DOC: Prikazi one rezultate u kojima se nalazi selektovani gimnasticar. Ako nijedan gimnasticar nije
+            // selektovan, prikazi rezultate u kojima se nalazi prvi gimnasticar iz selektovane liste. Ako je
+            // selektovana lista prazna, prikazi rezultate za prvu kategoriju.
+            GimnasticarUcesnik g = null;
+            DataGridViewUserControl c = getActiveSpravaGridGroupUserControl()[clickedSprava].DataGridViewUserControl;
+            if (c.getSelectedItemCount() > 0)
+                g = c.getSelectedItems<NastupNaSpravi>()[0].Gimnasticar;
+            else if (c.getItemCount<NastupNaSpravi>() > 0)
+                g = c.getItems<NastupNaSpravi>()[0].Gimnasticar;
+            if (g == null)
+                return -1;
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    rezTakDAO.Session = session;
+                    IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByGimnasticar(g);
+                    if (rezTakmicenja.Count > 0)
+                        return rezTakmicenja[0].Id;
+                    return -1;
+                }
+            }
+            catch (Exception)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+
             }
         }
 
@@ -1658,14 +1695,11 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiSpravaForm form = new RezultatiSpravaForm(takmicenje.Id, deoTakKod, -1, Sprava.Undefined, false, false);
+                RezultatiSpravaForm form = new RezultatiSpravaForm(takmicenje.Id, deoTakKod,
+                    findRezTakmicenjeForRezultati(), clickedSprava, false, false);
                 form.ShowDialog();
             }
-            catch (BusinessException ex)
-            {
-                MessageDialogs.showMessage(ex.Message, "Greska");
-            }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, "Greska");
             }

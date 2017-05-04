@@ -29,8 +29,6 @@ namespace Bilten
         //   proverio da li se liste poklapaju. Kada test pukne, odgovarajuci kod u programu treba apdejtovati, a test
         //   treba promeniti da u proveru ukljucuje i novododato svojstvo. Ima kod Petzolda u poglavlju 4 primer
         //   reflekcije (SysInfoReflection).
-        // - Kada se otvaraju rezultati iz prozora za start liste, treba otvoriti onu kategoriju i onu spravu
-        //   koja je trenutno aktivna.
         // - Kad oznacavas grupe za rotiranje u start listama, oznaci ih i u ostalim rotacijama a ne samo prvoj.
         // - Drag and drop za menjanje start lista
         // - Ekipni poredak za Memorijal da se automatski izracuna.
