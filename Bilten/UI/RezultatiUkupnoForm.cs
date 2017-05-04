@@ -161,6 +161,8 @@ namespace Bilten.UI
             {
                 btnPrint.Enabled = btnPrint.Visible = false;
                 btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
+                prikaziKlubToolStripMenuItem.Enabled = false;
+                prikaziDrzavuToolStripMenuItem.Enabled = false;
             }
         }
 

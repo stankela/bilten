@@ -207,6 +207,8 @@ namespace Bilten.UI
                 btnStampajKvalifikante.Enabled = btnStampajKvalifikante.Visible = false;
                 if (!select)
                     btnClose.Location = new Point(btnCancel.Location.X, btnCancel.Location.Y);
+                prikaziKlubToolStripMenuItem.Enabled = false;
+                prikaziDrzavuToolStripMenuItem.Enabled = false;
             }
             else
             {

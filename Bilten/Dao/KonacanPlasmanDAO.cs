@@ -14,6 +14,7 @@ namespace Bilten.Dao
         public string NazivTakmicenja { get; set; }
         public string MestoTakmicenja { get; set; }
         public DateTime DatumTakmicenja { get; set; }
+        public TipTakmicenja TipTakmicenja { get; set; }
         public string NazivKategorije { get; set; }
 
         public string Ime { get; set; }
@@ -55,8 +56,7 @@ namespace Bilten.Dao
         
         private string findVisebojTak1SQL = @"
             select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            t.tip_takmicenja, g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank,
-            pr.postoji_tak2, pr.odvojeno_tak2
+            t.tip_takmicenja, g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank
             from gimnasticari_ucesnici g
             join rezultati_ukupno r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -66,8 +66,6 @@ namespace Bilten.Dao
                 on t1.poredak_ukupno_id = p.poredak_id
             join rezultatsko_takmicenje rt
                 on rt.takmicenje1_id = t1.takmicenje1_id
-            join propozicije pr
-                on rt.propozicije_id = pr.propozicije_id
             join takmicarske_kategorije tk
                 on rt.kategorija_id = tk.kategorija_id
             join rezultatsko_takmicenje_description d
@@ -102,8 +100,7 @@ namespace Bilten.Dao
 
         private string findVisebojFinaleKupaSQL = @"
             select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank,
-            pr.postoji_tak2, pr.odvojeno_tak2
+            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank
             from gimnasticari_ucesnici g
             join rezultati_ukupno_finale_kupa r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -113,8 +110,6 @@ namespace Bilten.Dao
                 on t1.poredak_ukupno_finale_kupa_id = p.poredak_id
             join rezultatsko_takmicenje rt
                 on rt.takmicenje1_id = t1.takmicenje1_id
-            join propozicije pr
-                on rt.propozicije_id = pr.propozicije_id
             join takmicarske_kategorije tk
                 on rt.kategorija_id = tk.kategorija_id
             join rezultatsko_takmicenje_description d
@@ -149,8 +144,7 @@ namespace Bilten.Dao
 
         private string findSpraveTak1SQL = @"
             select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            t.tip_takmicenja, g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank,
-            pr.postoji_tak3, pr.odvojeno_tak3
+            t.tip_takmicenja, g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank
             from gimnasticari_ucesnici g
             join rezultati_sprava r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -160,8 +154,6 @@ namespace Bilten.Dao
                 on t1.takmicenje1_id = p.takmicenje1_id
             join rezultatsko_takmicenje rt
                 on rt.takmicenje1_id = t1.takmicenje1_id
-            join propozicije pr
-                on rt.propozicije_id = pr.propozicije_id
             join takmicarske_kategorije tk
                 on rt.kategorija_id = tk.kategorija_id
             join rezultatsko_takmicenje_description d            
@@ -174,8 +166,7 @@ namespace Bilten.Dao
 
         private string findPreskokTak1SQL = @"
             select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            t.tip_takmicenja, g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank,
-            pr.postoji_tak3, pr.odvojeno_tak3
+            t.tip_takmicenja, g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, r.rank
             from gimnasticari_ucesnici g
             join rezultati_preskok r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -185,8 +176,6 @@ namespace Bilten.Dao
                 on t1.poredak_preskok_id = p.poredak_id
             join rezultatsko_takmicenje rt
                 on rt.takmicenje1_id = t1.takmicenje1_id
-            join propozicije pr
-                on rt.propozicije_id = pr.propozicije_id
             join takmicarske_kategorije tk
                 on rt.kategorija_id = tk.kategorija_id
             join rezultatsko_takmicenje_description d
@@ -243,8 +232,7 @@ namespace Bilten.Dao
 
         private string findSpraveFinaleKupaSQL = @"
             select t.takmicenje_id, rt.rez_takmicenje_id, d.naziv as naziv_tak, t.datum, t.mesto, tk.naziv as naziv_kat,
-            t.tip_takmicenja, g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank,
-            pr.postoji_tak3, pr.odvojeno_tak3
+            g.prezime, g.ime, g.srednje_ime, g.dan_rodj, g.mesec_rodj, g.god_rodj, p.sprava, r.rank
             from gimnasticari_ucesnici g
             join rezultati_sprava_finale_kupa r
                 on r.gimnasticar_id = g.gimnasticar_id
@@ -254,8 +242,6 @@ namespace Bilten.Dao
                 on t1.takmicenje1_id = p.takmicenje1_id
             join rezultatsko_takmicenje rt
                 on rt.takmicenje1_id = t1.takmicenje1_id
-            join propozicije pr
-                on rt.propozicije_id = pr.propozicije_id
             join takmicarske_kategorije tk
                 on rt.kategorija_id = tk.kategorija_id
             join rezultatsko_takmicenje_description d            
@@ -329,17 +315,11 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                TipTakmicenja tipTakmicenja = (TipTakmicenja)rdr["tip_takmicenja"];
-                bool postojiTak2 = (bool)rdr["postoji_tak2"];
-                bool odvojenoTak2 = (bool)rdr["odvojeno_tak2"];
-                if (tipTakmicenja == TipTakmicenja.StandardnoTakmicenje && (!postojiTak2 || !odvojenoTak2)
-                    || tipTakmicenja == TipTakmicenja.FinaleKupa && odvojenoTak2)
-                {
-                    KonacanPlasman kp = new KonacanPlasman();
-                    loadCommonData(kp, rdr);
-                    kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
-                    result.Add(kp);
-                }
+                KonacanPlasman kp = new KonacanPlasman();
+                loadCommonData(kp, rdr);
+                kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
+                kp.TipTakmicenja = (TipTakmicenja)rdr["tip_takmicenja"];
+                result.Add(kp);
             }
 
             rdr.Close(); // obavezno, da bi se zatvorila konekcija otvorena u executeReader
@@ -359,6 +339,7 @@ namespace Bilten.Dao
                 KonacanPlasman kp = new KonacanPlasman();
                 loadCommonData(kp, rdr);
                 kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
+                kp.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
                 result.Add(kp);
             }
 
@@ -376,17 +357,11 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                bool postojiTak2 = (bool)rdr["postoji_tak2"];
-                bool odvojenoTak2 = (bool)rdr["odvojeno_tak2"];
-                // TODO4: Proveri da li se kod finala kupa PostojiTak2 i PostojiTak3 ponasaju kao kod obicnog takmicenja,
-                // tj. da li se poretci kreiraju i kada se stavi false. Ako da, izmeni ovu if naredbu (i kod spava isto).
-                if (!postojiTak2 || !odvojenoTak2)
-                {
-                    KonacanPlasman kp = new KonacanPlasman();
-                    loadCommonData(kp, rdr);
-                    kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
-                    result.Add(kp);
-                }
+                KonacanPlasman kp = new KonacanPlasman();
+                loadCommonData(kp, rdr);
+                kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
+                kp.TipTakmicenja = TipTakmicenja.FinaleKupa;
+                result.Add(kp);
             }
 
             rdr.Close(); // obavezno, da bi se zatvorila konekcija otvorena u executeReader
@@ -406,6 +381,7 @@ namespace Bilten.Dao
                 KonacanPlasman kp = new KonacanPlasman();
                 loadCommonData(kp, rdr);
                 kp.Viseboj = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
+                kp.TipTakmicenja = TipTakmicenja.ZbirViseKola;
                 result.Add(kp);
             }
 
@@ -423,20 +399,12 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                // NOTE: Cak i ako ne postoji takmicenje 3, poredak se ipak racuna i rezultate je moguce pregledati
-                // u prozoru RezultatiSpraveForm. Tako da u ovom slucaju treba prikazati i te plasmane. Isto vazi i za
-                // viseboj.
-                TipTakmicenja tipTakmicenja = (TipTakmicenja)rdr["tip_takmicenja"];
-                bool postojiTak3 = (bool)rdr["postoji_tak3"];
-                bool odvojenoTak3 = (bool)rdr["odvojeno_tak3"];
-                if (tipTakmicenja == TipTakmicenja.StandardnoTakmicenje && (!postojiTak3 || !odvojenoTak3)
-                    || tipTakmicenja == TipTakmicenja.FinaleKupa && odvojenoTak3)
-                {
-                    KonacanPlasman kp = new KonacanPlasman();
-                    loadCommonData(kp, rdr);
-                    loadSprava(kp, rdr);
-                    result.Add(kp);
-                }
+                // NOTE: Vracam sve rezultate koji postoje (ne proveravam postojiTak3 i odvojenoTak3).
+                KonacanPlasman kp = new KonacanPlasman();
+                loadCommonData(kp, rdr);
+                loadSprava(kp, rdr);
+                kp.TipTakmicenja = (TipTakmicenja)rdr["tip_takmicenja"];
+                result.Add(kp);
             }
 
             rdr.Close();
@@ -453,17 +421,11 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                TipTakmicenja tipTakmicenja = (TipTakmicenja)rdr["tip_takmicenja"];
-                bool postojiTak3 = (bool)rdr["postoji_tak3"];
-                bool odvojenoTak3 = (bool)rdr["odvojeno_tak3"];
-                if (tipTakmicenja == TipTakmicenja.StandardnoTakmicenje && (!postojiTak3 || !odvojenoTak3)
-                    || tipTakmicenja == TipTakmicenja.FinaleKupa && odvojenoTak3)
-                {
-                    KonacanPlasman kp = new KonacanPlasman();
-                    loadCommonData(kp, rdr);
-                    kp.Preskok = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
-                    result.Add(kp);
-                }
+                KonacanPlasman kp = new KonacanPlasman();
+                loadCommonData(kp, rdr);
+                kp.Preskok = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
+                kp.TipTakmicenja = (TipTakmicenja)rdr["tip_takmicenja"];
+                result.Add(kp);
             }
 
             rdr.Close();
@@ -483,6 +445,7 @@ namespace Bilten.Dao
                 KonacanPlasman kp = new KonacanPlasman();
                 loadCommonData(kp, rdr);
                 loadSprava(kp, rdr);
+                kp.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
                 result.Add(kp);
             }
 
@@ -503,6 +466,7 @@ namespace Bilten.Dao
                 KonacanPlasman kp = new KonacanPlasman();
                 loadCommonData(kp, rdr);
                 kp.Preskok = Convert.IsDBNull(rdr["rank"]) ? null : (Nullable<short>)rdr["rank"];
+                kp.TipTakmicenja = TipTakmicenja.StandardnoTakmicenje;
                 result.Add(kp);
             }
 
@@ -520,15 +484,11 @@ namespace Bilten.Dao
             List<KonacanPlasman> result = new List<KonacanPlasman>();
             while (rdr.Read())
             {
-                bool postojiTak3 = (bool)rdr["postoji_tak3"];
-                bool odvojenoTak3 = (bool)rdr["odvojeno_tak3"];
-                if (!postojiTak3 || !odvojenoTak3)
-                {
-                    KonacanPlasman kp = new KonacanPlasman();
-                    loadCommonData(kp, rdr);
-                    loadSprava(kp, rdr);
-                    result.Add(kp);
-                }
+                KonacanPlasman kp = new KonacanPlasman();
+                loadCommonData(kp, rdr);
+                loadSprava(kp, rdr);
+                kp.TipTakmicenja = TipTakmicenja.FinaleKupa;
+                result.Add(kp);
             }
 
             rdr.Close();

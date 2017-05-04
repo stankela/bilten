@@ -154,10 +154,24 @@ namespace Bilten.UI
 
             try
             {
-                Sprava sprava = gimnastika == Gimnastika.MSG ? Sprava.Parter : Sprava.Preskok;
-                RezultatiUkupnoForm form = new RezultatiUkupnoForm(selItem.TakmicenjeId, DeoTakmicenjaKod.Takmicenje1,
-                    selItem.RezultatskoTakmicenjeId, true);
-                form.ShowDialog();
+                if (selItem.TipTakmicenja == TipTakmicenja.StandardnoTakmicenje)
+                {
+                    RezultatiUkupnoForm form = new RezultatiUkupnoForm(selItem.TakmicenjeId, DeoTakmicenjaKod.Takmicenje1,
+                        selItem.RezultatskoTakmicenjeId, true);
+                    form.ShowDialog();
+                }
+                else if (selItem.TipTakmicenja == TipTakmicenja.FinaleKupa)
+                {
+                    RezultatiUkupnoFinaleKupaForm form = new RezultatiUkupnoFinaleKupaForm(selItem.TakmicenjeId,
+                        selItem.RezultatskoTakmicenjeId, true);
+                    form.ShowDialog();
+                }
+                else if (selItem.TipTakmicenja == TipTakmicenja.ZbirViseKola)
+                {
+                    RezultatiUkupnoZbirViseKolaForm form = new RezultatiUkupnoZbirViseKolaForm(selItem.TakmicenjeId,
+                        selItem.RezultatskoTakmicenjeId, true);
+                    form.ShowDialog();
+                }
             }
             catch (Exception ex)
             {
@@ -193,10 +207,31 @@ namespace Bilten.UI
 
             try
             {
-                Sprava sprava = gimnastika == Gimnastika.MSG ? Sprava.Parter : Sprava.Preskok;
-                RezultatiSpravaForm form = new RezultatiSpravaForm(selItem.TakmicenjeId, deoTakKod,
-                    selItem.RezultatskoTakmicenjeId, sprava, true, false);
-                form.ShowDialog();
+                if (selItem.TipTakmicenja == TipTakmicenja.StandardnoTakmicenje)
+                {
+                    RezultatiSpravaForm form = new RezultatiSpravaForm(selItem.TakmicenjeId, deoTakKod,
+                        selItem.RezultatskoTakmicenjeId, Sprava.Undefined, true, false);
+                    form.ShowDialog();
+                }
+                else if (selItem.TipTakmicenja == TipTakmicenja.FinaleKupa)
+                {
+                    // NOTE: Ovo je neka vrsta hacka, zato sto ako postoji odvojeno takmicenje 3, rezultati se
+                    // smestaju u poretku za takmicenje 1. Ja sam izabrao da rezultate za 1. i 2. kolo prikazujem
+                    // kada se klikne na takmicenje 1, a odvojeno finale kada se klikne na takmicenje 3.
+
+                    if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                    {
+                        RezultatiSpravaFinaleKupaForm form = new RezultatiSpravaFinaleKupaForm(selItem.TakmicenjeId,
+                            selItem.RezultatskoTakmicenjeId, true);
+                        form.ShowDialog();
+                    }
+                    else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+                    {
+                        RezultatiSpravaForm form = new RezultatiSpravaForm(selItem.TakmicenjeId,
+                            DeoTakmicenjaKod.Takmicenje1, selItem.RezultatskoTakmicenjeId, Sprava.Undefined, true, false);
+                        form.ShowDialog();
+                    }
+                }
             }
             catch (Exception ex)
             {

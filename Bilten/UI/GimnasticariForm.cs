@@ -363,23 +363,29 @@ namespace Bilten.UI
             List<KonacanPlasman> spraveFinaleKupa = kpDAO.findSpraveFinaleKupa(SelectedItem.Ime, SelectedItem.Prezime);
 
             List<KonacanPlasman> viseboj = new List<KonacanPlasman>();
-            viseboj.AddRange(visebojTak1);
-            viseboj.AddRange(visebojTak2);
             viseboj.AddRange(visebojFinaleKupa);
             viseboj.AddRange(visebojZbirViseKola);
+            viseboj.AddRange(visebojTak1);
+            viseboj.AddRange(visebojTak2);
 
             List<KonacanPlasman> sprave = new List<KonacanPlasman>();
+            // Dodajem najpre finale kupa da bi, ako je postojalo odvojeno takmicenje 3 finale kupa, rezultati prebrisali
+            // ove rezultate (za one gimnasticare koji su ucestvovali u odvojenom finalu kupa). Iz istog razloga najpre
+            // dodajem spraveTak1 pa spraveTak3.
+            sprave.AddRange(spraveFinaleKupa);
             sprave.AddRange(spraveTak1);
             sprave.AddRange(spraveTak3);
             sprave.AddRange(preskokTak1);
             sprave.AddRange(preskokTak3);
-            sprave.AddRange(spraveFinaleKupa);
 
             Dictionary<int, KonacanPlasman> plasmaniMap = new Dictionary<int, KonacanPlasman>();
             foreach (KonacanPlasman kp in viseboj)
             {
                 if (plasmaniMap.ContainsKey(kp.RezultatskoTakmicenjeId))
-                    plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
+                {
+                    if (kp.Viseboj != null)
+                        plasmaniMap[kp.RezultatskoTakmicenjeId].Viseboj = kp.Viseboj;
+                }
                 else
                     plasmaniMap.Add(kp.RezultatskoTakmicenjeId, kp);
             }

@@ -19,6 +19,7 @@ namespace Bilten.UI
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private Takmicenje takmicenje;
+        private bool forViewingOnly;
 
         // kljuc je rezTakmicenja.IndexOf(takmicenje) * (Sprava.Max + 1) + sprava
         private ISet<int> rezultatiOpened;
@@ -35,9 +36,10 @@ namespace Bilten.UI
             set { cmbSprava.SelectedItem = Sprave.toString(value); }
         }
 
-        public RezultatiSpravaFinaleKupaForm(int takmicenjeId)
+        public RezultatiSpravaFinaleKupaForm(int takmicenjeId, int startRezTakmicenjeId, bool forViewingOnly)
         {
             InitializeComponent();
+            this.forViewingOnly = forViewingOnly;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -58,7 +60,15 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoji takmicenje III ni za jednu kategoriju.");
 
-                    initUI();
+                    RezultatskoTakmicenje startRezTakmicenje = null;
+                    if (startRezTakmicenjeId != -1)
+                    {
+                        startRezTakmicenje = findRezTakmicenje(startRezTakmicenjeId, rezTakmicenja);
+                        if (startRezTakmicenje == null)
+                            throw new BusinessException("Ne postoje rezultati sprave za dato takmicenje.");
+                    }
+                    
+                    initUI(startRezTakmicenje);
                     rezultatiOpened = new HashSet<int>();
                 }
             }
@@ -103,7 +113,17 @@ namespace Bilten.UI
             return result;
         }
 
-        private void initUI()
+        private RezultatskoTakmicenje findRezTakmicenje(int rezTakmicenjeId, IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.Id == rezTakmicenjeId)
+                    return rt;
+            }
+            return null;
+        }
+
+        private void initUI(RezultatskoTakmicenje startRezTakmicenje)
         {
             Text = "I i II Kolo - rezultati sprave";
             this.ClientSize = new Size(930, 540);
@@ -112,6 +132,8 @@ namespace Bilten.UI
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "Naziv";
             cmbTakmicenje.SelectedIndex = 0;
+            if (startRezTakmicenje != null)
+                ActiveTakmicenje = startRezTakmicenje;
             cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
 
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -125,6 +147,12 @@ namespace Bilten.UI
             spravaGridUserControl1.SpravaGridMouseUp +=
                 new EventHandler<SpravaGridMouseUpEventArgs>(spravaGridUserControl1_SpravaGridMouseUp);
             spravaGridUserControl1.DataGridViewUserControl.DataGridView.MultiSelect = true;
+
+            if (forViewingOnly)
+            {
+                btnPrint.Enabled = btnPrint.Visible = false;
+                btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
+            }
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -298,9 +326,9 @@ namespace Bilten.UI
             int y = e.MouseEventArgs.Y;
             if (e.MouseEventArgs.Button == MouseButtons.Right && grid.HitTest(x, y).Type == DataGridViewHitTestType.Cell)
             {
-                mnQ.Enabled = /*mnQ.Visible =*/ kvalColumnVisible();
-                mnR.Enabled = /*mnR.Visible =*/ kvalColumnVisible();
-                mnPrazno.Enabled = /*mnPrazno.Visible =*/ kvalColumnVisible();
+                mnQ.Enabled = /*mnQ.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnR.Enabled = /*mnR.Visible =*/ !forViewingOnly && kvalColumnVisible();
+                mnPrazno.Enabled = /*mnPrazno.Visible =*/ !forViewingOnly && kvalColumnVisible();
                 contextMenuStrip1.Show(grid, new Point(x, y));
             }
         }

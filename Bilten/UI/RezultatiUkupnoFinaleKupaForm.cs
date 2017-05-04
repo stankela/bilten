@@ -27,7 +27,7 @@ namespace Bilten.UI
             set { cmbTakmicenje.SelectedItem = value; }
         }
 
-        public RezultatiUkupnoFinaleKupaForm(int takmicenjeId)
+        public RezultatiUkupnoFinaleKupaForm(int takmicenjeId, int startRezTakmicenjeId, bool forViewingOnly)
         {
             InitializeComponent();
 
@@ -50,7 +50,15 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException("Ne postoji takmicenje II ni za jednu kategoriju.");
 
-                    initUI();
+                    RezultatskoTakmicenje startRezTakmicenje = null;
+                    if (startRezTakmicenjeId != -1)
+                    {
+                        startRezTakmicenje = findRezTakmicenje(startRezTakmicenjeId, rezTakmicenja);
+                        if (startRezTakmicenje == null)
+                            throw new BusinessException("Ne postoje rezultati viseboj za dato takmicenje.");
+                    }
+
+                    initUI(startRezTakmicenje, forViewingOnly);
                     takmicenjeOpened = new bool[rezTakmicenja.Count];
                 }
             }
@@ -89,7 +97,17 @@ namespace Bilten.UI
             return result;
         }
 
-        private void initUI()
+        private RezultatskoTakmicenje findRezTakmicenje(int rezTakmicenjeId, IList<RezultatskoTakmicenje> rezTakmicenja)
+        {
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.Id == rezTakmicenjeId)
+                    return rt;
+            }
+            return null;
+        }
+
+        private void initUI(RezultatskoTakmicenje startRezTakmicenje, bool forViewingOnly)
         {
             Text = "I i II Kolo - rezultati viseboj";
             this.ClientSize = new Size(ClientSize.Width, 540);
@@ -98,10 +116,18 @@ namespace Bilten.UI
             cmbTakmicenje.DataSource = rezTakmicenja;
             cmbTakmicenje.DisplayMember = "Naziv";
             cmbTakmicenje.SelectedIndex = 0;
+            if (startRezTakmicenje != null)
+                ActiveTakmicenje = startRezTakmicenje;
             cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
 
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
+        
+            if (forViewingOnly)
+            {
+                btnPrint.Enabled = btnPrint.Visible = false;
+                btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
+            }
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,

@@ -797,7 +797,7 @@ namespace Bilten.UI
             {
                 if (takmicenje.ZbirViseKola)
                 {
-                    RezultatiUkupnoZbirViseKolaForm form = new RezultatiUkupnoZbirViseKolaForm(takmicenjeId.Value);
+                    RezultatiUkupnoZbirViseKolaForm form = new RezultatiUkupnoZbirViseKolaForm(takmicenjeId.Value, -1, false);
                     form.ShowDialog();
                 }
                 else
@@ -1109,7 +1109,7 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiUkupnoFinaleKupaForm form = new RezultatiUkupnoFinaleKupaForm(takmicenjeId.Value);
+                RezultatiUkupnoFinaleKupaForm form = new RezultatiUkupnoFinaleKupaForm(takmicenjeId.Value, -1, false);
                 form.ShowDialog();
             }
             catch (BusinessException ex)
@@ -1143,7 +1143,7 @@ namespace Bilten.UI
         {
             try
             {
-                RezultatiSpravaFinaleKupaForm form = new RezultatiSpravaFinaleKupaForm(takmicenjeId.Value);
+                RezultatiSpravaFinaleKupaForm form = new RezultatiSpravaFinaleKupaForm(takmicenjeId.Value, -1, false);
                 form.ShowDialog();
             }
             catch (BusinessException ex)
