@@ -1272,6 +1272,11 @@ namespace Bilten.UI
                     {
                         session.Transaction.Commit();
                         MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
+
+                        // TODO4: Da li treba zvati tryUpdate();
+
+                        // Otvori uvezeno takmicenje.
+                        onTakmicenjeOpened(t);
                     }
                 }
             }

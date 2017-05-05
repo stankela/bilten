@@ -472,6 +472,7 @@ namespace Bilten.UI
                     EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
                     RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
                     Takmicenje1DAO tak1DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje1DAO();
+                    Takmicenje3DAO tak3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
 
                     // Izbaci gimnasticara iz start lista
@@ -493,25 +494,39 @@ namespace Bilten.UI
                         tak1DAO.Update(rt.Takmicenje1);
                     }
 
-                    IList<Ocena> ocene = ocenaDAO.FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
+                    IList<Ocena> ocene1 = ocenaDAO.FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
+                    IList<Ocena> ocene3 = ocenaDAO.FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje3);
 
-                    // Izbaci gimnasticara iz rez. takmicenja
+                    // Izbaci gimnasticara iz takmicenja 1
                     foreach (RezultatskoTakmicenje rt in rezTakDAO.FindByGimnasticar(g))
                     {
                         rt.Takmicenje1.removeGimnasticar(g);
 
                         // Izbaci gimnasticara iz svih poredaka na kojima je vezbao.
-                        rt.Takmicenje1.updateRezultatiOnGimnasticarDeleted(g, ocene, rt);
+                        rt.Takmicenje1.updateRezultatiOnGimnasticarDeleted(g, ocene1, rt);
 
                         tak1DAO.Update(rt.Takmicenje1);
                         foreach (GimnasticarUcesnik g2 in rt.Takmicenje1.Gimnasticari)
                             gimUcesnikDAO.Evict(g2);
                     }
 
-                    foreach (Ocena o in ocene)
+                    // Izbaci gimnasticara iz takmicenja 3
+                    foreach (RezultatskoTakmicenje rt in rezTakDAO.FindByUcesnikTak3(g))
+                    {
+                        rt.Takmicenje3.clearUcesnik(g);
+                        foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
+                            p.deleteGimnasticar(g, rt);
+                        rt.Takmicenje3.PoredakPreskok.deleteGimnasticar(g, rt);
+
+                        tak3DAO.Update(rt.Takmicenje3);
+                    }
+
+                    foreach (Ocena o in ocene1)
+                        ocenaDAO.Delete(o);
+                    foreach (Ocena o in ocene3)
                         ocenaDAO.Delete(o);
                     
-                    // TODO4: Brisi takmicara iz takmicenja II i III.
+                    // TODO: Brisi takmicara iz takmicenja II i IV.
                     
                     gimUcesnikDAO.Delete(g);
 

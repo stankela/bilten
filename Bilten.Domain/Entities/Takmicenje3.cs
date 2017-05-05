@@ -22,6 +22,8 @@ namespace Bilten.Domain
             Ucesnici.Add(u);
         }
 
+        // TODO4: Proveri da li je potrebno da imam oba metoda - removeUcesnik i removeKvalifikant. Isto i za addUcesnik
+        // i addKvalifikant.
         public virtual void removeUcesnik(UcesnikTakmicenja3 u)
         {
             Ucesnici.Remove(u);
@@ -41,6 +43,23 @@ namespace Bilten.Domain
         {
             foreach (UcesnikTakmicenja3 u in new List<UcesnikTakmicenja3>(Ucesnici))
                 removeUcesnik(u);
+        }
+
+        public virtual void clearUcesnik(GimnasticarUcesnik g)
+        {
+            foreach (UcesnikTakmicenja3 u in new List<UcesnikTakmicenja3>(Ucesnici))
+            {
+                if (!u.Gimnasticar.Equals(g))
+                    continue;
+
+                // TODO4: Ovo nece apdejtovati QualOrder od rezervi.
+                foreach (UcesnikTakmicenja3 u2 in getUcesniciKvalifikanti(u.Sprava))
+                {
+                    if (u2.QualOrder > u.QualOrder)
+                        u2.QualOrder--;
+                }
+                Ucesnici.Remove(u);
+            }
         }
 
         public virtual IList<GimnasticarUcesnik> getUcesniciGimKvalifikanti(Sprava sprava)

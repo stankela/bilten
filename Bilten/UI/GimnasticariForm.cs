@@ -346,6 +346,7 @@ namespace Bilten.UI
             if (SelectedItem == null)
                 return;
 
+            // TODO4: Dodaj mogucnost izbora, ako ima vise gimnasticara ucesnika sa datim imenom i prezimenom.
             KonacanPlasmanDAO kpDAO = new KonacanPlasmanDAO();
             kpDAO.ConnectionString = ConfigurationParameters.ConnectionString;
 

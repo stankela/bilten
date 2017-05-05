@@ -9,6 +9,7 @@ namespace Bilten.Dao
     {
         RezultatskoTakmicenje FindByIdFetch_Ekipe(int rezTakmicenjeId);
         IList<RezultatskoTakmicenje> FindByGimnasticar(GimnasticarUcesnik g);
+        IList<RezultatskoTakmicenje> FindByUcesnikTak3(GimnasticarUcesnik g);
         RezultatskoTakmicenje FindByEkipa(Ekipa e);
         IList<RezultatskoTakmicenje> FindByTakmicenje(int takmicenjeId);
         IList<RezultatskoTakmicenje> FindByTakmicenjeFetch_Tak1_Gimnasticari(int takmicenjeId);
