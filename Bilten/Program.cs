@@ -36,7 +36,7 @@ namespace Bilten
         //   u svim kategorijama.
         // - Stampanje gimnasticara iz Registra.
 
-        public static int VERZIJA_PROGRAMA = 13;
+        public static int VERZIJA_PROGRAMA = 3;
 
         /// <summary>
         /// The main entry point for the application.

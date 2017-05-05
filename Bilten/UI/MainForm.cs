@@ -1262,18 +1262,15 @@ namespace Bilten.UI
                 using (session = NHibernateHelper.Instance.OpenSession())
                 using (session.BeginTransaction())
                 {
-                    //CurrentSessionContext.Bind(session);
-
                     // NOTE: Izgleda da CurrentSessionContext ne radi kada se otvara vise prozora. Zato koristim globalnu
                     // promenljivu Sesija.Instance.Session.
                     Sesija.Instance.Session = session;
                     Takmicenje t;
                     if (uveziTakmicenje(ofd.FileName, out t))
                     {
+                        t.LastModified = DateTime.Now;
                         session.Transaction.Commit();
                         MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
-
-                        // TODO4: Da li treba zvati tryUpdate();
 
                         // Otvori uvezeno takmicenje.
                         onTakmicenjeOpened(t);
@@ -1290,7 +1287,6 @@ namespace Bilten.UI
             finally
             {
                 Sesija.Instance.Session = null;
-                //CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
 

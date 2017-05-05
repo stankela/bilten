@@ -29,17 +29,9 @@ public class VersionUpdater
             return;
 
         if (verzijaBaze == 0)
-        {
-            string msg = "Bazu podataka je nemoguce konvertovati da radi sa trenutnom verzijom programa.";
-            MessageBox.Show(msg, "Bilten");
-            return;
-        }
+            throw new Exception("Bazu podataka je nemoguce konvertovati da radi sa trenutnom verzijom programa.");
         if (verzijaBaze > Program.VERZIJA_PROGRAMA)
-        {
-            string msg = "Greska u programu. Verzija baze je veca od verzije programa.";
-            MessageBox.Show(msg, "Bilten");
-            return;
-        }
+            throw new Exception("Greska u programu. Verzija baze je veca od verzije programa.");
 
         bool converted = false;
         if (verzijaBaze == 1 && Program.VERZIJA_PROGRAMA > 1)

@@ -20,6 +20,7 @@ namespace Bilten.UI
         public WaitForm()
         {
             InitializeComponent();
+            this.Text = "Sacekajte";
         }
     }
 }

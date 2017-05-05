@@ -121,6 +121,7 @@ namespace Bilten.Misc
         public string dumpAll(int takmicenjeId)
         {
             return BILTEN_TAKMICENJE_DUMP + "\n" +
+                Program.VERZIJA_PROGRAMA + "\n" +
                 dumpTakmicenje(takmicenjeId) +
                 dumpKlubovi(takmicenjeId) +
                 dumpDrzave(takmicenjeId) +
@@ -156,6 +157,9 @@ namespace Bilten.Misc
             {
                 if (reader.ReadLine() != BILTEN_TAKMICENJE_DUMP)
                     throw new Exception("Neuspesno ucitavanje takmicenja.");
+
+                // Verzija programa
+                reader.ReadLine();
 
                 int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
 
