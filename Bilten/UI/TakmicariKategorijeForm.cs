@@ -170,28 +170,7 @@ namespace Bilten.UI
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    onSelectedIndexChanged();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            onSelectedIndexChanged();
         }
 
         private void onSelectedIndexChanged()
@@ -384,8 +363,6 @@ namespace Bilten.UI
             }
             return true;
         }
-
-        // TODO4: Dodati srednje ime u tabelama za gimnasticare ucesnike
 
         private void btnEdit_Click(object sender, EventArgs e)
         {

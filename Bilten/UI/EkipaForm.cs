@@ -106,7 +106,7 @@ namespace Bilten.UI
         {
             // TODO: Ovo je delom prekopirano iz EkipeForm. Pokusaj da sve objedinis na
             // jednom mestu
-            dgwUserControlClanovi.AddColumn("Ime", "Ime", 100);
+            dgwUserControlClanovi.AddColumn("Ime", "ImeSrednjeIme", 100);
             dgwUserControlClanovi.AddColumn("Prezime", "Prezime", 100);
             dgwUserControlClanovi.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             dgwUserControlClanovi.AddColumn("Klub", "KlubUcesnik", 150);

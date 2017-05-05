@@ -17,7 +17,7 @@ namespace Bilten.UI
             dgwUserControlEkipe.AddColumn("Naziv ekipe", "Naziv", 200);
             dgwUserControlEkipe.AddColumn("Skraceni kod", "Kod", 100);
 
-            dgwUserControlClanovi.AddColumn("Ime", "Ime", 100);
+            dgwUserControlClanovi.AddColumn("Ime", "ImeSrednjeIme", 100);
             dgwUserControlClanovi.AddColumn("Prezime", "Prezime", 100);
             dgwUserControlClanovi.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             dgwUserControlClanovi.AddColumn("Klub", "KlubUcesnik", 150);

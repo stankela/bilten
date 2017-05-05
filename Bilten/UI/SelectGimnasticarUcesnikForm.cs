@@ -49,7 +49,7 @@ namespace Bilten.UI
         {
             // TODO: Napravi da budu sinhronizovani ovi podaci sa podacima iz
             // EkipaForm
-            dataGridViewUserControl1.AddColumn("Ime", "Ime", 100);
+            dataGridViewUserControl1.AddColumn("Ime", "ImeSrednjeIme", 100);
             dataGridViewUserControl1.AddColumn("Prezime", "Prezime", 100);
             dataGridViewUserControl1.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
             dataGridViewUserControl1.AddColumn("Gimnastika", "Gimnastika", 70);

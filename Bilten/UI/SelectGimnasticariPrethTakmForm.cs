@@ -73,7 +73,7 @@ namespace Bilten.UI
 
             dataGridViewUserControl2.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(dataGridViewUserControl2_GridColumnHeaderMouseClick);
-            GridColumnsInitializer.initGimnasticarUcesnik2(dataGridViewUserControl2);
+            GridColumnsInitializer.initGimnasticarUcesnik(dataGridViewUserControl2);
         }
 
         void dataGridViewUserControl2_GridColumnHeaderMouseClick(object sender, GridColumnHeaderMouseClickEventArgs e)
