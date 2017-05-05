@@ -616,9 +616,6 @@ namespace Bilten.UI
             Close();
         }
 
-        // TODO4: Kod izbora nacina rotacije za prvu spravu, pitaj da li takav nacin treba da bude i za ostale
-        // sprave.
-
         private void btnNewGroup_Click(object sender, EventArgs e)
         {
             // TODO: Dodaj brisanje grupa (razmisli da li samo poslednje ili bilo koje)
@@ -2116,12 +2113,16 @@ namespace Bilten.UI
             if (ActiveRotacija != 1)
                 return;
             StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
-            if (startLista.NacinRotacije == nacinRotacije)
-                return;
+            bool prvaSprava = takmicenje.Gimnastika == Gimnastika.MSG && startLista.Sprava == Sprava.Parter
+                || takmicenje.Gimnastika == Gimnastika.ZSG && startLista.Sprava == Sprava.Preskok;
+            bool sveSprave = prvaSprava && MessageDialogs.queryConfirmation(
+                "Da li zelite ovakav nacin rotacije i na ostalim spravama?","Nacin rotacije");
+            List<StartListaNaSpravi> startListe = new List<StartListaNaSpravi>();
+            if (sveSprave)
+                startListe.AddRange(ActiveRaspored.getStartListe(ActiveGrupa, ActiveRotacija));
+            else
+                startListe.Add(startLista);
 
-            startLista.NacinRotacije = nacinRotacije;
-
-            bool close = false;
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             ISession session = null;
@@ -2131,11 +2132,22 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
-
-                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
-                    takmicenje.LastModified = DateTime.Now;
-                    session.Transaction.Commit();
+                    bool modified = false;
+                    foreach (StartListaNaSpravi s in startListe)
+                    {
+                        if (s.NacinRotacije != nacinRotacije)
+                        {
+                            s.NacinRotacije = nacinRotacije;
+                            DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(s);
+                            modified = true;
+                        }
+                    }
+                    if (modified)
+                    {
+                        takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                        takmicenje.LastModified = DateTime.Now;
+                        session.Transaction.Commit();
+                    }
                 }
             }
             catch (Exception ex)
@@ -2143,7 +2155,6 @@ namespace Bilten.UI
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
                 MessageDialogs.showMessage(ex.Message, this.Text);
-                close = true;
             }
             finally
             {
@@ -2151,16 +2162,6 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-            if (close)
-            {
-                Close();
-                return;
-            }
-
-            mnRotirajEkipeRotirajGim.Checked = nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare;
-            mnNeRotirajEkipeRotirajGim.Checked = nacinRotacije == NacinRotacije.NeRotirajEkipeRotirajGimnasticare;
-            mnRotirajSve.Checked = nacinRotacije == NacinRotacije.RotirajSve;
-            mnNeRotirajNista.Checked = nacinRotacije == NacinRotacije.NeRotirajNista;
         }
 
         private void mnNeRotirajEkipeRotirajGim_Click(object sender, EventArgs e)
