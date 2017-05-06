@@ -36,7 +36,7 @@ namespace Bilten
         //   u svim kategorijama.
         // - Stampanje gimnasticara iz Registra.
 
-        public static int VERZIJA_PROGRAMA = 3;
+        public static int VERZIJA_PROGRAMA = 4;
 
         /// <summary>
         /// The main entry point for the application.
@@ -112,6 +112,7 @@ namespace Bilten
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
             rp.proveriTakmicenja234();
+            // rp.takmicenjaBezOcene();
             // rp.proveriViseKola();  // Postoji nekoliko takmicenja gde ova provera ne prolazi, ali mislim da je bolje
             // nista me menjam. 
 

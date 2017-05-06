@@ -18,7 +18,6 @@ ALTER TABLE takmicenja ADD COLUMN cetvrto_kolo_id int references takmicenja(takm
 
 
 13-Dec-2014
-ALTER TABLE ekipe DROP COLUMN rez_takmicenje_id;
 ALTER TABLE poredak_sprava DROP COLUMN rez_takmicenje_id;
 
 ALTER TABLE [gimnasticari] ADD CONSTRAINT [FK_gimnasticari_01] FOREIGN KEY ([kat_id]) REFERENCES [kategorije_gimnasticara]([kategorija_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -102,6 +101,8 @@ ALTER TABLE propozicije ADD COLUMN tak4_ne_racunaj_prosek bit;
 
 2010
 
+alter table takmicenja add column zreb_za_finale_tak3 nvarchar(128);
+
 alter table propozicije add column jedno_tak4_za_sve_kat bit;
 update propozicije set jedno_tak4_za_sve_kat = 0;
 alter table rezultatsko_takmicenje add column ima_ekipno_tak bit, komb_ekipno_tak bit;
@@ -111,6 +112,8 @@ alter table ucesnici_tak2 add column kval_status tinyint;
 update ucesnici_tak2 set kval_status = 1;
 alter table ucesnici_tak3 add column kval_status tinyint;
 update ucesnici_tak3 set kval_status = 1;
+alter table ucesnici_tak4 add column kval_status tinyint;
+update ucesnici_tak4 set kval_status = 1;
 
 alter table gimnasticari_ucesnici add column nastupa_za_drzavu bit;
 update gimnasticari_ucesnici set nastupa_za_drzavu = 0;

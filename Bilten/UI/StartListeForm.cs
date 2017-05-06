@@ -1648,6 +1648,14 @@ namespace Bilten.UI
             }
         }
 
+        // TODO4: Ispravi gresku kod oznacavanja ekipe - trenutno kada se selektuje vise gimnasticara, jedino radi ako
+        // je desni klik bio na zadnjem selektovanom gimnasticaru.
+        // TODO4: Razmisli da li treba izbaciti rotiranje gimnasticara unutar ekipe (posto to uvek treneri zadaju na
+        // takmicenju.)
+        // TODO4: Kod konacnih plasmana, uvedi izbor da li da se prikazuju svi rezultati, ili samo recimo prva 3 mesta.
+        // TODO4: Dodaj mogucnost stampanja poruke da se neki gimnasticar u prethodnim kolima takmicio u razlicitim
+        // kategorijama.
+
         int findRezTakmicenjeForRezultati()
         {
             // DOC: Prikazi one rezultate u kojima se nalazi selektovani gimnasticar. Ako nijedan gimnasticar nije

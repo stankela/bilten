@@ -159,7 +159,7 @@ namespace Bilten.Dao
             string tableName = "verzija_baze";
             if (!SqlCeUtilities.tableExists(tableName))
             {
-                return 0;
+                return -1;
             }
 
             string sql = "SELECT broj_verzije FROM " + tableName +
@@ -168,7 +168,7 @@ namespace Bilten.Dao
 
             string errMsg = "Greska prilikom citanja podataka iz baze.";
             SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, errMsg);
-            int result = 0;
+            int result = -1;
             if (rdr.Read())
                 result = rdr.GetInt32(0);
             rdr.Close();

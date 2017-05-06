@@ -28,12 +28,23 @@ public class VersionUpdater
         if (verzijaBaze == Program.VERZIJA_PROGRAMA)
             return;
 
-        if (verzijaBaze == 0)
+        if (verzijaBaze < 0)
             throw new Exception("Bazu podataka je nemoguce konvertovati da radi sa trenutnom verzijom programa.");
         if (verzijaBaze > Program.VERZIJA_PROGRAMA)
             throw new Exception("Greska u programu. Verzija baze je veca od verzije programa.");
 
         bool converted = false;
+
+        // Ovo sam koristio kada sam apdejtovao stare biltene (pre 2015).
+        if (verzijaBaze == 0)
+        {
+            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                "Bilten.Update.DatabaseUpdate_version1.sql", true);
+            SqlCeUtilities.updateDatabaseVersionNumber(1);
+            verzijaBaze = 1;
+            converted = true;
+        }
+
         if (verzijaBaze == 1 && Program.VERZIJA_PROGRAMA > 1)
         {
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
@@ -44,6 +55,14 @@ public class VersionUpdater
         }
 
         if (verzijaBaze == 2 && Program.VERZIJA_PROGRAMA > 2)
+        {
+            // Prazan apdejt (tj. prebacen je u apdejt za sledecu verziju)
+            SqlCeUtilities.updateDatabaseVersionNumber(3);
+            verzijaBaze = 3;
+            converted = true;
+        }
+
+        if (verzijaBaze == 3 && Program.VERZIJA_PROGRAMA > 3)
         {
             // TODO: Ove dve naredbe bi trebalo izvrsavati u okviru jedne transakcije. Isto i za ostale verzije.
 
@@ -82,8 +101,8 @@ public class VersionUpdater
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                 "Bilten.Update.DatabaseUpdate_version13.sql", true);
 
-            SqlCeUtilities.updateDatabaseVersionNumber(3);
-            verzijaBaze = 3;
+            SqlCeUtilities.updateDatabaseVersionNumber(4);
+            verzijaBaze = 4;
             converted = true;
         }
 
@@ -176,12 +195,13 @@ public class VersionUpdater
                 GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                 GimnasticarUcesnik g = gimUcesnikDAO.FindById(14422);
                 OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                IList<Ocena> ocene = ocenaDAO.FindByGimnasticar(g,
-                    DeoTakmicenjaKod.Takmicenje1);
-
-                ocenaDAO.Delete(ocene[0]);
-                gimUcesnikDAO.Delete(g);
-                session.Transaction.Commit();
+                IList<Ocena> ocene = ocenaDAO.FindByGimnasticar(g, DeoTakmicenjaKod.Takmicenje1);
+                if (ocene.Count > 0)
+                {
+                    ocenaDAO.Delete(ocene[0]);
+                    gimUcesnikDAO.Delete(g);
+                    session.Transaction.Commit();
+                }
             }
         }
         catch (Exception ex)

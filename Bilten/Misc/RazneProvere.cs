@@ -7,6 +7,7 @@ using NHibernate;
 using NHibernate.Context;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,7 +48,6 @@ namespace Bilten
         public void proveriPrvaDvaKola()
         {
             IList<int> takmicenjaId = getTakmicenjaId();
-
             ISession session = null;
             try
             {
@@ -208,6 +208,66 @@ namespace Bilten
                 {
                     CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 }
+            }
+        }
+
+        public void takmicenjaBezOcene()
+        {
+            StreamWriter logStreamWriter = File.CreateText("takmicenja_bez_ocene.txt");
+            IList<int> takmicenjaId = getTakmicenjaId();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    for (int i = 0; i < takmicenjaId.Count; ++i)
+                    {
+                        Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjaId[i]);
+
+                        string takmicenjeHeader = i.ToString() + ". " + t.ToString();
+                        if (t.FinaleKupa)
+                            takmicenjeHeader += " - FINALE KUPA";
+                        else if (t.ZbirViseKola)
+                            takmicenjeHeader += " - ZBIR VISE KOLA";
+                        takmicenjeHeader += " (" + t.Id + ")";
+
+                        if (!DAOFactoryFactory.DAOFactory.GetOcenaDAO().existsOcene(t.Id))
+                        {
+                            if (t.ZbirViseKola)
+                                continue;
+                            if (t.FinaleKupa)
+                            {
+                                bool odvojeno = false;
+                                IList<RezultatskoTakmicenje> rezTakmicenja
+                                    = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByTakmicenje(t.Id);
+                                foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                                {
+                                    if (rt.odvojenoTak3())
+                                    {
+                                        odvojeno = true;
+                                        break;
+                                    }
+                                }
+                                if (!odvojeno)
+                                    continue;
+                            }
+                            logStreamWriter.WriteLine(takmicenjeHeader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+                logStreamWriter.Close();
             }
         }
     }
