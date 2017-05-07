@@ -120,8 +120,10 @@ namespace Bilten.Misc
 
         public string dumpAll(int takmicenjeId)
         {
-            return BILTEN_TAKMICENJE_DUMP + "\n" +
-                Program.VERZIJA_PROGRAMA + "\n" +
+            StringBuilder strBuilder = new StringBuilder();
+            strBuilder.AppendLine(BILTEN_TAKMICENJE_DUMP);
+            strBuilder.AppendLine(Program.VERZIJA_PROGRAMA.ToString());
+            return  strBuilder.ToString() + 
                 dumpTakmicenje(takmicenjeId) +
                 dumpKlubovi(takmicenjeId) +
                 dumpDrzave(takmicenjeId) +
@@ -158,8 +160,11 @@ namespace Bilten.Misc
                 if (reader.ReadLine() != BILTEN_TAKMICENJE_DUMP)
                     throw new Exception("Neuspesno ucitavanje takmicenja.");
 
-                // Verzija programa
-                reader.ReadLine();
+                if (int.Parse(reader.ReadLine()) != Program.VERZIJA_PROGRAMA)
+                {
+                    throw new Exception("Neuspesno uvozenje takmicenja.\n\nTakmicenje je izvezeno koristeci verziju " +
+                        "programa razlicitu od trenutne, i nije ga moguce uvesti.");
+                }
 
                 int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
 

@@ -204,6 +204,16 @@ namespace Bilten.Domain
             return null;
         }
 
+        public virtual void dumpRezultati(StreamWriter streamWriter)
+        {
+            streamWriter.WriteLine("EKIPE ZBIR VISE KOLA");
+            foreach (RezultatEkipnoZbirViseKola r in getRezultati())
+            {
+                string line = r.Rank + ". " + r.Ekipa.Naziv + "   " + r.Total;
+                streamWriter.WriteLine(line);
+            }
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

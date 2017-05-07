@@ -14,7 +14,10 @@ namespace Bilten.UI
     {
         public string Message
         {
-            set { label1.Text = value; }
+            set {
+                label1.Text = value;
+                Update();
+            }
         }
 
         public WaitForm()

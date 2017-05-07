@@ -36,6 +36,24 @@ namespace Bilten
         //   u svim kategorijama.
         // - Stampanje gimnasticara iz Registra.
 
+        // TODO: (iz beleski)
+        // - Menjanje imena za gimnasticara ucesnika
+        // - Prozor gde ce biti prikazani klubovi ucesnici
+        // - Kada ima manje takmicara nego sto je u propozicijama dato kvalifikanata, svi treba da budu kvalifikovani
+        //   (nema pravila o max. takmicara iz kluba).
+        // - Kod rezultata ekipa, pored gimnasticara treba da stoji i kategorija (za slucaj kada se ekipa sastoji iz vise
+        //   kategorija)
+        // - Mogucnost promene kategorije istovremeno za vise gimnasticara iz registra.
+        // - Sprave u karticama umesto u padajucem meniju.
+        // - Za novo takmicenje uvesti datum od-do.
+        // - Promeni futer u stampi da stampa datum od-do.
+        // - Kada se kreiraju start liste za finale po spravama, dodaj mogucnost kreiranja svih start listi odjednom.
+        // - Broj E ocena da bude poseban za svako takmicenje 1, 2, 3, 4.
+        // - Kod izbora kako se racunaju kvalifikanti za finale preskoka, ne treba da postoji opcija "na osnovu 1. preskoka"
+        //   zato sto se uvek racuna na osnovu oba preskoka (oba ili max)
+        // - Kod racunanja ocene na osnovu oba preskoka treba da postoji izbor da li se ocena racuna na osnovu oba preskoka
+        //   ili vece ocene iz oba preskoka.
+
         public static int VERZIJA_PROGRAMA = 4;
 
         /// <summary>
@@ -112,6 +130,7 @@ namespace Bilten
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
             rp.proveriTakmicenja234();
+            // rp.dumpRezultati();
             // rp.takmicenjaBezOcene();
             // rp.proveriViseKola();  // Postoji nekoliko takmicenja gde ova provera ne prolazi, ali mislim da je bolje
             // nista me menjam. 

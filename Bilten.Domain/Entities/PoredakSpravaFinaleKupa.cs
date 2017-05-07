@@ -397,6 +397,17 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual void dumpRezultati(StreamWriter streamWriter)
+        {
+            string header = Sprave.toString(Sprava).ToUpper() + " - FINALE";
+            streamWriter.WriteLine(header);
+            foreach (RezultatSpravaFinaleKupa r in getRezultati())
+            {
+                string line = r.Rank + ". " + r.Gimnasticar.ImeSrednjeImePrezimeDatumRodjenja + "   " + r.Total;
+                streamWriter.WriteLine(line);
+            }
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

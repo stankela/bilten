@@ -1281,7 +1281,8 @@ namespace Bilten.UI
             {
                 if (session != null && session.Transaction != null && session.Transaction.IsActive)
                     session.Transaction.Rollback();
-                MessageDialogs.showMessage(ex.Message, strProgName);
+                // TODO4: Koristi showError umesto showMessage svugde gde se prikazuju poruke nakon hvatanja exceptiona.
+                MessageDialogs.showError(ex.Message, strProgName);
                 return;
             }
             finally

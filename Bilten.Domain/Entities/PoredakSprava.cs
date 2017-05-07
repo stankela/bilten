@@ -441,6 +441,18 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void dumpRezultati(StreamWriter streamWriter)
+        {
+            string sprava = Sprave.toString(Sprava).ToUpper();
+            string header = DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1 ? sprava : sprava + " - FINALE";
+            streamWriter.WriteLine(header);
+            foreach (RezultatSprava r in getRezultati())
+            {
+                string line = r.Rank + ". " + r.Gimnasticar.ImeSrednjeImePrezimeDatumRodjenja + "   " + r.Total;
+                streamWriter.WriteLine(line);
+            }
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

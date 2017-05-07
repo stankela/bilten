@@ -270,5 +270,103 @@ namespace Bilten
                 logStreamWriter.Close();
             }
         }
+
+        public void dumpRezultati()
+        {
+            Bilten.UI.WaitForm form = new UI.WaitForm();
+            form.Show();
+            form.TopMost = true;
+
+            StreamWriter logStreamWriter = File.CreateText("rezultati_dump.txt");
+            IList<int> takmicenjaId = getTakmicenjaId();
+            for (int i = 0; i < takmicenjaId.Count; ++i)
+            {
+                ISession session = null;
+                try
+                {
+                    using (session = NHibernateHelper.Instance.OpenSession())
+                    using (session.BeginTransaction())
+                    {
+                        Bilten.Misc.Sesija.Instance.Session = session;
+                        Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjaId[i]);
+
+                        string takmicenjeHeader = t.ToString() + " (" + t.Id + ")";
+                        logStreamWriter.WriteLine("TAKMICENJE: " + takmicenjeHeader);
+                        form.Message = i.ToString() + ". " + takmicenjeHeader;
+
+                        IList<RezultatskoTakmicenje> rezTakmicenja
+                            = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByTakmicenje(t.Id);
+                        foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                        {
+                            logStreamWriter.WriteLine(rt.ToString());
+
+                            // Takmicenje 1
+                            rt.Takmicenje1.PoredakUkupno.dumpRezultati(logStreamWriter);
+                            foreach (Sprava s in Sprave.getSprave(t.Gimnastika))
+                            {
+                                if (s != Sprava.Preskok)
+                                    rt.Takmicenje1.getPoredakSprava(s).dumpRezultati(logStreamWriter);
+                                else
+                                    rt.Takmicenje1.PoredakPreskok.dumpRezultati(logStreamWriter, rt.Propozicije, t.FinaleKupa);
+                            }
+                            if (rt.ImaEkipnoTakmicenje)
+                                rt.Takmicenje1.PoredakEkipno.dumpRezultati(logStreamWriter);
+
+                            // Finale kupa
+                            if (rt.Takmicenje1.PoredakUkupnoFinaleKupa != null)
+                                rt.Takmicenje1.PoredakUkupnoFinaleKupa.dumpRezultati(logStreamWriter);
+                            foreach (Sprava s in Sprave.getSprave(t.Gimnastika))
+                            {
+                                PoredakSpravaFinaleKupa p = rt.Takmicenje1.getPoredakSpravaFinaleKupa(s);
+                                if (p != null)
+                                    p.dumpRezultati(logStreamWriter);
+                            }
+                            if (rt.Takmicenje1.PoredakEkipnoFinaleKupa != null)
+                                rt.Takmicenje1.PoredakEkipnoFinaleKupa.dumpRezultati(logStreamWriter);
+
+                            // Zbir vise kola
+                            if (rt.Takmicenje1.PoredakUkupnoZbirViseKola != null)
+                                rt.Takmicenje1.PoredakUkupnoZbirViseKola.dumpRezultati(logStreamWriter);
+                            if (rt.Takmicenje1.PoredakEkipnoZbirViseKola != null)
+                                rt.Takmicenje1.PoredakEkipnoZbirViseKola.dumpRezultati(logStreamWriter);
+
+                            // Takmicenje 2
+                            if (rt.Takmicenje2 != null && rt.Takmicenje2.Poredak != null)
+                                rt.Takmicenje2.Poredak.dumpRezultati(logStreamWriter);
+
+                            // Takmicenje 3
+                            if (rt.Takmicenje3 != null)
+                            {
+                                foreach (Sprava s in Sprave.getSprave(t.Gimnastika))
+                                {
+                                    if (s != Sprava.Preskok)
+                                    {
+                                        PoredakSprava p = rt.Takmicenje3.getPoredak(s);
+                                        if (p != null)
+                                            p.dumpRezultati(logStreamWriter);
+                                    }
+                                    else if (rt.Takmicenje3.PoredakPreskok != null)
+                                        rt.Takmicenje3.PoredakPreskok.dumpRezultati(logStreamWriter, rt.Propozicije, t.FinaleKupa);
+                                }
+                            }
+
+                            // Takmicenje 4
+                            if (rt.Takmicenje4 != null && rt.Takmicenje4.Poredak != null)
+                                rt.Takmicenje4.Poredak.dumpRezultati(logStreamWriter);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                        session.Transaction.Rollback();
+                    logStreamWriter.Close();
+                    form.Close();
+                    throw new InfrastructureException(ex.Message, ex);
+                }
+            }
+            logStreamWriter.Close();
+            form.Close();
+        }
     }
 }

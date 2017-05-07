@@ -1655,6 +1655,7 @@ namespace Bilten.UI
         // TODO4: Kod konacnih plasmana, uvedi izbor da li da se prikazuju svi rezultati, ili samo recimo prva 3 mesta.
         // TODO4: Dodaj mogucnost stampanja poruke da se neki gimnasticar u prethodnim kolima takmicio u razlicitim
         // kategorijama.
+        // TODO4: Kod konacnih plasmana, prikazi i ocenu.
 
         int findRezTakmicenjeForRezultati()
         {

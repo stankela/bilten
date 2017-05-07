@@ -519,6 +519,23 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual void dumpRezultati(StreamWriter streamWriter, Propozicije propozicije, bool finaleKupa)
+        {
+            string header = DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1 ? "PRESKOK" : "PRESKOK - FINALE";
+            streamWriter.WriteLine(header);
+            foreach (RezultatPreskok r in getRezultati())
+            {
+                float? total;
+                bool obaPreskoka = propozicije.racunajObaPreskoka(DeoTakmicenjaKod, finaleKupa);
+                if (!obaPreskoka || r.TotalObeOcene == null)
+                    total = r.Total;
+                else
+                    total = r.TotalObeOcene;
+                string line = r.Rank + ". " + r.Gimnasticar.ImeSrednjeImePrezimeDatumRodjenja + "   " + total;
+                streamWriter.WriteLine(line);
+            }
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

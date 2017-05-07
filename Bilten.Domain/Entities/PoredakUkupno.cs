@@ -366,6 +366,17 @@ namespace Bilten.Domain
             return false;
         }
 
+        public virtual void dumpRezultati(StreamWriter streamWriter)
+        {
+            string header = DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1 ? "VISEBOJ" : "VISEBOJ - FINALE";
+            streamWriter.WriteLine(header);
+            foreach (RezultatUkupno r in getRezultati())
+            {
+                string line = r.Rank + ". " + r.Gimnasticar.ImeSrednjeImePrezimeDatumRodjenja + "   " + r.Total;
+                streamWriter.WriteLine(line);
+            }
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
