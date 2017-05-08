@@ -287,7 +287,7 @@ namespace Bilten
                     using (session = NHibernateHelper.Instance.OpenSession())
                     using (session.BeginTransaction())
                     {
-                        Bilten.Misc.Sesija.Instance.Session = session;
+                        CurrentSessionContext.Bind(session);
                         Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjaId[i]);
 
                         string takmicenjeHeader = t.ToString() + " (" + t.Id + ")";
@@ -363,6 +363,10 @@ namespace Bilten
                     logStreamWriter.Close();
                     form.Close();
                     throw new InfrastructureException(ex.Message, ex);
+                }
+                finally
+                {
+                    CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                 }
             }
             logStreamWriter.Close();

@@ -167,6 +167,8 @@ namespace Bilten.Services
             Takmicenje t2 = takmicenjeDAO.FindByNazivGimnastikaDatum(t.Naziv, t.Gimnastika, t.Datum);
             if (t2 != null)
             {
+                // Posto cemo izbrisati postojece takmicenje i uvesti ga sa novim ID-om, moramo da
+                // promenimo sva finala koja se referisu na ovo takmicenje da koriste novi ID.
                 IList<Takmicenje> finala = takmicenjeDAO.FindFinala(t2);
                 if (finala.Count > 0)
                 {

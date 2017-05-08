@@ -52,7 +52,5 @@ namespace Bilten.Misc
         {
             this.takmicenjeId = takmicenjeId;
         }
-
-        public ISession Session = null;
     }
 }

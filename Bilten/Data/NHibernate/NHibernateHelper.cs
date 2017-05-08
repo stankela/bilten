@@ -61,8 +61,6 @@ namespace Bilten.Data
 
         public ISession GetCurrentSession()
         {
-            if (Sesija.Instance.Session != null)
-                return Sesija.Instance.Session;
             return SessionFactory.GetCurrentSession();
         }
     }

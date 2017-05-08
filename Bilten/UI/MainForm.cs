@@ -1269,12 +1269,19 @@ namespace Bilten.UI
             bool uveziSudije = form2.CheckedIndices.Contains(1);
 
             Takmicenje t;
-            if (uveziTakmicenje(ofd.FileName, out t, uveziStartListe, uveziSudije))
+            try
             {
-                MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
-
-                // Otvori uvezeno takmicenje.
-                onTakmicenjeOpened(t);
+                if (uveziTakmicenje(ofd.FileName, out t, uveziStartListe, uveziSudije))
+                {
+                    MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
+                    // Otvori uvezeno takmicenje.
+                    onTakmicenjeOpened(t);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO4: Koristi showError umesto showMessage svugde gde se prikazuju poruke nakon hvatanja exceptiona.
+                MessageDialogs.showError(ex.Message, strProgName);
             }
         }
 
@@ -1295,90 +1302,112 @@ namespace Bilten.UI
             }
 
             t = takDump.takmicenje;
-            /*if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
-            {
-                // Uvezi takmicenje pod postojecim imenom
-                Cursor.Current = Cursors.WaitCursor;
-                Cursor.Show();
-                try
-                {
-                    TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                        takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
-                    return true;
-                }
-                finally
-                {
-                    Cursor.Hide();
-                    Cursor.Current = Cursors.Arrow;
-                }
-            }*/
 
-            string header = String.Format("Takmicenje '{0}' vec postoji", t.ToString());
-            SelectOptionForm form = new SelectOptionForm(
-                header, new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
-                strProgName);
-            if (form.ShowDialog() != DialogResult.OK)
+            int vrstaUvozenja = getUveziKind(t);
+            if (vrstaUvozenja == 0)
                 return false;
 
-            if (form.SelectedOption == 1)
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
             {
-                // Prebrisi postojece takmicenje
-                Cursor.Current = Cursors.WaitCursor;
-                Cursor.Show();
-                ISession session = null;
-                try
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    using (session = NHibernateHelper.Instance.OpenSession())
-                    using (session.BeginTransaction())
+                    CurrentSessionContext.Bind(session);
+                    if (vrstaUvozenja == 1)
                     {
-                        CurrentSessionContext.Bind(session);
-
+                        // Uvezi pod postojecim imenom.
+                        TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                            takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
+                    }
+                    else if (vrstaUvozenja == 2)
+                    {
+                        // Prebrisi postojece takmicenje
                         TakmicenjeService.prebrisiTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
                             takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
-                        t.LastModified = DateTime.Now;
-                        session.Transaction.Commit();
-                        return true;
                     }
-                }
-                catch (Exception ex)
-                {
-                    if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                        session.Transaction.Rollback();
-                    // TODO4: Koristi showError umesto showMessage svugde gde se prikazuju poruke nakon hvatanja exceptiona.
-                    MessageDialogs.showError(ex.Message, strProgName);
-                    return false;
-                }
-                finally
-                {
-                    CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-                    Cursor.Hide();
-                    Cursor.Current = Cursors.Arrow;
-                }
-            }
-            else
-            {
-                // Uvezi takmicenje pod novim imenom
-                TakmicenjeForm takForm = new TakmicenjeForm(t.Naziv, t.Gimnastika, t.Datum, t.Mesto, t.TipTakmicenja);
-                if (takForm.ShowDialog() != DialogResult.OK)
-                    return false;
+                    else if (vrstaUvozenja == 3)
+                    {
+                        // Uvezi takmicenje pod novim imenom. Ime je promenjeno u getUveziKind.
+                        TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                            takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
+                    }
 
-                t.Naziv = (takForm.Entity as Takmicenje).Naziv;
-                t.Datum = (takForm.Entity as Takmicenje).Datum;
-                t.Mesto = (takForm.Entity as Takmicenje).Mesto;
-
-                Cursor.Current = Cursors.WaitCursor;
-                Cursor.Show();
-                try
-                {
-                    TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
-                        takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
+                    t.LastModified = DateTime.Now;
+                    session.Transaction.Commit();
                     return true;
                 }
-                finally
+            }
+            catch (Exception)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        }
+
+        private int getUveziKind(Takmicenje t)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
                 {
-                    Cursor.Hide();
-                    Cursor.Current = Cursors.Arrow;
+                    CurrentSessionContext.Bind(session);
+                    if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
+                    {
+                        // Uvezi takmicenje pod postojecim imenom
+                        return 1;
+                    }
+
+                    string header = String.Format("Takmicenje '{0}' vec postoji", t.ToString());
+                    SelectOptionForm form = new SelectOptionForm(
+                        header, new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
+                        strProgName);
+                    if (form.ShowDialog() != DialogResult.OK)
+                        return 0;
+
+                    if (form.SelectedOption == 1)
+                    {
+                        // Prebrisi postojece takmicenje
+                        return 2;
+                    }
+                    else
+                    {
+                        // Uvezi takmicenje pod novim imenom
+                        TakmicenjeForm takForm = new TakmicenjeForm(t.Naziv, t.Gimnastika, t.Datum, t.Mesto, t.TipTakmicenja);
+                        if (takForm.ShowDialog() != DialogResult.OK)
+                            return 0;
+
+                        t.Naziv = (takForm.Entity as Takmicenje).Naziv;
+                        t.Datum = (takForm.Entity as Takmicenje).Datum;
+                        t.Mesto = (takForm.Entity as Takmicenje).Mesto;
+                        return 3;
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
 
