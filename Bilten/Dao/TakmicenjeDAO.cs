@@ -12,6 +12,7 @@ namespace Bilten.Dao
         IList<Takmicenje> FindAll();
         IList<Takmicenje> FindByGimnastika(Gimnastika gim);
         Takmicenje FindByNazivGimnastikaDatum(string naziv, Gimnastika gim, DateTime datum);
+        IList<Takmicenje> FindFinala(Takmicenje t);
         bool existsTakmicenje(string naziv, Gimnastika gim, DateTime datum);
     }
 }

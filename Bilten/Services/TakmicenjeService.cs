@@ -81,35 +81,44 @@ namespace Bilten.Services
                 ocenaDAO.Add(o);
         }
 
-        public static void deleteTakmicenje(int takmicenjeId)
+        public static void deleteTakmicenje(Takmicenje t)
         {
-            // TODO4: Potrebna je provera da li se neko takmicenje (finale kupa ili zbir vise kola) referise na ovo
-            // takmicenje.
+            // Proveri da li se neko takmicenje (finale kupa ili zbir vise kola) referise na ovo takmicenje.
+            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+            IList<Takmicenje> finala = takmicenjeDAO.FindFinala(t);
+            if (finala.Count > 0)
+            {
+                string msg = "Takmicenje \"" + t.ToString() + "\" je nemoguce izbrisati jer je ono jedno od kola za " +
+                    "sledeca finala:\n\n";
+                foreach (Takmicenje f in finala)
+                    msg += f.ToString() + "\n";
+                throw new BusinessException(msg);
+            }
 
             // brisi ocene
             OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-            foreach (Ocena o in ocenaDAO.FindByTakmicenje(takmicenjeId))
+            foreach (Ocena o in ocenaDAO.FindByTakmicenje(t.Id))
                 ocenaDAO.Delete(o);
 
             // brisi rasporede nastupa
             RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
-            foreach (RasporedNastupa r in rasporedNastupaDAO.FindByTakmicenje(takmicenjeId))
+            foreach (RasporedNastupa r in rasporedNastupaDAO.FindByTakmicenje(t.Id))
                 rasporedNastupaDAO.Delete(r);
 
             // brisi rasporede sudija
             RasporedSudijaDAO rasporedSudijaDAO = DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO();
-            foreach (RasporedSudija r in rasporedSudijaDAO.FindByTakmicenje(takmicenjeId))
+            foreach (RasporedSudija r in rasporedSudijaDAO.FindByTakmicenje(t.Id))
                 rasporedSudijaDAO.Delete(r);
 
             // brisi sudije ucesnike
             SudijaUcesnikDAO sudijaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO();
-            foreach (SudijaUcesnik s in sudijaUcesnikDAO.FindByTakmicenje(takmicenjeId))
+            foreach (SudijaUcesnik s in sudijaUcesnikDAO.FindByTakmicenje(t.Id))
                 sudijaUcesnikDAO.Delete(s);
 
             // brisi rezultatska takmicenja i ekipe
             RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
             EkipaDAO ekipaDAO = DAOFactoryFactory.DAOFactory.GetEkipaDAO();
-            foreach (RezultatskoTakmicenje r in rezultatskoTakmicenjeDAO.FindByTakmicenje(takmicenjeId))
+            foreach (RezultatskoTakmicenje r in rezultatskoTakmicenjeDAO.FindByTakmicenje(t.Id))
             {
                 foreach (Ekipa e in r.Takmicenje1.Ekipe)
                     ekipaDAO.Delete(e);
@@ -118,44 +127,44 @@ namespace Bilten.Services
 
             // brisi gimnasticare ucesnike
             GimnasticarUcesnikDAO gimnasticarUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
-            foreach (GimnasticarUcesnik g in gimnasticarUcesnikDAO.FindByTakmicenje(takmicenjeId))
+            foreach (GimnasticarUcesnik g in gimnasticarUcesnikDAO.FindByTakmicenje(t.Id))
                 gimnasticarUcesnikDAO.Delete(g);
 
             // brisi klubove ucesnike
             KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
-            foreach (KlubUcesnik k in klubUcesnikDAO.FindByTakmicenje(takmicenjeId))
+            foreach (KlubUcesnik k in klubUcesnikDAO.FindByTakmicenje(t.Id))
                 klubUcesnikDAO.Delete(k);
 
             // brisi drzave ucesnike
             DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
-            foreach (DrzavaUcesnik d in drzavaUcesnikDAO.FindByTakmicenje(takmicenjeId))
+            foreach (DrzavaUcesnik d in drzavaUcesnikDAO.FindByTakmicenje(t.Id))
                 drzavaUcesnikDAO.Delete(d);
 
             // brisi kategorije
             TakmicarskaKategorijaDAO takmicarskaKategorijaDAO = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO();
-            foreach (TakmicarskaKategorija k in takmicarskaKategorijaDAO.FindByTakmicenje(takmicenjeId))
+            foreach (TakmicarskaKategorija k in takmicarskaKategorijaDAO.FindByTakmicenje(t.Id))
                 takmicarskaKategorijaDAO.Delete(k);
 
             // brisi descriptions
             RezultatskoTakmicenjeDescriptionDAO rezTakDescDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDescriptionDAO();
-            foreach (RezultatskoTakmicenjeDescription d in rezTakDescDAO.FindByTakmicenje(takmicenjeId))
+            foreach (RezultatskoTakmicenjeDescription d in rezTakDescDAO.FindByTakmicenje(t.Id))
                 rezTakDescDAO.Delete(d);
 
             // brisi takmicenje
-            TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
-            takmicenjeDAO.Delete(takmicenjeDAO.FindById(takmicenjeId));
+            takmicenjeDAO.Delete(takmicenjeDAO.FindById(t.Id));
         }
 
-        public static bool deleteTakmicenje(string naziv, Gimnastika gimnastika, DateTime datum)
+        public static void prebrisiTakmicenje(Takmicenje t, IList<KlubUcesnik> klubovi, IList<DrzavaUcesnik> drzave,
+            IList<GimnasticarUcesnik> gimnasticari, IList<RezultatskoTakmicenje> rezTakmicenja,
+            IList<SudijaUcesnik> sudije, IList<RasporedSudija> rasporediSudija, IList<RasporedNastupa> rasporediNastupa,
+            IList<Ocena> ocene)
         {
-            Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
-                .FindByNazivGimnastikaDatum(naziv, gimnastika, datum);
-            if (t != null)
-            {
-                deleteTakmicenje(t.Id);
-                return true;
-            }
-            return false;
+            Takmicenje t2 = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO()
+                .FindByNazivGimnastikaDatum(t.Naziv, t.Gimnastika, t.Datum);
+            if (t2 != null)
+                deleteTakmicenje(t2);
+            TakmicenjeService.addTakmicenje(t, klubovi, drzave, gimnasticari,
+                rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, ocene);
         }
 
         public static void createFromPrevTakmicenje(Takmicenje takmicenje, Takmicenje from,

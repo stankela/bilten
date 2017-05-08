@@ -14,7 +14,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Takmicenje t
+                IQuery q = Session.CreateQuery(@"
+                    from Takmicenje t
                     left join fetch t.Kategorije
                     left join fetch t.TakmicenjeDescriptions
                     where t.Id = :id");
@@ -34,7 +35,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Takmicenje t
+                IQuery q = Session.CreateQuery(@"
+                    from Takmicenje t
                     left join fetch t.TakmicenjeDescriptions d
                     left join fetch d.Propozicije
                     left join fetch t.Kategorije
@@ -55,7 +57,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Takmicenje t
+                IQuery q = Session.CreateQuery(@"
+                    from Takmicenje t
                     order by t.Datum desc");
                 return q.List<Takmicenje>();
             }
@@ -69,7 +72,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select distinct t
+                IQuery q = Session.CreateQuery(@"
+                    select distinct t
                     from Takmicenje t
                     left join fetch t.Kategorije
                     where t.Gimnastika = :gim
@@ -87,7 +91,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Takmicenje t
+                IQuery q = Session.CreateQuery(@"
+                    from Takmicenje t
                     where t.Naziv like :naziv
                     and t.Gimnastika = :gim
                     and t.Datum = :datum");
@@ -105,11 +110,32 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<Takmicenje> FindFinala(Takmicenje t)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from Takmicenje t
+                    where t.PrvoKolo = :t
+                    or t.DrugoKolo = :t
+                    or t.TreceKolo = :t
+                    or t.CetvrtoKolo = :t");
+                q.SetEntity("t", t);
+                return q.List<Takmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public bool existsTakmicenje(string naziv, Gimnastika gim, DateTime datum)
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select count(*) from Takmicenje t
+                IQuery q = Session.CreateQuery(@"
+                    select count(*)
+                    from Takmicenje t
                     where t.Naziv like :naziv
                     and t.Gimnastika = :gim
                     and t.Datum = :datum");

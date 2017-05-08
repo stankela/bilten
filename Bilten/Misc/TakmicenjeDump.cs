@@ -174,6 +174,8 @@ namespace Bilten.Misc
                 takmicenje.loadFromDump(reader, map, out prvoKoloId, out drugoKoloId,
                     out treceKoloId, out cetvrtoKoloId);
 
+                // TODO4: Ovde moze da se desi da ID koji je postojao u biltenu iz koga se takmicenje izvozilo ne postoji
+                // u biltenu u koji se takmicenje uvozi.
                 takmicenje.PrvoKolo = prvoKoloId == -1 ? null :
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(prvoKoloId);
                 takmicenje.DrugoKolo = drugoKoloId == -1 ? null :

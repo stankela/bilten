@@ -1330,13 +1330,13 @@ namespace Bilten.UI
                 {
                     TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
                         takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
+                    return true;
                 }
                 finally
                 {
                     Cursor.Hide();
                     Cursor.Current = Cursors.Arrow;
                 }
-                return true;
             }
 
             string header = String.Format("Takmicenje '{0}' vec postoji", t.ToString());
@@ -1353,17 +1353,9 @@ namespace Bilten.UI
                 Cursor.Show();
                 try
                 {
-                    if (TakmicenjeService.deleteTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
-                    {
-                        TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                    TakmicenjeService.prebrisiTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
                             takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
-                        return true;
-                    }
-                    else
-                    {
-                        // concurrency error
-                        throw new Exception("Neuspesno uvozenje takmicenja");
-                    }
+                    return true;
                 }
                 finally
                 {
@@ -1388,13 +1380,13 @@ namespace Bilten.UI
                 {
                     TakmicenjeService.addTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
                         takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
+                    return true;
                 }
                 finally
                 {
                     Cursor.Hide();
                     Cursor.Current = Cursors.Arrow;
                 }
-                return true;
             }
         }
 
