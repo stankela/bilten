@@ -208,7 +208,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    TakmicenjeService.deleteTakmicenje(selTakmicenje);
+                    TakmicenjeService.deleteTakmicenje(selTakmicenje, true);
                     session.Transaction.Commit();
                 }
             }

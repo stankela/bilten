@@ -836,7 +836,6 @@ namespace Bilten.UI
         }
 
         // TODO4: Kod stampanja, kolonu sa nazivom ekipa stampaj u dva reda ako je naziv dugacak
-        // TODO4: Na pocetku damp fajla neka se nalazi broj verzije programa. Uvozi samo ako se verzije poklapaju.
         // TODO4: Kod stampanja rezultata za ekipe promeni da cela ekipa uvek bude na istoj strani
 
         private void mnKreirajTakmicenja234_Click(object sender, EventArgs e)
@@ -1256,46 +1255,6 @@ namespace Bilten.UI
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
 
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    // NOTE: Izgleda da CurrentSessionContext ne radi kada se otvara vise prozora. Zato koristim globalnu
-                    // promenljivu Sesija.Instance.Session.
-                    Sesija.Instance.Session = session;
-                    Takmicenje t;
-                    if (uveziTakmicenje(ofd.FileName, out t))
-                    {
-                        t.LastModified = DateTime.Now;
-                        session.Transaction.Commit();
-                        MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
-
-                        // Otvori uvezeno takmicenje.
-                        onTakmicenjeOpened(t);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                // TODO4: Koristi showError umesto showMessage svugde gde se prikazuju poruke nakon hvatanja exceptiona.
-                MessageDialogs.showError(ex.Message, strProgName);
-                return;
-            }
-            finally
-            {
-                Sesija.Instance.Session = null;
-            }
-        }
-
-        private bool uveziTakmicenje(string fileName, out Takmicenje t)
-        {
-            TakmicenjeDump takDump = new TakmicenjeDump();
-            takDump.loadFromFile(fileName);
-
             List<string> items = new List<string>();
             items.Add("Uvezi start liste");
             items.Add("Uvezi sudije i raspored sudija po spravama");
@@ -1304,24 +1263,39 @@ namespace Bilten.UI
                 "Izaberite da li zelite da uvezete start liste i sudije", "Uvezi start liste i sudije",
                 false, "", false);
             if (form2.ShowDialog() != DialogResult.OK)
+                return;
+
+            bool uveziStartListe = form2.CheckedIndices.Contains(0);
+            bool uveziSudije = form2.CheckedIndices.Contains(1);
+
+            Takmicenje t;
+            if (uveziTakmicenje(ofd.FileName, out t, uveziStartListe, uveziSudije))
             {
-                t = null;
-                return false;
+                MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);
+
+                // Otvori uvezeno takmicenje.
+                onTakmicenjeOpened(t);
             }
+        }
+
+        private bool uveziTakmicenje(string fileName, out Takmicenje t, bool uveziStartListe, bool uveziSudije)
+        {
+            TakmicenjeDump takDump = new TakmicenjeDump();
+            takDump.loadFromFile(fileName);
 
             IList<RasporedNastupa> rasporediNastupa = null;
-            if (form2.CheckedIndices.Contains(0))
+            if (uveziStartListe)
                 rasporediNastupa = takDump.rasporediNastupa;
             IList<SudijaUcesnik> sudije = null;
             IList<RasporedSudija> rasporediSudija = null;
-            if (form2.CheckedIndices.Contains(1))
+            if (uveziSudije)
             {
                 sudije = takDump.sudije;
                 rasporediSudija = takDump.rasporediSudija;
             }
 
             t = takDump.takmicenje;
-            if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
+            /*if (!DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().existsTakmicenje(t.Naziv, t.Gimnastika, t.Datum))
             {
                 // Uvezi takmicenje pod postojecim imenom
                 Cursor.Current = Cursors.WaitCursor;
@@ -1337,7 +1311,7 @@ namespace Bilten.UI
                     Cursor.Hide();
                     Cursor.Current = Cursors.Arrow;
                 }
-            }
+            }*/
 
             string header = String.Format("Takmicenje '{0}' vec postoji", t.ToString());
             SelectOptionForm form = new SelectOptionForm(
@@ -1351,14 +1325,32 @@ namespace Bilten.UI
                 // Prebrisi postojece takmicenje
                 Cursor.Current = Cursors.WaitCursor;
                 Cursor.Show();
+                ISession session = null;
                 try
                 {
-                    TakmicenjeService.prebrisiTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
+                    using (session = NHibernateHelper.Instance.OpenSession())
+                    using (session.BeginTransaction())
+                    {
+                        CurrentSessionContext.Bind(session);
+
+                        TakmicenjeService.prebrisiTakmicenje(t, takDump.klubovi, takDump.drzave, takDump.gimnasticari,
                             takDump.rezTakmicenja, sudije, rasporediSudija, rasporediNastupa, takDump.ocene);
-                    return true;
+                        t.LastModified = DateTime.Now;
+                        session.Transaction.Commit();
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                        session.Transaction.Rollback();
+                    // TODO4: Koristi showError umesto showMessage svugde gde se prikazuju poruke nakon hvatanja exceptiona.
+                    MessageDialogs.showError(ex.Message, strProgName);
+                    return false;
                 }
                 finally
                 {
+                    CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
                     Cursor.Hide();
                     Cursor.Current = Cursors.Arrow;
                 }
