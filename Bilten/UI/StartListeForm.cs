@@ -135,7 +135,7 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.Location = USER_CONTROL_LOCATION;
                 spravaGridGroupUserControl1.SpravaGridRightClick += 
                     new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
-                spravaGridGroupUserControl1.init(rasporedi[0].Gimnastika);
+                spravaGridGroupUserControl1.init(takmicenje.Gimnastika);
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
                     c.DataGridViewUserControl.DataGridView.CellFormatting +=
@@ -327,7 +327,7 @@ namespace Bilten.UI
             spravaGridGroupUserControl.SpravaGridRightClick +=
                 new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
             //spravaGridGroupUserControl.Size = this.rasporedSudijaUserControl1.Size;
-            spravaGridGroupUserControl.init(raspored.Gimnastika); // odredjuje i Size
+            spravaGridGroupUserControl.init(takmicenje.Gimnastika); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
                 c.DataGridViewUserControl.DataGridView.CellFormatting +=
@@ -395,7 +395,7 @@ namespace Bilten.UI
             if (brojGrupa == 0)
                 brojGrupa = 1;
             int brojRotacija = 4;
-            if (ActiveRaspored.Gimnastika == Gimnastika.MSG)
+            if (takmicenje.Gimnastika == Gimnastika.MSG)
                 brojRotacija = 6;
             initCombos(brojGrupa, brojRotacija);
 
@@ -568,7 +568,7 @@ namespace Bilten.UI
         {
             if (ActiveRaspored == null)
                 return;
-            SelectSpravaForm form = new SelectSpravaForm(ActiveRaspored.Gimnastika,
+            SelectSpravaForm form = new SelectSpravaForm(takmicenje.Gimnastika,
                 getActiveSpravaGridGroupUserControl().SelectedSprava);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
@@ -644,7 +644,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    ActiveRaspored.addNewGrupa();
+                    ActiveRaspored.addNewGrupa(takmicenje.Gimnastika);
                     DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Update(ActiveRaspored);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
@@ -714,7 +714,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    newRaspored = new RasporedNastupa(form.SelektovaneKategorije, deoTakKod);
+                    newRaspored = new RasporedNastupa(form.SelektovaneKategorije, deoTakKod, takmicenje.Gimnastika);
                     DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Add(newRaspored);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
@@ -971,7 +971,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Gimnastika,
+                SelectSpravaForm form2 = new SelectSpravaForm(takmicenje.Gimnastika,
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;
@@ -1790,7 +1790,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Gimnastika,
+                SelectSpravaForm form2 = new SelectSpravaForm(takmicenje.Gimnastika,
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;

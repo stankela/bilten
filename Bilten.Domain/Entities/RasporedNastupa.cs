@@ -45,25 +45,13 @@ namespace Bilten.Domain
             set { startListe = value; }
         }
 
-        public virtual Gimnastika Gimnastika
-        {
-            get
-            {
-                foreach (TakmicarskaKategorija k in Kategorije)
-                {
-                    return k.Gimnastika;
-                }
-                return Gimnastika.Undefined;
-            }
-        }
-
         public RasporedNastupa()
         { 
         
         }
 
         public RasporedNastupa(IList<TakmicarskaKategorija> kategorije, 
-            DeoTakmicenjaKod deoTakKod)
+            DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
         {
             if (kategorije.Count == 0)
                 throw new ArgumentException("Kategorije ne smeju da budu prazne.");
@@ -72,19 +60,19 @@ namespace Bilten.Domain
                 addKategorija(kat);
             this.deoTakKod = deoTakKod;
 
-            addNewGrupa();
+            addNewGrupa(gimnastika);
         }
 
-        public virtual void addNewGrupa()
+        public virtual void addNewGrupa(Gimnastika gimnastika)
         {
             if (canAddNewGrupa())
             {
                 int brojRotacija = 4;
-                if (Gimnastika == Gimnastika.MSG)
+                if (gimnastika == Gimnastika.MSG)
                     brojRotacija = 6;
                 int grupa = getBrojGrupa() + 1;
 
-                Sprava[] sprave = Sprave.getSprave(Gimnastika);
+                Sprava[] sprave = Sprave.getSprave(gimnastika);
 
                 for (int i = 1; i <= brojRotacija; i++)
                 {

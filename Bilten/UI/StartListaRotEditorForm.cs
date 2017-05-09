@@ -22,6 +22,7 @@ namespace Bilten.UI
         private int rotacija;
         private Color[] bojeZaEkipe;
         private bool dirty = false;
+        private Gimnastika gimnastika;
 
         private RasporedNastupa raspored;
         public RasporedNastupa RasporedNastupa
@@ -47,6 +48,8 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
+
+                    gimnastika = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId).Gimnastika;
                     raspored = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().FindByIdFetch(rasporedId);
                     startLista = raspored.getStartLista(sprava, grupa, rotacija);
                     foreach (NastupNaSpravi n in startLista.Nastupi)
@@ -131,7 +134,7 @@ namespace Bilten.UI
             SelectGimnasticarUcesnikForm form = null;
             try
             {
-                form = new SelectGimnasticarUcesnikForm(takmicenjeId, raspored.Gimnastika, null);
+                form = new SelectGimnasticarUcesnikForm(takmicenjeId, gimnastika, null);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)

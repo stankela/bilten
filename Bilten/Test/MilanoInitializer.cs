@@ -391,7 +391,7 @@ namespace Bilten.Test
             {
                 List<TakmicarskaKategorija> list = new List<TakmicarskaKategorija>();
                 list.Add(seniori);
-                RasporedNastupa raspored = new RasporedNastupa(list, deoTakmicenja[i]);
+                RasporedNastupa raspored = new RasporedNastupa(list, deoTakmicenja[i], gimnastika);
 
                 StartListaParser parser = new StartListaParser();
                 parser.parse(fileNames[i]);
@@ -410,7 +410,7 @@ namespace Bilten.Test
                     NastupNaSpravi nastup = new NastupNaSpravi(gimnasticar, 0);
 
                     while (raspored.getStartLista(sprava, grupa, rot) == null)
-                        raspored.addNewGrupa();
+                        raspored.addNewGrupa(gimnastika);
                     raspored.getStartLista(sprava, grupa, rot).addNastup(nastup);
                 }
 
