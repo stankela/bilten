@@ -234,7 +234,7 @@ namespace Bilten.UI
             {
                 try
                 {
-                    form3 = new SelectGimnasticariPrethTakmForm(ActiveKategorija.Gimnastika, false);
+                    form3 = new SelectGimnasticariPrethTakmForm(takmicenje.Gimnastika, false);
                     dlgResult = form3.ShowDialog();
                 }
                 catch (InfrastructureException ex)
@@ -248,7 +248,7 @@ namespace Bilten.UI
             {
                 try
                 {
-                    form = new SelectGimnasticarForm(ActiveKategorija.Gimnastika);
+                    form = new SelectGimnasticarForm(takmicenje.Gimnastika);
                     dlgResult = form.ShowDialog();
                 }
                 catch (InfrastructureException ex)

@@ -396,7 +396,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    newRaspored = new RasporedSudija(form.SelektovaneKategorije, deoTakKod, takmicenje);
+                    newRaspored = new RasporedSudija(form.SelektovaneKategorije, deoTakKod, takmicenje.Gimnastika);
                     DAOFactoryFactory.DAOFactory.GetRasporedSudijaDAO().Add(newRaspored);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);

@@ -74,8 +74,7 @@ namespace Bilten.Test
             takmicenje.ZavrsenoTak1 = true;
 
             string naziv = (gimnastika == Gimnastika.MSG) ? "Seniori" : "Seniorke";
-            TakmicarskaKategorija takKategorija = 
-                new TakmicarskaKategorija(naziv, gimnastika);
+            TakmicarskaKategorija takKategorija = new TakmicarskaKategorija(naziv);
 
             RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
             desc.Naziv = "European Championships";
@@ -286,7 +285,7 @@ namespace Bilten.Test
                 List<TakmicarskaKategorija> list = new List<TakmicarskaKategorija>();
                 list.Add(seniori);
                 RasporedSudija raspored = new RasporedSudija(list,
-                    deoTakmicenja[i], takmicenje);
+                    deoTakmicenja[i], gimnastika);
 
                 SudijeParser parser = new SudijeParser();
                 parser.parse(fileNames[i]);

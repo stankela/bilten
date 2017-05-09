@@ -21,7 +21,6 @@ namespace Bilten.UI
         private int takmicenjeId;
         List<string> kategorije;
         private string oldNaziv;
-        private Gimnastika gimnastika;
 
         public TakmicarskaKategorijaForm(Nullable<int> kategorijaId, int takmicenjeId)
         {
@@ -34,10 +33,9 @@ namespace Bilten.UI
         protected override void loadData()
         {
             Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
-            gimnastika = t.Gimnastika;
             ISet<string> kategorijeSet = new HashSet<string>();
             foreach (KategorijaGimnasticara k in DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO()
-                .FindByGimnastika(gimnastika))
+                .FindByGimnastika(t.Gimnastika))
             {
                 kategorijeSet.Add(k.Naziv);
             }
@@ -115,7 +113,6 @@ namespace Bilten.UI
         {
             TakmicarskaKategorija kat = (TakmicarskaKategorija)entity;
             kat.Naziv = cmbKategorija.Text.Trim();
-            kat.Gimnastika = gimnastika;
         }
 
         protected override void updateEntity(DomainObject entity)

@@ -18,19 +18,16 @@ namespace Bilten.UI
     public partial class FilterGimnasticarUcesnikUserControl : UserControl
     {
         private int takmicenjeId;
-        private Nullable<Gimnastika> gimnastika;
+        private Gimnastika gimnastika;
         private TakmicarskaKategorija startKategorija;
 
         private List<KlubUcesnik> klubovi;
         private List<DrzavaUcesnik> drzave;
-        private IList<TakmicarskaKategorija> sveKategorije;
-        private List<TakmicarskaKategorija> mKategorije = new List<TakmicarskaKategorija>();
-        private List<TakmicarskaKategorija> zKategorije = new List<TakmicarskaKategorija>();
+        private List<TakmicarskaKategorija> kategorije;
 
         private readonly string SVE_KATEGORIJE = "Sve kategorije";
         private readonly string SVI_KLUBOVI = "Svi klubovi";
         private readonly string SVE_DRZAVE = "Sve drzave";
-        private readonly string SVI = "Svi";
         private readonly string MSG = "MSG";
         private readonly string ZSG = "ZSG";
 
@@ -39,8 +36,7 @@ namespace Bilten.UI
             InitializeComponent();
         }
 
-        public void initialize(int takmicenjeId, Nullable<Gimnastika> gimnastika, 
-            TakmicarskaKategorija startKategorija)
+        public void initialize(int takmicenjeId, Gimnastika gimnastika, TakmicarskaKategorija startKategorija)
         {
             this.takmicenjeId = takmicenjeId;
             this.gimnastika = gimnastika;
@@ -71,16 +67,8 @@ namespace Bilten.UI
 
         private void loadData()
         {
-            sveKategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId);
-
-            foreach (TakmicarskaKategorija k in sveKategorije)
-            {
-                if (k.Gimnastika == Gimnastika.MSG)
-                    mKategorije.Add(k);
-                else
-                    zKategorije.Add(k);
-            }
-
+            kategorije = new List<TakmicarskaKategorija>(
+                DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
             klubovi = new List<KlubUcesnik>(
                 DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO().FindByTakmicenje(takmicenjeId));
             drzave = new List<DrzavaUcesnik>(
@@ -90,10 +78,16 @@ namespace Bilten.UI
         private void initUI()
         {
             cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbGimnastika.Items.AddRange(new string[] { SVI, MSG, ZSG });
+            cmbGimnastika.Items.AddRange(new string[] { MSG, ZSG });
+            if (gimnastika == Gimnastika.MSG)
+                cmbGimnastika.SelectedIndex = cmbGimnastika.Items.IndexOf(MSG);
+            else
+                cmbGimnastika.SelectedIndex = cmbGimnastika.Items.IndexOf(ZSG);
+            cmbGimnastika.Enabled = false;
 
             cmbKategorija.DropDownStyle = ComboBoxStyle.DropDownList;
-            fillKategorijeCombo(gimnastika);
+            cmbKategorija.Items.Add(SVE_KATEGORIJE);
+            cmbKategorija.Items.AddRange(kategorije.ToArray());
 
             cmbKlub.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbKlub.Items.Add(SVI_KLUBOVI);
@@ -104,45 +98,6 @@ namespace Bilten.UI
             cmbDrzava.Items.AddRange(drzave.ToArray());
 
             resetFilter();
-
-            cmbGimnastika.SelectedIndexChanged += new EventHandler(cmbGimnastika_SelectedIndexChanged);
-        }
-
-        private void fillKategorijeCombo(Nullable<Gimnastika> gimnastika)
-        {
-            cmbKategorija.Items.Clear();
-            IList<TakmicarskaKategorija> kategorije;
-            if (gimnastika == null)
-            {
-                kategorije = sveKategorije;
-                cmbKategorija.Items.Add(SVE_KATEGORIJE);
-            }
-            else if (gimnastika.Value == Gimnastika.MSG)
-                kategorije = mKategorije;
-            else
-                kategorije = zKategorije;
-            foreach (TakmicarskaKategorija k in kategorije)
-                cmbKategorija.Items.Add(k);
-        }
-
-        private void cmbGimnastika_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Nullable<Gimnastika> gimnastika = getSelectedGimnastika();
-            object selKategorijaItem = cmbKategorija.SelectedItem;
-            fillKategorijeCombo(gimnastika);
-            cmbKategorija.SelectedItem = selKategorijaItem;
-            if (cmbKategorija.SelectedIndex == -1 && cmbKategorija.Items.Count > 0)
-                cmbKategorija.SelectedIndex = 0;
-        }
-
-        private Nullable<Gimnastika> getSelectedGimnastika()
-        {
-            Nullable<Gimnastika> result = null;
-            if (cmbGimnastika.SelectedIndex == cmbGimnastika.Items.IndexOf(MSG))
-                result = Gimnastika.MSG;
-            else if (cmbGimnastika.SelectedIndex == cmbGimnastika.Items.IndexOf(ZSG))
-                result = Gimnastika.ZSG;
-            return result;
         }
 
         public void resetFilter()
@@ -151,41 +106,13 @@ namespace Bilten.UI
             txtPrezime.Text = String.Empty;
             txtGodRodj.Text = String.Empty;
 
-            cmbGimnastika.SelectedIndexChanged -= cmbGimnastika_SelectedIndexChanged;
-            if (gimnastika == null)
-            {
-                cmbGimnastika.SelectedIndex = cmbGimnastika.Items.IndexOf(SVI);
-            }
-            else
-            {
-                cmbGimnastika.Enabled = false;
-                if (gimnastika.Value == Gimnastika.MSG)
-                    cmbGimnastika.SelectedIndex = cmbGimnastika.Items.IndexOf(MSG);
-                else
-                    cmbGimnastika.SelectedIndex = cmbGimnastika.Items.IndexOf(ZSG);
-            }
-            cmbGimnastika.SelectedIndexChanged += cmbGimnastika_SelectedIndexChanged;
-
-            fillKategorijeCombo(gimnastika);
             if (startKategorija == null)
                 cmbKategorija.SelectedIndex = cmbKategorija.Items.IndexOf(SVE_KATEGORIJE);
             else
-                selectKategorija(startKategorija);
-            if (cmbKategorija.SelectedIndex == -1 && cmbKategorija.Items.Count > 0)
-                cmbKategorija.SelectedIndex = 0;
+                cmbKategorija.SelectedItem = startKategorija;
 
             cmbKlub.SelectedIndex = cmbKlub.Items.IndexOf(SVI_KLUBOVI);
             cmbDrzava.SelectedIndex = cmbDrzava.Items.IndexOf(SVE_DRZAVE);
-        }
-
-        private void selectKategorija(TakmicarskaKategorija kategorija)
-        {
-            foreach (object item in cmbKategorija.Items)
-            {
-                TakmicarskaKategorija kat = item as TakmicarskaKategorija;
-                if (kat != null && kat.Equals(kategorija))
-                    cmbKategorija.SelectedItem = item;
-            }
         }
 
         private bool validateFilter()
@@ -259,15 +186,7 @@ namespace Bilten.UI
             result.Prezime = txtPrezime.Text.Trim();
             if (txtGodRodj.Text.Trim() != String.Empty)
                 result.GodRodj = int.Parse(txtGodRodj.Text);
-            if (this.gimnastika == null)
-            {
-                if (cmbGimnastika.SelectedIndex == cmbGimnastika.Items.IndexOf(MSG))
-                    result.Gimnastika = Gimnastika.MSG;
-                else if (cmbGimnastika.SelectedIndex == cmbGimnastika.Items.IndexOf(ZSG))
-                    result.Gimnastika = Gimnastika.ZSG;
-            }
-            else
-                result.Gimnastika = this.gimnastika.Value;
+            result.Gimnastika = this.gimnastika;
 
             result.Kategorija = cmbKategorija.SelectedItem as TakmicarskaKategorija;
             result.Klub = cmbKlub.SelectedItem as KlubUcesnik;

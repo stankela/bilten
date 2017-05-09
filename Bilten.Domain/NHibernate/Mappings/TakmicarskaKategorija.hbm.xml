@@ -8,7 +8,6 @@
       <generator class="identity" />
     </id>
     <property name="Naziv" column="naziv" type="String" not-null="false" length="32"/>
-    <property name="Gimnastika" column="gimnastika" type="Byte" />
     <property name="RedBroj" column="redBroj" type="Byte" />
     <many-to-one name="Takmicenje" class="Takmicenje" column="takmicenje_id" />
   </class>

@@ -109,7 +109,6 @@ create table takmicarske_kategorije (
 	kategorija_id int identity(1,1) primary key,
 	takmicenje_id int references takmicenja(takmicenje_id),
 	naziv nvarchar(32),
-	gimnastika tinyint,
 	redBroj tinyint
 );
 

@@ -11,12 +11,11 @@ namespace Bilten.UI
 {
     public partial class FilterGimnasticarUcesnikForm : FilterForm
     {
-        public FilterGimnasticarUcesnikForm(int takmicenjeId, Nullable<Gimnastika> gimnastika,
+        public FilterGimnasticarUcesnikForm(int takmicenjeId, Gimnastika gimnastika,
             TakmicarskaKategorija startKategorija)
         {
             InitializeComponent();
-            filterGimnasticarUcesnikUserControl1.initialize(takmicenjeId, gimnastika,
-                startKategorija);
+            filterGimnasticarUcesnikUserControl1.initialize(takmicenjeId, gimnastika, startKategorija);
         }
 
         protected override void OnFilter(EventArgs e)

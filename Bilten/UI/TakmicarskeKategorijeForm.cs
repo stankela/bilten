@@ -206,7 +206,7 @@ namespace Bilten.UI
                         try
                         {
                             TakmicenjeService.addTakmicarskaKategorija(
-                                new TakmicarskaKategorija(kategorijeStr[index], gimnastika), takmicenjeId);
+                                new TakmicarskaKategorija(kategorijeStr[index]), takmicenjeId);
                             ++numAdded;
                         }
                         catch (BusinessException)

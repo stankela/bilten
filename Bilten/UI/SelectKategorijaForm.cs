@@ -71,9 +71,7 @@ namespace Bilten.UI
 
             IList<TakmicarskaKategorija> result = new List<TakmicarskaKategorija>();
             foreach (KategorijaGimnasticara kat in kategorije)
-            {
-                result.Add(new TakmicarskaKategorija(kat.Naziv, kat.Gimnastika));
-            }
+                result.Add(new TakmicarskaKategorija(kat.Naziv));
             return result;
         }
 

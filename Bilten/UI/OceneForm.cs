@@ -99,7 +99,7 @@ namespace Bilten.UI
             cmbKategorija.DataSource = kategorije;
 
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbSprava.Items.AddRange(Sprave.getSpraveNazivi(kategorije[0].Gimnastika));
+            cmbSprava.Items.AddRange(Sprave.getSpraveNazivi(takmicenje.Gimnastika));
 
             spravaGridUserControl1.DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
 
@@ -211,8 +211,8 @@ namespace Bilten.UI
             SelectGimnasticarUcesnikForm form = null;
             try
             {
-                form = new SelectGimnasticarUcesnikForm(ActiveKategorija.Takmicenje.Id, 
-                    ActiveKategorija.Gimnastika, ActiveKategorija);
+                form = new SelectGimnasticarUcesnikForm(ActiveKategorija.Takmicenje.Id,
+                    takmicenje.Gimnastika, ActiveKategorija);
                 form.MultiSelect = false;
                 if (form.ShowDialog() != DialogResult.OK
                 || form.SelectedEntities.Count != 1)

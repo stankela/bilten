@@ -203,8 +203,7 @@ namespace Bilten.Services
             foreach (RezultatskoTakmicenje rtFrom in rezTakmicenjaFrom)
             {
                 if (kategorije[rtFrom.Kategorija.RedBroj] == null)
-                    kategorije[rtFrom.Kategorija.RedBroj]
-                        = new TakmicarskaKategorija(rtFrom.Kategorija.Naziv, takmicenje.Gimnastika);
+                    kategorije[rtFrom.Kategorija.RedBroj] = new TakmicarskaKategorija(rtFrom.Kategorija.Naziv);
             }
 
             PropozicijeDAO propozicijeDAO = DAOFactoryFactory.DAOFactory.GetPropozicijeDAO();
@@ -374,7 +373,7 @@ namespace Bilten.Services
                     }
                 }
                 if (ok)
-                    takmicenje.addKategorija(new TakmicarskaKategorija(rt.Kategorija.Naziv, takmicenje.Gimnastika));
+                    takmicenje.addKategorija(new TakmicarskaKategorija(rt.Kategorija.Naziv));
             }
             if (takmicenje.Kategorije.Count == 0)
                 throw new BusinessException("Kategorije iz prethodnih kola se ne poklapaju");

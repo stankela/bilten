@@ -16,14 +16,6 @@ namespace Bilten.Domain
             set { naziv = value; }
         }
 
-        // TODO4: Da li je ovo potrebno? Gimnastika je uvek kao i za Takmicenje.
-        private Gimnastika gimnastika;
-        public virtual Gimnastika Gimnastika
-        {
-            get { return gimnastika; }
-            set { gimnastika = value; }
-        }
-
         private byte redBroj;
         public virtual byte RedBroj
         {
@@ -58,10 +50,9 @@ namespace Bilten.Domain
         
         }
 
-        public TakmicarskaKategorija(string naziv, Gimnastika gimnastika)
+        public TakmicarskaKategorija(string naziv)
         {
             this.naziv = naziv;
-            this.gimnastika = gimnastika;
         }
 
         public override void validate(Notification notification)
@@ -70,12 +61,6 @@ namespace Bilten.Domain
             {
                 notification.RegisterMessage(
                     "Naziv", "Naziv kategorije je obavezan.");
-            }
-
-            if (Gimnastika == Gimnastika.Undefined)
-            {
-                notification.RegisterMessage(
-                    "Gimnastika", "Gimnastika je obavezna.");
             }
         }
 
@@ -89,8 +74,7 @@ namespace Bilten.Domain
             if (object.ReferenceEquals(this, other)) return true;
             if (!(other is TakmicarskaKategorija)) return false;
             TakmicarskaKategorija that = (TakmicarskaKategorija)other;
-            return (this.Gimnastika == that.Gimnastika)
-                && this.Naziv.ToUpper() == that.Naziv.ToUpper();
+            return this.Naziv.ToUpper() == that.Naziv.ToUpper();
         }
 
         public override int GetHashCode()
@@ -98,7 +82,6 @@ namespace Bilten.Domain
             unchecked
             {
                 int result = 14;
-                result = 29 * result + Gimnastika.GetHashCode();
                 result = 29 * result + Naziv.GetHashCode();
                 return result;
             }
@@ -108,7 +91,6 @@ namespace Bilten.Domain
         {
             strBuilder.AppendLine(Id.ToString());
             strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
-            strBuilder.AppendLine(Gimnastika.ToString());
             strBuilder.AppendLine(RedBroj.ToString());
             strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
         }
@@ -117,7 +99,6 @@ namespace Bilten.Domain
         {
             string naziv = reader.ReadLine();
             Naziv = naziv != NULL ? naziv : null;
-            Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
             RedBroj = byte.Parse(reader.ReadLine());
 
             Takmicenje = map.takmicenjeMap[int.Parse(reader.ReadLine())];

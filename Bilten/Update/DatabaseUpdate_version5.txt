@@ -4,3 +4,5 @@ alter table rezultati_preskok drop column red_broj2;
 GO
 alter table rezultati_preskok drop column rank2;
 GO
+alter table takmicarske_kategorije drop column gimnastika;
+GO

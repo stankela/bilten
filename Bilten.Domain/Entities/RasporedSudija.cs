@@ -47,7 +47,7 @@ namespace Bilten.Domain
         }
 
         public RasporedSudija(IList<TakmicarskaKategorija> kategorije, 
-            DeoTakmicenjaKod deoTakKod, Takmicenje takmicenje)
+            DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
         {
             if (kategorije.Count == 0)
                 throw new ArgumentException("Kategorije ne smeju da budu prazne.");
@@ -56,7 +56,7 @@ namespace Bilten.Domain
                 addKategorija(kat);
             this.deoTakKod = deoTakKod;
 
-            Sprava[] sprave = Sprave.getSprave(kategorije[0].Gimnastika);
+            Sprava[] sprave = Sprave.getSprave(gimnastika);
             foreach (Sprava s in sprave)
                 odbori.Add(new SudijskiOdborNaSpravi(s));
         }
