@@ -1303,7 +1303,7 @@ namespace Bilten.UI
 
             t = takDump.takmicenje;
 
-            int vrstaUvozenja = getUveziKind(t);
+            int vrstaUvozenja = getVrstaUvozenja(t);
             if (vrstaUvozenja == 0)
                 return false;
 
@@ -1354,10 +1354,8 @@ namespace Bilten.UI
             }
         }
 
-        private int getUveziKind(Takmicenje t)
+        private int getVrstaUvozenja(Takmicenje t)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            Cursor.Show();
             ISession session = null;
             try
             {
@@ -1370,31 +1368,6 @@ namespace Bilten.UI
                         // Uvezi takmicenje pod postojecim imenom
                         return 1;
                     }
-
-                    string header = String.Format("Takmicenje '{0}' vec postoji", t.ToString());
-                    SelectOptionForm form = new SelectOptionForm(
-                        header, new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
-                        strProgName);
-                    if (form.ShowDialog() != DialogResult.OK)
-                        return 0;
-
-                    if (form.SelectedOption == 1)
-                    {
-                        // Prebrisi postojece takmicenje
-                        return 2;
-                    }
-                    else
-                    {
-                        // Uvezi takmicenje pod novim imenom
-                        TakmicenjeForm takForm = new TakmicenjeForm(t.Naziv, t.Gimnastika, t.Datum, t.Mesto, t.TipTakmicenja);
-                        if (takForm.ShowDialog() != DialogResult.OK)
-                            return 0;
-
-                        t.Naziv = (takForm.Entity as Takmicenje).Naziv;
-                        t.Datum = (takForm.Entity as Takmicenje).Datum;
-                        t.Mesto = (takForm.Entity as Takmicenje).Mesto;
-                        return 3;
-                    }
                 }
             }
             catch (Exception)
@@ -1406,9 +1379,30 @@ namespace Bilten.UI
             finally
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-                Cursor.Hide();
-                Cursor.Current = Cursors.Arrow;
             }
+
+            string header = String.Format("Takmicenje '{0}' vec postoji", t.ToString());
+            SelectOptionForm form = new SelectOptionForm(
+                header, new string[] { "Prebrisi postojece takmicenje", "Uvezi takmicenje pod novim imenom" },
+                strProgName);
+            if (form.ShowDialog() != DialogResult.OK)
+                return 0;
+
+            if (form.SelectedOption == 1)
+            {
+                // Prebrisi postojece takmicenje
+                return 2;
+            }
+
+            // Uvezi takmicenje pod novim imenom
+            TakmicenjeForm takForm = new TakmicenjeForm(t.Naziv, t.Gimnastika, t.Datum, t.Mesto, t.TipTakmicenja);
+            if (takForm.ShowDialog() != DialogResult.OK)
+                return 0;
+
+            t.Naziv = (takForm.Entity as Takmicenje).Naziv;
+            t.Datum = (takForm.Entity as Takmicenje).Datum;
+            t.Mesto = (takForm.Entity as Takmicenje).Mesto;
+            return 3;
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
