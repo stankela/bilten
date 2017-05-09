@@ -14,8 +14,6 @@
     <property name="E" column="e" />
     <property name="Penalty" column="penalty" />
     <property name="Total" column="total" />
-    <property name="RedBroj2" column="red_broj2" type="Int16" />
-    <property name="Rank2" column="rank2" type="Int16" />
     <property name="D_2" column="d_2" />
     <property name="E_2" column="e_2" />
     <property name="Penalty_2" column="penalty_2" />

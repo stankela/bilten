@@ -1,4 +1,4 @@
-Verzije vece od 1 se nalaze u posebnim fajlovima DatabaseUpdate_version{BROJ_VERZIJE}.sql
+Verzije vece od 1 se nalaze u posebnim fajlovima DatabaseUpdate_version{BROJ_VERZIJE}.txt
 
 01-Nov-2015 (VERZIJA = 1)
 ALTER TABLE takmicenja ADD COLUMN tip_takmicenja tinyint;

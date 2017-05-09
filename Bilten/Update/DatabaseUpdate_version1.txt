@@ -1,0 +1,135 @@
+-- Ovo sam koristio kada sam apdejtovao stare biltene (pre 2015)
+
+-- create table verzija_baze (verzija_id int primary key, broj_verzije int);
+-- INSERT INTO verzija_baze (verzija_id, broj_verzije) VALUES (1, 0);
+
+-- 2010
+alter table takmicenja add column zreb_za_finale_tak3 nvarchar(128);
+GO
+alter table ucesnici_tak4 add column kval_status tinyint;
+GO
+update ucesnici_tak4 set kval_status = 1;
+GO
+
+-- 28-Okt-2011
+ALTER TABLE propozicije DROP COLUMN tak3_na_osnovu_tak1;
+GO
+ALTER TABLE propozicije ADD COLUMN tak3_fin_ocena_je_zbir bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak3_fin_ocena_je_max bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak3_fin_ocena_je_prosek bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak3_ne_racunaj_prosek bit;
+GO
+ALTER TABLE propozicije DROP COLUMN tak2_na_osnovu_tak1;
+GO
+ALTER TABLE propozicije ADD COLUMN tak2_fin_ocena_je_zbir bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak2_fin_ocena_je_max bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak2_fin_ocena_je_prosek bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak2_ne_racunaj_prosek bit;
+GO
+ALTER TABLE propozicije DROP COLUMN broj_gim_u_ekipi;
+GO
+ALTER TABLE propozicije DROP COLUMN tak4_na_osnovu_tak1;
+GO
+ALTER TABLE propozicije ADD COLUMN tak4_fin_ocena_je_zbir bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak4_fin_ocena_je_max bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak4_fin_ocena_je_prosek bit;
+GO
+ALTER TABLE propozicije ADD COLUMN tak4_ne_racunaj_prosek bit;
+GO
+
+-- 18-Okt-2012
+ALTER TABLE takmicenja ADD COLUMN finale_kupa bit;
+GO
+
+-- 21-Okt-2012
+ALTER TABLE takmicenja ADD COLUMN prvo_kolo_id int references takmicenja(takmicenje_id);
+GO
+ALTER TABLE takmicenja ADD COLUMN drugo_kolo_id int references takmicenja(takmicenje_id);
+GO
+
+-- 10-Nov-2013
+create table rezultati_sprava_finale_kupa_update (
+	rez_takmicenje_id int references rezultatsko_takmicenje(rez_takmicenje_id),
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	sprava tinyint,
+	kval_status tinyint,
+	constraint PK_rezultati_sprava_finale_kupa_update 
+		primary key (rez_takmicenje_id, gimnasticar_id, sprava)
+);
+GO
+
+-- 30-Nov-2013
+ALTER TABLE takmicenja ADD COLUMN broj_e_ocena tinyint;
+GO
+UPDATE takmicenja SET broj_e_ocena = broj_e_sudija;
+GO
+ALTER TABLE nastup_na_spravi ADD COLUMN ekipa tinyint;
+GO
+UPDATE nastup_na_spravi SET ekipa = 0;
+GO
+ALTER TABLE sudije ADD COLUMN klub_id int references klubovi(klub_id);
+GO
+ALTER TABLE sudija_ucesnik ADD COLUMN klub_id int references klubovi_ucesnici(klub_id);
+GO
+ALTER TABLE sudija_ucesnik ADD COLUMN nastupa_za_drzavu bit;
+GO
+UPDATE sudija_ucesnik SET nastupa_za_drzavu = 0;
+GO
+ALTER TABLE sud_odbor_na_spravi ADD COLUMN has_d1_e1 bit;
+GO
+UPDATE sud_odbor_na_spravi set has_d1_e1 = 0;
+GO
+ALTER TABLE sud_odbor_na_spravi ADD COLUMN has_d2_e2 bit;
+GO
+UPDATE sud_odbor_na_spravi set has_d2_e2 = 0;
+GO
+ALTER TABLE takmicenja DROP COLUMN broj_e_sudija;
+GO
+ALTER TABLE takmicenja DROP COLUMN broj_lin_sudija;
+GO
+ALTER TABLE takmicenja DROP COLUMN broj_meraca_vremena;
+GO
+ALTER TABLE start_lista_sprava ADD COLUMN nacin_rotacije tinyint;
+GO
+UPDATE start_lista_sprava SET nacin_rotacije = 0;
+GO
+ALTER TABLE nastup_na_spravi DROP COLUMN nastupa_dva_puta;
+GO
+DROP TABLE sablon_item;
+GO
+DROP TABLE sablon_rasporeda_nastupa_takm1;
+GO
+
+-- 13-Dec-2014
+ALTER TABLE poredak_sprava DROP COLUMN rez_takmicenje_id;
+GO
+ALTER TABLE [gimnasticari] ADD CONSTRAINT [FK_gimnasticari_01] FOREIGN KEY ([kat_id]) REFERENCES [kategorije_gimnasticara]([kategorija_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+ALTER TABLE [gimnasticari] ADD CONSTRAINT [FK_gimnasticari_02] FOREIGN KEY ([klub_id]) REFERENCES [klubovi]([klub_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+ALTER TABLE [gimnasticari] ADD CONSTRAINT [FK_gimnasticari_03] FOREIGN KEY ([drzava_id]) REFERENCES [drzave]([drzava_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+ALTER TABLE [takmicarske_kategorije] ADD CONSTRAINT [FK_takmicarske_kategorije_01] FOREIGN KEY ([takmicenje_id]) REFERENCES [takmicenja]([takmicenje_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- 01-Nov-2015 (VERZIJA = 1)
+ALTER TABLE takmicenja ADD COLUMN tip_takmicenja tinyint;
+GO
+UPDATE takmicenja SET tip_takmicenja = 0;
+GO
+UPDATE takmicenja SET tip_takmicenja = 1 WHERE finale_kupa = 1;
+GO
+ALTER TABLE takmicenja DROP COLUMN finale_kupa;
+GO
+ALTER TABLE takmicenja ADD COLUMN trece_kolo_id int references takmicenja(takmicenje_id);
+GO
+ALTER TABLE takmicenja ADD COLUMN cetvrto_kolo_id int references takmicenja(takmicenje_id);
+GO

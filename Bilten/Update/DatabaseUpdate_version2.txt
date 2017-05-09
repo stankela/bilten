@@ -1,0 +1,6 @@
+-- 02-Dec-2016 (VERZIJA = 2)
+
+ALTER TABLE [ekipe] ADD COLUMN penalty real;
+GO
+ALTER TABLE [rezultati_ekipno] ADD COLUMN penalty real;
+GO

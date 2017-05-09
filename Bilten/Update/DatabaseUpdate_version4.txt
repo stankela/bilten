@@ -1,0 +1,313 @@
+-- 02-Apr-2017 (VERZIJA = 4)
+
+alter table propozicije drop column max_tak_tak1;
+GO
+alter table ocene drop column line_penalty;
+GO
+alter table ocene drop column time_penalty;
+GO
+alter table ocene drop column other_penalty;
+GO
+alter table ocene drop column vreme_vezbe;
+GO
+alter table druga_ocena drop column line_penalty;
+GO
+alter table druga_ocena drop column other_penalty;
+GO
+alter table sud_odbor_na_spravi drop column broj_meraca_vremena;
+GO
+alter table sud_odbor_na_spravi drop column broj_lin_sudija;
+GO
+alter table sudija_ucesnik drop column uloga_u_glav_sud_odboru;
+GO
+update sudija_na_spravi set uloga = uloga - 10 where uloga > 0;
+GO
+
+-- 02-Apr-2017
+
+alter table ekipe drop column rez_takmicenje_id;
+GO
+alter table ekipe drop column klub_id;
+GO
+alter table ekipe drop column drzava_id;
+GO
+
+-- 04-Apr-2017
+
+alter table gimnasticari_ucesnici drop column takmicenje_id;
+GO
+alter table gimnasticari_ucesnici drop column reg_broj;
+GO
+alter table gimnasticari_ucesnici drop column god_reg;
+GO
+alter table gimnasticari_ucesnici drop column takmicarski_broj;
+GO
+alter table gimnasticari_ucesnici drop column gimnastika;
+GO
+
+-- 08-Apr-2017
+
+create table poredak_ukupno_zbir_vise_kola (
+	poredak_id int identity(1,1) primary key,
+    deo_takmicenja_kod tinyint
+);
+GO
+create table rezultati_ukupno_zbir_vise_kola (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	total_1 real,
+	total_2 real,
+	total_3 real,
+	total_4 real,
+	total real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_ukupno_zbir_vise_kola(poredak_id)
+);
+GO
+alter table takmicenje1 add column poredak_ukupno_zbir_vise_kola_id int references poredak_ukupno_zbir_vise_kola(poredak_id);
+GO
+
+-- 08-Apr-2017
+
+alter table rezultati_ukupno_zbir_vise_kola add column kval_status tinyint;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column parter_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column parter_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column parter_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column parter_4 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column konj_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column konj_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column konj_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column konj_4 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column karike_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column karike_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column karike_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column karike_4 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column preskok_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column preskok_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column preskok_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column preskok_4 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column razboj_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column razboj_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column razboj_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column razboj_4 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column vratilo_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column vratilo_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column vratilo_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column vratilo_4 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column dvo_razboj_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column dvo_razboj_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column dvo_razboj_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column dvo_razboj_4 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column greda_1 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column greda_2 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column greda_3 real;
+GO
+alter table rezultati_ukupno_zbir_vise_kola add column greda_4 real;
+GO
+
+create table poredak_ekipno_zbir_vise_kola (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+GO
+
+create table rezultati_ekipno_zbir_vise_kola (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+    parter_1 real,
+    parter_2 real,
+    parter_3 real,
+    parter_4 real,
+    konj_1 real,
+    konj_2 real,
+    konj_3 real,
+    konj_4 real,
+    karike_1 real,
+    karike_2 real,
+    karike_3 real,
+    karike_4 real,
+    preskok_1 real,
+    preskok_2 real,
+    preskok_3 real,
+    preskok_4 real,
+    razboj_1 real,
+    razboj_2 real,
+    razboj_3 real,
+    razboj_4 real,
+    vratilo_1 real,
+    vratilo_2 real,
+    vratilo_3 real,
+    vratilo_4 real,
+    dvo_razboj_1 real,
+    dvo_razboj_2 real,
+    dvo_razboj_3 real,
+    dvo_razboj_4 real,
+    greda_1 real,
+    greda_2 real,
+    greda_3 real,
+    greda_4 real,
+	total_1 real,
+	total_2 real,
+	total_3 real,
+	total_4 real,
+	total real,
+	ekipa_id int references ekipe(ekipa_id),
+	poredak_id int references poredak_ekipno_zbir_vise_kola(poredak_id)
+);
+GO
+
+alter table takmicenje1 add column poredak_ekipno_zbir_vise_kola_id int references poredak_ekipno_zbir_vise_kola(poredak_id);
+GO
+
+-- 08-Apr-2017
+
+create table poredak_ukupno_finale_kupa (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+GO
+
+create table rezultati_ukupno_finale_kupa (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+    parter_1 real,
+    parter_2 real,
+    konj_1 real,
+    konj_2 real,
+    karike_1 real,
+    karike_2 real,
+    preskok_1 real,
+    preskok_2 real,
+    razboj_1 real,
+    razboj_2 real,
+    vratilo_1 real,
+    vratilo_2 real,
+    dvo_razboj_1 real,
+    dvo_razboj_2 real,
+    greda_1 real,
+    greda_2 real,
+	total_1 real,
+	total_2 real,
+	total real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_ukupno_finale_kupa(poredak_id)
+);
+GO
+
+alter table takmicenje1 add column poredak_ukupno_finale_kupa_id int references poredak_ukupno_finale_kupa(poredak_id);
+GO
+
+-- 08-Apr-2017
+
+create table poredak_ekipno_finale_kupa (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+GO
+
+create table rezultati_ekipno_finale_kupa (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+    parter_1 real,
+    parter_2 real,
+    konj_1 real,
+    konj_2 real,
+    karike_1 real,
+    karike_2 real,
+    preskok_1 real,
+    preskok_2 real,
+    razboj_1 real,
+    razboj_2 real,
+    vratilo_1 real,
+    vratilo_2 real,
+    dvo_razboj_1 real,
+    dvo_razboj_2 real,
+    greda_1 real,
+    greda_2 real,
+	total_1 real,
+	total_2 real,
+	total real,
+	ekipa_id int references ekipe(ekipa_id),
+	poredak_id int references poredak_ekipno_finale_kupa(poredak_id)
+);
+GO
+
+alter table takmicenje1 add column poredak_ekipno_finale_kupa_id int references poredak_ekipno_finale_kupa(poredak_id);
+GO
+
+-- 09-Apr-2017
+
+create table poredak_sprava_finale_kupa (
+	poredak_id int identity(1,1) primary key,
+	sprava tinyint,
+	takmicenje1_id int references takmicenje1(takmicenje1_id)
+);
+GO
+
+create table rezultati_sprava_finale_kupa (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+	d_prvo_kolo real,
+	e_prvo_kolo real,
+	total_prvo_kolo real,
+	d_drugo_kolo real,
+	e_drugo_kolo real,
+	total_drugo_kolo real,
+	total real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_sprava_finale_kupa(poredak_id)
+);
+GO
+
+alter table rezultati_ekipno drop column penalty;
+GO
+alter table ekipe add column sprave_mask int;
+GO
+update ekipe set sprave_mask = 510;
+GO
+alter table propozicije add column preskok_tak2_bolja_ocena bit;
+GO
+alter table gimnasticari_ucesnici add column penalty_viseboj real;
+GO
+alter table takmicenja add column last_modified datetime;
+GO

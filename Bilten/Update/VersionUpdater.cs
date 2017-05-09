@@ -39,7 +39,7 @@ public class VersionUpdater
         if (verzijaBaze == 0)
         {
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version1.sql", true);
+                "Bilten.Update.DatabaseUpdate_version1.txt", true);
             SqlCeUtilities.updateDatabaseVersionNumber(1);
             verzijaBaze = 1;
             converted = true;
@@ -48,7 +48,7 @@ public class VersionUpdater
         if (verzijaBaze == 1 && Program.VERZIJA_PROGRAMA > 1)
         {
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version2.sql", true);
+                "Bilten.Update.DatabaseUpdate_version2.txt", true);
             SqlCeUtilities.updateDatabaseVersionNumber(2);
             verzijaBaze = 2;
             converted = true;
@@ -64,34 +64,14 @@ public class VersionUpdater
 
         if (verzijaBaze == 3 && Program.VERZIJA_PROGRAMA > 3)
         {
-            // TODO: Ove dve naredbe bi trebalo izvrsavati u okviru jedne transakcije. Isto i za ostale verzije.
-
-            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version4.sql", true);
+            // TODO: Ove naredbe bi trebalo izvrsavati u okviru jedne transakcije. Isto i za ostale verzije.
 
             SqlCeUtilities.dropReferentialConstraint("ekipe", "klubovi_ucesnici");
             SqlCeUtilities.dropReferentialConstraint("ekipe", "drzave_ucesnici");
-            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version5.sql", true);
-
             SqlCeUtilities.dropReferentialConstraint("gimnasticari_ucesnici", "takmicenja");
-            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version6.sql", true);
 
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version8.sql", true);
-
-            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version9.sql", true);
-
-            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version10.sql", true);
-
-            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version11.sql", true);
-
-            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version12.sql", true);
+                "Bilten.Update.DatabaseUpdate_version4.txt", true);
 
             updateLastModified();
             updateVersion3();
@@ -99,10 +79,19 @@ public class VersionUpdater
             updateVersion13();
 
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-                "Bilten.Update.DatabaseUpdate_version13.sql", true);
+                "Bilten.Update.DatabaseUpdate_version4b.txt", true);
 
             SqlCeUtilities.updateDatabaseVersionNumber(4);
             verzijaBaze = 4;
+            converted = true;
+        }
+
+        if (verzijaBaze == 4 && Program.VERZIJA_PROGRAMA > 4)
+        {
+            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                "Bilten.Update.DatabaseUpdate_version5.txt", true);
+            SqlCeUtilities.updateDatabaseVersionNumber(5);
+            verzijaBaze = 5;
             converted = true;
         }
 
@@ -225,7 +214,8 @@ public class VersionUpdater
 
     public void updateVersion13()
     {
-        updatePreskok();
+        // NOTE: updatePreskok vise nije moguce zvati zato sto se oslanjalo na RedBroj2 i Rank2 koji su izbrisani.
+        //updatePreskok();
         updatePoredakViseKola();
         updateZavrsenoTak1();
         updateKvalifikanti();
@@ -435,7 +425,7 @@ public class VersionUpdater
         return result;
     }
 
-    private void updatePreskok()
+    /*private void updatePreskok()
     {
         IList<int> takmicenjaId = getTakmicenjaId();
         StreamWriter logStreamWriter = File.CreateText("log_update_preskok.txt");
@@ -626,7 +616,7 @@ public class VersionUpdater
         }
 
         DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO().Update(p);
-    }
+    }*/
 
     // Ponisti ZavrsenoTak1 na svim mestima gde je ZavrsenoTak1 a nije odvojenoTak3 ni za jedno rez. takmicenje.
     public void updateZavrsenoTak1()

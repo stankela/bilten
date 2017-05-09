@@ -429,8 +429,6 @@ create table rezultati_preskok (
 	e real,
 	penalty real,
 	total real,
-	red_broj2 smallint,
-	rank2 smallint,
 	d_2 real,
 	e_2 real,
 	penalty_2 real,

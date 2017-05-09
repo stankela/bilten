@@ -182,7 +182,11 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version1.sql" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version5.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version4.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version4b.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version2.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version1.txt" />
     <EmbeddedResource Include="UI\CheckListForm.resx">
       <DependentUpon>CheckListForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -192,22 +196,12 @@
     <EmbeddedResource Include="UI\WaitForm.resx">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Update\DatabaseUpdate_version13.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version12.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version11.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version10.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version9.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version8.sql" />
     <EmbeddedResource Include="UI\SelectOptionForm.resx">
       <DependentUpon>SelectOptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Update\DatabaseUpdate_version6.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version5.sql" />
-    <EmbeddedResource Include="Update\DatabaseUpdate_version4.sql" />
     <EmbeddedResource Include="UI\KonacanPlasmanForm.resx">
       <DependentUpon>KonacanPlasmanForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Update\DatabaseUpdate_version2.sql" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

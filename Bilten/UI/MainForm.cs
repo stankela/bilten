@@ -1268,9 +1268,9 @@ namespace Bilten.UI
             bool uveziStartListe = form2.CheckedIndices.Contains(0);
             bool uveziSudije = form2.CheckedIndices.Contains(1);
 
-            Takmicenje t;
             try
             {
+                Takmicenje t;
                 if (uveziTakmicenje(ofd.FileName, out t, uveziStartListe, uveziSudije))
                 {
                     MessageDialogs.showMessage("Takmicenje '" + t.ToString() + "' je uspesno uvezeno.", strProgName);

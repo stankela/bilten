@@ -7,21 +7,6 @@ namespace Bilten.Domain
 {
     public class RezultatPreskok : RezultatSprava
     {
-        // TODO4: Ukloni RedBroj2 i Rank2 (i iz baze) nakon sto apdejtujes sve rezultate za preskok.
-        private Nullable<short> redBroj2;
-        public virtual Nullable<short> RedBroj2
-        {
-            get { return redBroj2; }
-            set { redBroj2 = value; }
-        }
-
-        private Nullable<short> rank2;
-        public virtual Nullable<short> Rank2
-        {
-            get { return rank2; }
-            set { rank2 = value; }
-        }
-
         private Nullable<float> d_2;
         public virtual Nullable<float> D_2
         {
@@ -104,8 +89,6 @@ namespace Bilten.Domain
         public override void dump(StringBuilder strBuilder)
         {
             base.dump(strBuilder);
-            strBuilder.AppendLine(RedBroj2 != null ? RedBroj2.Value.ToString() : NULL);
-            strBuilder.AppendLine(Rank2 != null ? Rank2.Value.ToString() : NULL);
             strBuilder.AppendLine(D_2 != null ? D_2.Value.ToString() : NULL);
             strBuilder.AppendLine(E_2 != null ? E_2.Value.ToString() : NULL);
             strBuilder.AppendLine(Penalty_2 != null ? Penalty_2.Value.ToString() : NULL);
@@ -116,12 +99,6 @@ namespace Bilten.Domain
         public override void loadFromDump(StringReader reader, IdMap map)
         {
             base.loadFromDump(reader, map);
-
-            string redBroj2 = reader.ReadLine();
-            RedBroj2 = redBroj2 != NULL ? short.Parse(redBroj2) : (short?)null;
-
-            string rank2 = reader.ReadLine();
-            Rank2 = rank2 != NULL ? short.Parse(rank2) : (short?)null;
 
             string d_2 = reader.ReadLine();
             D_2 = d_2 != NULL ? float.Parse(d_2) : (float?)null;
