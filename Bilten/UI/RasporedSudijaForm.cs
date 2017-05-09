@@ -92,6 +92,8 @@ namespace Bilten.UI
             }
         }
 
+        // TODO4: Kada se bira sudija, treba da budu ponudjene sve sudije (i muske i zenske), nezavisno od MSG ili ZSG.
+
         private void createTab(RasporedSudija raspored)
         {
             if (rasporedi.IndexOf(raspored) == 0) // prvi tab
@@ -102,7 +104,7 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.Location = USER_CONTROL_LOCATION;
                 spravaGridGroupUserControl1.SpravaGridRightClick +=
                   new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
-                spravaGridGroupUserControl1.init(rasporedi[0].Gimnastika);
+                spravaGridGroupUserControl1.init(takmicenje.Gimnastika);
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
                     SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);
@@ -177,7 +179,7 @@ namespace Bilten.UI
             spravaGridGroupUserControl.SpravaGridRightClick +=
               new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
             //spravaGridGroupUserControl.Size = this.rasporedSudijaUserControl1.Size;
-            spravaGridGroupUserControl.init(raspored.Gimnastika); // odredjuje i Size
+            spravaGridGroupUserControl.init(takmicenje.Gimnastika); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
                 SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);
@@ -311,7 +313,7 @@ namespace Bilten.UI
         {
             if (ActiveRaspored == null)
                 return;
-            SelectSpravaForm form = new SelectSpravaForm(ActiveRaspored.Gimnastika,
+            SelectSpravaForm form = new SelectSpravaForm(takmicenje.Gimnastika,
                 getActiveSpravaGridGroupUserControl().SelectedSprava);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
@@ -608,7 +610,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(ActiveRaspored.Gimnastika,
+                SelectSpravaForm form2 = new SelectSpravaForm(takmicenje.Gimnastika,
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;

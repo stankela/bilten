@@ -41,18 +41,6 @@ namespace Bilten.Domain
             set { odbori = value; }
         }
 
-        public virtual Gimnastika Gimnastika
-        {
-            get
-            {
-                foreach (TakmicarskaKategorija k in Kategorije)
-                {
-                    return k.Gimnastika;
-                }
-                return Gimnastika.Undefined;
-            }
-        }
-
         public RasporedSudija()
         { 
         
