@@ -245,6 +245,12 @@ namespace Bilten.UI
                 {
                     notification.RegisterMessage("PrethodnoTakmicenje", "Izaberite takmicenje koje zelite da kopirate.");
                 }
+                if (ckbKopirajPrethTak.Enabled && ckbKopirajPrethTak.Checked
+                    && SelectedGimnastika != copyFromTakmicenje.Gimnastika)
+                {
+                    notification.RegisterMessage("Gimnastika",
+                        "Gimnastika mora da bude ista kao gimnastika takmicenja iz prethodnog kola.");
+                }
                 if (finaleKupa() && (prethodnaKola.Count != 2))
                 {
                     notification.RegisterMessage(
@@ -314,7 +320,6 @@ namespace Bilten.UI
             return new Takmicenje();
         }
 
-        // TODO4: Kada se kreira na osnovu prethodnog kola, gimnastika mora da se poklapa sa gimnastikom novog takmicenja.
         // TODO4: Kada budes testirao sve skorasnje izmene, proveri da li postoji neka greska slicna onoj koju sam imao kod
         // kopiranja kategorija iz prethodnog takmicenja - da je kopiranje pokvarilo prethodno takmicenje.
 
