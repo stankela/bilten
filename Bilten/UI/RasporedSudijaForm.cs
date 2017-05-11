@@ -117,7 +117,7 @@ namespace Bilten.UI
                     spravaGridGroupUserControl1.Right, spravaGridGroupUserControl1.Bottom);
                 tabPage1.AutoScrollMargin =
                     new Size(spravaGridGroupUserControl1.Location);
-                tabPage1.Text = getTabText(raspored);
+                tabPage1.Text = raspored.Naziv;
             }
             else
             {
@@ -152,23 +152,6 @@ namespace Bilten.UI
             contextMenuStrip1.Show(grid, new Point(x, y));
         }
 
-        private string getTabText(RasporedSudija rasporedSudija)
-        {
-            // TODO: Obradi slucaj kada raspored vazi za vise kategorija
-            List<TakmicarskaKategorija> kategorije =
-                new List<TakmicarskaKategorija>(rasporedSudija.Kategorije);
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
-            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
-                propDesc, ListSortDirection.Ascending));
-
-            if (kategorije.Count == 0)
-                return String.Empty;
-            else
-                return kategorije[0].ToString();
-        }
-
         private void initTab(TabPage tabPage, RasporedSudija raspored)
         {
             // TODO: Kod u ovom metodu je prekopiran iz Designer.cs fajla (plus ono
@@ -201,7 +184,7 @@ namespace Bilten.UI
             tabPage.AutoScrollMinSize = new Size(
                 spravaGridGroupUserControl.Right, spravaGridGroupUserControl.Bottom);
             tabPage.AutoScrollMargin = new Size(spravaGridGroupUserControl.Location);
-            tabPage.Text = getTabText(raspored);
+            tabPage.Text = raspored.Naziv;
             //tabPage.UseVisualStyleBackColor = this.tabPage1.UseVisualStyleBackColor;
             tabPage.ResumeLayout(false);
         }
@@ -362,20 +345,13 @@ namespace Bilten.UI
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            IList<TakmicarskaKategorija> dodeljeneKategorije = getDodeljeneKategorije();
-            if (dodeljeneKategorije.Count == kategorijeCount)
-            {
-                MessageDialogs.showMessage(
-                    "Vec su odredjeni rasporedi sudija za sve kategorije.", this.Text);
-                return;
-            }
-
             string msg = "Izaberite kategorije za koje vazi raspored sudija";
             DialogResult dlgResult = DialogResult.None;
             SelectKategorijaForm form = null;
             try
             {
-                form = new SelectKategorijaForm(takmicenje.Id, takmicenje.Gimnastika, dodeljeneKategorije, msg);
+                form = new SelectKategorijaForm(takmicenje.Id, takmicenje.Gimnastika, new List<TakmicarskaKategorija>(),
+                    msg);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -430,14 +406,6 @@ namespace Bilten.UI
                 tabControl1.SelectedIndex = tabControl1.TabPages.Count - 1;
             else
                 onSelectedIndexChanged();
-        }
-
-        private IList<TakmicarskaKategorija> getDodeljeneKategorije()
-        {
-            List<TakmicarskaKategorija> result = new List<TakmicarskaKategorija>();
-            foreach (RasporedSudija r in rasporedi)
-                result.AddRange(r.Kategorije);
-            return result;
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -580,7 +548,7 @@ namespace Bilten.UI
             {
                 nazivIzvestaja = "Raspored sudija - finale ekipno";
             }
-            string kategorija = getFirstKategorijaText(ActiveRaspored);
+            string kategorija = ActiveRaspored.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
@@ -657,25 +625,5 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
             }
         }
-
-        private string getFirstKategorijaText(RasporedSudija rasporedSudija)
-        {
-            List<TakmicarskaKategorija> kategorije =
-                new List<TakmicarskaKategorija>(rasporedSudija.Kategorije);
-
-            if (kategorije.Count == 0)
-                return String.Empty;
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
-            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
-                propDesc, ListSortDirection.Ascending));
-
-            string retValue = kategorije[0].ToString();
-            //for (int i = 1; i < kategorije.Count; i++)
-            //  retValue = retValue + ", " + kategorije[i].ToString();
-            return retValue;
-        }
-
     }
 }

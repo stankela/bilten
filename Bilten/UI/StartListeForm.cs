@@ -1205,8 +1205,8 @@ namespace Bilten.UI
             ISession session = null;
             if (rasporedi.Count > 0)
             {
-                // Posto cu brisati jedan po jedan tab, selektujem prvi tab da se ne bi pozivalo onSelectedTabIndexChanged
-                // prilikom svakog brisanja.
+                // Posto cu brisati jedan po jedan tab pocevsi od poslednjeg, selektujem prvi tab da se ne bi pozivalo
+                // onSelectedTabIndexChanged prilikom svakog brisanja.
                 tabControl1.SelectedIndex = 0;
 
                 // TODO4: Postojece rasporede brisem u posebnoj sesiji, zato sto ako ih brisem u istoj sesiji u

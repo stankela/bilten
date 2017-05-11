@@ -10,3 +10,7 @@ alter table raspored_nastupa add column takmicenje_id int references takmicenja(
 GO
 alter table raspored_nastupa add column naziv nvarchar(256);
 GO
+alter table raspored_sudija add column takmicenje_id int references takmicenja(takmicenje_id);
+GO
+alter table raspored_sudija add column naziv nvarchar(256);
+GO

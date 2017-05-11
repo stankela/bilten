@@ -31,8 +31,15 @@ namespace Bilten.Domain
             set { naziv = value; }
         }
 
+        private Takmicenje takmicenje;
+        public virtual Takmicenje Takmicenje
+        {
+            get { return takmicenje; }
+            set { takmicenje = value; }
+        }
+
         // TODO4: Ukloni ovo, deo iz *.hdm fajla i tabelu raspored_nastupa_kategorija nakon sto izvrsis apdejt na verziju
-        // 5.
+        // 5. Isto i u klasi RasporedSudija (tamo je tabela raspored_sudija_kategorija)
         private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
         public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
         {
@@ -45,13 +52,6 @@ namespace Bilten.Domain
         {
             get { return startListe; }
             set { startListe = value; }
-        }
-
-        private Takmicenje takmicenje;
-        public virtual Takmicenje Takmicenje
-        {
-            get { return takmicenje; }
-            set { takmicenje = value; }
         }
 
         public RasporedNastupa()
@@ -85,7 +85,7 @@ namespace Bilten.Domain
             addNewGrupa(gimnastika);
         }
 
-        public virtual string kreirajNaziv(IList<TakmicarskaKategorija> katList)
+        public static string kreirajNaziv(IList<TakmicarskaKategorija> katList)
         {
             List<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>(katList);
             if (kategorije.Count == 0)
@@ -179,21 +179,23 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Id.ToString());
             strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
             strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
 
             strBuilder.AppendLine(StartListe.Count.ToString());
             foreach (StartListaNaSpravi s in StartListe)
-                s.dump(strBuilder);
-        
-            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
+                s.dump(strBuilder);        
         }
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
 
-            string naziv = reader.ReadLine();
-            Naziv = naziv != NULL ? naziv : null;
+            string line = reader.ReadLine();
+            Naziv = line != NULL ? line : null;
             
+            line = reader.ReadLine();
+            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
+
             int count = int.Parse(reader.ReadLine());
             for (int i = 0; i < count; ++i)
             {
@@ -202,9 +204,6 @@ namespace Bilten.Domain
                 s.loadFromDump(reader, map);
                 StartListe.Add(s);
             }
-
-            string line = reader.ReadLine();
-            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
         }
     }
 }

@@ -15,23 +15,25 @@ namespace Bilten.Domain
             protected set { deoTakKod = value; }
         }
 
-        // TODO4: Izbrisi kategorije
+        private string naziv;
+        public virtual string Naziv
+        {
+            get { return naziv; }
+            set { naziv = value; }
+        }
+
+        private Takmicenje takmicenje;
+        public virtual Takmicenje Takmicenje
+        {
+            get { return takmicenje; }
+            set { takmicenje = value; }
+        }
 
         private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
         public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
         {
             get { return kategorije; }
             protected set { kategorije = value; }
-        }
-
-        public virtual void addKategorija(TakmicarskaKategorija kat)
-        {
-            Kategorije.Add(kat);
-        }
-
-        public virtual void removeKategorija(TakmicarskaKategorija kat)
-        {
-            Kategorije.Remove(kat);
         }
 
         private Iesi.Collections.Generic.ISet<SudijskiOdborNaSpravi> odbori = new HashedSet<SudijskiOdborNaSpravi>();
@@ -52,9 +54,9 @@ namespace Bilten.Domain
             if (kategorije.Count == 0)
                 throw new ArgumentException("Kategorije ne smeju da budu prazne.");
 
-            foreach (TakmicarskaKategorija kat in kategorije)
-                addKategorija(kat);
+            this.Naziv = RasporedNastupa.kreirajNaziv(kategorije);
             this.deoTakKod = deoTakKod;
+            this.takmicenje = kategorije[0].Takmicenje;
 
             Sprava[] sprave = Sprave.getSprave(gimnastika);
             foreach (Sprava s in sprave)
@@ -75,10 +77,8 @@ namespace Bilten.Domain
         {
             strBuilder.AppendLine(Id.ToString());
             strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
-
-            strBuilder.AppendLine(Kategorije.Count.ToString());
-            foreach (TakmicarskaKategorija k in Kategorije)
-                strBuilder.AppendLine(k.Id.ToString());
+            strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
 
             strBuilder.AppendLine(Odbori.Count.ToString());
             foreach (SudijskiOdborNaSpravi s in Odbori)
@@ -89,11 +89,13 @@ namespace Bilten.Domain
         {
             DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
 
-            int count = int.Parse(reader.ReadLine());
-            for (int i = 0; i < count; ++i)
-                Kategorije.Add(map.kategorijeMap[int.Parse(reader.ReadLine())]);
+            string line = reader.ReadLine();
+            Naziv = line != NULL ? line : null;
 
-            count = int.Parse(reader.ReadLine());
+            line = reader.ReadLine();
+            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
+            
+            int count = int.Parse(reader.ReadLine());
             for (int i = 0; i < count; ++i)
             {
                 reader.ReadLine();  // id

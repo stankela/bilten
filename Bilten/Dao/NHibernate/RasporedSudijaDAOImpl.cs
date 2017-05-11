@@ -14,10 +14,10 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select distinct r
-                        from RasporedSudija r
-                        join r.Kategorije k
-                        where k.Takmicenje.Id = :takmicenjeId");
+                IQuery q = Session.CreateQuery(@"
+                    select distinct r
+                    from RasporedSudija r
+                    where r.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<RasporedSudija>();
             }
@@ -34,7 +34,6 @@ namespace Bilten.Dao.NHibernate
                 IQuery q = Session.CreateQuery(@"
                     select distinct r
                     from RasporedSudija r
-                    left join fetch r.Kategorije k
                     left join fetch r.Odbori o
                     left join fetch o.Sudije s
                     left join fetch s.DrzavaUcesnik dr
@@ -59,15 +58,28 @@ namespace Bilten.Dao.NHibernate
                 IQuery q = Session.CreateQuery(@"
                     select distinct r
                     from RasporedSudija r
-                    left join fetch r.Kategorije k
                     left join fetch r.Odbori o
                     left join fetch o.Sudije s
                     left join fetch s.DrzavaUcesnik dr
                     left join fetch s.KlubUcesnik kl
                     where r.DeoTakmicenjaKod = :deoTak
-                    and k.Takmicenje.Id = :takmicenjeId");
+                    and r.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 q.SetByte("deoTak", (byte)deoTak);
+                return q.List<RasporedSudija>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RasporedSudija> FindAll()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from RasporedSudija r");
                 return q.List<RasporedSudija>();
             }
             catch (HibernateException ex)
