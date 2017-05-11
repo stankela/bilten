@@ -56,8 +56,7 @@ namespace Bilten.Domain
             Rezultati.Clear();
             foreach (RezultatEkipnoFinaleKupa r in rezultatiMap.Values)
             {
-                r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak4,
-                    rezTak.Propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola);
+                r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak4);
                 Rezultati.Add(r);
             }
             rankRezultati(rezTak.Propozicije);
@@ -148,10 +147,7 @@ namespace Bilten.Domain
         public virtual void calculateTotal(Propozicije propozicije)
         {
             foreach (RezultatEkipnoFinaleKupa r in Rezultati)
-            {
-                r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak4,
-                    propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola);
-            }
+                r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak4);
             rankRezultati(propozicije);
         }
 
@@ -178,8 +174,7 @@ namespace Bilten.Domain
                 }
             }
 
-            rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak4,
-                rezTak.Propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola);
+            rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak4);
             Rezultati.Add(rezultat);
             rankRezultati(rezTak.Propozicije);
         }

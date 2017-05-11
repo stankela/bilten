@@ -964,7 +964,12 @@ public class VersionUpdater
                     else if (p.Tak2FinalnaOcenaJeMaxObaKola)
                         p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Max;
                     else if (p.Tak2FinalnaOcenaJeProsekObaKola)
-                        p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Prosek;
+                    {
+                        if (p.Tak2NeRacunajProsekAkoNemaOceneIzObaKola)
+                            p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene;
+                        else
+                            p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.ProsekUvek;
+                    }
                     else
                         p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Undefined;
 
@@ -973,7 +978,12 @@ public class VersionUpdater
                     else if (p.Tak3FinalnaOcenaJeMaxObaKola)
                         p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Max;
                     else if (p.Tak3FinalnaOcenaJeProsekObaKola)
-                        p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Prosek;
+                    {
+                        if (p.Tak3NeRacunajProsekAkoNemaOceneIzObaKola)
+                            p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene;
+                        else
+                            p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.ProsekUvek;
+                    }
                     else
                         p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Undefined;
 
@@ -982,7 +992,12 @@ public class VersionUpdater
                     else if (p.Tak4FinalnaOcenaJeMaxObaKola)
                         p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Max;
                     else if (p.Tak4FinalnaOcenaJeProsekObaKola)
-                        p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Prosek;
+                    {
+                        if (p.Tak4NeRacunajProsekAkoNemaOceneIzObaKola)
+                            p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene;
+                        else
+                            p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.ProsekUvek;
+                    }
                     else
                         p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Undefined;
 

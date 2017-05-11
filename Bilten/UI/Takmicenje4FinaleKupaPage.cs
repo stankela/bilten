@@ -166,8 +166,9 @@ namespace Bilten.UI
                 rbtFinalnaOcenaJeZbir.Checked
                     = propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.Zbir;
                 rbtFinalnaOcenaJeProsek.Checked
-                    = propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.Prosek;
-                ckbNeRacunajProsek.Checked = propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene
+                    || propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.ProsekUvek;
+                ckbNeRacunajProsek.Checked = propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene;
 
                 if (propozicije.OdvojenoTak4)
                 {
@@ -311,8 +312,12 @@ namespace Bilten.UI
                 else if (rbtFinalnaOcenaJeZbir.Checked)
                     propozicije.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Zbir;
                 else if (rbtFinalnaOcenaJeProsek.Checked)
-                    propozicije.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Prosek;
-                propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = ckbNeRacunajProsek.Checked;
+                {
+                    if (ckbNeRacunajProsek.Checked)
+                        propozicije.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene;
+                    else
+                        propozicije.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.ProsekUvek;
+                }
 
                 if (propozicije.OdvojenoTak4)
                 {

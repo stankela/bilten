@@ -58,8 +58,7 @@ namespace Bilten.Domain
             {
                 // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
                 // na isti nacin.
-                r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2,
-                    rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
+                r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2);
                 Rezultati.Add(r);
             }
             rankRezultati(rezTak.Propozicije);
@@ -220,10 +219,7 @@ namespace Bilten.Domain
         public virtual void calculateTotal(Propozicije propozicije)
         {
             foreach (RezultatUkupnoFinaleKupa r in Rezultati)
-            {
-                r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak2,
-                    propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
-            }
+                r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak2);
             rankRezultati(propozicije);
         }
 
@@ -249,8 +245,7 @@ namespace Bilten.Domain
                     break;
                 }
             }
-            rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2,
-                rezTak.Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola);
+            rezultat.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak2);
             Rezultati.Add(rezultat);
             rankRezultati(rezTak.Propozicije);
         }

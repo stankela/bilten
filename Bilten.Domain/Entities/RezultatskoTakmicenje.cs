@@ -635,8 +635,7 @@ namespace Bilten.Domain
                     rankPoredakEkipeTak1 = true;
             }
 
-            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak2 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak2
-                || Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola)
+            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak2 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak2)
             {
                 if (takmicenje.FinaleKupa)
                     calculatePoredakUkupnoFinaleKupa = true;
@@ -644,15 +643,13 @@ namespace Bilten.Domain
                     calculatePoredakUkupnoZbirViseKola = true;
             }
 
-            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak3 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak3
-                || Propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola)
+            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak3 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak3)
             {
                 if (takmicenje.FinaleKupa)
                     calculatePoredakSpravaFinaleKupa = true;
             }
 
-            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak4 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak4
-                || Propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola)
+            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak4 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak4)
             {
                 if (takmicenje.FinaleKupa)
                     calculatePoredakEkipnoFinaleKupa = true;

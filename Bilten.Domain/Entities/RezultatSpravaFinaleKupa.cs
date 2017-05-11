@@ -99,7 +99,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin, bool neRacunajProsekAkoNemaOceneIzObaKola)
+        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin)
         {
             if (TotalPrvoKolo == null && TotalDrugoKolo == null)
             {
@@ -119,7 +119,7 @@ namespace Bilten.Domain
                 // TODO3: Proveri da li treba podesavati broj decimala (isto i za ostale rezultate finala kupa i
                 // zbira vise kola).
                 total = (total1 + total2) / 2;
-                if (neRacunajProsekAkoNemaOceneIzObaKola
+                if (nacin == NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene
                     && (TotalPrvoKolo == null || TotalDrugoKolo == null))
                 {
                     total = total1 + total2;

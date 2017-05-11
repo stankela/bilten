@@ -171,7 +171,7 @@ namespace Bilten.Domain
             TotalDrugoKolo = r.Total;
         }
 
-        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin, bool neRacunajProsekAkoNemaOceneIzObaKola)
+        public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin)
         {
             if (TotalPrvoKolo == null && TotalDrugoKolo == null)
             {
@@ -189,7 +189,7 @@ namespace Bilten.Domain
             else
             {
                 total = (total1 + total2) / 2;
-                if (neRacunajProsekAkoNemaOceneIzObaKola && (TotalPrvoKolo == null || TotalDrugoKolo == null))
+                if (nacin == NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene && (TotalPrvoKolo == null || TotalDrugoKolo == null))
                     total = total1 + total2;
             }
             Total = total;

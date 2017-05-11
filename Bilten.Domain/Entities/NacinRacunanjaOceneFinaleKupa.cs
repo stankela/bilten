@@ -5,6 +5,7 @@
         Undefined = 0,
         Zbir,
         Max,
-        Prosek
+        ProsekSamoAkoPostojeObeOcene,
+        ProsekUvek // racunaj prosek i kad nema obe ocene
     }
 }
