@@ -7,6 +7,6 @@ namespace Bilten.Dao
 {
     public interface PropozicijeDAO : GenericDAO<Propozicije, int>
     {
-
+        IList<Propozicije> FindAll();
     }
 }

@@ -192,9 +192,12 @@ namespace Bilten.UI
                 rbtOdvojenoTak3.Checked = propozicije.OdvojenoTak3;
                 rbtNaOsnovuPrvogIDrugogKola.Checked = !propozicije.OdvojenoTak3;
 
-                rbtFinalnaOcenaJeMax.Checked = propozicije.Tak3FinalnaOcenaJeMaxObaKola;
-                rbtFinalnaOcenaJeZbir.Checked = propozicije.Tak3FinalnaOcenaJeZbirObaKola;
-                rbtFinalnaOcenaJeProsek.Checked = propozicije.Tak3FinalnaOcenaJeProsekObaKola;
+                rbtFinalnaOcenaJeMax.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak3 ==  NacinRacunanjaOceneFinaleKupa.Max;
+                rbtFinalnaOcenaJeZbir.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak3 == NacinRacunanjaOceneFinaleKupa.Zbir;
+                rbtFinalnaOcenaJeProsek.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak3 == NacinRacunanjaOceneFinaleKupa.Prosek;
                 ckbNeRacunajProsek.Checked = propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola;
                 
                 if (propozicije.OdvojenoTak3)
@@ -373,9 +376,12 @@ namespace Bilten.UI
             {
                 propozicije.OdvojenoTak3 = rbtOdvojenoTak3.Checked;
 
-                propozicije.Tak3FinalnaOcenaJeMaxObaKola = rbtFinalnaOcenaJeMax.Checked;
-                propozicije.Tak3FinalnaOcenaJeZbirObaKola = rbtFinalnaOcenaJeZbir.Checked;
-                propozicije.Tak3FinalnaOcenaJeProsekObaKola = rbtFinalnaOcenaJeProsek.Checked;
+                if (rbtFinalnaOcenaJeMax.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Max;
+                else if (rbtFinalnaOcenaJeZbir.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Zbir;
+                else if (rbtFinalnaOcenaJeProsek.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Prosek;
                 propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola = ckbNeRacunajProsek.Checked;
 
                 if (propozicije.OdvojenoTak3)

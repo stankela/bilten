@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Iesi.Collections.Generic;
 using System.ComponentModel;
-using NHibernate;
 using Bilten.Util;
 using System.IO;
 
@@ -30,9 +29,6 @@ namespace Bilten.Domain
 
         public virtual void clearUcesnici()
         {
-            // TODO4: Domain klasa ne bi trebalo da koristi NHibernateUtil klasu. Ukloni i referencu na NHibernate.dll
-            // iz Bilten.Domain.dll.
-            NHibernateUtil.Initialize(Ucesnici);
             foreach (UcesnikTakmicenja4 u in new List<UcesnikTakmicenja4>(Ucesnici))
                 removeUcesnik(u);
         }

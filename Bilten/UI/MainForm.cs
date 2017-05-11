@@ -1285,10 +1285,36 @@ namespace Bilten.UI
             }
         }
 
+        // TODO4: Kada se kreira finale kupa, promeni u propozicijama da PostojiTak2, PostojiTak3 i PostojiTak4 budu true.
+
         private bool uveziTakmicenje(string fileName, out Takmicenje t, bool uveziStartListe, bool uveziSudije)
         {
             TakmicenjeDump takDump = new TakmicenjeDump();
-            takDump.loadFromFile(fileName);
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    // Sesija je potrebna za finala kupa, da se potraze prethodna kola na osnovu ID-a.
+                    takDump.loadFromFile(fileName);
+                }
+            }
+            catch (Exception)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
 
             IList<RasporedNastupa> rasporediNastupa = null;
             if (uveziStartListe)
@@ -1309,7 +1335,7 @@ namespace Bilten.UI
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
-            ISession session = null;
+            session = null;
             try
             {
                 using (session = NHibernateHelper.Instance.OpenSession())

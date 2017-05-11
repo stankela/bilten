@@ -161,9 +161,12 @@ namespace Bilten.UI
                 rbtPostojiTak4ZaSvakuKategoriju.Checked = !propozicije.JednoTak4ZaSveKategorije;
                 rbtJednoTak4ZaSveKategorije.Checked = propozicije.JednoTak4ZaSveKategorije;
 
-                rbtFinalnaOcenaJeMax.Checked = propozicije.Tak4FinalnaOcenaJeMaxObaKola;
-                rbtFinalnaOcenaJeZbir.Checked = propozicije.Tak4FinalnaOcenaJeZbirObaKola;
-                rbtFinalnaOcenaJeProsek.Checked = propozicije.Tak4FinalnaOcenaJeProsekObaKola;
+                rbtFinalnaOcenaJeMax.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.Max;
+                rbtFinalnaOcenaJeZbir.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.Zbir;
+                rbtFinalnaOcenaJeProsek.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak4 == NacinRacunanjaOceneFinaleKupa.Prosek;
                 ckbNeRacunajProsek.Checked = propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
 
                 if (propozicije.OdvojenoTak4)
@@ -303,9 +306,12 @@ namespace Bilten.UI
                 propozicije.OdvojenoTak4 = rbtOdvojenoTak4.Checked;
                 propozicije.JednoTak4ZaSveKategorije = rbtJednoTak4ZaSveKategorije.Checked;
 
-                propozicije.Tak4FinalnaOcenaJeMaxObaKola = rbtFinalnaOcenaJeMax.Checked;
-                propozicije.Tak4FinalnaOcenaJeZbirObaKola = rbtFinalnaOcenaJeZbir.Checked;
-                propozicije.Tak4FinalnaOcenaJeProsekObaKola = rbtFinalnaOcenaJeProsek.Checked;
+                if (rbtFinalnaOcenaJeMax.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Max;
+                else if (rbtFinalnaOcenaJeZbir.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Zbir;
+                else if (rbtFinalnaOcenaJeProsek.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Prosek;
                 propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = ckbNeRacunajProsek.Checked;
 
                 if (propozicije.OdvojenoTak4)

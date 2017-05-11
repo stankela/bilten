@@ -165,9 +165,12 @@ namespace Bilten.UI
                 rbtOdvojenoTak2.Checked = propozicije.OdvojenoTak2;
                 rbtNaOsnovuPrvogIDrugogKola.Checked = !propozicije.OdvojenoTak2;
 
-                rbtFinalnaOcenaJeMax.Checked = propozicije.Tak2FinalnaOcenaJeMaxObaKola;
-                rbtFinalnaOcenaJeZbir.Checked = propozicije.Tak2FinalnaOcenaJeZbirObaKola;
-                rbtFinalnaOcenaJeProsek.Checked = propozicije.Tak2FinalnaOcenaJeProsekObaKola;
+                rbtFinalnaOcenaJeMax.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak2 == NacinRacunanjaOceneFinaleKupa.Max;
+                rbtFinalnaOcenaJeZbir.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak2 == NacinRacunanjaOceneFinaleKupa.Zbir;
+                rbtFinalnaOcenaJeProsek.Checked
+                    = propozicije.NacinRacunanjaOceneFinaleKupaTak2 == NacinRacunanjaOceneFinaleKupa.Prosek;
                 ckbNeRacunajProsek.Checked = propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
 
                 if (propozicije.OdvojenoTak2)
@@ -318,9 +321,12 @@ namespace Bilten.UI
             {
                 propozicije.OdvojenoTak2 = rbtOdvojenoTak2.Checked;
 
-                propozicije.Tak2FinalnaOcenaJeMaxObaKola = rbtFinalnaOcenaJeMax.Checked;
-                propozicije.Tak2FinalnaOcenaJeZbirObaKola = rbtFinalnaOcenaJeZbir.Checked;
-                propozicije.Tak2FinalnaOcenaJeProsekObaKola = rbtFinalnaOcenaJeProsek.Checked;
+                if (rbtFinalnaOcenaJeMax.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Max;
+                else if (rbtFinalnaOcenaJeZbir.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Zbir;
+                else if (rbtFinalnaOcenaJeProsek.Checked)
+                    propozicije.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Prosek;
                 propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = ckbNeRacunajProsek.Checked;
 
                 if (propozicije.OdvojenoTak2)

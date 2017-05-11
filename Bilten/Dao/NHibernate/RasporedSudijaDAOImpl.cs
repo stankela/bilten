@@ -79,7 +79,7 @@ namespace Bilten.Dao.NHibernate
             try
             {
                 IQuery q = Session.CreateQuery(@"
-                    from RasporedSudija r");
+                    from RasporedSudija");
                 return q.List<RasporedSudija>();
             }
             catch (HibernateException ex)

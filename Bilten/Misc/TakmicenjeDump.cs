@@ -118,7 +118,7 @@ namespace Bilten.Misc
             return strBuilder.ToString();
         }
 
-        public string dumpAll(int takmicenjeId)
+        private string dumpAll(int takmicenjeId)
         {
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.AppendLine(BILTEN_TAKMICENJE_DUMP);
@@ -140,7 +140,7 @@ namespace Bilten.Misc
             File.WriteAllText(fileName, dumpAll(takmicenjeId));
         }
 
-        public void loadFromDump(string dump)
+        private void loadFromDump(string dump)
         {
             IdMap map = new IdMap();
 

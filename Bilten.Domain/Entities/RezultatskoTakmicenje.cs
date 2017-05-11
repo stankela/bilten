@@ -635,9 +635,7 @@ namespace Bilten.Domain
                     rankPoredakEkipeTak1 = true;
             }
 
-            if (Propozicije.Tak2FinalnaOcenaJeZbirObaKola != origPropozicije.Tak2FinalnaOcenaJeZbirObaKola
-                || Propozicije.Tak2FinalnaOcenaJeMaxObaKola != origPropozicije.Tak2FinalnaOcenaJeMaxObaKola
-                || Propozicije.Tak2FinalnaOcenaJeProsekObaKola != origPropozicije.Tak2FinalnaOcenaJeProsekObaKola
+            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak2 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak2
                 || Propozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak2NeRacunajProsekAkoNemaOceneIzObaKola)
             {
                 if (takmicenje.FinaleKupa)
@@ -646,18 +644,14 @@ namespace Bilten.Domain
                     calculatePoredakUkupnoZbirViseKola = true;
             }
 
-            if (Propozicije.Tak3FinalnaOcenaJeZbirObaKola != origPropozicije.Tak3FinalnaOcenaJeZbirObaKola
-                || Propozicije.Tak3FinalnaOcenaJeMaxObaKola != origPropozicije.Tak3FinalnaOcenaJeMaxObaKola
-                || Propozicije.Tak3FinalnaOcenaJeProsekObaKola != origPropozicije.Tak3FinalnaOcenaJeProsekObaKola
+            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak3 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak3
                 || Propozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak3NeRacunajProsekAkoNemaOceneIzObaKola)
             {
                 if (takmicenje.FinaleKupa)
                     calculatePoredakSpravaFinaleKupa = true;
             }
 
-            if (Propozicije.Tak4FinalnaOcenaJeZbirObaKola != origPropozicije.Tak4FinalnaOcenaJeZbirObaKola
-                || Propozicije.Tak4FinalnaOcenaJeMaxObaKola != origPropozicije.Tak4FinalnaOcenaJeMaxObaKola
-                || Propozicije.Tak4FinalnaOcenaJeProsekObaKola != origPropozicije.Tak4FinalnaOcenaJeProsekObaKola
+            if (Propozicije.NacinRacunanjaOceneFinaleKupaTak4 != origPropozicije.NacinRacunanjaOceneFinaleKupaTak4
                 || Propozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola != origPropozicije.Tak4NeRacunajProsekAkoNemaOceneIzObaKola)
             {
                 if (takmicenje.FinaleKupa)

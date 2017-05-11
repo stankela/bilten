@@ -190,23 +190,15 @@ namespace Bilten.Domain
 
         // Takmicenje 2
 
-        // TODO4: Napravi ovo svojstvo presistent, i izbrisi Tak2FinalnaOcenaJeZbirObaKola, Tak2FinalnaOcenaJeMaxObaKola,
-        // Tak2FinalnaOcenaJeProsekObaKola. Isto i za takmicenja 3 i 4.
+        private NacinRacunanjaOceneFinaleKupa nacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Zbir;
         public virtual NacinRacunanjaOceneFinaleKupa NacinRacunanjaOceneFinaleKupaTak2
         {
-            get 
-            {
-                if (Tak2FinalnaOcenaJeZbirObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Zbir;
-                else if (Tak2FinalnaOcenaJeMaxObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Max;
-                else if (Tak2FinalnaOcenaJeProsekObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Prosek;
-                else
-                    return NacinRacunanjaOceneFinaleKupa.Undefined;
-            }
+            get { return nacinRacunanjaOceneFinaleKupaTak2; }
+            set { nacinRacunanjaOceneFinaleKupaTak2 = value; }
         }
 
+        // TODO4: Ukloni sledeca 3 svojstva nakon sto izvrsis apdejt na verziju 5, iz .hbm fajlova i iz baze. Isto
+        // i za takmicenja 3 i 4.
         private bool tak2FinalnaOcenaJeZbirObaKola = true;
         public virtual bool Tak2FinalnaOcenaJeZbirObaKola
         {
@@ -237,19 +229,11 @@ namespace Bilten.Domain
 
         // Takmicenje 3
 
+        private NacinRacunanjaOceneFinaleKupa nacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Max;
         public virtual NacinRacunanjaOceneFinaleKupa NacinRacunanjaOceneFinaleKupaTak3
         {
-            get
-            {
-                if (Tak3FinalnaOcenaJeZbirObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Zbir;
-                else if (Tak3FinalnaOcenaJeMaxObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Max;
-                else if (Tak3FinalnaOcenaJeProsekObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Prosek;
-                else
-                    return NacinRacunanjaOceneFinaleKupa.Undefined;
-            }
+            get { return nacinRacunanjaOceneFinaleKupaTak3; }
+            set { nacinRacunanjaOceneFinaleKupaTak3 = value; }
         }
 
         private bool tak3FinalnaOcenaJeZbirObaKola;
@@ -282,19 +266,11 @@ namespace Bilten.Domain
 
         // Takmicenje 4
 
+        private NacinRacunanjaOceneFinaleKupa nacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Zbir;
         public virtual NacinRacunanjaOceneFinaleKupa NacinRacunanjaOceneFinaleKupaTak4
         {
-            get
-            {
-                if (Tak4FinalnaOcenaJeZbirObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Zbir;
-                else if (Tak4FinalnaOcenaJeMaxObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Max;
-                else if (Tak4FinalnaOcenaJeProsekObaKola)
-                    return NacinRacunanjaOceneFinaleKupa.Prosek;
-                else
-                    return NacinRacunanjaOceneFinaleKupa.Undefined;
-            }
+            get { return nacinRacunanjaOceneFinaleKupaTak4; }
+            set { nacinRacunanjaOceneFinaleKupaTak4 = value; }
         }
 
         private bool tak4FinalnaOcenaJeZbirObaKola = true;
@@ -543,9 +519,7 @@ namespace Bilten.Domain
                 // preskok za odvojeno finale.
                 p.PostojiTak2 = this.PostojiTak2;
                 p.OdvojenoTak2 = this.OdvojenoTak2;
-                p.Tak2FinalnaOcenaJeMaxObaKola = this.Tak2FinalnaOcenaJeMaxObaKola;
-                p.Tak2FinalnaOcenaJeZbirObaKola = this.Tak2FinalnaOcenaJeZbirObaKola;
-                p.Tak2FinalnaOcenaJeProsekObaKola = this.Tak2FinalnaOcenaJeProsekObaKola;
+                p.NacinRacunanjaOceneFinaleKupaTak2 = this.NacinRacunanjaOceneFinaleKupaTak2;
                 p.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
                 p.BrojFinalistaTak2 = this.BrojFinalistaTak2;
                 p.BrojRezerviTak2 = this.BrojRezerviTak2;
@@ -563,9 +537,7 @@ namespace Bilten.Domain
             {
                 p.PostojiTak3 = this.PostojiTak3;
                 p.OdvojenoTak3 = this.OdvojenoTak3;
-                p.Tak3FinalnaOcenaJeMaxObaKola = this.Tak3FinalnaOcenaJeMaxObaKola;
-                p.Tak3FinalnaOcenaJeZbirObaKola = this.Tak3FinalnaOcenaJeZbirObaKola;
-                p.Tak3FinalnaOcenaJeProsekObaKola = this.Tak3FinalnaOcenaJeProsekObaKola;
+                p.NacinRacunanjaOceneFinaleKupaTak3 = this.NacinRacunanjaOceneFinaleKupaTak3;
                 p.Tak3NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola;
                 p.BrojFinalistaTak3 = this.BrojFinalistaTak3;
                 p.BrojRezerviTak3 = this.BrojRezerviTak3;
@@ -592,9 +564,7 @@ namespace Bilten.Domain
                 p.PostojiTak4 = this.PostojiTak4;
                 p.OdvojenoTak4 = this.OdvojenoTak4;
                 p.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
-                p.Tak4FinalnaOcenaJeMaxObaKola = this.Tak4FinalnaOcenaJeMaxObaKola;
-                p.Tak4FinalnaOcenaJeZbirObaKola = this.Tak4FinalnaOcenaJeZbirObaKola;
-                p.Tak4FinalnaOcenaJeProsekObaKola = this.Tak4FinalnaOcenaJeProsekObaKola;
+                p.NacinRacunanjaOceneFinaleKupaTak4 = this.NacinRacunanjaOceneFinaleKupaTak4;
                 p.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
                 p.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
                 p.BrojRezultataKojiSeBodujuZaEkipu = this.BrojRezultataKojiSeBodujuZaEkipu;
@@ -628,19 +598,13 @@ namespace Bilten.Domain
             result.BrojEkipaUFinalu = this.BrojEkipaUFinalu;
             result.JednoTak4ZaSveKategorije = this.JednoTak4ZaSveKategorije;
 
-            result.Tak2FinalnaOcenaJeZbirObaKola = this.Tak2FinalnaOcenaJeZbirObaKola;
-            result.Tak2FinalnaOcenaJeMaxObaKola = this.Tak2FinalnaOcenaJeMaxObaKola;
-            result.Tak2FinalnaOcenaJeProsekObaKola = this.Tak2FinalnaOcenaJeProsekObaKola;
+            result.NacinRacunanjaOceneFinaleKupaTak2 = this.NacinRacunanjaOceneFinaleKupaTak2;
             result.Tak2NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola;
 
-            result.Tak3FinalnaOcenaJeZbirObaKola = this.Tak3FinalnaOcenaJeZbirObaKola;
-            result.Tak3FinalnaOcenaJeMaxObaKola = this.Tak3FinalnaOcenaJeMaxObaKola;
-            result.Tak3FinalnaOcenaJeProsekObaKola = this.Tak3FinalnaOcenaJeProsekObaKola;
+            result.NacinRacunanjaOceneFinaleKupaTak3 = this.NacinRacunanjaOceneFinaleKupaTak3;
             result.Tak3NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola;
 
-            result.Tak4FinalnaOcenaJeZbirObaKola = this.Tak4FinalnaOcenaJeZbirObaKola;
-            result.Tak4FinalnaOcenaJeMaxObaKola = this.Tak4FinalnaOcenaJeMaxObaKola;
-            result.Tak4FinalnaOcenaJeProsekObaKola = this.Tak4FinalnaOcenaJeProsekObaKola;
+            result.NacinRacunanjaOceneFinaleKupaTak4 = this.NacinRacunanjaOceneFinaleKupaTak4;
             result.Tak4NeRacunajProsekAkoNemaOceneIzObaKola = this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
             return result;
         }
@@ -675,19 +639,13 @@ namespace Bilten.Domain
             && this.BrojEkipaUFinalu == that.BrojEkipaUFinalu
             && this.JednoTak4ZaSveKategorije == that.JednoTak4ZaSveKategorije
 
-            && this.Tak2FinalnaOcenaJeZbirObaKola == that.Tak2FinalnaOcenaJeZbirObaKola
-            && this.Tak2FinalnaOcenaJeMaxObaKola == that.Tak2FinalnaOcenaJeMaxObaKola
-            && this.Tak2FinalnaOcenaJeProsekObaKola == that.Tak2FinalnaOcenaJeProsekObaKola
+            && this.NacinRacunanjaOceneFinaleKupaTak2 == that.NacinRacunanjaOceneFinaleKupaTak2
             && this.Tak2NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak2NeRacunajProsekAkoNemaOceneIzObaKola
 
-            && this.Tak3FinalnaOcenaJeZbirObaKola == that.Tak3FinalnaOcenaJeZbirObaKola
-            && this.Tak3FinalnaOcenaJeMaxObaKola == that.Tak3FinalnaOcenaJeMaxObaKola
-            && this.Tak3FinalnaOcenaJeProsekObaKola == that.Tak3FinalnaOcenaJeProsekObaKola
+            && this.NacinRacunanjaOceneFinaleKupaTak3 == that.NacinRacunanjaOceneFinaleKupaTak3
             && this.Tak3NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak3NeRacunajProsekAkoNemaOceneIzObaKola
 
-            && this.Tak4FinalnaOcenaJeZbirObaKola == that.Tak4FinalnaOcenaJeZbirObaKola
-            && this.Tak4FinalnaOcenaJeMaxObaKola == that.Tak4FinalnaOcenaJeMaxObaKola
-            && this.Tak4FinalnaOcenaJeProsekObaKola == that.Tak4FinalnaOcenaJeProsekObaKola
+            && this.NacinRacunanjaOceneFinaleKupaTak4 == that.NacinRacunanjaOceneFinaleKupaTak4
             && this.Tak4NeRacunajProsekAkoNemaOceneIzObaKola == that.Tak4NeRacunajProsekAkoNemaOceneIzObaKola;
         }
         
@@ -724,19 +682,13 @@ namespace Bilten.Domain
             strBuilder.AppendLine(BrojEkipaUFinalu.ToString());
             strBuilder.AppendLine(JednoTak4ZaSveKategorije.ToString());
 
-            strBuilder.AppendLine(Tak2FinalnaOcenaJeZbirObaKola.ToString());
-            strBuilder.AppendLine(Tak2FinalnaOcenaJeMaxObaKola.ToString());
-            strBuilder.AppendLine(Tak2FinalnaOcenaJeProsekObaKola.ToString());
+            strBuilder.AppendLine(NacinRacunanjaOceneFinaleKupaTak2.ToString());
             strBuilder.AppendLine(Tak2NeRacunajProsekAkoNemaOceneIzObaKola.ToString());
 
-            strBuilder.AppendLine(Tak3FinalnaOcenaJeZbirObaKola.ToString());
-            strBuilder.AppendLine(Tak3FinalnaOcenaJeMaxObaKola.ToString());
-            strBuilder.AppendLine(Tak3FinalnaOcenaJeProsekObaKola.ToString());
+            strBuilder.AppendLine(NacinRacunanjaOceneFinaleKupaTak3.ToString());
             strBuilder.AppendLine(Tak3NeRacunajProsekAkoNemaOceneIzObaKola.ToString());
 
-            strBuilder.AppendLine(Tak4FinalnaOcenaJeZbirObaKola.ToString());
-            strBuilder.AppendLine(Tak4FinalnaOcenaJeMaxObaKola.ToString());
-            strBuilder.AppendLine(Tak4FinalnaOcenaJeProsekObaKola.ToString());
+            strBuilder.AppendLine(NacinRacunanjaOceneFinaleKupaTak4.ToString());
             strBuilder.AppendLine(Tak4NeRacunajProsekAkoNemaOceneIzObaKola.ToString());
         }
 
@@ -766,19 +718,16 @@ namespace Bilten.Domain
             BrojEkipaUFinalu = byte.Parse(reader.ReadLine());
             JednoTak4ZaSveKategorije = bool.Parse(reader.ReadLine());
 
-            Tak2FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
-            Tak2FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
-            Tak2FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
+            NacinRacunanjaOceneFinaleKupaTak2
+                = (NacinRacunanjaOceneFinaleKupa)Enum.Parse(typeof(NacinRacunanjaOceneFinaleKupa), reader.ReadLine());
             Tak2NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
 
-            Tak3FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
-            Tak3FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
-            Tak3FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
+            NacinRacunanjaOceneFinaleKupaTak3
+                = (NacinRacunanjaOceneFinaleKupa)Enum.Parse(typeof(NacinRacunanjaOceneFinaleKupa), reader.ReadLine());
             Tak3NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
 
-            Tak4FinalnaOcenaJeZbirObaKola = bool.Parse(reader.ReadLine());
-            Tak4FinalnaOcenaJeMaxObaKola = bool.Parse(reader.ReadLine());
-            Tak4FinalnaOcenaJeProsekObaKola = bool.Parse(reader.ReadLine());
+            NacinRacunanjaOceneFinaleKupaTak4
+                = (NacinRacunanjaOceneFinaleKupa)Enum.Parse(typeof(NacinRacunanjaOceneFinaleKupa), reader.ReadLine());
             Tak4NeRacunajProsekAkoNemaOceneIzObaKola = bool.Parse(reader.ReadLine());
         }
     }

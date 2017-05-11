@@ -94,6 +94,7 @@ public class VersionUpdater
             addTakmicenjeToRasporedNastupa();
             addTakmicenjeToRasporedSudija();
             updateRegistarskiBrojToString();
+            updateNacinRacunanjaOceneFinaleKupa();
             verzijaBaze = 5;
             converted = true;
         }
@@ -929,6 +930,63 @@ public class VersionUpdater
                     else
                         g.RegistarskiBroj = g.RegBroj.ToString();
                     gimnasticarDAO.Update(g);
+                }
+                session.Transaction.Commit();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
+    }
+
+    private void updateNacinRacunanjaOceneFinaleKupa()
+    {
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+                PropozicijeDAO propozicijeDAO = DAOFactoryFactory.DAOFactory.GetPropozicijeDAO();
+                IList<Propozicije> propozicije = propozicijeDAO.FindAll();
+                foreach (Propozicije p in propozicije)
+                {
+                    if (p.Tak2FinalnaOcenaJeZbirObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Zbir;
+                    else if (p.Tak2FinalnaOcenaJeMaxObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Max;
+                    else if (p.Tak2FinalnaOcenaJeProsekObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Prosek;
+                    else
+                        p.NacinRacunanjaOceneFinaleKupaTak2 = NacinRacunanjaOceneFinaleKupa.Undefined;
+
+                    if (p.Tak3FinalnaOcenaJeZbirObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Zbir;
+                    else if (p.Tak3FinalnaOcenaJeMaxObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Max;
+                    else if (p.Tak3FinalnaOcenaJeProsekObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Prosek;
+                    else
+                        p.NacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Undefined;
+
+                    if (p.Tak4FinalnaOcenaJeZbirObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Zbir;
+                    else if (p.Tak4FinalnaOcenaJeMaxObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Max;
+                    else if (p.Tak4FinalnaOcenaJeProsekObaKola)
+                        p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Prosek;
+                    else
+                        p.NacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Undefined;
+
+                    propozicijeDAO.Update(p);
                 }
                 session.Transaction.Commit();
             }

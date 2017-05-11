@@ -10,6 +10,20 @@ namespace Bilten.Dao.NHibernate
     {
         #region PropozicijeDAO Members
 
+        public IList<Propozicije> FindAll()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from Propozicije");
+                return q.List<Propozicije>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

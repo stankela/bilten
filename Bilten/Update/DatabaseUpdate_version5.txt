@@ -16,3 +16,10 @@ alter table raspored_sudija add column naziv nvarchar(256);
 GO
 alter table gimnasticari add column registarski_broj nvarchar(16);
 GO
+alter table propozicije add column nacin_racunanja_ocene_finale_kupa_tak2 tinyint;
+GO
+alter table propozicije add column nacin_racunanja_ocene_finale_kupa_tak3 tinyint;
+GO
+alter table propozicije add column nacin_racunanja_ocene_finale_kupa_tak4 tinyint;
+GO
+
