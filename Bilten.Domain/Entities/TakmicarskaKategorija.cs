@@ -101,7 +101,8 @@ namespace Bilten.Domain
             Naziv = naziv != NULL ? naziv : null;
             RedBroj = byte.Parse(reader.ReadLine());
 
-            Takmicenje = map.takmicenjeMap[int.Parse(reader.ReadLine())];
+            string line = reader.ReadLine();
+            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
         }
     }
 }

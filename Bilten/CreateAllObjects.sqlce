@@ -249,7 +249,9 @@ create table raspored_sudija_kategorija (
 
 create table raspored_nastupa (
 	raspored_nastupa_id int identity(1,1) primary key,
-	deo_takmicenja_kod tinyint
+	deo_takmicenja_kod tinyint,
+	naziv nvarchar(256),
+	takmicenje_id int references takmicenja(takmicenje_id)
 );
 
 create table raspored_nastupa_kategorija (

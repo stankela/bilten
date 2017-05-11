@@ -59,31 +59,7 @@ namespace Bilten.UI
                     NHibernateUtil.Initialize(takmicenje);
 
                     initUI();
-
-                    // create tabs
-                    for (int i = 0; i < rasporedi.Count; i++)
-                        createTab(rasporedi[i]);
-
-                    tabOpened = new List<bool>();
-                    grupa = new List<int>();
-                    rot = new List<int>();
-                    for (int i = 0; i < rasporedi.Count; i++)
-                    {
-                        tabOpened.Add(false);
-                        grupa.Add(0);
-                        rot.Add(0);
-                    }
-
-                    // show first tab
-                    if (rasporedi.Count > 0)
-                    {
-                        if (tabControl1.SelectedIndex != 0)
-                            tabControl1.SelectedIndex = 0;
-                        else
-                            onSelectedTabIndexChanged();
-                    }
-                    else
-                        tabControl1.TabPages.Remove(tabPage1);
+                    createTabs(rasporedi);
                 }
             }
             catch (BusinessException)
@@ -119,10 +95,39 @@ namespace Bilten.UI
             this.ClientSize = new Size(this.ClientSize.Width, 540);
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje3 || takmicenje.FinaleKupa)
             {
+                cmbGrupa.Enabled = false;
                 cmbRotacija.Enabled = false;
+                btnNewGroup.Enabled = false;
                 btnOstaleRotacije.Text = "Kreiraj na osnovu kvalifikanata";
             }
             mnRotirajEkipeRotirajGim.Checked = true;
+        }
+
+        private void createTabs(IList<RasporedNastupa> rasporedi)
+        {
+            for (int i = 0; i < rasporedi.Count; i++)
+                createTab(rasporedi[i]);
+
+            tabOpened = new List<bool>();
+            grupa = new List<int>();
+            rot = new List<int>();
+            for (int i = 0; i < rasporedi.Count; i++)
+            {
+                tabOpened.Add(false);
+                grupa.Add(0);
+                rot.Add(0);
+            }
+
+            // show first tab
+            if (rasporedi.Count > 0)
+            {
+                if (tabControl1.SelectedIndex != 0)
+                    tabControl1.SelectedIndex = 0;
+                else
+                    onSelectedTabIndexChanged();
+            }
+            else
+                tabControl1.TabPages.Remove(tabPage1);
         }
 
         private void createTab(RasporedNastupa raspored)
@@ -150,7 +155,7 @@ namespace Bilten.UI
                     spravaGridGroupUserControl1.Right, spravaGridGroupUserControl1.Bottom);
                 tabPage1.AutoScrollMargin =
                     new Size(spravaGridGroupUserControl1.Location);
-                tabPage1.Text = getTabText(raspored);
+                tabPage1.Text = raspored.Naziv;
             }
             else
             {
@@ -279,44 +284,6 @@ namespace Bilten.UI
             contextMenuStrip1.Show(grid, new Point(x, y));
         }
 
-        private string getTabText(RasporedNastupa rasporedNastupa)
-        {
-            List<TakmicarskaKategorija> kategorije =
-                new List<TakmicarskaKategorija>(rasporedNastupa.Kategorije);
-
-            if (kategorije.Count == 0)
-                return String.Empty;
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
-            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
-                propDesc, ListSortDirection.Ascending));
-
-            string retValue = kategorije[0].ToString();
-            for (int i = 1; i < kategorije.Count; i++)
-                retValue = retValue + ", " + kategorije[i].ToString();
-            return retValue;
-        }
-
-        private string getFirstKategorijaText(RasporedNastupa rasporedNastupa)
-        {
-            List<TakmicarskaKategorija> kategorije =
-                new List<TakmicarskaKategorija>(rasporedNastupa.Kategorije);
-
-            if (kategorije.Count == 0)
-                return String.Empty;
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
-            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
-                propDesc, ListSortDirection.Ascending));
-
-            string retValue = kategorije[0].ToString();
-            //for (int i = 1; i < kategorije.Count; i++)
-              //  retValue = retValue + ", " + kategorije[i].ToString();
-            return retValue;
-        }
-
         private void initTab(TabPage tabPage, RasporedNastupa raspored)
         {
             // TODO: Kod u ovom metodu je prekopiran iz Designer.cs fajla (plus ono
@@ -351,10 +318,14 @@ namespace Bilten.UI
             tabPage.AutoScrollMinSize = new Size(
                 spravaGridGroupUserControl.Right, spravaGridGroupUserControl.Bottom);
             tabPage.AutoScrollMargin = new Size(spravaGridGroupUserControl.Location);
-            tabPage.Text = getTabText(raspored);
+            tabPage.Text = raspored.Naziv;
             //tabPage.UseVisualStyleBackColor = this.tabPage1.UseVisualStyleBackColor;
             tabPage.ResumeLayout(false);
         }
+
+        // TODO4: Naziv rasporeda bi trebalo menjati kada se gimnasticari dodaju i brisu iz neke od start lista, da sadrzi
+        // samo one kategorije koje postoje u start listama. Ako su sve kategorije u start listama, mozda bi trebalo
+        // da naziv bude "Sve kategorije".
 
         void cmbRotacija_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -679,21 +650,14 @@ namespace Bilten.UI
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            IList<TakmicarskaKategorija> dodeljeneKategorije = getDodeljeneKategorije();
-            if (dodeljeneKategorije.Count == kategorijeCount)
-            {
-                MessageDialogs.showMessage(
-                    "Vec su odredjene start liste za sve kategorije.", this.Text);
-                return;
-            }
-
             string msg = "Izaberite kategorije za koje vazi start lista";
             DialogResult dlgResult = DialogResult.None;
             SelectKategorijaForm form = null;
             try
             {
                 // TODO4: Izbrisi SelectKategorijaForm i zameni ga sa CheckListForm
-                form = new SelectKategorijaForm(takmicenje.Id, takmicenje.Gimnastika, dodeljeneKategorije, msg);
+                form = new SelectKategorijaForm(takmicenje.Id, takmicenje.Gimnastika, new List<TakmicarskaKategorija>(),
+                    msg);
                 dlgResult = form.ShowDialog();
             }
             catch (InfrastructureException ex)
@@ -751,14 +715,6 @@ namespace Bilten.UI
                 tabControl1.SelectedIndex = tabControl1.TabPages.Count - 1;
             else
                 onSelectedTabIndexChanged();
-        }
-
-        private IList<TakmicarskaKategorija> getDodeljeneKategorije()
-        {
-            List<TakmicarskaKategorija> result = new List<TakmicarskaKategorija>();
-            foreach (RasporedNastupa r in rasporedi)
-                result.AddRange(r.Kategorije);
-            return result;
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -935,7 +891,7 @@ namespace Bilten.UI
                 nazivIzvestaja = "Start liste - finale ekipno";
             }
             // TODO: Verovatno bi trebalo ukljuciti i turnus, ukoliko ima vise turnusa
-            string kategorijaRotacija = getFirstKategorijaText(ActiveRaspored) + ", Rotacija " + ActiveRotacija.ToString();
+            string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
@@ -1028,12 +984,12 @@ namespace Bilten.UI
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 if (takmicenje.FinaleKupa)
-                    kreirajNaOsnovuKvalifikanataFinaleKupa();
+                    kreirajNaOsnovuKvalifikanata(true);
                 else
                     kreirajPreostaleRotacije();
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
-                kreirajNaOsnovuKvalifikanata();
+                kreirajNaOsnovuKvalifikanata(false);
         }
 
         private void kreirajPreostaleRotacije()
@@ -1053,9 +1009,7 @@ namespace Bilten.UI
             foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
             {
                 if (ActiveRaspored.getStartLista(s, ActiveGrupa, 1).Nastupi.Count != 0)
-                {
                     aktivneSpraveRot1.Add(s);
-                }
             }
 
             SpraveNaRotacijiForm form = null;
@@ -1063,9 +1017,7 @@ namespace Bilten.UI
             {
                 form = new SpraveNaRotacijiForm(takmicenje.Gimnastika, aktivneSpraveRot1);
                 if (form.ShowDialog() != DialogResult.OK)
-                {
                     return;
-                }
             }
             catch (Exception ex)
             {
@@ -1075,9 +1027,7 @@ namespace Bilten.UI
 
             int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
             for (int rot = 2; rot <= finalRot; rot++)
-            {
                 kreirajRotaciju(rot, form.AktivneSprave);
-            }
      
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -1232,17 +1182,8 @@ namespace Bilten.UI
             return result;
         }
 
-        // TODO: Ceo ovaj deo gde se kreira na osnovu kvalifikanata je radjen na brzinu, gde je jedino bilo bitno da moze da
-        // se primeni na Memorijal. Trebalo bi ga temeljno proveriti i uciniti robustnijim.
-        private void kreirajNaOsnovuKvalifikanata()
+        private void kreirajNaOsnovuKvalifikanata(bool finaleKupa)
         {
-            if (ActiveRaspored == null)
-            {
-                string msg2 = "Morate najpre da kreirate praznu start listu (dugme \"Nova start lista\").";
-                MessageDialogs.showMessage(msg2, this.Text);
-                return;
-            }
-
             string msg = "Da li zelite da kreirate start listu na osnovu kvalifikanata?";
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
@@ -1261,69 +1202,107 @@ namespace Bilten.UI
                     return;
             }
 
-            List<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>(ActiveRaspored.Kategorije);
-            RezultatskoTakmicenje rezTakmicenje = loadRezTakmicenje(takmicenje.Id, kategorije[0]);
-            if (rezTakmicenje == null)
-                return;
-
-            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
-            for (int j = 0; j < sprave.Length; j++)
+            ISession session = null;
+            if (rasporedi.Count > 0)
             {
-                StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
-                startLista.clear();
+                // Posto cu brisati jedan po jedan tab, selektujem prvi tab da se ne bi pozivalo onSelectedTabIndexChanged
+                // prilikom svakog brisanja.
+                tabControl1.SelectedIndex = 0;
 
-                List<UcesnikTakmicenja3> kvalifikanti = new List<UcesnikTakmicenja3>(
-                    rezTakmicenje.Takmicenje3.getUcesniciKvalifikanti(sprave[j]));
-                PropertyDescriptor propDesc =
-                    TypeDescriptor.GetProperties(typeof(UcesnikTakmicenja3))["QualOrder"];
-                kvalifikanti.Sort(new SortComparer<UcesnikTakmicenja3>(propDesc, ListSortDirection.Ascending));
-
-                int k = 0;
-                while (k < zreb.Count)
+                // TODO4: Postojece rasporede brisem u posebnoj sesiji, zato sto ako ih brisem u istoj sesiji u
+                // kojoj i kreiram nove rasporede, sesija se odjednom izgubi (u metodu loadRezTakmicenjaOdvojenoTak3).
+                // Proveri zasto se ovo desava. Ako ne uspes da pronadjes razlog (i ostane ovakvo resenje), verovatno bi
+                // trebalo klonirati sve rasporede koji se brisu, i zatim ih restorovati ako druga sesija generise izuzetak.
+                Cursor.Current = Cursors.WaitCursor;
+                Cursor.Show();
+                try
                 {
-                    if (zreb[k] <= kvalifikanti.Count)
-                        startLista.addNastup(new NastupNaSpravi(kvalifikanti[zreb[k] - 1].Gimnasticar, 0));
-                    k++;
+                    using (session = NHibernateHelper.Instance.OpenSession())
+                    using (session.BeginTransaction())
+                    {
+                        CurrentSessionContext.Bind(session);
+                        RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
+                        while (rasporedi.Count > 0)
+                        {
+                            rasporedNastupaDAO.Delete(rasporedi[0]);
+                            rasporedi.RemoveAt(0);
+                        }
+                        session.Transaction.Commit();
+                    }
                 }
-                k = startLista.Nastupi.Count;
-                while (k < kvalifikanti.Count)
+                catch (Exception ex)
                 {
-                    startLista.addNastup(new NastupNaSpravi(kvalifikanti[k].Gimnasticar, 0));
-                    k++;
+                    if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                        session.Transaction.Rollback();
+                    MessageDialogs.showMessage(ex.Message, this.Text);
+                    Close();
+                    return;
+                }
+                finally
+                {
+                    Cursor.Hide();
+                    Cursor.Current = Cursors.Arrow;
+                    CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+                }
+
+                // Izbrisi tabove.
+                while (tabControl1.TabPages.Count > 0)
+                {
+                    int index = tabControl1.TabPages.Count - 1;
+                    tabControl1.TabPages.RemoveAt(index);
+                    tabOpened.RemoveAt(index);
+                    grupa.RemoveAt(index);
+                    rot.RemoveAt(index);
                 }
             }
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
-            ISession session = null;
+            session = null;
             try
             {
                 using (session = NHibernateHelper.Instance.OpenSession())
                 using (session.BeginTransaction())
                 {
-                    CurrentSessionContext.Bind(session);
-                    for (int j = 0; j < sprave.Length; j++)
-                    {
-                        StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
-                        foreach (NastupNaSpravi n in startLista.Nastupi)
-                        {
-                            //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
-                            // za koje start lista vazi.
+                    // TODO4: Da li ce ovo raditi ako postoji vise takmicenja (kao npr. Memorijal i DKMT kup)?
 
-                            // TODO3: Proveri da li ovo (tj. nedostatak ove naredbe na drugim mestima) ima veze sa time sto mi
-                            // za start liste ponekad daje gresku, i zbog cega sam morao da u klasi NastupNaSpravi kesiram
-                            // Kategoriju.
-                            NHibernateUtil.Initialize(n.Gimnasticar.TakmicarskaKategorija);
-                        }
-                        DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
+                    CurrentSessionContext.Bind(session);
+
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    takmicenjeDAO.Attach(takmicenje, false);
+
+                    RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
+
+                    IList<RezultatskoTakmicenje> rezTakmicenja;
+                    if (finaleKupa)
+                        rezTakmicenja = loadRezTakmicenjaFinaleKupaOdvojenoTak3(takmicenje.Id);
+                    else
+                        rezTakmicenja = loadRezTakmicenjaOdvojenoTak3(takmicenje.Id);
+                    if (rezTakmicenja.Count == 0)
+                    {
+                        MessageDialogs.showMessage("Ne postoji posebno takmicenje III ni za jednu kategoriju.", this.Text);
+                        return;
                     }
 
-                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                    {
+                        RasporedNastupa newRaspored = new RasporedNastupa(rt.Kategorija, deoTakKod, takmicenje.Gimnastika);
+                        foreach (Sprava sprava in Sprave.getSprave(takmicenje.Gimnastika))
+                        {
+                            IList<GimnasticarUcesnik> kvalifikanti;
+                            if (finaleKupa)
+                                kvalifikanti = rt.Takmicenje1.getPoredakSpravaFinaleKupa(sprava).getKvalifikanti();
+                            else
+                                kvalifikanti = rt.Takmicenje3.getGimnasticariKvalifikanti(sprava);
+                            StartListaNaSpravi startLista = newRaspored.getStartLista(sprava, 1, 1);
+                            startLista.kreirajNaOsnovuKvalifikanata(kvalifikanti, zreb);
+                        }
+                        rasporedNastupaDAO.Add(newRaspored);
+                        rasporedi.Add(newRaspored);
+                    }
+
                     takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
-
-                    setStartListe(ActiveRaspored, ActiveGrupa, 1 /*ActiveRotacija*/);
-                    getActiveSpravaGridGroupUserControl().clearSelection();
                 }
             }
             catch (Exception ex)
@@ -1340,6 +1319,23 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        
+            createTabs(rasporedi);
+            getActiveSpravaGridGroupUserControl().clearSelection();
+        }
+
+        private IList<RezultatskoTakmicenje> loadRezTakmicenjaOdvojenoTak3(int takmicenjeId)
+        {
+            IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
+
+            IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+                .FindByTakmicenjeFetch_Tak3_Poredak(takmicenjeId);
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+            {
+                if (rt.odvojenoTak3())
+                    result.Add(rt);
+            }
+            return result;
         }
 
         private List<int> parseZreb()
@@ -1353,29 +1349,26 @@ namespace Bilten.UI
             List<string> parts = new List<string>();
             char delimiter = ' ';
             int index = zreb.IndexOf(delimiter);
-            while (index != -1 && zreb != String.Empty)
+            while (index != -1)
             {
                 parts.Add(zreb.Substring(0, index));
                 zreb = zreb.Substring(index).Trim();
                 index = zreb.IndexOf(delimiter);
             }
-            if (zreb.Trim() != String.Empty)
-                parts.Add(zreb.Trim());
+            parts.Add(zreb.Trim());
 
             List<int> result = new List<int>();
-            int dummyInt;
+            int value;
             for (int i = 0; i < parts.Count; i++)
             {
-                if (!int.TryParse(parts[i], out dummyInt))
+                if (!int.TryParse(parts[i], out value))
                     return null;
-                result.Add(int.Parse(parts[i]));
+                result.Add(value);
             }
 
             int[] occurences = new int[result.Count];
             for (int i = 0; i < result.Count; i++)
-            {
                 occurences[i] = 0;
-            }
             for (int i = 0; i < result.Count; i++)
             {
                 int number = result[i];
@@ -1389,230 +1382,15 @@ namespace Bilten.UI
             return result;
         }
 
-        private void kreirajNaOsnovuKvalifikanataFinaleKupa()
+        private IList<RezultatskoTakmicenje> loadRezTakmicenjaFinaleKupaOdvojenoTak3(int takmicenjeId)
         {
-            if (ActiveRaspored == null)
-            {
-                string msg2 = "Morate najpre da kreirate praznu start listu (dugme \"Nova start lista\").";
-                MessageDialogs.showMessage(msg2, this.Text);
-                return;
-            }
-
-            string msg = "Da li zelite da kreirate start listu na osnovu kvalifikanata?";
-            if (!MessageDialogs.queryConfirmation(msg, this.Text))
-                return;
-
-            List<int> zreb = parseZreb();
-            if (zreb == null)
-            {
-                msg = "Nepravilno unesen zreb za finale.";
-                MessageDialogs.showMessage(msg, this.Text);
-                return;
-            }
-            else if (zreb.Count == 0)
-            {
-                msg = "Nije unesen zreb za start liste. Da li zelite da kreirate start listu bez zreba?";
-                if (!MessageDialogs.queryConfirmation(msg, this.Text))
-                    return;
-            }
-
-            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
-            Cursor.Current = Cursors.WaitCursor;
-            Cursor.Show();
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenjaFinaleKupa(takmicenje.Id);
-
-                    IList<RezultatskoTakmicenje> svaRezTakmicenja2 = new List<RezultatskoTakmicenje>();
-                    foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
-                    {
-                        if (rt.odvojenoTak3())
-                            svaRezTakmicenja2.Add(rt);
-                    }
-                    if (svaRezTakmicenja2.Count == 0)
-                    {
-                        MessageDialogs.showMessage("Ne postoji posebno takmicenje III ni za jednu kategoriju.", this.Text);
-                        return;
-                    }
-
-                    IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
-                    List<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>(ActiveRaspored.Kategorije);
-                    foreach (TakmicarskaKategorija k in kategorije)
-                    {
-                        foreach (RezultatskoTakmicenje rt in svaRezTakmicenja2)
-                        {
-                            if (rt.Kategorija.Equals(k))
-                            {
-                                rezTakmicenja.Add(rt);
-                            }
-                        }
-                    }
-                    if (rezTakmicenja.Count == 0)
-                    {
-                        return;
-                    }
-
-                    for (int j = 0; j < sprave.Length; j++)
-                    {
-                        StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
-                        startLista.clear();
-
-                        List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>();
-                        foreach (RezultatskoTakmicenje rezTak in rezTakmicenja)
-                        {
-                            PoredakSpravaFinaleKupa poredak = rezTak.Takmicenje1.getPoredakSpravaFinaleKupa(sprave[j]);
-                            foreach (RezultatSpravaFinaleKupa rez in poredak.getKvalifikanti())
-                            {
-                                rezultati.Add(rez);
-                            }
-                        }
-
-                        int k = 0;
-                        while (k < zreb.Count)
-                        {
-                            if (zreb[k] <= rezultati.Count)
-                                startLista.addNastup(new NastupNaSpravi(rezultati[zreb[k] - 1].Gimnasticar, 0));
-                            k++;
-                        }
-                        k = startLista.Nastupi.Count;
-                        while (k < rezultati.Count)
-                        {
-                            startLista.addNastup(new NastupNaSpravi(rezultati[k].Gimnasticar, 0));
-                            k++;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                Cursor.Hide();
-                Cursor.Current = Cursors.Arrow;
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
-
-            Cursor.Current = Cursors.WaitCursor;
-            Cursor.Show();
-            session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    for (int j = 0; j < sprave.Length; j++)
-                    {
-                        StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprave[j], ActiveGrupa, 1 /*ActiveRotacija*/);
-                        foreach (NastupNaSpravi n in startLista.Nastupi)
-                        {
-                            //  potrebno za slucaj kada se u start listi nalaze i gimnasticari iz kategorija razlicitih od kategorija
-                            // za koje start lista vazi.
-                            NHibernateUtil.Initialize(n.Gimnasticar.TakmicarskaKategorija);
-                        }
-                        DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO().Update(startLista);
-                    }
-
-                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
-                    takmicenje.LastModified = DateTime.Now;
-                    session.Transaction.Commit();
-
-                    setStartListe(ActiveRaspored, ActiveGrupa, 1 /*ActiveRotacija*/);
-                    getActiveSpravaGridGroupUserControl().clearSelection();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showMessage(ex.Message, this.Text);
-                Close();
-                return;
-            }
-            finally
-            {
-                Cursor.Hide();
-                Cursor.Current = Cursors.Arrow;
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
-        }
-
-        private RezultatskoTakmicenje loadRezTakmicenje(int takmicenjeId, TakmicarskaKategorija kat)
-        {
-            Cursor.Current = Cursors.WaitCursor;
-            Cursor.Show();
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    return doLoadRezTakmicenje(takmicenjeId, kat);
-                }
-            }
-            catch (InfrastructureException ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                MessageDialogs.showError(ex.Message, this.Text);
-                return null;
-            }
-            finally
-            {
-                Cursor.Hide();
-                Cursor.Current = Cursors.Arrow;
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
-        }
-
-        private RezultatskoTakmicenje doLoadRezTakmicenje(int takmicenjeId, TakmicarskaKategorija kat)
-        {
-            List<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
-
-            IList<RezultatskoTakmicenje> svaRezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
-                .FindByTakmicenjeKatFetch_Tak3_Poredak(takmicenjeId, kat);
-
-            foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
-            {
-                NHibernateUtil.Initialize(rt.Propozicije);
-                if (rt.odvojenoTak3())
-                {
-                    foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
-                        NHibernateUtil.Initialize(p.Rezultati);
-                    NHibernateUtil.Initialize(rt.Takmicenje3.PoredakPreskok.Rezultati);
-                    result.Add(rt);
-                }
-            }
-            return result[0];
-        }
-
-        private IList<RezultatskoTakmicenje> loadRezTakmicenjaFinaleKupa(int takmicenjeId)
-        {
-            IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
+            IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
+            IList<RezultatskoTakmicenje> rezTakmicenja = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByTakmicenjeFetch_Tak1_PoredakSpravaFinaleKupa(takmicenje.Id);
-            foreach (RezultatskoTakmicenje rt in result)
+            foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
-                    NHibernateUtil.Initialize(p.Rezultati);
+                if (rt.odvojenoTak3())
+                    result.Add(rt);
             }
             return result;
         }
@@ -1760,7 +1538,7 @@ namespace Bilten.UI
             {
                 nazivIzvestaja = "Start liste - finale ekipno";
             }
-            string kategorijaRotacija = getFirstKategorijaText(ActiveRaspored) + ", Rotacija " + ActiveRotacija.ToString();
+            string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true);
             if (!Opcije.Instance.HeaderFooterInitialized)
@@ -2062,9 +1840,6 @@ namespace Bilten.UI
 
         void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (ActiveRotacija != 1)
-                return;
-
             if (e.ColumnIndex != 0)
                 return;
 
@@ -2187,6 +1962,5 @@ namespace Bilten.UI
         {
             promeniNacinRotacije(NacinRotacije.NeRotirajNista, clickedSprava);
         }
-
     }
 }

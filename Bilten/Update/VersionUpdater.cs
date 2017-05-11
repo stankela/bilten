@@ -91,6 +91,7 @@ public class VersionUpdater
             SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
                 "Bilten.Update.DatabaseUpdate_version5.txt", true);
             SqlCeUtilities.updateDatabaseVersionNumber(5);
+            addTakmicenjeToRasporedNastupa();
             verzijaBaze = 5;
             converted = true;
         }
@@ -101,9 +102,7 @@ public class VersionUpdater
             MessageBox.Show(msg, "Bilten");
 
             if (File.Exists("NHibernateConfig"))
-            {
                 File.Delete("NHibernateConfig");
-            }
         }
     }
 
@@ -839,6 +838,40 @@ public class VersionUpdater
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        }
+    }
+
+    private void addTakmicenjeToRasporedNastupa()
+    {
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+                RasporedNastupaDAO rasporedNastupaDAO = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO();
+                IList<RasporedNastupa> rasporedi = rasporedNastupaDAO.FindAll();
+                foreach (RasporedNastupa r in rasporedi)
+                {
+                    IList<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>(r.Kategorije);
+                    r.Takmicenje = kategorije[0].Takmicenje;
+                    r.Naziv = r.kreirajNaziv(kategorije);
+                    r.Kategorije.Clear();
+                    rasporedNastupaDAO.Update(r);
+                }
+                session.Transaction.Commit();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
         }
     }
 }

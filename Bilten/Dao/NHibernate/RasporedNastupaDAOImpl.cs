@@ -16,8 +16,7 @@ namespace Bilten.Dao.NHibernate
             {
                 IQuery q = Session.CreateQuery(@"select distinct r
                         from RasporedNastupa r
-                        join r.Kategorije k
-                        where k.Takmicenje.Id = :takmicenjeId");
+                        where r.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 return q.List<RasporedNastupa>();
             }
@@ -33,12 +32,12 @@ namespace Bilten.Dao.NHibernate
             {
                 IQuery q = Session.CreateQuery(@"select distinct r
                     from RasporedNastupa r
-                    join fetch r.Kategorije k
                     left join fetch r.StartListe s
                     left join fetch s.Nastupi n
                     left join fetch n.Gimnasticar g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
+                    left join fetch g.TakmicarskaKategorija
                     where r.Id = :rasporedId");
                 q.SetInt32("rasporedId", rasporedId);
                 IList<RasporedNastupa> result = q.List<RasporedNastupa>();
@@ -59,16 +58,30 @@ namespace Bilten.Dao.NHibernate
                 IQuery q = Session.CreateQuery(@"
                     select distinct r
                     from RasporedNastupa r
-                    join fetch r.Kategorije k
                     left join fetch r.StartListe s
                     left join fetch s.Nastupi n
                     left join fetch n.Gimnasticar g
                     left join fetch g.DrzavaUcesnik dr
                     left join fetch g.KlubUcesnik kl
+                    left join fetch g.TakmicarskaKategorija
                     where r.DeoTakmicenjaKod = :deoTak
-                    and k.Takmicenje.Id = :takmicenjeId");
+                    and r.Takmicenje.Id = :takmicenjeId");
                 q.SetInt32("takmicenjeId", takmicenjeId);
                 q.SetByte("deoTak", (byte)deoTak);
+                return q.List<RasporedNastupa>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public IList<RasporedNastupa> FindAll()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from RasporedNastupa r");
                 return q.List<RasporedNastupa>();
             }
             catch (HibernateException ex)

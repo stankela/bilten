@@ -194,5 +194,23 @@ namespace Bilten.Domain
                 Nastupi.Add(n);
             }
         }
+
+        public virtual void kreirajNaOsnovuKvalifikanata(IList<GimnasticarUcesnik> kvalifikanti, List<int> zreb)
+        {
+            clear();
+            int k = 0;
+            while (k < zreb.Count)
+            {
+                if (zreb[k] <= kvalifikanti.Count)
+                    addNastup(new NastupNaSpravi(kvalifikanti[zreb[k] - 1], 0));
+                k++;
+            }
+            k = Nastupi.Count;
+            while (k < kvalifikanti.Count)
+            {
+                addNastup(new NastupNaSpravi(kvalifikanti[k], 0));
+                k++;
+            }
+        }
     }
 }

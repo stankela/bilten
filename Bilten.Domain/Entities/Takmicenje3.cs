@@ -62,36 +62,37 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual IList<GimnasticarUcesnik> getUcesniciGimKvalifikanti(Sprava sprava)
-        {
-            IList<GimnasticarUcesnik> result = new List<GimnasticarUcesnik>();
-            foreach (UcesnikTakmicenja3 u in Ucesnici)
-            {
-                if (u.Sprava == sprava && u.KvalStatus == KvalifikacioniStatus.Q)
-                    result.Add(u.Gimnasticar);
-            }
-            return result;
-        }
-
         public virtual IList<UcesnikTakmicenja3> getUcesniciKvalifikanti(Sprava sprava)
         {
-            IList<UcesnikTakmicenja3> result = new List<UcesnikTakmicenja3>();
+            List<UcesnikTakmicenja3> result = new List<UcesnikTakmicenja3>();
             foreach (UcesnikTakmicenja3 u in Ucesnici)
             {
                 if (u.Sprava == sprava && u.KvalStatus == KvalifikacioniStatus.Q)
                     result.Add(u);
             }
+            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(UcesnikTakmicenja3))["QualOrder"];
+            result.Sort(new SortComparer<UcesnikTakmicenja3>(propDesc, ListSortDirection.Ascending));
             return result;
         }
 
         public virtual IList<UcesnikTakmicenja3> getUcesniciRezerve(Sprava sprava)
         {
-            IList<UcesnikTakmicenja3> result = new List<UcesnikTakmicenja3>();
+            List<UcesnikTakmicenja3> result = new List<UcesnikTakmicenja3>();
             foreach (UcesnikTakmicenja3 u in Ucesnici)
             {
                 if (u.Sprava == sprava && u.KvalStatus == KvalifikacioniStatus.R)
                     result.Add(u);
             }
+            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(UcesnikTakmicenja3))["QualOrder"];
+            result.Sort(new SortComparer<UcesnikTakmicenja3>(propDesc, ListSortDirection.Ascending));
+            return result;
+        }
+
+        public virtual IList<GimnasticarUcesnik> getGimnasticariKvalifikanti(Sprava sprava)
+        {
+            IList<GimnasticarUcesnik> result = new List<GimnasticarUcesnik>();
+            foreach (UcesnikTakmicenja3 u in getUcesniciKvalifikanti(sprava))
+                result.Add(u.Gimnasticar);
             return result;
         }
 

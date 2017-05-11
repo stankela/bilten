@@ -386,13 +386,13 @@ namespace Bilten.Domain
             return result;
         }
 
-        public virtual List<RezultatSpravaFinaleKupa> getKvalifikanti()
+        public virtual IList<GimnasticarUcesnik> getKvalifikanti()
         {
-            List<RezultatSpravaFinaleKupa> result = new List<RezultatSpravaFinaleKupa>();
-            foreach (RezultatSpravaFinaleKupa rez in getRezultati())
+            IList<GimnasticarUcesnik> result = new List<GimnasticarUcesnik>();
+            foreach (RezultatSpravaFinaleKupa r in getRezultati())
             {
-                if (rez.KvalStatus == KvalifikacioniStatus.Q)
-                    result.Add(rez);
+                if (r.KvalStatus == KvalifikacioniStatus.Q)
+                    result.Add(r.Gimnasticar);
             }
             return result;
         }

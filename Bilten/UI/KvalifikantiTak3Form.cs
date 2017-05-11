@@ -191,15 +191,12 @@ namespace Bilten.UI
     
             dataGridViewUserControl1.setItems<UcesnikTakmicenja3>(
                 ActiveTakmicenje.Takmicenje3.getUcesniciRezerve(ActiveSprava));
-            dataGridViewUserControl1.sort<UcesnikTakmicenja3>("QualOrder", ListSortDirection.Ascending);
     }
 
         private void refreshKvalifikanti()
         {
             spravaGridUserControl1.DataGridViewUserControl
                 .setItems<UcesnikTakmicenja3>(ActiveTakmicenje.Takmicenje3.getUcesniciKvalifikanti(ActiveSprava));
-            spravaGridUserControl1.DataGridViewUserControl
-                .sort<UcesnikTakmicenja3>("QualOrder", ListSortDirection.Ascending);
         }
 
         private void initSpravaGridUserControl(Sprava sprava)

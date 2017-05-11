@@ -6,3 +6,7 @@ alter table rezultati_preskok drop column rank2;
 GO
 alter table takmicarske_kategorije drop column gimnastika;
 GO
+alter table raspored_nastupa add column takmicenje_id int references takmicenja(takmicenje_id);
+GO
+alter table raspored_nastupa add column naziv nvarchar(256);
+GO

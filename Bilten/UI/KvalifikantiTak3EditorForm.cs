@@ -98,8 +98,6 @@ namespace Bilten.UI
         {
             spravaGridUserControl1.DataGridViewUserControl
                 .setItems<UcesnikTakmicenja3>(rezTakmicenje.Takmicenje3.getUcesniciKvalifikanti(sprava));
-            spravaGridUserControl1.DataGridViewUserControl
-                .sort<UcesnikTakmicenja3>("QualOrder", ListSortDirection.Ascending);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

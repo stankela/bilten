@@ -47,7 +47,6 @@ namespace Bilten
         // - Sprave u karticama umesto u padajucem meniju.
         // - Za novo takmicenje uvesti datum od-do.
         // - Promeni futer u stampi da stampa datum od-do.
-        // - Kada se kreiraju start liste za finale po spravama, dodaj mogucnost kreiranja svih start listi odjednom.
         // - Broj E ocena da bude poseban za svako takmicenje 1, 2, 3, 4.
         // - Kod izbora kako se racunaju kvalifikanti za finale preskoka, ne treba da postoji opcija "na osnovu 1. preskoka"
         //   zato sto se uvek racuna na osnovu oba preskoka (oba ili max)

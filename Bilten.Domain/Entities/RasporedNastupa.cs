@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Iesi.Collections.Generic;
 using System.IO;
+using System.ComponentModel;
+using Bilten.Util;
 
 namespace Bilten.Domain
 {
@@ -19,8 +21,18 @@ namespace Bilten.Domain
         // ISet sa Iesi.Collections.Generic.ISet posto NHibernate trenutno ne radi sa System.Collections.Generic.ISet.
         // Proveri da li se nesto promenilo, tj. da li je NHibernate poceo da podrzava Iesi.Collections.Generic.ISet.
 
-        // TODO4: Izbaci Kategorije iz rasporeda nastupa
+        // TODO4: Proveri da li je moguce prikazati poruku kada se pokusa sa otvaranjem biltena a druga instanca je
+        // istovremeno otvorena.
 
+        private string naziv;
+        public virtual string Naziv
+        {
+            get { return naziv; }
+            set { naziv = value; }
+        }
+
+        // TODO4: Ukloni ovo, deo iz *.hdm fajla i tabelu raspored_nastupa_kategorija nakon sto izvrsis apdejt na verziju
+        // 5.
         private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
         public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
         {
@@ -28,21 +40,18 @@ namespace Bilten.Domain
             protected set { kategorije = value; }
         }
 
-        public virtual void addKategorija(TakmicarskaKategorija kat)
-        {
-            Kategorije.Add(kat);
-        }
-
-        public virtual void removeKategorija(TakmicarskaKategorija kat)
-        {
-            Kategorije.Remove(kat);
-        }
-
         private Iesi.Collections.Generic.ISet<StartListaNaSpravi> startListe = new HashedSet<StartListaNaSpravi>();
         public virtual Iesi.Collections.Generic.ISet<StartListaNaSpravi> StartListe
         {
             get { return startListe; }
             set { startListe = value; }
+        }
+
+        private Takmicenje takmicenje;
+        public virtual Takmicenje Takmicenje
+        {
+            get { return takmicenje; }
+            set { takmicenje = value; }
         }
 
         public RasporedNastupa()
@@ -53,14 +62,44 @@ namespace Bilten.Domain
         public RasporedNastupa(IList<TakmicarskaKategorija> kategorije, 
             DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
         {
+            init(kategorije, deoTakKod, gimnastika);
+        }
+
+        public RasporedNastupa(TakmicarskaKategorija kategorija,
+            DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
+        {
+            IList<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>();
+            kategorije.Add(kategorija);
+            init(kategorije, deoTakKod, gimnastika);
+        }
+
+        private void init(IList<TakmicarskaKategorija> kategorije, DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
+        {
             if (kategorije.Count == 0)
                 throw new ArgumentException("Kategorije ne smeju da budu prazne.");
 
-            foreach (TakmicarskaKategorija kat in kategorije)
-                addKategorija(kat);
+            this.Naziv = kreirajNaziv(kategorije);
             this.deoTakKod = deoTakKod;
+            this.takmicenje = kategorije[0].Takmicenje;
 
             addNewGrupa(gimnastika);
+        }
+
+        public virtual string kreirajNaziv(IList<TakmicarskaKategorija> katList)
+        {
+            List<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>(katList);
+            if (kategorije.Count == 0)
+                return String.Empty;
+
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(TakmicarskaKategorija))["RedBroj"];
+            kategorije.Sort(new SortComparer<TakmicarskaKategorija>(
+                propDesc, ListSortDirection.Ascending));
+
+            string result = kategorije[0].ToString();
+            for (int i = 1; i < kategorije.Count; i++)
+                result = result + ", " + kategorije[i].ToString();
+            return result;
         }
 
         public virtual void addNewGrupa(Gimnastika gimnastika)
@@ -139,25 +178,23 @@ namespace Bilten.Domain
         {
             strBuilder.AppendLine(Id.ToString());
             strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
-
-            strBuilder.AppendLine(Kategorije.Count.ToString());
-            foreach (TakmicarskaKategorija k in Kategorije)
-                strBuilder.AppendLine(k.Id.ToString());
+            strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
 
             strBuilder.AppendLine(StartListe.Count.ToString());
             foreach (StartListaNaSpravi s in StartListe)
                 s.dump(strBuilder);
+        
+            strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
         }
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             DeoTakmicenjaKod = (DeoTakmicenjaKod)Enum.Parse(typeof(DeoTakmicenjaKod), reader.ReadLine());
 
+            string naziv = reader.ReadLine();
+            Naziv = naziv != NULL ? naziv : null;
+            
             int count = int.Parse(reader.ReadLine());
-            for (int i = 0; i < count; ++i)
-                Kategorije.Add(map.kategorijeMap[int.Parse(reader.ReadLine())]);
-
-            count = int.Parse(reader.ReadLine());
             for (int i = 0; i < count; ++i)
             {
                 reader.ReadLine();  // id
@@ -165,6 +202,9 @@ namespace Bilten.Domain
                 s.loadFromDump(reader, map);
                 StartListe.Add(s);
             }
+
+            string line = reader.ReadLine();
+            Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
         }
     }
 }

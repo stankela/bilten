@@ -47,7 +47,7 @@ namespace Bilten.Domain
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 gimnasticari = getGimnasticari(ocene, rezTak);
             else
-                gimnasticari = rezTak.Takmicenje3.getUcesniciGimKvalifikanti(Sprava.Preskok);
+                gimnasticari = rezTak.Takmicenje3.getGimnasticariKvalifikanti(Sprava.Preskok);
 
             IDictionary<int, RezultatPreskok> rezultatiMap = new Dictionary<int, RezultatPreskok>();
             foreach (GimnasticarUcesnik g in gimnasticari)
