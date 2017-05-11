@@ -7,8 +7,8 @@ namespace Bilten.UI
 {
     public class GimnasticarFilter
     {
-        private RegistarskiBroj regBroj;
-        public RegistarskiBroj RegBroj
+        private string regBroj;
+        public string RegBroj
         {
             get { return regBroj; }
             set { regBroj = value; }

@@ -67,9 +67,16 @@ namespace Bilten.Domain
             set { drzava = value; }
         }
 
-        // TODO4: Prebaci tip u string.
-        private RegistarskiBroj registarskiBroj;
-        public virtual RegistarskiBroj RegistarskiBroj
+        // TODO4: Ukloni ovo, deo iz .hbm fajla i deo iz baze kada izvrsis apdejt na verziju 5. Izbrisi klasu RegistarskiBroj.
+        private RegistarskiBroj _registarskiBroj;
+        public virtual RegistarskiBroj RegBroj
+        {
+            get { return _registarskiBroj; }
+            set { _registarskiBroj = value; }
+        }
+
+        private string registarskiBroj;
+        public virtual string RegistarskiBroj
         {
             get { return registarskiBroj; }
             set { registarskiBroj = value; }

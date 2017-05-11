@@ -178,7 +178,7 @@ namespace Bilten.UI
 
                     IList<Gimnasticar> gimnasticari;
                     string failureMsg = "";
-                    if (flt.RegBroj != null)
+                    if (!String.IsNullOrEmpty(flt.RegBroj))
                     {
                         gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticariByRegBroj(flt.RegBroj);
                         if (gimnasticari.Count == 0)

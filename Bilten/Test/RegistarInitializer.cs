@@ -236,7 +236,7 @@ namespace Bilten.Test
                         gimnasticar.DatumRodjenja = null;
                     else
                         gimnasticar.DatumRodjenja = Datum.Parse(datumRodj);
-                    gimnasticar.RegistarskiBroj = RegistarskiBroj.Parse(regBroj);
+                    gimnasticar.RegistarskiBroj = regBroj;
                     if (datumReg.Trim() == String.Empty)
                         gimnasticar.DatumPoslednjeRegistracije = null;
                     else
@@ -263,7 +263,7 @@ namespace Bilten.Test
                         gimnasticar.DatumRodjenja = null;
                     else
                         gimnasticar.DatumRodjenja = Datum.Parse(datumRodj);
-                    gimnasticar.RegistarskiBroj = RegistarskiBroj.Parse(regBroj);
+                    gimnasticar.RegistarskiBroj = regBroj;
                     if (datumReg.Trim() == String.Empty)
                         gimnasticar.DatumPoslednjeRegistracije = null;
                     else

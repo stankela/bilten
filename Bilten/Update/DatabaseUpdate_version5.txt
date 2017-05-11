@@ -14,3 +14,5 @@ alter table raspored_sudija add column takmicenje_id int references takmicenja(t
 GO
 alter table raspored_sudija add column naziv nvarchar(256);
 GO
+alter table gimnasticari add column registarski_broj nvarchar(16);
+GO

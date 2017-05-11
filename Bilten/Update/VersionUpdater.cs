@@ -93,6 +93,7 @@ public class VersionUpdater
             SqlCeUtilities.updateDatabaseVersionNumber(5);
             addTakmicenjeToRasporedNastupa();
             addTakmicenjeToRasporedSudija();
+            updateRegistarskiBrojToString();
             verzijaBaze = 5;
             converted = true;
         }
@@ -894,6 +895,40 @@ public class VersionUpdater
                     r.Naziv = RasporedNastupa.kreirajNaziv(kategorije);
                     r.Kategorije.Clear();
                     rasporedSudijaDAO.Update(r);
+                }
+                session.Transaction.Commit();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
+    }
+
+    private void updateRegistarskiBrojToString()
+    {
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+                GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
+                IList<Gimnasticar> gimnasticari = gimnasticarDAO.FindAll();
+                foreach (Gimnasticar g in gimnasticari)
+                {
+                    if (g.RegBroj == null)
+                        g.RegistarskiBroj = String.Empty;
+                    else
+                        g.RegistarskiBroj = g.RegBroj.ToString();
+                    gimnasticarDAO.Update(g);
                 }
                 session.Transaction.Commit();
             }

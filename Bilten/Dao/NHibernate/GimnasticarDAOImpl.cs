@@ -14,7 +14,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Gimnasticar g
+                IQuery q = Session.CreateQuery(@"
+                    from Gimnasticar g
                     left join fetch g.Kategorija
                     left join fetch g.Klub
                     left join fetch g.Drzava
@@ -31,7 +32,8 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Gimnasticar g
+                IQuery q = Session.CreateQuery(@"
+                    from Gimnasticar g
                     left join fetch g.Kategorija
                     left join fetch g.Klub
                     left join fetch g.Drzava
@@ -50,7 +52,9 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Gimnasticar g where g.Klub = :klub");
+                IQuery q = Session.CreateQuery(@"
+                    from Gimnasticar g
+                    where g.Klub = :klub");
                 q.SetEntity("klub", klub);
                 return q.List<Gimnasticar>();
             }
@@ -64,7 +68,9 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Gimnasticar g where g.Drzava = :drzava");
+                IQuery q = Session.CreateQuery(@"
+                    from Gimnasticar g
+                    where g.Drzava = :drzava");
                 q.SetEntity("drzava", drzava);
                 return q.List<Gimnasticar>();
             }
@@ -78,7 +84,9 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Gimnasticar g where g.Kategorija = :kategorija");
+                IQuery q = Session.CreateQuery(@"
+                    from Gimnasticar g
+                    where g.Kategorija = :kategorija");
                 q.SetEntity("kategorija", kategorija);
                 return q.List<Gimnasticar>();
             }
@@ -88,18 +96,17 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public IList<Gimnasticar> FindGimnasticariByRegBroj(RegistarskiBroj regBroj)
+        public IList<Gimnasticar> FindGimnasticariByRegBroj(string regBroj)
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"from Gimnasticar g
+                IQuery q = Session.CreateQuery(@"
+                    from Gimnasticar g
                     left join fetch g.Kategorija
                     left join fetch g.Klub
                     left join fetch g.Drzava
-                    where g.RegistarskiBroj.Broj = :broj
-                    and g.RegistarskiBroj.GodinaRegistracije = :godina");
-                q.SetInt32("broj", regBroj.Broj);
-                q.SetInt16("godina", regBroj.GodinaRegistracije);
+                    where g.RegistarskiBroj like :regBroj");
+                q.SetString("regBroj", regBroj);
                 return q.List<Gimnasticar>();
             }
             catch (HibernateException ex)
@@ -112,10 +119,11 @@ namespace Bilten.Dao.NHibernate
             Nullable<int> godRodj, Nullable<Gimnastika> gimnastika, Drzava drzava,
             KategorijaGimnasticara kategorija, Klub klub)
         {
-            string query = @"from Gimnasticar g
-                    left join fetch g.Kategorija
-                    left join fetch g.Klub
-                    left join fetch g.Drzava";
+            string query = @"
+                from Gimnasticar g
+                left join fetch g.Kategorija
+                left join fetch g.Klub
+                left join fetch g.Drzava";
             string WHERE = " where ";
             if (!String.IsNullOrEmpty(ime))
             {
@@ -176,7 +184,10 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g where g.Klub = :klub");
+                IQuery q = Session.CreateQuery(@"
+                    select count(*)
+                    from Gimnasticar g
+                    where g.Klub = :klub");
                 q.SetEntity("klub", klub);
                 return (long)q.UniqueResult() > 0;
             }
@@ -190,7 +201,10 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g where g.Drzava = :drzava");
+                IQuery q = Session.CreateQuery(@"
+                    select count(*)
+                    from Gimnasticar g
+                    where g.Drzava = :drzava");
                 q.SetEntity("drzava", drzava);
                 return (long)q.UniqueResult() > 0;
             }
@@ -204,7 +218,10 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g where g.Kategorija = :kategorija");
+                IQuery q = Session.CreateQuery(@"
+                    select count(*)
+                    from Gimnasticar g
+                    where g.Kategorija = :kategorija");
                 q.SetEntity("kategorija", kategorija);
                 return (long)q.UniqueResult() > 0;
             }
@@ -219,7 +236,9 @@ namespace Bilten.Dao.NHibernate
         {
             try
             {
-                string query = @"select count(*) from Gimnasticar g
+                string query = @"
+                    select count(*)
+                    from Gimnasticar g
                     where g.Ime like :ime
                     and g.Prezime like :prezime";
                 if (!string.IsNullOrEmpty(srednjeIme))
@@ -258,15 +277,15 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
-        public bool existsGimnasticarRegBroj(RegistarskiBroj regBroj)
+        public bool existsGimnasticarRegBroj(string regBroj)
         {
             try
             {
-                IQuery q = Session.CreateQuery(@"select count(*) from Gimnasticar g
-                    where g.RegistarskiBroj.Broj = :broj
-                    and g.RegistarskiBroj.GodinaRegistracije = :godina");
-                q.SetInt32("broj", regBroj.Broj);
-                q.SetInt16("godina", regBroj.GodinaRegistracije);
+                IQuery q = Session.CreateQuery(@"
+                    select count(*)
+                    from Gimnasticar g
+                    where g.RegistarskiBroj like :regBroj");
+                q.SetString("regBroj", regBroj);
                 return (long)q.UniqueResult() > 0;
             }
             catch (HibernateException ex)
