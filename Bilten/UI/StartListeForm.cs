@@ -650,27 +650,7 @@ namespace Bilten.UI
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            string msg = "Izaberite kategorije za koje vazi start lista";
-            DialogResult dlgResult = DialogResult.None;
-            SelectKategorijaForm form = null;
-            try
-            {
-                // TODO4: Izbrisi SelectKategorijaForm i zameni ga sa CheckListForm
-                form = new SelectKategorijaForm(takmicenje.Id, takmicenje.Gimnastika, new List<TakmicarskaKategorija>(),
-                    msg);
-                dlgResult = form.ShowDialog();
-            }
-            catch (InfrastructureException ex)
-            {
-                MessageDialogs.showError(ex.Message, this.Text);
-                return;
-            }
-
-            if (dlgResult != DialogResult.OK || form.SelektovaneKategorije.Count == 0)
-                return;
-
-            RasporedNastupa newRaspored = null;
-            bool added = false;
+            IList<TakmicarskaKategorija> kategorije;
             ISession session = null;
             try
             {
@@ -678,7 +658,44 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    newRaspored = new RasporedNastupa(form.SelektovaneKategorije, deoTakKod, takmicenje.Gimnastika);
+                    kategorije = DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenje.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+            
+            IList<string> kategorijeStr = new List<string>();
+            foreach (TakmicarskaKategorija k in kategorije)
+                kategorijeStr.Add(k.Naziv);
+
+            string msg = "Izaberite kategorije za koje vazi start lista";
+            CheckListForm form = new CheckListForm(kategorijeStr, new List<int>(), msg, "Kategorije", true, msg, true);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            IList<TakmicarskaKategorija> selKategorije = new List<TakmicarskaKategorija>();
+            foreach (int i in form.CheckedIndices)
+                selKategorije.Add(kategorije[i]);
+
+            RasporedNastupa newRaspored = null;
+            bool added = false;
+            session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    newRaspored = new RasporedNastupa(selKategorije, deoTakKod, takmicenje.Gimnastika);
                     DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Add(newRaspored);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
