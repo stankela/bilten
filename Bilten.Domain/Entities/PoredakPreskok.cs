@@ -66,13 +66,12 @@ namespace Bilten.Domain
             Rezultati.Clear();
             foreach (RezultatPreskok r in rezultatiMap.Values)
                 Rezultati.Add(r);
-            rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
+            rankRezultati(rezTak.Propozicije);
         }
 
-        public virtual void rankRezultati(Propozicije propozicije, bool finaleKupa)
+        public virtual void rankRezultati(Propozicije propozicije)
         {
-            bool obaPreskoka = propozicije.racunajObaPreskoka(DeoTakmicenjaKod, finaleKupa);
-            if (!obaPreskoka)
+            if (!propozicije.racunajObaPreskoka(DeoTakmicenjaKod))
             {
                 List<RezultatPreskok> rezultati = new List<RezultatPreskok>(Rezultati);
                 rankByPrviPreskok(rezultati, 0);
@@ -225,8 +224,8 @@ namespace Bilten.Domain
                 RezultatPreskok rezultat = rezultati[i];
                 porediDrzavu.Add(false);
 
-                if (!propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka && rezultat.Total == null
-                || propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka && rezultat.TotalObeOcene == null)
+                if (!propozicije.Tak1PreskokNaOsnovuObaPreskoka && rezultat.Total == null
+                || propozicije.Tak1PreskokNaOsnovuObaPreskoka && rezultat.TotalObeOcene == null)
                 {
                     rezultat.KvalStatus = KvalifikacioniStatus.None;
                     continue;
@@ -298,7 +297,7 @@ namespace Bilten.Domain
                     }
                 }
                 else if (prevFinRezultat != null && resultsAreEqual(rezultat, prevFinRezultat,
-                    propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka))
+                    propozicije.Tak1PreskokNaOsnovuObaPreskoka))
                 {
                     // Dodali smo predvidjeni broj finalista, ali postoji rezultat koji je identican zadnjem dodatom
                     // finalisti.
@@ -314,7 +313,7 @@ namespace Bilten.Domain
                             rezultat.KvalStatus = KvalifikacioniStatus.Q;
                         }
                         else if (nadjiIstiFinRezultatIzKluba(rezultat, rezultati, porediDrzavu,
-                            propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka))
+                            propozicije.Tak1PreskokNaOsnovuObaPreskoka))
                         {
                             // Dostignut je limit broja takmicara iz kluba, a medju finalistima se nalazi
                             // i gimnasticar iz istog kluba koji ima istu ocenu. U tom slucaju moramo da dodamo i
@@ -460,7 +459,7 @@ namespace Bilten.Domain
             if (rezultat != null)
             {
                 rezultat.setOcena(o);
-                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -474,7 +473,7 @@ namespace Bilten.Domain
                     Rezultati.Remove(r);
                 else
                     r.clearOcena(o);
-                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -494,7 +493,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 r.setOcena(o);
-                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
@@ -505,7 +504,7 @@ namespace Bilten.Domain
             r.Gimnasticar = g;
             r.setOcena(o);
             Rezultati.Add(r);
-            rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
+            rankRezultati(rezTak.Propozicije);
         }
 
         public virtual void deleteGimnasticar(GimnasticarUcesnik g, 
@@ -515,19 +514,18 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
-                rankRezultati(rezTak.Propozicije, rezTak.Takmicenje.FinaleKupa);
+                rankRezultati(rezTak.Propozicije);
             }
         }
 
-        public virtual void dumpRezultati(StreamWriter streamWriter, Propozicije propozicije, bool finaleKupa)
+        public virtual void dumpRezultati(StreamWriter streamWriter, Propozicije propozicije)
         {
             string header = DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1 ? "PRESKOK" : "PRESKOK - FINALE";
             streamWriter.WriteLine(header);
             foreach (RezultatPreskok r in getRezultati())
             {
                 float? total;
-                bool obaPreskoka = propozicije.racunajObaPreskoka(DeoTakmicenjaKod, finaleKupa);
-                if (!obaPreskoka || r.TotalObeOcene == null)
+                if (!propozicije.racunajObaPreskoka(DeoTakmicenjaKod) || r.TotalObeOcene == null)
                     total = r.Total;
                 else
                     total = r.TotalObeOcene;

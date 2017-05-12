@@ -23,9 +23,9 @@
     <property name="MaxBrojTakmicaraTak3VaziZaDrzavu" column="max_tak_tak3_vazi_za_drzavu" type="Boolean" />
     <property name="BrojFinalistaTak3" column="broj_finalista_tak3" type="Byte" />
     <property name="BrojRezerviTak3" column="broj_rezervi_tak3" type="Byte" />
-    <property name="KvalifikantiTak3PreskokNaOsnovuObaPreskoka" 
+    <property name="Tak1PreskokNaOsnovuObaPreskoka" 
               column="kval_tak3_oba_preskoka" type="Boolean" />
-    <property name="PoredakTak3PreskokNaOsnovuObaPreskoka" 
+    <property name="Tak3PreskokNaOsnovuObaPreskoka" 
               column="poredak_tak3_oba_preskoka" type="Boolean" />
     
     <property name="PostojiTak4" column="postoji_tak4" type="Boolean" />

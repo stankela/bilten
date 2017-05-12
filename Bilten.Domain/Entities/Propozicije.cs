@@ -110,18 +110,18 @@ namespace Bilten.Domain
             set { brojRezerviTak3 = value; }
         }
 
-        private bool kvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-        public virtual bool KvalifikantiTak3PreskokNaOsnovuObaPreskoka
+        private bool tak1PreskokNaOsnovuObaPreskoka;
+        public virtual bool Tak1PreskokNaOsnovuObaPreskoka
         {
-            get { return kvalifikantiTak3PreskokNaOsnovuObaPreskoka; }
-            set { kvalifikantiTak3PreskokNaOsnovuObaPreskoka = value; }
+            get { return tak1PreskokNaOsnovuObaPreskoka; }
+            set { tak1PreskokNaOsnovuObaPreskoka = value; }
         }
 
-        private bool poredakTak3PreskokNaOsnovuObaPreskoka;
-        public virtual bool PoredakTak3PreskokNaOsnovuObaPreskoka
+        private bool tak3PreskokNaOsnovuObaPreskoka;
+        public virtual bool Tak3PreskokNaOsnovuObaPreskoka
         {
-            get { return poredakTak3PreskokNaOsnovuObaPreskoka; }
-            set { poredakTak3PreskokNaOsnovuObaPreskoka = value; }
+            get { return tak3PreskokNaOsnovuObaPreskoka; }
+            set { tak3PreskokNaOsnovuObaPreskoka = value; }
         }
 
         private bool postojiTak4;
@@ -159,31 +159,14 @@ namespace Bilten.Domain
             set { jednoTak4ZaSveKategorije = value; }
         }
 
-        // TODO4: Preimenuj KvalifikantiTak3PreskokNaOsnovuObaPreskoka u Tak1PreskokNaOsnovuObaPreskoka, i nek to
-        // svojstvo uvek predstavlja takmicenje 1. Preimenuj PoredakTak3PreskokNaOsnovuObaPreskoka u
-        // Tak3PreskokNaOsnovuObaPreskoka, i nek to svojstvo uvek predstavlja takmicenje 3. Nakon toga, argument
-        // finaleKupa nije potreban i treba ga izbrisati, a grana "if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)"
-        // treba da sadrzi samo "return Tak1PreskokNaOsnovuObaPreskoka".
-        public virtual bool racunajObaPreskoka(DeoTakmicenjaKod deoTakKod, bool finaleKupa)
+        public virtual bool racunajObaPreskoka(DeoTakmicenjaKod deoTakKod)
         {
             if (!PostojiTak3)
                 return false;
-            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
-            {
-                if (!OdvojenoTak3)
-                    return PoredakTak3PreskokNaOsnovuObaPreskoka;
-                else
-                {
-                    if (!finaleKupa)
-                        return KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-                    else
-                        // Kada u finalu kupa postoji posebno finale po spravama.
-                        return PoredakTak3PreskokNaOsnovuObaPreskoka;
-                }
-            }
 
-            Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje3);
-            return PoredakTak3PreskokNaOsnovuObaPreskoka;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+                return Tak1PreskokNaOsnovuObaPreskoka;
+            return Tak3PreskokNaOsnovuObaPreskoka;
         }
 
         // Finale kupa
@@ -483,8 +466,8 @@ namespace Bilten.Domain
                 p.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
                 p.BrojFinalistaTak3 = this.BrojFinalistaTak3;
                 p.BrojRezerviTak3 = this.BrojRezerviTak3;
-                p.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-                p.PoredakTak3PreskokNaOsnovuObaPreskoka = this.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                p.Tak1PreskokNaOsnovuObaPreskoka = this.Tak1PreskokNaOsnovuObaPreskoka;
+                p.Tak3PreskokNaOsnovuObaPreskoka = this.Tak3PreskokNaOsnovuObaPreskoka;
             }
         }
 
@@ -542,7 +525,7 @@ namespace Bilten.Domain
                 p.NeogranicenBrojTakmicaraIzKlubaTak3 = this.NeogranicenBrojTakmicaraIzKlubaTak3;
                 p.MaxBrojTakmicaraIzKlubaTak3 = this.MaxBrojTakmicaraIzKlubaTak3;
                 p.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
-                p.PoredakTak3PreskokNaOsnovuObaPreskoka = this.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                p.Tak1PreskokNaOsnovuObaPreskoka = this.Tak1PreskokNaOsnovuObaPreskoka;
             }
         }
 
@@ -586,8 +569,8 @@ namespace Bilten.Domain
             result.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
             result.BrojFinalistaTak3 = this.BrojFinalistaTak3;
             result.BrojRezerviTak3 = this.BrojRezerviTak3;
-            result.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
-            result.PoredakTak3PreskokNaOsnovuObaPreskoka = this.PoredakTak3PreskokNaOsnovuObaPreskoka;
+            result.Tak1PreskokNaOsnovuObaPreskoka = this.Tak1PreskokNaOsnovuObaPreskoka;
+            result.Tak3PreskokNaOsnovuObaPreskoka = this.Tak3PreskokNaOsnovuObaPreskoka;
 
             result.PostojiTak4 = this.PostojiTak4;
             result.OdvojenoTak4 = this.OdvojenoTak4;
@@ -622,8 +605,8 @@ namespace Bilten.Domain
             && this.MaxBrojTakmicaraTak3VaziZaDrzavu == that.MaxBrojTakmicaraTak3VaziZaDrzavu
             && this.BrojFinalistaTak3 == that.BrojFinalistaTak3
             && this.BrojRezerviTak3 == that.BrojRezerviTak3
-            && this.KvalifikantiTak3PreskokNaOsnovuObaPreskoka == that.KvalifikantiTak3PreskokNaOsnovuObaPreskoka
-            && this.PoredakTak3PreskokNaOsnovuObaPreskoka == that.PoredakTak3PreskokNaOsnovuObaPreskoka
+            && this.Tak1PreskokNaOsnovuObaPreskoka == that.Tak1PreskokNaOsnovuObaPreskoka
+            && this.Tak3PreskokNaOsnovuObaPreskoka == that.Tak3PreskokNaOsnovuObaPreskoka
 
             && this.PostojiTak4 == that.PostojiTak4
             && this.OdvojenoTak4 == that.OdvojenoTak4
@@ -660,8 +643,8 @@ namespace Bilten.Domain
             strBuilder.AppendLine(MaxBrojTakmicaraTak3VaziZaDrzavu.ToString());
             strBuilder.AppendLine(BrojFinalistaTak3.ToString());
             strBuilder.AppendLine(BrojRezerviTak3.ToString());
-            strBuilder.AppendLine(KvalifikantiTak3PreskokNaOsnovuObaPreskoka.ToString());
-            strBuilder.AppendLine(PoredakTak3PreskokNaOsnovuObaPreskoka.ToString());
+            strBuilder.AppendLine(Tak1PreskokNaOsnovuObaPreskoka.ToString());
+            strBuilder.AppendLine(Tak3PreskokNaOsnovuObaPreskoka.ToString());
 
             strBuilder.AppendLine(PostojiTak4.ToString());
             strBuilder.AppendLine(OdvojenoTak4.ToString());
@@ -691,8 +674,8 @@ namespace Bilten.Domain
             MaxBrojTakmicaraTak3VaziZaDrzavu = bool.Parse(reader.ReadLine());
             BrojFinalistaTak3 = byte.Parse(reader.ReadLine());
             BrojRezerviTak3 = byte.Parse(reader.ReadLine());
-            KvalifikantiTak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
-            PoredakTak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
+            Tak1PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
+            Tak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
 
             PostojiTak4 = bool.Parse(reader.ReadLine());
             OdvojenoTak4 = bool.Parse(reader.ReadLine());

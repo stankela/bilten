@@ -95,6 +95,7 @@ public class VersionUpdater
             addTakmicenjeToRasporedSudija();
             updateRegistarskiBrojToString();
             updateNacinRacunanjaOceneFinaleKupa();
+            updateNacinRacunanjaPreskoka();
             verzijaBaze = 5;
             converted = true;
         }
@@ -315,7 +316,7 @@ public class VersionUpdater
                         {
                             rezTak2 = new RezultatskoTakmicenje();
                             rezTak2.Propozicije = new Propozicije();
-                            rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = false;
+                            rezTak2.Propozicije.Tak3PreskokNaOsnovuObaPreskoka = false;
                             rezTak2.Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
                         }
 
@@ -1015,6 +1016,71 @@ public class VersionUpdater
         finally
         {
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
+    }
+
+    private void updateNacinRacunanjaPreskoka()
+    {
+        IList<int> takmicenjaId = getTakmicenjaId();
+        for (int i = 0; i < takmicenjaId.Count; ++i)
+        {
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+
+                    TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                    Takmicenje t = takmicenjeDAO.FindById(takmicenjaId[i]);
+                    IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(t.Id);
+
+                    foreach (RezultatskoTakmicenjeDescription d in t.TakmicenjeDescriptions)
+                        updateNacinRacunanjaPreskoka(d.Propozicije, t);
+                    foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                        updateNacinRacunanjaPreskoka(rt.Propozicije, t);
+
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        }
+    }
+
+    private void updateNacinRacunanjaPreskoka(Propozicije p, Takmicenje t)
+    {
+        if (!p.PostojiTak3)
+        {
+
+        }
+        else if (!p.OdvojenoTak3)
+        {
+            p.Tak1PreskokNaOsnovuObaPreskoka = p.Tak3PreskokNaOsnovuObaPreskoka;
+            p.Tak3PreskokNaOsnovuObaPreskoka = false;
+        }
+        else
+        {
+            if (!t.FinaleKupa)
+            {
+
+            }
+            else
+            {
+                p.Tak1PreskokNaOsnovuObaPreskoka = p.Tak3PreskokNaOsnovuObaPreskoka;
+                p.Tak3PreskokNaOsnovuObaPreskoka = false;
+            }
         }
     }
 }

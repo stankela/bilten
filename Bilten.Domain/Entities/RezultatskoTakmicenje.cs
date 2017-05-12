@@ -136,7 +136,7 @@ namespace Bilten.Domain
         public virtual void createTakmicenje3(IList<Ocena> oceneTak3)
         {
             Takmicenje3 = new Takmicenje3(Gimnastika);
-            Takmicenje3.createUcesnici(Takmicenje1, Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
+            Takmicenje3.createUcesnici(Takmicenje1, Propozicije.Tak1PreskokNaOsnovuObaPreskoka);
 
             // Ako ne postoje ocene, sledeci poziv samo sortira po prezimenu i na osnovu toga dodeljuje RedBroj
             foreach (PoredakSprava p in Takmicenje3.Poredak)
@@ -546,21 +546,15 @@ namespace Bilten.Domain
                 else if (takmicenje.FinaleKupa)
                     rankPoredakSpravaFinaleKupa = true;
             }
-            if (Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka != origPropozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka)
+            if (Propozicije.Tak1PreskokNaOsnovuObaPreskoka != origPropozicije.Tak1PreskokNaOsnovuObaPreskoka)
             {
-                if (takmicenje.StandardnoTakmicenje)
+                if (takmicenje.StandardnoTakmicenje || takmicenje.FinaleKupa)
                     rankPoredakPreskokTak1 = true;
             }
-            if (Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka != origPropozicije.PoredakTak3PreskokNaOsnovuObaPreskoka)
+            if (Propozicije.Tak3PreskokNaOsnovuObaPreskoka != origPropozicije.Tak3PreskokNaOsnovuObaPreskoka)
             {
                 if (takmicenje.StandardnoTakmicenje)
-                {
-                    rankPoredakPreskokTak1 = true;
-                    if (Takmicenje3 != null)
-                        rankPoredakPreskokTak3 = true;
-                }
-                else if (takmicenje.FinaleKupa)
-                    rankPoredakPreskokTak1 = true;
+                    rankPoredakPreskokTak3 = true;
             }
 
             // TODO: Fali kod za odvojeno ekipno finale kupa
@@ -671,9 +665,9 @@ namespace Bilten.Domain
                     ps.rankRezultati(Propozicije);
             }
             if (rankPoredakPreskokTak1)
-                Takmicenje1.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
+                Takmicenje1.PoredakPreskok.rankRezultati(Propozicije);
             if (rankPoredakPreskokTak3)
-                Takmicenje3.PoredakPreskok.rankRezultati(Propozicije, takmicenje.FinaleKupa);
+                Takmicenje3.PoredakPreskok.rankRezultati(Propozicije);
             if (createPoredakEkipeTak1)
             {
                 Takmicenje1.PoredakEkipno.create(this,

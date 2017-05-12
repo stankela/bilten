@@ -158,7 +158,7 @@ namespace Bilten.UI
             else
             {
                 RezultatPreskok selResult = (RezultatPreskok)form.SelectedResult;
-                bool obaPreskoka = rezTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+                bool obaPreskoka = rezTakmicenje.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
                 Nullable<float> qualScore = obaPreskoka ? selResult.TotalObeOcene : selResult.Total;
                 Nullable<short> qualRank = selResult.Rank;
 

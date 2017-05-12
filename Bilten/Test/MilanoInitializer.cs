@@ -108,8 +108,8 @@ namespace Bilten.Test
             result.MaxBrojTakmicaraTak3VaziZaDrzavu = true;
             result.BrojFinalistaTak3 = 8;
             result.BrojRezerviTak3 = 3;
-            result.KvalifikantiTak3PreskokNaOsnovuObaPreskoka = true;
-            result.PoredakTak3PreskokNaOsnovuObaPreskoka = true;
+            result.Tak1PreskokNaOsnovuObaPreskoka = true;
+            result.Tak3PreskokNaOsnovuObaPreskoka = true;
 
             result.PostojiTak4 = false;
             result.OdvojenoTak4 = false;
@@ -670,7 +670,7 @@ namespace Bilten.Test
                     p.create(rezTak, ocene);
                 rezTak.Takmicenje1.PoredakPreskok.create(rezTak, ocene);
                 rezTak.Takmicenje3.createUcesnici(rezTak.Takmicenje1, 
-                    rezTak.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka);
+                    rezTak.Propozicije.Tak1PreskokNaOsnovuObaPreskoka);
 
                 GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
                 if (gimnastika == Gimnastika.MSG)

@@ -214,8 +214,8 @@ namespace Bilten.UI
                         rbtDrzava.Checked = propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu;
                     }
 
-                    rbtPoredakPreskok1.Checked = !propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
-                    rbtPoredakPreskok2.Checked = propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka;
+                    rbtPoredakPreskok1.Checked = !propozicije.Tak1PreskokNaOsnovuObaPreskoka;
+                    rbtPoredakPreskok2.Checked = propozicije.Tak1PreskokNaOsnovuObaPreskoka;
                 }
             }
             
@@ -361,7 +361,7 @@ namespace Bilten.UI
             if (rbtPoredakPreskok1.Enabled && !rbtPoredakPreskok1.Checked && !rbtPoredakPreskok2.Checked)
             {
                 notification.RegisterMessage(
-                    "PoredakTak3PreskokNaOsnovuObaPreskoka",
+                    "Tak1PreskokNaOsnovuObaPreskoka",
                     "Izaberite da li se poredak za " +
                     "preskok racuna na osnovu prvog ili oba preskoka.");
             }
@@ -402,7 +402,7 @@ namespace Bilten.UI
                         propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu = rbtDrzava.Checked;
                     }
 
-                    propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka = rbtPoredakPreskok2.Checked;
+                    propozicije.Tak1PreskokNaOsnovuObaPreskoka = rbtPoredakPreskok2.Checked;
                 }
             }
         }

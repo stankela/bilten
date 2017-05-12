@@ -92,12 +92,7 @@ namespace Bilten.Domain
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    // TODO4: Koriscenje opcije PoredakTak3PreskokNaOsnovuObaPreskoka ce raditi samo ako u prvom kolu
-                    // nije bilo odvojenog takmicena 3; ako je bilo odvojenog takmicenja 3, tada nam umesto
-                    // PoredakTak3PreskokNaOsnovuObaPreskoka treba KvalifikantiTak3PreskokNaOsnovuObaPreskoka.
-                    // Postoji vec jedan TODO4 da se resi ovaj problem i da vrednost koja se odnosi na takmicenje 1 uvek
-                    // bude u samo jednoj opciji.
-                    rezultatiMap[r.Gimnasticar].initPrvoKolo(r, rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                    rezultatiMap[r.Gimnasticar].initPrvoKolo(r, rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka,
                         postojeObaPreskoka);
                 }
             }
@@ -107,7 +102,7 @@ namespace Bilten.Domain
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
                 {
-                    rezultatiMap[r.Gimnasticar].initDrugoKolo(r, rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                    rezultatiMap[r.Gimnasticar].initDrugoKolo(r, rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka,
                         postojeObaPreskoka);
                 }
             }
@@ -326,7 +321,7 @@ namespace Bilten.Domain
                 {
                     if (r.Gimnasticar.Equals(g))
                     {
-                        rezultat.initPrvoKolo(r, rezTak1.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                        rezultat.initPrvoKolo(r, rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka,
                             postojeObaPreskoka);
                         break;
                     }
@@ -337,7 +332,7 @@ namespace Bilten.Domain
                 {
                     if (r.Gimnasticar.Equals(g))
                     {
-                        rezultat.initDrugoKolo(r, rezTak2.Propozicije.PoredakTak3PreskokNaOsnovuObaPreskoka,
+                        rezultat.initDrugoKolo(r, rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka,
                             postojeObaPreskoka);
                         break;
                     }

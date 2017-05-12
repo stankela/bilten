@@ -307,7 +307,7 @@ namespace Bilten
                                 if (s != Sprava.Preskok)
                                     rt.Takmicenje1.getPoredakSprava(s).dumpRezultati(logStreamWriter);
                                 else
-                                    rt.Takmicenje1.PoredakPreskok.dumpRezultati(logStreamWriter, rt.Propozicije, t.FinaleKupa);
+                                    rt.Takmicenje1.PoredakPreskok.dumpRezultati(logStreamWriter, rt.Propozicije);
                             }
                             if (rt.ImaEkipnoTakmicenje)
                                 rt.Takmicenje1.PoredakEkipno.dumpRezultati(logStreamWriter);
@@ -346,7 +346,7 @@ namespace Bilten
                                             p.dumpRezultati(logStreamWriter);
                                     }
                                     else if (rt.Takmicenje3.PoredakPreskok != null)
-                                        rt.Takmicenje3.PoredakPreskok.dumpRezultati(logStreamWriter, rt.Propozicije, t.FinaleKupa);
+                                        rt.Takmicenje3.PoredakPreskok.dumpRezultati(logStreamWriter, rt.Propozicije);
                                 }
                             }
 

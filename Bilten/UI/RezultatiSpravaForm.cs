@@ -282,7 +282,7 @@ namespace Bilten.UI
             DataGridViewUserControl dgw = spravaGridUserControl1.DataGridViewUserControl;
             // TODO: Indexi kolona bi trebali da budu konstante
 
-            bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
+            bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
             if (dgw.DataGridView.Columns.Count == 0)
             {
                 GridColumnsInitializer.initRezultatiSprava(dgw, takmicenje, kvalColumnVisible(), sprava, obaPreskoka);
@@ -393,7 +393,7 @@ namespace Bilten.UI
                     documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
                         + ActiveTakmicenje.Kategorija.Naziv;
                 }
-                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
+                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
 
                 PreviewDialog p = new PreviewDialog();
                 if (form.StampajSveSprave)
@@ -552,7 +552,7 @@ namespace Bilten.UI
             else
             {
                 RezultatPreskok rp = (RezultatPreskok)rez;
-                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa);
+                bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
                 if (obaPreskoka && (rp.TotalObeOcene == null) || !obaPreskoka && (rp.Total == null))
                     return;
                 foreach (RezultatPreskok r in ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati())
@@ -735,7 +735,7 @@ namespace Bilten.UI
         private void promeniPoredakPreskok()
         {
             RazresiIsteOceneForm form = new RazresiIsteOceneForm(istiRezultati, takmicenje, Sprava.Preskok,
-                ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod, takmicenje.FinaleKupa));
+                ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod));
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
@@ -981,7 +981,7 @@ namespace Bilten.UI
                     documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
                         + ActiveTakmicenje.Kategorija.Naziv;
                 }
-                bool obaPresk = ActiveTakmicenje.Propozicije.KvalifikantiTak3PreskokNaOsnovuObaPreskoka;
+                bool obaPresk = ActiveTakmicenje.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
 
                 if (form.StampajSveSprave)
                 {

@@ -134,18 +134,18 @@ namespace Bilten.UI
             this.lblKvalPreskok.AutoSize = true;
             this.lblKvalPreskok.Location = new System.Drawing.Point(15, 247);
             this.lblKvalPreskok.Name = "lblKvalPreskok";
-            this.lblKvalPreskok.Size = new System.Drawing.Size(258, 13);
+            this.lblKvalPreskok.Size = new System.Drawing.Size(218, 13);
             this.lblKvalPreskok.TabIndex = 9;
-            this.lblKvalPreskok.Text = "Kvalifikanti za finale preskoka se racunaju na osnovu";
+            this.lblKvalPreskok.Text = "Preskok u takmicenju I se racuna na osnovu";
             // 
             // lblPoredakPreskok
             // 
             this.lblPoredakPreskok.AutoSize = true;
             this.lblPoredakPreskok.Location = new System.Drawing.Point(15, 333);
             this.lblPoredakPreskok.Name = "lblPoredakPreskok";
-            this.lblPoredakPreskok.Size = new System.Drawing.Size(233, 13);
+            this.lblPoredakPreskok.Size = new System.Drawing.Size(224, 13);
             this.lblPoredakPreskok.TabIndex = 12;
-            this.lblPoredakPreskok.Text = "Rezultat u finalu preskoka se racuna na osnovu";
+            this.lblPoredakPreskok.Text = "Preskok u takmicenju III se racuna na osnovu";
             // 
             // panel1
             // 
