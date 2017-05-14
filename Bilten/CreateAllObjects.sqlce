@@ -70,6 +70,7 @@ create table propozicije (
 	broj_rezervi_tak3 tinyint,
 	kval_tak3_oba_preskoka bit,
 	poredak_tak3_oba_preskoka bit,
+	veca_e_ocena_ima_prednost bit,
 	nacin_racunanja_ocene_finale_kupa_tak3 tinyint,
     tak3_fin_ocena_je_zbir bit,
     tak3_fin_ocena_je_max bit,

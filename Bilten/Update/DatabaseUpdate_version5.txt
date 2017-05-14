@@ -22,4 +22,5 @@ alter table propozicije add column nacin_racunanja_ocene_finale_kupa_tak3 tinyin
 GO
 alter table propozicije add column nacin_racunanja_ocene_finale_kupa_tak4 tinyint;
 GO
-
+alter table propozicije add column veca_e_ocena_ima_prednost bit;
+GO

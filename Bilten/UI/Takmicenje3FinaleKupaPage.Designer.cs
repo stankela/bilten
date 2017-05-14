@@ -51,10 +51,15 @@ namespace Bilten.UI
             this.rbtFinalnaOcenaJeProsek = new System.Windows.Forms.RadioButton();
             this.rbtFinalnaOcenaJeZbir = new System.Windows.Forms.RadioButton();
             this.rbtFinalnaOcenaJeMax = new System.Windows.Forms.RadioButton();
+            this.lblIstaKonacnaOcena = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.rbtPrednostImaVecaEOcena = new System.Windows.Forms.RadioButton();
+            this.rbtGimnasticariDelePlasman = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // ckbPostojiTak3
@@ -71,7 +76,7 @@ namespace Bilten.UI
             // lblMaxTak
             // 
             this.lblMaxTak.AutoSize = true;
-            this.lblMaxTak.Location = new System.Drawing.Point(18, 326);
+            this.lblMaxTak.Location = new System.Drawing.Point(18, 317);
             this.lblMaxTak.Name = "lblMaxTak";
             this.lblMaxTak.Size = new System.Drawing.Size(167, 13);
             this.lblMaxTak.TabIndex = 2;
@@ -79,7 +84,7 @@ namespace Bilten.UI
             // 
             // txtMaxTak
             // 
-            this.txtMaxTak.Location = new System.Drawing.Point(261, 324);
+            this.txtMaxTak.Location = new System.Drawing.Point(261, 315);
             this.txtMaxTak.Name = "txtMaxTak";
             this.txtMaxTak.Size = new System.Drawing.Size(43, 20);
             this.txtMaxTak.TabIndex = 12;
@@ -88,7 +93,7 @@ namespace Bilten.UI
             // ckbNeogranicenBrojTak
             // 
             this.ckbNeogranicenBrojTak.AutoSize = true;
-            this.ckbNeogranicenBrojTak.Location = new System.Drawing.Point(310, 327);
+            this.ckbNeogranicenBrojTak.Location = new System.Drawing.Point(310, 318);
             this.ckbNeogranicenBrojTak.Name = "ckbNeogranicenBrojTak";
             this.ckbNeogranicenBrojTak.Size = new System.Drawing.Size(195, 17);
             this.ckbNeogranicenBrojTak.TabIndex = 14;
@@ -99,7 +104,7 @@ namespace Bilten.UI
             // lblBrojFinalista
             // 
             this.lblBrojFinalista.AutoSize = true;
-            this.lblBrojFinalista.Location = new System.Drawing.Point(21, 253);
+            this.lblBrojFinalista.Location = new System.Drawing.Point(21, 244);
             this.lblBrojFinalista.Name = "lblBrojFinalista";
             this.lblBrojFinalista.Size = new System.Drawing.Size(63, 13);
             this.lblBrojFinalista.TabIndex = 5;
@@ -107,7 +112,7 @@ namespace Bilten.UI
             // 
             // txtBrojFinalista
             // 
-            this.txtBrojFinalista.Location = new System.Drawing.Point(90, 250);
+            this.txtBrojFinalista.Location = new System.Drawing.Point(90, 241);
             this.txtBrojFinalista.Name = "txtBrojFinalista";
             this.txtBrojFinalista.Size = new System.Drawing.Size(42, 20);
             this.txtBrojFinalista.TabIndex = 6;
@@ -116,7 +121,7 @@ namespace Bilten.UI
             // lblBrojRezervi
             // 
             this.lblBrojRezervi.AutoSize = true;
-            this.lblBrojRezervi.Location = new System.Drawing.Point(21, 279);
+            this.lblBrojRezervi.Location = new System.Drawing.Point(21, 270);
             this.lblBrojRezervi.Name = "lblBrojRezervi";
             this.lblBrojRezervi.Size = new System.Drawing.Size(59, 13);
             this.lblBrojRezervi.TabIndex = 7;
@@ -124,7 +129,7 @@ namespace Bilten.UI
             // 
             // txtBrojRezervi
             // 
-            this.txtBrojRezervi.Location = new System.Drawing.Point(90, 276);
+            this.txtBrojRezervi.Location = new System.Drawing.Point(90, 267);
             this.txtBrojRezervi.Name = "txtBrojRezervi";
             this.txtBrojRezervi.Size = new System.Drawing.Size(41, 20);
             this.txtBrojRezervi.TabIndex = 8;
@@ -133,7 +138,7 @@ namespace Bilten.UI
             // lblPoredakPreskok
             // 
             this.lblPoredakPreskok.AutoSize = true;
-            this.lblPoredakPreskok.Location = new System.Drawing.Point(15, 390);
+            this.lblPoredakPreskok.Location = new System.Drawing.Point(15, 369);
             this.lblPoredakPreskok.Name = "lblPoredakPreskok";
             this.lblPoredakPreskok.Size = new System.Drawing.Size(233, 13);
             this.lblPoredakPreskok.TabIndex = 12;
@@ -173,7 +178,7 @@ namespace Bilten.UI
             // 
             this.panel3.Controls.Add(this.rbtPoredakPreskok2);
             this.panel3.Controls.Add(this.rbtPoredakPreskok1);
-            this.panel3.Location = new System.Drawing.Point(28, 406);
+            this.panel3.Location = new System.Drawing.Point(28, 385);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(117, 49);
             this.panel3.TabIndex = 17;
@@ -206,7 +211,7 @@ namespace Bilten.UI
             // 
             this.panel4.Controls.Add(this.rbtDrzava);
             this.panel4.Controls.Add(this.rbtKlub);
-            this.panel4.Location = new System.Drawing.Point(191, 313);
+            this.panel4.Location = new System.Drawing.Point(191, 304);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(66, 42);
             this.panel4.TabIndex = 10;
@@ -243,7 +248,7 @@ namespace Bilten.UI
             this.panel2.Controls.Add(this.rbtFinalnaOcenaJeMax);
             this.panel2.Location = new System.Drawing.Point(28, 121);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(346, 112);
+            this.panel2.Size = new System.Drawing.Size(346, 98);
             this.panel2.TabIndex = 4;
             // 
             // ckbNeRacunajProsek
@@ -293,9 +298,53 @@ namespace Bilten.UI
             this.rbtFinalnaOcenaJeMax.UseVisualStyleBackColor = true;
             this.rbtFinalnaOcenaJeMax.CheckedChanged += new System.EventHandler(this.rbtFinalnaOcenaJeMax_CheckedChanged);
             // 
+            // lblIstaKonacnaOcena
+            // 
+            this.lblIstaKonacnaOcena.AutoSize = true;
+            this.lblIstaKonacnaOcena.Location = new System.Drawing.Point(15, 455);
+            this.lblIstaKonacnaOcena.Name = "lblIstaKonacnaOcena";
+            this.lblIstaKonacnaOcena.Size = new System.Drawing.Size(146, 13);
+            this.lblIstaKonacnaOcena.TabIndex = 18;
+            this.lblIstaKonacnaOcena.Text = "Gimnasticari sa istom ocenom";
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.rbtPrednostImaVecaEOcena);
+            this.panel5.Controls.Add(this.rbtGimnasticariDelePlasman);
+            this.panel5.Location = new System.Drawing.Point(28, 471);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(164, 50);
+            this.panel5.TabIndex = 19;
+            // 
+            // rbtPrednostImaVecaEOcena
+            // 
+            this.rbtPrednostImaVecaEOcena.AutoSize = true;
+            this.rbtPrednostImaVecaEOcena.Location = new System.Drawing.Point(3, 28);
+            this.rbtPrednostImaVecaEOcena.Name = "rbtPrednostImaVecaEOcena";
+            this.rbtPrednostImaVecaEOcena.Size = new System.Drawing.Size(156, 17);
+            this.rbtPrednostImaVecaEOcena.TabIndex = 1;
+            this.rbtPrednostImaVecaEOcena.TabStop = true;
+            this.rbtPrednostImaVecaEOcena.Text = "Prednost ima veca E ocena";
+            this.rbtPrednostImaVecaEOcena.UseVisualStyleBackColor = true;
+            this.rbtPrednostImaVecaEOcena.CheckedChanged += new System.EventHandler(this.rbtPrednostImaVecaEOcena_CheckedChanged);
+            // 
+            // rbtGimnasticariDelePlasman
+            // 
+            this.rbtGimnasticariDelePlasman.AutoSize = true;
+            this.rbtGimnasticariDelePlasman.Location = new System.Drawing.Point(3, 5);
+            this.rbtGimnasticariDelePlasman.Name = "rbtGimnasticariDelePlasman";
+            this.rbtGimnasticariDelePlasman.Size = new System.Drawing.Size(123, 17);
+            this.rbtGimnasticariDelePlasman.TabIndex = 0;
+            this.rbtGimnasticariDelePlasman.TabStop = true;
+            this.rbtGimnasticariDelePlasman.Text = "Zauzimaju isto mesto";
+            this.rbtGimnasticariDelePlasman.UseVisualStyleBackColor = true;
+            this.rbtGimnasticariDelePlasman.CheckedChanged += new System.EventHandler(this.rbtGimnasticariDelePlasman_CheckedChanged);
+            // 
             // Takmicenje3FinaleKupaPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.panel5);
+            this.Controls.Add(this.lblIstaKonacnaOcena);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -310,7 +359,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblMaxTak);
             this.Controls.Add(this.ckbPostojiTak3);
             this.Name = "Takmicenje3FinaleKupaPage";
-            this.Size = new System.Drawing.Size(527, 466);
+            this.Size = new System.Drawing.Size(527, 564);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel3.ResumeLayout(false);
@@ -319,6 +368,8 @@ namespace Bilten.UI
             this.panel4.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -349,6 +400,10 @@ namespace Bilten.UI
         private System.Windows.Forms.RadioButton rbtFinalnaOcenaJeZbir;
         private System.Windows.Forms.RadioButton rbtFinalnaOcenaJeMax;
         private System.Windows.Forms.CheckBox ckbNeRacunajProsek;
+        private System.Windows.Forms.Label lblIstaKonacnaOcena;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.RadioButton rbtPrednostImaVecaEOcena;
+        private System.Windows.Forms.RadioButton rbtGimnasticariDelePlasman;
 
 
     }

@@ -77,31 +77,29 @@ namespace Bilten.Domain
         public virtual Takmicenje1 Takmicenje1
         {
             get { return _takmicenje1; }
-            // NOTE: Postavio sam na public jer mi je trebalo u VersionUpdater.updateVersion13, da ispravim
-            // neregularnost u jednom finalu kupa.
-            // TODO: Eventualno ukloni ovo
-            /*protected*/ set { _takmicenje1 = value; }
+            protected set { _takmicenje1 = value; }
         }
 
         private Takmicenje2 _takmicenje2;
         public virtual Takmicenje2 Takmicenje2
         {
             get { return _takmicenje2; }
-            protected set { _takmicenje2 = value; }
+            // TODO4 Vrati na protected kada izvrsis update na verziju 5. Isto i za takmicenja 3 i 4.
+            /*protected*/ set { _takmicenje2 = value; }
         }
 
         private Takmicenje3 _takmicenje3;
         public virtual Takmicenje3 Takmicenje3
         {
             get { return _takmicenje3; }
-            protected set { _takmicenje3 = value; }
+            /*protected*/ set { _takmicenje3 = value; }
         }
 
         private Takmicenje4 _takmicenje4;
         public virtual Takmicenje4 Takmicenje4
         {
             get { return _takmicenje4; }
-            protected set { _takmicenje4 = value; }
+            /*protected*/ set { _takmicenje4 = value; }
         }
 
         public RezultatskoTakmicenje()
@@ -122,11 +120,13 @@ namespace Bilten.Domain
             this.gimnastika = takmicenje.Gimnastika;
 
             Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
+            Takmicenje2 = new Takmicenje2();
+            Takmicenje3 = new Takmicenje3(Gimnastika);
+            Takmicenje4 = new Takmicenje4();
         }
 
         public virtual void createTakmicenje2(IList<Ocena> oceneTak2)
         {
-            Takmicenje2 = new Takmicenje2();
             Takmicenje2.createUcesnici(Takmicenje1);
 
             // Ako ne postoje ocene, sledeci poziv samo sortira po prezimenu i na osnovu toga dodeljuje RedBroj
@@ -135,7 +135,6 @@ namespace Bilten.Domain
 
         public virtual void createTakmicenje3(IList<Ocena> oceneTak3)
         {
-            Takmicenje3 = new Takmicenje3(Gimnastika);
             Takmicenje3.createUcesnici(Takmicenje1, Propozicije.Tak1PreskokNaOsnovuObaPreskoka);
 
             // Ako ne postoje ocene, sledeci poziv samo sortira po prezimenu i na osnovu toga dodeljuje RedBroj
@@ -146,7 +145,6 @@ namespace Bilten.Domain
 
         public virtual void createTakmicenje4(IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap)
         {
-            Takmicenje4 = new Takmicenje4();
             Takmicenje4.createUcesnici(Takmicenje1);
             Takmicenje4.Poredak.create(this, ekipaRezultatiUkupnoMap);
         }
@@ -485,6 +483,7 @@ namespace Bilten.Domain
             bool createPoredakUkupnoTak1 = false;
             bool rankPoredakSpravaTak1 = false;
             bool rankPoredakPreskokTak1 = false;
+            bool rankPoredakSpravaTak3 = false;
             bool rankPoredakPreskokTak3 = false;
             bool rankPoredakEkipeTak1 = false;
             bool createPoredakEkipeTak1 = false;
@@ -545,6 +544,21 @@ namespace Bilten.Domain
                 }
                 else if (takmicenje.FinaleKupa)
                     rankPoredakSpravaFinaleKupa = true;
+            }
+            if (Propozicije.VecaEOcenaImaPrednost != origPropozicije.VecaEOcenaImaPrednost)
+            {
+                if (takmicenje.StandardnoTakmicenje)
+                {
+                    rankPoredakSpravaTak1 = true;
+                    rankPoredakPreskokTak1 = true;
+                    rankPoredakSpravaTak3 = true;
+                    rankPoredakPreskokTak3 = true;
+                }
+                else if (takmicenje.FinaleKupa)
+                {
+                    rankPoredakSpravaTak1 = true;
+                    rankPoredakPreskokTak1 = true;
+                }
             }
             if (Propozicije.Tak1PreskokNaOsnovuObaPreskoka != origPropozicije.Tak1PreskokNaOsnovuObaPreskoka)
             {
@@ -666,6 +680,11 @@ namespace Bilten.Domain
             }
             if (rankPoredakPreskokTak1)
                 Takmicenje1.PoredakPreskok.rankRezultati(Propozicije);
+            if (rankPoredakSpravaTak3)
+            {
+                foreach (PoredakSprava ps in Takmicenje3.Poredak)
+                    ps.rankRezultati(Propozicije);
+            }
             if (rankPoredakPreskokTak3)
                 Takmicenje3.PoredakPreskok.rankRezultati(Propozicije);
             if (createPoredakEkipeTak1)

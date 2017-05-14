@@ -98,13 +98,6 @@ namespace Bilten
             // TODO4
         }
 
-        // Proveri da li uvek vazi da je RezultatskoTakmicenje.Takmicenje2 == null kada je odvojenoTak2() == false.
-        // Isto i za takmicenja 3 i 4.
-        public void proveriTakmicenja234()
-        {
-            // TODO4
-        }
-
         // Proveri za sva finala kupa i zbir vise kola, da li postoje gimnasticari koji su nastupali u razlicitim
         // kategorijama u prethodnim kolima.
         public void proveriViseKola()

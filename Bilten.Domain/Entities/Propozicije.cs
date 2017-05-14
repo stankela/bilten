@@ -12,6 +12,8 @@ namespace Bilten.Domain
     {
         // TODO4: Razmisli da uklonis svojstva PostojiTak2 i PostojiTak3, tj. neka ona uvek budu true.
 
+        // Takmicenje 2
+
         private bool postojiTak2;
         public virtual bool PostojiTak2
         {
@@ -60,6 +62,8 @@ namespace Bilten.Domain
             get { return brojRezerviTak2; }
             set { brojRezerviTak2 = value; }
         }
+
+        // Takmicenje 3
 
         private bool postojiTak3;
         public virtual bool PostojiTak3
@@ -123,6 +127,15 @@ namespace Bilten.Domain
             get { return tak3PreskokNaOsnovuObaPreskoka; }
             set { tak3PreskokNaOsnovuObaPreskoka = value; }
         }
+
+        private bool vecaEOcenaImaPrednost = false;
+        public virtual bool VecaEOcenaImaPrednost
+        {
+            get { return vecaEOcenaImaPrednost; }
+            set { vecaEOcenaImaPrednost = value; }
+        }
+
+        // Takmicenje 4
 
         private bool postojiTak4;
         public virtual bool PostojiTak4
@@ -468,6 +481,7 @@ namespace Bilten.Domain
                 p.BrojRezerviTak3 = this.BrojRezerviTak3;
                 p.Tak1PreskokNaOsnovuObaPreskoka = this.Tak1PreskokNaOsnovuObaPreskoka;
                 p.Tak3PreskokNaOsnovuObaPreskoka = this.Tak3PreskokNaOsnovuObaPreskoka;
+                p.VecaEOcenaImaPrednost = this.VecaEOcenaImaPrednost;
             }
         }
 
@@ -526,6 +540,7 @@ namespace Bilten.Domain
                 p.MaxBrojTakmicaraIzKlubaTak3 = this.MaxBrojTakmicaraIzKlubaTak3;
                 p.MaxBrojTakmicaraTak3VaziZaDrzavu = this.MaxBrojTakmicaraTak3VaziZaDrzavu;
                 p.Tak1PreskokNaOsnovuObaPreskoka = this.Tak1PreskokNaOsnovuObaPreskoka;
+                p.VecaEOcenaImaPrednost = this.VecaEOcenaImaPrednost;
             }
         }
 
@@ -571,6 +586,7 @@ namespace Bilten.Domain
             result.BrojRezerviTak3 = this.BrojRezerviTak3;
             result.Tak1PreskokNaOsnovuObaPreskoka = this.Tak1PreskokNaOsnovuObaPreskoka;
             result.Tak3PreskokNaOsnovuObaPreskoka = this.Tak3PreskokNaOsnovuObaPreskoka;
+            result.VecaEOcenaImaPrednost = this.VecaEOcenaImaPrednost;
 
             result.PostojiTak4 = this.PostojiTak4;
             result.OdvojenoTak4 = this.OdvojenoTak4;
@@ -607,6 +623,7 @@ namespace Bilten.Domain
             && this.BrojRezerviTak3 == that.BrojRezerviTak3
             && this.Tak1PreskokNaOsnovuObaPreskoka == that.Tak1PreskokNaOsnovuObaPreskoka
             && this.Tak3PreskokNaOsnovuObaPreskoka == that.Tak3PreskokNaOsnovuObaPreskoka
+            && this.VecaEOcenaImaPrednost == that.VecaEOcenaImaPrednost
 
             && this.PostojiTak4 == that.PostojiTak4
             && this.OdvojenoTak4 == that.OdvojenoTak4
@@ -645,6 +662,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(BrojRezerviTak3.ToString());
             strBuilder.AppendLine(Tak1PreskokNaOsnovuObaPreskoka.ToString());
             strBuilder.AppendLine(Tak3PreskokNaOsnovuObaPreskoka.ToString());
+            strBuilder.AppendLine(VecaEOcenaImaPrednost.ToString());
 
             strBuilder.AppendLine(PostojiTak4.ToString());
             strBuilder.AppendLine(OdvojenoTak4.ToString());
@@ -676,6 +694,7 @@ namespace Bilten.Domain
             BrojRezerviTak3 = byte.Parse(reader.ReadLine());
             Tak1PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
             Tak3PreskokNaOsnovuObaPreskoka = bool.Parse(reader.ReadLine());
+            VecaEOcenaImaPrednost = bool.Parse(reader.ReadLine());
 
             PostojiTak4 = bool.Parse(reader.ReadLine());
             OdvojenoTak4 = bool.Parse(reader.ReadLine());

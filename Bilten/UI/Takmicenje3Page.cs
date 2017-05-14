@@ -58,6 +58,10 @@ namespace Bilten.UI
                 lblPoredakPreskok.Enabled = false;
                 rbtPoredakPreskok1.Enabled = false;
                 rbtPoredakPreskok2.Enabled = false;
+
+                lblIstaKonacnaOcena.Enabled = false;
+                rbtGimnasticariDelePlasman.Enabled = false;
+                rbtPrednostImaVecaEOcena.Enabled = false;
             }
             else
             {
@@ -87,6 +91,9 @@ namespace Bilten.UI
             lblKvalPreskok.Enabled = postojiTak3;
             rbtKvalPreskok1.Enabled = postojiTak3;
             rbtKvalPreskok2.Enabled = postojiTak3;
+            lblIstaKonacnaOcena.Enabled = postojiTak3;
+            rbtGimnasticariDelePlasman.Enabled = postojiTak3;
+            rbtPrednostImaVecaEOcena.Enabled = postojiTak3;
 
             bool odvojenoTak3 = rbtOdvojenoTak3.Enabled && rbtOdvojenoTak3.Checked;
             lblBrojFinalista.Enabled = odvojenoTak3;
@@ -151,6 +158,16 @@ namespace Bilten.UI
             dirty = true;
         }
 
+        private void rbtGimnasticariDelePlasman_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtPrednostImaVecaEOcena_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
         public override void OnSetActive()
         {
             updateUIFromPropozicije(propozicije);
@@ -163,6 +180,11 @@ namespace Bilten.UI
             clearUI();
 
             ckbPostojiTak3.Checked = propozicije.PostojiTak3;
+
+            // Nek ovo bude uvek selektovano
+            rbtGimnasticariDelePlasman.Checked = !propozicije.VecaEOcenaImaPrednost;
+            rbtPrednostImaVecaEOcena.Checked = propozicije.VecaEOcenaImaPrednost;
+
             if (propozicije.PostojiTak3)
             {
                 rbtOdvojenoTak3.Checked = propozicije.OdvojenoTak3;
@@ -208,6 +230,9 @@ namespace Bilten.UI
             rbtKvalPreskok2.CheckedChanged -= rbtKvalPreskok_CheckedChanged;
             rbtPoredakPreskok1.CheckedChanged -= rbtPoredakPreskok_CheckedChanged;
             rbtPoredakPreskok2.CheckedChanged -= rbtPoredakPreskok_CheckedChanged;
+
+            rbtGimnasticariDelePlasman.CheckedChanged -= rbtGimnasticariDelePlasman_CheckedChanged;
+            rbtPrednostImaVecaEOcena.CheckedChanged -= rbtPrednostImaVecaEOcena_CheckedChanged;
         }
 
         private void enableHandlers()
@@ -221,6 +246,9 @@ namespace Bilten.UI
             rbtKvalPreskok2.CheckedChanged += rbtKvalPreskok_CheckedChanged;
             rbtPoredakPreskok1.CheckedChanged += rbtPoredakPreskok_CheckedChanged;
             rbtPoredakPreskok2.CheckedChanged += rbtPoredakPreskok_CheckedChanged;
+
+            rbtGimnasticariDelePlasman.CheckedChanged += rbtGimnasticariDelePlasman_CheckedChanged;
+            rbtPrednostImaVecaEOcena.CheckedChanged += rbtPrednostImaVecaEOcena_CheckedChanged;
         }
 
         private void clearUI()
@@ -238,6 +266,9 @@ namespace Bilten.UI
             rbtKvalPreskok2.Checked = false;
             rbtPoredakPreskok1.Checked = false;
             rbtPoredakPreskok2.Checked = false;
+
+            rbtGimnasticariDelePlasman.Checked = false;
+            rbtPrednostImaVecaEOcena.Checked = false;
         }
 
         public override void OnApply()
@@ -331,6 +362,14 @@ namespace Bilten.UI
                     "Izaberite da li se preskok u takmicenju III " +
                     "racuna na osnovu prvog ili oba preskoka.");
             }
+
+            if (rbtGimnasticariDelePlasman.Enabled && !rbtGimnasticariDelePlasman.Checked
+                && !rbtPrednostImaVecaEOcena.Checked)
+            {
+                notification.RegisterMessage(
+                    "VecaEOcenaImaPrednost",
+                    "Izaberite kako se racuna plasman kada gimnasticari imaju istu ocenu.");
+            }
         }
 
         private void updatePropozicijeFromUI(Propozicije propozicije)
@@ -345,6 +384,7 @@ namespace Bilten.UI
             else
             {
                 propozicije.OdvojenoTak3 = rbtOdvojenoTak3.Checked;
+                propozicije.VecaEOcenaImaPrednost = rbtPrednostImaVecaEOcena.Checked;
 
                 if (!propozicije.OdvojenoTak3)
                     propozicije.Tak1PreskokNaOsnovuObaPreskoka = rbtKvalPreskok2.Checked;

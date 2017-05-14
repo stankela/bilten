@@ -17,17 +17,15 @@
     
     <property name="PostojiTak3" column="postoji_tak3" type="Boolean" />
     <property name="OdvojenoTak3" column="odvojeno_tak3" type="Boolean" />
-    <property name="NeogranicenBrojTakmicaraIzKlubaTak3" 
-              column="neogr_broj_tak_tak3" type="Boolean" />
+    <property name="NeogranicenBrojTakmicaraIzKlubaTak3" column="neogr_broj_tak_tak3" type="Boolean" />
     <property name="MaxBrojTakmicaraIzKlubaTak3" column="max_tak_tak3" type="Byte" />
     <property name="MaxBrojTakmicaraTak3VaziZaDrzavu" column="max_tak_tak3_vazi_za_drzavu" type="Boolean" />
     <property name="BrojFinalistaTak3" column="broj_finalista_tak3" type="Byte" />
     <property name="BrojRezerviTak3" column="broj_rezervi_tak3" type="Byte" />
-    <property name="Tak1PreskokNaOsnovuObaPreskoka" 
-              column="kval_tak3_oba_preskoka" type="Boolean" />
-    <property name="Tak3PreskokNaOsnovuObaPreskoka" 
-              column="poredak_tak3_oba_preskoka" type="Boolean" />
-    
+    <property name="Tak1PreskokNaOsnovuObaPreskoka" column="kval_tak3_oba_preskoka" type="Boolean" />
+    <property name="Tak3PreskokNaOsnovuObaPreskoka" column="poredak_tak3_oba_preskoka" type="Boolean" />
+    <property name="VecaEOcenaImaPrednost" column="veca_e_ocena_ima_prednost" type="Boolean" />
+
     <property name="PostojiTak4" column="postoji_tak4" type="Boolean" />
     <property name="OdvojenoTak4" column="odvojeno_tak4" type="Boolean" />
     <property name="JednoTak4ZaSveKategorije" column="jedno_tak4_za_sve_kat" type="Boolean" />

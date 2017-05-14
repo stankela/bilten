@@ -20,8 +20,6 @@ namespace Bilten
         // TODO4: (sa Memorijala 2016)
         // - Proveri OcenaForm (polje za E ocenu se ne ponasa ocekivano u sledece 3 situacije: kada se ostavi prazno,
         //   kada se ocena unese sa tackom umesto zareza, i kada se unese neki proizvoljan tekst)
-        // - Dodati u propozicijama nacin razresavanja kada dva takmicara imaju istu konacnu ocenu
-        //   (razresavanje za vezbe na spravi neka bude u propozicijama za takmicenje III itd.)
         // - Mislim da u programu postoji na nekoliko mesta obaveza da se kod menja ako se u neku
         //   klasu doda novo svojstvo (cini mi se da je prozor za propozicije jedno od tih mesta). Probaj da
         //   napises unit testove koji bi ovo proveravali sa refleksijom. Npr. test bi sadrzao listu svojstva koja
@@ -128,7 +126,6 @@ namespace Bilten
             RazneProvere rp = new RazneProvere();
             // rp.proveriPrvaDvaKola();   // OK
             rp.proveriRezultateIOcene();
-            rp.proveriTakmicenja234();
             // rp.dumpRezultati();
             // rp.takmicenjaBezOcene();
             // rp.proveriViseKola();  // Postoji nekoliko takmicenja gde ova provera ne prolazi, ali mislim da je bolje

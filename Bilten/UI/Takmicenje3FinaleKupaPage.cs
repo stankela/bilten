@@ -61,6 +61,10 @@ namespace Bilten.UI
                 lblPoredakPreskok.Enabled = false;
                 rbtPoredakPreskok1.Enabled = false;
                 rbtPoredakPreskok2.Enabled = false;
+
+                lblIstaKonacnaOcena.Enabled = false;
+                rbtGimnasticariDelePlasman.Enabled = false;
+                rbtPrednostImaVecaEOcena.Enabled = false;
             }
             else
             {
@@ -105,6 +109,10 @@ namespace Bilten.UI
             lblPoredakPreskok.Enabled = odvojenoTak3;
             rbtPoredakPreskok1.Enabled = odvojenoTak3;
             rbtPoredakPreskok2.Enabled = odvojenoTak3;
+
+            lblIstaKonacnaOcena.Enabled = odvojenoTak3;
+            rbtGimnasticariDelePlasman.Enabled = odvojenoTak3;
+            rbtPrednostImaVecaEOcena.Enabled = odvojenoTak3;
         }
 
         private void setEnabledNeogranicenBrojTak()
@@ -175,6 +183,16 @@ namespace Bilten.UI
             dirty = true;
         }
 
+        private void rbtGimnasticariDelePlasman_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtPrednostImaVecaEOcena_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
         public override void OnSetActive()
         {
             updateUIFromPropozicije(propozicije);
@@ -187,6 +205,11 @@ namespace Bilten.UI
             clearUI();
 
             ckbPostojiTak3.Checked = propozicije.PostojiTak3;
+     
+            // Nek ovo bude uvek selektovano
+            rbtGimnasticariDelePlasman.Checked = !propozicije.VecaEOcenaImaPrednost;
+            rbtPrednostImaVecaEOcena.Checked = propozicije.VecaEOcenaImaPrednost;
+
             if (propozicije.PostojiTak3)
             {
                 rbtOdvojenoTak3.Checked = propozicije.OdvojenoTak3;
@@ -238,6 +261,9 @@ namespace Bilten.UI
 
             rbtPoredakPreskok1.CheckedChanged -= rbtPoredakPreskok_CheckedChanged;
             rbtPoredakPreskok2.CheckedChanged -= rbtPoredakPreskok_CheckedChanged;
+
+            rbtGimnasticariDelePlasman.CheckedChanged -= rbtGimnasticariDelePlasman_CheckedChanged;
+            rbtPrednostImaVecaEOcena.CheckedChanged -= rbtPrednostImaVecaEOcena_CheckedChanged;
         }
 
         private void enableHandlers()
@@ -255,6 +281,9 @@ namespace Bilten.UI
 
             rbtPoredakPreskok1.CheckedChanged += rbtPoredakPreskok_CheckedChanged;
             rbtPoredakPreskok2.CheckedChanged += rbtPoredakPreskok_CheckedChanged;
+
+            rbtGimnasticariDelePlasman.CheckedChanged += rbtGimnasticariDelePlasman_CheckedChanged;
+            rbtPrednostImaVecaEOcena.CheckedChanged += rbtPrednostImaVecaEOcena_CheckedChanged;
         }
 
         private void clearUI()
@@ -276,6 +305,9 @@ namespace Bilten.UI
 
             rbtPoredakPreskok1.Checked = false;
             rbtPoredakPreskok2.Checked = false;
+
+            rbtGimnasticariDelePlasman.Checked = false;
+            rbtPrednostImaVecaEOcena.Checked = false;
         }
 
         public override void OnApply()
@@ -366,6 +398,13 @@ namespace Bilten.UI
                     "preskok racuna na osnovu prvog ili oba preskoka.");
             }
 
+            if (rbtGimnasticariDelePlasman.Enabled && !rbtGimnasticariDelePlasman.Checked
+                && !rbtPrednostImaVecaEOcena.Checked)
+            {
+                notification.RegisterMessage(
+                    "VecaEOcenaImaPrednost",
+                    "Izaberite kako se racuna plasman kada gimnasticari imaju istu ocenu.");
+            }
         }
 
         // TODO: Postoji dosta slicnosti u unosenju propozicija izmedju takmicenja 2, 3 i 4 (kako obicno takmicenje tako i
@@ -403,6 +442,7 @@ namespace Bilten.UI
                     }
 
                     propozicije.Tak1PreskokNaOsnovuObaPreskoka = rbtPoredakPreskok2.Checked;
+                    propozicije.VecaEOcenaImaPrednost = rbtPrednostImaVecaEOcena.Checked;
                 }
             }
         }

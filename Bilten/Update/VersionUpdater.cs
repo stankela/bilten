@@ -96,6 +96,7 @@ public class VersionUpdater
             updateRegistarskiBrojToString();
             updateNacinRacunanjaOceneFinaleKupa();
             updateNacinRacunanjaPreskoka();
+            updateTakmicenja234();
             verzijaBaze = 5;
             converted = true;
         }
@@ -219,12 +220,12 @@ public class VersionUpdater
     {
         // NOTE: updatePreskok vise nije moguce zvati zato sto se oslanjalo na RedBroj2 i Rank2 koji su izbrisani.
         //updatePreskok();
-        updatePoredakViseKola();
+        //updatePoredakViseKola();
         updateZavrsenoTak1();
         updateKvalifikanti();
     }
 
-    private void updatePoredakViseKola()
+    /*private void updatePoredakViseKola()
     {
         SqlCeCommand cmd = new SqlCeCommand("SELECT * FROM rezultati_sprava_finale_kupa_update");
         SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG);
@@ -399,7 +400,7 @@ public class VersionUpdater
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }
-    }
+    }*/
 
     private IList<int> getTakmicenjaId()
     {
@@ -1081,6 +1082,82 @@ public class VersionUpdater
                 p.Tak1PreskokNaOsnovuObaPreskoka = p.Tak3PreskokNaOsnovuObaPreskoka;
                 p.Tak3PreskokNaOsnovuObaPreskoka = false;
             }
+        }
+    }
+
+    // Uvek treba da bude Takmicenje2 != null. Isto i za takmicenja 3 i 4.
+    public void updateTakmicenja234()
+    {
+        StreamWriter logStreamWriter = File.CreateText("log_takmicenja234.txt");
+        IList<int> takmicenjaId = getTakmicenjaId();
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+                for (int i = 0; i < takmicenjaId.Count; ++i)
+                {
+                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjaId[i]);
+
+                    string takmicenjeHeader = i.ToString() + ". " + t.ToString();
+                    if (t.FinaleKupa)
+                        takmicenjeHeader += " - FINALE KUPA";
+                    else if (t.ZbirViseKola)
+                        takmicenjeHeader += " - ZBIR VISE KOLA";
+                    takmicenjeHeader += " (" + t.Id + ")";
+
+                    RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                    bool tak2 = false;
+                    bool tak3 = false;
+                    bool tak4 = false;
+                    foreach (RezultatskoTakmicenje rt in rezTakDAO.FindByTakmicenje(t.Id))
+                    {
+                        if (rt.Takmicenje2 == null)
+                        {
+                            tak2 = true;
+                            rt.Takmicenje2 = new Takmicenje2();
+                            rezTakDAO.Update(rt);
+                        }
+                        if (rt.Takmicenje3 == null)
+                        {
+                            tak3 = true;
+                            rt.Takmicenje3 = new Takmicenje3(t.Gimnastika);
+                            rezTakDAO.Update(rt);
+                        }
+                        if (rt.Takmicenje4 == null)
+                        {
+                            tak4 = true;
+                            rt.Takmicenje4 = new Takmicenje4();
+                            rezTakDAO.Update(rt);
+                        }
+                    }
+                    if (tak2 || tak3 || tak4)
+                    {
+                        string msg = String.Empty;
+                        if (tak2)
+                            msg += "   TAK2";
+                        if (tak3)
+                            msg += "   TAK3";
+                        if (tak4)
+                            msg += "   TAK4";
+                        logStreamWriter.WriteLine(takmicenjeHeader + msg);
+                    }
+                }
+                session.Transaction.Commit();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
+            logStreamWriter.Close();
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
         }
     }
 }
