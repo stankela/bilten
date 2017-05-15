@@ -30,20 +30,20 @@ namespace Bilten.UI
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.ekipeUserControl1 = new Bilten.UI.EkipeUserControl();
             this.btnAddEkipa = new System.Windows.Forms.Button();
             this.btnEditEkipa = new System.Windows.Forms.Button();
             this.btnDeleteEkipa = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.ekipeUserControl1 = new Bilten.UI.EkipeUserControl();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(12, 56);
             this.tabControl1.Name = "tabControl1";
@@ -62,6 +62,16 @@ namespace Bilten.UI
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // ekipeUserControl1
+            // 
+            this.ekipeUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ekipeUserControl1.Location = new System.Drawing.Point(6, 6);
+            this.ekipeUserControl1.Name = "ekipeUserControl1";
+            this.ekipeUserControl1.Size = new System.Drawing.Size(670, 251);
+            this.ekipeUserControl1.TabIndex = 0;
             // 
             // btnAddEkipa
             // 
@@ -103,16 +113,6 @@ namespace Bilten.UI
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // ekipeUserControl1
-            // 
-            this.ekipeUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.ekipeUserControl1.Location = new System.Drawing.Point(6, 6);
-            this.ekipeUserControl1.Name = "ekipeUserControl1";
-            this.ekipeUserControl1.Size = new System.Drawing.Size(670, 251);
-            this.ekipeUserControl1.TabIndex = 0;
-            // 
             // EkipeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -126,6 +126,7 @@ namespace Bilten.UI
             this.Name = "EkipeForm";
             this.Text = "EkipeForm";
             this.Load += new System.EventHandler(this.EkipeForm_Load);
+            this.Shown += new System.EventHandler(this.EkipeForm_Shown);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);

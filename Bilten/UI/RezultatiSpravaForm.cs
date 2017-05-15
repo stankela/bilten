@@ -22,9 +22,6 @@ namespace Bilten.UI
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
-
-        // kljuc je rezTakmicenja.IndexOf(takmicenje) * (Sprava.Max + 1) + sprava
-        private ISet<int> rezultatiOpened;
         private bool forViewingOnly;
         private bool select;
 
@@ -90,7 +87,6 @@ namespace Bilten.UI
                     }
                     
                     initUI(startRezTakmicenje, startSprava);
-                    rezultatiOpened = new HashSet<int>();
                 }
             }
             catch (BusinessException)
@@ -252,11 +248,6 @@ namespace Bilten.UI
         {
             btnStampajKvalifikante.Enabled = !forViewingOnly && kvalColumnVisible();            
             initSpravaGridUserControl(ActiveSprava);
-
-            int rezultatiKey = getRezultatiKey(ActiveTakmicenje, ActiveSprava);
-            if (!rezultatiOpened.Contains(rezultatiKey))
-                rezultatiOpened.Add(rezultatiKey);
-
             setItems();
         }
 
@@ -303,12 +294,6 @@ namespace Bilten.UI
                 return false;
             else
                 return deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak3();
-        }
-
-        private int getRezultatiKey(RezultatskoTakmicenje tak, Sprava sprava)
-        {
-            int result = rezTakmicenja.IndexOf(tak) * ((int)Sprava.Max + 1) + (int)sprava;
-            return result;
         }
 
         private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)

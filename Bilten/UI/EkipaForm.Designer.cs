@@ -131,6 +131,7 @@ namespace Bilten.UI
             // 
             // dgwUserControlClanovi
             // 
+            this.dgwUserControlClanovi.ColumnHeaderSorting = true;
             this.dgwUserControlClanovi.Location = new System.Drawing.Point(12, 199);
             this.dgwUserControlClanovi.Name = "dgwUserControlClanovi";
             this.dgwUserControlClanovi.Size = new System.Drawing.Size(486, 189);
@@ -212,6 +213,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblKod);
             this.Name = "EkipaForm";
             this.Text = "EkipaForm";
+            this.Shown += new System.EventHandler(this.EkipaForm_Shown);
             this.Controls.SetChildIndex(this.lblKod, 0);
             this.Controls.SetChildIndex(this.txtRezTakmicenje, 0);
             this.Controls.SetChildIndex(this.lblNaziv, 0);

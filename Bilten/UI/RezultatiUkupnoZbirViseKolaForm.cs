@@ -18,7 +18,6 @@ namespace Bilten.UI
     public partial class RezultatiUkupnoZbirViseKolaForm : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
-        private bool[] takmicenjeOpened;
         private Takmicenje takmicenje;
 
         private RezultatskoTakmicenje ActiveTakmicenje
@@ -57,9 +56,7 @@ namespace Bilten.UI
                         if (startRezTakmicenje == null)
                             throw new BusinessException("Ne postoje rezultati viseboj za dato takmicenje.");
                     }
-
                     initUI(startRezTakmicenje, forViewingOnly);
-                    takmicenjeOpened = new bool[rezTakmicenja.Count];
                 }
             }
             catch (BusinessException)
@@ -163,10 +160,6 @@ namespace Bilten.UI
                 //GridColumnsInitializer.reinitRezultatiUkupnoKeepColumnWidths(dataGridViewUserControl1,
                   //  takmicenje, kvalColumnVisible());
             }
-            
-            if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
-                takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
-
             setItems();
         }
 

@@ -20,7 +20,6 @@ namespace Bilten.UI
     public partial class RezultatiEkipeForm : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
-        private bool[] takmicenjeOpened;
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
         private IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap;
@@ -63,7 +62,6 @@ namespace Bilten.UI
                         = Takmicenje.getEkipaRezultatiUkupnoMap(rezTakmicenja, svaRezTakmicenja, deoTakKod);
 
                     initUI();
-                    takmicenjeOpened = new bool[rezTakmicenja.Count];
                 }
             }
             catch (BusinessException)
@@ -146,18 +144,14 @@ namespace Bilten.UI
         {
             DataGridView grid = dataGridViewUserControl1.DataGridView;
             if (e.Button == MouseButtons.Right && grid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
-            {
                 contextMenuStrip2.Show(grid, new Point(e.X, e.Y));
-            }
         }
 
         void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
             DataGridView grid = dataGridViewUserControl2.DataGridView;
             if (e.Button == MouseButtons.Right && grid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
-            {
                 contextMenuStrip1.Show(grid, new Point(e.X, e.Y));
-            }
         }
 
         void DataGridViewEkipe_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -170,7 +164,9 @@ namespace Bilten.UI
             RezultatEkipno rez = dataGridViewUserControl1.getSelectedItem<RezultatEkipno>();
             if (rez != null)
                 setRezultatiUkupno(rez.Ekipa);
-            else if (dataGridViewUserControl1.getItemCount<RezultatEkipno>() == 0)
+            else if (dataGridViewUserControl1.getItemCount<RezultatEkipno>() > 0)
+                setRezultatiUkupno(dataGridViewUserControl1.getItems<RezultatEkipno>()[0].Ekipa);
+            else
                 dataGridViewUserControl2.clearItems();
         }
 
@@ -178,6 +174,7 @@ namespace Bilten.UI
         {
             dataGridViewUserControl2.setItems<RezultatUkupno>(ekipaRezultatiUkupnoMap[e.Id]);
             dataGridViewUserControl2.sort<RezultatUkupno>("PrezimeIme", ListSortDirection.Ascending);
+            dataGridViewUserControl2.clearSelection();
         }
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -227,12 +224,14 @@ namespace Bilten.UI
                 dataGridViewUserControl2.DataGridView.Columns[1].Width =
                     GridColumnsInitializer.getMaxWidth(klubovi, dataGridViewUserControl2.DataGridView);
             }
+            setEkipe();
+        }
 
-            if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
-                takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
-
+        private void setEkipe()
+        {
             dataGridViewUserControl1.setItems<RezultatEkipno>(
                 ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
+            dataGridViewUserControl1.clearSelection();
             onEkipeCellMouseClick();
         }
 
@@ -483,9 +482,7 @@ namespace Bilten.UI
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
-            dataGridViewUserControl1.setItems<RezultatEkipno>(
-                ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati());
-            onEkipeCellMouseClick();
+            setEkipe();
         }
 
         private void mnSpraveKojeSeBoduju_Click(object sender, EventArgs e)

@@ -20,7 +20,6 @@ namespace Bilten.UI
     public partial class RezultatiUkupnoForm : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
-        private bool[] takmicenjeOpened;
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
         private bool forViewingOnly;
@@ -70,7 +69,6 @@ namespace Bilten.UI
                     }
 
                     initUI(startRezTakmicenje);
-                    takmicenjeOpened = new bool[rezTakmicenja.Count];
                 }
             }
             catch (BusinessException)
@@ -220,11 +218,7 @@ namespace Bilten.UI
                 // grid je vec inicijalizovan. podesi da velicine kolona budu nepromenjene.
                 GridColumnsInitializer.reinitRezultatiUkupnoKeepColumnWidths(dataGridViewUserControl1,
                     takmicenje, kvalColumnVisible(), true);
-            }
-            
-            if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
-                takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
-
+            }            
             setItems();
         }
 

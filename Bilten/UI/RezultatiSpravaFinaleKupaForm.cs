@@ -21,9 +21,6 @@ namespace Bilten.UI
         private Takmicenje takmicenje;
         private bool forViewingOnly;
 
-        // kljuc je rezTakmicenja.IndexOf(takmicenje) * (Sprava.Max + 1) + sprava
-        private ISet<int> rezultatiOpened;
-
         private RezultatskoTakmicenje ActiveTakmicenje
         {
             get { return cmbTakmicenje.SelectedItem as RezultatskoTakmicenje; }
@@ -67,9 +64,7 @@ namespace Bilten.UI
                         if (startRezTakmicenje == null)
                             throw new BusinessException("Ne postoje rezultati sprave za dato takmicenje.");
                     }
-                    
                     initUI(startRezTakmicenje);
-                    rezultatiOpened = new HashSet<int>();
                 }
             }
             catch (BusinessException)
@@ -178,11 +173,6 @@ namespace Bilten.UI
         private void onSelectedRezultatiChanged()
         {
             initSpravaGridUserControl(ActiveSprava);
-
-            int rezultatiKey = getRezultatiKey(ActiveTakmicenje, ActiveSprava);
-            if (!rezultatiOpened.Contains(rezultatiKey))
-                rezultatiOpened.Add(rezultatiKey);
-
             setItems();
         }
 
@@ -216,12 +206,6 @@ namespace Bilten.UI
         private bool kvalColumnVisible()
         {
             return ActiveTakmicenje.odvojenoTak3();
-        }
-
-        private int getRezultatiKey(RezultatskoTakmicenje tak, Sprava sprava)
-        {
-            int result = rezTakmicenja.IndexOf(tak) * ((int)Sprava.Max + 1) + (int)sprava;
-            return result;
         }
 
         private void cmbTakmicenje_DropDownClosed(object sender, EventArgs e)

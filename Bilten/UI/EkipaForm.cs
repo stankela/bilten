@@ -174,6 +174,7 @@ namespace Bilten.UI
                     new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
                 clanoviSorted = true;
             }
+            dgwUserControlClanovi.clearSelection();
         }
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
@@ -338,7 +339,6 @@ namespace Bilten.UI
             ekipa.removeGimnasticar(selClan);
 
             setClanovi(ekipa.Gimnasticari);
-            dgwUserControlClanovi.clearSelection();
         }
 
         private void rbtKlub_CheckedChanged(object sender, EventArgs e)
@@ -409,6 +409,11 @@ namespace Bilten.UI
         {
             rbtDrzava.Checked = true;
             updateNazivKod();
+        }
+
+        private void EkipaForm_Shown(object sender, EventArgs e)
+        {
+            dgwUserControlClanovi.clearSelection();
         }
     }
 }

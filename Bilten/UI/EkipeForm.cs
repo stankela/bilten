@@ -171,6 +171,10 @@ namespace Bilten.UI
             Ekipa selEkipa = getSelectedEkipa();
             if (selEkipa != null)
                 setClanovi(selEkipa.Gimnasticari);
+            else if (getActiveEkipeDataGridViewUserControl().getItemCount<Ekipa>() > 0)
+                setClanovi(getActiveEkipeDataGridViewUserControl().getItems<Ekipa>()[0].Gimnasticari);
+            else
+                getActiveEkipeDataGridViewUserControl().clearItems();
         }
 
         private void setClanovi(Iesi.Collections.Generic.ISet<GimnasticarUcesnik> gimnasticari)
@@ -184,6 +188,7 @@ namespace Bilten.UI
                     new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
                 clanoviSorted[tabControl1.SelectedIndex] = true;
             }
+            getActiveClanoviDataGridViewUserControl().clearSelection();
         }
 
         private void onSelectedIndexChanged()
@@ -193,21 +198,19 @@ namespace Bilten.UI
 
             tabOpened[tabControl1.SelectedIndex] = true;
             setEkipe(ActiveRezTakmicenje.Takmicenje1.Ekipe);
-            getActiveEkipeDataGridViewUserControl().sort<Ekipa>("Naziv", ListSortDirection.Ascending);
             onEkipeCellMouseClick();
         }
 
         private RezultatskoTakmicenje ActiveRezTakmicenje
         {
-            get
-            {
-                return rezTakmicenja[tabControl1.SelectedIndex];
-            }
+            get { return rezTakmicenja[tabControl1.SelectedIndex]; }
         }
 
         private void setEkipe(Iesi.Collections.Generic.ISet<Ekipa> ekipe)
         {
             getActiveEkipeDataGridViewUserControl().setItems<Ekipa>(ekipe);
+            getActiveEkipeDataGridViewUserControl().sort<Ekipa>("Naziv", ListSortDirection.Ascending);
+            getActiveEkipeDataGridViewUserControl().clearSelection();
         }
 
         private DataGridViewUserControl getActiveEkipeDataGridViewUserControl()
@@ -437,6 +440,11 @@ namespace Bilten.UI
         private void EkipeForm_Load(object sender, EventArgs e)
         {
             onEkipeCellMouseClick();
+        }
+
+        private void EkipeForm_Shown(object sender, EventArgs e)
+        {
+            getActiveEkipeDataGridViewUserControl().clearSelection();
         }
 
     }

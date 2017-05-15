@@ -18,7 +18,6 @@ namespace Bilten.UI
     public partial class RezultatiEkipeFinaleKupaForm : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
-        private bool[] takmicenjeOpened;
         private Takmicenje takmicenje;
 
         private RezultatskoTakmicenje ActiveTakmicenje
@@ -51,12 +50,8 @@ namespace Bilten.UI
                         throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
 
                     initUI();
-                    takmicenjeOpened = new bool[rezTakmicenja.Count];
                     cmbTakmicenje.SelectedIndex = 0;
-
                     cmbTakmicenje.SelectedIndexChanged += new EventHandler(cmbTakmicenje_SelectedIndexChanged);
-
-                    //onSelectedTakmicenjeChanged();
                 }
             }
             catch (BusinessException)
@@ -128,10 +123,7 @@ namespace Bilten.UI
         private void onSelectedTakmicenjeChanged()
         {
             GridColumnsInitializer.initRezultatiEkipnoFinaleKupa(dataGridViewUserControl1,
-                takmicenje, kvalColumnVisible());
-            
-            if (!takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)])
-                takmicenjeOpened[rezTakmicenja.IndexOf(ActiveTakmicenje)] = true;
+                takmicenje, kvalColumnVisible());            
             setItems();
         }
 
