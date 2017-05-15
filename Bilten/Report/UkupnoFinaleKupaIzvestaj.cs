@@ -439,8 +439,6 @@ namespace Bilten.Report
             RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + itemRect.Height / 3, itemRect.Width, 
                 itemRect.Height / 3);
 
-            // TODO3: Dodaj zumiranje (i forma i print previewa)
-
             string item1 = this.getFormattedString(itemsRow, itemsIndex);
             string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);
             g.DrawString(item1, itemFont, blackBrush, itemRect1, this.ItemRectFormat);

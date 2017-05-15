@@ -14,7 +14,7 @@ namespace Bilten.Report
         private UkupnoZbirViseKolaLista lista;
 
         public UkupnoZbirViseKolaIzvestaj(IList<RezultatUkupnoZbirViseKola> rezultati, Gimnastika gim,
-            bool extended, DataGridView formGrid, string documentName)
+            bool extended, DataGridView formGrid, string documentName, int brojKola)
 		{
             DocumentName = documentName;
             extended = false; // TODO3: Ispravi ovo.
@@ -29,7 +29,7 @@ namespace Bilten.Report
                 Margins = new Margins(75, 75, 75, 75);
 
             lista = new UkupnoZbirViseKolaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, formGrid);
+                gim, extended, formGrid, brojKola);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -52,14 +52,16 @@ namespace Bilten.Report
 
         private bool extended;
         private Gimnastika gimnastika;
+        private int brojKola;
 
         public UkupnoZbirViseKolaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoZbirViseKola> rezultati,
-            Gimnastika gim, bool extended, DataGridView formGrid)
+            Gimnastika gim, bool extended, DataGridView formGrid, int brojKola)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.extended = extended;
             this.gimnastika = gim;
+            this.brojKola = brojKola;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -140,7 +142,7 @@ namespace Bilten.Report
 		{
 			createColumns(g, contentBounds);
 
-			itemHeight = itemFont.GetHeight(g) * 6.6f;
+			itemHeight = itemFont.GetHeight(g) * (6.6f / 5 * (brojKola + 1));
             if (extended)
 			    itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             else
@@ -165,9 +167,7 @@ namespace Bilten.Report
             float spravaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
             float totalWidth = spravaWidth;
             if (extended)
-            {
                 spravaWidth = spravaWidth * 2.3f;
-            }
 
 			float xRank = contentBounds.X;
             float xIme = xRank + rankWidth;
@@ -328,11 +328,10 @@ namespace Bilten.Report
         }
 
         private UkupnoZbirViseKolaSpravaReportColumn addSpravaColumn(int itemsIndex, int itemsSpan, float x, float width,
-            string format, StringFormat itemRectFormat, string headerTitle,
-			StringFormat headerFormat)
+            string format, StringFormat itemRectFormat, string headerTitle, StringFormat headerFormat)
         {
             UkupnoZbirViseKolaSpravaReportColumn result = new UkupnoZbirViseKolaSpravaReportColumn(
-                itemsIndex, itemsSpan, x, width, headerTitle);
+                itemsIndex, itemsSpan, x, width, headerTitle, brojKola);
             result.Format = format;
             result.ItemRectFormat = itemRectFormat;
             result.HeaderFormat = headerFormat;
@@ -341,8 +340,7 @@ namespace Bilten.Report
         }
 
         private UkupnoZbirViseKolaSpravaReportColumn addTotalColumn(int itemsIndex, int itemsSpan, float x, float width,
-            string format, StringFormat itemRectFormat, string headerTitle,
-            StringFormat headerFormat)
+            string format, StringFormat itemRectFormat, string headerTitle, StringFormat headerFormat)
         {
             return addSpravaColumn(itemsIndex, itemsSpan, x, width, format, itemRectFormat, headerTitle, headerFormat);
         }
@@ -405,10 +403,14 @@ namespace Bilten.Report
 
     public class UkupnoZbirViseKolaSpravaReportColumn : ReportColumn
     {
-        public UkupnoZbirViseKolaSpravaReportColumn(int itemsIndex, int itemsSpan, float x, float width, string headerTitle)
+        private int brojKola;
+
+        public UkupnoZbirViseKolaSpravaReportColumn(int itemsIndex, int itemsSpan, float x, float width, string headerTitle,
+            int brojKola)
             : base(itemsIndex, x, width, headerTitle)
 		{
             this.itemsSpan = itemsSpan;
+            this.brojKola = brojKola;
         }
 
         public override void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
@@ -424,29 +426,34 @@ namespace Bilten.Report
                     itemRect.Width, itemRect.Height);
             }
 
-            RectangleF itemRect1 = new RectangleF(itemRect.X, itemRect.Y, itemRect.Width, itemRect.Height/5);
-            RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + itemRect.Height / 5, itemRect.Width, 
-                itemRect.Height / 5);
-            RectangleF itemRect3 = new RectangleF(itemRect.X, itemRect.Y + (itemRect.Height * 2) / 5, itemRect.Width,
-                itemRect.Height / 5);
-            RectangleF itemRect4 = new RectangleF(itemRect.X, itemRect.Y + (itemRect.Height * 3) / 5, itemRect.Width,
-                itemRect.Height / 5);
+            float visina = itemRect.Height / (brojKola + 1);
+
+            RectangleF itemRect1 = new RectangleF(itemRect.X, itemRect.Y, itemRect.Width, visina);
+            string item1 = this.getFormattedString(itemsRow, itemsIndex);
+            g.DrawString(item1, itemFont, blackBrush, itemRect1, this.ItemRectFormat);
+
+            RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + visina, itemRect.Width, visina);
+            string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);
+            g.DrawString(item2, itemFont, blackBrush, itemRect2, this.ItemRectFormat);
+
+            if (brojKola > 2)
+            {
+                RectangleF itemRect3 = new RectangleF(itemRect.X, itemRect.Y + 2 * visina, itemRect.Width, visina);
+                string item3 = this.getFormattedString(itemsRow, itemsIndex + 2);
+                g.DrawString(item3, itemFont, blackBrush, itemRect3, this.ItemRectFormat);
+            }
+            if (brojKola > 3)
+            {
+                RectangleF itemRect4 = new RectangleF(itemRect.X, itemRect.Y + 3 * visina, itemRect.Width, visina);
+                string item4 = this.getFormattedString(itemsRow, itemsIndex + 3);
+                g.DrawString(item4, itemFont, blackBrush, itemRect4, this.ItemRectFormat);
+            }
 
             // TODO3: Dodaj zumiranje (i forma i print previewa)
 
-            string item1 = this.getFormattedString(itemsRow, itemsIndex);
-            string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);
-            string item3 = this.getFormattedString(itemsRow, itemsIndex + 2);
-            string item4 = this.getFormattedString(itemsRow, itemsIndex + 3);
-            g.DrawString(item1, itemFont, blackBrush, itemRect1, this.ItemRectFormat);
-            g.DrawString(item2, itemFont, blackBrush, itemRect2, this.ItemRectFormat);
-            g.DrawString(item3, itemFont, blackBrush, itemRect3, this.ItemRectFormat);
-            g.DrawString(item4, itemFont, blackBrush, itemRect4, this.ItemRectFormat);
-
             if (itemsSpan == 5)
             {
-                RectangleF itemRect5 = new RectangleF(itemRect.X, itemRect.Y + (itemRect.Height * 4) / 5,
-                    itemRect.Width, itemRect.Height / 5);
+                RectangleF itemRect5 = new RectangleF(itemRect.X, itemRect.Y + brojKola * visina, itemRect.Width, visina);
                 string item5 = this.getFormattedString(itemsRow, itemsIndex + 4);
                 g.DrawString(item5, itemFont, blackBrush, itemRect5, this.ItemRectFormat);
             }

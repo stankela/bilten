@@ -92,8 +92,6 @@ namespace Bilten.UI
             }
         }
 
-        // TODO4: Kada se bira sudija, treba da budu ponudjene sve sudije (i muske i zenske), nezavisno od MSG ili ZSG.
-
         private void createTab(RasporedSudija raspored)
         {
             if (rasporedi.IndexOf(raspored) == 0) // prvi tab

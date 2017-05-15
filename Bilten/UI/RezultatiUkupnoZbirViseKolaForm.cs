@@ -231,7 +231,7 @@ namespace Bilten.UI
 
                 p.setIzvestaj(new UkupnoZbirViseKolaIzvestaj(rezultati, ActiveTakmicenje.Gimnastika,
                     Opcije.Instance.PrikaziDEOcene, dataGridViewUserControl1.DataGridView,
-                    documentName));
+                    documentName, takmicenje.getBrojKola()));
                 p.ShowDialog();
             }
             catch (Exception ex)

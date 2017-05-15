@@ -48,7 +48,7 @@ namespace Bilten.UI
 
                     rezTakmicenja = takmicenje.getRezTakmicenjaEkipe(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
                     if (rezTakmicenja.Count == 0)
-                        throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
+                        throw new BusinessException("Ne postoji ekipno takmicenje ni za jednu kategoriju.");
 
                     initUI();
                     takmicenjeOpened = new bool[rezTakmicenja.Count];
@@ -189,7 +189,7 @@ namespace Bilten.UI
 
                 p.setIzvestaj(new EkipeZbirViseKolaIzvestaj(rezultatiEkipno,
                     ActiveTakmicenje.Gimnastika, dataGridViewUserControl1.DataGridView,
-                    nazivIzvestaja));
+                    nazivIzvestaja, takmicenje.getBrojKola()));
                 p.ShowDialog();
             }
             catch (Exception ex)
@@ -207,9 +207,6 @@ namespace Bilten.UI
         {
             Close();
         }
-
-        // TODO4: Kod zbira vise kola, prikazuj u prozorima i prilikom stampe samo ona kola koja postoje
-        // (i kod viseboja i kod ekipno)
 
         private void btnIzracunaj_Click(object sender, EventArgs e)
         {

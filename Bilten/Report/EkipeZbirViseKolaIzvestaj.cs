@@ -14,7 +14,7 @@ namespace Bilten.Report
         private EkipeZbirViseKolaLista lista;
 
         public EkipeZbirViseKolaIzvestaj(IList<RezultatEkipnoZbirViseKola> rezultati, Gimnastika gim,
-            DataGridView formGrid, string documentName)
+            DataGridView formGrid, string documentName, int brojKola)
         {
             DocumentName = documentName;
 
@@ -24,7 +24,7 @@ namespace Bilten.Report
             Landscape = false;
             Margins = new Margins(75, 75, 75, 75);
 
-            lista = new EkipeZbirViseKolaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, gim, formGrid);
+            lista = new EkipeZbirViseKolaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, gim, formGrid, brojKola);
         }
 
         protected override void doSetupContent(Graphics g)
@@ -46,13 +46,15 @@ namespace Bilten.Report
         private Brush totalAllBrush;
 
         private Gimnastika gimnastika;
+        private int brojKola;
 
         public EkipeZbirViseKolaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatEkipnoZbirViseKola> rezultati,
-            Gimnastika gim, DataGridView formGrid)
+            Gimnastika gim, DataGridView formGrid, int brojKola)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.gimnastika = gim;
+            this.brojKola = brojKola;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -105,7 +107,7 @@ namespace Bilten.Report
         {
             createColumns(g, contentBounds);
 
-            itemHeight = itemFont.GetHeight(g) * 6.6f;
+            itemHeight = itemFont.GetHeight(g) * (6.6f / 5 * (brojKola + 1));
             itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 2.4f;
             groupHeaderHeight = itemsHeaderHeight;
             float afterGroupHeight = itemHeight;
@@ -252,7 +254,7 @@ namespace Bilten.Report
             StringFormat headerFormat)
         {
             EkipnoZbirViseKolaSpravaReportColumn result = new EkipnoZbirViseKolaSpravaReportColumn(
-                itemsIndex, itemsSpan, x, width, headerTitle);
+                itemsIndex, itemsSpan, x, width, headerTitle, brojKola);
             result.Format = format;
             result.ItemRectFormat = itemRectFormat;
             result.HeaderFormat = headerFormat;
@@ -320,15 +322,18 @@ namespace Bilten.Report
                 }
             }
         }
-
     }
 
     public class EkipnoZbirViseKolaSpravaReportColumn : ReportColumn
     {
-        public EkipnoZbirViseKolaSpravaReportColumn(int itemsIndex, int itemsSpan, float x, float width, string headerTitle)
+        private int brojKola;
+
+        public EkipnoZbirViseKolaSpravaReportColumn(int itemsIndex, int itemsSpan, float x, float width, string headerTitle,
+            int brojKola)
             : base(itemsIndex, x, width, headerTitle)
         {
             this.itemsSpan = itemsSpan;
+            this.brojKola = brojKola;
         }
 
         public override void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
@@ -344,29 +349,37 @@ namespace Bilten.Report
                     itemRect.Width, itemRect.Height);
             }
 
-            RectangleF itemRect1 = new RectangleF(itemRect.X, itemRect.Y, itemRect.Width, itemRect.Height / 5);
-            RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + itemRect.Height / 5, itemRect.Width,
-                itemRect.Height / 5);
-            RectangleF itemRect3 = new RectangleF(itemRect.X, itemRect.Y + (itemRect.Height * 2) / 5, itemRect.Width,
-                itemRect.Height / 5);
-            RectangleF itemRect4 = new RectangleF(itemRect.X, itemRect.Y + (itemRect.Height * 3) / 5, itemRect.Width,
-                itemRect.Height / 5);
+            float visina = itemRect.Height / (brojKola + 1);
 
-            // TODO3: Dodaj zumiranje (i forma i print previewa)
-
+            RectangleF itemRect1 = new RectangleF(itemRect.X, itemRect.Y, itemRect.Width, visina);
             string item1 = this.getFormattedString(itemsRow, itemsIndex);
-            string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);
-            string item3 = this.getFormattedString(itemsRow, itemsIndex + 2);
-            string item4 = this.getFormattedString(itemsRow, itemsIndex + 3);
             g.DrawString(item1, itemFont, blackBrush, itemRect1, this.ItemRectFormat);
+
+            RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + visina, itemRect.Width,
+                visina);
+            string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);
             g.DrawString(item2, itemFont, blackBrush, itemRect2, this.ItemRectFormat);
-            g.DrawString(item3, itemFont, blackBrush, itemRect3, this.ItemRectFormat);
-            g.DrawString(item4, itemFont, blackBrush, itemRect4, this.ItemRectFormat);
+
+            if (brojKola > 2)
+            {
+                RectangleF itemRect3 = new RectangleF(itemRect.X, itemRect.Y + 2 * visina, itemRect.Width,
+                    visina);
+                string item3 = this.getFormattedString(itemsRow, itemsIndex + 2);
+                g.DrawString(item3, itemFont, blackBrush, itemRect3, this.ItemRectFormat);
+            }
+
+            if (brojKola > 3)
+            {
+                RectangleF itemRect4 = new RectangleF(itemRect.X, itemRect.Y + 3 * visina, itemRect.Width,
+                    visina);
+                string item4 = this.getFormattedString(itemsRow, itemsIndex + 3);
+                g.DrawString(item4, itemFont, blackBrush, itemRect4, this.ItemRectFormat);
+            }
 
             if (itemsSpan == 5)
             {
-                RectangleF itemRect5 = new RectangleF(itemRect.X, itemRect.Y + (itemRect.Height * 4) / 5, itemRect.Width,
-                    itemRect.Height / 5);
+                RectangleF itemRect5 = new RectangleF(itemRect.X, itemRect.Y + brojKola * visina, itemRect.Width,
+                    visina);
                 string item5 = this.getFormattedString(itemsRow, itemsIndex + 4);
                 g.DrawString(item5, itemFont, blackBrush, itemRect5, this.ItemRectFormat);
             }

@@ -253,6 +253,20 @@ namespace Bilten.Domain
             return true;
         }
 
+        public virtual int getBrojKola()
+        {
+            int result = 0;
+            if (PrvoKolo != null)
+                ++result;
+            if (DrugoKolo != null)
+                ++result;
+            if (TreceKolo != null)
+                ++result;
+            if (CetvrtoKolo != null)
+                ++result;
+            return result;
+        }
+
         public Takmicenje()
         { 
         

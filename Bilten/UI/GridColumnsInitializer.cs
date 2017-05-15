@@ -483,8 +483,10 @@ namespace Bilten.UI
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
             dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             dgw.AddColumn("II Kolo", "TotalDrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
-            dgw.AddColumn("III Kolo", "TotalTreceKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
-            dgw.AddColumn("IV Kolo", "TotalCetvrtoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (takmicenje.TreceKolo != null)
+                dgw.AddColumn("III Kolo", "TotalTreceKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (takmicenje.CetvrtoKolo != null)
+                dgw.AddColumn("IV Kolo", "TotalCetvrtoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
         }
 
@@ -571,8 +573,10 @@ namespace Bilten.UI
             dgw.AddColumn("Ekipa", "NazivEkipe", 170);
             dgw.AddColumn("I Kolo", "TotalPrvoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             dgw.AddColumn("II Kolo", "TotalDrugoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
-            dgw.AddColumn("III Kolo", "TotalTreceKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
-            dgw.AddColumn("IV Kolo", "TotalCetvrtoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (takmicenje.TreceKolo != null)
+                dgw.AddColumn("III Kolo", "TotalTreceKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
+            if (takmicenje.CetvrtoKolo != null)
+                dgw.AddColumn("IV Kolo", "TotalCetvrtoKolo", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
             dgw.AddColumn("Ukupno", "Total", 50, "{0:F" + takmicenje.BrojDecimalaTotal + "}");
         }
 
