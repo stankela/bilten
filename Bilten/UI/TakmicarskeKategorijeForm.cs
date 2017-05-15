@@ -306,6 +306,7 @@ namespace Bilten.UI
                     // reload kategorije
                     setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
                     SelectedKategorija = (TakmicarskaKategorija)form.Entity;
+                    // TODO4: Trebalo bi apdejtovati prikaz u treeView za takmicenja da prikazuje promenjenu kategoriju.
                 }
             }
             catch (Exception ex)

@@ -536,9 +536,6 @@ namespace Bilten.UI
             }
         }
 
-        // TODO4: Kada se iz komboa za klub ili kategoriju bira pomocu auto complete, i kada se izabere pritiskom na enter,
-        // odmah se zatvara prozor. Proveri ovo na svim mestima gde se koristi auto complete.
-
         protected override void discardChanges()
         {
             // TODO: Razmotri da li bi trebalo da se brisu entiteti dodati
@@ -642,7 +639,9 @@ namespace Bilten.UI
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // NOTE: Vidi komentar u konstruktoru zasto je potreban ovaj metod.
-            if (keyData == Keys.Enter && !txtPrezime.Focused && !btnCancel.Focused)
+            // TODO4: Ako je pritisnut Enter a u fokusu je cmbDrzava, cmbKlub ili cmbKategorija, nece zatvoriti prozor.
+            if (keyData == Keys.Enter && !txtPrezime.Focused && !cmbDrzava.Focused && !cmbKlub.Focused
+                && !cmbKategorija.Focused && !btnCancel.Focused)
             {
                 // Simuliraj klik na OK.
                 btnOk.PerformClick();
