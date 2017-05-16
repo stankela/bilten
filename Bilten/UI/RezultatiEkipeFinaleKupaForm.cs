@@ -47,7 +47,7 @@ namespace Bilten.UI
 
                     rezTakmicenja = takmicenje.getRezTakmicenjaEkipe(svaRezTakmicenja, DeoTakmicenjaKod.Takmicenje1, true);
                     if (rezTakmicenja.Count == 0)
-                        throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
+                        throw new BusinessException("Ne postoji ekipno takmicenje ni za jednu kategoriju.");
 
                     initUI();
                     cmbTakmicenje.SelectedIndex = 0;

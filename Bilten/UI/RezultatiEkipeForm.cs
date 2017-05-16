@@ -56,7 +56,7 @@ namespace Bilten.UI
 
                     rezTakmicenja = takmicenje.getRezTakmicenjaEkipe(svaRezTakmicenja, deoTakKod, false);
                     if (rezTakmicenja.Count == 0)
-                        throw new BusinessException("Ne postoji takmicenje IV ni za jednu kategoriju.");
+                        throw new BusinessException("Ne postoji ekipno takmicenje ni za jednu kategoriju.");
 
                     ekipaRezultatiUkupnoMap
                         = Takmicenje.getEkipaRezultatiUkupnoMap(rezTakmicenja, svaRezTakmicenja, deoTakKod);

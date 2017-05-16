@@ -131,14 +131,6 @@ namespace Bilten
             // rp.proveriViseKola();  // Postoji nekoliko takmicenja gde ova provera ne prolazi, ali mislim da je bolje
             // nista me menjam. 
 
-            // TODO4: Ako je Propozicije.PostojiTak4 false, mora i RezultatskoTakmicenje.ImaEkipnoTakmicenje da bude false.
-
-            // TODO4: Proveri sva finala kupa, tako sto ces ponovo kreirati finale (
-            // pozivom TakmicenjeService.kreirajNaOsnovuViseKola) i uporediti rezultate sa postojecim finalima (gde su
-            // gimnasticari rucno dodavani). Razmisli da li treba menjati rezultate tamo gde se ne poklapaju (uradi to samo
-            // u takmicenjima gde ne postoji odvojeno takmicenje 3.)
-
-
             // Export schema from BiltenPodaci.sdf using the ExportSqlCe.exe tool.
             // For usage information, just run "ExportSqlCe.exe" without any arguments.            
             //string schemaFile = "BiltenPodaciScript.sql";

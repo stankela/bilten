@@ -277,7 +277,6 @@ namespace Bilten.UI
             }
         }
 
-
         private void btnEditKategorija_Click(object sender, EventArgs e)
         {
             if (SelectedKategorija == null)
@@ -306,7 +305,9 @@ namespace Bilten.UI
                     // reload kategorije
                     setKategorije(DAOFactoryFactory.DAOFactory.GetTakmicarskaKategorijaDAO().FindByTakmicenje(takmicenjeId));
                     SelectedKategorija = (TakmicarskaKategorija)form.Entity;
-                    // TODO4: Trebalo bi apdejtovati prikaz u treeView za takmicenja da prikazuje promenjenu kategoriju.
+
+                    // reload rez. takmicenja
+                    setTakmicenja(DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO().FindByTakmicenje(takmicenjeId));
                 }
             }
             catch (Exception ex)

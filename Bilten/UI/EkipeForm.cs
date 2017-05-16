@@ -51,7 +51,7 @@ namespace Bilten.UI
                             rezTakmicenja.Add(tak);
                     }
                     if (rezTakmicenja.Count == 0)
-                        throw new BusinessException("Ne postoje ekipna takmicenja ni za jednu kategoriju.");
+                        throw new BusinessException("Ne postoji ekipno takmicenje ni za jednu kategoriju.");
 
                     Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
                     viseKola = t.FinaleKupa || t.ZbirViseKola;
