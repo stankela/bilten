@@ -39,15 +39,6 @@ namespace Bilten.UI
         public GimnasticarForm(Nullable<int> gimnasticarId)
         {
             InitializeComponent();
-
-            // NOTE: Ponistavam AcceptButton (koji je u EntityDetailForm postavljen na btnOk), zato sto se pojavljuju
-            // problemi kada npr. dodajem novog gimnasticara, pa onda u dijalogu izaberem postojeceg gimnasticara iz baze.
-            // Tada, umesto da otvori dijalog sa podacima za novog gimnasticara, program se ponasa kao da je kliknuto
-            // na OK, i izvrsava validaciju za podatke iz dijaloga i npr. posto gimnastika jos nije unesena (zato sto
-            // unosimo novog gimnasticara), prikazuje prozor "Gimnastika je obavezna". Da bi se ovo izbeglo, simuliram
-            // AcceptButton overrajdovanjem metoda ProcessCmdKey (vidi dole).
-            this.AcceptButton = null;
-
             initialize(gimnasticarId, true);
         }
 
@@ -638,33 +629,33 @@ namespace Bilten.UI
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // NOTE: Vidi komentar u konstruktoru zasto je potreban ovaj metod.
-            // TODO4: Ako je pritisnut Enter a u fokusu je cmbDrzava, cmbKlub ili cmbKategorija, nece zatvoriti prozor.
-            if (keyData == Keys.Enter && !txtPrezime.Focused && !cmbDrzava.Focused && !cmbKlub.Focused
-                && !cmbKategorija.Focused && !btnCancel.Focused)
-            {
-                // Simuliraj klik na OK.
-                btnOk.PerformClick();
+            // NOTE: Ovaj metod je potreban da bi se pozvao metod promeniGimnasticara kada se izabere gimnasticar iz
+            // padajuce liste. Inace bi se preskocio poziv metoda txtPrezime_KeyDown, i direktno pozvao btnOK.Click handler.
+            if (keyData == Keys.Enter && txtPrezime.Focused && promeniGimnasticara())
                 return true;
-            }
-            
-            // Inace, odradi standardnu obradu za pritisak tastera. Ako je pritisnut Enter u txtPrezime, pozvace se
-            // txtPrezime_KeyDown.
+
+            // Inace, odradi standardnu obradu za pritisak tastera.
             return base.ProcessCmdKey(ref msg, keyData);
         }
         
         private void txtPrezime_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter)
-                return;
+            // NOTE: Mora da postoji i ovaj metod (nije dovoljan samo ProcessCmdKey), zato sto ako se gimnasticar izabere
+            // iz padajuce liste pomocu misa, ne poziva se ProcessCmdKey vec se poziva txtPrezime_KeyDown pri cemu je
+            // e.KeyCode == Keys.Enter.
+            if (e.KeyCode == Keys.Enter)
+                promeniGimnasticara();
+        }
 
+        private bool promeniGimnasticara()
+        {
             Gimnasticar g;
             if (txtPrezime.Text.IndexOf('(') != -1 && txtPrezime.Text.IndexOf(')') != -1)
             {
                 string imeSrednjeImePrezimeDatumRodjenja = txtPrezime.Text.Substring(txtPrezime.Text.IndexOf('(')).Trim();
 
                 // Ukloni zagrade
-                imeSrednjeImePrezimeDatumRodjenja = 
+                imeSrednjeImePrezimeDatumRodjenja =
                     imeSrednjeImePrezimeDatumRodjenja.Substring(1, imeSrednjeImePrezimeDatumRodjenja.Length - 2).Trim();
 
                 g = findGimnasticar(imeSrednjeImePrezimeDatumRodjenja.Trim());
@@ -680,20 +671,17 @@ namespace Bilten.UI
                     datumRodjenja = Datum.Parse(txtPrezime.Text.Substring(index + 1).Trim());
                 }
                 else
-                {
                     prezime = txtPrezime.Text.Trim();
-                }
                 g = findGimnasticar(txtIme.Text.Trim(), String.Empty, prezime, datumRodjenja);
             }
 
-            if (g != null)
-            {
-                gimnasticarToEdit = g;
-                closedByOK = true;
-                DialogResult = DialogResult.OK;
-                //Close();
-                return;
-            }
+            if (g == null)
+                return false;
+
+            gimnasticarToEdit = g;
+            closedByOK = true;
+            DialogResult = DialogResult.OK;
+            return true;
         }
 
         private Gimnasticar findGimnasticar(string imeSrednjeImePrezimeDatumRodjenja)
