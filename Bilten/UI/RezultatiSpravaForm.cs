@@ -773,17 +773,6 @@ namespace Bilten.UI
                 istiRezultati[0] as RezultatPreskok);
         }
 
-        // TODO4: Ispitaj i ispravi gresku koja je nastala na takmicenju "ZSG - I KOLO PGL SRBIJE ZSG, NOVI SAD, 18.5.2013".
-        // Nije unesena nijedna ocena u takmicenju 3, ali poredak postoji i to sa ocenama iz takmicenja 1. Poredak
-        // za preskok je ispravljen sa apdejtom koji je ponovo racunao poredak preskok za sva takmicenja. Trebalo bi
-        // ispraviti poretke i za ostale sprave. Takodje bi trebalo proveriti da li se ista stvar desila i na
-        // nekom drugom takmicenju (na bilo kojoj spravi). Pretpostavljam da treba gledati samo takmicenja koja imaju
-        // odvojeno takmicenje 3, tj gde je ZavrsenoTak1 == true. Za proveru kakvo je bilo stanje ranije koristi
-        // "Bilten - Copy 15.03.2017"
-        // Slicna greska u "Bilten - Copy 15.03.2017" postoji i u "MEMORIJAL 2015" gde u takmicenju 3 u V kategoriji za
-        // Octavian Tomescu postoji rezultat za preskok (sa ocenom koja nije kao u takmicenju 1), a u takmicenju 3 nije
-        // uneta nijedana ocena za Octavian Tomescu. Proveri kako je ovo moglo da se desi.
-
         private void btnIzracunaj_Click(object sender, EventArgs e)
         {
             string msg;

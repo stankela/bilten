@@ -296,8 +296,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak,
-            bool removeRezultat)
+        public virtual void deleteOcena(Ocena o, RezultatskoTakmicenje rezTak, bool removeRezultat)
         {
             RezultatPreskok r = getRezultat(o.Gimnasticar);
             if (r != null)
@@ -305,7 +304,7 @@ namespace Bilten.Domain
                 if (removeRezultat)
                     Rezultati.Remove(r);
                 else
-                    r.clearOcena(o);
+                    r.clearOcena();
                 rankRezultati(rezTak.Propozicije);
             }
         }

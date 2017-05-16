@@ -97,6 +97,7 @@ public class VersionUpdater
             updateNacinRacunanjaOceneFinaleKupa();
             updateNacinRacunanjaPreskoka();
             updateTakmicenja234();
+            updateTakmicenje_200();
             verzijaBaze = 5;
             converted = true;
         }
@@ -1154,6 +1155,54 @@ public class VersionUpdater
         finally
         {
             logStreamWriter.Close();
+            CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+        }
+    }
+
+    // Na takmicenju "ZSG - I KOLO PGL SRBIJE ZSG, NOVI SAD, 18.5.2013" nije unesena nijedna ocena u takmicenju 3,
+    // ali poredak postoji i to sa ocenama iz takmicenja 1. Poredak za preskok je ispravljen sa apdejtom koji je
+    // ponovo racunao poredak preskok za sva takmicenja. Ovaj metod ispravlja poretke i za ostale sprave.
+    private void updateTakmicenje_200()
+    {
+        ISession session = null;
+        try
+        {
+            using (session = NHibernateHelper.Instance.OpenSession())
+            using (session.BeginTransaction())
+            {
+                CurrentSessionContext.Bind(session);
+                Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(200);
+                if (!t.ToString().StartsWith("ZSG - I KOLO PGL SRBIJE "))
+                    throw new Exception("Pogresno takmicenje");
+                if (!t.ToString().EndsWith("NOVI SAD, 18.5.2013"))
+                    throw new Exception("Pogresno takmicenje");
+
+                RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+                Takmicenje3DAO tak3DAO = DAOFactoryFactory.DAOFactory.GetTakmicenje3DAO();
+                foreach (RezultatskoTakmicenje rt in rezTakDAO.FindByTakmicenje(t.Id))
+                {
+                    if (rt.Takmicenje3 == null)
+                        continue;
+                    if (!rt.odvojenoTak3())
+                        continue;
+                    foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
+                    {
+                        foreach (RezultatSprava r in p.Rezultati)
+                            r.clearOcena();
+                    }
+                    tak3DAO.Update(rt.Takmicenje3);
+                }
+                session.Transaction.Commit();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                session.Transaction.Rollback();
+            throw new InfrastructureException(ex.Message, ex);
+        }
+        finally
+        {
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
         }
     }

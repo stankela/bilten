@@ -53,7 +53,7 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void clearOcena(Ocena o)
+        public virtual void clearOcena()
         {
             D = null;
             E = null;

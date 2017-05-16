@@ -125,7 +125,17 @@ namespace Bilten
 
             RazneProvere rp = new RazneProvere();
             // rp.proveriPrvaDvaKola();   // OK
-            rp.proveriRezultateIOcene();
+
+            // rp.proveriRezultateIOcene();
+            /*  Ne prolazi za sledece (TODO4: Proveri da li postoji greska u programu):
+                MSG - MEMORIJAL "LAZA KRSTIC i MARICA DZELATOVIC" 2015, NOVI SAD, 5.12.2015 (335): Octavian Tomescu nema nijednu ocenu Takmicenje3
+                MSG - II KOLO PGL SRBIJE, NOVI SAD, 7.11.2015 (328): Stefan Malovic total se razlikuje Razboj Takmicenje1
+                MSG - II KOLO PGL SRBIJE, NOVI SAD, 7.11.2015 (328): Aleksandar Radosavljevic total se razlikuje Karike Takmicenje1                                
+                (U "MEMORIJAL 2015" u takmicenju 3 u V kategoriji za Octavian Tomescu postoji rezultat za preskok
+                sa ocenom koja nije kao u takmicenju 1), a u takmicenju 3 nije uneta nijedana ocena za Octavian Tomescu.)
+             */
+
+
             // rp.dumpRezultati();
             // rp.takmicenjaBezOcene();
             // rp.proveriViseKola();  // Postoji nekoliko takmicenja gde ova provera ne prolazi, ali mislim da je bolje

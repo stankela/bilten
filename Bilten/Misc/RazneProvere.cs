@@ -95,7 +95,193 @@ namespace Bilten
         // Proveri da li za svaki rezultat postoji i ocena.
         public void proveriRezultateIOcene()
         {
-            // TODO4
+            StreamWriter log = File.CreateText("proveri_rezultate_i_ocene.txt");
+            IList<int> takmicenjaId = getTakmicenjaId();
+            string takmicenjeHeader = String.Empty;
+            for (int j = 0; j < takmicenjaId.Count; ++j)
+            {
+                ISession session = null;
+                try
+                {
+                    using (session = NHibernateHelper.Instance.OpenSession())
+                    using (session.BeginTransaction())
+                    {
+                        CurrentSessionContext.Bind(session);
+                        TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
+                        Takmicenje t = takmicenjeDAO.FindById(takmicenjaId[j]);
+                        if (t.ZbirViseKola)
+                            continue;
+
+                        takmicenjeHeader = j.ToString() + ". " + t.ToString();
+                        takmicenjeHeader += " (" + t.Id + ")";
+
+                        RezultatskoTakmicenjeDAO rezTakDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                        IList<RezultatskoTakmicenje> rezTakmicenja = rezTakDAO.FindByTakmicenje(t.Id);
+
+                        OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+
+                        // Takmicenje 1
+                        IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje1);
+
+                        IDictionary<int, IList<Ocena>> oceneMap = new Dictionary<int, IList<Ocena>>();
+                        foreach (Ocena o in ocene)
+                        {
+                            if (!oceneMap.ContainsKey(o.Gimnasticar.Id))
+                                oceneMap.Add(o.Gimnasticar.Id, new List<Ocena>());
+                            oceneMap[o.Gimnasticar.Id].Add(o);
+                        }
+
+                        foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                        {
+                            foreach (PoredakSprava p in rt.Takmicenje1.PoredakSprava)
+                            {
+                                foreach (RezultatSprava r in p.Rezultati)
+                                {
+                                    if (!oceneMap.ContainsKey(r.Gimnasticar.Id))
+                                    {
+                                        if (r.Total != null)
+                                            log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                                " nema nijednu ocenu" + " Takmicenje1");
+                                        continue;
+                                    }
+                                    IList<Ocena> oceneList = oceneMap[r.Gimnasticar.Id];
+                                    Ocena o = null;
+                                    foreach (Ocena o2 in oceneList)
+                                    {
+                                        if (o2.Sprava == p.Sprava)
+                                        {
+                                            o = o2;
+                                            break;
+                                        }
+                                    }
+                                    if (o == null && r.Total != null)
+                                        log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                            " nema ocenu za " + p.Sprava.ToString() + " Takmicenje1");
+                                    if (o != null && o.Total != r.Total)
+                                        log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                            " total se razlikuje " + p.Sprava.ToString() + " Takmicenje1");
+                                }
+                            }
+
+                            foreach (RezultatPreskok r in rt.Takmicenje1.PoredakPreskok.Rezultati)
+                            {
+                                if (!oceneMap.ContainsKey(r.Gimnasticar.Id))
+                                {
+                                    if (r.Total != null || r.TotalObeOcene != null)
+                                        log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                            " nema nijednu ocenu" + " Takmicenje1");
+                                    continue;
+                                }
+                                IList<Ocena> oceneList = oceneMap[r.Gimnasticar.Id];
+                                Ocena o = null;
+                                foreach (Ocena o2 in oceneList)
+                                {
+                                    if (o2.Sprava == Sprava.Preskok)
+                                    {
+                                        o = o2;
+                                        break;
+                                    }
+                                }
+                                if (o == null && (r.Total != null || r.TotalObeOcene != null))
+                                    log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                        " nema ocenu za " + Sprava.Preskok.ToString() + " Takmicenje1");
+                                if (o != null && (o.Total != r.Total || o.TotalObeOcene != r.TotalObeOcene))
+                                    log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                        " total se razlikuje " + Sprava.Preskok.ToString() + " Takmicenje1");
+                            }
+                        }
+
+                        // Takmicenje 3
+                        ocene = ocenaDAO.FindByDeoTakmicenja(t.Id, DeoTakmicenjaKod.Takmicenje3);
+
+                        oceneMap = new Dictionary<int, IList<Ocena>>();
+                        foreach (Ocena o in ocene)
+                        {
+                            if (!oceneMap.ContainsKey(o.Gimnasticar.Id))
+                                oceneMap.Add(o.Gimnasticar.Id, new List<Ocena>());
+                            oceneMap[o.Gimnasticar.Id].Add(o);
+                        }
+
+                        foreach (RezultatskoTakmicenje rt in rezTakmicenja)
+                        {
+                            if (rt.Takmicenje3 == null)
+                                continue;
+                            if (!rt.odvojenoTak3())
+                                continue;
+                            foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
+                            {
+                                foreach (RezultatSprava r in p.Rezultati)
+                                {
+                                    if (!oceneMap.ContainsKey(r.Gimnasticar.Id))
+                                    {
+                                        if (r.Total != null)
+                                            log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                                " nema nijednu ocenu" + " Takmicenje3");
+                                        continue;
+                                    }
+                                    IList<Ocena> oceneList = oceneMap[r.Gimnasticar.Id];
+                                    Ocena o = null;
+                                    foreach (Ocena o2 in oceneList)
+                                    {
+                                        if (o2.Sprava == p.Sprava)
+                                        {
+                                            o = o2;
+                                            break;
+                                        }
+                                    }
+                                    if (o == null && r.Total != null)
+                                        log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                            " nema ocenu za " + p.Sprava.ToString() + " Takmicenje3");
+                                    if (o != null && o.Total != r.Total)
+                                        log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                            " total se razlikuje " + p.Sprava.ToString() + " Takmicenje3");
+                                }
+                            }
+
+                            foreach (RezultatPreskok r in rt.Takmicenje3.PoredakPreskok.Rezultati)
+                            {
+                                if (!oceneMap.ContainsKey(r.Gimnasticar.Id))
+                                {
+                                    if (r.Total != null || r.TotalObeOcene != null)
+                                        log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                            " nema nijednu ocenu" + " Takmicenje3");
+                                    continue;
+                                }
+                                IList<Ocena> oceneList = oceneMap[r.Gimnasticar.Id];
+                                Ocena o = null;
+                                foreach (Ocena o2 in oceneList)
+                                {
+                                    if (o2.Sprava == Sprava.Preskok)
+                                    {
+                                        o = o2;
+                                        break;
+                                    }
+                                }
+                                if (o == null && (r.Total != null || r.TotalObeOcene != null))
+                                    log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                        " nema ocenu za " + Sprava.Preskok.ToString() + " Takmicenje3");
+                                if (o != null && (o.Total != r.Total || o.TotalObeOcene != r.TotalObeOcene))
+                                    log.WriteLine(takmicenjeHeader + ": " + r.Gimnasticar.ToString() +
+                                        " total se razlikuje " + Sprava.Preskok.ToString() + " Takmicenje3");
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                        session.Transaction.Rollback();
+                    log.Close();
+                    MessageBox.Show(takmicenjeHeader);
+                    throw;
+                }
+                finally
+                {
+                    CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+                }
+            }
+            log.Close();
         }
 
         // Proveri za sva finala kupa i zbir vise kola, da li postoje gimnasticari koji su nastupali u razlicitim

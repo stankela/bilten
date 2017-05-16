@@ -76,9 +76,9 @@ namespace Bilten.Domain
             }
         }
 
-        public override void clearOcena(Ocena o)
+        public override void clearOcena()
         {
-            base.clearOcena(o);
+            base.clearOcena();
             D_2 = null;
             E_2 = null;
             Penalty_2 = null;
