@@ -10,6 +10,18 @@ namespace Bilten.Domain
 {
     public class Propozicije : DomainObject
     {
+        public Propozicije()
+        { 
+
+        }
+
+        public Propozicije(bool postojiTak2, bool postojiTak3, bool postojiTak4)
+        {
+            PostojiTak2 = postojiTak2;
+            PostojiTak3 = postojiTak3;
+            PostojiTak4 = postojiTak4;
+        }
+
         // TODO4: Razmisli da uklonis svojstva PostojiTak2 i PostojiTak3, tj. neka ona uvek budu true.
 
         // Takmicenje 2

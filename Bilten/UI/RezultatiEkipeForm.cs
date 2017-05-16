@@ -102,7 +102,7 @@ namespace Bilten.UI
 
             foreach (RezultatskoTakmicenje rt in result)
             {
-                // potrebno u Poredak.create
+                // Potrebno u kvalColumnVisible
                 NHibernateUtil.Initialize(rt.Propozicije);
 
                 // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
@@ -111,12 +111,8 @@ namespace Bilten.UI
                 // Rezultati).
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                     NHibernateUtil.Initialize(rt.Takmicenje1.PoredakEkipno.Rezultati);
-                else
-                {
-                    if (rt.odvojenoTak4())
-                        NHibernateUtil.Initialize(rt.Takmicenje4.Poredak.Rezultati);
-                }
-
+                else if (rt.odvojenoTak4())
+                    NHibernateUtil.Initialize(rt.Takmicenje4.Poredak.Rezultati);
             }
             return result;
         }

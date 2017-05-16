@@ -382,7 +382,7 @@ namespace Bilten.Services
             takmicenje.TakmicenjeDescriptions.Clear();            
             RezultatskoTakmicenjeDescription desc = new RezultatskoTakmicenjeDescription();
             desc.Naziv = takmicenje.Naziv;
-            desc.Propozicije = new Propozicije();
+            desc.Propozicije = new Propozicije(true, takmicenje.FinaleKupa, true);
             takmicenje.addTakmicenjeDescription(desc);
 
             // Takmicenje dodajem ovako rano zato sto se takmicenje.Id koristi dole u createGimnasticarUcesnik
@@ -391,10 +391,8 @@ namespace Bilten.Services
             IList<RezultatskoTakmicenje> rezTakmicenja = new List<RezultatskoTakmicenje>();
             foreach (TakmicarskaKategorija k in takmicenje.Kategorije)
             {
-                RezultatskoTakmicenje rt = new RezultatskoTakmicenje(takmicenje, k, desc, new Propozicije());
-                // TODO: HACK
-                rt.Propozicije.PostojiTak2 = true;
-                rt.Propozicije.PostojiTak4 = true;
+                Propozicije p = new Propozicije(true, takmicenje.FinaleKupa, true);
+                RezultatskoTakmicenje rt = new RezultatskoTakmicenje(takmicenje, k, desc, p);
                 rt.ImaEkipnoTakmicenje = true;
                 rt.KombinovanoEkipnoTak = false;
                 rezTakmicenja.Add(rt);

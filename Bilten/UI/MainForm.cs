@@ -338,7 +338,8 @@ namespace Bilten.UI
 
         private void refreshUI(Takmicenje takmicenje, bool newTakmicenje)
         {
-            mnKategorijeITakmicenja.Enabled = !takmicenje.ZbirViseKola;
+            // TODO4: Umesto sto se onemogucuje otvaranje kategorija i takmicenja, trebalo bi otvoriti u readonly modu.
+            mnKategorijeITakmicenja.Enabled = !takmicenje.FinaleKupa && !takmicenje.ZbirViseKola;
             mnPropozicije.Enabled = !takmicenje.ZbirViseKola;
             mnTakmicariKategorije.Enabled = true;
             mnTakmicariTakmicenja.Enabled = true;
@@ -1284,8 +1285,6 @@ namespace Bilten.UI
                 MessageDialogs.showError(ex.Message, strProgName);
             }
         }
-
-        // TODO4: Kada se kreira finale kupa, promeni u propozicijama da PostojiTak2, PostojiTak3 i PostojiTak4 budu true.
 
         private bool uveziTakmicenje(string fileName, out Takmicenje t, bool uveziStartListe, bool uveziSudije)
         {

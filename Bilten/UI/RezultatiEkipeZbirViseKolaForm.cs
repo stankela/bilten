@@ -84,9 +84,11 @@ namespace Bilten.UI
         {
             IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByTakmicenjeFetch_Tak1_PoredakEkipnoZbirViseKola(takmicenje.Id);
-
-            foreach (RezultatskoTakmicenje tak in result)
-                NHibernateUtil.Initialize(tak.Takmicenje1.PoredakEkipnoZbirViseKola.Rezultati);
+            foreach (RezultatskoTakmicenje rt in result)
+            {
+                NHibernateUtil.Initialize(rt.Propozicije);
+                NHibernateUtil.Initialize(rt.Takmicenje1.PoredakEkipnoZbirViseKola.Rezultati);
+            }
             return result;
         }
 

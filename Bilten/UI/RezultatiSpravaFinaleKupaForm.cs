@@ -102,6 +102,7 @@ namespace Bilten.UI
                 .FindByTakmicenjeFetch_Tak1_PoredakSpravaFinaleKupa(takmicenje.Id);
             foreach (RezultatskoTakmicenje rt in result)
             {
+                NHibernateUtil.Initialize(rt.Propozicije);
                 foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
                     NHibernateUtil.Initialize(p.Rezultati);
             }

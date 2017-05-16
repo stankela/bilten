@@ -17,9 +17,9 @@ namespace Bilten.Domain
             protected set { deoTakKod = value; }
         }
 
-        // TODO4: U 4.5 je u System.Collections.Generic uveden ISet, tako da sam morao eksplicitno da kvalifikujem
+        // TODO: U 4.5 je u System.Collections.Generic uveden ISet, tako da sam morao eksplicitno da kvalifikujem
         // ISet sa Iesi.Collections.Generic.ISet posto NHibernate trenutno ne radi sa System.Collections.Generic.ISet.
-        // Proveri da li se nesto promenilo, tj. da li je NHibernate poceo da podrzava Iesi.Collections.Generic.ISet.
+        // Proveri da li se nesto promenilo, tj. da li je NHibernate poceo da podrzava System.Collections.Generic.ISet.
 
         // TODO4: Proveri da li je moguce prikazati poruku kada se pokusa sa otvaranjem biltena a druga instanca je
         // istovremeno otvorena.

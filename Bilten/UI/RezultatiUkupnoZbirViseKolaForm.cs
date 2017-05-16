@@ -91,6 +91,7 @@ namespace Bilten.UI
                 .FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoZbirViseKola_KlubDrzava(takmicenje.Id);
             foreach (RezultatskoTakmicenje rt in result)
             {
+                NHibernateUtil.Initialize(rt.Propozicije);
                 // NOTE: Moram ovako da inicijalizujem, zato sto ako probam
                 // fetch u queriju, jako se sporo izvrsava (verovato
                 // zato sto se dobavljaju dve kolekcije - Gimnasticari i 

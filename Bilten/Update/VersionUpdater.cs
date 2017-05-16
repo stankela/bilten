@@ -136,9 +136,6 @@ public class VersionUpdater
                     foreach (RezultatskoTakmicenje tak in rezTakmicenja)
                     {
                         NHibernateUtil.Initialize(tak.Takmicenje1.PoredakUkupno.Rezultati);
-
-                        // potrebno u Poredak.create
-                        NHibernateUtil.Initialize(tak.Propozicije);
                     }
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {

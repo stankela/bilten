@@ -128,7 +128,7 @@ namespace Bilten.UI
 
             foreach (RezultatskoTakmicenje rt in result)
             {
-                // potrebno u Poredak.create
+                // Potrebno u kvalColumnVisible
                 NHibernateUtil.Initialize(rt.Propozicije);
 
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -137,14 +137,11 @@ namespace Bilten.UI
                         NHibernateUtil.Initialize(p.Rezultati);
                     NHibernateUtil.Initialize(rt.Takmicenje1.PoredakPreskok.Rezultati);
                 }
-                else
+                else if (rt.odvojenoTak3())
                 {
-                    if (rt.odvojenoTak3())
-                    {
-                        foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
-                            NHibernateUtil.Initialize(p.Rezultati);
-                        NHibernateUtil.Initialize(rt.Takmicenje3.PoredakPreskok.Rezultati);
-                    }
+                    foreach (PoredakSprava p in rt.Takmicenje3.Poredak)
+                        NHibernateUtil.Initialize(p.Rezultati);
+                    NHibernateUtil.Initialize(rt.Takmicenje3.PoredakPreskok.Rezultati);
                 }
             }
             return result;

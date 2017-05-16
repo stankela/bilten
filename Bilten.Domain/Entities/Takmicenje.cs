@@ -360,23 +360,13 @@ namespace Bilten.Domain
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
-                    if (rt.Propozicije.PostojiTak2)
-                    {
-                        if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak2)
-                            result.Add(rt);
-                    }
-                    else
-                    {
-                        // NOTE: Za takmicenje 1 se rezultati i poredak uvek racunaju za sprave i viseboj, i moguce ih je
-                        // pregledati u prozoru za rezultate, cak i ako su PostojiTak2 ili PostojiTak3 false.
-                        result.Add(rt);
-                    }
-                }
-                else
-                {
-                    if (rt.odvojenoTak2())
+                    // NOTE: Za takmicenje 1 se rezultati i poredak uvek racunaju i moguce ih je pregledati u prozoru za
+                    // rezultate, cak i ako je PostojiTak2 false. Zato ne proveravam PostojiTak2.
+                    if (StandardnoTakmicenje || ZbirViseKola || (FinaleKupa && (sumaObaKola || rt.odvojenoTak2())))
                         result.Add(rt);
                 }
+                else if (rt.odvojenoTak2())
+                    result.Add(rt);
             }
             return result;
         }
@@ -390,25 +380,13 @@ namespace Bilten.Domain
             {
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
-                    if (rt.Propozicije.PostojiTak3)
-                    {
-                        if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak3)
-                            result.Add(rt);
-                    }
-                    else
-                    {
-                        // NOTE: Za takmicenje 1 se rezultati i poredak uvek racunaju za sprave i viseboj, i moguce ih je
-                        // pregledati u prozoru za rezultate, cak i ako su PostojiTak2 ili PostojiTak3 false.
-                        // TODO4: Proveri da li treba prikazivati rezultate i za finale kupa i zbir vise kola. Isto i za
-                        // viseboj u metodu getRezTakmicenjaViseboj.
-                        result.Add(rt);
-                    }
-                }
-                else
-                {
-                    if (rt.odvojenoTak3())
+                    // NOTE: Za takmicenje 1 se rezultati i poredak uvek racunaju i moguce ih je pregledati u prozoru za
+                    // rezultate, cak i ako je PostojiTak3 false. Zato ne proveravam PostojiTak3.
+                    if (StandardnoTakmicenje || (FinaleKupa && (sumaObaKola || rt.odvojenoTak3())))
                         result.Add(rt);
                 }
+                else if (rt.odvojenoTak3())
+                    result.Add(rt);
             }
             return result;
         }
@@ -420,19 +398,18 @@ namespace Bilten.Domain
             IList<RezultatskoTakmicenje> result = new List<RezultatskoTakmicenje>();
             foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
             {
+                if (!rt.ImaEkipnoTakmicenje)
+                    continue;
                 if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
                 {
-                    if (rt.Propozicije.PostojiTak4 && rt.ImaEkipnoTakmicenje)
+                    if (rt.Propozicije.PostojiTak4)
                     {
-                        if (!FinaleKupa || sumaObaKola || rt.Propozicije.OdvojenoTak4)
+                        if (StandardnoTakmicenje || ZbirViseKola || (FinaleKupa && (sumaObaKola || rt.odvojenoTak4())))
                             result.Add(rt);
                     }
                 }
-                else
-                {
-                    if (rt.odvojenoTak4() && rt.ImaEkipnoTakmicenje)
-                        result.Add(rt);
-                }
+                else if (rt.odvojenoTak4())
+                    result.Add(rt);
             }
             return result;
         }

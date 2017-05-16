@@ -90,7 +90,10 @@ namespace Bilten.UI
             IList<RezultatskoTakmicenje> result = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO()
                 .FindByTakmicenjeFetch_KatDesc_Tak1_PoredakUkupnoFinaleKupa_KlubDrzava(takmicenje.Id);
             foreach (RezultatskoTakmicenje rt in result)
+            {
+                NHibernateUtil.Initialize(rt.Propozicije);
                 NHibernateUtil.Initialize(rt.Takmicenje1.PoredakUkupnoFinaleKupa.Rezultati);
+            }
             return result;
         }
 
