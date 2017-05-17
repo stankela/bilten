@@ -18,8 +18,6 @@ namespace Bilten
     static class Program
     {
         // TODO4: (sa Memorijala 2016)
-        // - Proveri OcenaForm (polje za E ocenu se ne ponasa ocekivano u sledece 3 situacije: kada se ostavi prazno,
-        //   kada se ocena unese sa tackom umesto zareza, i kada se unese neki proizvoljan tekst)
         // - Mislim da u programu postoji na nekoliko mesta obaveza da se kod menja ako se u neku
         //   klasu doda novo svojstvo (cini mi se da je prozor za propozicije jedno od tih mesta). Probaj da
         //   napises unit testove koji bi ovo proveravali sa refleksijom. Npr. test bi sadrzao listu svojstva koja
