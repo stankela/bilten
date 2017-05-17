@@ -212,9 +212,6 @@ namespace Bilten.Domain
             }
         }
 
-        // TODO4: Razmisli da li treba uvoditi ogranicenje da clanovi ekipe mogu da budu samo ucesnici istog
-        // takmicenja (tj. takmicenja description).
-
         public virtual void updateRezultatEkipe(Ekipa e, RezultatskoTakmicenje rezTak, List<RezultatUkupno> rezultati)
         {
             if (rezTak.ImaEkipnoTakmicenje)

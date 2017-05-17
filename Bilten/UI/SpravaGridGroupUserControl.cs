@@ -116,10 +116,7 @@ namespace Bilten.UI
         private void spravaGrid_MouseUp(object sender, SpravaGridMouseUpEventArgs e)
         {
             if (e.MouseEventArgs.Button == MouseButtons.Right)
-            {
-                OnSpravaGridRightClick(
-                    new SpravaGridRightClickEventArgs(e.Sprava, e.MouseEventArgs));
-            }
+                OnSpravaGridRightClick(new SpravaGridRightClickEventArgs(e.Sprava, e.MouseEventArgs));
         }
 
         protected virtual void OnSpravaGridRightClick(SpravaGridRightClickEventArgs e)
