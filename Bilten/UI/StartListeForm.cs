@@ -1012,13 +1012,6 @@ namespace Bilten.UI
             if (ActiveRaspored == null)
                 return;
 
-            /*int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
-            string preostaleRot = "2-" + finalRot.ToString();
-            string msgFmt = "Da li zelite da kreirate rotacije {0}? Prethodni raspored koji je postojao na rotacijama {0} " +
-                "bice izbrisan.";
-            if (!MessageDialogs.queryConfirmation(String.Format(msgFmt, preostaleRot), this.Text))
-                return;*/
-
             // Nadji aktivne sprave za rotaciju 1.
             List<Sprava> aktivneSpraveRot1 = new List<Sprava>();
             foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
@@ -1042,7 +1035,7 @@ namespace Bilten.UI
 
             int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
             for (int rot = 2; rot <= finalRot; rot++)
-                kreirajRotaciju(rot, form.AktivneSprave);
+                ActiveRaspored.kreirajRotaciju(ActiveGrupa, rot, form.AktivneSprave);
      
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -1085,116 +1078,6 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private void kreirajRotaciju(int rot, List<List<Sprava>> aktivneSprave)
-        {
-            foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
-            {
-                StartListaNaSpravi startLista = ActiveRaspored.getStartLista(s, ActiveGrupa, rot);
-                startLista.clear();
-
-                StartListaNaSpravi startListaPrethRot = getStartListaPrethRot(ActiveRaspored, ActiveGrupa, rot, s,
-                    aktivneSprave);
-                if (startListaPrethRot == null)
-                    continue;
-
-                // Nadji start listu na prvoj rotaciji
-                StartListaNaSpravi currentStartLista = startListaPrethRot;
-                int currentRot = rot - 1;
-                while (currentRot != 1)
-                {
-                    currentStartLista = getStartListaPrethRot(ActiveRaspored, ActiveGrupa, currentRot--,
-                        currentStartLista.Sprava, aktivneSprave);
-                }
-
-                NacinRotacije nacinRotacije = currentStartLista.NacinRotacije;
-                if (startListaPrethRot.Nastupi.Count > 0)
-                {
-                    if (nacinRotacije == NacinRotacije.RotirajSve || nacinRotacije == NacinRotacije.NeRotirajNista)
-                    {
-                        foreach (NastupNaSpravi n in startListaPrethRot.Nastupi)
-                        {
-                            startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
-                        }
-
-                        if (nacinRotacije == NacinRotacije.RotirajSve)
-                        {
-                            NastupNaSpravi n2 = startLista.Nastupi[0];
-                            startLista.removeNastup(n2);
-                            startLista.addNastup(n2);
-                        }
-                    }
-                    else if (nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare
-                             || nacinRotacije == NacinRotacije.NeRotirajEkipeRotirajGimnasticare)
-                    {
-                        // Najpre pronadji ekipe
-                        List<List<NastupNaSpravi>> listaEkipa = new List<List<NastupNaSpravi>>();
-                        int m = 0;
-                        while (m < startListaPrethRot.Nastupi.Count)
-                        {
-                            NastupNaSpravi prethNastup = startListaPrethRot.Nastupi[m];
-                            if (prethNastup.Ekipa == 0)
-                            {
-                                List<NastupNaSpravi> pojedinac = new List<NastupNaSpravi>();
-                                pojedinac.Add(new NastupNaSpravi(prethNastup.Gimnasticar, 0));
-                                listaEkipa.Add(pojedinac);
-                                ++m;
-                                continue;
-                            }
-
-                            List<NastupNaSpravi> novaEkipa = new List<NastupNaSpravi>();
-                            int ekipaId = prethNastup.Ekipa;
-                            while (m < startListaPrethRot.Nastupi.Count
-                                   && prethNastup.Ekipa == ekipaId)
-                            {
-                                novaEkipa.Add(new NastupNaSpravi(prethNastup.Gimnasticar, prethNastup.Ekipa));
-                                ++m;
-                                if (m < startListaPrethRot.Nastupi.Count)
-                                    prethNastup = startListaPrethRot.Nastupi[m];
-                            }
-                            listaEkipa.Add(novaEkipa);
-                        }
-
-                        if (nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare)
-                        {
-                            // Rotiraj ekipe
-                            List<NastupNaSpravi> prvaEkipa = listaEkipa[0];
-                            listaEkipa.RemoveAt(0);
-                            listaEkipa.Add(prvaEkipa);
-                        }
-
-                        foreach (List<NastupNaSpravi> ekipa in listaEkipa)
-                        {
-                            // Rotiraj clanove ekipe
-                            NastupNaSpravi nastup = ekipa[0];
-                            ekipa.RemoveAt(0);
-                            ekipa.Add(nastup);
-
-                            foreach (NastupNaSpravi n in ekipa)
-                            {
-                                startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private StartListaNaSpravi getStartListaPrethRot(RasporedNastupa ActiveRaspored, int ActiveGrupa, int rot,
-            Sprava sprava, List<List<Sprava>> aktivneSprave)
-        {
-            List<Sprava> sprave = aktivneSprave[rot - 1];
-            int i = sprave.IndexOf(sprava);
-            if (i == -1)
-                // Sprava nije aktivna u rotaciji.
-                return null;
-
-            List<Sprava> prethSprave = aktivneSprave[rot - 2];
-
-            Sprava prethSprava = (i == 0) ? prethSprave[prethSprave.Count - 1] : prethSprave[i - 1];
-            StartListaNaSpravi result = ActiveRaspored.getStartLista(prethSprava, ActiveGrupa, rot - 1);
-            return result;
         }
 
         private void kreirajNaOsnovuKvalifikanata(bool finaleKupa)
@@ -1737,19 +1620,12 @@ namespace Bilten.UI
                 // Nije selektovan pravi podskup svih vrsta, pa sledi da ne moze biti selektovan ni pravi podskup ekipa.
                 return false;
 
-            int firstEkipa = (dgw.Rows[firstIndex - 1].DataBoundItem as NastupNaSpravi).Ekipa;
-            int lastEkipa = (dgw.Rows[lastIndex + 1].DataBoundItem as NastupNaSpravi).Ekipa;
+            int ekipaPre = (dgw.Rows[firstIndex - 1].DataBoundItem as NastupNaSpravi).Ekipa;
+            int ekipaPosle = (dgw.Rows[lastIndex + 1].DataBoundItem as NastupNaSpravi).Ekipa;
 
-            if (firstEkipa == 0 || lastEkipa == 0 || firstEkipa != lastEkipa)
-                // Prva ekipa pre selektovanih i prva ekipa nakon selektovanih nisu iste.
-                return false;
-
-            for (int i = firstIndex; i <= lastIndex; i++)
-            {
-                if ((dgw.Rows[i].DataBoundItem as NastupNaSpravi).Ekipa != firstEkipa)
-                    return false;
-            }
-            return true;
+            if (ekipaPre != 0 && ekipaPosle != 0 && ekipaPre == ekipaPosle)
+                return true;
+            return false;
         }
 
         private void oznaci(bool oznaciKaoPojedinca)
@@ -1779,13 +1655,15 @@ namespace Bilten.UI
                 // Selektovan je pravi podskup neke ekipe. Ponisti ekipe za sve gimnasticare iz ekipe.
                 // Time se sprecava da imamo ekipu ciji clanovi nisu uzastopni u start listi.
 
-                List<byte> selEkipe = getEkipe(getActiveSpravaGridGroupUserControl()[clickedSprava]
-                    .DataGridViewUserControl.DataGridView, true);
+                // Ako je selektovan pravi podskup ekipe, samo jedna ekipa moze da bude selektovana.
+                int selEkipa = getEkipe(getActiveSpravaGridGroupUserControl()[clickedSprava]
+                    .DataGridViewUserControl.DataGridView, true)[0];
+
                 IList<NastupNaSpravi> sviNastupi = getActiveSpravaGridGroupUserControl()[clickedSprava]
                     .DataGridViewUserControl.getItems<NastupNaSpravi>();
                 foreach (NastupNaSpravi n in sviNastupi)
                 {
-                    if (selEkipe.IndexOf(n.Ekipa) != -1)
+                    if (n.Ekipa == selEkipa)
                         n.Ekipa = 0;
                 }
             }
@@ -1793,9 +1671,7 @@ namespace Bilten.UI
             {
                 // Ponisti ekipe za selektovane gimnasticare.
                 foreach (NastupNaSpravi n in selNastupi)
-                {
                     n.Ekipa = 0;
-                }
             }
 
             if (!oznaciKaoPojedinca)
@@ -1876,9 +1752,7 @@ namespace Bilten.UI
                     continue;
                 NastupNaSpravi n = row.DataBoundItem as NastupNaSpravi;
                 if (n.Ekipa > 0 && result.IndexOf(n.Ekipa) == -1)
-                {
                     result.Add(n.Ekipa);
-                }
             }
             return result;
         }

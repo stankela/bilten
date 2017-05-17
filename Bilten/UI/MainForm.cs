@@ -1258,6 +1258,8 @@ namespace Bilten.UI
             items.Add("Uvezi start liste");
             items.Add("Uvezi sudije i raspored sudija po spravama");
             List<int> checkedItems = new List<int>();
+            checkedItems.Add(0);
+            checkedItems.Add(1);
             CheckListForm form2 = new CheckListForm(items, checkedItems,
                 "Izaberite da li zelite da uvezete start liste i sudije", "Uvezi start liste i sudije",
                 false, "", false);

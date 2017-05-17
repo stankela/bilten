@@ -258,7 +258,7 @@ namespace Bilten.UI
 
             if (getBrojSprava() < aktivneSpraveRot1.Count)
             {
-                string msg = "Niste izabrali dovoljan broj sprava koje se rotiraju.\n\n " +
+                string msg = "Niste izabrali dovoljan broj sprava koje se rotiraju.\n\n" +
                     "Broj sprava koje se rotiraju ne sme biti " +
                     "manji od broja sprava za koje postoje start liste na rotaciji 1.";
                 MessageDialogs.showMessage(msg, this.Text);

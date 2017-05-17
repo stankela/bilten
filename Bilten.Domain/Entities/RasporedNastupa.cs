@@ -174,6 +174,101 @@ namespace Bilten.Domain
             return result;
         }
 
+        private StartListaNaSpravi getStartListaPrethRot(StartListaNaSpravi s, List<List<Sprava>> aktivneSprave)
+        {
+            int i = aktivneSprave[s.Rotacija - 1].IndexOf(s.Sprava);
+            List<Sprava> prethSprave = aktivneSprave[s.Rotacija - 2];
+            Sprava prethSprava = (i == 0) ? prethSprave[prethSprave.Count - 1] : prethSprave[i - 1];
+            StartListaNaSpravi result = getStartLista(prethSprava, s.Grupa, s.Rotacija - 1);
+            return result;
+        }
+
+        public virtual void kreirajRotaciju(int grupa, int rot, List<List<Sprava>> aktivneSprave)
+        {
+            foreach (Sprava s in Sprave.getSprave(Takmicenje.Gimnastika))
+            {
+                StartListaNaSpravi startLista = getStartLista(s, grupa, rot);
+                startLista.clear();
+
+                if (aktivneSprave[rot - 1].IndexOf(s) == -1)
+                    // Sprava nije aktivna u rotaciji.
+                    continue;
+
+                StartListaNaSpravi startListaPrethRot = getStartListaPrethRot(startLista, aktivneSprave);
+                if (startListaPrethRot.Nastupi.Count == 0)
+                    continue;
+
+                // Nadji nacin rotacije (u start listi na prvoj rotaciji).
+                StartListaNaSpravi current = startListaPrethRot;
+                while (current.Rotacija != 1)
+                    current = getStartListaPrethRot(current, aktivneSprave);
+                NacinRotacije nacinRotacije = current.NacinRotacije;
+
+                if (nacinRotacije == NacinRotacije.RotirajSve || nacinRotacije == NacinRotacije.NeRotirajNista)
+                {
+                    foreach (NastupNaSpravi n in startListaPrethRot.Nastupi)
+                        startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
+
+                    if (nacinRotacije == NacinRotacije.RotirajSve)
+                    {
+                        NastupNaSpravi n2 = startLista.Nastupi[0];
+                        startLista.removeNastup(n2);
+                        startLista.addNastup(n2);
+                    }
+                }
+                else if (nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare
+                         || nacinRotacije == NacinRotacije.NeRotirajEkipeRotirajGimnasticare)
+                {
+                    // Najpre pronadji ekipe
+                    List<List<NastupNaSpravi>> listaEkipa = new List<List<NastupNaSpravi>>();
+                    int m = 0;
+                    while (m < startListaPrethRot.Nastupi.Count)
+                    {
+                        NastupNaSpravi n = startListaPrethRot.Nastupi[m];
+                        byte ekipaId = n.Ekipa;
+                        if (ekipaId == 0)
+                        {
+                            List<NastupNaSpravi> pojedinac = new List<NastupNaSpravi>();
+                            pojedinac.Add(new NastupNaSpravi(n.Gimnasticar, 0));
+                            listaEkipa.Add(pojedinac);
+                            ++m;
+                            continue;
+                        }
+
+                        List<NastupNaSpravi> novaEkipa = new List<NastupNaSpravi>();
+                        while (n.Ekipa == ekipaId)
+                        {
+                            novaEkipa.Add(new NastupNaSpravi(n.Gimnasticar, ekipaId));
+                            if (++m < startListaPrethRot.Nastupi.Count)
+                                n = startListaPrethRot.Nastupi[m];
+                            else
+                                break;
+                        }
+                        listaEkipa.Add(novaEkipa);
+                    }
+
+                    if (nacinRotacije == NacinRotacije.RotirajEkipeRotirajGimnasticare)
+                    {
+                        // Rotiraj ekipe
+                        List<NastupNaSpravi> prvaEkipa = listaEkipa[0];
+                        listaEkipa.RemoveAt(0);
+                        listaEkipa.Add(prvaEkipa);
+                    }
+
+                    foreach (List<NastupNaSpravi> ekipa in listaEkipa)
+                    {
+                        // Rotiraj clanove ekipe
+                        NastupNaSpravi nastup = ekipa[0];
+                        ekipa.RemoveAt(0);
+                        ekipa.Add(nastup);
+
+                        foreach (NastupNaSpravi n in ekipa)
+                            startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
+                    }
+                }
+            }
+        }
+
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
