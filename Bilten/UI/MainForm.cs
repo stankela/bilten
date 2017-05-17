@@ -338,8 +338,7 @@ namespace Bilten.UI
 
         private void refreshUI(Takmicenje takmicenje, bool newTakmicenje)
         {
-            // TODO4: Umesto sto se onemogucuje otvaranje kategorija i takmicenja, trebalo bi otvoriti u readonly modu.
-            mnKategorijeITakmicenja.Enabled = !takmicenje.FinaleKupa && !takmicenje.ZbirViseKola;
+            mnKategorijeITakmicenja.Enabled = true;
             mnPropozicije.Enabled = !takmicenje.ZbirViseKola;
             mnTakmicariKategorije.Enabled = true;
             mnTakmicariTakmicenja.Enabled = true;
@@ -355,7 +354,6 @@ namespace Bilten.UI
             }
             else
             {
-
                 mnTakmicenje2.Visible = takmicenje.ZavrsenoTak1;
                 mnTakmicenje3.Visible = takmicenje.ZavrsenoTak1;
                 mnTakmicenje4.Visible = takmicenje.ZavrsenoTak1;

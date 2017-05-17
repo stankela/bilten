@@ -1113,8 +1113,6 @@ namespace Bilten.UI
             IList<RezultatskoTakmicenje> ekipnaRezTakmicenja = rezTakDAO.FindEkipnaTakmicenja(takmicenjeId);
             foreach (RezultatskoTakmicenje rt in ekipnaRezTakmicenja)
             {
-                // TODO4: Ovo ce raditi ako gimnasticar moze da bude clan samo jedne ekipe u istom rez. takmicenju.
-                // Uvedi ovo ogranicenje.
                 Ekipa e = rt.findEkipa(o.Gimnasticar, deoTakKod);
                 if (e == null)
                     continue;

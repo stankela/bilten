@@ -21,6 +21,7 @@ namespace Bilten.Dao.NHibernate
                     left join fetch r.TakmicenjeDescription d
                     left join fetch r.Takmicenje1 t
                     left join fetch t.Ekipe e
+                    left join fetch e.Gimnasticari
                     where r.Id = :id");
                 q.SetInt32("id", rezTakmicenjeId);
                 IList<RezultatskoTakmicenje> result = q.List<RezultatskoTakmicenje>();

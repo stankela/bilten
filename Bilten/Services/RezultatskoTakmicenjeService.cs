@@ -1,5 +1,6 @@
 ﻿using Bilten.Dao;
 using Bilten.Domain;
+using Bilten.Exceptions;
 using Bilten.Misc;
 using System;
 using System.Collections.Generic;
@@ -129,6 +130,18 @@ namespace Bilten.Services
                 }
             }
 
+            foreach (Ekipa e in rezTak.Takmicenje1.Ekipe)
+            {
+                foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
+                {
+                    if (e.Gimnasticari.Contains(g))
+                    {
+                        throw new BusinessException(String.Format(Strings.GIMNASTICAR_JE_CLAN_DRUGE_EKIPE_ERROR_MSG,
+                            g.ImeSrednjeImePrezime, e.Naziv));
+                    }
+                }
+            }
+
             if (rezTak.Takmicenje1.addEkipa(ekipa))
             {
                 DAOFactoryFactory.DAOFactory.GetEkipaDAO().Add(ekipa);
@@ -165,6 +178,20 @@ namespace Bilten.Services
         {
             RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO = DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
             rezultatskoTakmicenjeDAO.Attach(rezTakmicenje, false);
+
+            foreach (Ekipa e in rezTakmicenje.Takmicenje1.Ekipe)
+            {
+                if (e.Equals(ekipa))
+                    continue;
+                foreach (GimnasticarUcesnik g in ekipa.Gimnasticari)
+                {
+                    if (e.Gimnasticari.Contains(g))
+                    {
+                        throw new BusinessException(String.Format(Strings.GIMNASTICAR_JE_CLAN_DRUGE_EKIPE_ERROR_MSG,
+                            g.ImeSrednjeImePrezime, e.Naziv));
+                    }
+                }
+            }
 
             DAOFactoryFactory.DAOFactory.GetEkipaDAO().Update(ekipa);
 

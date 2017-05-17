@@ -299,28 +299,28 @@ namespace Bilten.UI
                 return;
 
             Ekipa ekipa = (Ekipa)entity;
-            List<GimnasticarUcesnik> okGimnasticari = new List<GimnasticarUcesnik>();
-            List<GimnasticarUcesnik> illegalGimnasticari = new List<GimnasticarUcesnik>();
+            bool added = false;
+
+            string msg = String.Empty;
             foreach (GimnasticarUcesnik g in form.SelectedEntities)
             {
+                Ekipa ekipa2 = rezTakmicenje.findEkipa(g, DeoTakmicenjaKod.Takmicenje1);
+                if (ekipa2 != null && !ekipa2.Equals(ekipa))
+                {
+                    msg += String.Format(
+                        Strings.GIMNASTICAR_JE_CLAN_DRUGE_EKIPE_ERROR_MSG, g.ImeSrednjeImePrezime, ekipa2.Naziv);
+                    continue;
+                }
                 if (ekipa.addGimnasticar(g))
-                    okGimnasticari.Add(g);
-                else
-                    illegalGimnasticari.Add(g);
-
+                    added = true;
             }
-            if (okGimnasticari.Count > 0)
-            {
+            if (added)
                 setClanovi(ekipa.Gimnasticari);
-                dgwUserControlClanovi.setSelectedItem<GimnasticarUcesnik>
-                    (okGimnasticari[okGimnasticari.Count - 1]);
-            }
 
-            if (illegalGimnasticari.Count > 0)
+            if (msg != String.Empty)
             {
-                string msg = "Sledeci gimnasticari nisu dodati: \n\n";
-                msg += StringUtil.getListString(illegalGimnasticari.ToArray());
-                //       MessageDialogs.showMessage(msg, this.Text);
+                string msg2 = "Sledeci gimnasticari nisu dodati jer su clanovi drugih ekipa: \n\n" + msg;
+                MessageDialogs.showMessage(msg2, this.Text);
             }
         }
 

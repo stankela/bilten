@@ -17,5 +17,9 @@ namespace Bilten
 
         public static readonly string NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG
             = "Morate najpre da unesete kategorije i takmicenja.";
+
+        public readonly static string GIMNASTICAR_JE_CLAN_DRUGE_EKIPE_ERROR_MSG
+            = "Gimnasticar \'{0}\' je clan druge ekipe ({1}).";
+
     }
 }
