@@ -147,6 +147,23 @@ namespace Bilten.Domain
                     prefix + "D", "D ocena ne sme da bude negativna.");
             }
 
+            if (BrojEOcena == 0)
+            {
+                if (E == null)
+                {
+                    if (!RucnoUnetaOcena)
+                    {
+                        notification.RegisterMessage(
+                            prefix + "E", "E ocena je obavezna.");
+                    }
+                }
+                else if (E < 0)
+                {
+                    notification.RegisterMessage(
+                        prefix + "E", "E ocena ne sme da bude negativna.");
+                }
+            }
+
             Nullable<float>[] eOcene = new Nullable<float>[6] { E1, E2, E3, E4, E5, E6 };
             for (byte i = 1; i <= BrojEOcena; i++)
             {

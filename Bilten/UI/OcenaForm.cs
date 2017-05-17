@@ -306,13 +306,13 @@ namespace Bilten.UI
             // provera da li je neko polje obavezno obavlja se u validate. Ovde se 
             // samo proverava format polja koja nisu prazna
 
-            requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD, txtE1,
+            requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD, txtE, txtE1,
                 txtE2, txtE3, txtE4, txtE5, txtE6, txtPenal, String.Empty);
             requiredFieldsAndFormatValidationRucnoUnetaOcena(notification, txtE, txtTotal, String.Empty);
 
             if (!isDrugaOcenaEmpty())
             {
-                requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2,
+                requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2, txtE_2,
                     txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtPenal_2, "DrugaOcena.");
                 requiredFieldsAndFormatValidationRucnoUnetaOcena(notification, txtE_2, txtTotal_2, "DrugaOcena.");
                 
@@ -358,7 +358,7 @@ namespace Bilten.UI
         }
 
         private void requiredFieldsAndFormatValidationZaIzracunavanje(
-            Notification notification, TextBox txtD, TextBox txtE1, TextBox txtE2,
+            Notification notification, TextBox txtD, TextBox txtE, TextBox txtE1, TextBox txtE2,
             TextBox txtE3, TextBox txtE4, TextBox txtE5, TextBox txtE6, 
             TextBox txtPenal, string prefix)
         {
@@ -374,6 +374,21 @@ namespace Bilten.UI
                     notification.RegisterMessage(
                         prefix + "D", String.Format(
                         "D ocena moze da sadrzi najvise {0} decimala.", takmicenje.BrojDecimalaD));
+                }
+            }
+
+            if (takmicenje.BrojEOcena == 0 && txtE.Text.Trim() != String.Empty)
+            {
+                if (!isFloat(txtE.Text))
+                {
+                    notification.RegisterMessage(
+                        prefix + "E", "Neispravan format za E ocenu.");
+                }
+                else if (!checkDecimalPlaces(txtE.Text, takmicenje.BrojDecimalaE))
+                {
+                    notification.RegisterMessage(
+                        prefix + "E", String.Format(
+                        "E ocena moze da sadrzi najvise {0} decimala.", takmicenje.BrojDecimalaE));
                 }
             }
 
@@ -795,11 +810,11 @@ namespace Bilten.UI
             try
             {
                 Notification notification = new Notification();
-                requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD, txtE1,
+                requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD, txtE, txtE1,
                     txtE2, txtE3, txtE4, txtE5, txtE6, txtPenal, String.Empty);
                 if (!isDrugaOcenaEmpty())
                 {
-                    requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2,
+                    requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2, txtE_2,
                         txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtPenal_2, "DrugaOcena.");
                 }
                 

@@ -91,9 +91,7 @@ namespace Bilten.Domain
         {
             base.validateZaIzracunavanje(notification);
             if (Ocena2 != null)
-            {
                 Ocena2.validateZaIzracunavanje(notification);
-            }
         }
 
         public virtual string PrezimeIme
