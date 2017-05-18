@@ -35,7 +35,6 @@ namespace Bilten.UI
             this.btnNewGroup = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
             this.lblGrupa = new System.Windows.Forms.Label();
             this.lblRotacija = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
@@ -60,6 +59,14 @@ namespace Bilten.UI
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnOstaleRotacije = new System.Windows.Forms.Button();
             this.btnPrintUnosOcena = new System.Windows.Forms.Button();
+            this.mnPrebaciNa = new System.Windows.Forms.ToolStripMenuItem();
+            this.parterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.konjToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.karikeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preskokToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.razbojToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vratiloToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spravaGridGroupUserControl1 = new Bilten.UI.SpravaGridGroupUserControl();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -107,9 +114,9 @@ namespace Bilten.UI
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(12, 66);
             this.tabControl1.Name = "tabControl1";
@@ -128,13 +135,6 @@ namespace Bilten.UI
             this.tabPage1.Size = new System.Drawing.Size(1242, 278);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
-            // 
-            // spravaGridGroupUserControl1
-            // 
-            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(3, 6);
-            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
-            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(444, 206);
-            this.spravaGridGroupUserControl1.TabIndex = 0;
             // 
             // lblGrupa
             // 
@@ -197,77 +197,78 @@ namespace Bilten.UI
             this.mnPrikaziDrzavu,
             this.mnOznaciKaoEkipu,
             this.mnOznaciKaoPojedinca,
-            this.mnNacinRotacije});
+            this.mnNacinRotacije,
+            this.mnPrebaciNa});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(187, 246);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(188, 268);
             // 
             // mnUnesiOcenu
             // 
             this.mnUnesiOcenu.Name = "mnUnesiOcenu";
-            this.mnUnesiOcenu.Size = new System.Drawing.Size(186, 22);
+            this.mnUnesiOcenu.Size = new System.Drawing.Size(187, 22);
             this.mnUnesiOcenu.Text = "Unesi ocenu";
             this.mnUnesiOcenu.Click += new System.EventHandler(this.mnUnesiOcenu_Click);
             // 
             // mnPromeniStartListu
             // 
             this.mnPromeniStartListu.Name = "mnPromeniStartListu";
-            this.mnPromeniStartListu.Size = new System.Drawing.Size(186, 22);
+            this.mnPromeniStartListu.Size = new System.Drawing.Size(187, 22);
             this.mnPromeniStartListu.Text = "Promeni start listu";
             this.mnPromeniStartListu.Click += new System.EventHandler(this.mnPromeniStartListu_Click);
             // 
             // mnRezultatiViseboj
             // 
             this.mnRezultatiViseboj.Name = "mnRezultatiViseboj";
-            this.mnRezultatiViseboj.Size = new System.Drawing.Size(186, 22);
+            this.mnRezultatiViseboj.Size = new System.Drawing.Size(187, 22);
             this.mnRezultatiViseboj.Text = "Rezultati viseboj";
             this.mnRezultatiViseboj.Click += new System.EventHandler(this.mnRezultatiViseboj_Click);
             // 
             // mnRezultatiSprave
             // 
             this.mnRezultatiSprave.Name = "mnRezultatiSprave";
-            this.mnRezultatiSprave.Size = new System.Drawing.Size(186, 22);
+            this.mnRezultatiSprave.Size = new System.Drawing.Size(187, 22);
             this.mnRezultatiSprave.Text = "Rezultati sprave";
             this.mnRezultatiSprave.Click += new System.EventHandler(this.mnRezultatiSprave_Click);
             // 
             // mnRezultatiEkipno
             // 
             this.mnRezultatiEkipno.Name = "mnRezultatiEkipno";
-            this.mnRezultatiEkipno.Size = new System.Drawing.Size(186, 22);
+            this.mnRezultatiEkipno.Size = new System.Drawing.Size(187, 22);
             this.mnRezultatiEkipno.Text = "Rezultati ekipno";
             this.mnRezultatiEkipno.Click += new System.EventHandler(this.mnRezultatiEkipno_Click);
             // 
             // mnOcene
             // 
             this.mnOcene.Name = "mnOcene";
-            this.mnOcene.Size = new System.Drawing.Size(186, 22);
+            this.mnOcene.Size = new System.Drawing.Size(187, 22);
             this.mnOcene.Text = "Ocene";
             this.mnOcene.Click += new System.EventHandler(this.mnOcene_Click);
             // 
             // mnPrikaziKlub
             // 
             this.mnPrikaziKlub.Name = "mnPrikaziKlub";
-            this.mnPrikaziKlub.Size = new System.Drawing.Size(186, 22);
+            this.mnPrikaziKlub.Size = new System.Drawing.Size(187, 22);
             this.mnPrikaziKlub.Text = "Prikazi klub";
             this.mnPrikaziKlub.Click += new System.EventHandler(this.mnPrikaziKlub_Click);
             // 
             // mnPrikaziDrzavu
             // 
             this.mnPrikaziDrzavu.Name = "mnPrikaziDrzavu";
-            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(186, 22);
+            this.mnPrikaziDrzavu.Size = new System.Drawing.Size(187, 22);
             this.mnPrikaziDrzavu.Text = "Prikazi drzavu";
             this.mnPrikaziDrzavu.Click += new System.EventHandler(this.mnPrikaziDrzavu_Click);
             // 
             // mnOznaciKaoEkipu
             // 
             this.mnOznaciKaoEkipu.Name = "mnOznaciKaoEkipu";
-            this.mnOznaciKaoEkipu.Size = new System.Drawing.Size(186, 22);
+            this.mnOznaciKaoEkipu.Size = new System.Drawing.Size(187, 22);
             this.mnOznaciKaoEkipu.Text = "Oznaci kao ekipu";
             this.mnOznaciKaoEkipu.Click += new System.EventHandler(this.mnOznaciKaoEkipu_Click);
             // 
             // mnOznaciKaoPojedinca
             // 
             this.mnOznaciKaoPojedinca.Name = "mnOznaciKaoPojedinca";
-            this.mnOznaciKaoPojedinca.Size = new System.Drawing.Size(186, 22);
+            this.mnOznaciKaoPojedinca.Size = new System.Drawing.Size(187, 22);
             this.mnOznaciKaoPojedinca.Text = "Oznaci kao pojedinca";
             this.mnOznaciKaoPojedinca.Click += new System.EventHandler(this.mnOznaciKaoPojedinca_Click);
             // 
@@ -279,34 +280,34 @@ namespace Bilten.UI
             this.mnNeRotirajEkipeRotirajGim,
             this.mnRotirajSve});
             this.mnNacinRotacije.Name = "mnNacinRotacije";
-            this.mnNacinRotacije.Size = new System.Drawing.Size(186, 22);
+            this.mnNacinRotacije.Size = new System.Drawing.Size(187, 22);
             this.mnNacinRotacije.Text = "Nacin rotacije";
             // 
             // mnNeRotirajNista
             // 
             this.mnNeRotirajNista.Name = "mnNeRotirajNista";
-            this.mnNeRotirajNista.Size = new System.Drawing.Size(320, 22);
+            this.mnNeRotirajNista.Size = new System.Drawing.Size(331, 22);
             this.mnNeRotirajNista.Text = "Ne rotiraj nista";
             this.mnNeRotirajNista.Click += new System.EventHandler(this.mnNeRotirajNista_Click);
             // 
             // mnRotirajEkipeRotirajGim
             // 
             this.mnRotirajEkipeRotirajGim.Name = "mnRotirajEkipeRotirajGim";
-            this.mnRotirajEkipeRotirajGim.Size = new System.Drawing.Size(320, 22);
+            this.mnRotirajEkipeRotirajGim.Size = new System.Drawing.Size(331, 22);
             this.mnRotirajEkipeRotirajGim.Text = "Rotiraj ekipe, rotiraj gimnasticare unutar ekipe";
             this.mnRotirajEkipeRotirajGim.Click += new System.EventHandler(this.mnRotirajEkipeRotirajGim_Click);
             // 
             // mnNeRotirajEkipeRotirajGim
             // 
             this.mnNeRotirajEkipeRotirajGim.Name = "mnNeRotirajEkipeRotirajGim";
-            this.mnNeRotirajEkipeRotirajGim.Size = new System.Drawing.Size(320, 22);
+            this.mnNeRotirajEkipeRotirajGim.Size = new System.Drawing.Size(331, 22);
             this.mnNeRotirajEkipeRotirajGim.Text = "Ne rotiraj ekipe, rotiraj gimnasticare unutar ekipe";
             this.mnNeRotirajEkipeRotirajGim.Click += new System.EventHandler(this.mnNeRotirajEkipeRotirajGim_Click);
             // 
             // mnRotirajSve
             // 
             this.mnRotirajSve.Name = "mnRotirajSve";
-            this.mnRotirajSve.Size = new System.Drawing.Size(320, 22);
+            this.mnRotirajSve.Size = new System.Drawing.Size(331, 22);
             this.mnRotirajSve.Text = "Rotiraj sve gimnasticare nezavisno od ekipe";
             this.mnRotirajSve.Click += new System.EventHandler(this.mnRotirajSve_Click);
             // 
@@ -339,6 +340,62 @@ namespace Bilten.UI
             this.btnPrintUnosOcena.Text = "Stampaj liste za unos ucena";
             this.btnPrintUnosOcena.UseVisualStyleBackColor = true;
             this.btnPrintUnosOcena.Click += new System.EventHandler(this.btnPrintUnosOcena_Click);
+            // 
+            // mnPrebaciNa
+            // 
+            this.mnPrebaciNa.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.parterToolStripMenuItem,
+            this.konjToolStripMenuItem,
+            this.karikeToolStripMenuItem,
+            this.preskokToolStripMenuItem,
+            this.razbojToolStripMenuItem,
+            this.vratiloToolStripMenuItem});
+            this.mnPrebaciNa.Name = "mnPrebaciNa";
+            this.mnPrebaciNa.Size = new System.Drawing.Size(187, 22);
+            this.mnPrebaciNa.Text = "Prebaci na";
+            // 
+            // parterToolStripMenuItem
+            // 
+            this.parterToolStripMenuItem.Name = "parterToolStripMenuItem";
+            this.parterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.parterToolStripMenuItem.Text = "Parter";
+            // 
+            // konjToolStripMenuItem
+            // 
+            this.konjToolStripMenuItem.Name = "konjToolStripMenuItem";
+            this.konjToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.konjToolStripMenuItem.Text = "Konj";
+            // 
+            // karikeToolStripMenuItem
+            // 
+            this.karikeToolStripMenuItem.Name = "karikeToolStripMenuItem";
+            this.karikeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.karikeToolStripMenuItem.Text = "Karike";
+            // 
+            // preskokToolStripMenuItem
+            // 
+            this.preskokToolStripMenuItem.Name = "preskokToolStripMenuItem";
+            this.preskokToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.preskokToolStripMenuItem.Text = "Preskok";
+            // 
+            // razbojToolStripMenuItem
+            // 
+            this.razbojToolStripMenuItem.Name = "razbojToolStripMenuItem";
+            this.razbojToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.razbojToolStripMenuItem.Text = "Razboj";
+            // 
+            // vratiloToolStripMenuItem
+            // 
+            this.vratiloToolStripMenuItem.Name = "vratiloToolStripMenuItem";
+            this.vratiloToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.vratiloToolStripMenuItem.Text = "Vratilo";
+            // 
+            // spravaGridGroupUserControl1
+            // 
+            this.spravaGridGroupUserControl1.Location = new System.Drawing.Point(3, 6);
+            this.spravaGridGroupUserControl1.Name = "spravaGridGroupUserControl1";
+            this.spravaGridGroupUserControl1.Size = new System.Drawing.Size(444, 206);
+            this.spravaGridGroupUserControl1.TabIndex = 0;
             // 
             // StartListeForm
             // 
@@ -404,5 +461,12 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnNeRotirajEkipeRotirajGim;
         private System.Windows.Forms.ToolStripMenuItem mnRotirajSve;
         private System.Windows.Forms.ToolStripMenuItem mnNeRotirajNista;
+        private System.Windows.Forms.ToolStripMenuItem mnPrebaciNa;
+        private System.Windows.Forms.ToolStripMenuItem parterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem konjToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem karikeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem preskokToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem razbojToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vratiloToolStripMenuItem;
     }
 }

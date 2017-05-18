@@ -103,9 +103,7 @@ namespace Bilten.UI
                     continue;
                 NastupNaSpravi n = row.DataBoundItem as NastupNaSpravi;
                 if (n.Ekipa > 0 && result.IndexOf(n.Ekipa) == -1)
-                {
                     result.Add(n.Ekipa);
-                }
             }
             return result;
         }
@@ -147,10 +145,23 @@ namespace Bilten.UI
                 return;
 
             bool added = false;
+            string msg = String.Empty;
             foreach (GimnasticarUcesnik g in form.SelectedEntities)
             {
+                StartListaNaSpravi startLista2 = raspored.getStartLista(g, startLista.Grupa, startLista.Rotacija);
+                if (startLista2 != null && startLista2.Sprava != startLista.Sprava)
+                {
+                    msg += g.ImeSrednjeImePrezime + " (" + Sprave.toString(startLista2.Sprava) + ")\n";
+                    continue;
+                }
                 if (startLista.addGimnasticar(g))
                     added = true;
+            }
+
+            if (msg != String.Empty)
+            {
+                MessageDialogs.showMessage("Sledeci gimnsticari nisu dodati jer vec postoje u rotaciji:\n\n" + msg,
+                    this.Text);
             }
 
             if (added)
@@ -163,17 +174,13 @@ namespace Bilten.UI
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            NastupNaSpravi nastup =
-                spravaGridUserControl1.getSelectedItem<NastupNaSpravi>();
-            if (nastup == null)
+            IList<NastupNaSpravi> nastupi =
+                spravaGridUserControl1.getSelectedItems<NastupNaSpravi>();
+            if (nastupi.Count == 0)
                 return;
 
-            string msgFmt = "Da li zelite da izbrisete gimnasticara '{0}'?";
-            if (!MessageDialogs.queryConfirmation(
-                String.Format(msgFmt, nastup.Gimnasticar.PrezimeIme), this.Text))
-                return;
-
-            startLista.removeNastup(nastup);
+            foreach (NastupNaSpravi n in nastupi)
+                startLista.removeNastup(n);
             dirty = true;
             spravaGridUserControl1.setItems(startLista.Nastupi);
             spravaGridUserControl1.clearSelection();

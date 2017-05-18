@@ -95,6 +95,11 @@ namespace Bilten.UI
             return dataGridViewUserControl1.getSelectedItem<T>();
         }
 
+        public IList<T> getSelectedItems<T>()
+        {
+            return dataGridViewUserControl1.getSelectedItems<T>();
+        }
+
         public void setSelectedItem<T>(T item)
         {
             dataGridViewUserControl1.setSelectedItem<T>(item);

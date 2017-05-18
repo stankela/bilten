@@ -153,6 +153,16 @@ namespace Bilten.Domain
             return true;
         }
 
+        public virtual StartListaNaSpravi getStartLista(GimnasticarUcesnik g, int grupa, int rot)
+        {
+            foreach (StartListaNaSpravi s in StartListe)
+            {
+                if (s.Grupa == grupa && s.Rotacija == rot && s.gimnasticarExists(g))
+                    return s;
+            }
+            return null;
+        }
+
         public virtual StartListaNaSpravi getStartLista(Sprava sprava, int grupa, int rot)
         {
             foreach (StartListaNaSpravi s in StartListe)
@@ -265,6 +275,21 @@ namespace Bilten.Domain
                         foreach (NastupNaSpravi n in ekipa)
                             startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
                     }
+                }
+            }
+        }
+
+        public virtual void prebaciGimnasticare(IList<NastupNaSpravi> nastupi, StartListaNaSpravi from,
+            StartListaNaSpravi to)
+        {
+            foreach (NastupNaSpravi n in nastupi)
+            {
+                if (from.removeNastup(n))
+                {
+                    // Kod prebacivanja ne proveravam da li je gimnasticar vec u nekoj start listi u istoj rotaciji zato
+                    // sto je prilikom dodavanja gimnasticara osigurano da gimnasticar moze da bude u samo jednoj start
+                    // listi u rotaciji).
+                    to.addNastup(new NastupNaSpravi(n.Gimnasticar, 0));
                 }
             }
         }

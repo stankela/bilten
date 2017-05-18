@@ -28,7 +28,7 @@ public class VersionUpdater
         if (verzijaBaze == Program.VERZIJA_PROGRAMA)
             return;
 
-        if (verzijaBaze < 0)
+        if (verzijaBaze < 4)
             throw new Exception("Bazu podataka je nemoguce konvertovati da radi sa trenutnom verzijom programa.");
         if (verzijaBaze > Program.VERZIJA_PROGRAMA)
             throw new Exception("Greska u programu. Verzija baze je veca od verzije programa.");

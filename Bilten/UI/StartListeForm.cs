@@ -101,6 +101,26 @@ namespace Bilten.UI
                 btnOstaleRotacije.Text = "Kreiraj na osnovu kvalifikanata";
             }
             mnRotirajEkipeRotirajGim.Checked = true;
+
+            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
+            for (int i = 0; i < sprave.Length; ++i)
+            {
+                Sprava s = sprave[i];
+                mnPrebaciNa.DropDownItems[i].Tag = s;
+                mnPrebaciNa.DropDownItems[i].Text = Sprave.toString(s);
+                mnPrebaciNa.DropDownItems[i].Click += mnPrebaciNa_Click;
+            }
+            bool enabled = takmicenje.Gimnastika == Gimnastika.MSG;
+            mnPrebaciNa.DropDownItems[4].Enabled = enabled;
+            mnPrebaciNa.DropDownItems[4].Visible = enabled;
+            mnPrebaciNa.DropDownItems[5].Enabled = enabled;
+            mnPrebaciNa.DropDownItems[5].Visible = enabled;
+        }
+
+        void mnPrebaciNa_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem mn = (ToolStripMenuItem)sender;
+            prebaciGimnasticare((Sprava)mn.Tag);
         }
 
         private void createTabs(IList<RasporedNastupa> rasporedi)
@@ -220,6 +240,11 @@ namespace Bilten.UI
         void spravaGridGroupUserControl1_SpravaGridRightClick(object sender, SpravaGridRightClickEventArgs e)
         {
             clickedSprava = e.Sprava;
+            foreach (SpravaGridUserControl c in getActiveSpravaGridGroupUserControl().SpravaGridUserControls)
+            {
+                if (c.Sprava != clickedSprava)
+                    c.clearSelection();
+            }
             DataGridView grid = getActiveSpravaGridGroupUserControl()[clickedSprava]
                 .DataGridViewUserControl.DataGridView;
             int x = e.MouseEventArgs.X;
@@ -233,12 +258,15 @@ namespace Bilten.UI
                 mnUnesiOcenu.Enabled = selCount == 1;
                 mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = true;
                 mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = true;
+                mnPrebaciNa.Enabled = selCount > 0;
             }
             else
             {
+                getActiveSpravaGridGroupUserControl()[clickedSprava].clearSelection();
                 mnUnesiOcenu.Enabled = false;
                 mnPrikaziKlub.Enabled = mnPrikaziKlub.Visible = false;
                 mnPrikaziDrzavu.Enabled = mnPrikaziDrzavu.Visible = false;
+                mnPrebaciNa.Enabled = false;
             }
 
             bool enableNacinRotacije = deoTakKod == DeoTakmicenjaKod.Takmicenje1
@@ -278,6 +306,15 @@ namespace Bilten.UI
                 mnRezultatiViseboj.Visible = false;
                 mnRezultatiSprave.Enabled = false;
                 mnRezultatiSprave.Visible = false;
+            }
+            if (mnPrebaciNa.Enabled)
+            {
+                foreach (ToolStripMenuItem mn in mnPrebaciNa.DropDownItems)
+                {
+                    // mn.Tag je null za peti i sesti meni kada je gimnastika ZSG
+                    if (mn.Tag != null)
+                        mn.Enabled = (Sprava)mn.Tag != clickedSprava;
+                }
             }
             contextMenuStrip1.Show(grid, new Point(x, y));
         }
@@ -1626,6 +1663,54 @@ namespace Bilten.UI
             if (ekipaPre != 0 && ekipaPosle != 0 && ekipaPre == ekipaPosle)
                 return true;
             return false;
+        }
+
+        private void prebaciGimnasticare(Sprava sprava)
+        {
+            StartListaNaSpravi startLista = ActiveRaspored.getStartLista(clickedSprava, ActiveGrupa, ActiveRotacija);
+
+            IList<NastupNaSpravi> selNastupi = getActiveSpravaGridGroupUserControl()[clickedSprava]
+                .DataGridViewUserControl.getSelectedItems<NastupNaSpravi>();
+            if (selNastupi.Count == 0)
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    StartListaNaSpravi startLista2 = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
+                    ActiveRaspored.prebaciGimnasticare(selNastupi, startLista, startLista2);
+
+                    StartListaNaSpraviDAO startListaDAO = DAOFactoryFactory.DAOFactory.GetStartListaNaSpraviDAO();
+                    startListaDAO.Update(startLista);
+                    startListaDAO.Update(startLista2);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        
+            setStartListe(ActiveRaspored, ActiveGrupa, ActiveRotacija);
+            getActiveSpravaGridGroupUserControl().clearSelection();
         }
 
         private void oznaci(bool oznaciKaoPojedinca)

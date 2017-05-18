@@ -77,9 +77,9 @@ namespace Bilten.Domain
                 Nastupi.Add(nastup);
         }
 
-        public virtual void removeNastup(NastupNaSpravi nastup)
+        public virtual bool removeNastup(NastupNaSpravi nastup)
         {
-            Nastupi.Remove(nastup);
+            return Nastupi.Remove(nastup);
         }
 
         public virtual void removeNastup(GimnasticarUcesnik g)
@@ -105,7 +105,7 @@ namespace Bilten.Domain
             return true;
         }
 
-        private bool gimnasticarExists(GimnasticarUcesnik g)
+        public virtual bool gimnasticarExists(GimnasticarUcesnik g)
         {
             foreach (GimnasticarUcesnik g2 in Gimnasticari)
             {
