@@ -1095,7 +1095,7 @@ public class VersionUpdater
     // Uvek treba da bude Takmicenje2 != null. Isto i za takmicenja 3 i 4.
     public void updateTakmicenja234()
     {
-        StreamWriter logStreamWriter = File.CreateText("log_takmicenja234.txt");
+        /*StreamWriter logStreamWriter = File.CreateText("log_takmicenja234.txt");
         IList<int> takmicenjaId = getTakmicenjaId();
         ISession session = null;
         try
@@ -1165,7 +1165,7 @@ public class VersionUpdater
         {
             logStreamWriter.Close();
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-        }
+        }*/
     }
 
     // Na takmicenju "ZSG - I KOLO PGL SRBIJE ZSG, NOVI SAD, 18.5.2013" nije unesena nijedna ocena u takmicenju 3,

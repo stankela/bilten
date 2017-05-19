@@ -84,22 +84,21 @@ namespace Bilten.Domain
         public virtual Takmicenje2 Takmicenje2
         {
             get { return _takmicenje2; }
-            // TODO4 Vrati na protected kada izvrsis update na verziju 5. Isto i za takmicenja 3 i 4.
-            /*protected*/ set { _takmicenje2 = value; }
+            protected set { _takmicenje2 = value; }
         }
 
         private Takmicenje3 _takmicenje3;
         public virtual Takmicenje3 Takmicenje3
         {
             get { return _takmicenje3; }
-            /*protected*/ set { _takmicenje3 = value; }
+            protected set { _takmicenje3 = value; }
         }
 
         private Takmicenje4 _takmicenje4;
         public virtual Takmicenje4 Takmicenje4
         {
             get { return _takmicenje4; }
-            /*protected*/ set { _takmicenje4 = value; }
+            protected set { _takmicenje4 = value; }
         }
 
         public RezultatskoTakmicenje()
