@@ -38,15 +38,6 @@ namespace Bilten.Domain
             set { takmicenje = value; }
         }
 
-        // TODO4: Ukloni ovo, deo iz *.hdm fajla i tabelu raspored_nastupa_kategorija nakon sto izvrsis apdejt na verziju
-        // 5. Isto i u klasi RasporedSudija (tamo je tabela raspored_sudija_kategorija)
-        private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
-        public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
-        {
-            get { return kategorije; }
-            protected set { kategorije = value; }
-        }
-
         private Iesi.Collections.Generic.ISet<StartListaNaSpravi> startListe = new HashedSet<StartListaNaSpravi>();
         public virtual Iesi.Collections.Generic.ISet<StartListaNaSpravi> StartListe
         {

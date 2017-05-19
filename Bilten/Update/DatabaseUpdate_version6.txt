@@ -28,3 +28,7 @@ alter table propozicije drop column tak4_fin_ocena_je_prosek;
 GO
 alter table propozicije drop column tak4_ne_racunaj_prosek;
 GO
+drop table raspored_nastupa_kategorija;
+GO
+drop table raspored_sudija_kategorija;
+GO

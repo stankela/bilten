@@ -10,10 +10,6 @@
     <property name="DeoTakmicenjaKod" column="deo_takmicenja_kod" type="Byte" />
     <property name="Naziv" column="naziv" type="String" />
     <many-to-one name="Takmicenje" class="Takmicenje" column="takmicenje_id" />
-    <set name="Kategorije" table="raspored_nastupa_kategorija" lazy="true">
-      <key column="raspored_nastupa_id"/>
-      <many-to-many class="TakmicarskaKategorija" column="kategorija_id"/>
-    </set>
     <set name="StartListe" lazy="true" cascade="all-delete-orphan" >
       <key column="raspored_nastupa_id" />
       <one-to-many class="StartListaNaSpravi" />

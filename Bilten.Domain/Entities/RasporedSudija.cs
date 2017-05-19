@@ -29,13 +29,6 @@ namespace Bilten.Domain
             set { takmicenje = value; }
         }
 
-        private Iesi.Collections.Generic.ISet<TakmicarskaKategorija> kategorije = new HashedSet<TakmicarskaKategorija>();
-        public virtual Iesi.Collections.Generic.ISet<TakmicarskaKategorija> Kategorije
-        {
-            get { return kategorije; }
-            protected set { kategorije = value; }
-        }
-
         private Iesi.Collections.Generic.ISet<SudijskiOdborNaSpravi> odbori = new HashedSet<SudijskiOdborNaSpravi>();
         public virtual Iesi.Collections.Generic.ISet<SudijskiOdborNaSpravi> Odbori
         {
