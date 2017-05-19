@@ -23,13 +23,18 @@ namespace Bilten.UI
         private Nullable<Gimnastika> gimnastika;
         private bool initializing;
 
-        private readonly string SVE_KATEGORIJE = "Sve kategorije";
-        private readonly string SVI_KLUBOVI = "Svi klubovi";
-        private readonly string SVE_DRZAVE = "Sve drzave";
+        private readonly string SVE_KATEGORIJE = "SVE KATEGORIJE";
+        private readonly string SVI_KLUBOVI = "SVI KLUBOVI";
+        private readonly string SVE_DRZAVE = "SVE DRZAVE";
         private readonly string SVI = "Svi";
         private readonly string MSG = "MSG";
         private readonly string ZSG = "ZSG";
-        
+
+        public event EventHandler Filter;
+
+        // TODO4: Dodaj dugme "Ponisti filter" (i u ostalim filter kontrolama)
+        // (treba da poziva filterGimnasticarUserControl1.resetFilter())
+
         public FilterGimnasticarUserControl()
         {
             InitializeComponent();
@@ -113,15 +118,12 @@ namespace Bilten.UI
 
         public void resetFilter()
         {
-            txtRegBroj.Text = String.Empty;
             txtIme.Text = String.Empty;
             txtPrezime.Text = String.Empty;
             txtGodRodj.Text = String.Empty;
 
             if (gimnastika == null)
-            {
                 cmbGimnastika.SelectedIndex = cmbGimnastika.Items.IndexOf(SVI);
-            }
             else
             {
                 cmbGimnastika.Enabled = false;
@@ -140,12 +142,8 @@ namespace Bilten.UI
             Notification notification = new Notification();
             int dummyInt;
 
-            if (txtGodRodj.Text.Trim() != String.Empty &&
-            !int.TryParse(txtGodRodj.Text, out dummyInt))
-            {
-                notification.RegisterMessage(
-                  "GodinaRodjenja", "Neispravan format za godinu rodjenja.");
-            }
+            if (txtGodRodj.Text.Trim() != String.Empty && !int.TryParse(txtGodRodj.Text, out dummyInt))
+                notification.RegisterMessage("GodinaRodjenja", "Neispravan format za godinu rodjenja.");
             if (!notification.IsValid())
             {
                 NotificationMessage msg = notification.FirstMessage;
@@ -155,19 +153,13 @@ namespace Bilten.UI
                 return false;
             }
             else
-            {
                 return true;
-            }
         }
 
         private void setFocus(string propertyName)
         {
             switch (propertyName)
             {
-                case "RegistarskiBroj":
-                    txtRegBroj.Focus();
-                    break;
-
                 case "Ime":
                     txtIme.Focus();
                     break;
@@ -207,7 +199,6 @@ namespace Bilten.UI
                 return null;
 
             GimnasticarFilter result = new GimnasticarFilter();
-            result.RegBroj = txtRegBroj.Text.Trim();
             result.Ime = txtIme.Text.Trim();
             result.Prezime = txtPrezime.Text.Trim();
             if (txtGodRodj.Text.Trim() != String.Empty)
@@ -272,6 +263,46 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        }
+
+        protected virtual void OnFilter(EventArgs e)
+        {
+            EventHandler tmp = Filter;
+            if (tmp != null)
+                Filter(this, e);
+        }
+
+        private void txtIme_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                OnFilter(EventArgs.Empty);
+        }
+
+        private void txtPrezime_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                OnFilter(EventArgs.Empty);
+        }
+
+        private void txtGodRodj_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                OnFilter(EventArgs.Empty);
+        }
+
+        private void cmbKategorija_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnFilter(EventArgs.Empty);
+        }
+
+        private void cmbKlub_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnFilter(EventArgs.Empty);
+        }
+
+        private void cmbDrzava_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnFilter(EventArgs.Empty);
         }
     }
 }

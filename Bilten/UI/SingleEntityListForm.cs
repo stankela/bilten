@@ -17,7 +17,6 @@ namespace Bilten.UI
 {
     public partial class SingleEntityListForm<T> : BaseEntityListForm where T : DomainObject, new()
     {
-        protected FilterForm filterForm;
         protected bool updateLastModified = false;
 
         private StatusBar statusBar;
@@ -246,16 +245,6 @@ namespace Bilten.UI
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void btnApplyFilter_Click(object sender, EventArgs e)
-        {
-            onApplyFilter();
-        }
-
-        protected virtual void onApplyFilter()
-        {
-
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)

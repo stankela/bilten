@@ -25,12 +25,14 @@ namespace Bilten.UI
         private List<DrzavaUcesnik> drzave;
         private List<TakmicarskaKategorija> kategorije;
 
-        private readonly string SVE_KATEGORIJE = "Sve kategorije";
-        private readonly string SVI_KLUBOVI = "Svi klubovi";
-        private readonly string SVE_DRZAVE = "Sve drzave";
+        private readonly string SVE_KATEGORIJE = "SVE KATEGORIJE";
+        private readonly string SVI_KLUBOVI = "SVI KLUBOVI";
+        private readonly string SVE_DRZAVE = "SVE DRZAVE";
         private readonly string MSG = "MSG";
         private readonly string ZSG = "ZSG";
 
+        public event EventHandler Filter;
+        
         public FilterGimnasticarUcesnikUserControl()
         {
             InitializeComponent();
@@ -193,6 +195,46 @@ namespace Bilten.UI
             result.Drzava = cmbDrzava.SelectedItem as DrzavaUcesnik;
 
             return result;
+        }
+
+        protected virtual void OnFilter(EventArgs e)
+        {
+            EventHandler tmp = Filter;
+            if (tmp != null)
+                Filter(this, e);
+        }
+
+        private void txtIme_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                OnFilter(EventArgs.Empty);
+        }
+
+        private void txtPrezime_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                OnFilter(EventArgs.Empty);
+        }
+
+        private void txtGodRodj_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                OnFilter(EventArgs.Empty);
+        }
+
+        private void cmbKategorija_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnFilter(EventArgs.Empty);
+        }
+
+        private void cmbKlub_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnFilter(EventArgs.Empty);
+        }
+
+        private void cmbDrzava_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnFilter(EventArgs.Empty);
         }
     }
 }

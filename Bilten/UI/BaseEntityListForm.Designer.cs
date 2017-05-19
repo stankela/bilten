@@ -37,7 +37,6 @@ namespace Bilten.UI
             this.btnEditItem = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.btnApplyFilter = new System.Windows.Forms.Button();
             this.btnDeleteItem = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnApplySort = new System.Windows.Forms.Button();
@@ -45,7 +44,9 @@ namespace Bilten.UI
             this.btnShowHelp = new System.Windows.Forms.Button();
             this.btnDuplicate = new System.Windows.Forms.Button();
             this.pnlListPlaceholder = new System.Windows.Forms.Panel();
+            this.pnlList = new System.Windows.Forms.Panel();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
+            this.pnlFilter = new System.Windows.Forms.Panel();
             this.pnlPager = new System.Windows.Forms.Panel();
             this.lblPageCounter = new System.Windows.Forms.Label();
             this.btnShowLastPage = new System.Windows.Forms.Button();
@@ -56,6 +57,7 @@ namespace Bilten.UI
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.pnlListPlaceholder.SuspendLayout();
+            this.pnlList.SuspendLayout();
             this.pnlPager.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,7 +87,6 @@ namespace Bilten.UI
             this.panel1.Controls.Add(this.btnEditItem);
             this.panel1.Controls.Add(this.btnRefresh);
             this.panel1.Controls.Add(this.btnClose);
-            this.panel1.Controls.Add(this.btnApplyFilter);
             this.panel1.Controls.Add(this.btnDeleteItem);
             this.panel1.Location = new System.Drawing.Point(442, 3);
             this.panel1.Name = "panel1";
@@ -106,7 +107,7 @@ namespace Bilten.UI
             // btnPrintPreview
             // 
             this.btnPrintPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPrintPreview.Location = new System.Drawing.Point(6, 235);
+            this.btnPrintPreview.Location = new System.Drawing.Point(6, 189);
             this.btnPrintPreview.Name = "btnPrintPreview";
             this.btnPrintPreview.Size = new System.Drawing.Size(82, 28);
             this.btnPrintPreview.TabIndex = 6;
@@ -126,7 +127,7 @@ namespace Bilten.UI
             // btnRefresh
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Location = new System.Drawing.Point(6, 191);
+            this.btnRefresh.Location = new System.Drawing.Point(6, 145);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(82, 28);
             this.btnRefresh.TabIndex = 5;
@@ -136,22 +137,12 @@ namespace Bilten.UI
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(6, 279);
+            this.btnClose.Location = new System.Drawing.Point(6, 233);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(82, 28);
             this.btnClose.TabIndex = 4;
             this.btnClose.Text = "Zatvori";
             this.btnClose.UseVisualStyleBackColor = true;
-            // 
-            // btnApplyFilter
-            // 
-            this.btnApplyFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApplyFilter.Location = new System.Drawing.Point(6, 144);
-            this.btnApplyFilter.Name = "btnApplyFilter";
-            this.btnApplyFilter.Size = new System.Drawing.Size(82, 28);
-            this.btnApplyFilter.TabIndex = 3;
-            this.btnApplyFilter.Text = "Filtriraj";
-            this.btnApplyFilter.UseVisualStyleBackColor = true;
             // 
             // btnDeleteItem
             // 
@@ -217,12 +208,22 @@ namespace Bilten.UI
             // 
             // pnlListPlaceholder
             // 
-            this.pnlListPlaceholder.Controls.Add(this.dataGridViewUserControl1);
+            this.pnlListPlaceholder.Controls.Add(this.pnlList);
+            this.pnlListPlaceholder.Controls.Add(this.pnlFilter);
             this.pnlListPlaceholder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlListPlaceholder.Location = new System.Drawing.Point(3, 3);
             this.pnlListPlaceholder.Name = "pnlListPlaceholder";
             this.pnlListPlaceholder.Size = new System.Drawing.Size(433, 373);
             this.pnlListPlaceholder.TabIndex = 2;
+            // 
+            // pnlList
+            // 
+            this.pnlList.Controls.Add(this.dataGridViewUserControl1);
+            this.pnlList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlList.Location = new System.Drawing.Point(0, 69);
+            this.pnlList.Name = "pnlList";
+            this.pnlList.Size = new System.Drawing.Size(433, 304);
+            this.pnlList.TabIndex = 2;
             // 
             // dataGridViewUserControl1
             // 
@@ -230,8 +231,16 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(433, 373);
-            this.dataGridViewUserControl1.TabIndex = 0;
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(433, 304);
+            this.dataGridViewUserControl1.TabIndex = 1;
+            // 
+            // pnlFilter
+            // 
+            this.pnlFilter.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlFilter.Location = new System.Drawing.Point(0, 0);
+            this.pnlFilter.Name = "pnlFilter";
+            this.pnlFilter.Size = new System.Drawing.Size(433, 69);
+            this.pnlFilter.TabIndex = 1;
             // 
             // pnlPager
             // 
@@ -307,6 +316,7 @@ namespace Bilten.UI
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.pnlListPlaceholder.ResumeLayout(false);
+            this.pnlList.ResumeLayout(false);
             this.pnlPager.ResumeLayout(false);
             this.pnlPager.PerformLayout();
             this.ResumeLayout(false);
@@ -333,9 +343,10 @@ namespace Bilten.UI
         protected Panel pnlListPlaceholder;
         protected TableLayoutPanel layoutPanel;
         protected Button btnApplySort;
-        protected Button btnApplyFilter;
         protected Button btnShowHelp;
-        protected DataGridViewUserControl dataGridViewUserControl1;
         protected Button btnDuplicate;
+        protected Panel pnlFilter;
+        private Panel pnlList;
+        protected DataGridViewUserControl dataGridViewUserControl1;
     }
 }

@@ -52,10 +52,6 @@ namespace Bilten.UI
             // 
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
-            // btnApplyFilter
-            // 
-            this.btnApplyFilter.Click += new System.EventHandler(this.btnApplyFilter_Click);
-            // 
             // SingleEntityListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

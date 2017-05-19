@@ -30,15 +30,23 @@ namespace Bilten.UI
         {
             this.SuspendLayout();
             // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(606, 321);
+            // 
+            // btnOk
+            // 
+            this.btnOk.Location = new System.Drawing.Point(513, 321);
+            // 
             // dataGridViewUserControl1
             // 
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(663, 283);
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(663, 239);
             // 
             // SelectGimnasticarForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(695, 363);
+            this.ClientSize = new System.Drawing.Size(695, 366);
             this.Name = "SelectGimnasticarForm";
             this.Text = "SelectGimnasticarForm";
             this.Load += new System.EventHandler(this.SelectGimnasticarForm_Load);

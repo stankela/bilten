@@ -16,6 +16,8 @@ namespace Bilten.UI
 {
     public partial class GimnasticariForm : SingleEntityListForm<Gimnasticar>
     {
+        private FilterGimnasticarUserControl filterGimnasticarUserControl1;
+
         public GimnasticariForm()
         {
             this.Text = "Gimnasticari";
@@ -23,6 +25,14 @@ namespace Bilten.UI
             this.btnPrintPreview.Visible = true;
             this.btnPrintPreview.Text = "Rezultati";
             this.btnPrintPreview.Click += btnRezultati_Click;
+
+            filterGimnasticarUserControl1 = new FilterGimnasticarUserControl();
+            this.pnlFilter.SuspendLayout();
+            this.pnlFilter.Controls.Add(filterGimnasticarUserControl1);
+            this.pnlFilter.ResumeLayout(false);
+            this.pnlFilter.Height = filterGimnasticarUserControl1.Height + 10;
+            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
+            filterGimnasticarUserControl1.initialize(null);
     
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -57,6 +67,7 @@ namespace Bilten.UI
 
         protected override void prikaziSve()
         {
+            filterGimnasticarUserControl1.resetFilter();
             ISession session = null;
             try
             {
@@ -125,43 +136,15 @@ namespace Bilten.UI
             DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().Delete(g);
         }
 
-        protected override void onApplyFilter()
+        private void filterGimnasticarUserControl1_Filter(object sender, EventArgs e)
         {
-            if (filterForm == null || filterForm.IsDisposed)
-            {
-                // NOTE: IsDisposed je true kada se form zatvori (bilo pritiskom na X
-                // ili pozivom Close)
-
-                try
-                {
-                    filterForm = new FilterGimnasticarForm(null); // can throw
-                    filterForm.Filter += new EventHandler(filterForm_Filter);
-                    filterForm.Show();
-                }
-                catch (InfrastructureException ex)
-                {
-                    MessageDialogs.showError(ex.Message, this.Text);
-                }
-            }
-            else
-            {
-                filterForm.Activate();
-            }
+            GimnasticarFilter flt = filterGimnasticarUserControl1.getFilter();
+            if (flt != null)
+                filter(flt);
         }
 
-        private void filterForm_Filter(object sender, EventArgs e)
+        private void filter(GimnasticarFilter flt)
         {
-            object filterObject = filterForm.FilterObject;
-            if (filterObject != null)
-                filter(filterObject);
-        }
-
-        private void filter(object filterObject)
-        {
-            GimnasticarFilter flt = filterObject as GimnasticarFilter;
-            if (flt == null)
-                return;
-
             ISession session = null;
             try
             {
@@ -176,21 +159,11 @@ namespace Bilten.UI
                     //    "FindGimnasticariByTakmicenje",
                     //    new string[] { "takmicenje" }, new object[] { takmicenje });
 
-                    IList<Gimnasticar> gimnasticari;
                     string failureMsg = "";
-                    if (!String.IsNullOrEmpty(flt.RegBroj))
-                    {
-                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticariByRegBroj(flt.RegBroj);
-                        if (gimnasticari.Count == 0)
-                            failureMsg = "Ne postoji gimnasticar sa datim registarskim brojem.";
-                    }
-                    else
-                    {
-                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(flt.Ime,
-                            flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
-                        if (gimnasticari.Count == 0)
-                            failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
-                    }
+                    IList<Gimnasticar> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(
+                        flt.Ime, flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
+                    if (gimnasticari.Count == 0)
+                        failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
                     SetItems(gimnasticari);
                     updateEntityCount();
                     if (gimnasticari.Count == 0)

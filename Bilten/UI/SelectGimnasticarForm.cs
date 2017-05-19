@@ -17,6 +17,7 @@ namespace Bilten.UI
     public partial class SelectGimnasticarForm : SelectEntityForm
     {
         private Gimnastika gimnastika;
+        private FilterGimnasticarUserControl filterGimnasticarUserControl1;
 
         public SelectGimnasticarForm(Gimnastika gimnastika)
         {
@@ -24,6 +25,15 @@ namespace Bilten.UI
             Text = "Izaberi gimnasticara";
             this.ClientSize = new Size(ClientSize.Width, 500);
             this.gimnastika = gimnastika;
+
+            filterGimnasticarUserControl1 = new FilterGimnasticarUserControl();
+            this.pnlFilter.SuspendLayout();
+            this.pnlFilter.Controls.Add(filterGimnasticarUserControl1);
+            this.pnlFilter.ResumeLayout(false);
+            this.pnlFilter.Height = filterGimnasticarUserControl1.Height + 10;
+            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
+            filterGimnasticarUserControl1.initialize(gimnastika);
+
             initializeGridColumns();
 
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
@@ -81,12 +91,15 @@ namespace Bilten.UI
             }
         }
 
-        protected override void filter(object filterObject)
+        private void filterGimnasticarUserControl1_Filter(object sender, EventArgs e)
         {
-            GimnasticarFilter flt = filterObject as GimnasticarFilter;
-            if (flt == null)
-                return;
+            GimnasticarFilter flt = filterGimnasticarUserControl1.getFilter();
+            if (flt != null)
+                filter(flt);
+        }
 
+        private void filter(GimnasticarFilter flt)
+        {
             ISession session = null;
             try
             {
@@ -101,21 +114,11 @@ namespace Bilten.UI
                     //    "FindGimnasticariByTakmicenje",
                     //    new string[] { "takmicenje" }, new object[] { takmicenje });
 
-                    IList<Gimnasticar> gimnasticari;
                     string failureMsg = "";
-                    if (!String.IsNullOrEmpty(flt.RegBroj))
-                    {
-                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticariByRegBroj(flt.RegBroj);
-                        if (gimnasticari.Count == 0)
-                            failureMsg = "Ne postoji gimnasticar sa datim registarskim brojem.";
-                    }
-                    else
-                    {
-                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(flt.Ime,
-                            flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
-                        if (gimnasticari.Count == 0)
-                            failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
-                    }
+                    IList<Gimnasticar> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(
+                        flt.Ime, flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
+                    if (gimnasticari.Count == 0)
+                        failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
                     setEntities(gimnasticari);
                     if (gimnasticari.Count == 0)
                         MessageDialogs.showMessage(failureMsg, this.Text);
@@ -133,11 +136,6 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        protected override FilterForm createFilterForm()
-        {
-            return new FilterGimnasticarForm(gimnastika);
         }
 
         private void SelectGimnasticarForm_Load(object sender, EventArgs e)

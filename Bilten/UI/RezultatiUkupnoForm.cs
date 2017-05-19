@@ -236,8 +236,6 @@ namespace Bilten.UI
             dataGridViewUserControl1.Focus();
         }
 
-        // TODO4: Izbaci sve prozore za filtriranje.
-
         private void btnPrint_Click(object sender, EventArgs e)
         {
             string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(deoTakKod, takmicenje.FinaleKupa, false);

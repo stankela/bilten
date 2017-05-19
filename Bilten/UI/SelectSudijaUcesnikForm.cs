@@ -21,7 +21,6 @@ namespace Bilten.UI
             InitializeComponent();
             Text = "Izaberi sudiju";
             this.ClientSize = new System.Drawing.Size(800, 540);
-            btnFilter.Enabled = false;
             initializeGridColumns();
 
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);

@@ -216,12 +216,12 @@ public class VersionUpdater
         }
     }
 
-    class RezultatSpravaFinaleKupaUpdate
+    /*class RezultatSpravaFinaleKupaUpdate
     {
         public int GimnasticarId;
         public Sprava Sprava;
         public KvalifikacioniStatus KvalStatus;
-    }
+    }*/
 
     public void updateVersion13()
     {

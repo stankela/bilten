@@ -12,8 +12,6 @@ namespace Bilten.UI
 {
     public partial class SelectEntityForm : Form
     {
-        protected FilterForm filterForm;
-
         protected IList<object> selectedEntities = new List<object>();
         public IList<object> SelectedEntities
         {
@@ -64,53 +62,6 @@ namespace Bilten.UI
 
             foreach (DataGridViewRow row in selectedRows)
                 selectedEntities.Add(row.DataBoundItem);
-        }
-
-        private void btnFilter_Click(object sender, EventArgs e)
-        {
-            if (filterForm == null || filterForm.IsDisposed)
-            {
-                // NOTE: IsDisposed je true kada se form zatvori (bilo pritiskom na X
-                // ili pozivom Close)
-
-                try
-                {
-                    filterForm = createFilterForm(); // can throw
-                    filterForm.Filter += new EventHandler(filterForm_Filter);
-                    filterForm.Show();
-                }
-                catch (InfrastructureException ex)
-                {
-                    MessageDialogs.showError(ex.Message, this.Text);
-                }
-            }
-            else
-            {
-                filterForm.Activate();
-            }
-        }
-
-        protected virtual FilterForm createFilterForm()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        private void filterForm_Filter(object sender, EventArgs e)
-        {
-            object filterObject = filterForm.FilterObject;
-            if (filterObject != null)
-                filter(filterObject);
-        }
-
-        protected virtual void filter(object filterObject)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        private void SelectEntityForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (filterForm != null)
-                filterForm.Close();
         }
     }
 }

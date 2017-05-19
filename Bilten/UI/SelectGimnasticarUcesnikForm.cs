@@ -20,8 +20,9 @@ namespace Bilten.UI
         private Gimnastika gimnastika;
         private TakmicarskaKategorija kategorija;
 
-        public SelectGimnasticarUcesnikForm(int takmicenjeId, Gimnastika gimnastika,
-            TakmicarskaKategorija kategorija)
+        private FilterGimnasticarUcesnikUserControl filterGimnasticarUcesnikUserControl1;
+        
+        public SelectGimnasticarUcesnikForm(int takmicenjeId, Gimnastika gimnastika, TakmicarskaKategorija kategorija)
         {
             InitializeComponent();
             Text = "Izaberi gimnasticara";
@@ -29,6 +30,15 @@ namespace Bilten.UI
             this.takmicenjeId = takmicenjeId;
             this.gimnastika = gimnastika;
             this.kategorija = kategorija;
+
+            filterGimnasticarUcesnikUserControl1 = new FilterGimnasticarUcesnikUserControl();
+            this.pnlFilter.SuspendLayout();
+            this.pnlFilter.Controls.Add(filterGimnasticarUcesnikUserControl1);
+            this.pnlFilter.ResumeLayout(false);
+            this.pnlFilter.Height = filterGimnasticarUcesnikUserControl1.Height + 10;
+            filterGimnasticarUcesnikUserControl1.Filter += filterGimnasticarUcesnikUserControl1_Filter;
+            filterGimnasticarUcesnikUserControl1.initialize(takmicenjeId, gimnastika, kategorija);
+
             initializeGridColumns();
 
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
@@ -87,12 +97,15 @@ namespace Bilten.UI
             }
         }
 
-        protected override void filter(object filterObject)
+        private void filterGimnasticarUcesnikUserControl1_Filter(object sender, EventArgs e)
         {
-            GimnasticarUcesnikFilter flt = filterObject as GimnasticarUcesnikFilter;
-            if (flt == null)
-                return;
+            GimnasticarUcesnikFilter flt = filterGimnasticarUcesnikUserControl1.getFilter();
+            if (flt != null)
+                filter(flt);
+        }
 
+        private void filter(GimnasticarUcesnikFilter flt)
+        {
             ISession session = null;
             try
             {
@@ -122,18 +135,6 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        protected override FilterForm createFilterForm()
-        {
-            // TODO: Ovaj poziv je uredu za prvo prikazivanje FilterForma, zato sto
-            // ga inicijalizuje na osnovu stanja u gridu. Medjutim, za sledeca
-            // prikazivanja ne mora da bude u redu - npr. ako se nakon prvog 
-            // prikazivanja FilterForma u gridu budu neki opstiji podaci, tada
-            // ce za drugo prikazivanje FilterForm biti inicijalizovan razlicito
-            // od stanja u gridu. Razmisli o varijanti da se FilterForm uvek 
-            // inicijalizuje na osnovu stanja u gridu
-            return new FilterGimnasticarUcesnikForm(takmicenjeId, gimnastika, kategorija);
         }
 
         private void SelectGimnasticarUcesnikForm_Load(object sender, EventArgs e)
