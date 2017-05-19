@@ -125,7 +125,6 @@ namespace Bilten.UI
             this.Controls.Add(this.tabControl1);
             this.Name = "EkipeForm";
             this.Text = "EkipeForm";
-            this.Load += new System.EventHandler(this.EkipeForm_Load);
             this.Shown += new System.EventHandler(this.EkipeForm_Shown);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

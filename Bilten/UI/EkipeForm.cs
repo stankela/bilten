@@ -59,7 +59,6 @@ namespace Bilten.UI
                     initUI();
                     tabOpened = new bool[rezTakmicenja.Count];
                     clanoviSorted = new bool[rezTakmicenja.Count];
-                    onSelectedIndexChanged();
                 }
             }
             catch (BusinessException)
@@ -437,15 +436,9 @@ namespace Bilten.UI
             Close();
         }
 
-        private void EkipeForm_Load(object sender, EventArgs e)
-        {
-            onEkipeCellMouseClick();
-        }
-
         private void EkipeForm_Shown(object sender, EventArgs e)
         {
-            getActiveEkipeDataGridViewUserControl().clearSelection();
+            onSelectedIndexChanged();
         }
-
     }
 }
