@@ -55,10 +55,6 @@ create table propozicije (
 	broj_finalista_tak2 tinyint,
 	broj_rezervi_tak2 tinyint,
 	nacin_racunanja_ocene_finale_kupa_tak2 tinyint,
-    tak2_fin_ocena_je_zbir bit,
-    tak2_fin_ocena_je_max bit,
-    tak2_fin_ocena_je_prosek bit,
-    tak2_ne_racunaj_prosek bit,
 	postoji_tak3 bit,
 	odvojeno_tak3 bit,
 	neogr_broj_tak_tak3 bit,
@@ -70,20 +66,12 @@ create table propozicije (
 	poredak_tak3_oba_preskoka bit,
 	veca_e_ocena_ima_prednost bit,
 	nacin_racunanja_ocene_finale_kupa_tak3 tinyint,
-    tak3_fin_ocena_je_zbir bit,
-    tak3_fin_ocena_je_max bit,
-    tak3_fin_ocena_je_prosek bit,
-    tak3_ne_racunaj_prosek bit,
 	postoji_tak4 bit,
 	odvojeno_tak4 bit,
 	jedno_tak4_za_sve_kat bit,
 	broj_rezultata_ekipe tinyint,
 	broj_ekipa_u_finalu tinyint,
-	nacin_racunanja_ocene_finale_kupa_tak4 tinyint,
-    tak4_fin_ocena_je_zbir bit,
-    tak4_fin_ocena_je_max bit,
-    tak4_fin_ocena_je_prosek bit,
-    tak4_ne_racunaj_prosek bit
+	nacin_racunanja_ocene_finale_kupa_tak4 tinyint
 );
 
 create table takmicenja (

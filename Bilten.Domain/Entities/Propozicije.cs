@@ -205,36 +205,6 @@ namespace Bilten.Domain
             set { nacinRacunanjaOceneFinaleKupaTak2 = value; }
         }
 
-        // TODO4: Ukloni sledeca 4 svojstva nakon sto izvrsis apdejt na verziju 5, iz .hbm fajlova i iz baze. Isto
-        // i za takmicenja 3 i 4.
-        private bool tak2FinalnaOcenaJeZbirObaKola = true;
-        public virtual bool Tak2FinalnaOcenaJeZbirObaKola
-        {
-            get { return tak2FinalnaOcenaJeZbirObaKola; }
-            set { tak2FinalnaOcenaJeZbirObaKola = value; }
-        }
-
-        private bool tak2FinalnaOcenaJeMaxObaKola;
-        public virtual bool Tak2FinalnaOcenaJeMaxObaKola
-        {
-            get { return tak2FinalnaOcenaJeMaxObaKola; }
-            set { tak2FinalnaOcenaJeMaxObaKola = value; }
-        }
-
-        private bool tak2FinalnaOcenaJeProsekObaKola;
-        public virtual bool Tak2FinalnaOcenaJeProsekObaKola
-        {
-            get { return tak2FinalnaOcenaJeProsekObaKola; }
-            set { tak2FinalnaOcenaJeProsekObaKola = value; }
-        }
-
-        private bool tak2NeRacunajProsekAkoNemaOceneIzObaKola = true;
-        public virtual bool Tak2NeRacunajProsekAkoNemaOceneIzObaKola
-        {
-            get { return tak2NeRacunajProsekAkoNemaOceneIzObaKola; }
-            set { tak2NeRacunajProsekAkoNemaOceneIzObaKola = value; }
-        }
-
         // Takmicenje 3
 
         private NacinRacunanjaOceneFinaleKupa nacinRacunanjaOceneFinaleKupaTak3 = NacinRacunanjaOceneFinaleKupa.Max;
@@ -244,34 +214,6 @@ namespace Bilten.Domain
             set { nacinRacunanjaOceneFinaleKupaTak3 = value; }
         }
 
-        private bool tak3FinalnaOcenaJeZbirObaKola;
-        public virtual bool Tak3FinalnaOcenaJeZbirObaKola
-        {
-            get { return tak3FinalnaOcenaJeZbirObaKola; }
-            set { tak3FinalnaOcenaJeZbirObaKola = value; }
-        }
-
-        private bool tak3FinalnaOcenaJeMaxObaKola = true;
-        public virtual bool Tak3FinalnaOcenaJeMaxObaKola
-        {
-            get { return tak3FinalnaOcenaJeMaxObaKola; }
-            set { tak3FinalnaOcenaJeMaxObaKola = value; }
-        }
-
-        private bool tak3FinalnaOcenaJeProsekObaKola;
-        public virtual bool Tak3FinalnaOcenaJeProsekObaKola
-        {
-            get { return tak3FinalnaOcenaJeProsekObaKola; }
-            set { tak3FinalnaOcenaJeProsekObaKola = value; }
-        }
-
-        private bool tak3NeRacunajProsekAkoNemaOceneIzObaKola = true;
-        public virtual bool Tak3NeRacunajProsekAkoNemaOceneIzObaKola
-        {
-            get { return tak3NeRacunajProsekAkoNemaOceneIzObaKola; }
-            set { tak3NeRacunajProsekAkoNemaOceneIzObaKola = value; }
-        }
-
         // Takmicenje 4
 
         private NacinRacunanjaOceneFinaleKupa nacinRacunanjaOceneFinaleKupaTak4 = NacinRacunanjaOceneFinaleKupa.Zbir;
@@ -279,34 +221,6 @@ namespace Bilten.Domain
         {
             get { return nacinRacunanjaOceneFinaleKupaTak4; }
             set { nacinRacunanjaOceneFinaleKupaTak4 = value; }
-        }
-
-        private bool tak4FinalnaOcenaJeZbirObaKola = true;
-        public virtual bool Tak4FinalnaOcenaJeZbirObaKola
-        {
-            get { return tak4FinalnaOcenaJeZbirObaKola; }
-            set { tak4FinalnaOcenaJeZbirObaKola = value; }
-        }
-
-        private bool tak4FinalnaOcenaJeMaxObaKola;
-        public virtual bool Tak4FinalnaOcenaJeMaxObaKola
-        {
-            get { return tak4FinalnaOcenaJeMaxObaKola; }
-            set { tak4FinalnaOcenaJeMaxObaKola = value; }
-        }
-
-        private bool tak4FinalnaOcenaJeProsekObaKola;
-        public virtual bool Tak4FinalnaOcenaJeProsekObaKola
-        {
-            get { return tak4FinalnaOcenaJeProsekObaKola; }
-            set { tak4FinalnaOcenaJeProsekObaKola = value; }
-        }
-
-        private bool tak4NeRacunajProsekAkoNemaOceneIzObaKola = true;
-        public virtual bool Tak4NeRacunajProsekAkoNemaOceneIzObaKola
-        {
-            get { return tak4NeRacunajProsekAkoNemaOceneIzObaKola; }
-            set { tak4NeRacunajProsekAkoNemaOceneIzObaKola = value; }
         }
 
         public virtual bool odvojenoTak2()

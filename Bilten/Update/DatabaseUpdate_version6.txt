@@ -4,3 +4,27 @@ alter table gimnasticari drop column reg_broj;
 GO
 alter table gimnasticari drop column god_reg;
 GO
+alter table propozicije drop column tak2_fin_ocena_je_zbir;
+GO
+alter table propozicije drop column tak2_fin_ocena_je_max;
+GO
+alter table propozicije drop column tak2_fin_ocena_je_prosek;
+GO
+alter table propozicije drop column tak2_ne_racunaj_prosek;
+GO
+alter table propozicije drop column tak3_fin_ocena_je_zbir;
+GO
+alter table propozicije drop column tak3_fin_ocena_je_max;
+GO
+alter table propozicije drop column tak3_fin_ocena_je_prosek;
+GO
+alter table propozicije drop column tak3_ne_racunaj_prosek;
+GO
+alter table propozicije drop column tak4_fin_ocena_je_zbir;
+GO
+alter table propozicije drop column tak4_fin_ocena_je_max;
+GO
+alter table propozicije drop column tak4_fin_ocena_je_prosek;
+GO
+alter table propozicije drop column tak4_ne_racunaj_prosek;
+GO

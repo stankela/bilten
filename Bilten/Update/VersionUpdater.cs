@@ -957,7 +957,7 @@ public class VersionUpdater
 
     private void updateNacinRacunanjaOceneFinaleKupa()
     {
-        ISession session = null;
+        /*ISession session = null;
         try
         {
             using (session = NHibernateHelper.Instance.OpenSession())
@@ -1024,7 +1024,7 @@ public class VersionUpdater
         finally
         {
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-        }
+        }*/
     }
 
     private void updateNacinRacunanjaPreskoka()
