@@ -101,9 +101,7 @@ namespace Bilten.Domain
             set { _poredakEkipno = value; }
         }
 
-        // TODO4: Proveri da li je potrebno da inicijalizujem poredak sa novim objektom (za standardne poretke to nisam
-        // radio). Isto i za zbir vise kola.
-        private PoredakUkupnoFinaleKupa _poredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
+        private PoredakUkupnoFinaleKupa _poredakUkupnoFinaleKupa;
         public virtual PoredakUkupnoFinaleKupa PoredakUkupnoFinaleKupa
         {
             get { return _poredakUkupnoFinaleKupa; }
@@ -127,21 +125,21 @@ namespace Bilten.Domain
             return null;
         }
 
-        private PoredakEkipnoFinaleKupa _poredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();
+        private PoredakEkipnoFinaleKupa _poredakEkipnoFinaleKupa;
         public virtual PoredakEkipnoFinaleKupa PoredakEkipnoFinaleKupa
         {
             get { return _poredakEkipnoFinaleKupa; }
             set { _poredakEkipnoFinaleKupa = value; }
         }
 
-        private PoredakUkupnoZbirViseKola _poredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
+        private PoredakUkupnoZbirViseKola _poredakUkupnoZbirViseKola;
         public virtual PoredakUkupnoZbirViseKola PoredakUkupnoZbirViseKola
         {
             get { return _poredakUkupnoZbirViseKola; }
             set { _poredakUkupnoZbirViseKola = value; }
         }
 
-        private PoredakEkipnoZbirViseKola _poredakEkipnoZbirViseKola = new PoredakEkipnoZbirViseKola();
+        private PoredakEkipnoZbirViseKola _poredakEkipnoZbirViseKola;
         public virtual PoredakEkipnoZbirViseKola PoredakEkipnoZbirViseKola
         {
             get { return _poredakEkipnoZbirViseKola; }
@@ -153,17 +151,27 @@ namespace Bilten.Domain
         
         }
 
-        public Takmicenje1(Gimnastika gimnastika)
+        public Takmicenje1(Takmicenje takmicenje)
         {
+            if (takmicenje.ZbirViseKola)
+            {
+                _poredakUkupnoZbirViseKola = new PoredakUkupnoZbirViseKola();
+                _poredakEkipnoZbirViseKola = new PoredakEkipnoZbirViseKola();
+            }
+            else if (takmicenje.FinaleKupa)
+            {
+                _poredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
+                _poredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();
+            }
+
             _poredakUkupno = new PoredakUkupno(DeoTakmicenjaKod.Takmicenje1);
-            foreach (Sprava s in Sprave.getSprave(gimnastika))
+            foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
             {
                 if (s != Sprava.Preskok)
                     _poredakSprava.Add(new PoredakSprava(DeoTakmicenjaKod.Takmicenje1, s));
             }
             _poredakPreskok = new PoredakPreskok(DeoTakmicenjaKod.Takmicenje1);
             _poredakEkipno = new PoredakEkipno(DeoTakmicenjaKod.Takmicenje1);
-
         }
 
         public virtual void initPoredakSpravaFinaleKupa(Gimnastika gimnastika)

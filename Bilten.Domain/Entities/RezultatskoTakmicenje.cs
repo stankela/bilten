@@ -118,7 +118,7 @@ namespace Bilten.Domain
             this.propozicije = propozicije;
             this.gimnastika = takmicenje.Gimnastika;
 
-            Takmicenje1 = new Takmicenje1(takmicenje.Gimnastika);
+            Takmicenje1 = new Takmicenje1(takmicenje);
             Takmicenje2 = new Takmicenje2();
             Takmicenje3 = new Takmicenje3(Gimnastika);
             Takmicenje4 = new Takmicenje4();
