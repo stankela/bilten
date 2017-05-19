@@ -81,7 +81,6 @@
     <Compile Include="Entities\Propozicije.cs" />
     <Compile Include="Entities\RasporedNastupa.cs" />
     <Compile Include="Entities\RasporedSudija.cs" />
-    <Compile Include="Entities\RegistarskiBroj.cs" />
     <Compile Include="Entities\Rezultat.cs" />
     <Compile Include="Entities\RezultatEkipno.cs" />
     <Compile Include="Entities\RezultatEkipnoFinaleKupa.cs" />

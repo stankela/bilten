@@ -173,6 +173,8 @@ namespace Bilten.Domain
         {
             if (object.ReferenceEquals(this, other))
                 return true;
+            // NOTE: Bitno je da se koristi operator is a ne GetType, zato sto
+            // other moze da bude proxy.
             if (!(other is Datum))
                 return false;
             Datum that = (Datum)other;
@@ -195,8 +197,22 @@ namespace Bilten.Domain
             }
         }
 
+        // NOTE: Operator == (onako kako je implementiran u klasi Object)
+        // ne poziva metod Equals. Da bi koriscenje operatora == dovelo do poziva
+        // metoda Equals potrebno je eksplicitno implementirati operator == i u njemu
+        // pozivati Equals.
+        
         public static bool operator ==(Datum d1, Datum d2)
         {
+            // NOTE: Bitno je da se najpre proveri da li d1 nije null, zato sto d1
+            // predstavlja levu stranu u izrazu poredjenja, a na njoj moze da
+            // se nalazi objekt koji ima vrednost null.
+
+            // Takodje, kada je potrebno poredjenje po referenci (a ne po vrednosti)
+            // trebalo bi koristiti iskljucivo metod ReferenceEquals a ne
+            // operator == zato sto je moguce da je operator == redefinisan pa ce
+            // se u stvari dobiti poredjenje po vrednosti
+            
             if (object.ReferenceEquals(d1, null))
                 return object.ReferenceEquals(d2, null);
             else

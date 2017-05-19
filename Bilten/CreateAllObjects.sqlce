@@ -37,8 +37,6 @@ create table gimnasticari (
 	god_rodj smallint,
 	gimnastika tinyint,
 	registarski_broj nvarchar(16),
-	reg_broj int,
-	god_reg smallint,
 	dan_posl_reg tinyint,
 	mesec_posl_reg tinyint,
 	god_posl_reg smallint,

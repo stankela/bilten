@@ -182,6 +182,7 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version6.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version5.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version4.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version4b.txt" />

@@ -16,10 +16,6 @@
       <property name="Godina" column="god_rodj" type="Int16" />
     </component>
     <property name="Gimnastika" column="gimnastika" type="Byte" />
-    <component name="RegBroj" class="RegistarskiBroj">
-      <property name="Broj" column="reg_broj" type="Int32" />
-      <property name="GodinaRegistracije" column="god_reg" type="Int16" />
-    </component>
     <property name="RegistarskiBroj" column="registarski_broj" type="String" length="16"/>
     <component name="DatumPoslednjeRegistracije" class="Datum">
       <property name="Dan" column="dan_posl_reg" type="Byte" />

@@ -104,8 +104,8 @@ public class VersionUpdater
 
         if (verzijaBaze == 5 && Program.VERZIJA_PROGRAMA > 5)
         {
-            //SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
-              //  "Bilten.Update.DatabaseUpdate_version5.txt", true);
+            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                "Bilten.Update.DatabaseUpdate_version6.txt", true);
             SqlCeUtilities.updateDatabaseVersionNumber(6);
             verzijaBaze = 6;
             converted = true;
@@ -923,7 +923,7 @@ public class VersionUpdater
 
     private void updateRegistarskiBrojToString()
     {
-        ISession session = null;
+        /*ISession session = null;
         try
         {
             using (session = NHibernateHelper.Instance.OpenSession())
@@ -952,7 +952,7 @@ public class VersionUpdater
         finally
         {
             CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-        }
+        }*/
     }
 
     private void updateNacinRacunanjaOceneFinaleKupa()

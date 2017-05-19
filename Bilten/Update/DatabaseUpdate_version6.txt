@@ -1,0 +1,6 @@
+-- 19-Maj-2017 (VERZIJA = 6)
+
+alter table gimnasticari drop column reg_broj;
+GO
+alter table gimnasticari drop column god_reg;
+GO
