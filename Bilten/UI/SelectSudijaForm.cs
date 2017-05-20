@@ -111,6 +111,7 @@ namespace Bilten.UI
                             flt.Ime, flt.Prezime, flt.Pol, flt.Drzava, flt.Klub);
                     }
                     setEntities(sudije);
+                    dataGridViewUserControl1.Focus();
                     if (sudije.Count == 0)
                         MessageDialogs.showMessage("Ne postoje sudije koje zadovoljavaju date kriterijume.", "");
                 }

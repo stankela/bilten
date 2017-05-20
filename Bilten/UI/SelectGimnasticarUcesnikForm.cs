@@ -123,6 +123,7 @@ namespace Bilten.UI
                                 flt.Ime, flt.Prezime, flt.Drzava, flt.Kategorija, flt.Klub, takmicenjeId);
                     }
                     setEntities(gimnasticari);
+                    dataGridViewUserControl1.Focus();
                     if (gimnasticari.Count == 0)
                         MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", this.Text);
                 }

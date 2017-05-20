@@ -138,6 +138,7 @@ namespace Bilten.UI
                     }
                     SetItems(gimnasticari);
                     updateEntityCount();
+                    dataGridViewUserControl1.Focus();
                     if (gimnasticari.Count == 0)
                         MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", "");
                 }

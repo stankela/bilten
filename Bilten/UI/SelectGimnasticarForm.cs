@@ -118,6 +118,7 @@ namespace Bilten.UI
                             flt.Ime, flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
                     }
                     setEntities(gimnasticari);
+                    dataGridViewUserControl1.Focus();
                     if (gimnasticari.Count == 0)
                         MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", "");
                 }
