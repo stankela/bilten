@@ -240,6 +240,7 @@ namespace Bilten.UI
         public void SetItems(IList<T> list)
         {
             dataGridViewUserControl1.setItems<T>(list);
+            dataGridViewUserControl1.clearSelection();
         }
 
         private void btnClose_Click(object sender, EventArgs e)

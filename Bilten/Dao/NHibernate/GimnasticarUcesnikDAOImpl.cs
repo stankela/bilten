@@ -91,9 +91,8 @@ namespace Bilten.Dao.NHibernate
             }
         }
         
-        public IList<GimnasticarUcesnik> FindGimnasticariUcesnici(string ime,
-            string prezime, Nullable<int> godRodj, DrzavaUcesnik drzava, TakmicarskaKategorija kategorija,
-            KlubUcesnik klub, int takmicenjeId)
+        public IList<GimnasticarUcesnik> FindGimnasticariUcesnici(string ime, string prezime, DrzavaUcesnik drzava,
+            TakmicarskaKategorija kategorija, KlubUcesnik klub, int takmicenjeId)
         {
             string query = @"from GimnasticarUcesnik g
                     left join fetch g.TakmicarskaKategorija k
@@ -104,8 +103,6 @@ namespace Bilten.Dao.NHibernate
                 query += " and lower(g.Ime) like :ime";
             if (!String.IsNullOrEmpty(prezime))
                 query += " and lower(g.Prezime) like :prezime";
-            if (godRodj != null)
-                query += " and g.DatumRodjenja.Godina = :godRodj";
             if (kategorija != null)
                 query += " and g.TakmicarskaKategorija = :kategorija";
             if (drzava != null)
@@ -120,8 +117,6 @@ namespace Bilten.Dao.NHibernate
                 q.SetString("ime", ime.ToLower() + '%');
             if (!String.IsNullOrEmpty(prezime))
                 q.SetString("prezime", prezime.ToLower() + '%');
-            if (godRodj != null)
-                q.SetInt16("godRodj", (short)godRodj.Value);
             if (kategorija != null)
                 q.SetEntity("kategorija", kategorija);
             if (drzava != null)

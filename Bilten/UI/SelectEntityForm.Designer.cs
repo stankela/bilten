@@ -88,6 +88,7 @@ namespace Bilten.UI
             this.Name = "SelectEntityForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SelectEntitiesForm";
+            this.Load += new System.EventHandler(this.SelectEntityForm_Load);
             this.ResumeLayout(false);
 
         }

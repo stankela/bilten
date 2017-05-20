@@ -21,7 +21,7 @@ namespace Bilten.UI
         private List<Klub> klubovi;
         private List<Drzava> drzave;
         private Nullable<Gimnastika> gimnastika;
-        private bool initializing;
+        private bool generateFilterEvent = true;
 
         private readonly string SVE_KATEGORIJE = "SVE KATEGORIJE";
         private readonly string SVI_KLUBOVI = "SVI KLUBOVI";
@@ -32,9 +32,6 @@ namespace Bilten.UI
 
         public event EventHandler Filter;
 
-        // TODO4: Dodaj dugme "Ponisti filter" (i u ostalim filter kontrolama)
-        // (treba da poziva filterGimnasticarUserControl1.resetFilter())
-
         public FilterGimnasticarUserControl()
         {
             InitializeComponent();
@@ -42,9 +39,7 @@ namespace Bilten.UI
 
         public void initialize(Nullable<Gimnastika> gimnastika)
         {
-            initializing = true;
             this.gimnastika = gimnastika;
-
             ISession session = null;
             try
             {
@@ -52,9 +47,14 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    loadData();
+                    kategorije = new List<KategorijaGimnasticara>(loadKategorije(gimnastika));
+                    klubovi = new List<Klub>(DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll());
+                    drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
+
                     initUI();
-                    initializing = false;
+
+                    // Stavljam ovo na kraj da se ne bi dvaput ucitavale kategorije
+                    cmbGimnastika.SelectedIndexChanged += cmbGimnastika_SelectedIndexChanged;
                 }
             }
             catch (Exception ex)
@@ -69,13 +69,6 @@ namespace Bilten.UI
             }
         }
 
-        private void loadData()
-        {
-            kategorije = new List<KategorijaGimnasticara>(loadKategorije(gimnastika));
-            klubovi = new List<Klub>(DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll());
-            drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
-        }
-
         private IList<KategorijaGimnasticara> loadKategorije(Nullable<Gimnastika> gimnastika)
         {
             if (gimnastika != null)
@@ -86,15 +79,6 @@ namespace Bilten.UI
 
         private void initUI()
         {
-            cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbGimnastika.Items.AddRange(new string[] { SVI, MSG, ZSG });
-
-            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDown;
-            cmbDrzava.Items.Add(SVE_DRZAVE);
-            cmbDrzava.Items.AddRange(drzave.ToArray());
-            cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
-            cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
-
             cmbKategorija.DropDownStyle = ComboBoxStyle.DropDown;
             setKategorije();
             cmbKategorija.AutoCompleteMode = AutoCompleteMode.Suggest;
@@ -106,7 +90,18 @@ namespace Bilten.UI
             cmbKlub.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmbKlub.AutoCompleteSource = AutoCompleteSource.ListItems;
 
+            cmbDrzava.DropDownStyle = ComboBoxStyle.DropDown;
+            cmbDrzava.Items.Add(SVE_DRZAVE);
+            cmbDrzava.Items.AddRange(drzave.ToArray());
+            cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
+
+            cmbGimnastika.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbGimnastika.Items.AddRange(new string[] { SVI, MSG, ZSG });
+
+            generateFilterEvent = false;
             resetFilter();
+            generateFilterEvent = true;
         }
 
         private void setKategorije()
@@ -147,8 +142,7 @@ namespace Bilten.UI
             if (!notification.IsValid())
             {
                 NotificationMessage msg = notification.FirstMessage;
-                // TODO: this.Text nije inicijalizovan
-                MessageDialogs.showMessage(msg.Message, this.Text);
+                MessageDialogs.showMessage(msg.Message, String.Empty);
                 setFocus(msg.FieldName);
                 return false;
             }
@@ -224,8 +218,6 @@ namespace Bilten.UI
 
         private void cmbGimnastika_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (initializing)
-                return;
             reloadKategorije();
             cmbKategorija.SelectedIndex = cmbKategorija.Items.IndexOf(SVE_KATEGORIJE);
         }
@@ -267,6 +259,8 @@ namespace Bilten.UI
 
         protected virtual void OnFilter(EventArgs e)
         {
+            if (!generateFilterEvent)
+                return;
             EventHandler tmp = Filter;
             if (tmp != null)
                 Filter(this, e);
@@ -302,6 +296,14 @@ namespace Bilten.UI
 
         private void cmbDrzava_SelectedIndexChanged(object sender, EventArgs e)
         {
+            OnFilter(EventArgs.Empty);
+        }
+
+        private void btnPonisti_Click(object sender, EventArgs e)
+        {
+            generateFilterEvent = false;
+            resetFilter();
+            generateFilterEvent = true;
             OnFilter(EventArgs.Empty);
         }
     }

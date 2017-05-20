@@ -21,20 +21,6 @@ namespace Bilten.UI
             set { prezime = value; }
         }
 
-        private Nullable<int> godRodj;
-        public Nullable<int> GodRodj
-        {
-            get { return godRodj; }
-            set { godRodj = value; }
-        }
-
-        private Nullable<Gimnastika> gimnastika;
-        public Nullable<Gimnastika> Gimnastika
-        {
-            get { return gimnastika; }
-            set { gimnastika = value; }
-        }
-
         private DrzavaUcesnik drzava;
         public DrzavaUcesnik Drzava
         {
@@ -59,6 +45,13 @@ namespace Bilten.UI
         public GimnasticarUcesnikFilter()
         {
 
+        }
+
+        public bool isEmpty()
+        {
+            bool result = String.IsNullOrEmpty(ime) && String.IsNullOrEmpty(prezime)
+                && drzava == null && kategorija == null && klub == null;
+            return result;
         }
     }
 }

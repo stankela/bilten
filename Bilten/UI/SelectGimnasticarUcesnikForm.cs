@@ -18,7 +18,6 @@ namespace Bilten.UI
     {
         private int takmicenjeId;
         private Gimnastika gimnastika;
-        private TakmicarskaKategorija kategorija;
 
         private FilterGimnasticarUcesnikUserControl filterGimnasticarUcesnikUserControl1;
         
@@ -29,23 +28,22 @@ namespace Bilten.UI
 
             this.takmicenjeId = takmicenjeId;
             this.gimnastika = gimnastika;
-            this.kategorija = kategorija;
 
             filterGimnasticarUcesnikUserControl1 = new FilterGimnasticarUcesnikUserControl();
             this.pnlFilter.SuspendLayout();
             this.pnlFilter.Controls.Add(filterGimnasticarUcesnikUserControl1);
             this.pnlFilter.ResumeLayout(false);
             this.pnlFilter.Height = filterGimnasticarUcesnikUserControl1.Height + 10;
-            filterGimnasticarUcesnikUserControl1.Filter += filterGimnasticarUcesnikUserControl1_Filter;
             filterGimnasticarUcesnikUserControl1.initialize(takmicenjeId, gimnastika, kategorija);
+            filterGimnasticarUcesnikUserControl1.Filter += filterGimnasticarUcesnikUserControl1_Filter;
 
             initializeGridColumns();
 
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
                 DataGridViewUserControl_GridColumnHeaderMouseClick);
-            this.ClientSize = new Size(800, 450);
+            this.ClientSize = new Size(filterGimnasticarUcesnikUserControl1.Width + 20, 540);
 
-            showAll();
+            showAll(kategorija);
         }
 
         void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender, GridColumnHeaderMouseClickEventArgs e)
@@ -68,8 +66,12 @@ namespace Bilten.UI
             dataGridViewUserControl1.AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
 
-        private void showAll()
+        private void showAll(TakmicarskaKategorija kategorija)
         {
+            filterGimnasticarUcesnikUserControl1.Filter -= filterGimnasticarUcesnikUserControl1_Filter;
+            filterGimnasticarUcesnikUserControl1.resetFilter(kategorija);
+            filterGimnasticarUcesnikUserControl1.Filter += filterGimnasticarUcesnikUserControl1_Filter;
+
             ISession session = null;
             try
             {
@@ -77,12 +79,9 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    IList<GimnasticarUcesnik> gimnasticari
-                        = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindByTakmicenjeKat(takmicenjeId, kategorija);
+                    IList<GimnasticarUcesnik> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO()
+                        .FindByTakmicenjeKat(takmicenjeId, kategorija);
                     setEntities(gimnasticari);
-                    DataGridViewUserControl.sort<GimnasticarUcesnik>(
-                        new string[] { "Prezime", "Ime" },
-                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
                 }
             }
             catch (Exception ex)
@@ -113,15 +112,20 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    string failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
-                    IList<GimnasticarUcesnik> gimnasticari
-                        = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindGimnasticariUcesnici(
-                            flt.Ime, flt.Prezime, flt.GodRodj, flt.Drzava,
-                            flt.Kategorija, flt.Klub, takmicenjeId);
+                    IList<GimnasticarUcesnik> gimnasticari;
+                    if (flt.isEmpty())
+                    {
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindByTakmicenjeKat(
+                            takmicenjeId, null);
+                    }
+                    else
+                    {
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindGimnasticariUcesnici(
+                                flt.Ime, flt.Prezime, flt.Drzava, flt.Kategorija, flt.Klub, takmicenjeId);
+                    }
                     setEntities(gimnasticari);
                     if (gimnasticari.Count == 0)
-                        MessageDialogs.showMessage(failureMsg, this.Text);
-                    dataGridViewUserControl1.clearSelection();
+                        MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", this.Text);
                 }
             }
             catch (Exception ex)
@@ -135,11 +139,6 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private void SelectGimnasticarUcesnikForm_Load(object sender, EventArgs e)
-        {
-            dataGridViewUserControl1.clearSelection();
         }
     }
 }

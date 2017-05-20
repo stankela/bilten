@@ -23,7 +23,6 @@ namespace Bilten.UI
         {
             InitializeComponent();
             Text = "Izaberi gimnasticara";
-            this.ClientSize = new Size(ClientSize.Width, 500);
             this.gimnastika = gimnastika;
 
             filterGimnasticarUserControl1 = new FilterGimnasticarUserControl();
@@ -31,9 +30,10 @@ namespace Bilten.UI
             this.pnlFilter.Controls.Add(filterGimnasticarUserControl1);
             this.pnlFilter.ResumeLayout(false);
             this.pnlFilter.Height = filterGimnasticarUserControl1.Height + 10;
-            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
             filterGimnasticarUserControl1.initialize(gimnastika);
+            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
 
+            this.ClientSize = new Size(filterGimnasticarUserControl1.Width + 20, 540);
             initializeGridColumns();
 
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
@@ -64,6 +64,10 @@ namespace Bilten.UI
 
         private void showAll()
         {
+            filterGimnasticarUserControl1.Filter -= filterGimnasticarUserControl1_Filter;
+            filterGimnasticarUserControl1.resetFilter();
+            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
+            
             ISession session = null;
             try
             {
@@ -74,9 +78,6 @@ namespace Bilten.UI
                     IList<Gimnasticar> gimnasticari
                         = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindByGimnastika(gimnastika);
                     setEntities(gimnasticari);
-                    DataGridViewUserControl.sort<Gimnasticar>(
-                        new string[] { "Prezime", "Ime" },
-                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
                 }
             }
             catch (Exception ex)
@@ -108,21 +109,17 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
 
-                    // biranje gimnasticara sa prethodnog takmicenja
-                    //Takmicenje takmicenje = dataContext.GetById<Takmicenje>(5);
-                    //gimnasticari = dataContext.ExecuteNamedQuery<Gimnasticar>(
-                    //    "FindGimnasticariByTakmicenje",
-                    //    new string[] { "takmicenje" }, new object[] { takmicenje });
-
-                    string failureMsg = "";
-                    IList<Gimnasticar> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(
-                        flt.Ime, flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
-                    if (gimnasticari.Count == 0)
-                        failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
+                    IList<Gimnasticar> gimnasticari;
+                    if (flt.isEmpty(false))
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindByGimnastika(gimnastika);
+                    else
+                    {
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(
+                            flt.Ime, flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
+                    }
                     setEntities(gimnasticari);
                     if (gimnasticari.Count == 0)
-                        MessageDialogs.showMessage(failureMsg, this.Text);
-                    dataGridViewUserControl1.clearSelection();
+                        MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", "");
                 }
             }
             catch (Exception ex)
@@ -136,11 +133,6 @@ namespace Bilten.UI
             {
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
-        }
-
-        private void SelectGimnasticarForm_Load(object sender, EventArgs e)
-        {
-            dataGridViewUserControl1.clearSelection();
         }
     }
 }

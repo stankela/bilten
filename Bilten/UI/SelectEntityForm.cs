@@ -36,6 +36,7 @@ namespace Bilten.UI
         protected void setEntities<T>(IList<T> entities)
         {
             dataGridViewUserControl1.setItems<T>(entities);
+            dataGridViewUserControl1.clearSelection();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -62,6 +63,11 @@ namespace Bilten.UI
 
             foreach (DataGridViewRow row in selectedRows)
                 selectedEntities.Add(row.DataBoundItem);
+        }
+
+        private void SelectEntityForm_Load(object sender, EventArgs e)
+        {
+            dataGridViewUserControl1.clearSelection();
         }
     }
 }

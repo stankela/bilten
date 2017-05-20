@@ -31,43 +31,21 @@ namespace Bilten.UI
             this.pnlFilter.Controls.Add(filterGimnasticarUserControl1);
             this.pnlFilter.ResumeLayout(false);
             this.pnlFilter.Height = filterGimnasticarUserControl1.Height + 10;
-            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
             filterGimnasticarUserControl1.initialize(null);
+            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
     
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
-
-            ISession session = null;
-            try
-            {
-                using (session = NHibernateHelper.Instance.OpenSession())
-                using (session.BeginTransaction())
-                {
-                    CurrentSessionContext.Bind(session);
-                    IList<Gimnasticar> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindAll();
-                    SetItems(gimnasticari);
-                    dataGridViewUserControl1.sort<Gimnasticar>(
-                        new string[] { "Prezime", "Ime" },
-                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
-                    updateEntityCount();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (session != null && session.Transaction != null && session.Transaction.IsActive)
-                    session.Transaction.Rollback();
-                throw new InfrastructureException(ex.Message, ex);
-            }
-            finally
-            {
-                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
-            }
+            prikaziSve();
         }
 
         protected override void prikaziSve()
         {
+            filterGimnasticarUserControl1.Filter -= filterGimnasticarUserControl1_Filter;
             filterGimnasticarUserControl1.resetFilter();
+            filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
+            
             ISession session = null;
             try
             {
@@ -77,9 +55,6 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     IList<Gimnasticar> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindAll();
                     SetItems(gimnasticari);
-                    dataGridViewUserControl1.sort<Gimnasticar>(
-                        new string[] { "Prezime", "Ime" },
-                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
                     updateEntityCount();
                 }
             }
@@ -153,21 +128,18 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
 
-                    // biranje gimnasticara sa prethodnog takmicenja
-                    //Takmicenje takmicenje = dataContext.GetById<Takmicenje>(5);
-                    //gimnasticari = dataContext.ExecuteNamedQuery<Gimnasticar>(
-                    //    "FindGimnasticariByTakmicenje",
-                    //    new string[] { "takmicenje" }, new object[] { takmicenje });
-
-                    string failureMsg = "";
-                    IList<Gimnasticar> gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(
-                        flt.Ime, flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
-                    if (gimnasticari.Count == 0)
-                        failureMsg = "Ne postoje gimnasticari koji zadovoljavaju date kriterijume.";
+                    IList<Gimnasticar> gimnasticari;
+                    if (flt.isEmpty(true))
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindAll();
+                    else
+                    {
+                        gimnasticari = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO().FindGimnasticari(
+                            flt.Ime, flt.Prezime, flt.GodRodj, flt.Gimnastika, flt.Drzava, flt.Kategorija, flt.Klub);
+                    }
                     SetItems(gimnasticari);
                     updateEntityCount();
                     if (gimnasticari.Count == 0)
-                        MessageDialogs.showMessage(failureMsg, this.Text);
+                        MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", "");
                 }
             }
             catch (Exception ex)

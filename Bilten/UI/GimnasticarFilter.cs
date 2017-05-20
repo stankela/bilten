@@ -60,5 +60,14 @@ namespace Bilten.UI
         { 
         
         }
+
+        public bool isEmpty(bool checkGimnastika)
+        {
+            bool result = String.IsNullOrEmpty(ime) && String.IsNullOrEmpty(prezime) && godRodj == null
+                && drzava == null && kategorija == null && klub == null;
+            if (checkGimnastika)
+                result = result && gimnastika == null;
+            return result;
+        }
     }
 }
