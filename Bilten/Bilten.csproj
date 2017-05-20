@@ -182,6 +182,9 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="UI\FilterSudijaUserControl.resx">
+      <DependentUpon>FilterSudijaUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Update\DatabaseUpdate_version6.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version5.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version4.txt" />
@@ -315,6 +318,12 @@
     </Compile>
     <Compile Include="UI\FilterGimnasticarUserControl.Designer.cs">
       <DependentUpon>FilterGimnasticarUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FilterSudijaUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\FilterSudijaUserControl.Designer.cs">
+      <DependentUpon>FilterSudijaUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\FormUtil.cs" />
     <Compile Include="UI\GimnasticarFilter.cs" />
@@ -619,6 +628,7 @@
     <Compile Include="UI\StartListeForm.Designer.cs">
       <DependentUpon>StartListeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SudijaFilter.cs" />
     <Compile Include="UI\SudijaForm.cs">
       <SubType>Form</SubType>
     </Compile>

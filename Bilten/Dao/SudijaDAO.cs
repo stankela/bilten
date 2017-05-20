@@ -9,6 +9,7 @@ namespace Bilten.Dao
     {
         IList<Sudija> FindSudijeByDrzava(Drzava drzava);
         IList<Sudija> FindAll();
+        IList<Sudija> FindSudije(string ime, string prezime, Pol? pol, Drzava drzava, Klub klub);
         bool existsSudija(Drzava drzava);
         bool existsSudija(string ime, string prezime);
     }

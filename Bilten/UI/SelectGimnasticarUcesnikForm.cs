@@ -38,7 +38,6 @@ namespace Bilten.UI
             filterGimnasticarUcesnikUserControl1.Filter += filterGimnasticarUcesnikUserControl1_Filter;
 
             initializeGridColumns();
-
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
                 DataGridViewUserControl_GridColumnHeaderMouseClick);
             this.ClientSize = new Size(filterGimnasticarUcesnikUserControl1.Width + 20, 540);

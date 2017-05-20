@@ -35,9 +35,9 @@ namespace Bilten.UI
 
             this.ClientSize = new Size(filterGimnasticarUserControl1.Width + 20, 540);
             initializeGridColumns();
-
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
-                DataGridViewUserControl_GridColumnHeaderMouseClick);            
+                DataGridViewUserControl_GridColumnHeaderMouseClick);
+
             showAll();
         }
 

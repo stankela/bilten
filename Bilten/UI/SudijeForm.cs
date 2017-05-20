@@ -16,14 +16,34 @@ namespace Bilten.UI
 {
     public partial class SudijeForm : SingleEntityListForm<Sudija>
     {
+        private FilterSudijaUserControl filterSudijaUserControl1;
+        
         public SudijeForm()
         {
             this.Text = "Sudije";
-            this.ClientSize = new Size(800, 540);
+
+            filterSudijaUserControl1 = new FilterSudijaUserControl();
+            this.pnlFilter.SuspendLayout();
+            this.pnlFilter.Controls.Add(filterSudijaUserControl1);
+            this.pnlFilter.ResumeLayout(false);
+            this.pnlFilter.Height = filterSudijaUserControl1.Height + 10;
+            filterSudijaUserControl1.initialize();
+            filterSudijaUserControl1.Filter += filterSudijaUserControl1_Filter;
+
+            this.ClientSize = new Size(filterSudijaUserControl1.Width + panel1.Width + 20, 540);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
 
+            prikaziSve();            
+        }
+
+        protected override void prikaziSve()
+        {
+            filterSudijaUserControl1.Filter -= filterSudijaUserControl1_Filter;
+            filterSudijaUserControl1.resetFilter();
+            filterSudijaUserControl1.Filter += filterSudijaUserControl1_Filter;
+            
             ISession session = null;
             try
             {
@@ -33,9 +53,6 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     IList<Sudija> sudije = DAOFactoryFactory.DAOFactory.GetSudijaDAO().FindAll();
                     SetItems(sudije);
-                    dataGridViewUserControl1.sort<Sudija>(
-                        new string[] { "Prezime", "Ime" },
-                        new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
                     updateEntityCount();
                 }
             }
@@ -51,7 +68,7 @@ namespace Bilten.UI
             }
         }
 
-        // TODO: Dodaj i druge stvari koje postoje u GimnasticariForm, kao npr. filtriranje, provera prilikom unosa da li
+        // TODO: Dodaj i druge stvari koje postoje u GimnasticariForm, kao npr. provera prilikom unosa da li
         // sudija vec postoji i ako postoji otvaranje dijaloga za edit.
 
         private void DataGridViewUserControl_GridColumnHeaderMouseClick(object sender,
@@ -95,6 +112,50 @@ namespace Bilten.UI
         {
             int count = dataGridViewUserControl1.getItems<Sudija>().Count;
             StatusPanel.Panels[0].Text = count.ToString() + " sudija";
+        }
+
+        private void filterSudijaUserControl1_Filter(object sender, EventArgs e)
+        {
+            SudijaFilter flt = filterSudijaUserControl1.getFilter();
+            if (flt != null)
+                filter(flt);
+        }
+
+        private void filter(SudijaFilter flt)
+        {
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+
+                    IList<Sudija> sudije;
+                    if (flt.isEmpty())
+                        sudije = DAOFactoryFactory.DAOFactory.GetSudijaDAO().FindAll();
+                    else
+                    {
+                        sudije = DAOFactoryFactory.DAOFactory.GetSudijaDAO().FindSudije(
+                            flt.Ime, flt.Prezime, flt.Pol, flt.Drzava, flt.Klub);
+                    }
+                    SetItems(sudije);
+                    updateEntityCount();
+                    if (sudije.Count == 0)
+                        MessageDialogs.showMessage("Ne postoje sudije koje zadovoljavaju date kriterijume.", "");
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(
+                    Strings.getFullDatabaseAccessExceptionMessage(ex), this.Text);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
         }
     }
 }

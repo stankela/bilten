@@ -17,11 +17,7 @@ namespace Bilten.UI
 {
     public partial class FilterGimnasticarUserControl : UserControl
     {
-        private List<KategorijaGimnasticara> kategorije;
-        private List<Klub> klubovi;
-        private List<Drzava> drzave;
         private Nullable<Gimnastika> gimnastika;
-        private bool generateFilterEvent = true;
 
         private readonly string SVE_KATEGORIJE = "SVE KATEGORIJE";
         private readonly string SVI_KLUBOVI = "SVI KLUBOVI";
@@ -31,6 +27,7 @@ namespace Bilten.UI
         private readonly string ZSG = "ZSG";
 
         public event EventHandler Filter;
+        private bool generateFilterEvent = true;
 
         public FilterGimnasticarUserControl()
         {
@@ -47,11 +44,11 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    kategorije = new List<KategorijaGimnasticara>(loadKategorije(gimnastika));
-                    klubovi = new List<Klub>(DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll());
-                    drzave = new List<Drzava>(DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll());
+                    IList<KategorijaGimnasticara> kategorije = loadKategorije(gimnastika);
+                    IList<Klub> klubovi = DAOFactoryFactory.DAOFactory.GetKlubDAO().FindAll();
+                    IList<Drzava> drzave = DAOFactoryFactory.DAOFactory.GetDrzavaDAO().FindAll();
 
-                    initUI();
+                    initUI(kategorije, klubovi, drzave);
 
                     // Stavljam ovo na kraj da se ne bi dvaput ucitavale kategorije
                     cmbGimnastika.SelectedIndexChanged += cmbGimnastika_SelectedIndexChanged;
@@ -77,22 +74,22 @@ namespace Bilten.UI
                 return DAOFactoryFactory.DAOFactory.GetKategorijaGimnasticaraDAO().FindAll();
         }
 
-        private void initUI()
+        private void initUI(IList<KategorijaGimnasticara> kategorije, IList<Klub> klubovi, IList<Drzava> drzave)
         {
             cmbKategorija.DropDownStyle = ComboBoxStyle.DropDown;
-            setKategorije();
+            setKategorije(kategorije);
             cmbKategorija.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmbKategorija.AutoCompleteSource = AutoCompleteSource.ListItems;
 
             cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
             cmbKlub.Items.Add(SVI_KLUBOVI);
-            cmbKlub.Items.AddRange(klubovi.ToArray());
+            cmbKlub.Items.AddRange(new List<Klub>(klubovi).ToArray());
             cmbKlub.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmbKlub.AutoCompleteSource = AutoCompleteSource.ListItems;
 
             cmbDrzava.DropDownStyle = ComboBoxStyle.DropDown;
             cmbDrzava.Items.Add(SVE_DRZAVE);
-            cmbDrzava.Items.AddRange(drzave.ToArray());
+            cmbDrzava.Items.AddRange(new List<Drzava>(drzave).ToArray());
             cmbDrzava.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmbDrzava.AutoCompleteSource = AutoCompleteSource.ListItems;
 
@@ -104,11 +101,11 @@ namespace Bilten.UI
             generateFilterEvent = true;
         }
 
-        private void setKategorije()
+        private void setKategorije(IList<KategorijaGimnasticara> kategorije)
         {
             cmbKategorija.Items.Clear();
             cmbKategorija.Items.Add(SVE_KATEGORIJE);
-            cmbKategorija.Items.AddRange(kategorije.ToArray());
+            cmbKategorija.Items.AddRange(new List<KategorijaGimnasticara>(kategorije).ToArray());
         }
 
         public void resetFilter()
@@ -237,8 +234,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    kategorije = new List<KategorijaGimnasticara>(loadKategorije(gim));
-                    setKategorije();
+                    setKategorije(loadKategorije(gim));
                 }
             }
             catch (Exception ex)
