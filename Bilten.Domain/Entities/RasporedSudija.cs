@@ -29,6 +29,8 @@ namespace Bilten.Domain
             set { takmicenje = value; }
         }
 
+        // TODO4: Fali Equals i GetHashCode za SudijskiOdborNaSpravi
+
         private Iesi.Collections.Generic.ISet<SudijskiOdborNaSpravi> odbori = new HashedSet<SudijskiOdborNaSpravi>();
         public virtual Iesi.Collections.Generic.ISet<SudijskiOdborNaSpravi> Odbori
         {

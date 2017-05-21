@@ -38,6 +38,8 @@ namespace Bilten.Domain
             set { takmicenje = value; }
         }
 
+        // TODO4: Fali Equals i GetHashCode za StartListaNaSpravai
+
         private Iesi.Collections.Generic.ISet<StartListaNaSpravi> startListe = new HashedSet<StartListaNaSpravi>();
         public virtual Iesi.Collections.Generic.ISet<StartListaNaSpravi> StartListe
         {

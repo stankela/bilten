@@ -27,8 +27,8 @@ namespace Bilten.Domain
             Gimnasticari.Remove(gimnasticar);
         }
 
-        // TODO4: Za sve klasa koje se cuvaju u setovima trebalo bi implementirati
-        // Equals i GetHashCode
+        // NOTE: Za sve klase koje se cuvaju u setovima trebalo bi implementirati Equals i GetHashCode
+
         private Iesi.Collections.Generic.ISet<Ekipa> ekipe = new HashedSet<Ekipa>();
         public virtual Iesi.Collections.Generic.ISet<Ekipa> Ekipe
         {
@@ -70,6 +70,8 @@ namespace Bilten.Domain
             set { _poredakUkupno = value; }
         }
 
+        // TODO4: Fali Equals i GetHashCode za PoredakSprava
+
         private Iesi.Collections.Generic.ISet<PoredakSprava> _poredakSprava = new HashedSet<PoredakSprava>();
         public virtual Iesi.Collections.Generic.ISet<PoredakSprava> PoredakSprava
         {
@@ -108,6 +110,8 @@ namespace Bilten.Domain
             set { _poredakUkupnoFinaleKupa = value; }
         }
 
+        // TODO4: Fali Equals i GetHashCode za PoredakSpravaFinaleKupa
+        
         private Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> _poredakSpravaFinaleKupa = new HashedSet<PoredakSpravaFinaleKupa>();
         public virtual Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> PoredakSpravaFinaleKupa
         {

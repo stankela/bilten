@@ -10,6 +10,8 @@ namespace Bilten.Domain
 {
     public class Takmicenje3 : DomainObject
     {
+        // TODO4: Fali Equals i GetHashCode za UcesnikTakmicenja3
+        
         private Iesi.Collections.Generic.ISet<UcesnikTakmicenja3> _ucesnici = new HashedSet<UcesnikTakmicenja3>();
         public virtual Iesi.Collections.Generic.ISet<UcesnikTakmicenja3> Ucesnici
         {
