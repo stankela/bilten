@@ -62,7 +62,6 @@ namespace Bilten.UI
 
         private void initializeGridColumns()
         {
-            // TODO: Sinhronizuj sa SudijeForm
             dataGridViewUserControl1.AddColumn("Ime", "Ime", 100);
             dataGridViewUserControl1.AddColumn("Prezime", "Prezime", 100);
             dataGridViewUserControl1.AddColumn("Pol", "Pol", 100);

@@ -137,12 +137,6 @@ namespace Bilten.Report
             float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            // TODO3: Ne bi trebalo pristupati kolonama po fixnom indexu (kao u sledecoj liniji) zato sto je moguce da se
-            // index promeni (ako npr. dodam novu kolonu).
-
-            // TODO3: Trenutno se velicine svih kolona za ocene podesavaju prema velicini prve kolone (D). Promeni da se
-            // svaka podesava odvojeno. (i u ostalim izvestajima)
-
             // kolo i kval sam podesio kao polovinu Rank kolone.
             float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
@@ -217,7 +211,7 @@ namespace Bilten.Report
             String rankTitle = "Rank";
             String imeTitle = "Ime";
             String klubTitle = "Klub";
-            String koloTitle = ""; // TODO3: Neka bude uspravno.
+            String koloTitle = "";
             String totalTitle = "Total";
             String kvalTitle = String.Empty;
 
@@ -331,7 +325,8 @@ namespace Bilten.Report
         }
     }
 
-    // TODO3: Ovu klasu bi trebalo merdzovati sa klasom  UkupnoFinaleKupaSpravaReportColumn
+    // TODO3: Ovu klasu bi trebalo merdzovati sa klasom  UkupnoFinaleKupaSpravaReportColumn (isto i za klasu
+    // DvaPreskokaReportColumn)
     public class SpravaFinaleKupaReportColumn : ReportColumn
     {
         private bool drawPartItemRect;

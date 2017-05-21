@@ -91,8 +91,6 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    // TODO: Razresi situaciju kada dva takmicara imaju isti total
-                    // (uradi i za PoredakSprava, PoredakPreskok i PoredakEkipno)
                     if (rezultati[i].Total != prevTotal)
                         rezultati[i].Rank = (short)(i + 1);
                     else

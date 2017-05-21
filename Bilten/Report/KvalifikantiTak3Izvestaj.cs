@@ -333,7 +333,8 @@ namespace Bilten.Report
                 rightMargin = contentBounds.Right - (2 - columnNumber) * contentBounds.Width / 2;
 
             // Kada imam dve kolone, razmak izmedju tabela podesavam da bude isti kao i razmak sa leve i desne strane.
-            // TODO3: Sledece izracunavanje delte ne radi dobro kada ima samo jedna kolona.
+            // TODO3: Sledece izracunavanje delte ne radi dobro kada ima samo jedna kolona (isto i u izvestaju za start
+            // liste i rasporede sudija).
             float delta;
             if (columnNumber == 1)
             {

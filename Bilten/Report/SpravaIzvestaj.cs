@@ -245,9 +245,9 @@ namespace Bilten.Report
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
             // TODO3: Ne bi trebalo pristupati kolonama po fixnom indexu (kao u sledecoj liniji) zato sto je moguce da se
-            // index promeni (ako npr. dodam novu kolonu).
+            // index promeni (ako npr. dodam novu kolonu). Isto i u ostalim izvestajima.
 
-            // TODO3: Trenutno se velice svih kolona za ocene podesavaju prema velicini prve kolone (D). Promeni da se
+            // TODO3: Trenutno se velicine svih kolona za ocene podesavaju prema velicini prve kolone (D). Promeni da se
             // svaka podesava odvojeno. (i u ostalim izvestajima)
 
             // skok i kval sam podesio kao polovinu Rank kolone.
@@ -340,7 +340,7 @@ namespace Bilten.Report
             String rankTitle = Opcije.Instance.RankString;
             String imeTitle = Opcije.Instance.ImeString;
             String klubTitle = Opcije.Instance.KlubDrzavaString;
-            String skokTitle = ""; // TODO3: Neka bude uspravno.
+            String skokTitle = ""; // TODO3: Neka bude uspravno (isto i u izvestaju za sudijske formulare).
             String totalTitle = Opcije.Instance.TotalString;
             String kvalTitle = String.Empty;
 
@@ -487,7 +487,6 @@ namespace Bilten.Report
         }
     }
 
-    // TODO3: Ovu klasu bi trebalo merdzovati sa klasom  UkupnoFinaleKupaSpravaReportColumn
     public class DvaPreskokaReportColumn : ReportColumn
     {
         private bool drawPartItemRect;

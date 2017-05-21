@@ -209,7 +209,6 @@ namespace Bilten.UI
                     klubovi.Add(r.Gimnasticar.KlubDrzava);
                 }
             }
-            // TODO: Indexi kolona bi trebali da budu konstante
             if (imena.Count > 0)
             {
                 dataGridViewUserControl2.DataGridView.Columns[0].Width =

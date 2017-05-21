@@ -268,7 +268,6 @@ namespace Bilten.UI
             spravaGridUserControl1.init(sprava);
 
             DataGridViewUserControl dgw = spravaGridUserControl1.DataGridViewUserControl;
-            // TODO: Indexi kolona bi trebali da budu konstante
 
             bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
             if (dgw.DataGridView.Columns.Count == 0)
@@ -432,9 +431,6 @@ namespace Bilten.UI
 
                 // TODO2: Uvedi opciju da li se zeli stampanje izvestaja sa ili bez
                 // linija
-
-                // TODO2: U izvestajima uvedi opciju da grupa koja ne moze da stane
-                // cela na jednu stranu pocinje na vrhu sledece strane
             }
             catch (Exception ex)
             {

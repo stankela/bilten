@@ -7,7 +7,7 @@ namespace Bilten.Util
 {
     public class RounderToZero
     {
-        //TODO2: kada se izracunava ocena za preskok kod koje je jedna penalizacija zadata
+        //TODO4: kada se izracunava ocena za preskok kod koje je jedna penalizacija zadata
         //a druga nije, greskom se dopisuje druga penalizacija da ima vrednost 0.0.
 
         public static decimal round(decimal value, int digits)

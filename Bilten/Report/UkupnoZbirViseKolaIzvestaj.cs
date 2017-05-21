@@ -17,7 +17,7 @@ namespace Bilten.Report
             bool extended, DataGridView formGrid, string documentName, int brojKola)
 		{
             DocumentName = documentName;
-            extended = false; // TODO3: Ispravi ovo.
+            extended = false;
 
             Font itemFont = new Font("Arial", 8);
             Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
@@ -261,7 +261,7 @@ namespace Bilten.Report
             String rankTitle = "Rank";
 			String imeTitle = "Ime";
 			String klubTitle = "Klub";
-            String koloTitle = ""; // TODO3: Neka bude uspravno.
+            String koloTitle = "";
             String totalTitle = "Total";
             String kvalTitle = String.Empty;
 

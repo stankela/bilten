@@ -473,7 +473,7 @@ namespace Bilten.Services
                 }
             }
 
-            // TODO: Prebaci u domenske klase sto vise koda iz ove funkcije.
+            // TODO: Prebaci u domenske klase sto vise koda iz ove funkcije (isto i u funkciji updateViseKola).
 
             takmicenje.kreirajRezultateViseKola(rezTakmicenja, rezTakmicenjaPrethodnaKola);
 
@@ -560,8 +560,6 @@ namespace Bilten.Services
                     }
                 }
             }
-
-            // TODO: Prebaci u domenske klase sto vise koda iz ove funkcije.
 
             takmicenje.kreirajRezultateViseKola(rezTakmicenja, rezTakmicenjaPrethodnaKola);
 

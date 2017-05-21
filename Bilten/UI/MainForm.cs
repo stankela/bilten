@@ -836,6 +836,7 @@ namespace Bilten.UI
 
         // TODO4: Kod stampanja, kolonu sa nazivom ekipa stampaj u dva reda ako je naziv dugacak
         // TODO4: Kod stampanja rezultata za ekipe promeni da cela ekipa uvek bude na istoj strani
+        // (i za ostale izvestaje; razmisli o uvodjenju opcije za ovo - da grupa uvek bude na istoj strani)
 
         private void mnKreirajTakmicenja234_Click(object sender, EventArgs e)
         {

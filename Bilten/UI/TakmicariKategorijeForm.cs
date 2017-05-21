@@ -141,8 +141,6 @@ namespace Bilten.UI
 
         private void initTab(int i, TabPage tabPage, TakmicarskaKategorija takmicarskaKategorija)
         {
-            // TODO: Kod u ovom metodu je prekopiran iz Designer.cs fajla. Proveri
-            // da li je u Designer.cs fajlu nesto menjano, i ako jeste promeni ovde.
             TakmicariKategorijeUserControl takmicariKategorijeUserControl = 
                 new TakmicariKategorijeUserControl();
 

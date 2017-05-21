@@ -137,8 +137,6 @@ namespace Bilten.UI
 
         private void initTab(int i, TabPage tabPage, RezultatskoTakmicenje rezTakmicenje)
         {
-            // TODO: Kod u ovom metodu je prekopiran iz Designer.cs fajla. Proveri
-            // da li je u Designer.cs fajlu nesto menjano, i ako jeste promeni ovde.
             EkipeUserControl ekipeUserControl = new EkipeUserControl();
             ekipeUserControl.Anchor = this.ekipeUserControl1.Anchor;
             ekipeUserControl.Location = this.ekipeUserControl1.Location;

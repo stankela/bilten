@@ -320,7 +320,7 @@ namespace Bilten.Report
             String imeTitle = Opcije.Instance.ImeString;
             String klubTitle = Opcije.Instance.KlubDrzavaString;
             String kategorijaTitle = Opcije.Instance.KategorijaString;
-            String skokTitle = ""; // TODO3: Neka bude uspravno.
+            String skokTitle = "";
             String totalTitle = Opcije.Instance.TotalString;
 
             Columns.Clear();

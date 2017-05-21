@@ -27,7 +27,7 @@ namespace Bilten.Domain
             Gimnasticari.Remove(gimnasticar);
         }
 
-        // TODO: Za sve klasa koje se cuvaju u setovima trebalo bi implementirati
+        // TODO4: Za sve klasa koje se cuvaju u setovima trebalo bi implementirati
         // Equals i GetHashCode
         private Iesi.Collections.Generic.ISet<Ekipa> ekipe = new HashedSet<Ekipa>();
         public virtual Iesi.Collections.Generic.ISet<Ekipa> Ekipe

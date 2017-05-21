@@ -232,7 +232,8 @@ namespace Bilten.UI
         }
 
 
-        // TODO: Indexi kolona bi trebali da budu konstante
+        // TODO: Indexi kolona bi trebali da budu konstante (i na svim ostalim mestima gde se koristi
+        // DataGridView.Columns[])
         public static void maximizeColumnsRezultatiUkupno(DataGridViewUserControl dgw, 
             DeoTakmicenjaKod deoTakKod, IList<RezultatskoTakmicenje> rezTakmicenja)
         {

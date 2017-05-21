@@ -56,7 +56,7 @@ namespace Bilten.UI
         private void initializeGridColumns()
         {
             // TODO: Napravi da budu sinhronizovani ovi podaci sa podacima iz
-            // GimnasticariForm
+            // GimnasticariForm. Isto i za ostale gridove.
             dataGridViewUserControl1.AddColumn("Ime", "ImeSrednjeIme", 100);
             dataGridViewUserControl1.AddColumn("Prezime", "Prezime", 100);
             dataGridViewUserControl1.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");

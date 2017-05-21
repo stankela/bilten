@@ -214,7 +214,7 @@ namespace Bilten.Report
 
             String rankTitle = "Rank";
             String ekipaTitle = "Ekipa";
-            String koloTitle = ""; // TODO3: Neka bude uspravno.
+            String koloTitle = ""; // TODO3: Neka bude uspravno (isto u i ostalim izvestajima sa vise kola).
             String totalTitle = "Total";
             String kvalTitle = String.Empty;
 

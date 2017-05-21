@@ -92,8 +92,6 @@ namespace Bilten.Domain
                 }
                 else
                 {
-                    // TODO: Razresi situaciju kada dva takmicara imaju isti total
-                    // (uradi i za PoredakSprava, PoredakPreskok i PoredakEkipno)
                     if (rezultati[i].Total != prevTotal)
                         rezultati[i].Rank = (short)(i + 1);
                     else
@@ -115,9 +113,6 @@ namespace Bilten.Domain
                 return;
             }
             
-            // TODO: Obradi situaciju kada ima npr. 24 finalista, a 24 i 25 takmicar
-            // imaju isti total (uradi i za PoredakSprava i PoredakEkipno, finale kupa i zbir vise kola)
-
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>(Rezultati);
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(RezultatUkupno))["RedBroj"];
