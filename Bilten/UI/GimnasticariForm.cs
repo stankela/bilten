@@ -33,6 +33,14 @@ namespace Bilten.UI
             this.pnlFilter.Height = filterGimnasticarUserControl1.Height + 10;
             filterGimnasticarUserControl1.initialize(null);
             filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
+
+            int offset = filterGimnasticarUserControl1.Bottom + 10 - btnNewItem.Location.Y;
+            btnNewItem.Location = new Point(btnNewItem.Location.X, btnNewItem.Location.Y + offset);
+            btnEditItem.Location = new Point(btnEditItem.Location.X, btnEditItem.Location.Y + offset);
+            btnDeleteItem.Location = new Point(btnDeleteItem.Location.X, btnDeleteItem.Location.Y + offset);
+            btnRefresh.Location = new Point(btnRefresh.Location.X, btnRefresh.Location.Y + offset);
+            btnPrintPreview.Location = new Point(btnPrintPreview.Location.X, btnPrintPreview.Location.Y + offset);
+            btnClose.Location = new Point(btnClose.Location.X, btnClose.Location.Y + offset);
     
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -139,8 +147,6 @@ namespace Bilten.UI
                     SetItems(gimnasticari);
                     updateEntityCount();
                     dataGridViewUserControl1.Focus();
-                    if (gimnasticari.Count == 0)
-                        MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", "");
                 }
             }
             catch (Exception ex)

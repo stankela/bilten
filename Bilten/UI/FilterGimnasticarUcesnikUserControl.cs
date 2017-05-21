@@ -26,7 +26,12 @@ namespace Bilten.UI
 
         public event EventHandler Filter;
         private bool generateFilterEvent = true;
-    
+
+        public Point btnPonistiLocation
+        {
+            get { return btnPonisti.Location; }
+        }
+        
         public FilterGimnasticarUcesnikUserControl()
         {
             InitializeComponent();

@@ -19,6 +19,8 @@ namespace Bilten.UI
         public DrzaveForm()
         {
             this.Text = "Drzave";
+            pnlFilter.Visible = false;
+            btnRefresh.Visible = false;
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();

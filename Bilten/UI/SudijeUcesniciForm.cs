@@ -24,6 +24,8 @@ namespace Bilten.UI
         {
             this.Text = "Sudije na takmicenju";
             this.ClientSize = new Size(800, 540);
+            pnlFilter.Visible = false;
+            btnRefresh.Visible = false;
             btnEditItem.Enabled = false;
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);

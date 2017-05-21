@@ -24,14 +24,19 @@ namespace Bilten.UI
             Text = "Izaberi sudiju";
 
             filterSudijaUserControl1 = new FilterSudijaUserControl();
+            filterSudijaUserControl1.initialize();
             this.pnlFilter.SuspendLayout();
             this.pnlFilter.Controls.Add(filterSudijaUserControl1);
+            this.pnlFilter.Width = filterSudijaUserControl1.Width;
             this.pnlFilter.ResumeLayout(false);
-            this.pnlFilter.Height = filterSudijaUserControl1.Height + 10;
-            filterSudijaUserControl1.initialize();
             filterSudijaUserControl1.Filter += filterSudijaUserControl1_Filter;
 
-            this.ClientSize = new Size(filterSudijaUserControl1.Width + 20, 540);
+            int x = filterSudijaUserControl1.Location.X + filterSudijaUserControl1.Width + 30;
+            int y = filterSudijaUserControl1.Location.Y + filterSudijaUserControl1.btnPonistiLocation.Y;
+            btnOk.Location = new Point(x, y);
+            btnCancel.Location = new Point(btnOk.Location.X + 85, btnOk.Location.Y);
+
+            this.ClientSize = new Size(btnCancel.Location.X + btnCancel.Size.Width + 20, 540);
             initializeGridColumns();
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
                 DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -112,8 +117,6 @@ namespace Bilten.UI
                     }
                     setEntities(sudije);
                     dataGridViewUserControl1.Focus();
-                    if (sudije.Count == 0)
-                        MessageDialogs.showMessage("Ne postoje sudije koje zadovoljavaju date kriterijume.", "");
                 }
             }
             catch (Exception ex)

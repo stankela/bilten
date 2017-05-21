@@ -26,14 +26,19 @@ namespace Bilten.UI
             this.gimnastika = gimnastika;
 
             filterGimnasticarUserControl1 = new FilterGimnasticarUserControl();
+            filterGimnasticarUserControl1.initialize(gimnastika);
             this.pnlFilter.SuspendLayout();
             this.pnlFilter.Controls.Add(filterGimnasticarUserControl1);
+            this.pnlFilter.Width = filterGimnasticarUserControl1.Width;
             this.pnlFilter.ResumeLayout(false);
-            this.pnlFilter.Height = filterGimnasticarUserControl1.Height + 10;
-            filterGimnasticarUserControl1.initialize(gimnastika);
             filterGimnasticarUserControl1.Filter += filterGimnasticarUserControl1_Filter;
 
-            this.ClientSize = new Size(filterGimnasticarUserControl1.Width + 20, 540);
+            int x = filterGimnasticarUserControl1.Location.X + filterGimnasticarUserControl1.Width + 30;
+            int y = filterGimnasticarUserControl1.Location.Y + filterGimnasticarUserControl1.btnPonistiLocation.Y;
+            btnOk.Location = new Point(x, y);
+            btnCancel.Location = new Point(btnOk.Location.X + 85, btnOk.Location.Y);
+
+            this.ClientSize = new Size(btnCancel.Location.X + btnCancel.Size.Width + 20, 540);
             initializeGridColumns();
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
                 DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -119,8 +124,6 @@ namespace Bilten.UI
                     }
                     setEntities(gimnasticari);
                     dataGridViewUserControl1.Focus();
-                    if (gimnasticari.Count == 0)
-                        MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", "");
                 }
             }
             catch (Exception ex)

@@ -25,6 +25,8 @@ namespace Bilten.UI
             // (osim onih koje je nasledio), to treba da se radi programski.
 
             this.Text = "Kategorije gimnasticara";
+            pnlFilter.Visible = false;
+            btnRefresh.Visible = false;
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();

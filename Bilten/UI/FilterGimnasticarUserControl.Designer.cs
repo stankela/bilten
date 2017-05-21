@@ -169,7 +169,7 @@ namespace Bilten.UI
             // 
             // btnPonisti
             // 
-            this.btnPonisti.Location = new System.Drawing.Point(1040, 15);
+            this.btnPonisti.Location = new System.Drawing.Point(958, 15);
             this.btnPonisti.Name = "btnPonisti";
             this.btnPonisti.Size = new System.Drawing.Size(85, 23);
             this.btnPonisti.TabIndex = 16;
@@ -197,7 +197,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblPrezime);
             this.Controls.Add(this.lblIme);
             this.Name = "FilterGimnasticarUserControl";
-            this.Size = new System.Drawing.Size(1142, 47);
+            this.Size = new System.Drawing.Size(1054, 47);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -20,6 +20,7 @@ namespace Bilten.UI
         {
             InitializeComponent();
             Text = "Izaberi sudiju";
+            pnlFilter.Visible = false;
             this.ClientSize = new System.Drawing.Size(800, 540);
             initializeGridColumns();
 

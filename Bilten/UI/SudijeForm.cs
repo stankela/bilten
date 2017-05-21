@@ -30,6 +30,14 @@ namespace Bilten.UI
             filterSudijaUserControl1.initialize();
             filterSudijaUserControl1.Filter += filterSudijaUserControl1_Filter;
 
+            int offset = filterSudijaUserControl1.Bottom + 10 - btnNewItem.Location.Y;
+            btnNewItem.Location = new Point(btnNewItem.Location.X, btnNewItem.Location.Y + offset);
+            btnEditItem.Location = new Point(btnEditItem.Location.X, btnEditItem.Location.Y + offset);
+            btnDeleteItem.Location = new Point(btnDeleteItem.Location.X, btnDeleteItem.Location.Y + offset);
+            btnRefresh.Location = new Point(btnRefresh.Location.X, btnRefresh.Location.Y + offset);
+            btnPrintPreview.Location = new Point(btnPrintPreview.Location.X, btnPrintPreview.Location.Y + offset);
+            btnClose.Location = new Point(btnClose.Location.X, btnClose.Location.Y + offset);
+            
             this.ClientSize = new Size(filterSudijaUserControl1.Width + panel1.Width + 20, 540);
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
@@ -142,8 +150,6 @@ namespace Bilten.UI
                     SetItems(sudije);
                     dataGridViewUserControl1.Focus();
                     updateEntityCount();
-                    if (sudije.Count == 0)
-                        MessageDialogs.showMessage("Ne postoje sudije koje zadovoljavaju date kriterijume.", "");
                 }
             }
             catch (Exception ex)

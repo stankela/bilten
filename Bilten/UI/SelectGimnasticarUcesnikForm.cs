@@ -30,17 +30,22 @@ namespace Bilten.UI
             this.gimnastika = gimnastika;
 
             filterGimnasticarUcesnikUserControl1 = new FilterGimnasticarUcesnikUserControl();
+            filterGimnasticarUcesnikUserControl1.initialize(takmicenjeId, gimnastika, kategorija);
             this.pnlFilter.SuspendLayout();
             this.pnlFilter.Controls.Add(filterGimnasticarUcesnikUserControl1);
+            this.pnlFilter.Width = filterGimnasticarUcesnikUserControl1.Width;
             this.pnlFilter.ResumeLayout(false);
-            this.pnlFilter.Height = filterGimnasticarUcesnikUserControl1.Height + 10;
-            filterGimnasticarUcesnikUserControl1.initialize(takmicenjeId, gimnastika, kategorija);
             filterGimnasticarUcesnikUserControl1.Filter += filterGimnasticarUcesnikUserControl1_Filter;
 
+            int x = filterGimnasticarUcesnikUserControl1.Location.X + filterGimnasticarUcesnikUserControl1.Width + 30;
+            int y = filterGimnasticarUcesnikUserControl1.Location.Y + filterGimnasticarUcesnikUserControl1.btnPonistiLocation.Y;
+            btnOk.Location = new Point(x, y);
+            btnCancel.Location = new Point(btnOk.Location.X + 85, btnOk.Location.Y);
+
+            this.ClientSize = new Size(btnCancel.Location.X + btnCancel.Size.Width + 20, 540);
             initializeGridColumns();
             DataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(
                 DataGridViewUserControl_GridColumnHeaderMouseClick);
-            this.ClientSize = new Size(filterGimnasticarUcesnikUserControl1.Width + 20, 540);
 
             showAll(kategorija);
         }
@@ -124,8 +129,6 @@ namespace Bilten.UI
                     }
                     setEntities(gimnasticari);
                     dataGridViewUserControl1.Focus();
-                    if (gimnasticari.Count == 0)
-                        MessageDialogs.showMessage("Ne postoje gimnasticari koji zadovoljavaju date kriterijume.", this.Text);
                 }
             }
             catch (Exception ex)
