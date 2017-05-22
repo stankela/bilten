@@ -274,6 +274,17 @@ namespace Bilten.Domain
             return result;
         }
 
+        public virtual int getBrojKvalifikanata()
+        {
+            int result = 0;
+            foreach (RezultatPreskok r in Rezultati)
+            {
+                if (r.KvalStatus == KvalifikacioniStatus.Q)
+                    ++result;
+            }
+            return result;
+        }
+
         public virtual void addOcena(Ocena o, RezultatskoTakmicenje rezTak,
             bool createRezultat)
         {

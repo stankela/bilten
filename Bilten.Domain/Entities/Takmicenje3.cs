@@ -5,6 +5,7 @@ using Iesi.Collections.Generic;
 using System.ComponentModel;
 using Bilten.Util;
 using System.IO;
+using Bilten.Exceptions;
 
 namespace Bilten.Domain
 {
@@ -22,8 +23,6 @@ namespace Bilten.Domain
             Ucesnici.Add(u);
         }
 
-        // TODO4: Proveri da li je potrebno da imam oba metoda - removeUcesnik i removeKvalifikant. Isto i za addUcesnik
-        // i addKvalifikant.
         public virtual void removeUcesnik(UcesnikTakmicenja3 u)
         {
             Ucesnici.Remove(u);
@@ -42,7 +41,7 @@ namespace Bilten.Domain
         public virtual void clearUcesnici()
         {
             foreach (UcesnikTakmicenja3 u in new List<UcesnikTakmicenja3>(Ucesnici))
-                removeUcesnik(u);
+                Ucesnici.Remove(u);
         }
 
         public virtual void clearUcesnik(GimnasticarUcesnik g)
@@ -99,73 +98,41 @@ namespace Bilten.Domain
         public virtual void createUcesnici(Takmicenje1 takmicenje1, bool obaPreskoka)
         {
             clearUcesnici();
-
-            int qualOrder;
-            int rezOrder;
-            PropertyDescriptor propDesc;
+            short qualOrder;
+            short rezOrder;
+            int brojKvalifikanata;
             foreach (PoredakSprava p in takmicenje1.PoredakSprava)
             {
-                List<RezultatSprava> rezultati = new List<RezultatSprava>(p.Rezultati);
-                propDesc = TypeDescriptor.GetProperties(typeof(RezultatSprava))["RedBroj"];
-                rezultati.Sort(new SortComparer<RezultatSprava>(propDesc,
-                    ListSortDirection.Ascending));
-
+                brojKvalifikanata = p.getBrojKvalifikanata();
                 qualOrder = 0;
-                foreach (RezultatSprava rez in rezultati)
-                {
-                    if (rez.KvalStatus == KvalifikacioniStatus.Q)
-                    {
-                        UcesnikTakmicenja3 u = new UcesnikTakmicenja3(
-                            rez.Gimnasticar, p.Sprava, (short)(++qualOrder), rez.Total, 
-                            rez.Rank, rez.KvalStatus);
-                        addUcesnik(u);
-                    }
-                }
                 rezOrder = 0;
-                foreach (RezultatSprava rez in rezultati)
+                foreach (RezultatSprava r in p.getRezultati())
                 {
-                    if (rez.KvalStatus == KvalifikacioniStatus.R)
-                    {
-                        UcesnikTakmicenja3 u = new UcesnikTakmicenja3(
-                            rez.Gimnasticar, p.Sprava, (short)(qualOrder + (++rezOrder)), rez.Total,
-                            rez.Rank, rez.KvalStatus);
-                        addUcesnik(u);
-                    }
+                    short order;
+                    if (r.KvalStatus == KvalifikacioniStatus.Q)
+                        order = ++qualOrder;
+                    else if (r.KvalStatus == KvalifikacioniStatus.R)
+                        order = (short)(brojKvalifikanata + (++rezOrder));
+                    else
+                        continue;
+                    addUcesnik(r.Gimnasticar, p.Sprava, r.Total, r.Rank, r.KvalStatus, order);
                 }
             }
-
-            List<RezultatPreskok> rezultatiPreskok = new List<RezultatPreskok>(
-                takmicenje1.PoredakPreskok.Rezultati);
-
-            propDesc = TypeDescriptor.GetProperties(typeof(RezultatPreskok))["RedBroj"];
-            rezultatiPreskok.Sort(new SortComparer<RezultatPreskok>(propDesc,
-                ListSortDirection.Ascending));
 
             qualOrder = 0;
-            foreach (RezultatPreskok rez in rezultatiPreskok)
-            {
-                if (rez.KvalStatus == KvalifikacioniStatus.Q)
-                {
-                    Nullable<float> qualScore = obaPreskoka ? rez.TotalObeOcene : rez.Total;
-                    short qualRank = rez.Rank.Value;
-                    UcesnikTakmicenja3 u = new UcesnikTakmicenja3(
-                        rez.Gimnasticar, Sprava.Preskok, (short)(++qualOrder), 
-                        qualScore, qualRank, rez.KvalStatus);
-                    addUcesnik(u);
-                }
-            }
             rezOrder = 0;
-            foreach (RezultatPreskok rez in rezultatiPreskok)
+            brojKvalifikanata = takmicenje1.PoredakPreskok.getBrojKvalifikanata();
+            foreach (RezultatPreskok r in takmicenje1.PoredakPreskok.getRezultati())
             {
-                if (rez.KvalStatus == KvalifikacioniStatus.R)
-                {
-                    Nullable<float> qualScore = obaPreskoka ? rez.TotalObeOcene : rez.Total;
-                    short qualRank = rez.Rank.Value;
-                    UcesnikTakmicenja3 u = new UcesnikTakmicenja3(
-                        rez.Gimnasticar, Sprava.Preskok, (short)(qualOrder + (++rezOrder)),
-                        qualScore, qualRank, rez.KvalStatus);
-                    addUcesnik(u);
-                }
+                short order;
+                if (r.KvalStatus == KvalifikacioniStatus.Q)
+                    order = ++qualOrder;
+                else if (r.KvalStatus == KvalifikacioniStatus.R)
+                    order = (short)(brojKvalifikanata + (++rezOrder));
+                else
+                    continue;
+                Nullable<float> qualScore = obaPreskoka ? r.TotalObeOcene : r.Total;
+                addUcesnik(r.Gimnasticar, Sprava.Preskok, qualScore, r.Rank, r.KvalStatus, order);
             }
         }
 
@@ -243,16 +210,22 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual UcesnikTakmicenja3 addKvalifikant(GimnasticarUcesnik gimnasticar, Sprava sprava,
-            Nullable<float> qualScore, Nullable<short> qualRank)
+        public virtual UcesnikTakmicenja3 addUcesnik(GimnasticarUcesnik gimnasticar, Sprava sprava,
+            Nullable<float> qualScore, Nullable<short> qualRank, KvalifikacioniStatus kvalStatus)
         {
-            if (getUcesnikKvalifikant(gimnasticar, sprava) != null)
-                return null;
-
             short qualOrder = (short)(getUcesniciKvalifikanti(sprava).Count + 1);
-            UcesnikTakmicenja3 u = new UcesnikTakmicenja3(gimnasticar, sprava,
-                        qualOrder, qualScore, qualRank, KvalifikacioniStatus.Q);
-            Ucesnici.Add(u);
+            return addUcesnik(gimnasticar, sprava, qualScore, qualRank, kvalStatus, qualOrder);
+        }
+
+        public virtual UcesnikTakmicenja3 addUcesnik(GimnasticarUcesnik gimnasticar, Sprava sprava,
+            Nullable<float> qualScore, Nullable<short> qualRank, KvalifikacioniStatus kvalStatus, short qualOrder)
+        {
+            UcesnikTakmicenja3 u = new UcesnikTakmicenja3(gimnasticar, sprava, qualOrder, qualScore, qualRank, kvalStatus);
+            if (!Ucesnici.Add(u))
+            {
+                throw new BusinessException(
+                    String.Format("Gimnasticar \"{0}\" je vec medju kvalifikantima.", u.Gimnasticar));
+            }
             return u;
         }
 

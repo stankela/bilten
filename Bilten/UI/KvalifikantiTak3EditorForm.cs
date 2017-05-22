@@ -122,7 +122,7 @@ namespace Bilten.UI
             }
 
             // moram da koristim Naziv zato sto nije implementiran Equals u klasi
-            // RezultatskoTakmicenje
+            // RezultatskoTakmicenje TODO4: Ispravi ovo
             if (form.SelectedTakmicenje.Naziv != rezTakmicenje.Naziv)
             {
                 string msg = "Morate da izaberete kvalifikanta iz istog takmicenja " +
@@ -138,32 +138,26 @@ namespace Bilten.UI
                 return;
             }
 
-            foreach (UcesnikTakmicenja3 u in rezTakmicenje.Takmicenje3.getUcesniciKvalifikanti(sprava))
-            {
-                if (u.Gimnasticar.Id == form.SelectedResult.Gimnasticar.Id)
-                {
-                    string msg = String.Format("Gimnasticar \"{0}\" je vec medju kvalifikantima.", u.Gimnasticar);
-                    MessageDialogs.showMessage(msg, this.Text);
-                    return;
-                }
-            }
-
             UcesnikTakmicenja3 newKvalifikant;
-            if (sprava != Sprava.Preskok)
+            try
             {
                 RezultatSprava selResult = form.SelectedResult;
-                newKvalifikant = rezTakmicenje.Takmicenje3.addKvalifikant(selResult.Gimnasticar, sprava,
-                        selResult.Total, selResult.Rank);
+                Nullable<float> qualScore;
+                if (sprava != Sprava.Preskok)
+                    qualScore = selResult.Total;
+                else
+                {
+                    qualScore = rezTakmicenje.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
+                        ? ((RezultatPreskok)selResult).TotalObeOcene : selResult.Total;
+                }
+                newKvalifikant = rezTakmicenje.Takmicenje3.addUcesnik(selResult.Gimnasticar, sprava, qualScore,
+                    selResult.Rank, KvalifikacioniStatus.Q);
             }
-            else
+            catch (BusinessException ex)
             {
-                RezultatPreskok selResult = (RezultatPreskok)form.SelectedResult;
-                bool obaPreskoka = rezTakmicenje.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
-                Nullable<float> qualScore = obaPreskoka ? selResult.TotalObeOcene : selResult.Total;
-                Nullable<short> qualRank = selResult.Rank;
-
-                newKvalifikant = rezTakmicenje.Takmicenje3.addKvalifikant(selResult.Gimnasticar, sprava,
-                        qualScore, qualRank);
+                // Kada je gimnasticar vec medju kvalifikantima.
+                MessageDialogs.showMessage(ex.Message, "");
+                return;
             }
 
             refreshItems();

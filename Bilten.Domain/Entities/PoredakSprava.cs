@@ -299,12 +299,8 @@ namespace Bilten.Domain
         public virtual List<RezultatSprava> getRezultati()
         {
             List<RezultatSprava> result = new List<RezultatSprava>(Rezultati);
-
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatSprava))["RedBroj"];
-            result.Sort(new SortComparer<RezultatSprava>(propDesc,
-                ListSortDirection.Ascending));
-
+            PropertyDescriptor propDesc =TypeDescriptor.GetProperties(typeof(RezultatSprava))["RedBroj"];
+            result.Sort(new SortComparer<RezultatSprava>(propDesc, ListSortDirection.Ascending));
             return result;
         }
 
@@ -321,7 +317,17 @@ namespace Bilten.Domain
                 if (r.KvalStatus == KvalifikacioniStatus.R)
                     result.Add(r);
             }
+            return result;
+        }
 
+        public virtual int getBrojKvalifikanata()
+        {
+            int result = 0;
+            foreach (RezultatSprava r in Rezultati)
+            {
+                if (r.KvalStatus == KvalifikacioniStatus.Q)
+                    ++result;
+            }
             return result;
         }
 

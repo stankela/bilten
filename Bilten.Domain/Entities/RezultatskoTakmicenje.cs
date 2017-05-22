@@ -191,6 +191,7 @@ namespace Bilten.Domain
             }
         }
 
+        // TODO4: Izbaci nepotrebne stvari iz Equals i GetHashCode (Gimnastika i Takmicenje)
         public override bool Equals(object other)
         {
             if (object.ReferenceEquals(this, other)) return true;
