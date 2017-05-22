@@ -386,6 +386,9 @@ namespace Bilten.Domain
             return result;
         }
 
+        // NOTE: Nisu implementirani Equals i GetHashCode (iako se PoredakSpravaFinaleKupa cuva u setovima) zato sto je
+        // podrazumevani Equals dovoljan.
+
         public virtual void dumpRezultati(StreamWriter streamWriter)
         {
             string header = Sprave.toString(Sprava).ToUpper() + " - FINALE";

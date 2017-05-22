@@ -304,6 +304,9 @@ namespace Bilten.Domain
             return true;
         }
 
+        // NOTE: Nisu implementirani Equals i GetHashCode (iako se SudijskiOdborNaSpravi cuva u setovima) zato sto je
+        // podrazumevani Equals dovoljan.
+        
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());

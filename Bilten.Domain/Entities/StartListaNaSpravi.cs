@@ -60,8 +60,7 @@ namespace Bilten.Domain
         
         }
 
-        public StartListaNaSpravi(Sprava sprava,
-            byte grupa, byte rotacija, NacinRotacije nacinRotacije)
+        public StartListaNaSpravi(Sprava sprava, byte grupa, byte rotacija, NacinRotacije nacinRotacije)
         {
             this.sprava = sprava;
             this.grupa = grupa;
@@ -161,6 +160,9 @@ namespace Bilten.Domain
             foreach (NastupNaSpravi n in Nastupi)
                 n.Ekipa = 0;
         }
+
+        // NOTE: Nisu implementirani Equals i GetHashCode (iako se StartListaNaSpravi cuva u setovima) zato sto je
+        // podrazumevani Equals dovoljan.
 
         public virtual void dump(StringBuilder strBuilder)
         {

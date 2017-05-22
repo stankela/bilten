@@ -70,8 +70,6 @@ namespace Bilten.Domain
             set { _poredakUkupno = value; }
         }
 
-        // TODO4: Fali Equals i GetHashCode za PoredakSprava
-
         private Iesi.Collections.Generic.ISet<PoredakSprava> _poredakSprava = new HashedSet<PoredakSprava>();
         public virtual Iesi.Collections.Generic.ISet<PoredakSprava> PoredakSprava
         {
@@ -110,8 +108,6 @@ namespace Bilten.Domain
             set { _poredakUkupnoFinaleKupa = value; }
         }
 
-        // TODO4: Fali Equals i GetHashCode za PoredakSpravaFinaleKupa
-        
         private Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> _poredakSpravaFinaleKupa = new HashedSet<PoredakSpravaFinaleKupa>();
         public virtual Iesi.Collections.Generic.ISet<PoredakSpravaFinaleKupa> PoredakSpravaFinaleKupa
         {

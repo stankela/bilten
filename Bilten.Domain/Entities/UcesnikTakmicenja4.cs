@@ -26,6 +26,25 @@ namespace Bilten.Domain
             _ekipa = ekipa;
         }
 
+        public override bool Equals(object other)
+        {
+            if (object.ReferenceEquals(this, other)) return true;
+            if (!(other is UcesnikTakmicenja4)) return false;
+
+            UcesnikTakmicenja4 that = (UcesnikTakmicenja4)other;
+            return this.Ekipa.Equals(that.Ekipa);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = 14;
+                result = 29 * result + Ekipa.GetHashCode();
+                return result;
+            }
+        }
+        
         public override void dump(StringBuilder strBuilder)
         {
             base.dump(strBuilder);

@@ -401,6 +401,9 @@ namespace Bilten.Domain
             }
         }
 
+        // NOTE: Nisu implementirani Equals i GetHashCode (iako se PoredakSprava cuva u setovima) zato sto je
+        // podrazumevani Equals dovoljan.
+        
         public virtual void dumpRezultati(StreamWriter streamWriter)
         {
             string sprava = Sprave.toString(Sprava).ToUpper();

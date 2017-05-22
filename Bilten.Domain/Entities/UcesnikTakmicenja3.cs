@@ -57,6 +57,26 @@ namespace Bilten.Domain
             _sprava = sprava;
         }
 
+        public override bool Equals(object other)
+        {
+            if (object.ReferenceEquals(this, other)) return true;
+            if (!(other is UcesnikTakmicenja3)) return false;
+
+            UcesnikTakmicenja3 that = (UcesnikTakmicenja3)other;
+            return this.Gimnasticar.Equals(that.Gimnasticar) && this.Sprava == that.Sprava;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = 14;
+                result = 29 * result + Gimnasticar.GetHashCode();
+                result = 29 * result + Sprava.GetHashCode();
+                return result;
+            }
+        }
+
         public override void dump(StringBuilder strBuilder)
         {
             base.dump(strBuilder);
