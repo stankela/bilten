@@ -96,14 +96,14 @@ namespace Bilten.Domain
             set { cetvrtoKolo = value; }
         }
 
-        private byte brojEOcena = 6;
+        private byte brojEOcena = 0;
         public virtual byte BrojEOcena
         {
             get { return brojEOcena; }
             set { brojEOcena = value; }
         }
 
-        private byte brojDecimalaD = 3;
+        private byte brojDecimalaD = 1;
         public virtual byte BrojDecimalaD
         {
             get { return brojDecimalaD; }
