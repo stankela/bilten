@@ -30,6 +30,8 @@ namespace Bilten
         //   u svim kategorijama.
         // - Stampanje gimnasticara iz Registra.
 
+        // TODO4: Kada postoji odvojeno takmicenje 3, vrati u prozicijama "Kvalifikanti za finale preskoka se
+        // racunaju na osnovu" i "Rezultat u finalu preskoka se racuna na osnovu"
         // TODO4: Dodaj registarski broj u filter za gimnasticara
         // TODO4: Kada se klikne na Enter a postoji deo za filtriranje, filtriraj.
         // TODO4: Mogucnost promene kategorije istovremeno za vise gimnasticara iz registra.
