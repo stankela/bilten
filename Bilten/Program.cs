@@ -30,6 +30,13 @@ namespace Bilten
         //   u svim kategorijama.
         // - Stampanje gimnasticara iz Registra.
 
+        // TODO4: Dodaj registarski broj u filter za gimnasticara
+        // TODO4: Kada se klikne na Enter a postoji deo za filtriranje, filtriraj.
+        // TODO4: Mogucnost promene kategorije istovremeno za vise gimnasticara iz registra.
+        // TODO4: Dodaj prijavljivanje greske.
+        // TODO4: Dodaj dodavanje beleski o unapredjenjima u programu.
+        // TODO4: Dodaj katagoriju za sudije.
+
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
         // - Prozor gde ce biti prikazani klubovi ucesnici
@@ -37,7 +44,6 @@ namespace Bilten
         //   (nema pravila o max. takmicara iz kluba).
         // - Kod rezultata ekipa, pored gimnasticara treba da stoji i kategorija (za slucaj kada se ekipa sastoji iz vise
         //   kategorija)
-        // - Mogucnost promene kategorije istovremeno za vise gimnasticara iz registra.
         // - Sprave u karticama umesto u padajucem meniju.
         // - Za novo takmicenje uvesti datum od-do.
         // - Promeni futer u stampi da stampa datum od-do.
