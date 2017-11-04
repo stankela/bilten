@@ -142,7 +142,7 @@ namespace Bilten.Services
                 }
             }
 
-            if (rezTak.Takmicenje1.addEkipa(ekipa))
+            if (rezTak.Takmicenje1.addEkipa(ekipa, true))
             {
                 DAOFactoryFactory.DAOFactory.GetEkipaDAO().Add(ekipa);
 

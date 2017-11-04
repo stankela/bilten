@@ -311,7 +311,7 @@ namespace Bilten.Services
                     // Ne kopiram clanove ekipe zato sto dodavati clanove ekipe ima smisla jedino ako se znaju
                     // rezultati, a ovaj metod samo pravi pripremu takmicenja i nema nikakvih rezultata.
 
-                    rt.Takmicenje1.addEkipa(ekipa);
+                    rt.Takmicenje1.addEkipa(ekipa, true);
                 }
             }
 
@@ -467,7 +467,7 @@ namespace Bilten.Services
                         Ekipa ekipa = new Ekipa();
                         ekipa.Naziv = e.Naziv;
                         ekipa.Kod = e.Kod;
-                        rt.Takmicenje1.addEkipa(ekipa);
+                        rt.Takmicenje1.addEkipa(ekipa, false);
                         ekipaDAO.Add(ekipa);
                     }
                 }
@@ -555,7 +555,7 @@ namespace Bilten.Services
                         Ekipa ekipa = new Ekipa();
                         ekipa.Naziv = e.Naziv;
                         ekipa.Kod = e.Kod;
-                        rt.Takmicenje1.addEkipa(ekipa);
+                        rt.Takmicenje1.addEkipa(ekipa, false);
                         ekipaDAO.Add(ekipa);
                     }
                 }

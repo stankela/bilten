@@ -13,6 +13,7 @@ using Bilten.Dao;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Services;
+using System.IO;
 
 namespace Bilten.UI
 {
@@ -383,19 +384,36 @@ namespace Bilten.UI
                 string msg = "Takmicenje je uspesno napravljeno, sa svim gimnasticarima i ekipama iz prethodnih kola.";
                 if (razlicitaKola.Count > 0)
                 {
-                    msg += "\n\nSledeci gimnasticari su ucestvovali u razlicitim kategorijama u prethodnim kolima, " +
-                        "i rezultat u finalu ce im biti raspodeljen po kategorijama na sledeci nacin:\n";
+                    string msg2 = String.Empty;
+                    msg2 += "Sledeci gimnasticari su ucestvovali u razlicitim kategorijama "
+                        + Environment.NewLine
+                        + "u prethodnim kolima, i rezultat u finalu ce im biti raspodeljen "
+                        + Environment.NewLine
+                        + "po kategorijama na sledeci nacin:";
+                    msg2 += Environment.NewLine;
                     foreach (KeyValuePair<GimnasticarUcesnik, IList<Pair<int, TakmicarskaKategorija>>> entry
                         in razlicitaKola)
                     {
-                        msg += "\n" + entry.Key.ImeSrednjeImePrezimeDatumRodjenja + ":\n";
+                        msg2 += Environment.NewLine
+                             + entry.Key.ImeSrednjeImePrezimeDatumRodjenja + " (" + entry.Key.KlubDrzava + ")"
+                             + ":" + Environment.NewLine;
 
                         List<Pair<int, TakmicarskaKategorija>> pairList
                             = new List<Pair<int, TakmicarskaKategorija>>(entry.Value);
                         pairList.Sort((x, y) => x.First.CompareTo(y.First));
                         foreach (Pair<int, TakmicarskaKategorija> koloKatPair in pairList)
-                            msg += (koloKatPair.First + 1).ToString() + ". kolo - " + koloKatPair.Second.Naziv + "\n";
+                            msg2 += (koloKatPair.First + 1).ToString() + ". kolo - " + koloKatPair.Second.Naziv
+                                + Environment.NewLine;
                     }
+                    string fileName = "Obavestenje.txt";
+                    File.WriteAllText(fileName, msg2);
+
+                    msg += Environment.NewLine + Environment.NewLine + msg2;
+                    string msgFormat = Environment.NewLine
+                                     + "Tekst ove poruke nalazi se u fajlu \"{0}\" u folderu za Bilten."
+                                     + Environment.NewLine;
+                    msg += String.Format(msgFormat, fileName);
+
 
                     /*msg += "\nUkoliko zelite da se rezultat u finalu pojavljuje u samo jednoj kategoriji, " +
                         "promenite prethodna kola i smestite gimnasticara u odgovarajucu kategoriju. Rezultat " +

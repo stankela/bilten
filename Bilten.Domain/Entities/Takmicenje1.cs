@@ -36,9 +36,11 @@ namespace Bilten.Domain
             protected set { ekipe = value; }
         }
 
-        public virtual bool addEkipa(Ekipa ekipa)
+        // NOTE: Za takmicenja sa vise kola ne proveravam kod, zato sto se cesto desi situacija da se npr imena ekipa
+        // ne poklapaju (npr. razlikuju se u par slova), a kodovi su isti, pa onda prijavljuje gresku.
+        public virtual bool addEkipa(Ekipa ekipa, bool proveriKod)
         {
-            if (existsEkipaKod(ekipa.Kod))
+            if (proveriKod && existsEkipaKod(ekipa.Kod))
             {
                 string msg = "Ekipa sa datim kodom vec postoji.\n\n";
                 msg += "Ekipa: " + ekipa.Naziv;
