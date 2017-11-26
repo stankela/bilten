@@ -38,9 +38,11 @@ namespace Bilten
         // TODO4: Dodaj prijavljivanje greske.
         // TODO4: Dodaj dodavanje beleski o unapredjenjima u programu.
         // TODO4: Dodaj katagoriju za sudije.
-        // TODO4: Proveri zasto kada se promeni da postoji jedno ekipno takmicenje za sve kategorije, ne izbrise ostala
-        // takmicenja.
+        // TODO4: Proveri u kojim slucajevima kada se promeni da postoji jedno ekipno takmicenje za sve kategorije,
+        // ne izbrise ostala takmicenja.
         // TODO4: Proveri u kojim slucajevima nece da izracuna ekipni poredak automatski vec mora da se klikne na Izracunaj.
+        // TODO4: Kada se pravi finale kupa ili finale vise kola, dodaj opciju da se racuna bolji preskok iz prethodnih kola.
+        // TODO4: Dodaj opciju "Sprave koje se boduju" za sprave i za viseboj.
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
