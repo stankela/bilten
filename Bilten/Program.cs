@@ -43,6 +43,10 @@ namespace Bilten
         // TODO4: Proveri u kojim slucajevima nece da izracuna ekipni poredak automatski vec mora da se klikne na Izracunaj.
         // TODO4: Kada se pravi finale kupa ili finale vise kola, dodaj opciju da se racuna bolji preskok iz prethodnih kola.
         // TODO4: Dodaj opciju "Sprave koje se boduju" za sprave i za viseboj.
+        // TODO4: Dodaj stampanje sudija ucesnika.
+        // TODO4: Dodaj automatsko podesavanje sirine kolona u start listama.
+        // TODO4: Dodaj opciju da se liste koje sadrze sprave (start liste, ocene, ...) stampaju jedna za drugom, koliko
+        // moze da stane na jednoj strani.
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
