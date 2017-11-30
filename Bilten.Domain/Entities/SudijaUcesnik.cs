@@ -97,6 +97,28 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual string DrzavaString
+        {
+            get
+            {
+                if (DrzavaUcesnik != null)
+                    return DrzavaUcesnik.Kod;
+                else
+                    return String.Empty;
+            }
+        }
+
+        public virtual string KlubString
+        {
+            get
+            {
+                if (KlubUcesnik != null)
+                    return klubUcesnik.Naziv;
+                else
+                    return String.Empty;
+            }
+        }
+
         public override bool Equals(object other)
         {
             if (object.ReferenceEquals(this, other)) return true;

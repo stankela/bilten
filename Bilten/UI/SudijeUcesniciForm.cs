@@ -13,6 +13,7 @@ using Bilten.Dao;
 using NHibernate;
 using NHibernate.Context;
 using Bilten.Util;
+using Bilten.Report;
 
 namespace Bilten.UI
 {
@@ -27,6 +28,11 @@ namespace Bilten.UI
             pnlFilter.Visible = false;
             btnRefresh.Visible = false;
             btnEditItem.Enabled = false;
+
+            this.btnPrintPreview.Visible = true;
+            this.btnPrintPreview.Text = "Stampaj";
+            this.btnPrintPreview.Click += btnStampaj_Click;
+
             dataGridViewUserControl1.GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(DataGridViewUserControl_GridColumnHeaderMouseClick);
             InitializeGridColumns();
@@ -42,6 +48,7 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    NHibernateUtil.Initialize(takmicenje);
 
                     IList<SudijaUcesnik> sudije
                         = DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().FindByTakmicenjeFetchKlubDrzava(takmicenjeId);
@@ -276,6 +283,81 @@ namespace Bilten.UI
         {
             int count = dataGridViewUserControl1.getItems<SudijaUcesnik>().Count;
             StatusPanel.Panels[0].Text = count.ToString() + " sudija";
+        }
+
+        private void btnStampaj_Click(object sender, EventArgs e)
+        {
+            //char shVeliko = '\u0160';
+            char chMalo = '\u010d';
+            string nazivIzvestaja = "Sudije na takmi" + chMalo + "enju";
+
+            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
+                false, false, false, false, false, false, false);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = takmicenje.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = nazivIzvestaja;
+                form.Header4Text = "";
+                form.FooterText = mestoDatum;
+            }
+            else
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+                form.Header3Text = nazivIzvestaja;
+                form.Header4Text = "";
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            FormUtil.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                PreviewDialog p = new PreviewDialog();
+
+                List<SudijaUcesnik> sudije = dataGridViewUserControl1.getItems<SudijaUcesnik>();
+
+                /*PropertyDescriptor propDesc =
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubDrzava"];
+                gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc,
+                    ListSortDirection.Ascending));*/
+
+
+                PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                    TypeDescriptor.GetProperties(typeof(SudijaUcesnik))["DrzavaString"],
+                    TypeDescriptor.GetProperties(typeof(SudijaUcesnik))["KlubString"],
+                    TypeDescriptor.GetProperties(typeof(SudijaUcesnik))["Prezime"],
+                    TypeDescriptor.GetProperties(typeof(SudijaUcesnik))["Ime"]
+                };
+                ListSortDirection[] sortDir = new ListSortDirection[] {
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending
+                };
+                sudije.Sort(new SortComparer<SudijaUcesnik>(propDesc, sortDir));
+
+                p.setIzvestaj(new SudijeUcesniciIzvestaj(sudije,
+                    dataGridViewUserControl1.DataGridView, nazivIzvestaja));
+                p.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
         }
     }
 }
