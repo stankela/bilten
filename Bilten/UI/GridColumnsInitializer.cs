@@ -594,5 +594,24 @@ namespace Bilten.UI
             g.Dispose();
             return (int)Math.Ceiling(maxWidth);
         }
+
+        public static void setColumnWidthsStartLista(DataGridViewUserControl dgw, StartListaNaSpravi startLista)
+        {
+            List<string> imena = new List<string>();
+            List<string> klubovi = new List<string>();
+            List<string> kategorije = new List<string>();
+            foreach (NastupNaSpravi n in startLista.Nastupi)
+            {
+                imena.Add(n.PrezimeIme);
+                klubovi.Add(n.KlubDrzava);
+                kategorije.Add(n.Kategorija);
+            }
+            if (imena.Count > 0)
+                dgw.DataGridView.Columns[1].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);
+            if (klubovi.Count > 0)
+                dgw.DataGridView.Columns[2].Width = GridColumnsInitializer.getMaxWidth(klubovi, dgw.DataGridView);
+            if (kategorije.Count > 0)
+                dgw.DataGridView.Columns[3].Width = GridColumnsInitializer.getMaxWidth(kategorije, dgw.DataGridView);
+        }
     }
 }

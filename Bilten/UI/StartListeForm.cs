@@ -560,6 +560,7 @@ namespace Bilten.UI
                 StartListaNaSpravi startLista = ActiveRaspored.getStartLista(c.Sprava, ActiveGrupa, ActiveRotacija);
                 int startListaId = startLista != null ? startLista.Id : 0;
                 GridColumnsInitializer.initStartLista(startListaId, c.DataGridViewUserControl);
+                GridColumnsInitializer.setColumnWidthsStartLista(c.DataGridViewUserControl, startLista);
             }
         }
 
