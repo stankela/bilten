@@ -47,6 +47,7 @@ namespace Bilten
         // TODO4: Dodaj opciju da se liste koje sadrze sprave (start liste, ocene, ...) stampaju jedna za drugom, koliko
         // moze da stane na jednoj strani.
         // TODO4: Dodaj dugme "Filtriraj" za gimnasticare ucesnike (i proveri zasto nekad nece da filtrira).
+        // TODO4: Dodati kategoriju i gimnastiku za sudije.
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
