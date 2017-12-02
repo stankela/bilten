@@ -28,21 +28,25 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnSpraveKojeSeBoduju = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(12, 60);
             this.tabControl1.Name = "tabControl1";
@@ -64,9 +68,9 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl1
             // 
-            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(17, 16);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
@@ -103,6 +107,20 @@ namespace Bilten.UI
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnSpraveKojeSeBoduju});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(190, 48);
+            // 
+            // mnSpraveKojeSeBoduju
+            // 
+            this.mnSpraveKojeSeBoduju.Name = "mnSpraveKojeSeBoduju";
+            this.mnSpraveKojeSeBoduju.Size = new System.Drawing.Size(189, 22);
+            this.mnSpraveKojeSeBoduju.Text = "Sprave koje se boduju";
+            this.mnSpraveKojeSeBoduju.Click += new System.EventHandler(this.mnSpraveKojeSeBoduju_Click);
+            // 
             // TakmicariTakmicenjaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -117,6 +135,7 @@ namespace Bilten.UI
             this.Text = "TakmicariKategorijeForm";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -129,5 +148,7 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem mnSpraveKojeSeBoduju;
     }
 }

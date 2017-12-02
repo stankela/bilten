@@ -90,6 +90,7 @@ namespace Bilten.UI
             GridColumnsInitializer.initGimnasticarUcesnik(dataGridViewUserControl1);
             dataGridViewUserControl1.GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(dataGridViewUserControl_GridColumnHeaderMouseClick);
+            dataGridViewUserControl1.DataGridView.MouseUp += DataGridView_MouseUp;
 
             // init other tabs
             for (int i = 1; i < rezTakmicenja.Count; i++)
@@ -98,6 +99,13 @@ namespace Bilten.UI
                 tabControl1.Controls.Add(newTab);
                 initTab(i, newTab, rezTakmicenja[i]);
             }
+        }
+
+        void DataGridView_MouseUp(object sender, MouseEventArgs e)
+        {
+            DataGridView dgw = (sender as DataGridView);
+            if (e.Button == MouseButtons.Right && dgw.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
+                contextMenuStrip1.Show(dgw, new Point(e.X, e.Y));
         }
 
         void dataGridViewUserControl_GridColumnHeaderMouseClick(object sender, 
@@ -118,6 +126,7 @@ namespace Bilten.UI
             dataGridViewUserControl.TabIndex = this.dataGridViewUserControl1.TabIndex;
             GridColumnsInitializer.initGimnasticarUcesnik(dataGridViewUserControl);
             dataGridViewUserControl.GridColumnHeaderMouseClick += new EventHandler<GridColumnHeaderMouseClickEventArgs>(dataGridViewUserControl_GridColumnHeaderMouseClick);
+            dataGridViewUserControl.DataGridView.MouseUp += DataGridView_MouseUp;
 
             tabPage.SuspendLayout();    // NOTE: ovo je obavezno, jer bez toga naredba
             // tabPage.Controls.Add(dataGridViewUserControl) pozicionira
@@ -355,6 +364,91 @@ namespace Bilten.UI
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void mnSpraveKojeSeBoduju_Click(object sender, EventArgs e)
+        {
+            IList<GimnasticarUcesnik> selItems = getActiveDataGridViewUserControl()
+                .getSelectedItems<GimnasticarUcesnik>();
+            if (selItems.Count != 1)
+                return;
+            GimnasticarUcesnik g = selItems[0];
+
+            List<int> checkedItems = new List<int>();
+            foreach (Sprava s in Sprave.getSprave(ActiveRezTakmicenje.Gimnastika))
+            {
+                if (g.getSpravaSeBoduje(s))
+                    checkedItems.Add(Sprave.indexOf(s, ActiveRezTakmicenje.Gimnastika));
+            }
+
+            CheckListForm form = new CheckListForm(
+                new List<string>(Sprave.getSpraveNazivi(ActiveRezTakmicenje.Gimnastika)), checkedItems,
+                "Izaberite sprave koje se boduju", "Sprave koje se boduju", true, "Izaberite sprave", true);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            Sprava[] sprave = Sprave.getSprave(ActiveRezTakmicenje.Gimnastika);
+            IList<Sprava> spraveKojeSeBoduju = new List<Sprava>();
+            g.clearSpraveKojeSeBoduju();
+            foreach (int i in form.CheckedIndices)
+                g.setSpravaSeBoduje(sprave[i]);
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().Update(g);
+
+                    PoredakSpravaDAO poredakSpravaDAO = DAOFactoryFactory.DAOFactory.GetPoredakSpravaDAO();
+                    PoredakPreskokDAO poredakPreskokDAO = DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO();
+
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(takmicenjeId, DeoTakmicenjaKod.Takmicenje1);
+                    
+                    foreach (Sprava s in Sprave.getSprave(ActiveRezTakmicenje.Gimnastika))
+                    {
+                        if (s != Sprava.Preskok)
+                        {
+                            PoredakSprava p = ActiveRezTakmicenje.getPoredakSprava(DeoTakmicenjaKod.Takmicenje1, s);
+                            poredakSpravaDAO.Attach(p, false);
+                            p.create(ActiveRezTakmicenje, ocene);
+                            poredakSpravaDAO.Update(p);
+                        }
+                        else
+                        {
+                            PoredakPreskok p = ActiveRezTakmicenje.getPoredakPreskok(DeoTakmicenjaKod.Takmicenje1);
+                            poredakPreskokDAO.Attach(p, false);
+                            p.create(ActiveRezTakmicenje, ocene);
+                            poredakPreskokDAO.Update(p);
+                        }
+                    }
+                    foreach (Ocena o in ocene)
+                        ocenaDAO.Evict(o);
+
+                    Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    takmicenje.LastModified = DateTime.Now;
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
         }
     }
 }

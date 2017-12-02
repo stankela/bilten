@@ -72,6 +72,13 @@ namespace Bilten.Domain
             set { penaltyViseboj = value; }
         }
 
+        private int spraveMask = 510; // 0b111111110
+        public virtual int SpraveMask
+        {
+            get { return spraveMask; }
+            set { spraveMask = value; }
+        }
+
         public GimnasticarUcesnik()
         { 
         
@@ -170,6 +177,21 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual bool getSpravaSeBoduje(Sprava sprava)
+        {
+            return ((1 << (int)sprava) & SpraveMask) != 0;
+        }
+
+        public virtual void setSpravaSeBoduje(Sprava sprava)
+        {
+            SpraveMask |= (1 << (int)sprava);
+        }
+
+        public virtual void clearSpraveKojeSeBoduju()
+        {
+            SpraveMask = 0;
+        }
+
         public override void validate(Notification notification)
         {
             // TODO: 
@@ -234,6 +256,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(TakmicarskaKategorija != null ? TakmicarskaKategorija.Id.ToString() : NULL);
             strBuilder.AppendLine(NastupaZaDrzavu.ToString());
             strBuilder.AppendLine(PenaltyViseboj != null ? PenaltyViseboj.Value.ToString() : NULL);
+            strBuilder.AppendLine(SpraveMask.ToString());
         }
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
@@ -263,6 +286,8 @@ namespace Bilten.Domain
 
             string penalty = reader.ReadLine();
             PenaltyViseboj = penalty != NULL ? float.Parse(penalty) : (float?)null;
+        
+            SpraveMask = int.Parse(reader.ReadLine());
         }
     }
 }
