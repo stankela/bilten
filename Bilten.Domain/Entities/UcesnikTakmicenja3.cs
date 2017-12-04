@@ -57,7 +57,11 @@ namespace Bilten.Domain
             _sprava = sprava;
         }
 
-        public override bool Equals(object other)
+        // NOTE: Ovo je zakomentarisano jer je pravilo probleme kod promene kvalifikanata u takmicenju 3.
+        // Trenutno, kada se doda nov kvalifikant u takmicenju 3 koji je bio rezerva, on i dalje ostaje rezerva
+        // (tj. nalazi se i na listi za kvalifikante i na listi za rezerve). Dakle, u Takmicenje3.Ucesnici isti gimnasticar
+        // moze da se pojavljuje dva puta.
+        /*public override bool Equals(object other)
         {
             if (object.ReferenceEquals(this, other)) return true;
             if (!(other is UcesnikTakmicenja3)) return false;
@@ -75,7 +79,7 @@ namespace Bilten.Domain
                 result = 29 * result + Sprava.GetHashCode();
                 return result;
             }
-        }
+        }*/
 
         public override void dump(StringBuilder strBuilder)
         {

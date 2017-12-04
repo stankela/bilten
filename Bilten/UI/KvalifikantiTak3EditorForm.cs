@@ -150,8 +150,8 @@ namespace Bilten.UI
                     qualScore = rezTakmicenje.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
                         ? ((RezultatPreskok)selResult).TotalObeOcene : selResult.Total;
                 }
-                newKvalifikant = rezTakmicenje.Takmicenje3.addUcesnik(selResult.Gimnasticar, sprava, qualScore,
-                    selResult.Rank, KvalifikacioniStatus.Q);
+                newKvalifikant = rezTakmicenje.Takmicenje3.addKvalifikant(selResult.Gimnasticar, sprava, qualScore,
+                    selResult.Rank);
             }
             catch (BusinessException ex)
             {

@@ -187,16 +187,15 @@ namespace Bilten.UI
                 rezultatiOpened.Add(rezultatiKey);
             }
 
-            refreshKvalifikanti();
-    
-            dataGridViewUserControl1.setItems<UcesnikTakmicenja3>(
-                ActiveTakmicenje.Takmicenje3.getUcesniciRezerve(ActiveSprava));
-    }
+            refreshKvalifikantiIRezerve();    
+        }
 
-        private void refreshKvalifikanti()
+        private void refreshKvalifikantiIRezerve()
         {
             spravaGridUserControl1.DataGridViewUserControl
                 .setItems<UcesnikTakmicenja3>(ActiveTakmicenje.Takmicenje3.getUcesniciKvalifikanti(ActiveSprava));
+            dataGridViewUserControl1.setItems<UcesnikTakmicenja3>(
+                ActiveTakmicenje.Takmicenje3.getUcesniciRezerve(ActiveSprava));
         }
 
         private void initSpravaGridUserControl(Sprava sprava)
@@ -292,7 +291,7 @@ namespace Bilten.UI
             CurrencyManager currencyManager =
                 (CurrencyManager)this.BindingContext[cmbTakmicenje.DataSource];
             currencyManager.Refresh();
-            refreshKvalifikanti();
+            refreshKvalifikantiIRezerve();
         }
 
         private RezultatskoTakmicenje loadRezTakmicenje(int rezTakmicenjeId)

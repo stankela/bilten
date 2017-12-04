@@ -63,23 +63,20 @@ namespace Bilten.Domain
 
         public virtual IList<UcesnikTakmicenja3> getUcesniciKvalifikanti(Sprava sprava)
         {
-            List<UcesnikTakmicenja3> result = new List<UcesnikTakmicenja3>();
-            foreach (UcesnikTakmicenja3 u in Ucesnici)
-            {
-                if (u.Sprava == sprava && u.KvalStatus == KvalifikacioniStatus.Q)
-                    result.Add(u);
-            }
-            PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(UcesnikTakmicenja3))["QualOrder"];
-            result.Sort(new SortComparer<UcesnikTakmicenja3>(propDesc, ListSortDirection.Ascending));
-            return result;
+            return doGetUcesnici(sprava, KvalifikacioniStatus.Q);
         }
 
         public virtual IList<UcesnikTakmicenja3> getUcesniciRezerve(Sprava sprava)
         {
+            return doGetUcesnici(sprava, KvalifikacioniStatus.R);
+        }
+
+        public virtual IList<UcesnikTakmicenja3> doGetUcesnici(Sprava sprava, KvalifikacioniStatus kvalStatus)
+        {
             List<UcesnikTakmicenja3> result = new List<UcesnikTakmicenja3>();
             foreach (UcesnikTakmicenja3 u in Ucesnici)
             {
-                if (u.Sprava == sprava && u.KvalStatus == KvalifikacioniStatus.R)
+                if (u.Sprava == sprava && u.KvalStatus == kvalStatus)
                     result.Add(u);
             }
             PropertyDescriptor propDesc = TypeDescriptor.GetProperties(typeof(UcesnikTakmicenja3))["QualOrder"];
@@ -210,22 +207,30 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual UcesnikTakmicenja3 addUcesnik(GimnasticarUcesnik gimnasticar, Sprava sprava,
-            Nullable<float> qualScore, Nullable<short> qualRank, KvalifikacioniStatus kvalStatus)
+        // Public metod koji se poziva samo kada se dodaje novi kvalifikant u prozoru za dodavanje kvalifikanata.
+        public virtual UcesnikTakmicenja3 addKvalifikant(GimnasticarUcesnik gimnasticar, Sprava sprava,
+            Nullable<float> qualScore, Nullable<short> qualRank)
         {
+            foreach (UcesnikTakmicenja3 u in getUcesniciKvalifikanti(sprava))
+            {
+                if (u.Gimnasticar.Id == gimnasticar.Id)
+                {
+                    throw new BusinessException(
+                        String.Format("Gimnasticar \"{0}\" je vec medju kvalifikantima.", gimnasticar));
+                }
+            }
+            // Ne proveravam da li je gimnasticar medju rezervama. Kada se doda nov kvalifikant u takmicenju 3 koji je bio
+            // rezerva, on i dalje ostaje rezerva (tj. nalazi se i na listi za kvalifikante i na listi za rezerve). Dakle,
+            // u setu Ucesnici isti gimnasticar moze da se pojavljuje dva puta.
             short qualOrder = (short)(getUcesniciKvalifikanti(sprava).Count + 1);
-            return addUcesnik(gimnasticar, sprava, qualScore, qualRank, kvalStatus, qualOrder);
+            return addUcesnik(gimnasticar, sprava, qualScore, qualRank, KvalifikacioniStatus.Q, qualOrder);
         }
 
-        public virtual UcesnikTakmicenja3 addUcesnik(GimnasticarUcesnik gimnasticar, Sprava sprava,
+        private UcesnikTakmicenja3 addUcesnik(GimnasticarUcesnik gimnasticar, Sprava sprava,
             Nullable<float> qualScore, Nullable<short> qualRank, KvalifikacioniStatus kvalStatus, short qualOrder)
         {
             UcesnikTakmicenja3 u = new UcesnikTakmicenja3(gimnasticar, sprava, qualOrder, qualScore, qualRank, kvalStatus);
-            if (!Ucesnici.Add(u))
-            {
-                throw new BusinessException(
-                    String.Format("Gimnasticar \"{0}\" je vec medju kvalifikantima.", u.Gimnasticar));
-            }
+            Ucesnici.Add(u);
             return u;
         }
 
