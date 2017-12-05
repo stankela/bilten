@@ -139,18 +139,18 @@ namespace Bilten.UI
             this.lblKvalPreskok.AutoSize = true;
             this.lblKvalPreskok.Location = new System.Drawing.Point(15, 247);
             this.lblKvalPreskok.Name = "lblKvalPreskok";
-            this.lblKvalPreskok.Size = new System.Drawing.Size(218, 13);
+            this.lblKvalPreskok.Size = new System.Drawing.Size(368, 13);
             this.lblKvalPreskok.TabIndex = 9;
-            this.lblKvalPreskok.Text = "Preskok u takmicenju I se racuna na osnovu";
+            this.lblKvalPreskok.Text = "Ocena za kvalifikacije u finalu preskoka iz takmicenja I se racuna na osnovu";
             // 
             // lblPoredakPreskok
             // 
             this.lblPoredakPreskok.AutoSize = true;
             this.lblPoredakPreskok.Location = new System.Drawing.Point(15, 333);
             this.lblPoredakPreskok.Name = "lblPoredakPreskok";
-            this.lblPoredakPreskok.Size = new System.Drawing.Size(224, 13);
+            this.lblPoredakPreskok.Size = new System.Drawing.Size(308, 13);
             this.lblPoredakPreskok.TabIndex = 12;
-            this.lblPoredakPreskok.Text = "Preskok u takmicenju III se racuna na osnovu";
+            this.lblPoredakPreskok.Text = "Rezultat u finalu preskoka u takmicenju III se racuna na osnovu";
             // 
             // panel1
             // 
@@ -188,7 +188,7 @@ namespace Bilten.UI
             this.panel2.Controls.Add(this.rbtKvalPreskok1);
             this.panel2.Location = new System.Drawing.Point(28, 263);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(138, 47);
+            this.panel2.Size = new System.Drawing.Size(170, 47);
             this.panel2.TabIndex = 16;
             // 
             // rbtKvalPreskok2
@@ -196,10 +196,10 @@ namespace Bilten.UI
             this.rbtKvalPreskok2.AutoSize = true;
             this.rbtKvalPreskok2.Location = new System.Drawing.Point(3, 26);
             this.rbtKvalPreskok2.Name = "rbtKvalPreskok2";
-            this.rbtKvalPreskok2.Size = new System.Drawing.Size(92, 17);
+            this.rbtKvalPreskok2.Size = new System.Drawing.Size(165, 17);
             this.rbtKvalPreskok2.TabIndex = 13;
             this.rbtKvalPreskok2.TabStop = true;
-            this.rbtKvalPreskok2.Text = "Oba preskoka";
+            this.rbtKvalPreskok2.Text = "Proseka ocena oba preskoka";
             this.rbtKvalPreskok2.UseVisualStyleBackColor = true;
             this.rbtKvalPreskok2.CheckedChanged += new System.EventHandler(this.rbtKvalPreskok_CheckedChanged);
             // 
@@ -304,10 +304,10 @@ namespace Bilten.UI
             this.rbtPrednostImaVecaEOcena.AutoSize = true;
             this.rbtPrednostImaVecaEOcena.Location = new System.Drawing.Point(3, 26);
             this.rbtPrednostImaVecaEOcena.Name = "rbtPrednostImaVecaEOcena";
-            this.rbtPrednostImaVecaEOcena.Size = new System.Drawing.Size(156, 17);
+            this.rbtPrednostImaVecaEOcena.Size = new System.Drawing.Size(154, 17);
             this.rbtPrednostImaVecaEOcena.TabIndex = 1;
             this.rbtPrednostImaVecaEOcena.TabStop = true;
-            this.rbtPrednostImaVecaEOcena.Text = "Prednost ima veca E ocena";
+            this.rbtPrednostImaVecaEOcena.Text = "Prednost ima bolja E ocena";
             this.rbtPrednostImaVecaEOcena.UseVisualStyleBackColor = true;
             this.rbtPrednostImaVecaEOcena.CheckedChanged += new System.EventHandler(this.rbtPrednostImaVecaEOcena_CheckedChanged);
             // 
