@@ -232,7 +232,7 @@ namespace Bilten.UI
 
         private void RezultatskoTakmicenjeDescriptionForm_Shown(object sender, EventArgs e)
         {
-            if (!editMode)
+            if (txtNaziv.Text.Trim() == String.Empty)
                 txtNaziv.Focus();
             else
                 btnCancel.Focus();
