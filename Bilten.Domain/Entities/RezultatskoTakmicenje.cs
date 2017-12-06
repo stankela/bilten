@@ -575,7 +575,12 @@ namespace Bilten.Domain
 
             if (Propozicije.PostojiTak4 != origPropozicije.PostojiTak4)
             {
-                if (takmicenje.ZavrsenoTak1)
+                // TODO4: Ovaj deo (konkretno grana else if (Propozicije.PostojiTak4)) je pravio probleme kada se
+                // kreira takmicenje gde postoji jedno ekipno takmicenje za sve kategorije (prava vrednost za
+                // ImaEkipnoTakmicenje se podesi u updateImaEkipnoTakmicenje, a onda se ovde pogresno postavi na true
+                // za sva rez.takmicenja). Proveri da li moze (i kada) da pravi probleme to sto sam ceo ovaj deo
+                // zakomentarisao 
+                /*if (takmicenje.ZavrsenoTak1)
                 {
                     // ignorisi
                     // TODO: Da li treba vracati originalnu vrednost za PostojiTak4 (isto i za PostojiTak2 i PostojiTak3)
@@ -589,7 +594,7 @@ namespace Bilten.Domain
                 {
                     // TODO: Razmisli da li treba pitati korisnika za potvrdu, pa zatim izbrisati ekipe i poredak ekipno.
                     ImaEkipnoTakmicenje = false;
-                }
+                }*/
                 // KombinovanoEkipnoTak se podesava u updateImaEkipnoTakmicenje.
             }
             if (Propozicije.OdvojenoTak4 != origPropozicije.OdvojenoTak4)
