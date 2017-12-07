@@ -90,6 +90,7 @@ create table takmicenja (
 	zavrseno_tak1 bit,
 	zreb_za_finale_tak3 nvarchar(128),
 	last_modified datetime,
+	vrhovni_sudija_id int references sudija_ucesnik(sudija_id),
 	prvo_kolo_id int references takmicenja(takmicenje_id),
 	drugo_kolo_id int references takmicenja(takmicenje_id),
 	trece_kolo_id int references takmicenja(takmicenje_id),

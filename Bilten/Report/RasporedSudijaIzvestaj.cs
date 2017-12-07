@@ -15,6 +15,10 @@ namespace Bilten.Report
         private float itemFontSize = 9;
         private bool svakaSpravaNaPosebnojStrani;
 
+        private string vrhovniSudija;
+        private string vrhovniSudijaCaption;
+        private bool stampajVrhovnogSudiju;
+
         private ReportText vrhovniSudijaReportText;
         private ReportText vrhovniSudijaCaptionReportText;
 
@@ -24,17 +28,44 @@ namespace Bilten.Report
         public RasporedSudijaIzvestaj(SudijskiOdborNaSpravi odbor, string documentName, DataGridView formGrid)
         {
             DocumentName = documentName;
+            this.vrhovniSudija = String.Empty;
+            this.vrhovniSudijaCaption = String.Empty;
+            stampajVrhovnogSudiju = false;
+
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+
+            vrhovniSudijaCaptionFont = new Font("Arial", 11, FontStyle.Bold);
+            vrhovniSudijaFont = new Font("Arial", 11);
+            
             svakaSpravaNaPosebnojStrani = true;
 
             reportListe.Add(new RasporedSudijaLista(this, 1, 0f, itemFont, itemsHeaderFont, odbor, false, 1, formGrid));
         }
 
         public RasporedSudijaIzvestaj(List<SudijskiOdborNaSpravi> odbori, Gimnastika gim,
-            string documentName, int brojSpravaPoStrani, SpravaGridGroupUserControl spravaGridGroupUserControl)
+            string documentName, int brojSpravaPoStrani, SpravaGridGroupUserControl spravaGridGroupUserControl,
+            SudijaUcesnik vrhovniSudija)
         {
             DocumentName = documentName;
+            if (vrhovniSudija != null)
+            {
+                this.vrhovniSudija = vrhovniSudija.PrezimeIme;
+                if (vrhovniSudija.Pol == Pol.Muski)
+                    vrhovniSudijaCaption = "Vrhovni sudija: ";
+                else
+                    vrhovniSudijaCaption = "Vrhovna sutkinja: ";
+            }
+            else
+            {
+                this.vrhovniSudija = String.Empty;
+                if (gim == Gimnastika.MSG)
+                    vrhovniSudijaCaption = "Vrhovni sudija: ";
+                else
+                    vrhovniSudijaCaption = "Vrhovna sutkinja: ";
+            }
+            stampajVrhovnogSudiju = true;
+
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
 
@@ -80,30 +111,30 @@ namespace Bilten.Report
 
         protected override void doSetupContent(Graphics g)
         {
-            string vrhovniSudijaCaption = "Vrhovni sudija: ";
-            string vrhovniSudija = "Ime Prezime";
-
-            StringFormat format = new StringFormat();
-            //format.Alignment = StringAlignment.Center;
             float vrhovniSudijaHeight = Math.Max(vrhovniSudijaCaptionFont.GetHeight(g),
                 vrhovniSudijaFont.GetHeight(g));
-            float vrhovniSudijaCaptionWidth = g.MeasureString(vrhovniSudijaCaption, vrhovniSudijaCaptionFont).Width;
-            float vrhovniSudijaWidth = g.MeasureString(vrhovniSudija, vrhovniSudijaFont).Width;
-            float vrhovniSudijaTotalWidth = vrhovniSudijaCaptionWidth + vrhovniSudijaWidth;
+            if (stampajVrhovnogSudiju)
+            {
+                StringFormat format = new StringFormat();
+                //format.Alignment = StringAlignment.Center;
+                float vrhovniSudijaCaptionWidth = g.MeasureString(vrhovniSudijaCaption, vrhovniSudijaCaptionFont).Width;
+                float vrhovniSudijaWidth = g.MeasureString(vrhovniSudija, vrhovniSudijaFont).Width;
+                float vrhovniSudijaTotalWidth = vrhovniSudijaCaptionWidth + vrhovniSudijaWidth;
 
-            RectangleF vrhovniSudijaRect = new RectangleF(
-                contentBounds.X + (contentBounds.Width - vrhovniSudijaTotalWidth) / 2,
-                contentBounds.Y + 2 * vrhovniSudijaHeight, vrhovniSudijaTotalWidth, vrhovniSudijaHeight);
+                RectangleF vrhovniSudijaRect = new RectangleF(
+                    contentBounds.X + (contentBounds.Width - vrhovniSudijaTotalWidth) / 2,
+                    contentBounds.Y + 2 * vrhovniSudijaHeight, vrhovniSudijaTotalWidth, vrhovniSudijaHeight);
 
-            vrhovniSudijaCaptionReportText = new ReportText(
-                vrhovniSudijaCaption, vrhovniSudijaCaptionFont,
-                blackBrush, vrhovniSudijaRect, format);
+                vrhovniSudijaCaptionReportText = new ReportText(
+                    vrhovniSudijaCaption, vrhovniSudijaCaptionFont,
+                    blackBrush, vrhovniSudijaRect, format);
 
-            vrhovniSudijaRect.X += vrhovniSudijaCaptionWidth;
-            vrhovniSudijaRect.Width -= vrhovniSudijaCaptionWidth;
-            vrhovniSudijaReportText = new ReportText(
-                vrhovniSudija, vrhovniSudijaFont,
-                blackBrush, vrhovniSudijaRect, format);
+                vrhovniSudijaRect.X += vrhovniSudijaCaptionWidth;
+                vrhovniSudijaRect.Width -= vrhovniSudijaCaptionWidth;
+                vrhovniSudijaReportText = new ReportText(
+                    vrhovniSudija, vrhovniSudijaFont,
+                    blackBrush, vrhovniSudijaRect, format);
+            }
             
             // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
             lastPageNum = 0;
@@ -135,7 +166,7 @@ namespace Bilten.Report
 
         public override void drawContent(Graphics g, int pageNum)
         {
-            if (pageNum == 1)
+            if (pageNum == 1 && stampajVrhovnogSudiju)
             {
                 vrhovniSudijaReportText.draw(g);
                 vrhovniSudijaCaptionReportText.draw(g);

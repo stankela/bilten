@@ -167,12 +167,13 @@ namespace Bilten.Misc
                 }
 
                 int prvoKoloId, drugoKoloId, treceKoloId, cetvrtoKoloId;
+                int vrhovniSudijaId;
 
                 // load takmicenje
                 string id = reader.ReadLine();
                 map.takmicenjeMap.Add(int.Parse(id), takmicenje);
                 takmicenje.loadFromDump(reader, map, out prvoKoloId, out drugoKoloId,
-                    out treceKoloId, out cetvrtoKoloId);
+                    out treceKoloId, out cetvrtoKoloId, out vrhovniSudijaId);
 
                 // TODO4: Ovde moze da se desi da ID koji je postojao u biltenu iz koga se takmicenje izvozilo ne postoji
                 // u biltenu u koji se takmicenje uvozi.
@@ -184,6 +185,8 @@ namespace Bilten.Misc
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(treceKoloId);
                 takmicenje.CetvrtoKolo = cetvrtoKoloId == -1 ? null :
                     DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(cetvrtoKoloId);
+
+                // Vrhovnog sudiju ucitavam dole (nakon sto ucitam sve sudije ucesnike).
 
                 // load klubovi
                 int count = int.Parse(reader.ReadLine());
@@ -248,6 +251,8 @@ namespace Bilten.Misc
                     s.loadFromDump(reader, map);
                     sudije.Add(s);
                 }
+
+                takmicenje.VrhovniSudija = vrhovniSudijaId == -1 ? null : map.sudijeMap[vrhovniSudijaId];
 
                 // load rasporedi sudija
                 count = int.Parse(reader.ReadLine());

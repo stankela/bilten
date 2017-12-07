@@ -41,12 +41,16 @@ namespace Bilten
         // TODO4: Proveri u kojim slucajevima kada se promeni da postoji jedno ekipno takmicenje za sve kategorije,
         // ne izbrise ostala takmicenja.
         // TODO4: Proveri u kojim slucajevima nece da izracuna ekipni poredak automatski vec mora da se klikne na Izracunaj.
+        // (moguce da ovo ima veze sa greskom kada se selektuje jedno ekipno takmicenje za sve kategorije, a koju sam
+        // privremeno ispravio u 13581cdf21cab5bb7ba5c5f5888ebeae90c5621e)
         // TODO4: Kada se pravi finale kupa ili finale vise kola, dodaj opciju da se racuna bolji preskok iz prethodnih kola.
         // TODO4: Dodaj opciju "Sprave koje se boduju" za sprave i za viseboj.
         // TODO4: Dodaj opciju da se liste koje sadrze sprave (start liste, ocene, ...) stampaju jedna za drugom, koliko
         // moze da stane na jednoj strani.
         // TODO4: Dodaj dugme "Filtriraj" za gimnasticare ucesnike (i proveri zasto nekad nece da filtrira).
         // TODO4: Dodati kategoriju i gimnastiku za sudije, i ne stampati pol.
+        // TODO4: Dodaj unit testove koji ce proveravati da li je dodato neko novo svojstvo koje je bitno u dump metodima
+        // kao i u metodu koji proverava da li su propozicije promenjene, a da pritom ovi metodi nisu apdejtovani.
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
@@ -64,7 +68,7 @@ namespace Bilten
         // - Kod racunanja ocene na osnovu oba preskoka treba da postoji izbor da li se ocena racuna na osnovu oba preskoka
         //   ili vece ocene iz oba preskoka.
 
-        public static int VERZIJA_PROGRAMA = 6;
+        public static int VERZIJA_PROGRAMA = 7;
 
         /// <summary>
         /// The main entry point for the application.

@@ -90,6 +90,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Vrhovni sudija";
+            this.Shown += new System.EventHandler(this.VrhovniSudijaForm_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

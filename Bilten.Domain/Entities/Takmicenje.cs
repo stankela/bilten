@@ -607,6 +607,8 @@ namespace Bilten.Domain
             strBuilder.AppendLine(TreceKolo != null ? TreceKolo.Id.ToString() : NULL);
             strBuilder.AppendLine(CetvrtoKolo != null ? CetvrtoKolo.Id.ToString() : NULL);
 
+            strBuilder.AppendLine(VrhovniSudija != null ? VrhovniSudija.Id.ToString() : NULL);
+
             strBuilder.AppendLine(BrojEOcena.ToString());
             strBuilder.AppendLine(BrojDecimalaD.ToString());
             strBuilder.AppendLine(BrojDecimalaE1.ToString());
@@ -627,7 +629,7 @@ namespace Bilten.Domain
         }
 
         public virtual void loadFromDump(StringReader reader, IdMap map, out int prvoKoloId, out int drugoKoloId,
-            out int treceKoloId, out int cetvrtoKoloId)
+            out int treceKoloId, out int cetvrtoKoloId, out int vrhovniSudijaId)
         {
             string naziv = reader.ReadLine();
             Naziv = naziv != NULL ? naziv : null;            
@@ -646,6 +648,9 @@ namespace Bilten.Domain
             drugoKoloId = drugoKoloIdStr != NULL ? int.Parse(drugoKoloIdStr) : -1;
             treceKoloId = treceKoloIdStr != NULL ? int.Parse(treceKoloIdStr) : -1;
             cetvrtoKoloId = cetvrtoKoloIdStr != NULL ? int.Parse(cetvrtoKoloIdStr) : -1;
+
+            string vrhovniSudijaIdStr = reader.ReadLine();
+            vrhovniSudijaId = vrhovniSudijaIdStr != NULL ? int.Parse(vrhovniSudijaIdStr) : -1;
 
             BrojEOcena = byte.Parse(reader.ReadLine());
             BrojDecimalaD = byte.Parse(reader.ReadLine());

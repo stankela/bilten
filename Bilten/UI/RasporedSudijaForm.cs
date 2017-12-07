@@ -57,6 +57,8 @@ namespace Bilten.UI
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
                     NHibernateUtil.Initialize(takmicenje);
+                    // Potrebno za slucaj da ne postoje sudije na spravama vec samo vrhovni sudija.
+                    NHibernateUtil.Initialize(takmicenje.VrhovniSudija);
 
                     // create tabs
                     for (int i = 0; i < rasporedi.Count; i++)
@@ -616,7 +618,7 @@ namespace Bilten.UI
                         odbori.Add(ActiveRaspored.getOdbor(s));
                     }
                     p.setIzvestaj(new RasporedSudijaIzvestaj(odbori, takmicenje.Gimnastika, documentName,
-                        form.BrojSpravaPoStrani, getActiveSpravaGridGroupUserControl()));
+                        form.BrojSpravaPoStrani, getActiveSpravaGridGroupUserControl(), takmicenje.VrhovniSudija));
                 }
                 else
                 {

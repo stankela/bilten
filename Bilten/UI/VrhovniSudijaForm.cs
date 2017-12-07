@@ -61,6 +61,7 @@ namespace Bilten.UI
 
                     SudijaUcesnik emptySudija = new SudijaUcesnik();
                     emptySudija.Prezime = PRAZNO;
+                    emptySudija.Ime = "";
                     sudije.Insert(0, emptySudija);
 
                     cmbVrhovniSudija.DropDownStyle = ComboBoxStyle.DropDown;
@@ -129,6 +130,11 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        }
+
+        private void VrhovniSudijaForm_Shown(object sender, EventArgs e)
+        {
+            btnCancel.Focus();
         }
     }
 }
