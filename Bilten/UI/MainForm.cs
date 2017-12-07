@@ -69,6 +69,7 @@ namespace Bilten.UI
             mnTakmicariTakmicenja.Enabled = false;
             mnEkipe.Enabled = false;
             mnSudijeNaTakmicenju.Enabled = false;
+            mnVrhovniSudija.Enabled = false;
         
             strProgName = Application.ProductName;
             mnTakmicenje1.Visible = false;
@@ -344,6 +345,7 @@ namespace Bilten.UI
             mnTakmicariTakmicenja.Enabled = true;
             mnEkipe.Enabled = true;
             mnSudijeNaTakmicenju.Enabled = true;
+            mnVrhovniSudija.Enabled = true;
             mnTakmicenje1.Visible = true;
 
             if (newTakmicenje)
@@ -1437,6 +1439,19 @@ namespace Bilten.UI
             {
                 MessageDialogs.showError(initError, "");
                 Close();
+            }
+        }
+
+        private void mnVrhovniSudija_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                VrhovniSudijaForm form = new VrhovniSudijaForm(takmicenjeId.Value);
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
             }
         }
     }

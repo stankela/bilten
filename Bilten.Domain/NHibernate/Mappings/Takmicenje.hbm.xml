@@ -34,6 +34,7 @@
     <many-to-one name="DrugoKolo" class="Takmicenje" column="drugo_kolo_id" />
     <many-to-one name="TreceKolo" class="Takmicenje" column="trece_kolo_id" />
     <many-to-one name="CetvrtoKolo" class="Takmicenje" column="cetvrto_kolo_id" />
+    <!--<many-to-one name="VrhovniSudija" class="SudijaUcesnik" column="vrhovni_sudija_id" />-->
   </class>
 
 </hibernate-mapping>

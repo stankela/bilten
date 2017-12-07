@@ -96,6 +96,13 @@ namespace Bilten.Domain
             set { cetvrtoKolo = value; }
         }
 
+        private SudijaUcesnik vrhovniSudija;
+        public virtual SudijaUcesnik VrhovniSudija
+        {
+            get { return vrhovniSudija; }
+            set { vrhovniSudija = value; }
+        }
+
         private byte brojEOcena = 0;
         public virtual byte BrojEOcena
         {

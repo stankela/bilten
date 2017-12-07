@@ -81,10 +81,16 @@ namespace Bilten.UI
             spravaGridUserControl1.clearSelection();
         }
 
+        // TODO4: Moguce je selektovati vise sudija, ali kada se pritisne Brisi, izbrise se samo jedan. Ispravi ovo.
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (sudijskiOdbor.isComplete())
+            {
+                string msg = "Sve pozicije su popunjene. Morate najpre da dodate nove pozicije (dugme Funkcije).";
+                MessageDialogs.showMessage(msg, this.Text);
                 return;
+            }
 
             DialogResult dlgResult = DialogResult.None;
             SelectSudijaUcesnikForm form = null;

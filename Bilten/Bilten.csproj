@@ -185,6 +185,9 @@
     <EmbeddedResource Include="UI\FilterSudijaUserControl.resx">
       <DependentUpon>FilterSudijaUserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\VrhovniSudijaForm.resx">
+      <DependentUpon>VrhovniSudijaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Update\DatabaseUpdate_version6.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version5.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version4.txt" />
@@ -725,6 +728,12 @@
     </Compile>
     <Compile Include="UI\TakmicenjeForm.Designer.cs">
       <DependentUpon>TakmicenjeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\VrhovniSudijaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\VrhovniSudijaForm.Designer.cs">
+      <DependentUpon>VrhovniSudijaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\WaitForm.cs">
       <SubType>Form</SubType>

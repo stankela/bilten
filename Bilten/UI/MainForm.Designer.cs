@@ -80,6 +80,7 @@ namespace Bilten.UI
             this.mnKvalifikantiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOceneTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnVrhovniSudija = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -185,7 +186,8 @@ namespace Bilten.UI
             this.mnTakmicariKategorije,
             this.mnTakmicariTakmicenja,
             this.mnEkipe,
-            this.mnSudijeNaTakmicenju});
+            this.mnSudijeNaTakmicenju,
+            this.mnVrhovniSudija});
             this.mnTakmicenje.Name = "mnTakmicenje";
             this.mnTakmicenje.Size = new System.Drawing.Size(80, 20);
             this.mnTakmicenje.Text = "Takmicenje";
@@ -495,6 +497,13 @@ namespace Bilten.UI
             this.mnRezultatiTak4.Size = new System.Drawing.Size(132, 22);
             this.mnRezultatiTak4.Text = "Rezultati";
             // 
+            // mnVrhovniSudija
+            // 
+            this.mnVrhovniSudija.Name = "mnVrhovniSudija";
+            this.mnVrhovniSudija.Size = new System.Drawing.Size(196, 22);
+            this.mnVrhovniSudija.Text = "Vrhovni sudija";
+            this.mnVrhovniSudija.Click += new System.EventHandler(this.mnVrhovniSudija_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -567,6 +576,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnTakmicenje3RasporedSudija;
         private System.Windows.Forms.ToolStripMenuItem mnIzveziTakmicenje;
         private System.Windows.Forms.ToolStripMenuItem mnUveziTakmicenje;
+        private System.Windows.Forms.ToolStripMenuItem mnVrhovniSudija;
     }
 }
 

@@ -15,6 +15,12 @@ namespace Bilten.Report
         private float itemFontSize = 9;
         private bool svakaSpravaNaPosebnojStrani;
 
+        private ReportText vrhovniSudijaReportText;
+        private ReportText vrhovniSudijaCaptionReportText;
+
+        private Font vrhovniSudijaCaptionFont;
+        private Font vrhovniSudijaFont;
+        
         public RasporedSudijaIzvestaj(SudijskiOdborNaSpravi odbor, string documentName, DataGridView formGrid)
         {
             DocumentName = documentName;
@@ -31,6 +37,10 @@ namespace Bilten.Report
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+
+            vrhovniSudijaCaptionFont = new Font("Arial", 11, FontStyle.Bold);
+            vrhovniSudijaFont = new Font("Arial", 11);
+
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
             bool sveSpraveNaJednojStrani = brojSpravaPoStrani > 3;
 
@@ -70,6 +80,31 @@ namespace Bilten.Report
 
         protected override void doSetupContent(Graphics g)
         {
+            string vrhovniSudijaCaption = "Vrhovni sudija: ";
+            string vrhovniSudija = "Ime Prezime";
+
+            StringFormat format = new StringFormat();
+            //format.Alignment = StringAlignment.Center;
+            float vrhovniSudijaHeight = Math.Max(vrhovniSudijaCaptionFont.GetHeight(g),
+                vrhovniSudijaFont.GetHeight(g));
+            float vrhovniSudijaCaptionWidth = g.MeasureString(vrhovniSudijaCaption, vrhovniSudijaCaptionFont).Width;
+            float vrhovniSudijaWidth = g.MeasureString(vrhovniSudija, vrhovniSudijaFont).Width;
+            float vrhovniSudijaTotalWidth = vrhovniSudijaCaptionWidth + vrhovniSudijaWidth;
+
+            RectangleF vrhovniSudijaRect = new RectangleF(
+                contentBounds.X + (contentBounds.Width - vrhovniSudijaTotalWidth) / 2,
+                contentBounds.Y + 2 * vrhovniSudijaHeight, vrhovniSudijaTotalWidth, vrhovniSudijaHeight);
+
+            vrhovniSudijaCaptionReportText = new ReportText(
+                vrhovniSudijaCaption, vrhovniSudijaCaptionFont,
+                blackBrush, vrhovniSudijaRect, format);
+
+            vrhovniSudijaRect.X += vrhovniSudijaCaptionWidth;
+            vrhovniSudijaRect.Width -= vrhovniSudijaCaptionWidth;
+            vrhovniSudijaReportText = new ReportText(
+                vrhovniSudija, vrhovniSudijaFont,
+                blackBrush, vrhovniSudijaRect, format);
+            
             // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
             lastPageNum = 0;
             float maxImeWidth = 0.0f;
@@ -78,7 +113,7 @@ namespace Bilten.Report
             {
                 if (svakaSpravaNaPosebnojStrani)
                     lista.FirstPageNum = lastPageNum + 1;
-                lista.StartY = contentBounds.Y + lista.RelY * contentBounds.Height;
+                lista.StartY = contentBounds.Y + 3 * vrhovniSudijaHeight + lista.RelY * (contentBounds.Height - 3 * vrhovniSudijaHeight);
                 lista.setupContent(g, contentBounds);
                 if (lista.Columns[1].Width > maxImeWidth)
                     maxImeWidth = lista.Columns[1].Width;
@@ -92,7 +127,7 @@ namespace Bilten.Report
             {
                 if (svakaSpravaNaPosebnojStrani)
                     lista.FirstPageNum = lastPageNum + 1;
-                lista.StartY = contentBounds.Y + lista.RelY * contentBounds.Height;
+                lista.StartY = contentBounds.Y + 3 * vrhovniSudijaHeight + lista.RelY * (contentBounds.Height - 3 * vrhovniSudijaHeight);
                 lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
                 lastPageNum = lista.LastPageNum;
             }
@@ -100,6 +135,11 @@ namespace Bilten.Report
 
         public override void drawContent(Graphics g, int pageNum)
         {
+            if (pageNum == 1)
+            {
+                vrhovniSudijaReportText.draw(g);
+                vrhovniSudijaCaptionReportText.draw(g);
+            }
             foreach (RasporedSudijaLista lista in reportListe)
             {
                 lista.drawContent(g, contentBounds, pageNum);
