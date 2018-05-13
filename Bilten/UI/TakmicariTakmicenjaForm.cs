@@ -15,6 +15,7 @@ using Bilten.Dao;
 using NHibernate;
 using Bilten.Util;
 using Bilten.Services;
+using Bilten.Report;
 
 namespace Bilten.UI
 {
@@ -23,12 +24,11 @@ namespace Bilten.UI
         private IList<RezultatskoTakmicenje> rezTakmicenja;
         private bool[] tabOpened;
         private StatusBar statusBar;
-        private int takmicenjeId;
+        private Takmicenje takmicenje;
         
         public TakmicariTakmicenjaForm(int takmicenjeId)
         {
             InitializeComponent();
-            this.takmicenjeId = takmicenjeId;
 
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -44,6 +44,9 @@ namespace Bilten.UI
                     if (rezTakmicenja.Count == 0)
                         throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    NHibernateUtil.Initialize(takmicenje);
+                    
                     initUI();
                     tabOpened = new bool[rezTakmicenja.Count];
                     onSelectedIndexChanged();
@@ -105,7 +108,11 @@ namespace Bilten.UI
         {
             DataGridView dgw = (sender as DataGridView);
             if (e.Button == MouseButtons.Right && dgw.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
+            {
+                mnSpraveKojeSeBoduju.Enabled = false;  // TODO4: Ovo je privremeno dok se ne ispravi greska (vidi
+                                                       // odgovarajuci TODO4 u Program.cs
                 contextMenuStrip1.Show(dgw, new Point(e.X, e.Y));
+            }
         }
 
         void dataGridViewUserControl_GridColumnHeaderMouseClick(object sender, 
@@ -256,8 +263,8 @@ namespace Bilten.UI
                         addedGimnasticari);
                     if (addedGimnasticari.Count > 0)
                     {
-                        Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
-                        t.LastModified = DateTime.Now;
+                        takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                        takmicenje.LastModified = DateTime.Now;
                         session.Transaction.Commit();
                     }
                 }
@@ -322,8 +329,8 @@ namespace Bilten.UI
                     CurrentSessionContext.Bind(session);
                     RezultatskoTakmicenjeService.deleteGimnasticariFromRezTak(selItems, ActiveRezTakmicenje);
 
-                    Takmicenje t = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
-                    t.LastModified = DateTime.Now;
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                     
                     setGimnasticari(ActiveRezTakmicenje.Takmicenje1.Gimnasticari);
@@ -408,7 +415,7 @@ namespace Bilten.UI
                     PoredakPreskokDAO poredakPreskokDAO = DAOFactoryFactory.DAOFactory.GetPoredakPreskokDAO();
 
                     OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
-                    IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(takmicenjeId, DeoTakmicenjaKod.Takmicenje1);
+                    IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
                     
                     foreach (Sprava s in Sprave.getSprave(ActiveRezTakmicenje.Gimnastika))
                     {
@@ -430,7 +437,7 @@ namespace Bilten.UI
                     foreach (Ocena o in ocene)
                         ocenaDAO.Evict(o);
 
-                    Takmicenje takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
                     takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();
                 }
@@ -448,6 +455,86 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+        }
+
+        private void btnPrint_Click(object sender, EventArgs e)
+        {
+            //char shVeliko = '\u0160';
+            char chMalo = '\u010d';
+            string nazivIzvestaja;
+            if (takmicenje.Gimnastika == Gimnastika.MSG)
+                nazivIzvestaja = "Gimnasti" + chMalo + "ari";
+            else
+                nazivIzvestaja = "Gimnasti" + chMalo + "arke";
+
+            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
+                false, false, false, false, false, false, false);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = takmicenje.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = ActiveRezTakmicenje.Naziv;
+                form.Header4Text = nazivIzvestaja;
+                form.FooterText = mestoDatum;
+            }
+            else
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+                form.Header3Text = ActiveRezTakmicenje.Naziv;
+                form.Header4Text = nazivIzvestaja;
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            FormUtil.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                PreviewDialog p = new PreviewDialog();
+
+                nazivIzvestaja = nazivIzvestaja + " - " + ActiveRezTakmicenje.Naziv;
+                List<GimnasticarUcesnik> gimnasticari = getActiveDataGridViewUserControl().getItems<GimnasticarUcesnik>();
+
+                /*PropertyDescriptor propDesc =
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubDrzava"];
+                gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc,
+                    ListSortDirection.Ascending));*/
+
+
+                PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["DrzavaString"],
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubString"],
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Prezime"],
+                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Ime"]
+                };
+                ListSortDirection[] sortDir = new ListSortDirection[] {
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending,
+                    ListSortDirection.Ascending
+                };
+                gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc, sortDir));
+
+                p.setIzvestaj(new TakmicariIzvestaj(gimnasticari,
+                    takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView, nazivIzvestaja));
+                p.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
             }
         }
     }

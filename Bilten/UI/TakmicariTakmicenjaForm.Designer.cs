@@ -37,6 +37,7 @@ namespace Bilten.UI
             this.btnClose = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnSpraveKojeSeBoduju = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnPrint = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -99,7 +100,7 @@ namespace Bilten.UI
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(240, 12);
+            this.btnClose.Location = new System.Drawing.Point(335, 12);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -112,7 +113,7 @@ namespace Bilten.UI
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnSpraveKojeSeBoduju});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(190, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(190, 26);
             // 
             // mnSpraveKojeSeBoduju
             // 
@@ -121,18 +122,29 @@ namespace Bilten.UI
             this.mnSpraveKojeSeBoduju.Text = "Sprave koje se boduju";
             this.mnSpraveKojeSeBoduju.Click += new System.EventHandler(this.mnSpraveKojeSeBoduju_Click);
             // 
+            // btnPrint
+            // 
+            this.btnPrint.Location = new System.Drawing.Point(242, 12);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(75, 23);
+            this.btnPrint.TabIndex = 4;
+            this.btnPrint.Text = "Stampaj";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            // 
             // TakmicariTakmicenjaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(939, 429);
+            this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.tabControl1);
             this.Name = "TakmicariTakmicenjaForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TakmicariKategorijeForm";
+            this.Text = "TakmicariTakmicenjaForm";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
@@ -150,5 +162,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem mnSpraveKojeSeBoduju;
+        private System.Windows.Forms.Button btnPrint;
     }
 }

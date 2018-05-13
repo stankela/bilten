@@ -51,6 +51,14 @@ namespace Bilten
         // TODO4: Dodati kategoriju i gimnastiku za sudije, i ne stampati pol.
         // TODO4: Dodaj unit testove koji ce proveravati da li je dodato neko novo svojstvo koje je bitno u dump metodima
         // kao i u metodu koji proverava da li su propozicije promenjene, a da pritom ovi metodi nisu apdejtovani.
+        // TODO4: kada ne postoji odvojeno finale takmicenja3, treba i tada da postoji opcija o maksimalnom broju
+        // takmicara iz kluba/drzave.
+        // TODO4: opcija zauzimaju isti plasman/prednost ima bolja e ocena treba da postoji i za takmicenje 1
+        // i za takmicenje 3.
+        // TODO4: Dugme za brisanje start listi razdvoji od dugmeta za stampanje.
+        // TODO4: Sprave koje se boduju nije zavrseno (u TakmicariTakmicenjaForm). Dobijam izuzetak koji nastaje zato
+        // sto rez.takmicenja nisu dobro ucitana (koristi se FindByTakmicenjeFetch_Tak1_Gimnasticari, a potrebni su i
+        // poretci sprava). Trenutno sam onemogucio tu meni opciju.
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
