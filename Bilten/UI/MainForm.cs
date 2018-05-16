@@ -1454,5 +1454,19 @@ namespace Bilten.UI
                 MessageDialogs.showError(ex.Message, strProgName);
             }
         }
+
+        private void mnJezik_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                JezikForm form = new JezikForm();
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
+
+        }
     }
 }

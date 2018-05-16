@@ -349,14 +349,6 @@ namespace Bilten.Domain
             set { _printerName = value; }
         }
 
-        // TODO3: Omoguci da moze da se bira
-        private bool _srpski = false;
-        public virtual bool Srpski
-        {
-            get { return _srpski; }
-            set { _srpski = value; }
-        }
-
         private bool _unosOcenaBezIzrZaCeloTak = false;
         public virtual bool UnosOcenaBezIzrZaCeloTak
         {
@@ -364,92 +356,67 @@ namespace Bilten.Domain
             set { _unosOcenaBezIzrZaCeloTak = value; }
         }
 
+        private bool _srpski = false;
+        public virtual bool Srpski
+        {
+            get { return _srpski; }
+            set { _srpski = value; }
+        }
+
+        private string redBrojString = "RB";  // "No."
         public virtual string RedBrojString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "RB";
-                else
-                    return "No.";
-            }
+            get { return redBrojString; }
+            set { redBrojString = value; }
         }
 
+        private string rankString = "Rank";  // "Rank"
         public virtual string RankString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "Rank";
-                else
-                    return "Rank";
-            }
+            get { return rankString; }
+            set { rankString = value; }
         }
 
+        private string imeString = "Ime";  // "Name"
         public virtual string ImeString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "Ime";
-                else
-                    return "Name";
-            }
+            get { return imeString; }
+            set { imeString = value; }
         }
 
+        private string klubDrzavaString = "Klub";  // "Club / NT"
         public virtual string KlubDrzavaString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "Klub";
-                else
-                    return "Club / NT";
-            }
+            get { return klubDrzavaString; }
+            set { klubDrzavaString = value; }
         }
 
+        private string kategorijaString = "Kategorija";  // "Category"
         public virtual string KategorijaString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "Kategorija";
-                else
-                    return "Category";
-            }
+            get { return kategorijaString; }
+            set { kategorijaString = value; }
         }
 
+        private string totalString = "Ukupno";  // "Total"
         public virtual string TotalString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "Ukupno";
-                else
-                    return "Total";
-            }
+            get { return totalString; }
+            set { totalString = value; }
         }
 
+        private string ocenaString = "Ocena";  // "Score"
         public virtual string OcenaString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "Ocena";
-                else
-                    return "Score";
-            }
+            get { return ocenaString; }
+            set { ocenaString = value; }
         }
 
+        private string rezerveString = "REZERVE";  // "RESERVES"
         public virtual string RezerveString
         {
-            get
-            {
-                if (this.Srpski)
-                    return "REZERVE";
-                else
-                    return "RESERVES";
-            }
+            get { return rezerveString; }
+            set { rezerveString = value; }
         }
     }
 }

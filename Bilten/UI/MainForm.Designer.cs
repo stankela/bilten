@@ -53,6 +53,7 @@ namespace Bilten.UI
             this.mnTakmicariTakmicenja = new System.Windows.Forms.ToolStripMenuItem();
             this.mnEkipe = new System.Windows.Forms.ToolStripMenuItem();
             this.mnSudijeNaTakmicenju = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnVrhovniSudija = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1RasporedSudija = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrvoDrugoKoloViseboj = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,7 +81,8 @@ namespace Bilten.UI
             this.mnKvalifikantiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnOceneTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnVrhovniSudija = new System.Windows.Forms.ToolStripMenuItem();
+            this.opcijeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnJezik = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,7 +95,8 @@ namespace Bilten.UI
             this.mnTakmicenje1,
             this.mnTakmicenje2,
             this.mnTakmicenje3,
-            this.mnTakmicenje4});
+            this.mnTakmicenje4,
+            this.opcijeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(698, 24);
@@ -287,6 +290,13 @@ namespace Bilten.UI
             this.mnSudijeNaTakmicenju.Size = new System.Drawing.Size(196, 22);
             this.mnSudijeNaTakmicenju.Text = "Sudije na takmicenju";
             this.mnSudijeNaTakmicenju.Click += new System.EventHandler(this.mnSudijeNaTakmicenju_Click);
+            // 
+            // mnVrhovniSudija
+            // 
+            this.mnVrhovniSudija.Name = "mnVrhovniSudija";
+            this.mnVrhovniSudija.Size = new System.Drawing.Size(196, 22);
+            this.mnVrhovniSudija.Text = "Vrhovni sudija";
+            this.mnVrhovniSudija.Click += new System.EventHandler(this.mnVrhovniSudija_Click);
             // 
             // mnTakmicenje1
             // 
@@ -497,12 +507,20 @@ namespace Bilten.UI
             this.mnRezultatiTak4.Size = new System.Drawing.Size(132, 22);
             this.mnRezultatiTak4.Text = "Rezultati";
             // 
-            // mnVrhovniSudija
+            // opcijeToolStripMenuItem
             // 
-            this.mnVrhovniSudija.Name = "mnVrhovniSudija";
-            this.mnVrhovniSudija.Size = new System.Drawing.Size(196, 22);
-            this.mnVrhovniSudija.Text = "Vrhovni sudija";
-            this.mnVrhovniSudija.Click += new System.EventHandler(this.mnVrhovniSudija_Click);
+            this.opcijeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnJezik});
+            this.opcijeToolStripMenuItem.Name = "opcijeToolStripMenuItem";
+            this.opcijeToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.opcijeToolStripMenuItem.Text = "Opcije";
+            // 
+            // mnJezik
+            // 
+            this.mnJezik.Name = "mnJezik";
+            this.mnJezik.Size = new System.Drawing.Size(152, 22);
+            this.mnJezik.Text = "Jezik";
+            this.mnJezik.Click += new System.EventHandler(this.mnJezik_Click);
             // 
             // MainForm
             // 
@@ -577,6 +595,8 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnIzveziTakmicenje;
         private System.Windows.Forms.ToolStripMenuItem mnUveziTakmicenje;
         private System.Windows.Forms.ToolStripMenuItem mnVrhovniSudija;
+        private System.Windows.Forms.ToolStripMenuItem opcijeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnJezik;
     }
 }
 
