@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Bilten.Domain"
+                   namespace="Bilten.Domain">
+
+  <class name="Jezik" table="jezici" lazy="true">
+    <id name="Id" column="jezik_id" access="nosetter.camelcase">
+      <generator class="identity" />
+    </id>
+    <property name="Naziv" column="naziv" type="String"/>
+    <property name="RedBroj" column="red_broj" type="String"/>
+    <property name="Rank" column="rank" type="String"/>
+    <property name="Ime" column="ime" type="String"/>
+    <property name="KlubDrzava" column="klub_drzava" type="String"/>
+    <property name="Kategorija" column="kategorija" type="String"/>
+    <property name="Ukupno" column="ukupno" type="String"/>
+    <property name="Ocena" column="ocena" type="String"/>
+    <property name="Rezerve" column="rezerve" type="String"/>
+  </class>
+
+</hibernate-mapping>

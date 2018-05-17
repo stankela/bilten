@@ -94,6 +94,7 @@
     <Compile Include="Dao\GenericDAO.cs" />
     <Compile Include="Dao\GimnasticarDAO.cs" />
     <Compile Include="Dao\GimnasticarUcesnikDAO.cs" />
+    <Compile Include="Dao\JezikDAO.cs" />
     <Compile Include="Dao\KategorijaGimnasticaraDAO.cs" />
     <Compile Include="Dao\KlubDAO.cs" />
     <Compile Include="Dao\KlubUcesnikDAO.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Dao\NHibernate\GenericNHibernateDAO.cs" />
     <Compile Include="Dao\NHibernate\GimnasticarDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\GimnasticarUcesnikDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\JezikDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KategorijaGimnasticaraDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KlubDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\KlubUcesnikDAOImpl.cs" />
@@ -182,6 +184,7 @@
     <Content Include="CHANGE_LOG.txt" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version8.txt" />
     <EmbeddedResource Include="UI\JezikForm.resx">
       <DependentUpon>JezikForm.cs</DependentUpon>
     </EmbeddedResource>

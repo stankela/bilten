@@ -46,12 +46,14 @@
             this.txtTotal = new System.Windows.Forms.TextBox();
             this.txtOcena = new System.Windows.Forms.TextBox();
             this.txtRezerve = new System.Windows.Forms.TextBox();
+            this.lblRezik = new System.Windows.Forms.Label();
+            this.cmbJezik = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(78, 391);
+            this.btnOK.Location = new System.Drawing.Point(78, 446);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 18;
@@ -62,7 +64,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(169, 391);
+            this.btnCancel.Location = new System.Drawing.Point(169, 446);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 19;
@@ -72,7 +74,7 @@
             // lblRedBroj
             // 
             this.lblRedBroj.AutoSize = true;
-            this.lblRedBroj.Location = new System.Drawing.Point(25, 31);
+            this.lblRedBroj.Location = new System.Drawing.Point(25, 86);
             this.lblRedBroj.Name = "lblRedBroj";
             this.lblRedBroj.Size = new System.Drawing.Size(55, 13);
             this.lblRedBroj.TabIndex = 20;
@@ -81,7 +83,7 @@
             // lblRank
             // 
             this.lblRank.AutoSize = true;
-            this.lblRank.Location = new System.Drawing.Point(25, 73);
+            this.lblRank.Location = new System.Drawing.Point(25, 128);
             this.lblRank.Name = "lblRank";
             this.lblRank.Size = new System.Drawing.Size(33, 13);
             this.lblRank.TabIndex = 21;
@@ -90,7 +92,7 @@
             // lblIme
             // 
             this.lblIme.AutoSize = true;
-            this.lblIme.Location = new System.Drawing.Point(25, 119);
+            this.lblIme.Location = new System.Drawing.Point(25, 174);
             this.lblIme.Name = "lblIme";
             this.lblIme.Size = new System.Drawing.Size(24, 13);
             this.lblIme.TabIndex = 22;
@@ -99,7 +101,7 @@
             // lblKlub
             // 
             this.lblKlub.AutoSize = true;
-            this.lblKlub.Location = new System.Drawing.Point(25, 163);
+            this.lblKlub.Location = new System.Drawing.Point(25, 218);
             this.lblKlub.Name = "lblKlub";
             this.lblKlub.Size = new System.Drawing.Size(28, 13);
             this.lblKlub.TabIndex = 23;
@@ -108,7 +110,7 @@
             // lblKategorija
             // 
             this.lblKategorija.AutoSize = true;
-            this.lblKategorija.Location = new System.Drawing.Point(25, 208);
+            this.lblKategorija.Location = new System.Drawing.Point(25, 263);
             this.lblKategorija.Name = "lblKategorija";
             this.lblKategorija.Size = new System.Drawing.Size(54, 13);
             this.lblKategorija.TabIndex = 24;
@@ -117,7 +119,7 @@
             // lblTotal
             // 
             this.lblTotal.AutoSize = true;
-            this.lblTotal.Location = new System.Drawing.Point(25, 254);
+            this.lblTotal.Location = new System.Drawing.Point(25, 309);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(45, 13);
             this.lblTotal.TabIndex = 25;
@@ -126,7 +128,7 @@
             // lblOcena
             // 
             this.lblOcena.AutoSize = true;
-            this.lblOcena.Location = new System.Drawing.Point(25, 291);
+            this.lblOcena.Location = new System.Drawing.Point(25, 346);
             this.lblOcena.Name = "lblOcena";
             this.lblOcena.Size = new System.Drawing.Size(39, 13);
             this.lblOcena.TabIndex = 26;
@@ -135,7 +137,7 @@
             // lblRezerve
             // 
             this.lblRezerve.AutoSize = true;
-            this.lblRezerve.Location = new System.Drawing.Point(25, 337);
+            this.lblRezerve.Location = new System.Drawing.Point(25, 392);
             this.lblRezerve.Name = "lblRezerve";
             this.lblRezerve.Size = new System.Drawing.Size(47, 13);
             this.lblRezerve.TabIndex = 27;
@@ -143,59 +145,77 @@
             // 
             // txtRedBroj
             // 
-            this.txtRedBroj.Location = new System.Drawing.Point(87, 28);
+            this.txtRedBroj.Location = new System.Drawing.Point(87, 83);
             this.txtRedBroj.Name = "txtRedBroj";
             this.txtRedBroj.Size = new System.Drawing.Size(100, 20);
             this.txtRedBroj.TabIndex = 28;
             // 
             // txtRank
             // 
-            this.txtRank.Location = new System.Drawing.Point(87, 70);
+            this.txtRank.Location = new System.Drawing.Point(87, 125);
             this.txtRank.Name = "txtRank";
             this.txtRank.Size = new System.Drawing.Size(100, 20);
             this.txtRank.TabIndex = 29;
             // 
             // txtIme
             // 
-            this.txtIme.Location = new System.Drawing.Point(87, 116);
+            this.txtIme.Location = new System.Drawing.Point(87, 171);
             this.txtIme.Name = "txtIme";
             this.txtIme.Size = new System.Drawing.Size(100, 20);
             this.txtIme.TabIndex = 30;
             // 
             // txtKlub
             // 
-            this.txtKlub.Location = new System.Drawing.Point(87, 160);
+            this.txtKlub.Location = new System.Drawing.Point(87, 215);
             this.txtKlub.Name = "txtKlub";
             this.txtKlub.Size = new System.Drawing.Size(100, 20);
             this.txtKlub.TabIndex = 31;
             // 
             // txtKategorija
             // 
-            this.txtKategorija.Location = new System.Drawing.Point(87, 205);
+            this.txtKategorija.Location = new System.Drawing.Point(87, 260);
             this.txtKategorija.Name = "txtKategorija";
             this.txtKategorija.Size = new System.Drawing.Size(100, 20);
             this.txtKategorija.TabIndex = 32;
             // 
             // txtTotal
             // 
-            this.txtTotal.Location = new System.Drawing.Point(87, 251);
+            this.txtTotal.Location = new System.Drawing.Point(87, 306);
             this.txtTotal.Name = "txtTotal";
             this.txtTotal.Size = new System.Drawing.Size(100, 20);
             this.txtTotal.TabIndex = 33;
             // 
             // txtOcena
             // 
-            this.txtOcena.Location = new System.Drawing.Point(87, 288);
+            this.txtOcena.Location = new System.Drawing.Point(87, 343);
             this.txtOcena.Name = "txtOcena";
             this.txtOcena.Size = new System.Drawing.Size(100, 20);
             this.txtOcena.TabIndex = 34;
             // 
             // txtRezerve
             // 
-            this.txtRezerve.Location = new System.Drawing.Point(87, 334);
+            this.txtRezerve.Location = new System.Drawing.Point(87, 389);
             this.txtRezerve.Name = "txtRezerve";
             this.txtRezerve.Size = new System.Drawing.Size(100, 20);
             this.txtRezerve.TabIndex = 35;
+            // 
+            // lblRezik
+            // 
+            this.lblRezik.AutoSize = true;
+            this.lblRezik.Location = new System.Drawing.Point(21, 18);
+            this.lblRezik.Name = "lblRezik";
+            this.lblRezik.Size = new System.Drawing.Size(31, 13);
+            this.lblRezik.TabIndex = 36;
+            this.lblRezik.Text = "Jezik";
+            // 
+            // cmbJezik
+            // 
+            this.cmbJezik.FormattingEnabled = true;
+            this.cmbJezik.Location = new System.Drawing.Point(24, 37);
+            this.cmbJezik.Name = "cmbJezik";
+            this.cmbJezik.Size = new System.Drawing.Size(121, 21);
+            this.cmbJezik.TabIndex = 20;
+            this.cmbJezik.SelectedIndexChanged += new System.EventHandler(this.cmbJezik_SelectedIndexChanged);
             // 
             // JezikForm
             // 
@@ -203,7 +223,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(270, 436);
+            this.ClientSize = new System.Drawing.Size(279, 490);
+            this.Controls.Add(this.cmbJezik);
+            this.Controls.Add(this.lblRezik);
             this.Controls.Add(this.txtRezerve);
             this.Controls.Add(this.txtOcena);
             this.Controls.Add(this.txtTotal);
@@ -254,6 +276,8 @@
         private System.Windows.Forms.TextBox txtTotal;
         private System.Windows.Forms.TextBox txtOcena;
         private System.Windows.Forms.TextBox txtRezerve;
+        private System.Windows.Forms.Label lblRezik;
+        private System.Windows.Forms.ComboBox cmbJezik;
 
     }
 }

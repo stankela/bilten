@@ -197,5 +197,10 @@ namespace Bilten.Dao.NHibernate
         {
             return new PoredakEkipnoZbirViseKolaDAOImpl();
         }
+
+        public override JezikDAO GetJezikDAO()
+        {
+            return new JezikDAOImpl();
+        }
     }
 }

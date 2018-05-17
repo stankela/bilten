@@ -1,0 +1,23 @@
+-- 17-Maj-2018 (VERZIJA = 8)
+
+create table jezici (
+    jezik_id int identity(1,1) primary key,
+    naziv nvarchar(64),
+    red_broj nvarchar(64),
+    rank nvarchar(64),
+    ime nvarchar(64),
+    klub_drzava nvarchar(64),
+    kategorija nvarchar(64),
+    ukupno nvarchar(64),
+    ocena nvarchar(64),
+    rezerve nvarchar(64)
+);
+GO
+
+INSERT INTO jezici (naziv, red_broj, rank, ime, klub_drzava, kategorija, ukupno, ocena, rezerve)
+VALUES ('Srpski', 'RB', 'Rank', 'Ime', 'Klub', 'Kategorija', 'Ukupno', 'Ocena', 'REZERVE');
+GO
+
+INSERT INTO jezici (naziv, red_broj, rank, ime, klub_drzava, kategorija, ukupno, ocena, rezerve)
+VALUES ('Engleski', 'No.', 'Rank', 'Name', 'Club / NT', 'Category', 'Total', 'Score', 'RESERVES');
+GO

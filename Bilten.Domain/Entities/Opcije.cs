@@ -356,11 +356,11 @@ namespace Bilten.Domain
             set { _unosOcenaBezIzrZaCeloTak = value; }
         }
 
-        private bool _srpski = false;
-        public virtual bool Srpski
+        private string _jezik = "Srpski";
+        public virtual string Jezik
         {
-            get { return _srpski; }
-            set { _srpski = value; }
+            get { return _jezik; }
+            set { _jezik = value; }
         }
 
         private string redBrojString = "RB";  // "No."
