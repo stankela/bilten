@@ -390,7 +390,7 @@ namespace Bilten.Test
             {
                 List<TakmicarskaKategorija> list = new List<TakmicarskaKategorija>();
                 list.Add(seniori);
-                RasporedNastupa raspored = new RasporedNastupa(list, deoTakmicenja[i], gimnastika);
+                RasporedNastupa raspored = new RasporedNastupa(list, deoTakmicenja[i], gimnastika, 0);
 
                 StartListaParser parser = new StartListaParser();
                 parser.parse(fileNames[i]);

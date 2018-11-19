@@ -18,7 +18,13 @@ namespace Bilten.Domain
         Vratilo = 6,
         DvovisinskiRazboj = 7,
         Greda = 8,
-        Max = Greda
+        PraznaSprava1 = 9,
+        PraznaSprava2 = 10,
+        PraznaSprava3 = 11,
+        PraznaSprava4 = 12,
+        PraznaSprava5 = 13,
+        PraznaSprava6 = 14,
+        Max = PraznaSprava6
     }
 
     public static class Sprave
@@ -113,6 +119,24 @@ namespace Bilten.Domain
                 case Sprava.Greda:
                     return "Greda";
 
+                case Sprava.PraznaSprava1:
+                    return "PraznaSprava1";
+
+                case Sprava.PraznaSprava2:
+                    return "PraznaSprava2";
+
+                case Sprava.PraznaSprava3:
+                    return "PraznaSprava3";
+
+                case Sprava.PraznaSprava4:
+                    return "PraznaSprava4";
+
+                case Sprava.PraznaSprava5:
+                    return "PraznaSprava5";
+
+                case Sprava.PraznaSprava6:
+                    return "PraznaSprava6";
+
                 case Sprava.Undefined:
                     return "Nepoznata sprava";
 
@@ -199,6 +223,100 @@ namespace Bilten.Domain
                     return false;
             }
             return true;
+        }
+
+        public static Sprava getSprava(int index, Gimnastika gim)
+        {
+            if (gim == Gimnastika.MSG)
+            {
+                switch (index)
+                {
+                    case 1:
+                        return Sprava.Parter;
+
+                    case 2:
+                        return Sprava.Konj;
+
+                    case 3:
+                        return Sprava.Karike;
+
+                    case 4:
+                        return Sprava.Preskok;
+
+                    case 5:
+                        return Sprava.Razboj;
+
+                    case 6:
+                        return Sprava.Vratilo;
+
+                    default:
+                        throw new ArgumentException("Nedozvoljena vrednost za spravu.");
+                }
+            }
+            else
+            {
+                switch (index)
+                {
+                    case 1:
+                        return Sprava.Preskok;
+
+                    case 2:
+                        return Sprava.DvovisinskiRazboj;
+
+                    case 3:
+                        return Sprava.Greda;
+
+                    case 4:
+                        return Sprava.Parter;
+
+                    default:
+                        throw new ArgumentException("Nedozvoljena vrednost za spravu.");
+                }
+            }
+        }
+
+        public static Sprava[] getSpraveIPauze(int pauzeMask, Gimnastika gim)
+        {
+            List<Sprava> result = new List<Sprava>();
+            int spravaIndex = 1;
+            int pauzaIndex = 1;
+            int maxPauzaIndex = 12;  // 6 sprava + 6 pauza
+            if (gim == Gimnastika.ZSG)
+                maxPauzaIndex = 10;
+            for (int i = 1; i <= maxPauzaIndex; ++i)
+            {
+                if (RasporedNastupa.isPauzaSet(pauzeMask, i))
+                {
+                    result.Add((Sprava)((int)Sprava.PraznaSprava1 + pauzaIndex - 1));
+                    ++pauzaIndex;
+                }
+                else
+                {
+                    if ((gim == Gimnastika.MSG && spravaIndex <= 6) || (gim == Gimnastika.ZSG && spravaIndex <= 4))
+                    {
+                        result.Add(Sprave.getSprava(spravaIndex, gim));
+                        ++spravaIndex;
+                    }
+                }
+            }
+            return result.ToArray();
+        }
+
+        public static bool isPraznaSprava(Sprava sprava)
+        {
+            switch (sprava)
+            {
+                case Sprava.PraznaSprava1:
+                case Sprava.PraznaSprava2:
+                case Sprava.PraznaSprava3:
+                case Sprava.PraznaSprava4:
+                case Sprava.PraznaSprava5:
+                case Sprava.PraznaSprava6:
+                    return true;
+
+                default:
+                    return false;
+            }
         }
     }
 }

@@ -46,7 +46,7 @@ namespace Bilten.UI
             }
         }
 
-        public void init(Gimnastika gimnastika)
+        public void init(Sprava[] sprave)
         {
             // Najpre izbaci sve kontrole koje su dodate u prethodnom pozivu funkcije init, osim prve.
             List<Control> controls = new List<Control>();
@@ -61,16 +61,15 @@ namespace Bilten.UI
                     this.Controls.Remove(c2);
             }
 
-            Sprava[] sprave = Sprave.getSprave(gimnastika);
-
             int width = spravaGridUserControl1.Width;
             int height = spravaGridUserControl1.Height;
             int xOffset = 50;
             int yOffset = 25;
 
+            // xOffset i yOffset je razmak izmedju sprava. razmak pre prve sprave i posle poslednje sprave je nula.
             this.Width = 2 * width + xOffset;
             int brojSprava = sprave.Length;
-            this.Height = (brojSprava / 2) * height + (brojSprava / 2 - 1) * yOffset;
+            this.Height = ((brojSprava+1) / 2) * height + ((brojSprava+1) / 2 - 1) * yOffset;
 
             int tabIndex = spravaGridUserControl1.TabIndex;
             for (int i = 0; i < brojSprava; i++)

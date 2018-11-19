@@ -1,0 +1,6 @@
+-- 03-Nov-2018 (VERZIJA = 9)
+
+alter table raspored_nastupa add column pauze_mask int;
+GO
+update raspored_nastupa set pauze_mask = 0;
+GO

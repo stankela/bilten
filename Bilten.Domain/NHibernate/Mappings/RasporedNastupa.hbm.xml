@@ -9,6 +9,7 @@
     </id>
     <property name="DeoTakmicenjaKod" column="deo_takmicenja_kod" type="Byte" />
     <property name="Naziv" column="naziv" type="String" />
+    <property name="PauzeMask" column="pauze_mask" />
     <many-to-one name="Takmicenje" class="Takmicenje" column="takmicenje_id" />
     <set name="StartListe" lazy="true" cascade="all-delete-orphan" >
       <key column="raspored_nastupa_id" />

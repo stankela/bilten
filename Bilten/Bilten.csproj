@@ -182,8 +182,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
+    <EmbeddedResource Include="Images\Prazno.bmp" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
+    <EmbeddedResource Include="UI\PauzeForm.resx">
+      <DependentUpon>PauzeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Update\DatabaseUpdate_version9.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version8.txt" />
     <EmbeddedResource Include="UI\JezikForm.resx">
       <DependentUpon>JezikForm.cs</DependentUpon>
@@ -455,6 +460,12 @@
     </Compile>
     <Compile Include="UI\OtvoriTakmicenjeForm.Designer.cs">
       <DependentUpon>OtvoriTakmicenjeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PauzeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\PauzeForm.Designer.cs">
+      <DependentUpon>PauzeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\PenalizacijaForm.cs">
       <SubType>Form</SubType>

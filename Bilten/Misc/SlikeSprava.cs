@@ -30,6 +30,12 @@ namespace Bilten
             slike[(int)Sprava.Vratilo] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Vratilo.bmp"));
             slike[(int)Sprava.DvovisinskiRazboj] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.DvovisinskiRazboj.bmp"));
             slike[(int)Sprava.Greda] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Greda.bmp"));
+            slike[(int)Sprava.PraznaSprava1] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Prazno.bmp"));
+            slike[(int)Sprava.PraznaSprava2] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Prazno.bmp"));
+            slike[(int)Sprava.PraznaSprava3] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Prazno.bmp"));
+            slike[(int)Sprava.PraznaSprava4] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Prazno.bmp"));
+            slike[(int)Sprava.PraznaSprava5] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Prazno.bmp"));
+            slike[(int)Sprava.PraznaSprava6] = new Bitmap(asm.GetManifestResourceStream("Bilten.Images.Prazno.bmp"));
         }
 
         public static Image getImage(Sprava sprava)

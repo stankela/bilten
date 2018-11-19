@@ -104,7 +104,7 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.Location = USER_CONTROL_LOCATION;
                 spravaGridGroupUserControl1.SpravaGridRightClick +=
                   new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
-                spravaGridGroupUserControl1.init(takmicenje.Gimnastika);
+                spravaGridGroupUserControl1.init(Sprave.getSprave(takmicenje.Gimnastika));
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
                     SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);
@@ -159,7 +159,7 @@ namespace Bilten.UI
             spravaGridGroupUserControl.SpravaGridRightClick +=
               new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
             //spravaGridGroupUserControl.Size = this.rasporedSudijaUserControl1.Size;
-            spravaGridGroupUserControl.init(takmicenje.Gimnastika); // odredjuje i Size
+            spravaGridGroupUserControl.init(Sprave.getSprave(takmicenje.Gimnastika)); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
                 SudijskiOdborNaSpravi odbor = raspored.getOdbor(c.Sprava);

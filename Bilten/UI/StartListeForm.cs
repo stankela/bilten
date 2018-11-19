@@ -52,6 +52,9 @@ namespace Bilten.UI
                     if (kategorijeCount == 0)
                         throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
+                    // TODO4: Treba uvesti redni broj i turnus, i sortirati rasporede po njima nakon sto se ucitaju iz baze.
+                    // TODO4: Kada promenis da svaki RasporedNastupa odgovara jednom turnusu, promeni da kod brisanja
+                    // start liste brise sve odgovarajuce turnuse.
                     rasporedi = DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO()
                         .FindByTakmicenjeDeoTak(takmicenjeId, deoTakKod);
 
@@ -101,20 +104,29 @@ namespace Bilten.UI
                 btnOstaleRotacije.Text = "Kreiraj na osnovu kvalifikanata";
             }
             mnRotirajEkipeRotirajGim.Checked = true;
+        }
 
-            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
+        private void updateMnPrebaciNa(Sprava[] sprave)
+        {
+            // TODO4: Proveri da li su itemi koji se dodaju isti kao i oni koji se brisu, i u tom slucaju ne radi nista.
+            mnPrebaciNa.DropDownItems.Clear();
             for (int i = 0; i < sprave.Length; ++i)
             {
                 Sprava s = sprave[i];
-                mnPrebaciNa.DropDownItems[i].Tag = s;
-                mnPrebaciNa.DropDownItems[i].Text = Sprave.toString(s);
-                mnPrebaciNa.DropDownItems[i].Click += mnPrebaciNa_Click;
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                //item.Size = new System.Drawing.Size(152, 22);
+                if (!Sprave.isPraznaSprava(s))
+                {
+                    item.Text = Sprave.toString(s);
+                }
+                else
+                {
+                    item.Text = "Pauza";
+                }
+                item.Tag = s;
+                item.Click += mnPrebaciNa_Click;
+                mnPrebaciNa.DropDownItems.Add(item);
             }
-            bool enabled = takmicenje.Gimnastika == Gimnastika.MSG;
-            mnPrebaciNa.DropDownItems[4].Enabled = enabled;
-            mnPrebaciNa.DropDownItems[4].Visible = enabled;
-            mnPrebaciNa.DropDownItems[5].Enabled = enabled;
-            mnPrebaciNa.DropDownItems[5].Visible = enabled;
         }
 
         void mnPrebaciNa_Click(object sender, EventArgs e)
@@ -160,7 +172,7 @@ namespace Bilten.UI
                 spravaGridGroupUserControl1.Location = USER_CONTROL_LOCATION;
                 spravaGridGroupUserControl1.SpravaGridRightClick += 
                     new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
-                spravaGridGroupUserControl1.init(takmicenje.Gimnastika);
+                spravaGridGroupUserControl1.init(Sprave.getSpraveIPauze(raspored.PauzeMask, takmicenje.Gimnastika));
                 foreach (SpravaGridUserControl c in spravaGridGroupUserControl1.SpravaGridUserControls)
                 {
                     c.DataGridViewUserControl.DataGridView.CellFormatting +=
@@ -311,9 +323,7 @@ namespace Bilten.UI
             {
                 foreach (ToolStripMenuItem mn in mnPrebaciNa.DropDownItems)
                 {
-                    // mn.Tag je null za peti i sesti meni kada je gimnastika ZSG
-                    if (mn.Tag != null)
-                        mn.Enabled = (Sprava)mn.Tag != clickedSprava;
+                    mn.Enabled = (Sprava)mn.Tag != clickedSprava;
                 }
             }
             contextMenuStrip1.Show(grid, new Point(x, y));
@@ -330,7 +340,7 @@ namespace Bilten.UI
             spravaGridGroupUserControl.SpravaGridRightClick +=
                 new EventHandler<SpravaGridRightClickEventArgs>(spravaGridGroupUserControl1_SpravaGridRightClick);
             //spravaGridGroupUserControl.Size = this.rasporedSudijaUserControl1.Size;
-            spravaGridGroupUserControl.init(takmicenje.Gimnastika); // odredjuje i Size
+            spravaGridGroupUserControl.init(Sprave.getSpraveIPauze(raspored.PauzeMask, takmicenje.Gimnastika)); // odredjuje i Size
             foreach (SpravaGridUserControl c in spravaGridGroupUserControl.SpravaGridUserControls)
             {
                 c.DataGridViewUserControl.DataGridView.CellFormatting +=
@@ -365,12 +375,12 @@ namespace Bilten.UI
 
         void cmbRotacija_SelectedIndexChanged(object sender, EventArgs e)
         {
-            onRotacijaChanged();
+            onRotacijaChanged(false);
         }
 
         void cmbGrupa_SelectedIndexChanged(object sender, EventArgs e)
         {
-            onRotacijaChanged();
+            onRotacijaChanged(true);
         }
 
         private void initCombos(int brojGrupa, int brojRotacija)
@@ -401,10 +411,11 @@ namespace Bilten.UI
             int brojGrupa = ActiveRaspored.getBrojGrupa();
             if (brojGrupa == 0)
                 brojGrupa = 1;
-            int brojRotacija = 4;
-            if (takmicenje.Gimnastika == Gimnastika.MSG)
-                brojRotacija = 6;
+            Sprava[] sprave = Sprave.getSpraveIPauze(ActiveRaspored.PauzeMask, takmicenje.Gimnastika);
+            int brojRotacija = sprave.Length;
             initCombos(brojGrupa, brojRotacija);
+
+            updateMnPrebaciNa(sprave);
 
             if (tabOpened[tabControl1.SelectedIndex])
             {
@@ -530,15 +541,15 @@ namespace Bilten.UI
             }
         }
 
-        private void onRotacijaChanged()
+        private void onRotacijaChanged(bool updateMnPrebaciNa)
         {
             if (ActiveRaspored == null)
                 return;
 
-            handleRotacijaChanged();
+            handleRotacijaChanged(updateMnPrebaciNa);
         }
 
-        private void handleRotacijaChanged()
+        private void handleRotacijaChanged(bool UpdateMnPrebaciNa)
         {
             int g = (int)cmbGrupa.SelectedItem;
             int r = (int)cmbRotacija.SelectedItem;
@@ -546,6 +557,10 @@ namespace Bilten.UI
             rot[tabControl1.SelectedIndex] = r;
 
             setStartListe(ActiveRaspored, g, r);
+            if (UpdateMnPrebaciNa)
+            {
+                updateMnPrebaciNa(Sprave.getSpraveIPauze(ActiveRaspored.PauzeMask, takmicenje.Gimnastika));
+            }
 
             updateGridColumnWidths();
 
@@ -682,7 +697,7 @@ namespace Bilten.UI
             cmbGrupa.Items.Add(brojGrupa);
 
             updateCombos(brojGrupa, 1);
-            onRotacijaChanged();
+            onRotacijaChanged(true);
         }
 
         private void btnNew_Click(object sender, EventArgs e)
@@ -723,6 +738,16 @@ namespace Bilten.UI
             foreach (int i in form.CheckedIndices)
                 selKategorije.Add(kategorije[i]);
 
+            int pauzeMask = 0;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                PauzeForm form2 = new PauzeForm(takmicenje.Gimnastika);
+                form2.init();
+                if (form2.ShowDialog() != DialogResult.OK)
+                    return;
+                pauzeMask = form2.PauzeMask;
+            }
+
             RasporedNastupa newRaspored = null;
             bool added = false;
             session = null;
@@ -732,7 +757,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    newRaspored = new RasporedNastupa(selKategorije, deoTakKod, takmicenje.Gimnastika);
+                    newRaspored = new RasporedNastupa(selKategorije, deoTakKod, takmicenje.Gimnastika, pauzeMask);
                     DAOFactoryFactory.DAOFactory.GetRasporedNastupaDAO().Add(newRaspored);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
@@ -848,6 +873,12 @@ namespace Bilten.UI
 
         private void unesiOcenu(SpravaGridUserControl c, bool openedWithEnter)
         {
+            if (Sprave.isPraznaSprava(c.Sprava))
+            {
+                MessageDialogs.showMessage("Nije dozvoljen unos ocena za pauze u rotaciji.", this.Text);
+                return;
+            }
+
             DataGridViewSelectedRowCollection selRows = c.DataGridViewUserControl.DataGridView.SelectedRows;
             if (selRows.Count != 1)
                 return;
@@ -1051,30 +1082,41 @@ namespace Bilten.UI
             if (ActiveRaspored == null)
                 return;
 
-            // Nadji aktivne sprave za rotaciju 1.
-            List<Sprava> aktivneSpraveRot1 = new List<Sprava>();
-            foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+            List<List<Sprava>> aktivneSprave = null;
+            int finalRot = Sprave.getSpraveIPauze(ActiveRaspored.PauzeMask, takmicenje.Gimnastika).Length;
+            if (!ActiveRaspored.hasPauze())
             {
-                if (ActiveRaspored.getStartLista(s, ActiveGrupa, 1).Nastupi.Count != 0)
-                    aktivneSpraveRot1.Add(s);
-            }
-
-            SpraveNaRotacijiForm form = null;
-            try
-            {
-                form = new SpraveNaRotacijiForm(takmicenje.Gimnastika, aktivneSpraveRot1);
-                if (form.ShowDialog() != DialogResult.OK)
+                // Nadji aktivne sprave za rotaciju 1.
+                List<Sprava> aktivneSpraveRot1 = new List<Sprava>();
+                foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+                {
+                    if (ActiveRaspored.getStartLista(s, ActiveGrupa, 1).Nastupi.Count != 0)
+                        aktivneSpraveRot1.Add(s);
+                }
+                try
+                {
+                    SpraveNaRotacijiForm form = new SpraveNaRotacijiForm(takmicenje.Gimnastika, aktivneSpraveRot1);
+                    if (form.ShowDialog() != DialogResult.OK)
+                        return;
+                    aktivneSprave = form.AktivneSprave;
+                }
+                catch (Exception ex)
+                {
+                    MessageDialogs.showError(ex.Message, this.Text);
                     return;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                MessageDialogs.showError(ex.Message, this.Text);
-                return;
+                aktivneSprave = new List<List<Sprava>>();
+                for (int i = 1; i <= finalRot; ++i)
+                {
+                    aktivneSprave.Add(new List<Sprava>(Sprave.getSpraveIPauze(ActiveRaspored.PauzeMask, takmicenje.Gimnastika)));
+                }
             }
 
-            int finalRot = (takmicenje.Gimnastika == Gimnastika.ZSG) ? 4 : 6;
             for (int rot = 2; rot <= finalRot; rot++)
-                ActiveRaspored.kreirajRotaciju(ActiveGrupa, rot, form.AktivneSprave);
+                ActiveRaspored.kreirajRotaciju(ActiveGrupa, rot, aktivneSprave);
      
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -1223,7 +1265,7 @@ namespace Bilten.UI
 
                     foreach (RezultatskoTakmicenje rt in rezTakmicenja)
                     {
-                        RasporedNastupa newRaspored = new RasporedNastupa(rt.Kategorija, deoTakKod, takmicenje.Gimnastika);
+                        RasporedNastupa newRaspored = new RasporedNastupa(rt.Kategorija, deoTakKod, takmicenje.Gimnastika, 0);
                         foreach (Sprava sprava in Sprave.getSprave(takmicenje.Gimnastika))
                         {
                             IList<GimnasticarUcesnik> kvalifikanti;

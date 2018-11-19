@@ -24,7 +24,7 @@ namespace Bilten.UI
 
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSprava.Items.AddRange(Sprave.getSpraveNazivi(gimnastika));
-            if (sprava == Sprava.Undefined)
+            if (sprava == Sprava.Undefined || Sprave.isPraznaSprava(sprava))
                 cmbSprava.SelectedIndex = 0;
             else
                 cmbSprava.SelectedIndex = Sprave.indexOf(sprava, gimnastika);

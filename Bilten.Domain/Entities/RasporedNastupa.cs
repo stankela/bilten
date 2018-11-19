@@ -45,33 +45,69 @@ namespace Bilten.Domain
             set { startListe = value; }
         }
 
+        // 6 sprava + 6 pauza + zadnji bit koji se ne racuna. Jedinicom se oznacavaju samo pauze.
+        private int pauzeMask = 0; // 0b0000000000000
+        //private int pauzeMask = 4;   // 0b0000000000100 = Par, Pauza, Konj, Kar, Pre, Raz, Vra
+        public virtual int PauzeMask
+        {
+            get { return pauzeMask; }
+            set { pauzeMask = value; }
+        }
+
+        public static bool isPauzaSet(int pauzeMask, int pauzaIndex)
+        {
+            return ((1 << pauzaIndex) & pauzeMask) != 0;
+        }
+
+        public virtual bool isPauzaSet(int pauzaIndex)
+        {
+            return isPauzaSet(PauzeMask, pauzaIndex);
+        }
+
+        public virtual void setPauza(int pauzaIndex)
+        {
+            PauzeMask |= (1 << pauzaIndex);
+        }
+
+        public virtual void clearPauze()
+        {
+            PauzeMask = 0;
+        }
+
+        public virtual bool hasPauze()
+        {
+            return PauzeMask != 0;
+        }
+
         public RasporedNastupa()
         { 
         
         }
 
         public RasporedNastupa(IList<TakmicarskaKategorija> kategorije, 
-            DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
+            DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika, int pauzeMask)
         {
-            init(kategorije, deoTakKod, gimnastika);
+            init(kategorije, deoTakKod, gimnastika, pauzeMask);
         }
 
         public RasporedNastupa(TakmicarskaKategorija kategorija,
-            DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
+            DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika, int pauzeMask)
         {
             IList<TakmicarskaKategorija> kategorije = new List<TakmicarskaKategorija>();
             kategorije.Add(kategorija);
-            init(kategorije, deoTakKod, gimnastika);
+            init(kategorije, deoTakKod, gimnastika, pauzeMask);
         }
 
-        private void init(IList<TakmicarskaKategorija> kategorije, DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika)
+        private void init(IList<TakmicarskaKategorija> kategorije, DeoTakmicenjaKod deoTakKod, Gimnastika gimnastika,
+            int pauzeMask)
         {
             if (kategorije.Count == 0)
                 throw new ArgumentException("Kategorije ne smeju da budu prazne.");
 
             this.Naziv = kreirajNaziv(kategorije);
-            this.deoTakKod = deoTakKod;
-            this.takmicenje = kategorije[0].Takmicenje;
+            this.DeoTakmicenjaKod = deoTakKod;
+            this.PauzeMask = pauzeMask;
+            this.Takmicenje = kategorije[0].Takmicenje;
 
             addNewGrupa(gimnastika);
         }
@@ -95,14 +131,11 @@ namespace Bilten.Domain
 
         public virtual void addNewGrupa(Gimnastika gimnastika)
         {
+            Sprava[] sprave = Sprave.getSpraveIPauze(PauzeMask, gimnastika);
             if (canAddNewGrupa())
             {
-                int brojRotacija = 4;
-                if (gimnastika == Gimnastika.MSG)
-                    brojRotacija = 6;
+                int brojRotacija = sprave.Length;
                 int grupa = getBrojGrupa() + 1;
-
-                Sprava[] sprave = Sprave.getSprave(gimnastika);
 
                 for (int i = 1; i <= brojRotacija; i++)
                 {
@@ -186,7 +219,7 @@ namespace Bilten.Domain
 
         public virtual void kreirajRotaciju(int grupa, int rot, List<List<Sprava>> aktivneSprave)
         {
-            foreach (Sprava s in Sprave.getSprave(Takmicenje.Gimnastika))
+            foreach (Sprava s in Sprave.getSpraveIPauze(PauzeMask, Takmicenje.Gimnastika))
             {
                 StartListaNaSpravi startLista = getStartLista(s, grupa, rot);
                 startLista.clear();
@@ -291,6 +324,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(DeoTakmicenjaKod.ToString());
             strBuilder.AppendLine(Naziv != null ? Naziv : NULL);
             strBuilder.AppendLine(Takmicenje != null ? Takmicenje.Id.ToString() : NULL);
+            strBuilder.AppendLine(PauzeMask.ToString());
 
             strBuilder.AppendLine(StartListe.Count.ToString());
             foreach (StartListaNaSpravi s in StartListe)
@@ -307,6 +341,8 @@ namespace Bilten.Domain
             line = reader.ReadLine();
             Takmicenje = line != NULL ? map.takmicenjeMap[int.Parse(line)] : null;
 
+            PauzeMask = int.Parse(reader.ReadLine());
+            
             int count = int.Parse(reader.ReadLine());
             for (int i = 0; i < count; ++i)
             {
