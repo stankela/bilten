@@ -27,7 +27,7 @@ namespace Bilten.Report
                 stampajKlub, stampajKategoriju, false, 1, formGrid));
 		}
 
-        public StartListaIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
+        public StartListaIzvestaj(List<StartListaNaSpravi> startListe,
             string documentName, int brojSpravaPoStrani, bool stampajRedniBroj,
             bool stampajKlub, bool stampajKategoriju, SpravaGridGroupUserControl spravaGridGroupUserControl)
         {
@@ -35,12 +35,18 @@ namespace Bilten.Report
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
+            // TODO4: Ova promenljiva u stvari oznacava da li stampamo u jednoj (false) ili dve (true) kolone.
+            // Ceo ovaj izvestaj (tj. layout sprava na strani) treba bolje uraditi.
             bool sveSpraveNaJednojStrani = brojSpravaPoStrani > 3;
 
             if (sveSpraveNaJednojStrani)
                 Margins = new Margins(50, 50, 100, 100);
-            
-            Sprava[] sprave = Sprave.getSprave(gim);
+
+            Sprava[] sprave = new Sprava[startListe.Count];
+            for (int i = 0; i < startListe.Count; ++i)
+            {
+                sprave[i] = startListe[i].Sprava;
+            }
             for (int i = 0; i < sprave.Length; i++)
             {
                 Sprava sprava = sprave[i];
@@ -49,8 +55,8 @@ namespace Bilten.Report
                 int columnNumber = 1;
                 if (sveSpraveNaJednojStrani)
                 {
-                    page = 1;
-                    relY = (i / 2) * (1 / 3f) + 0.05f;
+                    page = (i / 6) + 1;
+                    relY = ((i % 6) / 2) * (1 / 3f) + 0.05f;
                     columnNumber = (i % 2 == 0) ? 1 : 2;
                 }
                 else if (brojSpravaPoStrani == 2 || brojSpravaPoStrani == 3)

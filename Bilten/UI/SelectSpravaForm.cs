@@ -17,17 +17,30 @@ namespace Bilten.UI
             get { return sprava; }
         }
 
-        public SelectSpravaForm(Gimnastika gimnastika, Sprava sprava)
+        public SelectSpravaForm(Sprava[] sprave, Sprava sprava)
         {
             InitializeComponent();
             Text = "Sprava";
 
             cmbSprava.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbSprava.Items.AddRange(Sprave.getSpraveNazivi(gimnastika));
-            if (sprava == Sprava.Undefined || Sprave.isPraznaSprava(sprava))
+            foreach (Sprava s in sprave)
+            {
+                cmbSprava.Items.Add(Sprave.toString(s));
+            }
+            if (sprava == Sprava.Undefined)
                 cmbSprava.SelectedIndex = 0;
             else
-                cmbSprava.SelectedIndex = Sprave.indexOf(sprava, gimnastika);
+            {
+                List<Sprava> sprave2 = new List<Sprava>(sprave);
+                int selectedIndex = sprave2.IndexOf(sprava);
+                if (selectedIndex < 0)
+                {
+                    // Ovo se desava kada je sprava pauza, a moze da se bira samo izmedju sprava koje nisu pauze.
+                    // Tada selektujem prvu spravu.
+                    selectedIndex = 0;
+                }
+                cmbSprava.SelectedIndex = selectedIndex;
+            }
         }
 
         private void btnOK_Click(object sender, EventArgs e)

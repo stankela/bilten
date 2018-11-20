@@ -183,6 +183,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
     <EmbeddedResource Include="Images\Prazno.bmp" />
+    <EmbeddedResource Include="Images\Pause1.jpg" />
+    <EmbeddedResource Include="Images\Pause2.jpg" />
+    <EmbeddedResource Include="Images\Pause3.jpg" />
+    <EmbeddedResource Include="Images\Pause4.jpg" />
+    <EmbeddedResource Include="Images\Pause5.jpg" />
+    <EmbeddedResource Include="Images\Pause6.jpg" />
     <Content Include="TODO.txt" />
     <Content Include="Update\DatabaseUpdate.txt" />
     <EmbeddedResource Include="UI\PauzeForm.resx">

@@ -60,6 +60,8 @@ namespace Bilten
         // sto rez.takmicenja nisu dobro ucitana (koristi se FindByTakmicenjeFetch_Tak1_Gimnasticari, a potrebni su i
         // poretci sprava). Trenutno sam onemogucio tu meni opciju.
 
+        // TODO4: Dodaj D, E i Penalizaciju kada stampas kvalifikante za takmicenje 3.
+
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
         // - Prozor gde ce biti prikazani klubovi ucesnici

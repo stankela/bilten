@@ -293,7 +293,7 @@ namespace Bilten.UI
         {
             if (ActiveRaspored == null)
                 return;
-            SelectSpravaForm form = new SelectSpravaForm(takmicenje.Gimnastika,
+            SelectSpravaForm form = new SelectSpravaForm(Sprave.getSprave(takmicenje.Gimnastika),
                 getActiveSpravaGridGroupUserControl().SelectedSprava);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
@@ -593,7 +593,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(takmicenje.Gimnastika,
+                SelectSpravaForm form2 = new SelectSpravaForm(Sprave.getSprave(takmicenje.Gimnastika),
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;

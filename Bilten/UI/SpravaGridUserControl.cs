@@ -41,6 +41,16 @@ namespace Bilten.UI
         {
             this.sprava = sprava;
             pictureBoxSprava.Image = SlikeSprava.getImage(sprava);
+            if (Sprave.isPraznaSprava(sprava))
+            {
+                pictureBoxSprava.SizeMode = PictureBoxSizeMode.Zoom;
+                pictureBoxSprava.Width = Convert.ToInt32(
+                    pictureBoxSprava.Height * ((1.0 * pictureBoxSprava.Image.Width) / pictureBoxSprava.Image.Height));
+            }
+            else
+            {
+                pictureBoxSprava.SizeMode = PictureBoxSizeMode.AutoSize;
+            }
             centerPicture();
         }
 

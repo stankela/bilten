@@ -115,14 +115,7 @@ namespace Bilten.UI
                 Sprava s = sprave[i];
                 ToolStripMenuItem item = new ToolStripMenuItem();
                 //item.Size = new System.Drawing.Size(152, 22);
-                if (!Sprave.isPraznaSprava(s))
-                {
-                    item.Text = Sprave.toString(s);
-                }
-                else
-                {
-                    item.Text = "Pauza";
-                }
+                item.Text = Sprave.toString(s);
                 item.Tag = s;
                 item.Click += mnPrebaciNa_Click;
                 mnPrebaciNa.DropDownItems.Add(item);
@@ -591,7 +584,7 @@ namespace Bilten.UI
         {
             if (ActiveRaspored == null)
                 return;
-            SelectSpravaForm form = new SelectSpravaForm(takmicenje.Gimnastika,
+            SelectSpravaForm form = new SelectSpravaForm(Sprave.getSpraveIPauze(ActiveRaspored.PauzeMask, takmicenje.Gimnastika),
                 getActiveSpravaGridGroupUserControl().SelectedSprava);
             if (form.ShowDialog() != DialogResult.OK)
                 return;
@@ -1012,7 +1005,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(takmicenje.Gimnastika,
+                SelectSpravaForm form2 = new SelectSpravaForm(Sprave.getSpraveIPauze(ActiveRaspored.PauzeMask, takmicenje.Gimnastika),
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;
@@ -1032,11 +1025,11 @@ namespace Bilten.UI
                 if (form.StampajSveSprave)
                 {
                     List<StartListaNaSpravi> startListe = new List<StartListaNaSpravi>();
-                    foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+                    foreach (Sprava s in Sprave.getSpraveIPauze(ActiveRaspored.PauzeMask, takmicenje.Gimnastika))
                     {
                         startListe.Add(ActiveRaspored.getStartLista(s, ActiveGrupa, ActiveRotacija));
                     }
-                    p.setIzvestaj(new StartListaIzvestaj(startListe, takmicenje.Gimnastika, documentName,
+                    p.setIzvestaj(new StartListaIzvestaj(startListe, documentName,
                         form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi, form.StampajKlub, form.StampajKategoriju,
                         getActiveSpravaGridGroupUserControl()));
                 }
@@ -1545,7 +1538,7 @@ namespace Bilten.UI
             Sprava sprava = Sprava.Undefined;
             if (!form.StampajSveSprave)
             {
-                SelectSpravaForm form2 = new SelectSpravaForm(takmicenje.Gimnastika,
+                SelectSpravaForm form2 = new SelectSpravaForm(Sprave.getSprave(takmicenje.Gimnastika),
                     getActiveSpravaGridGroupUserControl().SelectedSprava);
                 if (form2.ShowDialog() != DialogResult.OK)
                     return;

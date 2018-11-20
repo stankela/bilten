@@ -120,22 +120,22 @@ namespace Bilten.Domain
                     return "Greda";
 
                 case Sprava.PraznaSprava1:
-                    return "PraznaSprava1";
+                    return "Pauza 1";
 
                 case Sprava.PraznaSprava2:
-                    return "PraznaSprava2";
+                    return "Pauza 2";
 
                 case Sprava.PraznaSprava3:
-                    return "PraznaSprava3";
+                    return "Pauza 3";
 
                 case Sprava.PraznaSprava4:
-                    return "PraznaSprava4";
+                    return "Pauza 4";
 
                 case Sprava.PraznaSprava5:
-                    return "PraznaSprava5";
+                    return "Pauza 5";
 
                 case Sprava.PraznaSprava6:
-                    return "PraznaSprava6";
+                    return "Pauza 6";
 
                 case Sprava.Undefined:
                     return "Nepoznata sprava";
