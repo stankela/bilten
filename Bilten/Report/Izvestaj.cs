@@ -352,7 +352,7 @@ namespace Bilten.Report
 			//e.PageSettings.Margins = new Margins(50, 50, 50, 50);
 		}
 
-        public static void scaleImageIsotropically(Graphics g, Image image, RectangleF rect)
+        public static void scaleImageIsotropically(Graphics g, Image image, RectangleF rect, float reductionRatio = 1f)
         {
             SizeF sizef = new SizeF(image.Width / image.HorizontalResolution,
                                     image.Height / image.VerticalResolution);
@@ -361,7 +361,7 @@ namespace Bilten.Report
                                     rect.Height / sizef.Height);
 
             sizef.Width *= fScale;
-            sizef.Height *= fScale;
+            sizef.Height *= (fScale * reductionRatio);
 
             g.DrawImage(image, rect.X + (rect.Width - sizef.Width) / 2,
                                   rect.Y + (rect.Height - sizef.Height) / 2,

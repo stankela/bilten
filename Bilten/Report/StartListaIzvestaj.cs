@@ -356,7 +356,9 @@ namespace Bilten.Report
                                 imageHeight);
                             g.DrawRectangle(pen, imageRect.X, imageRect.Y,
                                 imageRect.Width, imageRect.Height);
-                            Izvestaj.scaleImageIsotropically(g, col.Image, imageRect);
+                            // Mnozim sa 0.95 zato sto se desava da slike pauza (koje nemaju okvir oko
+                            // sebe) prebrisu gornju liniju pravougaonika u koji su smestene.
+                            Izvestaj.scaleImageIsotropically(g, col.Image, imageRect, 0.95f);
                         }
                     }
                     else

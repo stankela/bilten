@@ -868,7 +868,7 @@ namespace Bilten.UI
         {
             if (Sprave.isPraznaSprava(c.Sprava))
             {
-                MessageDialogs.showMessage("Nije dozvoljen unos ocena za pauze u rotaciji.", this.Text);
+                //MessageDialogs.showMessage("Nije dozvoljen unos ocena za pauze u rotaciji.", this.Text);
                 return;
             }
 

@@ -41,6 +41,8 @@ namespace Bilten.UI
             spravaGridUserControl1.init(sprava);
             spravaGridUserControl1.DataGridViewUserControl.DataGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(DataGridView_CellFormatting);
 
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
             ISession session = null;
             try
             {
@@ -71,6 +73,8 @@ namespace Bilten.UI
             }
             finally
             {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
         }

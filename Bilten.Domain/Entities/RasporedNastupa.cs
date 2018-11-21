@@ -231,6 +231,16 @@ namespace Bilten.Domain
                 StartListaNaSpravi startListaPrethRot = getStartListaPrethRot(startLista, aktivneSprave);
                 if (startListaPrethRot.Nastupi.Count == 0)
                     continue;
+                if (Sprave.isPraznaSprava(startListaPrethRot.Sprava))
+                {
+                    // Ako je prethodna sprava pauza, samo prebacujem gimnasticare na novu spravu, bez obzira koji je
+                    // nacin rotacije. Rotacija je izvrsena kada sam prebacivao sa sprave na pauzu.
+                    foreach (NastupNaSpravi n in startListaPrethRot.Nastupi)
+                    {
+                        startLista.addNastup(new NastupNaSpravi(n.Gimnasticar, n.Ekipa));
+                    }
+                    continue;
+                }
 
                 // Nadji nacin rotacije (u start listi na prvoj rotaciji).
                 StartListaNaSpravi current = startListaPrethRot;
