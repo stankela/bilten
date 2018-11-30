@@ -158,6 +158,7 @@ namespace Bilten.UI
                 btnIzracunaj.Enabled = btnIzracunaj.Visible = false;
                 prikaziKlubToolStripMenuItem.Enabled = false;
                 prikaziDrzavuToolStripMenuItem.Enabled = false;
+                btnStampajKvalifikante.Enabled = btnStampajKvalifikante.Visible = false;
             }
         }
 
@@ -203,6 +204,7 @@ namespace Bilten.UI
 
         private void onSelectedTakmicenjeChanged()
         {
+            btnStampajKvalifikante.Enabled = !forViewingOnly && kvalColumnVisible();
             if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
             {
                 GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
@@ -305,7 +307,7 @@ namespace Bilten.UI
             {
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, Opcije.Instance.PrikaziDEOcene,
-                    kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName));
+                    kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, false));
                 form2.ShowDialog();
             }
             catch (Exception ex)
@@ -630,6 +632,107 @@ namespace Bilten.UI
 
             dataGridViewUserControl1.setItems<RezultatUkupno>(p.getRezultati());
             dataGridViewUserControl1.setSelectedItem<RezultatUkupno>(r);
+        }
+
+        private List<RezultatUkupnoExtended> getKvalifikantiIRezerve(List<RezultatUkupnoExtended> rezultatiEx)
+        {
+            List<RezultatUkupnoExtended> result = new List<RezultatUkupnoExtended>();
+            foreach (RezultatUkupnoExtended r in rezultatiEx)
+            {
+                if (r.KvalStatus == KvalifikacioniStatus.Q)
+                    result.Add(r);
+            }
+            foreach (RezultatUkupnoExtended r in rezultatiEx)
+            {
+                if (r.KvalStatus == KvalifikacioniStatus.R)
+                    result.Add(r);
+            }
+            return result;
+        }
+
+        private void btnStampajKvalifikante_Click(object sender, EventArgs e)
+        {
+            char shMalo = '\u0161';
+            string nazivIzvestaja = "Finale vi" + shMalo + "eboja - kvalifikanti i rezerve";
+            string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
+
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
+                form.Header4Text = nazivIzvestaja;
+                form.FooterText = mestoDatum;
+            }
+            else
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
+                form.Header4Text = nazivIzvestaja;
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            FormUtil.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+
+            PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
+            List<RezultatUkupnoExtended> rezultatiEx = null;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
+                        .FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
+                    rezultatiEx = p.getRezultatiExtended(ocene, Opcije.Instance.PrikaziDEOcene,
+                        ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                PreviewDialog form2 = new PreviewDialog();
+                form2.setIzvestaj(new UkupnoIzvestaj(getKvalifikantiIRezerve(rezultatiEx), ActiveTakmicenje.Gimnastika,
+                    Opcije.Instance.PrikaziDEOcene, false, p.hasPenalty(),
+                    dataGridViewUserControl1.DataGridView, documentName, true));
+                form2.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
         }
 
     }

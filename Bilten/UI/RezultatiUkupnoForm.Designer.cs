@@ -39,9 +39,10 @@ namespace Bilten.UI
             this.mnR = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrazno = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPromeniPoredakZaIsteOcene = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPenalizacija = new System.Windows.Forms.ToolStripMenuItem();
             this.btnIzracunaj = new System.Windows.Forms.Button();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
-            this.mnPenalizacija = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnStampajKvalifikante = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,7 +67,7 @@ namespace Bilten.UI
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(574, 10);
+            this.btnClose.Location = new System.Drawing.Point(718, 10);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -85,7 +86,7 @@ namespace Bilten.UI
             this.mnPromeniPoredakZaIsteOcene,
             this.mnPenalizacija});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(236, 180);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(236, 158);
             // 
             // prikaziKlubToolStripMenuItem
             // 
@@ -129,6 +130,13 @@ namespace Bilten.UI
             this.mnPromeniPoredakZaIsteOcene.Text = "Promeni poredak za iste ocene";
             this.mnPromeniPoredakZaIsteOcene.Click += new System.EventHandler(this.mnPromeniPoredakZaIsteOcene_Click);
             // 
+            // mnPenalizacija
+            // 
+            this.mnPenalizacija.Name = "mnPenalizacija";
+            this.mnPenalizacija.Size = new System.Drawing.Size(235, 22);
+            this.mnPenalizacija.Text = "Penalizacija";
+            this.mnPenalizacija.Click += new System.EventHandler(this.mnPenalizacija_Click);
+            // 
             // btnIzracunaj
             // 
             this.btnIzracunaj.Location = new System.Drawing.Point(480, 10);
@@ -147,21 +155,25 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(12, 58);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(688, 287);
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(832, 287);
             this.dataGridViewUserControl1.TabIndex = 0;
             // 
-            // mnPenalizacija
+            // btnStampajKvalifikante
             // 
-            this.mnPenalizacija.Name = "mnPenalizacija";
-            this.mnPenalizacija.Size = new System.Drawing.Size(235, 22);
-            this.mnPenalizacija.Text = "Penalizacija";
-            this.mnPenalizacija.Click += new System.EventHandler(this.mnPenalizacija_Click);
+            this.btnStampajKvalifikante.Location = new System.Drawing.Point(571, 10);
+            this.btnStampajKvalifikante.Name = "btnStampajKvalifikante";
+            this.btnStampajKvalifikante.Size = new System.Drawing.Size(132, 23);
+            this.btnStampajKvalifikante.TabIndex = 5;
+            this.btnStampajKvalifikante.Text = "Stampaj kvalifikante";
+            this.btnStampajKvalifikante.UseVisualStyleBackColor = true;
+            this.btnStampajKvalifikante.Click += new System.EventHandler(this.btnStampajKvalifikante_Click);
             // 
             // RezultatiUkupnoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 357);
+            this.ClientSize = new System.Drawing.Size(856, 357);
+            this.Controls.Add(this.btnStampajKvalifikante);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.btnIzracunaj);
             this.Controls.Add(this.dataGridViewUserControl1);
@@ -191,5 +203,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnIzracunaj;
         private System.Windows.Forms.ToolStripMenuItem mnPromeniPoredakZaIsteOcene;
         private System.Windows.Forms.ToolStripMenuItem mnPenalizacija;
+        private System.Windows.Forms.Button btnStampajKvalifikante;
     }
 }

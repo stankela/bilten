@@ -14,7 +14,8 @@ namespace Bilten.Report
 		private UkupnoLista lista;
 
 		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
-            bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, string documentName)
+            bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, string documentName,
+            bool stampanjeKvalifikanata)
 		{
             DocumentName = documentName;
 
@@ -28,7 +29,7 @@ namespace Bilten.Report
                 Margins = new Margins(75, 75, 75, 75);
 
             lista = new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, kvalColumn, penalty, formGrid);
+                gim, extended, kvalColumn, penalty, formGrid, stampanjeKvalifikanata);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -56,7 +57,7 @@ namespace Bilten.Report
 
 		public UkupnoLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoExtended> rezultati,
-            Gimnastika gim, bool extended, bool kvalColumn, bool penalty, DataGridView formGrid)
+            Gimnastika gim, bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, bool stampanjeKvalifikanata)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.extended = extended;
@@ -67,29 +68,50 @@ namespace Bilten.Report
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
 
-            fetchItems(rezultati, gim, extended);
+            fetchItems(rezultati, gim, extended, stampanjeKvalifikanata);
         }
 
-        private void fetchItems(IList<RezultatUkupnoExtended> rezultati, 
-            Gimnastika gim, bool extended)
+        private void fetchItems(IList<RezultatUkupnoExtended> rezultati,
+            Gimnastika gim, bool extended, bool stampanjeKvalifikanata)
 		{
-            items = getUkupnoReportItems(rezultati, gim, extended);
+            items = getUkupnoReportItems(rezultati, gim, extended, stampanjeKvalifikanata);
 		
 			groups = new List<ReportGrupa>();
 			groups.Add(new ReportGrupa(0, items.Count));
 		}
 
         private List<object[]> getUkupnoReportItems(IList<RezultatUkupnoExtended> rezultati,
-            Gimnastika gim, bool extended)
+            Gimnastika gim, bool extended, bool stampanjeKvalifikanata)
         {
             List<object[]> result = new List<object[]>();
+            int q = 0;
+            int rezerva = 0;
             foreach (RezultatUkupnoExtended r in rezultati)
             {
+                string redBroj = String.Empty;
+                if (!stampanjeKvalifikanata)
+                {
+                    redBroj = r.Rank.ToString();
+                }
+                else
+                {
+                    if (r.KvalStatus == KvalifikacioniStatus.Q)
+                    {
+                        ++q;
+                        redBroj = q.ToString();
+                    }
+                    else if (r.KvalStatus == KvalifikacioniStatus.R)
+                    {
+                        ++rezerva;
+                        redBroj = "R" + rezerva.ToString();
+                    }
+                }
+
                 if (gim == Gimnastika.MSG)
                 {
                     if (extended)
                     {
-                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
                             r.ParterD, r.ParterE, r.Parter, 
                             r.KonjD, r.KonjE, r.Konj, 
                             r.KarikeD, r.KarikeE, r.Karike, 
@@ -100,7 +122,7 @@ namespace Bilten.Report
                     }
                     else
                     {
-                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
                             r.Parter, r.Konj, r.Karike, r.Preskok, r.Razboj, 
                             r.Vratilo, r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
                     }
@@ -109,7 +131,7 @@ namespace Bilten.Report
                 {
                     if (extended)
                     {
-                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
                             r.PreskokD, r.PreskokE, r.Preskok, 
                             r.DvovisinskiRazbojD, r.DvovisinskiRazbojE, r.DvovisinskiRazboj, 
                             r.GredaD, r.GredaE, r.Greda, 
@@ -118,7 +140,7 @@ namespace Bilten.Report
                     }
                     else
                     {
-                        result.Add(new object[] { r.Rank, r.PrezimeIme, r.KlubDrzava,
+                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
                             r.Preskok, r.DvovisinskiRazboj, r.Greda, r.Parter, 
                             r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
                     }
