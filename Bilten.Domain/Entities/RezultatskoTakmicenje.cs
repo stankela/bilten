@@ -510,6 +510,7 @@ namespace Bilten.Domain
                 createPoredakUkupnoTak1 = true;
             if (Propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 != origPropozicije.NeogranicenBrojTakmicaraIzKlubaTak2
                 || Propozicije.MaxBrojTakmicaraIzKlubaTak2 != origPropozicije.MaxBrojTakmicaraIzKlubaTak2
+                || Propozicije.MaxBrojTakmicaraTak2VaziZaDrzavu != origPropozicije.MaxBrojTakmicaraTak2VaziZaDrzavu
                 || Propozicije.BrojFinalistaTak2 != origPropozicije.BrojFinalistaTak2
                 || Propozicije.BrojRezerviTak2 != origPropozicije.BrojRezerviTak2)
             {

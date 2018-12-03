@@ -61,6 +61,13 @@ namespace Bilten.Domain
             set { maxBrojTakmicaraIzKlubaTak2 = value; }
         }
 
+        private bool maxBrojTakmicaraTak2VaziZaDrzavu;
+        public virtual bool MaxBrojTakmicaraTak2VaziZaDrzavu
+        {
+            get { return maxBrojTakmicaraTak2VaziZaDrzavu; }
+            set { maxBrojTakmicaraTak2VaziZaDrzavu = value; }
+        }
+
         private byte brojFinalistaTak2;
         public virtual byte BrojFinalistaTak2
         {
@@ -388,6 +395,7 @@ namespace Bilten.Domain
                 p.BrojRezerviTak2 = this.BrojRezerviTak2;
                 p.NeogranicenBrojTakmicaraIzKlubaTak2 = this.NeogranicenBrojTakmicaraIzKlubaTak2;
                 p.MaxBrojTakmicaraIzKlubaTak2 = this.MaxBrojTakmicaraIzKlubaTak2;
+                p.MaxBrojTakmicaraTak2VaziZaDrzavu = this.MaxBrojTakmicaraTak2VaziZaDrzavu;
             }
         }
 
@@ -500,6 +508,7 @@ namespace Bilten.Domain
             result.ZaPreskokVisebojRacunajBoljuOcenu = this.ZaPreskokVisebojRacunajBoljuOcenu;
             result.NeogranicenBrojTakmicaraIzKlubaTak2 = this.NeogranicenBrojTakmicaraIzKlubaTak2;
             result.MaxBrojTakmicaraIzKlubaTak2 = this.MaxBrojTakmicaraIzKlubaTak2;
+            result.MaxBrojTakmicaraTak2VaziZaDrzavu = this.MaxBrojTakmicaraTak2VaziZaDrzavu;
             result.BrojFinalistaTak2 = this.BrojFinalistaTak2;
             result.BrojRezerviTak2 = this.BrojRezerviTak2;
 
@@ -537,6 +546,7 @@ namespace Bilten.Domain
             && this.ZaPreskokVisebojRacunajBoljuOcenu == that.ZaPreskokVisebojRacunajBoljuOcenu
             && this.NeogranicenBrojTakmicaraIzKlubaTak2 == that.NeogranicenBrojTakmicaraIzKlubaTak2
             && this.MaxBrojTakmicaraIzKlubaTak2 == that.MaxBrojTakmicaraIzKlubaTak2
+            && this.MaxBrojTakmicaraTak2VaziZaDrzavu == that.MaxBrojTakmicaraTak2VaziZaDrzavu
             && this.BrojFinalistaTak2 == that.BrojFinalistaTak2
             && this.BrojRezerviTak2 == that.BrojRezerviTak2
 
@@ -576,6 +586,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(ZaPreskokVisebojRacunajBoljuOcenu.ToString());
             strBuilder.AppendLine(NeogranicenBrojTakmicaraIzKlubaTak2.ToString());
             strBuilder.AppendLine(MaxBrojTakmicaraIzKlubaTak2.ToString());
+            strBuilder.AppendLine(MaxBrojTakmicaraTak2VaziZaDrzavu.ToString());
             strBuilder.AppendLine(BrojFinalistaTak2.ToString());
             strBuilder.AppendLine(BrojRezerviTak2.ToString());
 
@@ -608,6 +619,7 @@ namespace Bilten.Domain
             ZaPreskokVisebojRacunajBoljuOcenu = bool.Parse(reader.ReadLine());
             NeogranicenBrojTakmicaraIzKlubaTak2 = bool.Parse(reader.ReadLine());
             MaxBrojTakmicaraIzKlubaTak2 = byte.Parse(reader.ReadLine());
+            MaxBrojTakmicaraTak2VaziZaDrzavu = bool.Parse(reader.ReadLine());
             BrojFinalistaTak2 = byte.Parse(reader.ReadLine());
             BrojRezerviTak2 = byte.Parse(reader.ReadLine());
 

@@ -98,6 +98,7 @@ namespace Bilten.Test
             result.OdvojenoTak2 = true;
             result.NeogranicenBrojTakmicaraIzKlubaTak2 = false;
             result.MaxBrojTakmicaraIzKlubaTak2 = 2;
+            result.MaxBrojTakmicaraTak2VaziZaDrzavu = true;
             result.BrojFinalistaTak2 = 24;
             result.BrojRezerviTak2 = 4;
 

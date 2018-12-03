@@ -43,8 +43,12 @@ namespace Bilten.UI
             this.rbtBoljiPreskok = new System.Windows.Forms.RadioButton();
             this.rbtPrviPreskok = new System.Windows.Forms.RadioButton();
             this.lblPreskokViseboj = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.rbtDrzava = new System.Windows.Forms.RadioButton();
+            this.rbtKlub = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // ckbPostojiTak2
@@ -63,9 +67,9 @@ namespace Bilten.UI
             this.lblMaxTak.AutoSize = true;
             this.lblMaxTak.Location = new System.Drawing.Point(15, 289);
             this.lblMaxTak.Name = "lblMaxTak";
-            this.lblMaxTak.Size = new System.Drawing.Size(233, 13);
+            this.lblMaxTak.Size = new System.Drawing.Size(167, 13);
             this.lblMaxTak.TabIndex = 2;
-            this.lblMaxTak.Text = "Maksimalan broj takmicara iz istog kluba/drzave";
+            this.lblMaxTak.Text = "Maksimalan broj takmicara iz istog";
             // 
             // txtMaxTak
             // 
@@ -193,9 +197,43 @@ namespace Bilten.UI
             this.lblPreskokViseboj.TabIndex = 0;
             this.lblPreskokViseboj.Text = "Za preskok viseboja racuna se";
             // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.rbtDrzava);
+            this.panel4.Controls.Add(this.rbtKlub);
+            this.panel4.Location = new System.Drawing.Point(184, 277);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(66, 42);
+            this.panel4.TabIndex = 14;
+            // 
+            // rbtDrzava
+            // 
+            this.rbtDrzava.AutoSize = true;
+            this.rbtDrzava.Location = new System.Drawing.Point(3, 21);
+            this.rbtDrzava.Name = "rbtDrzava";
+            this.rbtDrzava.Size = new System.Drawing.Size(59, 17);
+            this.rbtDrzava.TabIndex = 1;
+            this.rbtDrzava.TabStop = true;
+            this.rbtDrzava.Text = "Drzave";
+            this.rbtDrzava.UseVisualStyleBackColor = true;
+            this.rbtDrzava.CheckedChanged += new System.EventHandler(this.rbtDrzava_CheckedChanged);
+            // 
+            // rbtKlub
+            // 
+            this.rbtKlub.AutoSize = true;
+            this.rbtKlub.Location = new System.Drawing.Point(3, 3);
+            this.rbtKlub.Name = "rbtKlub";
+            this.rbtKlub.Size = new System.Drawing.Size(52, 17);
+            this.rbtKlub.TabIndex = 0;
+            this.rbtKlub.TabStop = true;
+            this.rbtKlub.Text = "Kluba";
+            this.rbtKlub.UseVisualStyleBackColor = true;
+            this.rbtKlub.CheckedChanged += new System.EventHandler(this.rbtKlub_CheckedChanged);
+            // 
             // Takmicenje2Page
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.txtBrojRezervi);
@@ -207,11 +245,13 @@ namespace Bilten.UI
             this.Controls.Add(this.lblMaxTak);
             this.Controls.Add(this.ckbPostojiTak2);
             this.Name = "Takmicenje2Page";
-            this.Size = new System.Drawing.Size(501, 325);
+            this.Size = new System.Drawing.Size(501, 448);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -234,6 +274,9 @@ namespace Bilten.UI
         private System.Windows.Forms.RadioButton rbtBoljiPreskok;
         private System.Windows.Forms.RadioButton rbtPrviPreskok;
         private System.Windows.Forms.Label lblPreskokViseboj;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.RadioButton rbtDrzava;
+        private System.Windows.Forms.RadioButton rbtKlub;
 
 
     }

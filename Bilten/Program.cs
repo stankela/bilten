@@ -61,6 +61,7 @@ namespace Bilten
         // poretci sprava). Trenutno sam onemogucio tu meni opciju.
 
         // TODO4: Dodaj D, E i Penalizaciju kada stampas kvalifikante za takmicenje 3.
+        // TODO4: Broj E ocena treba da se posebno podesava za takmicenja 1, 2, 3 i 4.
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
@@ -78,7 +79,7 @@ namespace Bilten
         // - Kod racunanja ocene na osnovu oba preskoka treba da postoji izbor da li se ocena racuna na osnovu oba preskoka
         //   ili vece ocene iz oba preskoka.
 
-        public static int VERZIJA_PROGRAMA = 9;
+        public static int VERZIJA_PROGRAMA = 10;
 
         /// <summary>
         /// The main entry point for the application.

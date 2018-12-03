@@ -52,6 +52,7 @@ create table propozicije (
 	preskok_tak2_bolja_ocena bit,
 	neogr_broj_tak_tak2 bit,
 	max_tak_tak2 tinyint,
+	max_tak_tak2_vazi_za_drzavu bit,
 	broj_finalista_tak2 tinyint,
 	broj_rezervi_tak2 tinyint,
 	nacin_racunanja_ocene_finale_kupa_tak2 tinyint,

@@ -12,6 +12,7 @@
     <property name="ZaPreskokVisebojRacunajBoljuOcenu" column="preskok_tak2_bolja_ocena" type="Boolean" />
     <property name="NeogranicenBrojTakmicaraIzKlubaTak2" column="neogr_broj_tak_tak2" type="Boolean" />
     <property name="MaxBrojTakmicaraIzKlubaTak2" column="max_tak_tak2" type="Byte" />
+    <property name="MaxBrojTakmicaraTak2VaziZaDrzavu" column="max_tak_tak2_vazi_za_drzavu" type="Boolean" />
     <property name="BrojFinalistaTak2" column="broj_finalista_tak2" type="Byte" />
     <property name="BrojRezerviTak2" column="broj_rezervi_tak2" type="Byte" />
     

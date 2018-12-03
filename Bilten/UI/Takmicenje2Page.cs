@@ -52,6 +52,8 @@ namespace Bilten.UI
                 lblMaxTak.Enabled = false;
                 txtMaxTak.Enabled = false;
                 ckbNeogranicenBrojTak.Enabled = false;
+                rbtKlub.Enabled = false;
+                rbtDrzava.Enabled = false;
             }
             else
             {
@@ -106,6 +108,8 @@ namespace Bilten.UI
             bool enabled = ckbNeogranicenBrojTak.Enabled && !ckbNeogranicenBrojTak.Checked;
             lblMaxTak.Enabled = enabled;
             txtMaxTak.Enabled = enabled;
+            rbtKlub.Enabled = enabled;
+            rbtDrzava.Enabled = enabled;
         }
 
         private void ckbNeogranicenBrojTak_CheckedChanged(object sender, EventArgs e)
@@ -155,7 +159,10 @@ namespace Bilten.UI
                     txtBrojRezervi.Text = propozicije.BrojRezerviTak2.ToString();
                     ckbNeogranicenBrojTak.Checked = propozicije.NeogranicenBrojTakmicaraIzKlubaTak2;
                     if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
+                    {
                         txtMaxTak.Text = propozicije.MaxBrojTakmicaraIzKlubaTak2.ToString();
+                        rbtDrzava.Checked = propozicije.MaxBrojTakmicaraTak2VaziZaDrzavu;
+                    }
                 }
             }
             
@@ -191,6 +198,7 @@ namespace Bilten.UI
             rbtPrviPreskok.Checked = true;
             rbtBoljiPreskok.Checked = false;
             ckbNeogranicenBrojTak.Checked = false;
+            rbtKlub.Checked = true;
             txtMaxTak.Text = String.Empty;
             txtBrojFinalista.Text = String.Empty;
             txtBrojRezervi.Text = String.Empty;
@@ -295,9 +303,22 @@ namespace Bilten.UI
                     propozicije.BrojRezerviTak2 = byte.Parse(txtBrojRezervi.Text);
                     propozicije.NeogranicenBrojTakmicaraIzKlubaTak2 = ckbNeogranicenBrojTak.Checked;
                     if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
+                    {
                         propozicije.MaxBrojTakmicaraIzKlubaTak2 = byte.Parse(txtMaxTak.Text);
+                        propozicije.MaxBrojTakmicaraTak2VaziZaDrzavu = rbtDrzava.Checked;
+                    }
                 }
             }
+        }
+
+        private void rbtKlub_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void rbtDrzava_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
         }
     }
 }

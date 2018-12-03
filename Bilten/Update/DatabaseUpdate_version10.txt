@@ -1,0 +1,6 @@
+-- 03-Dec-2018 (VERZIJA = 10)
+
+alter table propozicije add column max_tak_tak2_vazi_za_drzavu bit;
+GO
+update propozicije set max_tak_tak2_vazi_za_drzavu = 0;
+GO

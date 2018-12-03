@@ -182,6 +182,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version10.txt" />
     <EmbeddedResource Include="Images\Prazno.bmp" />
     <EmbeddedResource Include="Images\Pause1.jpg" />
     <EmbeddedResource Include="Images\Pause2.jpg" />

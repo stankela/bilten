@@ -138,6 +138,15 @@ public class VersionUpdater
             converted = true;
         }
 
+        if (verzijaBaze == 9 && Program.VERZIJA_PROGRAMA > 9)
+        {
+            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                "Bilten.Update.DatabaseUpdate_version10.txt", true);
+            SqlCeUtilities.updateDatabaseVersionNumber(10);
+            verzijaBaze = 10;
+            converted = true;
+        }
+
         if (converted)
         {
             string msg = String.Format("Baza podataka je konvertovana u verziju {0}.", verzijaBaze);

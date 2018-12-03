@@ -226,7 +226,7 @@ namespace Bilten.Domain
                         // Poslednji uslov u if naredbi znaci da je dostignut limit broja takmicara iz kluba, a medju
                         // finalistima se nalazi i gimnasticar iz istog kluba koji ima istu ocenu. U tom slucaju moramo
                         // da dodamo i ovog finalistu. TODO4: Da li u ovom slucaju treba da povecavamo finCount? (i kod
-                        // preskoka isto).
+                        // rezultata viseboja isto).
 
                         finCount++;
                         rezultat.KvalStatus = KvalifikacioniStatus.Q;
@@ -263,7 +263,7 @@ namespace Bilten.Domain
                 else
                 {
                     // TODO: Uradi i za rezerve razresavanje situacije kada postoji vise rezervi sa identicnim
-                    // rezultatom (isto i za preskok).
+                    // rezultatom (isto i za rezultate viseboj).
                     rezultat.KvalStatus = KvalifikacioniStatus.None;
                 }
             }
