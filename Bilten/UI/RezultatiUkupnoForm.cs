@@ -240,6 +240,11 @@ namespace Bilten.UI
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
+            stampaj(null);
+        }
+
+        private void stampaj(PoredakUkupno p)
+        {
             string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(deoTakKod, takmicenje.FinaleKupa, false);
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
@@ -248,7 +253,7 @@ namespace Bilten.UI
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
 
-                string mestoDatum = takmicenje.Mesto + "  " 
+                string mestoDatum = takmicenje.Mesto + "  "
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
@@ -263,13 +268,14 @@ namespace Bilten.UI
                 form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.Header4Text = nazivIzvestaja;
             }
-            
+
             if (form.ShowDialog() != DialogResult.OK)
                 return;
             FormUtil.initHeaderFooterFromForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
-            PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
+            if (p == null)
+                p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
             List<RezultatUkupnoExtended> rezultatiEx = null;
 
             Cursor.Current = Cursors.WaitCursor;
@@ -733,6 +739,50 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1)
+                return;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            PoredakUkupno p = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+
+                    OcenaDAO ocenaDAO = DAOFactoryFactory.DAOFactory.GetOcenaDAO();
+                    IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
+
+                    p = new PoredakUkupno(DeoTakmicenjaKod.Takmicenje1);
+                    p.create(ActiveTakmicenje, ocene, true);
+
+                    foreach (Ocena o in ocene)
+                        ocenaDAO.Evict(o);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                Close();
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            stampaj(p);
         }
 
     }

@@ -33,7 +33,9 @@ namespace Bilten.Domain
             this.deoTakKod = deoTakKod;
         }
 
-        public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene)
+        // Ako je finaleMemorijala == true, to znaci da postoji samo takmicenje 1 ali da se poredak izracunava tako
+        // sto postoje ogranicenja za broj gimnasticara iz kluba/drzave.
+        public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene, bool finaleMemorijala = false)
         {
             IList<GimnasticarUcesnik> gimnasticari;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -62,10 +64,10 @@ namespace Bilten.Domain
                     r.addPenalty(r.Gimnasticar.PenaltyViseboj.Value);
                 Rezultati.Add(r);
             }
-            rankRezultati(rezTak.Propozicije);
+            rankRezultati(rezTak.Propozicije, finaleMemorijala);
         }
 
-        public virtual void rankRezultati(Propozicije propozicije)
+        public virtual void rankRezultati(Propozicije propozicije, bool finaleMemorijala = false)
         {
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>(Rezultati);
 
@@ -101,15 +103,35 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
-            updateKvalStatus(propozicije);
+            if (!finaleMemorijala)
+            {
+                updateKvalStatus(propozicije.odvojenoTak2(), propozicije.BrojFinalistaTak2, propozicije.BrojRezerviTak2,
+                    propozicije.NeogranicenBrojTakmicaraIzKlubaTak2, propozicije.MaxBrojTakmicaraIzKlubaTak2,
+                    propozicije.MaxBrojTakmicaraTak2VaziZaDrzavu);
+            }
+            else
+            {
+                updateKvalStatus(true, 1000, 0,
+                    false, 2,
+                    true);
+                for (int i = Rezultati.Count - 1; i >= 0; --i)
+                {
+                    if (Rezultati[i].KvalStatus != KvalifikacioniStatus.Q)
+                        Rezultati.RemoveAt(i);
+                }
+                // Ponovi rangiraj gimnasticare, nakon sto smo izbacili suvisne.
+                rankRezultati(propozicije);
+            }
         }
 
-        private void updateKvalStatus(Propozicije propozicije)
+        private void updateKvalStatus(bool odvojenoTak2, int brojFinalistaTak2, int brojRezerviTak2,
+            bool neogranicenBrojTakmicaraIzKlubaTak2, int maxBrojTakmicaraIzKlubaTak2,
+            bool maxBrojTakmicaraTak2VaziZaDrzavu)
         {
             foreach (RezultatUkupno r in Rezultati)
                 r.KvalStatus = KvalifikacioniStatus.None;
 
-            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !propozicije.odvojenoTak2())
+            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1 || !odvojenoTak2)
                 return;
             
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>(Rezultati);
@@ -137,10 +159,10 @@ namespace Bilten.Domain
                     continue;
                 }
 
-                if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
+                if (!neogranicenBrojTakmicaraIzKlubaTak2)
                 {
                     porediDrzavu.Add(false);
-                    if (propozicije.MaxBrojTakmicaraTak2VaziZaDrzavu)
+                    if (maxBrojTakmicaraTak2VaziZaDrzavu)
                     {
                         if (rezultat.Gimnasticar.DrzavaUcesnik != null)
                         {
@@ -172,10 +194,10 @@ namespace Bilten.Domain
                         brojTakmicaraMap.Add(id, 0);
                 }
 
-                if (finCount < propozicije.BrojFinalistaTak2 || rezultat.Rank == prevFinRezultat.Rank)
+                if (finCount < brojFinalistaTak2 || rezultat.Rank == prevFinRezultat.Rank)
                 {
-                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak2
-                        || brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak2
+                    if (neogranicenBrojTakmicaraIzKlubaTak2
+                        || brojTakmicaraMap[id] < maxBrojTakmicaraIzKlubaTak2
                         || postojiIstiKvalRezultatIzKluba(rezultat, rezultati, porediDrzavu))
                     {
                         // Poslednji uslov u if naredbi znaci da je dostignut limit broja takmicara iz kluba, a medju
@@ -186,10 +208,10 @@ namespace Bilten.Domain
                         finCount++;
                         rezultat.KvalStatus = KvalifikacioniStatus.Q;
                         prevFinRezultat = rezultat;
-                        if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
+                        if (!neogranicenBrojTakmicaraIzKlubaTak2)
                             brojTakmicaraMap[id]++;
                     }
-                    else if (rezCount < propozicije.BrojRezerviTak2 && Opcije.Instance.UzimajPrvuSlobodnuRezervu)
+                    else if (rezCount < brojRezerviTak2 && Opcije.Instance.UzimajPrvuSlobodnuRezervu)
                     {
                         rezCount++;
                         rezultat.KvalStatus = KvalifikacioniStatus.R;
@@ -197,14 +219,14 @@ namespace Bilten.Domain
                     else
                         rezultat.KvalStatus = KvalifikacioniStatus.None;
                 }
-                else if (rezCount < propozicije.BrojRezerviTak2)
+                else if (rezCount < brojRezerviTak2)
                 {
-                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak2
-                        || brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak2)
+                    if (neogranicenBrojTakmicaraIzKlubaTak2
+                        || brojTakmicaraMap[id] < maxBrojTakmicaraIzKlubaTak2)
                     {
                         rezCount++;
                         rezultat.KvalStatus = KvalifikacioniStatus.R;
-                        if (!propozicije.NeogranicenBrojTakmicaraIzKlubaTak2)
+                        if (!neogranicenBrojTakmicaraIzKlubaTak2)
                             brojTakmicaraMap[id]++;
                     }
                     else if (Opcije.Instance.UzimajPrvuSlobodnuRezervu)
