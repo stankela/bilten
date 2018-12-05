@@ -35,7 +35,8 @@ namespace Bilten.Domain
 
         // Ako je finaleMemorijala == true, to znaci da postoji samo takmicenje 1 ali da se poredak izracunava tako
         // sto postoje ogranicenja za broj gimnasticara iz kluba/drzave.
-        public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene, bool finaleMemorijala = false)
+        public virtual void create(RezultatskoTakmicenje rezTak, IList<Ocena> ocene, bool finaleMemorijala = false,
+            int maxBrojTakmicaraIzKluba = 0, bool maxBrojTakmicaraVaziZaDrzavu = false)
         {
             IList<GimnasticarUcesnik> gimnasticari;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -64,10 +65,11 @@ namespace Bilten.Domain
                     r.addPenalty(r.Gimnasticar.PenaltyViseboj.Value);
                 Rezultati.Add(r);
             }
-            rankRezultati(rezTak.Propozicije, finaleMemorijala);
+            rankRezultati(rezTak.Propozicije, finaleMemorijala, maxBrojTakmicaraIzKluba, maxBrojTakmicaraVaziZaDrzavu);
         }
 
-        public virtual void rankRezultati(Propozicije propozicije, bool finaleMemorijala = false)
+        public virtual void rankRezultati(Propozicije propozicije, bool finaleMemorijala = false,
+            int maxBrojTakmicaraIzKluba = 0, bool maxBrojTakmicaraVaziZaDrzavu = false)
         {
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>(Rezultati);
 
@@ -112,8 +114,8 @@ namespace Bilten.Domain
             else
             {
                 updateKvalStatus(true, 1000, 0,
-                    false, 2,
-                    true);
+                    false, maxBrojTakmicaraIzKluba,
+                    maxBrojTakmicaraVaziZaDrzavu);
                 for (int i = Rezultati.Count - 1; i >= 0; --i)
                 {
                     if (Rezultati[i].KvalStatus != KvalifikacioniStatus.Q)

@@ -138,7 +138,7 @@ namespace Bilten.UI
         private void initUI(RezultatskoTakmicenje startRezTakmicenje)
         {
             Text = "Rezultati - " + DeoTakmicenjaKodovi.toString(deoTakKod);
-            this.ClientSize = new Size(900, 540);
+            this.ClientSize = new Size(1100, 540);
 
             cmbTakmicenje.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTakmicenje.DataSource = rezTakmicenja;
@@ -159,6 +159,7 @@ namespace Bilten.UI
                 prikaziKlubToolStripMenuItem.Enabled = false;
                 prikaziDrzavuToolStripMenuItem.Enabled = false;
                 btnStampajKvalifikante.Enabled = btnStampajKvalifikante.Visible = false;
+                btnStampajSaOgranicenjem.Enabled = btnStampajSaOgranicenjem.Visible = false;
             }
         }
 
@@ -205,6 +206,8 @@ namespace Bilten.UI
         private void onSelectedTakmicenjeChanged()
         {
             btnStampajKvalifikante.Enabled = !forViewingOnly && kvalColumnVisible();
+            btnStampajSaOgranicenjem.Enabled = !forViewingOnly && deoTakKod == DeoTakmicenjaKod.Takmicenje1
+                                               && !takmicenje.FinaleKupa && !ActiveTakmicenje.odvojenoTak2();
             if (dataGridViewUserControl1.DataGridView.Columns.Count == 0)
             {
                 GridColumnsInitializer.initRezultatiUkupno(dataGridViewUserControl1,
@@ -240,12 +243,15 @@ namespace Bilten.UI
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            stampaj(null);
+            stampaj(null, null);
         }
 
-        private void stampaj(PoredakUkupno p)
+        private void stampaj(PoredakUkupno p, string nazivIzvestaja)
         {
-            string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(deoTakKod, takmicenje.FinaleKupa, false);
+            if (String.IsNullOrEmpty(nazivIzvestaja))
+            {
+                nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(deoTakKod, takmicenje.FinaleKupa, false);
+            }
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false);
@@ -287,8 +293,12 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
-                    IList<Ocena> ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
-                        .FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
+                    IList<Ocena> ocene = null;
+                    if (Opcije.Instance.PrikaziDEOcene)
+                    {
+                        ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
+                            .FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
+                    }
                     rezultatiEx = p.getRezultatiExtended(ocene, Opcije.Instance.PrikaziDEOcene,
                         ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
                 }
@@ -741,9 +751,10 @@ namespace Bilten.UI
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnStampajSaOgranicenjem_Click(object sender, EventArgs e)
         {
-            if (deoTakKod != DeoTakmicenjaKod.Takmicenje1)
+            MaxGimIzKlubaUFinaluForm form = new MaxGimIzKlubaUFinaluForm();
+            if (form.ShowDialog() != DialogResult.OK)
                 return;
 
             Cursor.Current = Cursors.WaitCursor;
@@ -761,7 +772,7 @@ namespace Bilten.UI
                     IList<Ocena> ocene = ocenaDAO.FindByDeoTakmicenja(takmicenje.Id, DeoTakmicenjaKod.Takmicenje1);
 
                     p = new PoredakUkupno(DeoTakmicenjaKod.Takmicenje1);
-                    p.create(ActiveTakmicenje, ocene, true);
+                    p.create(ActiveTakmicenje, ocene, true, form.MaxBrojTakmicaraIzKluba, form.MaxBrojTakmicaraVaziZaDrzavu);
 
                     foreach (Ocena o in ocene)
                         ocenaDAO.Evict(o);
@@ -782,7 +793,9 @@ namespace Bilten.UI
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
-            stampaj(p);
+            char shMalo = '\u0161';
+            string nazivIzvestaja = "Finale vi" + shMalo + "eboja";
+            stampaj(p, nazivIzvestaja);
         }
 
     }

@@ -62,6 +62,9 @@ namespace Bilten
 
         // TODO4: Dodaj D, E i Penalizaciju kada stampas kvalifikante za takmicenje 3.
         // TODO4: Broj E ocena treba da se posebno podesava za takmicenja 1, 2, 3 i 4.
+        // TODO4: Izbaci opciju uzmi prvu slobodnu rezervu.
+        // TODO4: Podesi sirine kolona u RezultatiUkupnoForm, RezultatiSpraveForm i RezultatiEkipeForm.
+        // TODO4: Stavi shMalo u neko static read-only svojstvo (npr u klasi Jezik ili Opcije)
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
