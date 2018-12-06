@@ -287,9 +287,7 @@ namespace Bilten.UI
 
         private void btnStampaj_Click(object sender, EventArgs e)
         {
-            //char shVeliko = '\u0160';
-            char chMalo = '\u010d';
-            string nazivIzvestaja = "Sudije na takmi" + chMalo + "enju";
+            string nazivIzvestaja = "Sudije na takmi" + Jezik.chMalo + "enju";
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
                 false, false, false, false, false, false, false);

@@ -272,29 +272,27 @@ namespace Bilten.Domain
         {
             Trace.Assert(deoTakKod == DeoTakmicenjaKod.Takmicenje1 || deoTakKod == DeoTakmicenjaKod.Takmicenje2);
 
-            //char shVeliko = '\u0160';
-            char shMalo = '\u0161';
             string result = String.Empty;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 if (finaleKupa)
                 {
                     if (sumaObaKola)
-                        result = "I i II kolo - Rezultati vi" + shMalo + "eboj";
+                        result = "I i II kolo - Rezultati vi" + Jezik.shMalo + "eboj";
                     else
-                        result = "Vi" + shMalo + "eboj";
+                        result = "Vi" + Jezik.shMalo + "eboj";
                 }
                 else
                 {
                     if (Propozicije.OdvojenoTak2)
-                        result = "Kvalifikacije za finale vi" + shMalo + "eboja";
+                        result = "Kvalifikacije za finale vi" + Jezik.shMalo + "eboja";
                     else
-                        result = "Vi" + shMalo + "eboj";
+                        result = "Vi" + Jezik.shMalo + "eboj";
                 }
             }
             else
             {
-                result = "Finale vi" + shMalo + "eboja";
+                result = "Finale vi" + Jezik.shMalo + "eboja";
             }
             return result;
         }

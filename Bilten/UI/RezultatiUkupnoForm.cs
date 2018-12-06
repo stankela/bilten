@@ -668,8 +668,7 @@ namespace Bilten.UI
 
         private void btnStampajKvalifikante_Click(object sender, EventArgs e)
         {
-            char shMalo = '\u0161';
-            string nazivIzvestaja = "Finale vi" + shMalo + "eboja - kvalifikanti i rezerve";
+            string nazivIzvestaja = "Finale vi" + Jezik.shMalo + "eboja - kvalifikanti i rezerve";
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false);
@@ -793,8 +792,7 @@ namespace Bilten.UI
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
 
-            char shMalo = '\u0161';
-            string nazivIzvestaja = "Finale vi" + shMalo + "eboja";
+            string nazivIzvestaja = "Finale vi" + Jezik.shMalo + "eboja";
             stampaj(p, nazivIzvestaja);
         }
 

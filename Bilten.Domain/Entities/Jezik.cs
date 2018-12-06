@@ -8,6 +8,10 @@ namespace Bilten.Domain
 {
     public class Jezik : DomainObject
     {
+        public static char shMalo = '\u0161';
+        public static char chMalo = '\u010d';
+        public static char shVeliko = '\u0160';
+
         private string naziv;
         public virtual string Naziv
         {

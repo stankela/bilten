@@ -564,13 +564,11 @@ namespace Bilten.UI
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            //char shVeliko = '\u0160';
-            char chMalo = '\u010d';
             string nazivIzvestaja;
             if (takmicenje.Gimnastika == Gimnastika.MSG)
-                nazivIzvestaja = "Gimnasti" + chMalo + "ari";
+                nazivIzvestaja = "Gimnasti" + Jezik.chMalo + "ari";
             else
-                nazivIzvestaja = "Gimnasti" + chMalo + "arke";
+                nazivIzvestaja = "Gimnasti" + Jezik.chMalo + "arke";
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
                 false, false, false, false, false, false, false);
