@@ -5,6 +5,7 @@ using Iesi.Collections.Generic;
 using System.Diagnostics;
 using Bilten.Util;
 using System.IO;
+using Bilten.Exceptions;
 
 namespace Bilten.Domain
 {
@@ -520,17 +521,30 @@ namespace Bilten.Domain
                     ekipe = rt.Takmicenje4.getUcesnici();
 
                 foreach (Ekipa e in ekipe)
-                    result.Add(e.Id, findRezultatiUkupnoForEkipa(e, gimRezUkupnoMap));
+                    result.Add(e.Id, findRezultatiUkupnoForEkipa(e, gimRezUkupnoMap, rt.Gimnastika));
             }       
             return result;
         }
 
         public static List<RezultatUkupno> findRezultatiUkupnoForEkipa(Ekipa e,
-            IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> gimRezUkupnoMap)
+            IDictionary<int, IList<Pair<RezultatskoTakmicenje, RezultatUkupno>>> gimRezUkupnoMap,
+            Gimnastika gimnastika)
         {
             List<RezultatUkupno> result = new List<RezultatUkupno>();
             foreach (GimnasticarUcesnik g in e.Gimnasticari)
+            {
+                if (!gimRezUkupnoMap.ContainsKey(g.Id))
+                {
+                    string msgFmt;
+                    if (gimnastika == Gimnastika.MSG)
+                        msgFmt = "Gimnasticar '{0}' ({1}) je clan ekipe '{2}' a nije dodat u 'Takmicari - takmicenja'.";
+                    else
+                        msgFmt = "Gimnasticarka '{0}' ({1}) je clanica ekipe '{2}' a nije dodata u 'Takmicari - takmicenja'.";
+                    string msg = String.Format(msgFmt, g.ImeSrednjeImePrezime, g.TakmicarskaKategorija, e.Naziv);
+                    throw new BusinessException(msg);
+                }
                 result.Add(getRezultatUkupnoForEkipniRezultat(g, gimRezUkupnoMap[g.Id]));
+            }
             return result;
         }
 
