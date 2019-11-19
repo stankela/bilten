@@ -180,6 +180,67 @@ namespace Bilten.Dao.NHibernate
             return q.List<Gimnasticar>();
         }
 
+        public Gimnasticar FindGimnasticar(string ime, string prezime, Nullable<int> danRodj, Nullable<int> mesRodj,
+            Nullable<int> godRodj, Nullable<Gimnastika> gimnastika)
+        {
+            string query = @"
+                from Gimnasticar g
+                left join fetch g.Kategorija
+                left join fetch g.Klub
+                left join fetch g.Drzava";
+            string WHERE = " where ";
+            if (!String.IsNullOrEmpty(ime))
+            {
+                query += WHERE + "lower(g.Ime) like :ime";
+                WHERE = " and ";
+            }
+            if (!String.IsNullOrEmpty(prezime))
+            {
+                query += WHERE + "lower(g.Prezime) like :prezime";
+                WHERE = " and ";
+            }
+            if (danRodj != null)
+            {
+                query += WHERE + "g.DatumRodjenja.Dan = :danRodj";
+                WHERE = " and ";
+            }
+            if (mesRodj != null)
+            {
+                query += WHERE + "g.DatumRodjenja.Mesec = :mesRodj";
+                WHERE = " and ";
+            }
+            if (godRodj != null)
+            {
+                query += WHERE + "g.DatumRodjenja.Godina = :godRodj";
+                WHERE = " and ";
+            }
+            if (gimnastika != null)
+            {
+                query += WHERE + "g.Gimnastika = :gimnastika";
+                WHERE = " and ";
+            }
+            query += " order by g.Prezime asc, g.Ime asc";
+
+            IQuery q = Session.CreateQuery(query);
+            if (!String.IsNullOrEmpty(ime))
+                q.SetString("ime", ime.ToLower() + '%');
+            if (!String.IsNullOrEmpty(prezime))
+                q.SetString("prezime", prezime.ToLower() + '%');
+            if (danRodj != null)
+                q.SetByte("danRodj", (byte)danRodj.Value);
+            if (mesRodj != null)
+                q.SetByte("mesRodj", (byte)mesRodj.Value);
+            if (godRodj != null)
+                q.SetInt16("godRodj", (short)godRodj.Value);
+            if (gimnastika != null)
+                q.SetByte("gimnastika", (byte)gimnastika.Value);
+            IList<Gimnasticar> result = q.List<Gimnasticar>();
+            if (result != null && result.Count > 0)
+                return result[0];
+            else
+                return null;
+        }
+
         public bool existsGimnasticar(Klub klub)
         {
             try

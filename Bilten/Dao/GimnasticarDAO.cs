@@ -16,6 +16,8 @@ namespace Bilten.Dao
         IList<Gimnasticar> FindGimnasticari(string ime, string prezime,
             Nullable<int> godRodj, Nullable<Gimnastika> gimnastika, Drzava drzava,
             KategorijaGimnasticara kategorija, Klub klub);
+        Gimnasticar FindGimnasticar(string ime, string prezime, Nullable<int> danRodj, Nullable<int> mesRodj,
+            Nullable<int> godRodj, Nullable<Gimnastika> gimnastika);
         bool existsGimnasticar(Klub klub);
         bool existsGimnasticar(Drzava drzava);
         bool existsGimnasticar(KategorijaGimnasticara kategorija);

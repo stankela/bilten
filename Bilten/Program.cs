@@ -66,6 +66,8 @@ namespace Bilten
         // PoredakUkupno i PoredakSprava. Proveri i ostale poretke (npr. ekipno) da li treba da se uradi slicno.
         // Istovremeno, jos jedanput detaljno proveri izracunavanje u PoredakUkupno i PoredakSprava. Takodje, razmisli o
         // izbacivanju opcije UzimajPrvuSlobodnuRezervu.
+        // TODO4: Implementiraj preostale slucajeve kada se menja ime gimnasticara ucesnika
+        // (oznaceni sa "Greska u programu - neuspesna promena imena gimnasticara" u GimnasticarUcesnikForm)
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika

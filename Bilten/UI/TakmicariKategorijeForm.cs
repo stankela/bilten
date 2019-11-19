@@ -382,7 +382,7 @@ namespace Bilten.UI
             try
             {
                 GimnasticarUcesnikForm form =
-                    new GimnasticarUcesnikForm(selectedItem.Id, ActiveKategorija);
+                    new GimnasticarUcesnikForm(selectedItem.Id, ActiveKategorija, takmicenje.Gimnastika);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     GimnasticarUcesnik editedItem = (GimnasticarUcesnik)form.Entity;

@@ -19,6 +19,12 @@ namespace Bilten.UI
         private List<KlubUcesnik> klubovi;
         private List<DrzavaUcesnik> drzave;
 
+        private string oldIme;
+        private string oldPrezime;
+        private string oldSrednjeIme;
+        private Datum oldDatumRodjenja;
+        private Gimnastika gimnastika;
+        
         private KlubUcesnik emptyKlub;
         private DrzavaUcesnik emptyDrzava;
         private readonly string PRAZNO = "<<Prazno>>";
@@ -40,13 +46,14 @@ namespace Bilten.UI
         // li je ovo uopste moguce, tj. da li nece da dovede do greske u nekom drugom delu programa).
 
         public GimnasticarUcesnikForm(Nullable<int> gimnasticarUcesnikId,
-            TakmicarskaKategorija kategorija)
+            TakmicarskaKategorija kategorija, Gimnastika gimnastika)
         {
             if (gimnasticarUcesnikId == null)
                 throw new ArgumentException("GimnasticarUcesnikForm only works in edit mode.");
             InitializeComponent();
 
             this.updateLastModified = true;
+            this.gimnastika = gimnastika;
 
             emptyKlub = new KlubUcesnik();
             emptyKlub.Naziv = PRAZNO;
@@ -146,6 +153,15 @@ namespace Bilten.UI
             return DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindById(id);
         }
 
+        protected override void saveOriginalData(DomainObject entity)
+        {
+            GimnasticarUcesnik gimnasticar = (GimnasticarUcesnik)entity;
+            oldIme = gimnasticar.Ime;
+            oldSrednjeIme = gimnasticar.SrednjeIme;
+            oldPrezime = gimnasticar.Prezime;
+            oldDatumRodjenja = gimnasticar.DatumRodjenja;
+        }
+
         protected override void updateUIFromEntity(DomainObject entity)
         {
             GimnasticarUcesnik gimnasticar = (GimnasticarUcesnik)entity;
@@ -171,6 +187,17 @@ namespace Bilten.UI
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
         {
+            if (txtIme.Text.Trim() == String.Empty)
+            {
+                notification.RegisterMessage(
+                    "Ime", "Ime gimnasticara je obavezno.");
+            }
+            if (txtPrezime.Text.Trim() == String.Empty)
+            {
+                notification.RegisterMessage(
+                    "Prezime", "Prezime gimnasticara je obavezno.");
+            }
+
             Datum dummyDatum;
             if (txtDatumRodj.Text.Trim() != String.Empty
             && !Datum.TryParse(txtDatumRodj.Text, out dummyDatum))
@@ -194,6 +221,18 @@ namespace Bilten.UI
         {
             switch (propertyName)
             {
+                case "Ime":
+                    txtIme.Focus();
+                    break;
+
+                case "SrednjeIme":
+                    txtSrednjeIme.Focus();
+                    break;
+
+                case "Prezime":
+                    txtPrezime.Focus();
+                    break;
+
                 case "DatumRodjenja":
                     txtDatumRodj.Focus();
                     break;
@@ -214,6 +253,14 @@ namespace Bilten.UI
         protected override void updateEntityFromUI(DomainObject entity)
         {
             GimnasticarUcesnik gimnasticar = (GimnasticarUcesnik)entity;
+
+            gimnasticar.Ime = txtIme.Text.Trim();
+            if (txtSrednjeIme.Text.Trim() == String.Empty)
+                gimnasticar.SrednjeIme = null;
+            else
+                gimnasticar.SrednjeIme = txtSrednjeIme.Text.Trim();
+            gimnasticar.Prezime = txtPrezime.Text.Trim();
+
             if (txtDatumRodj.Text.Trim() == String.Empty)
                 gimnasticar.DatumRodjenja = null;
             else
@@ -228,6 +275,81 @@ namespace Bilten.UI
                 gimnasticar.DrzavaUcesnik = null;
             
             gimnasticar.NastupaZaDrzavu = rbtDrzava.Checked;
+        }
+
+        protected override void checkBusinessRulesOnUpdate(DomainObject entity)
+        {
+            GimnasticarUcesnik g = (GimnasticarUcesnik)entity;
+            if (!hasImeSrednjeImePrezimeDatumRodjenjaChanged(g))
+                return;
+
+            GimnasticarDAO gimnasticarDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarDAO();
+
+            if (gimnasticarDAO.existsGimnasticarImePrezimeSrednjeImeDatumRodjenja(oldIme, oldPrezime, oldSrednjeIme,
+                oldDatumRodjenja))
+            {
+                if (!gimnasticarDAO.existsGimnasticarImePrezimeSrednjeImeDatumRodjenja(g.Ime, g.Prezime, g.SrednjeIme,
+                    g.DatumRodjenja))
+                {
+                    // Staro ime postoji u registru, novo ime ne postoji u registru.
+                    // Menjaj staro ime u registru sa novim
+                    Gimnasticar gim = gimnasticarDAO.FindGimnasticar(oldIme, oldPrezime,
+                        oldDatumRodjenja.Dan, oldDatumRodjenja.Mesec, oldDatumRodjenja.Godina, gimnastika);
+                    if (gim != null)
+                    {
+                        gim.Ime = g.Ime;
+                        gim.Prezime = g.Prezime;
+                        gim.SrednjeIme = g.SrednjeIme;
+                        gim.DatumRodjenja = g.DatumRodjenja;
+                        gimnasticarDAO.Update(gim);
+                    }
+                    else
+                    {
+                        throw new BusinessException("Greska u programu");
+                    }
+                }
+                else
+                {
+                    // Staro ime postoji u registru, novo ime postoji u registru.
+                    // TODO4: Ne menjaj nista u registru; trazi potvrdu za nastavak
+                    throw new BusinessException("Greska u programu - neuspesna promena imena gimnasticara2");
+                }
+            }
+            else
+            {
+                if (!gimnasticarDAO.existsGimnasticarImePrezimeSrednjeImeDatumRodjenja(g.Ime, g.Prezime, g.SrednjeIme,
+                    g.DatumRodjenja))
+                {
+                    // Staro ime ne postoji u registru, novo ime ne postoji u registru.
+                    // TODO4: Dodaj novog gimnasticara u registru sa novim imenom
+                    throw new BusinessException("Greska u programu - neuspesna promena imena gimnasticara3");
+                }
+                else
+                {
+                    // Staro ime ne postoji u registru, novo ime postoji u registru.
+                    // TODO4: Ne menjaj nista u registru; trazi potvrdu za nastavak
+                    throw new BusinessException("Greska u programu - neuspesna promena imena gimnasticara4");
+                }
+            }
+        }
+
+        private bool hasImeSrednjeImePrezimeDatumRodjenjaChanged(GimnasticarUcesnik g)
+        {
+            bool equals = g.Ime.ToUpper() == oldIme.ToUpper()
+                && g.Prezime.ToUpper() == oldPrezime.ToUpper();
+            if (equals)
+            {
+                equals = string.IsNullOrEmpty(g.SrednjeIme)
+                    && string.IsNullOrEmpty(oldSrednjeIme)
+                || (!string.IsNullOrEmpty(g.SrednjeIme)
+                    && !string.IsNullOrEmpty(oldSrednjeIme)
+                    && g.SrednjeIme.ToUpper() == oldSrednjeIme.ToUpper());
+            }
+            if (equals)
+            {
+                equals = g.DatumRodjenja == oldDatumRodjenja;
+            }
+            return !equals;
         }
 
         protected override void updateEntity(DomainObject entity)

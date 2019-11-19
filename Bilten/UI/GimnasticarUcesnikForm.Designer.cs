@@ -70,10 +70,8 @@ namespace Bilten.UI
             // 
             this.txtIme.Location = new System.Drawing.Point(97, 12);
             this.txtIme.Name = "txtIme";
-            this.txtIme.ReadOnly = true;
             this.txtIme.Size = new System.Drawing.Size(100, 20);
             this.txtIme.TabIndex = 11;
-            this.txtIme.TabStop = false;
             // 
             // lblPrezime
             // 
@@ -88,10 +86,8 @@ namespace Bilten.UI
             // 
             this.txtPrezime.Location = new System.Drawing.Point(97, 70);
             this.txtPrezime.Name = "txtPrezime";
-            this.txtPrezime.ReadOnly = true;
             this.txtPrezime.Size = new System.Drawing.Size(100, 20);
             this.txtPrezime.TabIndex = 13;
-            this.txtPrezime.TabStop = false;
             // 
             // lblDatumRodj
             // 
@@ -223,7 +219,6 @@ namespace Bilten.UI
             // 
             this.txtSrednjeIme.Location = new System.Drawing.Point(97, 40);
             this.txtSrednjeIme.Name = "txtSrednjeIme";
-            this.txtSrednjeIme.ReadOnly = true;
             this.txtSrednjeIme.Size = new System.Drawing.Size(100, 20);
             this.txtSrednjeIme.TabIndex = 34;
             // 
