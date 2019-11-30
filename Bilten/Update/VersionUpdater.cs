@@ -33,6 +33,7 @@ public class VersionUpdater
         if (verzijaBaze > Program.VERZIJA_PROGRAMA)
             throw new Exception("Greska u programu. Verzija baze je veca od verzije programa.");
 
+        int staraVerzijaBaze = verzijaBaze;
         bool converted = false;
 
         // Ovo sam koristio kada sam apdejtovao stare biltene (pre 2015).
@@ -149,7 +150,8 @@ public class VersionUpdater
 
         if (converted)
         {
-            string msg = String.Format("Baza podataka je konvertovana u verziju {0}.", verzijaBaze);
+            string msg = String.Format("Baza podataka je konvertovana iz verzije {0} u verziju {1}.", staraVerzijaBaze,
+                verzijaBaze);
             MessageBox.Show(msg, "Bilten");
 
             if (File.Exists("NHibernateConfig"))
