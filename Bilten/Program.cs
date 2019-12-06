@@ -85,7 +85,7 @@ namespace Bilten
         // - Kod racunanja ocene na osnovu oba preskoka treba da postoji izbor da li se ocena racuna na osnovu oba preskoka
         //   ili vece ocene iz oba preskoka.
 
-        public static int VERZIJA_PROGRAMA = 10;
+        public static int VERZIJA_PROGRAMA = 11;
 
         /// <summary>
         /// The main entry point for the application.
@@ -157,6 +157,28 @@ namespace Bilten
                 Cursor.Current = Cursors.Arrow;
             }
 
+            session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    Jezik jezik = DAOFactoryFactory.DAOFactory.GetJezikDAO().FindDefault();
+                    Opcije.Instance.UpdateJezik(jezik);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                throw new InfrastructureException(ex.Message, ex);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+            
             RazneProvere rp = new RazneProvere();
             // rp.proveriPrvaDvaKola();   // OK
 

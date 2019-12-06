@@ -626,3 +626,17 @@ create table rezultati_sprava_finale_kupa (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_sprava_finale_kupa(poredak_id)
 );
+
+create table jezici (
+    jezik_id int identity(1,1) primary key,
+    default_jezik bit,
+    naziv nvarchar(64),
+    red_broj nvarchar(64),
+    rank nvarchar(64),
+    ime nvarchar(64),
+    klub_drzava nvarchar(64),
+    kategorija nvarchar(64),
+    ukupno nvarchar(64),
+    ocena nvarchar(64),
+    rezerve nvarchar(64)
+);

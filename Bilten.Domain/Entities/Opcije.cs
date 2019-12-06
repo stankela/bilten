@@ -418,5 +418,18 @@ namespace Bilten.Domain
             get { return rezerveString; }
             set { rezerveString = value; }
         }
+
+        public virtual void UpdateJezik(Jezik jezik)
+        {
+            Jezik = jezik.Naziv;
+            RedBrojString = jezik.RedBroj;
+            RankString = jezik.Rank;
+            ImeString = jezik.Ime;
+            KlubDrzavaString = jezik.KlubDrzava;
+            KategorijaString = jezik.Kategorija;
+            TotalString = jezik.Ukupno;
+            OcenaString = jezik.Ocena;
+            RezerveString = jezik.Rezerve;
+        }
     }
 }

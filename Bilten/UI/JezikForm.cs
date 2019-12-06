@@ -175,7 +175,12 @@ namespace Bilten.UI
                 return;
             }
 
+            foreach (Jezik j in jezici)
+            {
+                j.Default = false;
+            }
             updateJezikFromUI(jezici[currentIndex]);
+            jezici[currentIndex].Default = true;
 
             // TODO4: Proveri jos jednom ceo ovaj JezikForm, jer je sve radjeno na brzinu.
 
@@ -206,15 +211,7 @@ namespace Bilten.UI
             }
 
             // Update options
-            Opcije.Instance.Jezik = jezici[currentIndex].Naziv;
-            Opcije.Instance.RedBrojString = txtRedBroj.Text.Trim();
-            Opcije.Instance.RankString = txtRank.Text.Trim();
-            Opcije.Instance.ImeString = txtIme.Text.Trim();
-            Opcije.Instance.KlubDrzavaString = txtKlub.Text.Trim();
-            Opcije.Instance.KategorijaString = txtKategorija.Text.Trim();
-            Opcije.Instance.TotalString = txtTotal.Text.Trim();
-            Opcije.Instance.OcenaString = txtOcena.Text.Trim();
-            Opcije.Instance.RezerveString = txtRezerve.Text.Trim();
+            Opcije.Instance.UpdateJezik(jezici[currentIndex]);
         }
     }
 }

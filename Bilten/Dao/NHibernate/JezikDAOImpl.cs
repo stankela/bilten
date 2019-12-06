@@ -23,6 +23,22 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public Jezik FindDefault()
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"from Jezik where Default = true");
+                IList<Jezik> result = q.List<Jezik>();
+                if (result != null && result.Count > 0)
+                    return result[0];
+                return null;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

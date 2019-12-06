@@ -1,0 +1,8 @@
+-- 06-Dec-2019 (VERZIJA = 11)
+
+alter table jezici add column default_jezik bit;
+GO
+update jezici set default_jezik = 1 where naziv = 'Srpski';
+GO
+update jezici set default_jezik = 0 where naziv = 'Engleski';
+GO

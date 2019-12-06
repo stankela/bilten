@@ -19,6 +19,13 @@ namespace Bilten.Domain
             set { naziv = value; }
         }
 
+        private bool default_;
+        public virtual bool Default
+        {
+            get { return default_; }
+            set { default_ = value; }
+        }
+
         private string redBroj;
         public virtual string RedBroj
         {

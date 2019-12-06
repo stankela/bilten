@@ -8,5 +8,6 @@ namespace Bilten.Dao
     public interface JezikDAO : GenericDAO<Jezik, int>
     {
         IList<Jezik> FindAll();
+        Jezik FindDefault();
     }
 }
