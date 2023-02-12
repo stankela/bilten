@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Bilten.Util;
 using System.IO;
 using Bilten.Exceptions;
+using System.Globalization;
 
 namespace Bilten.Domain
 {
@@ -642,13 +643,57 @@ namespace Bilten.Domain
                 k.dump(strBuilder);
         }
 
+        // TODO4: Ovaj metod se koristi za parsiranje dampovanih datuma, i uveden je zato sto srpski format za datum
+        // nema tacku iza godine, a hrvatski ima. Proveri da li treba da se poziva na jos nekim mestima (osim ovih gde se
+        // trenutno poziva). Proveri i da li sve moze jednostavnije i brze da se uradi.
+        public static DateTime ParsirajDatum(string dateString)
+        {
+            DateTime result = new DateTime();
+            CultureInfo[] cultures = {
+                CultureInfo.CreateSpecificCulture("sr-Cyrl-RS"), 
+                CultureInfo.CreateSpecificCulture("sr-Cyrl-ME"), 
+                CultureInfo.CreateSpecificCulture("sr-Cyrl-CS"), 
+                CultureInfo.CreateSpecificCulture("sr-Cyrl-BA"), 
+
+                CultureInfo.CreateSpecificCulture("sr-Latn-RS"), 
+                CultureInfo.CreateSpecificCulture("sr-Latn-ME"), 
+                CultureInfo.CreateSpecificCulture("sr-Latn-CS"), 
+                CultureInfo.CreateSpecificCulture("sr-Latn-BA"), 
+
+                CultureInfo.CreateSpecificCulture("hr-HR"),
+                CultureInfo.CreateSpecificCulture("hr-BA"),                
+                CultureInfo.CreateSpecificCulture("bs-Cyrl-BA"),
+                CultureInfo.CreateSpecificCulture("bs-Latn-BA"),
+                System.Threading.Thread.CurrentThread.CurrentCulture
+            };
+            //CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures);
+            bool ok = false;
+            foreach (CultureInfo culture in cultures)
+            {
+                try
+                {
+                    result = DateTime.Parse(dateString, culture);
+                    ok = true;
+                    break;
+                }
+                catch (FormatException)
+                {
+                }
+            }
+            if (!ok)
+            {
+                throw new Exception("Pogresan format za datum.");
+            }
+            return result;
+        }
+
         public virtual void loadFromDump(StringReader reader, IdMap map, out int prvoKoloId, out int drugoKoloId,
             out int treceKoloId, out int cetvrtoKoloId, out int vrhovniSudijaId)
         {
             string naziv = reader.ReadLine();
             Naziv = naziv != NULL ? naziv : null;            
             Gimnastika = (Gimnastika)Enum.Parse(typeof(Gimnastika), reader.ReadLine());
-            Datum = DateTime.Parse(reader.ReadLine());
+            Datum = ParsirajDatum(reader.ReadLine());
             string mesto = reader.ReadLine();
             Mesto = mesto != NULL ? mesto : null;
 
@@ -677,7 +722,7 @@ namespace Bilten.Domain
             string zreb = reader.ReadLine();
             ZrebZaFinalePoSpravama = zreb != NULL ? zreb : null;
 
-            LastModified = DateTime.Parse(reader.ReadLine());
+            LastModified = ParsirajDatum(reader.ReadLine());
 
             int brojTakmicenja = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojTakmicenja; ++i)

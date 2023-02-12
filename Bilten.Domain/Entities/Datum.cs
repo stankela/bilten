@@ -93,7 +93,7 @@ namespace Bilten.Domain
             // parsiraj kao datum
             try
             {
-                return new Datum(DateTime.Parse(s));
+                return new Datum(Takmicenje.ParsirajDatum(s));
             }
             catch (Exception)
             {

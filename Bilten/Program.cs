@@ -66,8 +66,20 @@ namespace Bilten
         // PoredakUkupno i PoredakSprava. Proveri i ostale poretke (npr. ekipno) da li treba da se uradi slicno.
         // Istovremeno, jos jedanput detaljno proveri izracunavanje u PoredakUkupno i PoredakSprava. Takodje, razmisli o
         // izbacivanju opcije UzimajPrvuSlobodnuRezervu.
+        // TODO4: Neka i u stampanim start listama budu vidljive ekipe (stampaj drugom bojom svaku ekipu)
+        // TODO4: Proveri zasto nekad nece da prikazuje pauze u start listi (pa moram ponovo da kliknem na kreiraj
+        // preostale rotacije da bi se prikazale)
+        // TODO4: Uvedi DNF kao mogucnost za gimnasticarke koje su ucestvovale ali nisu zavrsile vezbu.
+        //        Postoji i opcija DNS za gimnasticarke koje nisu ni startovale.
+        // TODO4: Kada se menjaju kvalifikanti u takmicenju 1, ako postoji kreirano takmicenje 2, 3 i 4 obavesti da
+        // mora ponovo da se klikne na "Kreiraj takmicenja 2, 3 i 4" da bi promene bile vidljive u takmicenjima 2, 3 i 4.
+        // TODO4: Olaksaj kreiranje ekipa za memorijal tako sto program automatski pronalazi najbolju gimnasticarku
+        // iz svake kategorije.
         // TODO4: Implementiraj preostale slucajeve kada se menja ime gimnasticara ucesnika
         // (oznaceni sa "Greska u programu - neuspesna promena imena gimnasticara" u GimnasticarUcesnikForm)
+        // TODO4: Uvek kada menjas program, najpre dodaj TODO komentar:
+            // TODO4: Ne zaboravi da proveris da li treba da se menja Dump, kao i da setujes
+            // 'takmicenje.LastModified = true'
 
         // TODO: (iz beleski)
         // - Menjanje imena za gimnasticara ucesnika
