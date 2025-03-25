@@ -1160,18 +1160,17 @@ namespace Bilten.UI
             if (!MessageDialogs.queryConfirmation(msg, this.Text))
                 return;
 
-            List<int> zreb = parseZreb();
-            if (zreb == null)
-            {
-                msg = "Nepravilno unesen zreb za finale.";
-                MessageDialogs.showMessage(msg, this.Text);
-                return;
-            }
-            else if (zreb.Count == 0)
+            List<List<int>> zreb;
+            if (takmicenje.ZrebZaFinalePoSpravama.Trim() == String.Empty)
             {
                 msg = "Nije unesen zreb za start liste. Da li zelite da kreirate start listu bez zreba?";
                 if (!MessageDialogs.queryConfirmation(msg, this.Text))
                     return;
+                zreb = new List<List<int>>();
+            }
+            else
+            {
+                zreb = Zreb.parseZreb(takmicenje.ZrebZaFinalePoSpravama, takmicenje.Gimnastika);
             }
 
             ISession session = null;
@@ -1267,7 +1266,12 @@ namespace Bilten.UI
                             else
                                 kvalifikanti = rt.Takmicenje3.getGimnasticariKvalifikanti(sprava);
                             StartListaNaSpravi startLista = newRaspored.getStartLista(sprava, 1, 1);
-                            startLista.kreirajNaOsnovuKvalifikanata(kvalifikanti, zreb);
+                            List<int> zrb;
+                            if (zreb.Count == 0)
+                                zrb = new List<int>();
+                            else
+                                zrb = zreb[Sprave.indexOf(sprava, takmicenje.Gimnastika)];
+                            startLista.kreirajNaOsnovuKvalifikanata(kvalifikanti, zrb);
                         }
                         rasporedNastupaDAO.Add(newRaspored);
                         rasporedi.Add(newRaspored);
@@ -1306,50 +1310,6 @@ namespace Bilten.UI
             {
                 if (rt.odvojenoTak3())
                     result.Add(rt);
-            }
-            return result;
-        }
-
-        private List<int> parseZreb()
-        {
-            string zreb = String.Empty;
-            if (takmicenje.ZrebZaFinalePoSpravama != null)
-                zreb = takmicenje.ZrebZaFinalePoSpravama.Trim();
-            if (zreb == String.Empty)
-                return new List<int>();
-
-            List<string> parts = new List<string>();
-            char delimiter = ' ';
-            int index = zreb.IndexOf(delimiter);
-            while (index != -1)
-            {
-                parts.Add(zreb.Substring(0, index));
-                zreb = zreb.Substring(index).Trim();
-                index = zreb.IndexOf(delimiter);
-            }
-            parts.Add(zreb.Trim());
-
-            List<int> result = new List<int>();
-            int value;
-            for (int i = 0; i < parts.Count; i++)
-            {
-                if (!int.TryParse(parts[i], out value))
-                    return null;
-                result.Add(value);
-            }
-
-            int[] occurences = new int[result.Count];
-            for (int i = 0; i < result.Count; i++)
-                occurences[i] = 0;
-            for (int i = 0; i < result.Count; i++)
-            {
-                int number = result[i];
-                if (number < 1 || number > result.Count)
-                    return null;
-                if (occurences[number - 1] == 0)
-                    occurences[number - 1] = 1;
-                else
-                    return null;
             }
             return result;
         }
