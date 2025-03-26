@@ -59,6 +59,7 @@ namespace Bilten.UI
             o.StampajKategoriju = form.StampajKategoriju;
             o.StampajKlub = form.StampajKlub;
             o.BrojEOcenaFormular = form.BrojEOcenaFormular;
+            o.StampajPojedinacneEOcene = form.StampajPojedinacneEOcene;
         }
 
         public static void initHeaderFooterFormFromOpcije(HeaderFooterForm form)
@@ -116,6 +117,7 @@ namespace Bilten.UI
             form.StampajKategoriju = o.StampajKategoriju;
             form.StampajKlub = o.StampajKlub;
             form.BrojEOcenaFormular = o.BrojEOcenaFormular;
+            form.StampajPojedinacneEOcene = o.StampajPojedinacneEOcene;
         }
 
     }

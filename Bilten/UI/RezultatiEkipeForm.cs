@@ -265,7 +265,7 @@ namespace Bilten.UI
             // vazi za sve izvestaje. Razmisli da li to treba uvesti i za
             // ostala polja.
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod,
-                false, false, false, false, false, false, false);
+                false, false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

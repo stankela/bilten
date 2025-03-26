@@ -20,7 +20,7 @@ namespace Bilten.UI
 
         public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible,
             bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool stampajKategorijuVisible,
-            bool stampajKlubVisible, bool brojEOcenaFormularVisible)
+            bool stampajKlubVisible, bool brojEOcenaFormularVisible, bool stampajPojedinacneEOceneVisible)
         {
             InitializeComponent();
             this.Text = "Opcije za stampanje";
@@ -39,6 +39,11 @@ namespace Bilten.UI
             ckbStampajRedniBroj.Enabled = stampajRedniBrojVisible;
             if (stampajRedniBrojVisible)
                 ckbStampajRedniBroj.Location = new Point(ckbPenalSprave.Location.X, ckbStampajRedniBroj.Location.Y);
+
+            ckbStampajPoredinacneEOcene.Visible = stampajPojedinacneEOceneVisible;
+            ckbStampajPoredinacneEOcene.Enabled = stampajPojedinacneEOceneVisible;
+            if (stampajPojedinacneEOceneVisible)
+                ckbStampajPoredinacneEOcene.Location = ckbStampajKategoriju.Location;
 
             ckbStampajKategoriju.Visible = stampajKategorijuVisible;
             ckbStampajKategoriju.Enabled = stampajKategorijuVisible;
@@ -308,6 +313,17 @@ namespace Bilten.UI
             }
         }
 
+        private bool _stampajPojedinacneEOcene;
+        public bool StampajPojedinacneEOcene
+        {
+            get { return _stampajPojedinacneEOcene; }
+            set
+            {
+                _stampajPojedinacneEOcene = value;
+                ckbStampajPoredinacneEOcene.Checked = value;
+            }
+        }
+
         private bool _stampajSveSprave;
         public bool StampajSveSprave
         {
@@ -485,6 +501,7 @@ namespace Bilten.UI
             _footerFontItalic = ckbItalicFooter.Checked;
 
             _prikaziDEOcene = ckbPrikaziDEOcene.Checked;
+            _stampajPojedinacneEOcene = ckbStampajPoredinacneEOcene.Checked;
             _stampajSveSprave = rbtSveSprave.Checked;
             if (_stampajSveSprave)
                 _brojSpravaPoStrani = Int32.Parse(txtBrojSprava.Text);

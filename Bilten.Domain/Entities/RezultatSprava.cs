@@ -28,6 +28,48 @@ namespace Bilten.Domain
             protected set { e = value; }
         }
 
+        private Nullable<float> e1;
+        public virtual Nullable<float> E1
+        {
+            get { return e1; }
+            protected set { e1 = value; }
+        }
+
+        private Nullable<float> e2;
+        public virtual Nullable<float> E2
+        {
+            get { return e2; }
+            protected set { e2 = value; }
+        }
+
+        private Nullable<float> e3;
+        public virtual Nullable<float> E3
+        {
+            get { return e3; }
+            protected set { e3 = value; }
+        }
+
+        private Nullable<float> e4;
+        public virtual Nullable<float> E4
+        {
+            get { return e4; }
+            protected set { e4 = value; }
+        }
+
+        private Nullable<float> e5;
+        public virtual Nullable<float> E5
+        {
+            get { return e5; }
+            protected set { e5 = value; }
+        }
+
+        private Nullable<float> e6;
+        public virtual Nullable<float> E6
+        {
+            get { return e6; }
+            protected set { e6 = value; }
+        }
+
         private Nullable<float> penalty;
         public virtual Nullable<float> Penalty
         {
@@ -41,6 +83,12 @@ namespace Bilten.Domain
             {
                 D = o.D;
                 E = o.E;
+                E1 = o.E1;
+                E2 = o.E2;
+                E3 = o.E3;
+                E4 = o.E4;
+                E5 = o.E5;
+                E6 = o.E6;
                 Penalty = o.Penalty;
                 Total = o.Total;
             }
@@ -48,6 +96,12 @@ namespace Bilten.Domain
             {
                 D = null;
                 E = null;
+                E1 = null;
+                E2 = null;
+                E3 = null;
+                E4 = null;
+                E5 = null;
+                E6 = null;
                 Penalty = null;
                 Total = null;
             }
@@ -57,6 +111,12 @@ namespace Bilten.Domain
         {
             D = null;
             E = null;
+            E1 = null;
+            E2 = null;
+            E3 = null;
+            E4 = null;
+            E5 = null;
+            E6 = null;
             Penalty = null;
             Total = null;
         }
@@ -83,6 +143,7 @@ namespace Bilten.Domain
             }
         }
 
+        // TODO5: Da li ovde (i u loadFromDump) treba da se dodaju E1, E2, ...
         public override void dump(StringBuilder strBuilder)
         {
             base.dump(strBuilder);

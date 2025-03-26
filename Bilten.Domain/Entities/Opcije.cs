@@ -276,6 +276,13 @@ namespace Bilten.Domain
             set { _prikaziDEOcene = value; }
         }
 
+        private bool _stampajPojedinacneEOcene = false;
+        public virtual bool StampajPojedinacneEOcene
+        {
+            get { return _stampajPojedinacneEOcene; }
+            set { _stampajPojedinacneEOcene = value; }
+        }
+
         private bool _stampajSveSpraveTak1 = true;
         public virtual bool StampajSveSpraveTak1
         {

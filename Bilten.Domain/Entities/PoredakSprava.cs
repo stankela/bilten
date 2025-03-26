@@ -407,6 +407,21 @@ namespace Bilten.Domain
             }
         }
 
+        // Ovo sluzi da apdejtujemo ocene E1, E2, ...
+        public virtual void updateOcene(IList<Ocena> ocene)
+        {
+            IDictionary<int, RezultatSprava> rezultatiMap = new Dictionary<int, RezultatSprava>();
+            foreach (RezultatSprava r in Rezultati)
+            {
+                rezultatiMap.Add(r.Gimnasticar.Id, r);
+            }
+            foreach (Ocena o in ocene)
+            {
+                if (o.Sprava == Sprava && rezultatiMap.ContainsKey(o.Gimnasticar.Id))
+                    rezultatiMap[o.Gimnasticar.Id].setOcena(o);
+            }
+        }
+
         // NOTE: Nisu implementirani Equals i GetHashCode (iako se PoredakSprava cuva u setovima) zato sto je
         // podrazumevani Equals dovoljan.
         

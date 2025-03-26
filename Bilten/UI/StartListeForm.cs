@@ -971,7 +971,7 @@ namespace Bilten.UI
             // TODO: Verovatno bi trebalo ukljuciti i turnus, ukoliko ima vise turnusa
             string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -1470,7 +1470,7 @@ namespace Bilten.UI
             }
             string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

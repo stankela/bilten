@@ -467,7 +467,7 @@ namespace Bilten.UI
                 nazivIzvestaja = "Gimnasti" + Jezik.chMalo + "arke";
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
-                false, false, false, false, false, false, false);
+                false, false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

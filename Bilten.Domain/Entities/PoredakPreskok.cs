@@ -361,6 +361,21 @@ namespace Bilten.Domain
             }
         }
 
+        // Ovo sluzi da apdejtujemo ocene E1, E2, ...
+        public virtual void updateOcene(IList<Ocena> ocene)
+        {
+            IDictionary<int, RezultatPreskok> rezultatiMap = new Dictionary<int, RezultatPreskok>();
+            foreach (RezultatPreskok r in Rezultati)
+            {
+                rezultatiMap.Add(r.Gimnasticar.Id, r);
+            }
+            foreach (Ocena o in ocene)
+            {
+                if (o.Sprava == Sprava.Preskok && rezultatiMap.ContainsKey(o.Gimnasticar.Id))
+                    rezultatiMap[o.Gimnasticar.Id].setOcena(o);
+            }
+        }
+
         public virtual void dumpRezultati(StreamWriter streamWriter, Propozicije propozicije)
         {
             string header = DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1 ? "PRESKOK" : "PRESKOK - FINALE";

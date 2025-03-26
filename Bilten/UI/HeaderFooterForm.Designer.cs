@@ -74,6 +74,7 @@ namespace Bilten.UI
             this.label1 = new System.Windows.Forms.Label();
             this.ckbStampajKategoriju = new System.Windows.Forms.CheckBox();
             this.ckbStampajKlub = new System.Windows.Forms.CheckBox();
+            this.ckbStampajPoredinacneEOcene = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -492,6 +493,16 @@ namespace Bilten.UI
             this.ckbStampajKlub.Text = "Stampaj klub";
             this.ckbStampajKlub.UseVisualStyleBackColor = true;
             // 
+            // ckbStampajPoredinacneEOcene
+            // 
+            this.ckbStampajPoredinacneEOcene.AutoSize = true;
+            this.ckbStampajPoredinacneEOcene.Location = new System.Drawing.Point(150, 456);
+            this.ckbStampajPoredinacneEOcene.Name = "ckbStampajPoredinacneEOcene";
+            this.ckbStampajPoredinacneEOcene.Size = new System.Drawing.Size(208, 17);
+            this.ckbStampajPoredinacneEOcene.TabIndex = 56;
+            this.ckbStampajPoredinacneEOcene.Text = "Stampaj pojedinacne ocene E1, E2, ...";
+            this.ckbStampajPoredinacneEOcene.UseVisualStyleBackColor = true;
+            // 
             // HeaderFooterForm
             // 
             this.AcceptButton = this.btnOk;
@@ -499,6 +510,7 @@ namespace Bilten.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(695, 538);
+            this.Controls.Add(this.ckbStampajPoredinacneEOcene);
             this.Controls.Add(this.ckbStampajKlub);
             this.Controls.Add(this.ckbStampajKategoriju);
             this.Controls.Add(this.label1);
@@ -604,5 +616,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox ckbStampajKategoriju;
         private System.Windows.Forms.CheckBox ckbStampajKlub;
+        private System.Windows.Forms.CheckBox ckbStampajPoredinacneEOcene;
     }
 }

@@ -21,6 +21,48 @@ namespace Bilten.Domain
             protected set { e_2 = value; }
         }
 
+        private Nullable<float> e1_2;
+        public virtual Nullable<float> E1_2
+        {
+            get { return e1_2; }
+            protected set { e1_2 = value; }
+        }
+
+        private Nullable<float> e2_2;
+        public virtual Nullable<float> E2_2
+        {
+            get { return e2_2; }
+            protected set { e2_2 = value; }
+        }
+
+        private Nullable<float> e3_2;
+        public virtual Nullable<float> E3_2
+        {
+            get { return e3_2; }
+            protected set { e3_2 = value; }
+        }
+
+        private Nullable<float> e4_2;
+        public virtual Nullable<float> E4_2
+        {
+            get { return e4_2; }
+            protected set { e4_2 = value; }
+        }
+
+        private Nullable<float> e5_2;
+        public virtual Nullable<float> E5_2
+        {
+            get { return e5_2; }
+            protected set { e5_2 = value; }
+        }
+
+        private Nullable<float> e6_2;
+        public virtual Nullable<float> E6_2
+        {
+            get { return e6_2; }
+            protected set { e6_2 = value; }
+        }
+
         private Nullable<float> penalty_2;
         public virtual Nullable<float> Penalty_2
         {
@@ -62,6 +104,12 @@ namespace Bilten.Domain
             {
                 D_2 = o.Ocena2.D;
                 E_2 = o.Ocena2.E;
+                E1_2 = o.Ocena2.E1;
+                E2_2 = o.Ocena2.E2;
+                E3_2 = o.Ocena2.E3;
+                E4_2 = o.Ocena2.E4;
+                E5_2 = o.Ocena2.E5;
+                E6_2 = o.Ocena2.E6;
                 Penalty_2 = o.Ocena2.Penalty;
                 Total_2 = o.Ocena2.Total;
                 TotalObeOcene = o.TotalObeOcene;
@@ -70,6 +118,12 @@ namespace Bilten.Domain
             {
                 D_2 = null;
                 E_2 = null;
+                E1_2 = null;
+                E2_2 = null;
+                E3_2 = null;
+                E4_2 = null;
+                E5_2 = null;
+                E6_2 = null;
                 Penalty_2 = null;
                 Total_2 = null;
                 TotalObeOcene = null;
@@ -81,11 +135,18 @@ namespace Bilten.Domain
             base.clearOcena();
             D_2 = null;
             E_2 = null;
+            E1_2 = null;
+            E2_2 = null;
+            E3_2 = null;
+            E4_2 = null;
+            E5_2 = null;
+            E6_2 = null;
             Penalty_2 = null;
             Total_2 = null;
             TotalObeOcene = null;
         }
 
+        // TODO5: Da li ovde (i u loadFromDump) treba da se dodaju E1, E2, ...
         public override void dump(StringBuilder strBuilder)
         {
             base.dump(strBuilder);
