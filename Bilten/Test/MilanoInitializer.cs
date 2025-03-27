@@ -324,7 +324,9 @@ namespace Bilten.Test
                             // podesi broj meraca vremena i linijskih sudija za prethodni
                             // odbor
                             odbor = raspored.getOdbor(prevSprava);
-                            odbor.setSupportedUloge(odbor.BrojDSudija, odbor.HasD1_E1, odbor.HasD2_E2, odbor.BrojESudija);
+                            odbor.setSupportedUloge(odbor.BrojDSudija, odbor.HasD1_E1, odbor.HasD2_E2, odbor.BrojESudija,
+                                odbor.HasApparatusSupervisor, odbor.HasTimeJudge, odbor.BrojLinSudija,
+                                odbor.NumerisaneLinSudije);
                         }
                         prevSprava = sprava;
                     }
@@ -333,7 +335,8 @@ namespace Bilten.Test
                 }
                 // podesi broj meraca vremena i linijskih sudija za poslednji odbor
                 odbor = raspored.getOdbor(prevSprava);
-                odbor.setSupportedUloge(odbor.BrojDSudija, odbor.HasD1_E1, odbor.HasD2_E2, odbor.BrojESudija);
+                odbor.setSupportedUloge(odbor.BrojDSudija, odbor.HasD1_E1, odbor.HasD2_E2, odbor.BrojESudija,
+                    odbor.HasApparatusSupervisor, odbor.HasTimeJudge, odbor.BrojLinSudija, odbor.NumerisaneLinSudije);
 
                 /*dataContext.Evict(takmicenje);
                 foreach (SudijaUcesnik s in sudije_ucesnici)

@@ -1,0 +1,18 @@
+-- 27-Mar-2025 (VERZIJA = 12)
+
+alter table sud_odbor_na_spravi add column has_apparatus_supervisor bit;
+GO
+alter table sud_odbor_na_spravi add column has_time_judge bit;
+GO
+alter table sud_odbor_na_spravi add column broj_lin_sudija tinyint;
+GO
+alter table sud_odbor_na_spravi add column numerisane_lin_sudije bit;
+GO
+update sud_odbor_na_spravi set has_apparatus_supervisor = 0;
+GO
+update sud_odbor_na_spravi set has_time_judge = 0;
+GO
+update sud_odbor_na_spravi set broj_lin_sudija = 0;
+GO
+update sud_odbor_na_spravi set numerisane_lin_sudije = 0;
+GO

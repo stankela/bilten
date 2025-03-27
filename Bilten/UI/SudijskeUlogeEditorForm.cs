@@ -25,7 +25,7 @@ namespace Bilten.UI
         {
             Text = "Sudijske funkcije - " + Sprave.toString(odbor.Sprava);
 
-            List<SudijskaUloga> uloge = new List<SudijskaUloga>(SudijskeUloge.getSveUloge());
+            List<SudijskaUloga> uloge = new List<SudijskaUloga>(SudijskeUloge.getSveUlogeZaSpravu());
 
             int x = 12;
             int y = 12;
@@ -59,6 +59,8 @@ namespace Bilten.UI
             result.Location = location;
             result.TabIndex = tabIndex;
             result.Text = SudijskeUloge.toString(uloga);
+            if (uloga == SudijskaUloga.AS)
+                result.Text = "AS (Supervizor na spravi)";
             result.UseVisualStyleBackColor = true;
             result.Tag = uloga;
             result.Checked = check;
@@ -89,6 +91,15 @@ namespace Bilten.UI
                 {
                     setChecked(SudijskaUloga.D2, false);
                     setChecked(SudijskaUloga.E2, false);
+                }
+                else if (uloga == SudijskaUloga.L)
+                {
+                    setChecked(SudijskaUloga.L1, false);
+                    setChecked(SudijskaUloga.L2, false);
+                }
+                else if (uloga == SudijskaUloga.L1 || uloga == SudijskaUloga.L2)
+                {
+                    setChecked(SudijskaUloga.L, false);
                 }
             }
         }
@@ -145,7 +156,25 @@ namespace Bilten.UI
             if (isChecked(SudijskaUloga.E6))
                 brojESudija += 1;
 
-            odbor.setSupportedUloge(brojDSudija, isChecked(SudijskaUloga.D1_E1), isChecked(SudijskaUloga.D2_E2), brojESudija);
+            byte brojLinSudija = 0;
+            bool numerisaneLinSudije = false;
+            if (isChecked(SudijskaUloga.L))
+            {
+                brojLinSudija = 1;
+            }
+            else if (isChecked(SudijskaUloga.L2))
+            {
+                brojLinSudija = 2;
+                numerisaneLinSudije = true;
+            }
+            else if (isChecked(SudijskaUloga.L1))
+            {
+                brojLinSudija = 1;
+                numerisaneLinSudije = true;
+            }
+
+            odbor.setSupportedUloge(brojDSudija, isChecked(SudijskaUloga.D1_E1), isChecked(SudijskaUloga.D2_E2), brojESudija,
+                isChecked(SudijskaUloga.AS), isChecked(SudijskaUloga.T), brojLinSudija, numerisaneLinSudije);
         }
 
         private bool validate()
@@ -220,6 +249,17 @@ namespace Bilten.UI
                     "Moguce je selektovati samo uzastopne E sudije.", this.Text);
                 return false;
             }
+
+            // Proveri da li je selektovan L2 a nije selektovan L1
+            if (!isChecked(SudijskaUloga.L1) && isChecked(SudijskaUloga.L2))
+            {
+                MessageDialogs.showMessage(
+                    "Moguce je selektovati samo uzastopne linijske sudije.", this.Text);
+                return false;
+            }
+
+            // U ckb_CheckedChanged je implementirano da ako selektujem L automatski se deselektuje L1 i L2, kao i da ako
+            // selektujem L1 ili L2 automatski se deselektuje L. Zato to ne proveravam ovde.
 
             return true;
         }

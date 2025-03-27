@@ -15,6 +15,9 @@ namespace Bilten.Domain
             set { sprava = value; }
         }
 
+        // Sledeca svojstva (BrojDSudija, ..., sve do NumerisaneLinSudije) odredjuju koje sve sudijske pozicije postoje
+        // za datu spravu (ne mora da znaci da su sve pozicije i popunjene)
+
         private byte brojDSudija = 2;
         public virtual byte BrojDSudija
         {
@@ -41,6 +44,34 @@ namespace Bilten.Domain
         {
             get { return brojESudija; }
             protected set { brojESudija = value; }
+        }
+
+        private bool hasApparatusSupervisor = false;
+        public virtual bool HasApparatusSupervisor
+        {
+            get { return hasApparatusSupervisor; }
+            protected set { hasApparatusSupervisor = value; }
+        }
+
+        private bool hasTimeJudge = false;
+        public virtual bool HasTimeJudge
+        {
+            get { return hasTimeJudge; }
+            protected set { hasTimeJudge = value; }
+        }
+
+        private byte brojLinSudija = 0;
+        public virtual byte BrojLinSudija
+        {
+            get { return brojLinSudija; }
+            protected set { brojLinSudija = value; }
+        }
+
+        private bool numerisaneLinSudije = false;
+        public virtual bool NumerisaneLinSudije
+        {
+            get { return numerisaneLinSudije; }
+            protected set { numerisaneLinSudije = value; }
         }
 
         // NOTE: Stavio sam byte umesto SudijskaUloga zato sto inace daje gresku
@@ -89,15 +120,21 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void setSupportedUloge(byte brojDSudija, bool has_d1_e1, bool has_d2_e2, byte brojESudija)
+        public virtual void setSupportedUloge(byte brojDSudija, bool has_d1_e1, bool has_d2_e2, byte brojESudija,
+            bool hasApparatusSupervisor, bool hasTimeJudge, byte brojLinSudija, bool numerisaneLinSudije)
         {
             BrojDSudija = brojDSudija;
             HasD1_E1 = has_d1_e1;
             HasD2_E2 = has_d2_e2;
             BrojESudija = brojESudija;
+            HasApparatusSupervisor = hasApparatusSupervisor;
+            HasTimeJudge = hasTimeJudge;
+            BrojLinSudija = brojLinSudija;
+            NumerisaneLinSudije = numerisaneLinSudije;
 
             List<SudijskaUloga> noveUloge = new List<SudijskaUloga>(
-                SudijskeUloge.getUloge(brojDSudija, has_d1_e1, has_d2_e2, brojESudija));
+                SudijskeUloge.getUloge(brojDSudija, has_d1_e1, has_d2_e2, brojESudija, hasApparatusSupervisor, hasTimeJudge,
+                                       brojLinSudija, numerisaneLinSudije));
 
             // ukloni sudije sa ulogama koje ne postoje u novim ulogama
 
@@ -152,6 +189,7 @@ namespace Bilten.Domain
                 return null;
         }
 
+        // TODO4: Ovaj metod se nigde ne koristi
         private bool sudijaExists(SudijaUcesnik sudija)
         {
             foreach (SudijaUcesnik s in Sudije.Values)
@@ -211,7 +249,7 @@ namespace Bilten.Domain
             raspored.Sort(
                 delegate(SudijaNaSpravi s1, SudijaNaSpravi s2)
                 {
-                    return s1.Uloga.CompareTo(s2.Uloga);
+                    return SudijskeUloge.getSortOrder(s1.Uloga) - SudijskeUloge.getSortOrder(s2.Uloga);
                 });
         }
 
@@ -238,7 +276,8 @@ namespace Bilten.Domain
 
         private void createSupportedUloge()
         {
-            List<SudijskaUloga> uloge = SudijskeUloge.getUloge(BrojDSudija, HasD1_E1, HasD2_E2, BrojESudija);
+            List<SudijskaUloga> uloge = SudijskeUloge.getUloge(BrojDSudija, HasD1_E1, HasD2_E2, BrojESudija,
+                HasApparatusSupervisor, HasTimeJudge, BrojLinSudija, NumerisaneLinSudije);
             
             _supportedUloge = new List<SudijskaUloga>();
             foreach (SudijskaUloga u in uloge)
@@ -315,6 +354,10 @@ namespace Bilten.Domain
             strBuilder.AppendLine(HasD1_E1.ToString());
             strBuilder.AppendLine(HasD2_E2.ToString());
             strBuilder.AppendLine(BrojESudija.ToString());
+            strBuilder.AppendLine(HasApparatusSupervisor.ToString());
+            strBuilder.AppendLine(HasTimeJudge.ToString());
+            strBuilder.AppendLine(BrojLinSudija.ToString());
+            strBuilder.AppendLine(NumerisaneLinSudije.ToString());
 
             strBuilder.AppendLine(Sudije.Count.ToString());
             IEnumerator<KeyValuePair<byte, SudijaUcesnik>> e = Sudije.GetEnumerator();
@@ -332,6 +375,10 @@ namespace Bilten.Domain
             HasD1_E1 = bool.Parse(reader.ReadLine());
             HasD2_E2 = bool.Parse(reader.ReadLine());
             BrojESudija = byte.Parse(reader.ReadLine());
+            HasApparatusSupervisor = bool.Parse(reader.ReadLine());
+            HasTimeJudge = bool.Parse(reader.ReadLine());
+            BrojLinSudija = byte.Parse(reader.ReadLine());
+            NumerisaneLinSudije = bool.Parse(reader.ReadLine());
 
             int count = int.Parse(reader.ReadLine());
             for (int i = 0; i < count; ++i)

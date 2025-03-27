@@ -182,6 +182,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version12.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version11.txt" />
     <EmbeddedResource Include="UI\MaxGimIzKlubaUFinaluForm.resx">
       <DependentUpon>MaxGimIzKlubaUFinaluForm.cs</DependentUpon>

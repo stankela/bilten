@@ -21,7 +21,13 @@ namespace Bilten.Domain
         E3,
         E4,
         E5,
-        E6
+        E6,
+        SJ, /* Superior Jury */
+        AS /* Apparatus Supervisor */,
+        T /* Time jugde */,
+        L /* Line judge */,
+        L1,
+        L2
 
 
 
@@ -56,7 +62,8 @@ namespace Bilten.Domain
 
     public static class SudijskeUloge
     {
-        public static List<SudijskaUloga> getUloge(byte brojDSudija, bool hasD1_E1, bool hasD2_E2, byte brojESudija)
+        public static List<SudijskaUloga> getUloge(byte brojDSudija, bool hasD1_E1, bool hasD2_E2, byte brojESudija,
+            bool hasApparatusSupervisor, bool hasTimeJudge, byte brojLinSudija, bool numerisaneLinSudije)
         {
             List<SudijskaUloga> result = new List<SudijskaUloga>();
 
@@ -106,12 +113,30 @@ namespace Bilten.Domain
             if (brojESudija > 5)
                 result.Add(SudijskaUloga.E6);
 
+            if (hasApparatusSupervisor)
+                result.Add(SudijskaUloga.AS);
+            if (hasTimeJudge)
+                result.Add(SudijskaUloga.T);
+            if (brojLinSudija > 0)
+            {
+                if (numerisaneLinSudije)
+                    result.Add(SudijskaUloga.L1);
+                else
+                    result.Add(SudijskaUloga.L);
+            }
+            if (brojLinSudija > 1)
+            {
+                result.Add(SudijskaUloga.L2);
+            }
+
             return result;
         }
 
-        public static SudijskaUloga[] getSveUloge()
+        public static SudijskaUloga[] getSveUlogeZaSpravu()
         {
+            // Ovde ne spada vrhovni sudija
             return new SudijskaUloga[] { 
+                SudijskaUloga.AS,
                 SudijskaUloga.D1, 
                 SudijskaUloga.D2, 
                 SudijskaUloga.D1_E1, 
@@ -121,7 +146,11 @@ namespace Bilten.Domain
                 SudijskaUloga.E3, 
                 SudijskaUloga.E4, 
                 SudijskaUloga.E5, 
-                SudijskaUloga.E6
+                SudijskaUloga.E6,
+                SudijskaUloga.T,
+                SudijskaUloga.L,
+                SudijskaUloga.L1,
+                SudijskaUloga.L2
             };
         }
 
@@ -131,37 +160,80 @@ namespace Bilten.Domain
             {
                 case SudijskaUloga.D1:
                     return "D1";
-
                 case SudijskaUloga.D2:
                     return "D2";
-
                 case SudijskaUloga.D1_E1:
                     return "D1-E1";
-
                 case SudijskaUloga.D2_E2:
                     return "D2-E2";
-
                 case SudijskaUloga.E1:
                     return "E1";
-
                 case SudijskaUloga.E2:
                     return "E2";
-
                 case SudijskaUloga.E3:
                     return "E3";
-
                 case SudijskaUloga.E4:
                     return "E4";
-
                 case SudijskaUloga.E5:
                     return "E5";
-
                 case SudijskaUloga.E6:
                     return "E6";
-
+                case SudijskaUloga.SJ:
+                    return "Vrhovni sudija";
+                case SudijskaUloga.AS:
+                    return "AS"; // "Supervizor na spravi";
+                case SudijskaUloga.T:
+                    return "T"; // "Merac vremena";
+                case SudijskaUloga.L:
+                    return "L"; // "Linijski sudija";
+                case SudijskaUloga.L1:
+                    return "L1"; // "Linijski sudija 1";
+                case SudijskaUloga.L2:
+                    return "L2"; // "Linijski sudija 2";
                 case SudijskaUloga.Undefined:
                     return "Nepoznata sudijska funkcija";
-
+                default:
+                    throw new ArgumentException("Nedozvoljena vrednost za sudijsku funkciju.");
+            }
+        }
+        public static int getSortOrder(SudijskaUloga uloga)
+        {
+            switch (uloga)
+            {
+                case SudijskaUloga.SJ:
+                    return 0;
+                case SudijskaUloga.AS:
+                    return 1;
+                case SudijskaUloga.D1:
+                    return 2;
+                case SudijskaUloga.D2:
+                    return 3;
+                case SudijskaUloga.D1_E1:
+                    return 4;
+                case SudijskaUloga.D2_E2:
+                    return 5;
+                case SudijskaUloga.E1:
+                    return 6;
+                case SudijskaUloga.E2:
+                    return 7;
+                case SudijskaUloga.E3:
+                    return 8;
+                case SudijskaUloga.E4:
+                    return 9;
+                case SudijskaUloga.E5:
+                    return 10;
+                case SudijskaUloga.E6:
+                    return 11;
+                case SudijskaUloga.T:
+                    return 12;
+                case SudijskaUloga.L:
+                    return 13;
+                case SudijskaUloga.L1:
+                    return 14;
+                case SudijskaUloga.L2:
+                    return 15;
+                case SudijskaUloga.Undefined:
+                    return 100;
                 default:
                     throw new ArgumentException("Nedozvoljena vrednost za sudijsku funkciju.");
             }

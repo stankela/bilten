@@ -12,6 +12,10 @@
     <property name="HasD1_E1" column="has_d1_e1" type="Boolean" />
     <property name="HasD2_E2" column="has_d2_e2" type="Boolean" />
     <property name="BrojESudija" column="broj_e_sudija" type="Byte" />
+    <property name="HasApparatusSupervisor" column="has_apparatus_supervisor" type="Boolean" />
+    <property name="HasTimeJudge" column="has_time_judge" type="Boolean" />
+    <property name="BrojLinSudija" column="broj_lin_sudija" type="Byte" />
+    <property name="NumerisaneLinSudije" column="numerisane_lin_sudije" type="Boolean" />
     <map name="Sudije" table="sudija_na_spravi" lazy="true" >
       <key column="sud_odbor_id"/>
       <index type="Byte" column="uloga"/>

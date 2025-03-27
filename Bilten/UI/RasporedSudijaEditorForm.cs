@@ -126,6 +126,7 @@ namespace Bilten.UI
             if (okSudije.Count > 0)
             {
                 spravaGridUserControl1.setItems(sudijskiOdbor.Raspored);
+                spravaGridUserControl1.clearSelection();
             }
 
             if (illegalSudije.Count > 0)
@@ -149,6 +150,7 @@ namespace Bilten.UI
 
             sudijskiOdbor.removeSudija(sudija.Uloga);
             spravaGridUserControl1.setItems(sudijskiOdbor.Raspored);
+            spravaGridUserControl1.clearSelection();
         }
 
         private void btnDeleteAll_Click(object sender, EventArgs e)
@@ -162,6 +164,7 @@ namespace Bilten.UI
 
             sudijskiOdbor.clearSudije();
             spravaGridUserControl1.setItems(sudijskiOdbor.Raspored);
+            spravaGridUserControl1.clearSelection();
         }
 
         private void btnMoveUp_Click(object sender, EventArgs e)
@@ -225,7 +228,10 @@ namespace Bilten.UI
         {
             SudijskeUlogeEditorForm form = new SudijskeUlogeEditorForm(sudijskiOdbor);
             if (form.ShowDialog() == DialogResult.OK)
+            {
                 spravaGridUserControl1.setItems(sudijskiOdbor.Raspored);
+                spravaGridUserControl1.clearSelection();
+            }
         }
     }
 }

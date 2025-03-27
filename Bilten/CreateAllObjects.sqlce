@@ -296,6 +296,10 @@ create table sud_odbor_na_spravi (
  	has_d1_e1 bit,
  	has_d2_e2 bit,
     broj_e_sudija tinyint,
+	has_apparatus_supervisor bit,
+    has_time_judge bit,
+    broj_lin_sudija tinyint,
+    numerisane_lin_sudije bit,
 	raspored_sud_id int references raspored_sudija(raspored_sud_id)
 );
 
