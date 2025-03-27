@@ -20,7 +20,8 @@ namespace Bilten.UI
 
         public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible,
             bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool stampajKategorijuVisible,
-            bool stampajKlubVisible, bool brojEOcenaFormularVisible, bool stampajPojedinacneEOceneVisible)
+            bool stampajKlubVisible, bool brojEOcenaFormularVisible, bool stampajPojedinacneEOceneVisible,
+            bool prikaziPenalizacijuVisebojVisible)
         {
             InitializeComponent();
             this.Text = "Opcije za stampanje";
@@ -28,6 +29,11 @@ namespace Bilten.UI
 
             ckbPrikaziDEOcene.Visible = prikaziDEOceneVisible;
             ckbPrikaziDEOcene.Enabled = prikaziDEOceneVisible;
+
+            ckbPrikaziPenalizaciju.Visible = prikaziPenalizacijuVisebojVisible;
+            ckbPrikaziPenalizaciju.Enabled = prikaziPenalizacijuVisebojVisible;
+            if (prikaziPenalizacijuVisebojVisible)
+                ckbPrikaziPenalizaciju.Location = new Point(ckbPrikaziDEOcene.Location.X, ckbPrikaziPenalizaciju.Location.Y);
 
             panel1.Visible = brojSpravaPoStraniVisible;
             panel1.Enabled = brojSpravaPoStraniVisible;
@@ -313,6 +319,17 @@ namespace Bilten.UI
             }
         }
 
+        private bool _prikaziPenalizacijuViseboj;
+        public bool PrikaziPenalizacijuViseboj
+        {
+            get { return _prikaziPenalizacijuViseboj; }
+            set
+            {
+                _prikaziPenalizacijuViseboj = value;
+                ckbPrikaziPenalizaciju.Checked = value;
+            }
+        }
+
         private bool _stampajPojedinacneEOcene;
         public bool StampajPojedinacneEOcene
         {
@@ -501,6 +518,7 @@ namespace Bilten.UI
             _footerFontItalic = ckbItalicFooter.Checked;
 
             _prikaziDEOcene = ckbPrikaziDEOcene.Checked;
+            _prikaziPenalizacijuViseboj = ckbPrikaziPenalizaciju.Checked;
             _stampajPojedinacneEOcene = ckbStampajPoredinacneEOcene.Checked;
             _stampajSveSprave = rbtSveSprave.Checked;
             if (_stampajSveSprave)

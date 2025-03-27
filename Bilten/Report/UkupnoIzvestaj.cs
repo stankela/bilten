@@ -15,7 +15,7 @@ namespace Bilten.Report
 
 		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
             bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, string documentName,
-            bool stampanjeKvalifikanata)
+            bool stampanjeKvalifikanata, bool penalizacijaZaSprave)
 		{
             DocumentName = documentName;
 
@@ -29,7 +29,7 @@ namespace Bilten.Report
                 Margins = new Margins(75, 75, 75, 75);
 
             lista = new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, kvalColumn, penalty, formGrid, stampanjeKvalifikanata);
+                gim, extended, kvalColumn, penalty, formGrid, stampanjeKvalifikanata, penalizacijaZaSprave);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -54,25 +54,28 @@ namespace Bilten.Report
         private bool kvalColumn;
         private bool penalty;
         private Gimnastika gimnastika;
+        bool penalizacijaZaSprave;
 
 		public UkupnoLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoExtended> rezultati,
-            Gimnastika gim, bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, bool stampanjeKvalifikanata)
+            Gimnastika gim, bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, bool stampanjeKvalifikanata,
+            bool penalizacijaZaSprave)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.extended = extended;
             this.kvalColumn = kvalColumn;
             this.penalty = penalty;
             this.gimnastika = gim;
+            this.penalizacijaZaSprave = penalizacijaZaSprave;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
 
-            fetchItems(rezultati, gim, extended, stampanjeKvalifikanata);
+            fetchItems(rezultati, gim, stampanjeKvalifikanata);
         }
 
         private void fetchItems(IList<RezultatUkupnoExtended> rezultati,
-            Gimnastika gim, bool extended, bool stampanjeKvalifikanata)
+            Gimnastika gim, bool stampanjeKvalifikanata)
 		{
             items = getUkupnoReportItems(rezultati, gim, extended, stampanjeKvalifikanata);
 		
@@ -109,41 +112,61 @@ namespace Bilten.Report
 
                 if (gim == Gimnastika.MSG)
                 {
+                    List<object> items = new List<object> { redBroj, r.PrezimeIme, r.KlubDrzava,
+                            r.Parter, r.Konj, r.Karike, r.Preskok, r.Razboj, r.Vratilo,
+                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty };
                     if (extended)
                     {
-                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
-                            r.ParterD, r.ParterE, r.Parter, 
-                            r.KonjD, r.KonjE, r.Konj, 
-                            r.KarikeD, r.KarikeE, r.Karike, 
-                            r.PreskokD, r.PreskokE, r.Preskok, 
-                            r.RazbojD, r.RazbojE, r.Razboj, 
-                            r.VratiloD, r.VratiloE, r.Vratilo, 
-                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
+                        items.Insert(3, r.ParterD);
+                        items.Insert(4, r.ParterE);
+                        items.Insert(6, r.KonjD);
+                        items.Insert(7, r.KonjE);
+                        items.Insert(9, r.KarikeD);
+                        items.Insert(10, r.KarikeE);
+                        items.Insert(12, r.PreskokD);
+                        items.Insert(13, r.PreskokE);
+                        items.Insert(15, r.RazbojD);
+                        items.Insert(16, r.RazbojE);
+                        items.Insert(18, r.VratiloD);
+                        items.Insert(19, r.VratiloE);
                     }
-                    else
+                    if (penalizacijaZaSprave)
                     {
-                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
-                            r.Parter, r.Konj, r.Karike, r.Preskok, r.Razboj, 
-                            r.Vratilo, r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
+                        // extended je uvek true kada prikazujemo penalizaciju za sprave
+                        // index se povecava za 4 zato sto imamo D, E, Pen, i Total za svaku spravu
+                        items.Insert(6, r.ParterPen);
+                        items.Insert(10, r.KonjPen);
+                        items.Insert(14, r.KarikePen);
+                        items.Insert(18, r.PreskokPen);
+                        items.Insert(22, r.RazbojPen);
+                        items.Insert(26, r.VratiloPen);
                     }
+                    result.Add(items.ToArray());
                 }
                 else
                 {
+                    List<object> items = new List<object> { redBroj, r.PrezimeIme, r.KlubDrzava,
+                            r.Preskok, r.DvovisinskiRazboj, r.Greda, r.Parter, 
+                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty };
                     if (extended)
                     {
-                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
-                            r.PreskokD, r.PreskokE, r.Preskok, 
-                            r.DvovisinskiRazbojD, r.DvovisinskiRazbojE, r.DvovisinskiRazboj, 
-                            r.GredaD, r.GredaE, r.Greda, 
-                            r.ParterD, r.ParterE, r.Parter, 
-                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
+                        items.Insert(3, r.PreskokD);
+                        items.Insert(4, r.PreskokE);
+                        items.Insert(6, r.DvovisinskiRazbojD);
+                        items.Insert(7, r.DvovisinskiRazbojE);
+                        items.Insert(9, r.GredaD);
+                        items.Insert(10, r.GredaE);
+                        items.Insert(12, r.ParterD);
+                        items.Insert(13, r.ParterE);
                     }
-                    else
+                    if (penalizacijaZaSprave)
                     {
-                        result.Add(new object[] { redBroj, r.PrezimeIme, r.KlubDrzava,
-                            r.Preskok, r.DvovisinskiRazboj, r.Greda, r.Parter, 
-                            r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty });
+                        items.Insert(6, r.PreskokPen);
+                        items.Insert(10, r.DvovisinskiRazbojPen);
+                        items.Insert(14, r.GredaPen);
+                        items.Insert(18, r.ParterPen);
                     }
+                    result.Add(items.ToArray());
                 }
             }
             return result;
@@ -153,8 +176,13 @@ namespace Bilten.Report
 		{
 			createColumns(g, contentBounds);
 
-			itemHeight = itemFont.GetHeight(g) * 1.4f;
-            if (extended)
+            if (extended && penalizacijaZaSprave)
+                itemHeight = itemFont.GetHeight(g) * 2.9f;
+            else
+                itemHeight = itemFont.GetHeight(g) * 1.4f;
+            if (extended && penalizacijaZaSprave)
+                itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 4.8f;
+            else if (extended)
 			    itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             else
                 itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 2.4f;
@@ -175,10 +203,18 @@ namespace Bilten.Report
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
 
             float spravaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+
+            if (extended && penalizacijaZaSprave)
+            {
+                createColumnsExtendedPenalizacija(g, contentBounds, gridWidth, printWidth, rankWidth, imeWidth, klubWidth,
+                    spravaWidth);
+                return;
+            }
+
             float penaltyWidth = spravaWidth * (2.0f / 3);
             float totalWidth = spravaWidth;
             if (extended)
-                spravaWidth = spravaWidth * 2.3f;
+                spravaWidth = spravaWidth * 2.0f;
             float kvalWidth = rankWidth / 2;
 
 			float xRank = contentBounds.X;
@@ -204,20 +240,22 @@ namespace Bilten.Report
             if (kvalColumn)
                 xRightEnd += kvalWidth;
             
-            float dWidth = (xKonj - xParter) / 3;
+            float spravaDWidth = ((xKonj - xParter) / 3) * 0.8f;
+            float spravaEWidth = (xKonj - xParter - spravaDWidth) / 2;
+            float spravaTotWidth = spravaEWidth;
 
-            float xParterE = xParter + dWidth;
-            float xParterTot = xParterE + dWidth;
-            float xKonjE = xKonj + dWidth;
-            float xKonjTot = xKonjE + dWidth;
-            float xKarikeE = xKarike + dWidth;
-            float xKarikeTot = xKarikeE + dWidth;
-            float xPreskokE = xPreskok + dWidth;
-            float xPreskokTot = xPreskokE + dWidth;
-            float xRazbojE = xRazboj + dWidth;
-            float xRazbojTot = xRazbojE + dWidth;
-            float xVratiloE = xVratilo + dWidth;
-            float xVratiloTot = xVratiloE + dWidth;
+            float xParterE = xParter + spravaDWidth;
+            float xParterTot = xParterE + spravaEWidth;
+            float xKonjE = xKonj + spravaDWidth;
+            float xKonjTot = xKonjE + spravaEWidth;
+            float xKarikeE = xKarike + spravaDWidth;
+            float xKarikeTot = xKarikeE + spravaEWidth;
+            float xPreskokE = xPreskok + spravaDWidth;
+            float xPreskokTot = xPreskokE + spravaEWidth;
+            float xRazbojE = xRazboj + spravaDWidth;
+            float xRazbojTot = xRazbojE + spravaEWidth;
+            float xVratiloE = xVratilo + spravaDWidth;
+            float xVratiloTot = xVratiloE + spravaEWidth;
 
             float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
             if (delta < -contentBounds.X)
@@ -250,10 +288,6 @@ namespace Bilten.Report
             xRazbojTot += delta;
             xVratiloTot += delta;
             
-            float spravaDWidth = dWidth;
-            float spravaEWidth = dWidth;
-            float spravaTotWidth = xKonj - xParter - 2*dWidth;
-
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
 
             // TODO3: Ispravi sledece greske gde je umesto Alignment stavljeno ponovljeno LineAlignment. Uradi to i u 
@@ -353,8 +387,170 @@ namespace Bilten.Report
                 }
             }
         }
-		
-		protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
+
+        private void createColumnsExtendedPenalizacija(Graphics g, RectangleF contentBounds,
+            float gridWidth, float printWidth, float rankWidth, float imeWidth, float klubWidth, float spravaWidth)
+        {
+            float penaltyWidth = spravaWidth * (2.0f / 3);
+            float totalWidth = spravaWidth;
+            float kvalWidth = rankWidth / 2;
+            spravaWidth = spravaWidth * 2;
+
+            float xRank = contentBounds.X;
+            float xIme = xRank + rankWidth;
+            float xKlub = xIme + imeWidth;
+            float xParter = xKlub + klubWidth;
+            float xKonj = xParter + spravaWidth;
+            float xKarike = xKonj + spravaWidth;
+            float xPreskok = xKarike + spravaWidth;
+            float xRazboj = xPreskok + spravaWidth;
+            float xVratilo = xRazboj + spravaWidth;
+            float xTotal = xVratilo + spravaWidth;
+            if (gimnastika == Gimnastika.ZSG)
+                xTotal = xRazboj;
+
+            float xPenalty = xTotal;
+            if (penalty)
+                xTotal += penaltyWidth;
+
+            float xKval = xTotal + totalWidth;
+
+            float xRightEnd = xKval;
+            if (kvalColumn)
+                xRightEnd += kvalWidth;
+
+            float spravaEWidth = (xKonj - xParter) / 2;
+            float spravaTotWidth = spravaEWidth;
+
+            float xParterTot = xParter + spravaEWidth;
+            float xKonjTot = xKonj + spravaEWidth;
+            float xKarikeTot = xKarike + spravaEWidth;
+            float xPreskokTot = xPreskok + spravaEWidth;
+            float xRazbojTot = xRazboj + spravaEWidth;
+            float xVratiloTot = xVratilo + spravaEWidth;
+
+            float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
+            if (delta < -contentBounds.X)
+                delta = -contentBounds.X;
+            xRank += delta;
+            xIme += delta;
+            xKlub += delta;
+            xParter += delta;
+            xKonj += delta;
+            xKarike += delta;
+            xPreskok += delta;
+            xRazboj += delta;
+            xVratilo += delta;
+            xPenalty += delta;
+            xTotal += delta;
+            xKval += delta;
+            xRightEnd += delta;
+
+            xParterTot += delta;
+            xKonjTot += delta;
+            xKarikeTot += delta;
+            xPreskokTot += delta;
+            xRazbojTot += delta;
+            xVratiloTot += delta;
+
+            StringFormat rankFormat = Izvestaj.centerCenterFormat;
+
+            StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
+            imeFormat.LineAlignment = StringAlignment.Near;
+            imeFormat.LineAlignment = StringAlignment.Center;
+
+            StringFormat klubFormat = new StringFormat(StringFormatFlags.NoWrap);
+            klubFormat.LineAlignment = StringAlignment.Center;
+            klubFormat.LineAlignment = StringAlignment.Center;
+
+            StringFormat spravaFormat = Izvestaj.centerCenterFormat;
+            StringFormat totalFormat = Izvestaj.centerCenterFormat;
+            StringFormat kvalFormat = Izvestaj.centerCenterFormat;
+
+            StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
+
+            String rankTitle = Opcije.Instance.RankString;
+            String imeTitle = Opcije.Instance.ImeString;
+            String klubTitle = Opcije.Instance.KlubDrzavaString;
+            String totalTitle = Opcije.Instance.TotalString;
+            String kvalTitle = String.Empty;
+
+            Columns.Clear();
+
+            addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
+            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+
+            string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
+            string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
+            string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
+            string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
+
+            Sprava[] sprave = Sprave.getSprave(gimnastika);
+
+            float[] x = { xParter, xParterTot, xKonj, xKonjTot, xKarike, xKarikeTot, xPreskok, xPreskokTot,
+                          xRazboj, xRazbojTot, xVratilo, xVratiloTot };
+            ReportColumn prevColumn = column;
+            for (int i = 0; i < sprave.Length; i++)
+            {
+                ReportColumn column1 = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, x[2 * i], spravaEWidth, fmtE,
+                    spravaFormat, "D\nE", spravaHeaderFormat);
+
+                column1.Image = SlikeSprava.getImage(sprave[i]);
+                column1.Split = true;
+                column1.Span = true;
+
+                column = addDvaPreskokaColumn(column1.getItemsIndexEnd(), 2, x[2 * i + 1], spravaTotWidth, fmtTot,
+                    spravaFormat, "Total\nPen", spravaHeaderFormat);
+                column.Image = SlikeSprava.getImage(sprave[i]);
+                column.Split = true;
+                column.Brush = totalBrush;
+
+                column1.SpanEndColumn = column;
+                prevColumn = column;
+            }
+
+            column = addColumn(prevColumn.getItemsIndexEnd(), xTotal, totalWidth, fmtTot, totalFormat, totalTitle, totalHeaderFormat);
+            column.Brush = totalAllBrush;
+
+            if (kvalColumn)
+            {
+                column = addColumn(column.getItemsIndexEnd(), xKval, kvalWidth, kvalFormat, kvalTitle);
+                column.DrawHeaderRect = false;
+                column.DrawItemRect = false;
+            }
+            if (penalty)
+            {
+                column = addColumn(column.getItemsIndexEnd(), xPenalty, penaltyWidth, fmtPen, totalFormat, "Pen.",
+                    totalHeaderFormat);
+                if (!kvalColumn)
+                {
+                    // Posto se kvalifikacioni status uvek dodaje u report items, cak i ako ne postoji kolona za
+                    // kval. status, moram da azuriram report item index za penalty ako nije dodata kolona za
+                    // kvalifikacioni status.
+                    column.itemsIndex += 1;
+                }
+            }
+        }
+
+        private DvaPreskokaReportColumn addDvaPreskokaColumn(int itemsIndex, int itemsSpan, float x, float width,
+            string format, StringFormat itemRectFormat, string headerTitle, StringFormat headerFormat)
+        {
+            DvaPreskokaReportColumn result = new DvaPreskokaReportColumn(
+                itemsIndex, itemsSpan, x, width, headerTitle);
+            result.Format = format;
+            result.ItemRectFormat = itemRectFormat;
+            result.HeaderFormat = headerFormat;
+            Columns.Add(result);
+            result.Lista = this;
+            return result;
+        }
+
+        protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
 		{
             foreach (ReportColumn col in Columns)
             {
@@ -365,7 +561,11 @@ namespace Bilten.Report
                 {
                     if (col.Split)
                     {
-                        float imageHeight = (2f / 3) * columnHeaderRect.Height;
+                        float imageHeight;
+                        if (extended && penalizacijaZaSprave)
+                            imageHeight = (2f / 4) * columnHeaderRect.Height;
+                        else
+                            imageHeight = (2f / 3) * columnHeaderRect.Height;
                         RectangleF textRect = new RectangleF(
                             columnHeaderRect.X, columnHeaderRect.Y + imageHeight, columnHeaderRect.Width,
                             columnHeaderRect.Height - imageHeight);
@@ -407,6 +607,5 @@ namespace Bilten.Report
                 }
             }
         }
-
     }
 }

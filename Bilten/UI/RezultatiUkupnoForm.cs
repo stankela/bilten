@@ -254,7 +254,8 @@ namespace Bilten.UI
             }
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false, false,
+                                                         true);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -284,6 +285,19 @@ namespace Bilten.UI
                 p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
             List<RezultatUkupnoExtended> rezultatiEx = null;
 
+            bool extended = false;
+            bool penalizacijaZaSprave = false;
+            if (Opcije.Instance.PrikaziPenalizacijuViseboj)
+            {
+                extended = true;
+                penalizacijaZaSprave = true;
+            }
+            else if (Opcije.Instance.PrikaziDEOcene)
+            {
+                extended = true;
+                penalizacijaZaSprave = false;
+            }
+            
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
             ISession session = null;
@@ -294,12 +308,12 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     IList<Ocena> ocene = null;
-                    if (Opcije.Instance.PrikaziDEOcene)
+                    if (extended)
                     {
                         ocene = DAOFactoryFactory.DAOFactory.GetOcenaDAO()
                             .FindByDeoTakmicenja(takmicenje.Id, deoTakKod);
                     }
-                    rezultatiEx = p.getRezultatiExtended(ocene, Opcije.Instance.PrikaziDEOcene,
+                    rezultatiEx = p.getRezultatiExtended(ocene, extended,
                         ActiveTakmicenje.Propozicije.ZaPreskokVisebojRacunajBoljuOcenu);
                 }
             }
@@ -322,8 +336,9 @@ namespace Bilten.UI
             try
             {
                 PreviewDialog form2 = new PreviewDialog();
-                form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, Opcije.Instance.PrikaziDEOcene,
-                    kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, false));
+                form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, extended,
+                    kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, false,
+                    penalizacijaZaSprave));
                 form2.ShowDialog();
             }
             catch (Exception ex)
@@ -671,7 +686,8 @@ namespace Bilten.UI
             string nazivIzvestaja = "Finale vi" + Jezik.shMalo + "eboja - kvalifikanti i rezerve";
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false, false,
+                                                         false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -736,7 +752,7 @@ namespace Bilten.UI
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(getKvalifikantiIRezerve(rezultatiEx), ActiveTakmicenje.Gimnastika,
                     Opcije.Instance.PrikaziDEOcene, false, p.hasPenalty(),
-                    dataGridViewUserControl1.DataGridView, documentName, true));
+                    dataGridViewUserControl1.DataGridView, documentName, true, false));
                 form2.ShowDialog();
             }
             catch (Exception ex)

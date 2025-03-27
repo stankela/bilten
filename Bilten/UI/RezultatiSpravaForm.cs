@@ -335,7 +335,7 @@ namespace Bilten.UI
             string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaSprava(deoTakKod, takmicenje.FinaleKupa, false);
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, true, false, false, false, false,
-                                                         takmicenje.BrojEOcena > 0);
+                                                         takmicenje.BrojEOcena > 0, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -949,7 +949,8 @@ namespace Bilten.UI
         {
             string nazivIzvestaja = "Finale po spravama - kvalifikanti i rezerve";
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false, false,
+                                                         false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

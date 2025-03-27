@@ -296,20 +296,24 @@ namespace Bilten.Domain
                     {
                         float? d;
                         float? e;
+                        float? pen;
                         if (o.Sprava != Sprava.Preskok || !zaPreskokVisebojRacunajBoljuOcenu || o.Ocena2 == null
                             || Math.Max(o.Total.Value, o.Ocena2.Total.Value) == o.Total.Value)
                         {
                             d = o.D;
                             e = o.E;
+                            pen = o.Penalty;
                         }
                         else
                         {
                             d = o.Ocena2.D;
                             e = o.Ocena2.E;
+                            pen = o.Ocena2.Penalty;
                         }
                         RezultatUkupnoExtended r = rezultatiMap[o.Gimnasticar.Id];
                         r.setDOcena(o.Sprava, d);
                         r.setEOcena(o.Sprava, e);
+                        r.setPenalizacija(o.Sprava, pen);
                     }
                 }
 

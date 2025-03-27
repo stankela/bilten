@@ -75,6 +75,7 @@ namespace Bilten.UI
             this.ckbStampajKategoriju = new System.Windows.Forms.CheckBox();
             this.ckbStampajKlub = new System.Windows.Forms.CheckBox();
             this.ckbStampajPoredinacneEOcene = new System.Windows.Forms.CheckBox();
+            this.ckbPrikaziPenalizaciju = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -503,6 +504,16 @@ namespace Bilten.UI
             this.ckbStampajPoredinacneEOcene.Text = "Stampaj pojedinacne ocene E1, E2, ...";
             this.ckbStampajPoredinacneEOcene.UseVisualStyleBackColor = true;
             // 
+            // ckbPrikaziPenalizaciju
+            // 
+            this.ckbPrikaziPenalizaciju.AutoSize = true;
+            this.ckbPrikaziPenalizaciju.Location = new System.Drawing.Point(214, 339);
+            this.ckbPrikaziPenalizaciju.Name = "ckbPrikaziPenalizaciju";
+            this.ckbPrikaziPenalizaciju.Size = new System.Drawing.Size(144, 17);
+            this.ckbPrikaziPenalizaciju.TabIndex = 57;
+            this.ckbPrikaziPenalizaciju.Text = "Prikazi D, E i penalizaciju";
+            this.ckbPrikaziPenalizaciju.UseVisualStyleBackColor = true;
+            // 
             // HeaderFooterForm
             // 
             this.AcceptButton = this.btnOk;
@@ -510,6 +521,7 @@ namespace Bilten.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(695, 538);
+            this.Controls.Add(this.ckbPrikaziPenalizaciju);
             this.Controls.Add(this.ckbStampajPoredinacneEOcene);
             this.Controls.Add(this.ckbStampajKlub);
             this.Controls.Add(this.ckbStampajKategoriju);
@@ -617,5 +629,6 @@ namespace Bilten.UI
         private System.Windows.Forms.CheckBox ckbStampajKategoriju;
         private System.Windows.Forms.CheckBox ckbStampajKlub;
         private System.Windows.Forms.CheckBox ckbStampajPoredinacneEOcene;
+        private System.Windows.Forms.CheckBox ckbPrikaziPenalizaciju;
     }
 }

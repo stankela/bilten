@@ -42,6 +42,7 @@ namespace Bilten.UI
             o.FooterFontItalic = form.FooterFontItalic;
 
             o.PrikaziDEOcene = form.PrikaziDEOcene;
+            o.PrikaziPenalizacijuViseboj = form.PrikaziPenalizacijuViseboj;
             if (form.DeoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 o.StampajSveSpraveTak1 = form.StampajSveSprave;
@@ -96,6 +97,7 @@ namespace Bilten.UI
             form.FooterFontItalic = o.FooterFontItalic;
 
             form.PrikaziDEOcene = o.PrikaziDEOcene;
+            form.PrikaziPenalizacijuViseboj = o.PrikaziPenalizacijuViseboj;
             if (form.DeoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 form.StampajSveSprave = o.StampajSveSpraveTak1;

@@ -290,7 +290,7 @@ namespace Bilten.UI
             string nazivIzvestaja = "Sudije na takmi" + Jezik.chMalo + "enju";
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
-                false, false, false, false, false, false, false, false);
+                false, false, false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

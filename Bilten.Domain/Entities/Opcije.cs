@@ -276,6 +276,13 @@ namespace Bilten.Domain
             set { _prikaziDEOcene = value; }
         }
 
+        private bool _prikaziPenalizacijuViseboj = false;
+        public virtual bool PrikaziPenalizacijuViseboj
+        {
+            get { return _prikaziPenalizacijuViseboj; }
+            set { _prikaziPenalizacijuViseboj = value; }
+        }
+
         private bool _stampajPojedinacneEOcene = false;
         public virtual bool StampajPojedinacneEOcene
         {

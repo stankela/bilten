@@ -140,7 +140,7 @@ namespace Bilten.Domain
             }
         }
 
-        // svojstva za prikaz ocena iz preskoka gde postoje dva preskoka
+        // Svojstva za prikaz ocena iz preskoka gde postoje dva preskoka. Koristi se u OceneForm
         public virtual string D_2
         {
             get

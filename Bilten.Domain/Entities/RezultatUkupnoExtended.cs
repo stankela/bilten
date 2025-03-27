@@ -39,6 +39,13 @@ namespace Bilten.Domain
             protected set { _parterE = value; }
         }
 
+        private Nullable<float> _parterPen;
+        public virtual Nullable<float> ParterPen
+        {
+            get { return _parterPen; }
+            protected set { _parterPen = value; }
+        }
+
         private Nullable<float> _konjD;
         public virtual Nullable<float> KonjD
         {
@@ -51,6 +58,13 @@ namespace Bilten.Domain
         {
             get { return _konjE; }
             protected set { _konjE = value; }
+        }
+
+        private Nullable<float> _konjPen;
+        public virtual Nullable<float> KonjPen
+        {
+            get { return _konjPen; }
+            protected set { _konjPen = value; }
         }
 
         private Nullable<float> _karikeD;
@@ -67,6 +81,13 @@ namespace Bilten.Domain
             protected set { _karikeE = value; }
         }
 
+        private Nullable<float> _karikePen;
+        public virtual Nullable<float> KarikePen
+        {
+            get { return _karikePen; }
+            protected set { _karikePen = value; }
+        }
+
         private Nullable<float> _preskokD;
         public virtual Nullable<float> PreskokD
         {
@@ -79,6 +100,13 @@ namespace Bilten.Domain
         {
             get { return _preskokE; }
             protected set { _preskokE = value; }
+        }
+
+        private Nullable<float> _preskokPen;
+        public virtual Nullable<float> PreskokPen
+        {
+            get { return _preskokPen; }
+            protected set { _preskokPen = value; }
         }
 
         private Nullable<float> _razbojD;
@@ -95,6 +123,13 @@ namespace Bilten.Domain
             protected set { _razbojE = value; }
         }
 
+        private Nullable<float> _razbojPen;
+        public virtual Nullable<float> RazbojPen
+        {
+            get { return _razbojPen; }
+            protected set { _razbojPen = value; }
+        }
+
         private Nullable<float> _vratiloD;
         public virtual Nullable<float> VratiloD
         {
@@ -107,6 +142,13 @@ namespace Bilten.Domain
         {
             get { return _vratiloE; }
             protected set { _vratiloE = value; }
+        }
+
+        private Nullable<float> _vratiloPen;
+        public virtual Nullable<float> VratiloPen
+        {
+            get { return _vratiloPen; }
+            protected set { _vratiloPen = value; }
         }
 
         private Nullable<float> _gredaD;
@@ -123,6 +165,13 @@ namespace Bilten.Domain
             protected set { _gredaE = value; }
         }
 
+        private Nullable<float> _gredaPen;
+        public virtual Nullable<float> GredaPen
+        {
+            get { return _gredaPen; }
+            protected set { _gredaPen = value; }
+        }
+
         private Nullable<float> _dvovisinskiRazbojD;
         public virtual Nullable<float> DvovisinskiRazbojD
         {
@@ -135,6 +184,13 @@ namespace Bilten.Domain
         {
             get { return _dvovisinskiRazbojE; }
             protected set { _dvovisinskiRazbojE = value; }
+        }
+
+        private Nullable<float> _dvovisinskiRazbojPen;
+        public virtual Nullable<float> DvovisinskiRazbojPen
+        {
+            get { return _dvovisinskiRazbojPen; }
+            protected set { _dvovisinskiRazbojPen = value; }
         }
 
         public void setDOcena(Sprava sprava, Nullable<float> value)
@@ -212,6 +268,47 @@ namespace Bilten.Domain
 
                 case Sprava.Greda:
                     GredaE = value;
+                    break;
+
+                default:
+                    throw new ArgumentException("Nedozvoljena vrednost za spravu.");
+            }
+        }
+
+        public void setPenalizacija(Sprava sprava, Nullable<float> value)
+        {
+            switch (sprava)
+            {
+                case Sprava.Parter:
+                    ParterPen = value;
+                    break;
+
+                case Sprava.Konj:
+                    KonjPen = value;
+                    break;
+
+                case Sprava.Karike:
+                    KarikePen = value;
+                    break;
+
+                case Sprava.Preskok:
+                    PreskokPen = value;
+                    break;
+
+                case Sprava.Razboj:
+                    RazbojPen = value;
+                    break;
+
+                case Sprava.Vratilo:
+                    VratiloPen = value;
+                    break;
+
+                case Sprava.DvovisinskiRazboj:
+                    DvovisinskiRazbojPen = value;
+                    break;
+
+                case Sprava.Greda:
+                    GredaPen = value;
                     break;
 
                 default:
