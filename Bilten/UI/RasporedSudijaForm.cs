@@ -619,13 +619,14 @@ namespace Bilten.UI
                         odbori.Add(ActiveRaspored.getOdbor(s));
                     }
                     p.setIzvestaj(new RasporedSudijaIzvestaj(odbori, takmicenje.Gimnastika, documentName,
-                        form.BrojSpravaPoStrani, getActiveSpravaGridGroupUserControl(), takmicenje.VrhovniSudija));
+                        form.BrojSpravaPoStrani, getActiveSpravaGridGroupUserControl(), takmicenje.VrhovniSudija,
+                        takmicenje));
                 }
                 else
                 {
                     SudijskiOdborNaSpravi odbor = ActiveRaspored.getOdbor(sprava);
                     p.setIzvestaj(new RasporedSudijaIzvestaj(odbor, documentName,
-                    getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
+                    getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje));
                 }
 
                 p.ShowDialog();

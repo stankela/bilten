@@ -1468,5 +1468,18 @@ namespace Bilten.UI
             }
 
         }
+
+        private void mnLogo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LogoForm form = new LogoForm(takmicenjeId.Value);
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, strProgName);
+            }
+        }
     }
 }

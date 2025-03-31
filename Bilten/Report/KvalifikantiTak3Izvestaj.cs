@@ -16,7 +16,7 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public KvalifikantiTak3Izvestaj(List<RezultatSprava> rezultati, Sprava sprava, string documentName,
-            DataGridView formGrid)
+            DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -28,7 +28,7 @@ namespace Bilten.Report
 		}
 
         public KvalifikantiTak3Izvestaj(List<RezultatPreskok> rezultati, bool obaPreskoka, string documentName,
-            DataGridView formGrid)
+            DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -41,7 +41,7 @@ namespace Bilten.Report
 
         public KvalifikantiTak3Izvestaj(List<List<RezultatSprava>> rezultatiSprave,
             List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, Gimnastika gim,
-            string documentName, int brojSpravaPoStrani, DataGridView formGrid)
+            string documentName, int brojSpravaPoStrani, DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);

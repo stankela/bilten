@@ -14,7 +14,7 @@ namespace Bilten.Report
         private SudijeUcesniciLista lista;
 
         public SudijeUcesniciIzvestaj(IList<SudijaUcesnik> sudije, DataGridView formGrid,
-            string documentName)
+            string documentName, Takmicenje takmicenje) : base(takmicenje)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 10);

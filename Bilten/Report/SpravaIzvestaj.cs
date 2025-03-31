@@ -14,7 +14,7 @@ namespace Bilten.Report
 
         public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati,
             bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
-            int numRowsToMark, int brojEOcena)
+            int numRowsToMark, int brojEOcena, Takmicenje takmicenje) : base(takmicenje)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -27,7 +27,7 @@ namespace Bilten.Report
 
         public SpravaIzvestaj(bool obaPreskoka, IList<RezultatPreskok> rezultati,
             bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
-            int numRowsToMark, int brojEOcena)
+            int numRowsToMark, int brojEOcena, Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -41,7 +41,8 @@ namespace Bilten.Report
         public SpravaIzvestaj(List<List<RezultatSprava>> rezultatiSprave,
             List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, Gimnastika gim,
             bool kvalColumn, string documentName, int brojSpravaPoStrani, bool prikaziPenal,
-            DataGridView formGrid, bool markFirstRows, int numRowsToMark, int brojEOcena)
+            DataGridView formGrid, bool markFirstRows, int numRowsToMark, int brojEOcena, Takmicenje takmicenje)
+            : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);

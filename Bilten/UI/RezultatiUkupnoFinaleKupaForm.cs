@@ -228,7 +228,7 @@ namespace Bilten.UI
                 
                 p.setIzvestaj(new UkupnoFinaleKupaIzvestaj(rezultati, ActiveTakmicenje.Gimnastika,
                     Opcije.Instance.PrikaziDEOcene, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
-                    documentName));
+                    documentName, takmicenje));
                 p.ShowDialog();
             }
             catch (Exception ex)

@@ -1032,14 +1032,14 @@ namespace Bilten.UI
                     }
                     p.setIzvestaj(new StartListaIzvestaj(startListe, documentName,
                         form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi, form.StampajKlub, form.StampajKategoriju,
-                        getActiveSpravaGridGroupUserControl()));
+                        getActiveSpravaGridGroupUserControl(), takmicenje));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
                     p.setIzvestaj(new StartListaIzvestaj(startLista, documentName, form.StampajRedniBrojNaStartListi,
                         form.StampajKlub, form.StampajKategoriju,
-                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje));
                 }
 
                 p.ShowDialog();
@@ -1529,14 +1529,14 @@ namespace Bilten.UI
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, takmicenje.Gimnastika, documentName,
                         brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
                         form.StampajKategoriju, form.StampajKlub,
-                        getActiveSpravaGridGroupUserControl()));
+                        getActiveSpravaGridGroupUserControl(), takmicenje));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena,
                         form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
-                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView));
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje));
                 }
 
                 p.ShowDialog();

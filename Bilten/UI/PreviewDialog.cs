@@ -43,16 +43,22 @@ namespace Bilten.UI
             if (PrinterSettings.InstalledPrinters.Count == 0)
             {
                 rezimRada = RezimRada.MyPreviewDraw;
-
                 float pageWidth = 210 / 25.4f;
                 float pageHeight = 297 / 25.4f;
-                Size s = pageToScreen(new SizeF(pageWidth, pageHeight));
-                bitmap = new Bitmap(s.Width, s.Height);
-                bitmap.SetResolution(screenGraphics.DpiX, screenGraphics.DpiY);
-
-                bitmapGraphics = Graphics.FromImage(bitmap);
-                pictureBox1.ClientSize = bitmap.Size;
+                createPreviewBitmap(pageWidth, pageHeight);
             }
+        }
+
+        private void createPreviewBitmap(float pageWidth, float pageHeight)
+        {
+            Size s = pageToScreen(new SizeF(pageWidth, pageHeight));
+            bitmap = new Bitmap(s.Width, s.Height);
+            bitmap.SetResolution(screenGraphics.DpiX, screenGraphics.DpiY);
+
+            bitmapGraphics = Graphics.FromImage(bitmap);
+            bitmapGraphics.PageUnit = GraphicsUnit.Inch;
+            bitmapGraphics.PageScale = 1f;
+            pictureBox1.ClientSize = bitmap.Size;
         }
 
         // TODO: Trebao bi neki parametar za page koordinate. Ovako se pretpostavlja
@@ -135,8 +141,8 @@ namespace Bilten.UI
             }
             else
             {
-                g = printDocument1.PrinterSettings.CreateMeasurementGraphics();
                 PageSettings pageSettings = printDocument1.DefaultPageSettings;
+                g = printDocument1.PrinterSettings.CreateMeasurementGraphics(pageSettings);
 
                 Margins margins = pageSettings.Margins;
                 Rectangle mBounds = new Rectangle(
@@ -152,8 +158,9 @@ namespace Bilten.UI
 
                 pageBounds = TranslateBounds(g, pBounds);
                 marginBounds = TranslateBounds(g, Rectangle.Truncate(marginBounds));
-            }
 
+                createPreviewBitmap(pageBounds.Width, pageBounds.Height);
+            }
             izvestaj.setupContent(g, marginBounds, pageBounds);
         }
 
@@ -384,35 +391,13 @@ namespace Bilten.UI
 
         private void drawPreviewPage()
         {
-            if (rezimRada == RezimRada.MyPreviewDraw)
+            bitmapGraphics.Clear(Color.White);
+            if (rezimRada != RezimRada.PageSizeTooSmall)
             {
                 izvestaj.TimeOfPrint = DateTime.Now;
-                bitmapGraphics.Clear(Color.White);
                 drawPage(bitmapGraphics, previewPage);
-                pictureBox1.Image = bitmap;
-                return;
             }
-            else if (rezimRada == RezimRada.PageSizeTooSmall)
-            {
-                bitmapGraphics.Clear(Color.White);
-                pictureBox1.Image = bitmap;
-                return;
-            }
-
-            PrintController oldControler = printDocument1.PrintController;
-            PreviewPrintController prevControler = new PreviewPrintController();
-            printDocument1.PrintController = prevControler;
-            page = previewPage;
-            lastPageToPrint = previewPage;
-            printDocument1.Print();
-            printDocument1.PrintController = oldControler;
-
-            PreviewPageInfo pageInfo = prevControler.GetPreviewPageInfo()[0];
-            // PhysicalSize is in 0.01 inch
-            pictureBox1.ClientSize = pageToScreen(new SizeF(
-                pageInfo.PhysicalSize.Width / 100f,
-                pageInfo.PhysicalSize.Height / 100f));
-            pictureBox1.Image = pageInfo.Image; // Metafile
+            pictureBox1.Image = bitmap;
         }
 
         private void btnFirst_Click(object sender, System.EventArgs e)

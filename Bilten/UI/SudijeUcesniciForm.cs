@@ -344,7 +344,7 @@ namespace Bilten.UI
                 sudije.Sort(new SortComparer<SudijaUcesnik>(propDesc, sortDir));
 
                 p.setIzvestaj(new SudijeUcesniciIzvestaj(sudije,
-                    dataGridViewUserControl1.DataGridView, nazivIzvestaja));
+                    dataGridViewUserControl1.DataGridView, nazivIzvestaja, takmicenje));
                 p.ShowDialog();
             }
             catch (Exception ex)

@@ -168,6 +168,41 @@ namespace Bilten.Domain
             set { lastModified = value; }
         }
 
+        private string logo1RelPath;
+        public virtual string Logo1RelPath
+        {
+            get { return logo1RelPath; }
+            set { logo1RelPath = value; }
+        }
+
+        private string logo2RelPath;
+        public virtual string Logo2RelPath
+        {
+            get { return logo2RelPath; }
+            set { logo2RelPath = value; }
+        }
+
+        private string logo3RelPath;
+        public virtual string Logo3RelPath
+        {
+            get { return logo3RelPath; }
+            set { logo3RelPath = value; }
+        }
+
+        private string logo4RelPath;
+        public virtual string Logo4RelPath
+        {
+            get { return logo4RelPath; }
+            set { logo4RelPath = value; }
+        }
+
+        private string logo5RelPath;
+        public virtual string Logo5RelPath
+        {
+            get { return logo5RelPath; }
+            set { logo5RelPath = value; }
+        }
+
         private Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenjeDescriptions = 
             new HashedSet<RezultatskoTakmicenjeDescription>();
         public virtual Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> TakmicenjeDescriptions

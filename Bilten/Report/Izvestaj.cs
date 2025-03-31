@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using Bilten.Domain;
 using System.Drawing.Printing;
+using Bilten.UI;
 
 namespace Bilten.Report
 {
@@ -119,7 +120,14 @@ namespace Bilten.Report
 			set { timeOfPrint = value; }
 		}
 
-        public Izvestaj()
+        private Takmicenje takmicenje;
+        private Image logo1Image;
+        private Image logo2Image;
+        private Image logo3Image;
+        private Image logo4Image;
+        private Image logo5Image;
+
+        public Izvestaj(Takmicenje takmicenje)
         {
             Header1Text = Opcije.Instance.Header1Text;
             Header2Text = Opcije.Instance.Header2Text;
@@ -132,6 +140,66 @@ namespace Bilten.Report
             createFonts();
 
             A4 = true;
+            this.takmicenje = takmicenje;
+
+            // Slike ucitavam u konstruktoru iz dva razloga. Prvo, ako izvestaj ima vise strana, time izbegavam da
+            // ponovo ucitavam sliku za svaku stranu. Drugo, ako neka slika fali, stampam poruku o gresci samo jednom,
+            // umsto za svaku stranu posebno.
+            if (!String.IsNullOrEmpty(takmicenje.Logo1RelPath))
+            {
+                try
+                {
+                    logo1Image = Image.FromFile(takmicenje.Logo1RelPath);
+                }
+                catch (Exception)
+                {
+                    MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo1RelPath + "\"", "Greska");
+                }
+            }
+            if (!String.IsNullOrEmpty(takmicenje.Logo2RelPath))
+            {
+                try
+                {
+                    logo2Image = Image.FromFile(takmicenje.Logo2RelPath);
+                }
+                catch (Exception)
+                {
+                    MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo2RelPath + "\"", "Greska");
+                }
+            }
+            if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath))
+            {
+                try
+                {
+                    logo3Image = Image.FromFile(takmicenje.Logo3RelPath);
+                }
+                catch (Exception)
+                {
+                    MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo3RelPath + "\"", "Greska");
+                }
+            }
+            if (!String.IsNullOrEmpty(takmicenje.Logo4RelPath))
+            {
+                try
+                {
+                    logo4Image = Image.FromFile(takmicenje.Logo4RelPath);
+                }
+                catch (Exception)
+                {
+                    MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo4RelPath + "\"", "Greska");
+                }
+            }
+            if (!String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+            {
+                try
+                {
+                    logo5Image = Image.FromFile(takmicenje.Logo5RelPath);
+                }
+                catch (Exception)
+                {
+                    MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo5RelPath + "\"", "Greska");
+                }
+            }
         }
 
         private void createFormats()
@@ -156,7 +224,7 @@ namespace Bilten.Report
 
             dateFormat = new StringFormat();
 			dateFormat.Alignment = StringAlignment.Far;
-			dateFormat.LineAlignment = StringAlignment.Near;
+			dateFormat.LineAlignment = StringAlignment.Center;
 		}
 
 		public virtual void BeginPrint(object sender, System.Drawing.Printing.PrintEventArgs e)
@@ -240,23 +308,136 @@ namespace Bilten.Report
 			g.DrawString(Header2Text, header2Font, blackBrush, header2Bounds, header2Format);
             g.DrawString(Header3Text, header3Font, blackBrush, header3Bounds, header3Format);
             g.DrawString(Header4Text, header4Font, blackBrush, header4Bounds, header4Format);
+
+            // TODO5: Kada postoji logo1 a ne postoji logo2, treba prvo pokusati da se centrira unutar regiona izmedju
+            // dva logoa (kao sto se i sada radi). Ako to ne moze da stane, treba prvo proveriti da li header 1 moze da
+            // stane u srednji i desni region. Ako moze, stampati tako da je x koordinata tamo gde je pocetak srednjeg
+            // regiona. Ako ne moze, stampati u dva reda, centrirano u srednjem regionu (kao sto se i sada radi).
+
+            float logoHeight = getHeaderLogoHeight();
+            if (!String.IsNullOrEmpty(takmicenje.Logo1RelPath))
+            {
+                // Stampaj sa leve strane hedera
+                RectangleF logo1Bounds = new RectangleF(pageBounds.Left, pageBounds.Top, logoHeight, logoHeight);
+                //pictureBounds.Inflate(-0.05f * pictureWidth, -0.05f * pictureHeight);
+                drawLogo(g, logo1Bounds, logo1Image);
+            }
+            if (!String.IsNullOrEmpty(takmicenje.Logo2RelPath))
+            {
+                // Stampaj sa desne strane hedera
+                RectangleF logo2Bounds = new RectangleF(pageBounds.Right - logoHeight, pageBounds.Top,
+                    logoHeight, logoHeight);
+                drawLogo(g, logo2Bounds, logo2Image);
+            }
+        }
+
+        private float getHeaderLogoHeight()
+        {
+            float rel = 0.16f;
+            if (pageBounds.Width < pageBounds.Height)
+            {
+                return rel * pageBounds.Width;
+            }
+            else
+            {
+                return rel * pageBounds.Height;
+            }
         }
 
         private void drawFooter(Graphics g, int pageNum)
         {
-     /*       g.DrawRectangle(pen, footerBounds.X, footerBounds.Y,
-                footerBounds.Width, footerBounds.Height);
-*/
-            g.DrawString(FooterText, footerFont, blackBrush, footerBounds, footerFormat);
-            
+            float height = pageBounds.Bottom - footerBounds.Top;  // ovo je takodje i width za logo
+            float y = footerBounds.Top;
+
+            float endX = 0.0f;
+            if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo4RelPath) && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+            { 
+                // Centriraj logo3 po sredini futera
+                float x = pageBounds.Left + (pageBounds.Width - height) / 2;
+                RectangleF logo3Bounds = new RectangleF(x, y, height, height);
+                drawLogo(g, logo3Bounds, logo3Image);
+                endX = logo3Bounds.Right;
+            }
+            else if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath) && !String.IsNullOrEmpty(takmicenje.Logo4RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+            {
+                // Centriraj po sredini futera logo3, logo4
+                float medjuRazmak = height * 0.2f;
+                float sredinaStrane = pageBounds.Left + pageBounds.Width / 2;
+                float leviX = sredinaStrane - medjuRazmak/2 - height;
+                float desniX = sredinaStrane + medjuRazmak / 2;
+                RectangleF logo3Bounds = new RectangleF(leviX, y, height, height);
+                RectangleF logo4Bounds = new RectangleF(desniX, y, height, height);
+                drawLogo(g, logo3Bounds, logo3Image);
+                drawLogo(g, logo4Bounds, logo4Image);
+                endX = logo4Bounds.Right;
+            }
+            else if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath) && !String.IsNullOrEmpty(takmicenje.Logo4RelPath)
+                && !String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+            {
+                // Centriraj po sredini futera logo3, logo4, logo5
+                float medjuRazmak = height * 0.2f;
+                float srednjiX = pageBounds.Left + (pageBounds.Width - height) / 2;
+                float leviX = srednjiX - medjuRazmak - height;
+                float desnix = srednjiX + height + medjuRazmak;
+                RectangleF logo3Bounds = new RectangleF(leviX, y, height, height);
+                RectangleF logo4Bounds = new RectangleF(srednjiX, y, height, height);
+                RectangleF logo5Bounds = new RectangleF(desnix, y, height, height);
+                drawLogo(g, logo3Bounds, logo3Image);
+                drawLogo(g, logo4Bounds, logo4Image);
+                drawLogo(g, logo5Bounds, logo5Image);
+                endX = logo5Bounds.Right;
+            }
+
+            //g.DrawRectangle(pen, footerBounds.X, footerBounds.Y, footerBounds.Width, footerBounds.Height);
+
             String page = "Strana";
             String from = "/";
             string datum = TimeOfPrint.ToShortDateString();
             string vreme = TimeOfPrint.ToShortTimeString();
-    //        g.DrawString(datum + " " + vreme, pageNumFont, blackBrush,
-      //          footerBounds.Right, footerBounds.Top, dateFormat);
-            g.DrawString(String.Format("{0} {1}{2}{3}", page, pageNum, from, LastPageNum), pageNumFont, blackBrush,
-                footerBounds.Right, footerBounds.Top + pageNumFont.GetHeight(g) * 1.5f, dateFormat);
+            string pageText = String.Format("{0} {1}{2}{3}", page, pageNum, from, LastPageNum);
+
+            if (String.IsNullOrEmpty(takmicenje.Logo3RelPath) && String.IsNullOrEmpty(takmicenje.Logo4RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+            {
+                g.DrawString(FooterText, footerFont, blackBrush, footerBounds, footerFormat);
+                g.DrawString(pageText, pageNumFont, blackBrush,
+                    footerBounds.Right, footerBounds.Top + pageNumFont.GetHeight(g) * 1.5f, dateFormat);
+            }
+            else
+            {
+                // TODO5: Probaj da nadjes neko generalnije resenje.
+                float x = footerBounds.Right + (pageBounds.Right - footerBounds.Right) / 2;
+                float y1 = footerBounds.Y + footerBounds.Height / 2;
+                // Uz desnu ivicu i po sredini gornje linije (racuna se u odnosu na dve linije koje se seku u tacki (x, y1)
+                g.DrawString(FooterText, footerFont, blackBrush, x, y1, dateFormat);
+
+                float y2 = footerBounds.Bottom;
+                StringFormat fmt = new StringFormat();
+                fmt.Alignment = StringAlignment.Far;
+                fmt.LineAlignment = StringAlignment.Near;
+                // Uz desnu i gornju ivicu (racuna se u odnosu na dve linije koje se seku u tacki (x, y2)
+                g.DrawString(pageText, pageNumFont, blackBrush, x, y2, fmt);
+            }
+            // g.DrawString(datum + " " + vreme, pageNumFont, blackBrush,
+            //      footerBounds.Right, footerBounds.Top, dateFormat);
+        }
+
+        private void drawLogo(Graphics g, RectangleF bounds, Image image)
+        {
+            if (image != null)
+            {
+                Izvestaj.scaleImageIsotropically(g, image, bounds);
+            }
+            else
+            {
+                // Slika nije pronadjena. Stampaj prazan okvir
+                using (Pen pen = new Pen(Color.Black, 1 / 72f * 0.25f))
+                {
+                    g.DrawRectangle(pen, bounds.X, bounds.Y, bounds.Width, bounds.Height);
+                }
+            }
         }
 
         public void setupContent(Graphics g, RectangleF marginBounds, RectangleF pageBounds)
@@ -273,30 +454,86 @@ namespace Bilten.Report
 
 		private void calculateHeaderBounds(Graphics g, RectangleF marginBounds)
 		{
-	        //float headerSection1RelHeight = 1.0f / 5;
-            float headerSection2RelHeight = 1.0f / 5;
-            float headerSection3RelHeight = 1.0f / 5;
-            float headerSection4RelHeight = 1.0f / 5;
+            // Potrebno za g.MeasureString (headeri mogu da se prostiru u dva reda)
+            StringFormat fmt = new StringFormat();
+            fmt.Alignment = StringAlignment.Near;
+            fmt.LineAlignment = StringAlignment.Near;
 
-            headerBounds = new RectangleF(marginBounds.Location, 
-				new SizeF(marginBounds.Width, getHeaderHeight(g, marginBounds)));
+            // Ovo je potrebno za neka podesavanja u hederu. Ovo je visina za header1 tekst kada bi ceo stao u jedan red.
+            // Prava visina za header1 tekst (koja moze da zauzima dva reda) se izracunava dole u headerSec1Height.
+            float header1Height = g.MeasureString(Header1Text, header1Font, new PointF(), fmt).Height;    
+            
+            PointF header1TopLeft;
+            float width;
+            if (!String.IsNullOrEmpty(takmicenje.Logo1RelPath))
+            {
+                header1TopLeft = new PointF(pageBounds.Left + getHeaderLogoHeight(), pageBounds.Top + header1Height);
+                width = pageBounds.Width - 2 * getHeaderLogoHeight();
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(takmicenje.Logo2RelPath))
+                {
+                    header1TopLeft = new PointF(pageBounds.Left + getHeaderLogoHeight(), pageBounds.Top + header1Height);
+                    width = pageBounds.Width - 2 * getHeaderLogoHeight();
+                }
+                else
+                {
+                    header1TopLeft = marginBounds.Location;
+                    width = marginBounds.Width;
+                }
+            }
 
-            // Header 1 moze da se prostire u dva reda
-            float headerSec1Height = g.MeasureString(Header1Text, header1Font, headerBounds.Size).Height;
-            //float headerSec1Height = headerSection1RelHeight * headerBounds.Height;
-            float headerSec2Height = headerSection2RelHeight * headerBounds.Height;
-            float headerSec3Height = headerSection3RelHeight * headerBounds.Height;
-            float headerSec4Height = headerSection4RelHeight * headerBounds.Height;
+            float x = header1TopLeft.X;
 
-            header1Bounds = new RectangleF(headerBounds.Location,
-                new SizeF(headerBounds.Width, headerSec1Height));
-            header2Bounds = new RectangleF(headerBounds.X, header1Bounds.Bottom,
-                headerBounds.Width, headerSec2Height);
+            SizeF layoutArea = new SizeF(width, /*dummy*/width);  // koristi se samo za merenje (da sve ispravno stane u
+                                                                  // dva reda ako treba), visina je nebitna
+            if (!String.IsNullOrEmpty(Header1Text))
+            {
+                float headerSec1Height = g.MeasureString(Header1Text, header1Font, layoutArea, fmt).Height;
+                header1Bounds = new RectangleF(header1TopLeft, new SizeF(width, headerSec1Height));
+            }
+            else
+            {
+                // Prazan rectangle koji ima ispravnu Bottom koordinatu.
+                header1Bounds = new RectangleF(header1TopLeft, new SizeF());
+            }
 
-            header3Bounds = new RectangleF(headerBounds.X, headerBounds.Bottom - (headerSec3Height + headerSec4Height),
-                headerBounds.Width, headerSec3Height);
-            header4Bounds = new RectangleF(headerBounds.X, headerBounds.Bottom - headerSec4Height,
-                headerBounds.Width, headerSec4Height);
+            PointF header2TopLeft = new PointF(x, header1Bounds.Bottom);
+            if (!String.IsNullOrEmpty(Header2Text))
+            {
+                float headerSec2Height = g.MeasureString(Header2Text, header2Font, layoutArea, fmt).Height;
+                header2Bounds = new RectangleF(header2TopLeft, new SizeF(width, headerSec2Height));
+            }
+            else
+            {
+                header2Bounds = new RectangleF(header2TopLeft, new SizeF());
+            }
+
+            float header2AfterHeight = header1Height;
+            PointF header3TopLeft = new PointF(x, header2Bounds.Bottom + header2AfterHeight);
+            if (!String.IsNullOrEmpty(Header3Text))
+            {
+                float headerSec3Height = g.MeasureString(Header3Text, header3Font, layoutArea, fmt).Height;
+                header3Bounds = new RectangleF(header3TopLeft, new SizeF(width, headerSec3Height));
+            }
+            else
+            {
+                header3Bounds = new RectangleF(header3TopLeft, new SizeF());
+            }
+
+            PointF header4TopLeft = new PointF(x, header3Bounds.Bottom);
+            if (!String.IsNullOrEmpty(Header4Text))
+            {
+                float headerSec4Height = g.MeasureString(Header4Text, header4Font, layoutArea, fmt).Height;
+                header4Bounds = new RectangleF(header4TopLeft, new SizeF(width, headerSec4Height));
+            }
+            else
+            {
+                header4Bounds = new RectangleF(header4TopLeft, new SizeF());
+            }
+
+            headerBounds = new RectangleF(header1TopLeft, new SizeF(width, header4Bounds.Bottom - header1Bounds.Top));
         }
 
         // TODO3: Nadji bolji nacin za podesavanje velicine hedera i futera
@@ -315,10 +552,9 @@ namespace Bilten.Report
 			float headerHeight = getHeaderHeight(g, marginBounds);
             float footerHeight = getFooterHeight(g, marginBounds);
 
-            contentBounds = new RectangleF(marginBounds.X, 
-				marginBounds.Y + headerHeight, 
-				marginBounds.Width, 
-				marginBounds.Height - headerHeight - footerHeight);
+            float headerBottom = header4Bounds.Bottom + convCmToInch(0.5f);
+            contentBounds = new RectangleF(marginBounds.X, headerBottom,
+                marginBounds.Width, marginBounds.Bottom - headerBottom - footerHeight);
 		}
 
         public virtual float getFooterHeight(Graphics g, RectangleF marginBounds)
@@ -327,7 +563,7 @@ namespace Bilten.Report
                 return convCmToInch(0.3f);
             else
                 return convCmToInch(1f);
-    }
+        }
 
         private void calculateFooterBounds(Graphics g, RectangleF marginBounds)
         {

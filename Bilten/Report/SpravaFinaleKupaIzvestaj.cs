@@ -13,7 +13,7 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public SpravaFinaleKupaIzvestaj(Sprava sprava, IList<RezultatSpravaFinaleKupa> rezultati,
-            bool kvalColumn, string documentName, DataGridView formGrid)
+            bool kvalColumn, string documentName, DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);
@@ -25,7 +25,8 @@ namespace Bilten.Report
         }
 
         public SpravaFinaleKupaIzvestaj(List<List<RezultatSpravaFinaleKupa>> rezultatiSprave,
-            Gimnastika gim, bool kvalColumn, string documentName, int brojSpravaPoStrani, DataGridView formGrid)
+            Gimnastika gim, bool kvalColumn, string documentName, int brojSpravaPoStrani, DataGridView formGrid,
+            Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", 8);

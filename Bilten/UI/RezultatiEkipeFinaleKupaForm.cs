@@ -189,7 +189,7 @@ namespace Bilten.UI
 
                 p.setIzvestaj(new EkipeFinaleKupaIzvestaj(rezultatiEkipno,
                     ActiveTakmicenje.Gimnastika, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
-                    nazivIzvestaja));
+                    nazivIzvestaja, takmicenje));
                 p.ShowDialog();
             }
             catch (Exception ex)

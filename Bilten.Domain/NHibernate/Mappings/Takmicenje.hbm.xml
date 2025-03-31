@@ -20,6 +20,11 @@
     <property name="BrojDecimalaTotal" column="broj_decimala_total" type="Byte" />
     <property name="ZavrsenoTak1" column="zavrseno_tak1" type="Boolean" />
     <property name="ZrebZaFinalePoSpravama" column="zreb_za_finale_tak3" type="String" length="128"/>
+    <property name="Logo1RelPath" column="logo1_rel_path" type="String" length="128"/>
+    <property name="Logo2RelPath" column="logo2_rel_path" type="String" length="128"/>
+    <property name="Logo3RelPath" column="logo3_rel_path" type="String" length="128"/>
+    <property name="Logo4RelPath" column="logo4_rel_path" type="String" length="128"/>
+    <property name="Logo5RelPath" column="logo5_rel_path" type="String" length="128"/>
     <property name="LastModified" column="last_modified" />
     <set name="Kategorije" lazy="true" cascade="save-update"
       inverse="true" >

@@ -14,7 +14,8 @@ namespace Bilten.Report
         private UkupnoZbirViseKolaLista lista;
 
         public UkupnoZbirViseKolaIzvestaj(IList<RezultatUkupnoZbirViseKola> rezultati, Gimnastika gim,
-            bool extended, DataGridView formGrid, string documentName, int brojKola)
+            bool extended, DataGridView formGrid, string documentName, int brojKola, Takmicenje takmicenje)
+            : base(takmicenje)
 		{
             DocumentName = documentName;
             extended = false;

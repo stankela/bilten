@@ -306,7 +306,8 @@ namespace Bilten.UI
                 bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak4();
 
                 p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, ekipaRezultatiUkupnoMap,
-                    ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName));
+                    ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName,
+                    takmicenje));
                 p.ShowDialog();
             }
             catch (Exception ex)

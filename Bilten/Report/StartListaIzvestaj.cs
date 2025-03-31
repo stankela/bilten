@@ -16,7 +16,7 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public StartListaIzvestaj(StartListaNaSpravi startLista, string documentName, bool stampajRedniBroj,
-            bool stampajKlub, bool stampajKategoriju, DataGridView formGrid)
+            bool stampajKlub, bool stampajKategoriju, DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -29,7 +29,8 @@ namespace Bilten.Report
 
         public StartListaIzvestaj(List<StartListaNaSpravi> startListe,
             string documentName, int brojSpravaPoStrani, bool stampajRedniBroj,
-            bool stampajKlub, bool stampajKategoriju, SpravaGridGroupUserControl spravaGridGroupUserControl)
+            bool stampajKlub, bool stampajKategoriju, SpravaGridGroupUserControl spravaGridGroupUserControl,
+            Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);

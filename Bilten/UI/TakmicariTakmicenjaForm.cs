@@ -522,7 +522,7 @@ namespace Bilten.UI
                 gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc, sortDir));
 
                 p.setIzvestaj(new TakmicariIzvestaj(gimnasticari,
-                    takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView, nazivIzvestaja));
+                    takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView, nazivIzvestaja, takmicenje));
                 p.ShowDialog();
             }
             catch (Exception ex)

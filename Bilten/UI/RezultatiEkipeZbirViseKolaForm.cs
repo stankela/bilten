@@ -183,7 +183,7 @@ namespace Bilten.UI
 
                 p.setIzvestaj(new EkipeZbirViseKolaIzvestaj(rezultatiEkipno,
                     ActiveTakmicenje.Gimnastika, dataGridViewUserControl1.DataGridView,
-                    nazivIzvestaja, takmicenje.getBrojKola()));
+                    nazivIzvestaja, takmicenje.getBrojKola(), takmicenje));
                 p.ShowDialog();
             }
             catch (Exception ex)

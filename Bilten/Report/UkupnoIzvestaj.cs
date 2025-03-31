@@ -15,7 +15,7 @@ namespace Bilten.Report
 
 		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
             bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, string documentName,
-            bool stampanjeKvalifikanata, bool penalizacijaZaSprave)
+            bool stampanjeKvalifikanata, bool penalizacijaZaSprave, Takmicenje takmicenje) : base(takmicenje)
 		{
             DocumentName = documentName;
 

@@ -14,7 +14,7 @@ namespace Bilten.Report
         private EkipeZbirViseKolaLista lista;
 
         public EkipeZbirViseKolaIzvestaj(IList<RezultatEkipnoZbirViseKola> rezultati, Gimnastika gim,
-            DataGridView formGrid, string documentName, int brojKola)
+            DataGridView formGrid, string documentName, int brojKola, Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
 

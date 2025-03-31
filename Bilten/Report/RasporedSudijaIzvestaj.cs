@@ -17,7 +17,8 @@ namespace Bilten.Report
         private bool dveKolone;
         private RasporedSudijaLista vrhovniSudijaLista;
         
-        public RasporedSudijaIzvestaj(SudijskiOdborNaSpravi odbor, string documentName, DataGridView formGrid)
+        public RasporedSudijaIzvestaj(SudijskiOdborNaSpravi odbor, string documentName, DataGridView formGrid,
+            Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
 
@@ -37,7 +38,7 @@ namespace Bilten.Report
 
         public RasporedSudijaIzvestaj(List<SudijskiOdborNaSpravi> odbori, Gimnastika gim,
             string documentName, int brojSpravaPoStrani, SpravaGridGroupUserControl spravaGridGroupUserControl,
-            SudijaUcesnik vrhovniSudija)
+            SudijaUcesnik vrhovniSudija, Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
 

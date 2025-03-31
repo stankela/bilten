@@ -16,7 +16,8 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public SudijskiFormularIzvestaj(StartListaNaSpravi startLista, string documentName, int brojEOcena, 
-            bool stampajRedniBroj, bool stampajKategoriju, bool stampajKlub, DataGridView formGrid)
+            bool stampajRedniBroj, bool stampajKategoriju, bool stampajKlub, DataGridView formGrid, Takmicenje takmicenje)
+            : base(takmicenje)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -34,7 +35,8 @@ namespace Bilten.Report
 
         public SudijskiFormularIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
             string documentName, int brojEOcena, int brojSpravaPoStrani, bool stampajRedniBroj,
-            bool stampajKategoriju, bool stampajKlub, SpravaGridGroupUserControl spravaGridGroupUserControl)
+            bool stampajKategoriju, bool stampajKlub, SpravaGridGroupUserControl spravaGridGroupUserControl,
+            Takmicenje takmicenje) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);

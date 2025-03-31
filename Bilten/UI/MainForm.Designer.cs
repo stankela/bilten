@@ -83,6 +83,7 @@ namespace Bilten.UI
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.opcijeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnJezik = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnLogo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -190,7 +191,8 @@ namespace Bilten.UI
             this.mnTakmicariTakmicenja,
             this.mnEkipe,
             this.mnSudijeNaTakmicenju,
-            this.mnVrhovniSudija});
+            this.mnVrhovniSudija,
+            this.mnLogo});
             this.mnTakmicenje.Name = "mnTakmicenje";
             this.mnTakmicenje.Size = new System.Drawing.Size(80, 20);
             this.mnTakmicenje.Text = "Takmicenje";
@@ -518,9 +520,16 @@ namespace Bilten.UI
             // mnJezik
             // 
             this.mnJezik.Name = "mnJezik";
-            this.mnJezik.Size = new System.Drawing.Size(152, 22);
+            this.mnJezik.Size = new System.Drawing.Size(98, 22);
             this.mnJezik.Text = "Jezik";
             this.mnJezik.Click += new System.EventHandler(this.mnJezik_Click);
+            // 
+            // mnLogo
+            // 
+            this.mnLogo.Name = "mnLogo";
+            this.mnLogo.Size = new System.Drawing.Size(196, 22);
+            this.mnLogo.Text = "Logo";
+            this.mnLogo.Click += new System.EventHandler(this.mnLogo_Click);
             // 
             // MainForm
             // 
@@ -597,6 +606,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnVrhovniSudija;
         private System.Windows.Forms.ToolStripMenuItem opcijeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mnJezik;
+        private System.Windows.Forms.ToolStripMenuItem mnLogo;
     }
 }
 

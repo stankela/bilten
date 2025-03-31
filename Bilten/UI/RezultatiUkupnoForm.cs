@@ -338,7 +338,7 @@ namespace Bilten.UI
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, extended,
                     kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, false,
-                    penalizacijaZaSprave));
+                    penalizacijaZaSprave, takmicenje));
                 form2.ShowDialog();
             }
             catch (Exception ex)
@@ -752,7 +752,7 @@ namespace Bilten.UI
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(getKvalifikantiIRezerve(rezultatiEx), ActiveTakmicenje.Gimnastika,
                     Opcije.Instance.PrikaziDEOcene, false, p.hasPenalty(),
-                    dataGridViewUserControl1.DataGridView, documentName, true, false));
+                    dataGridViewUserControl1.DataGridView, documentName, true, false, takmicenje));
                 form2.ShowDialog();
             }
             catch (Exception ex)
