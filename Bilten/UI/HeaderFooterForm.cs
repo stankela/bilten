@@ -21,7 +21,7 @@ namespace Bilten.UI
         public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible,
             bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool stampajKategorijuVisible,
             bool stampajKlubVisible, bool brojEOcenaFormularVisible, bool stampajPojedinacneEOceneVisible,
-            bool prikaziPenalizacijuVisebojVisible, bool prikaziClanoveEkipeVisible)
+            bool prikaziPenalizacijuVisebojVisible, bool prikaziClanoveEkipeVisible, bool prikaziBonusVisible)
         {
             InitializeComponent();
             this.Text = "Opcije za stampanje";
@@ -46,6 +46,11 @@ namespace Bilten.UI
             ckbPenalSprave.Visible = prikaziPenalSpravaVisible;
             ckbPenalSprave.Enabled = prikaziPenalSpravaVisible;
 
+            ckbPrikaziBonus.Visible = prikaziBonusVisible;
+            ckbPrikaziBonus.Enabled = prikaziBonusVisible;
+            if (prikaziBonusVisible)
+                ckbPrikaziBonus.Location = ckbStampajKategoriju.Location;
+
             ckbStampajRedniBroj.Visible = stampajRedniBrojVisible;
             ckbStampajRedniBroj.Enabled = stampajRedniBrojVisible;
             if (stampajRedniBrojVisible)
@@ -54,7 +59,7 @@ namespace Bilten.UI
             ckbStampajPoredinacneEOcene.Visible = stampajPojedinacneEOceneVisible;
             ckbStampajPoredinacneEOcene.Enabled = stampajPojedinacneEOceneVisible;
             if (stampajPojedinacneEOceneVisible)
-                ckbStampajPoredinacneEOcene.Location = ckbStampajKategoriju.Location;
+                ckbStampajPoredinacneEOcene.Location = ckbStampajKlub.Location;
 
             ckbStampajKategoriju.Visible = stampajKategorijuVisible;
             ckbStampajKategoriju.Enabled = stampajKategorijuVisible;
@@ -406,6 +411,17 @@ namespace Bilten.UI
             }
         }
 
+        private bool _prikaziBonus;
+        public bool PrikaziBonus
+        {
+            get { return _prikaziBonus; }
+            set
+            {
+                _prikaziBonus = value;
+                ckbPrikaziBonus.Checked = value;
+            }
+        }
+
         private bool _stampajRedniBrojNaStartListi;
         public bool StampajRedniBrojNaStartListi
         {
@@ -541,6 +557,7 @@ namespace Bilten.UI
             if (_stampajSveSprave)
                 _brojSpravaPoStrani = Int32.Parse(txtBrojSprava.Text);
             _prikaziPenalSprave = ckbPenalSprave.Checked;
+            _prikaziBonus = ckbPrikaziBonus.Checked;
             _stampajRedniBrojNaStartListi = ckbStampajRedniBroj.Checked;
             _stampajKategoriju = ckbStampajKategoriju.Checked;
             _stampajKlub = ckbStampajKlub.Checked;

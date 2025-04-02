@@ -566,7 +566,7 @@ namespace Bilten.UI
             string kategorija = ActiveRaspored.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false, false,
-                                                         false, false);
+                                                         false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

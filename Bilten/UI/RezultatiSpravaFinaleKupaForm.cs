@@ -230,7 +230,7 @@ namespace Bilten.UI
             string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaSprava(DeoTakmicenjaKod.Takmicenje1, true, true);
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
-                false, true, false, false, false, false, false, false, false, false);
+                false, true, false, false, false, false, false, false, false, false, false /*TODO5: Verovatno treba true*/);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

@@ -77,6 +77,7 @@ namespace Bilten.UI
             this.ckbStampajPoredinacneEOcene = new System.Windows.Forms.CheckBox();
             this.ckbPrikaziPenalizaciju = new System.Windows.Forms.CheckBox();
             this.ckbPrikaziClanoveEkipe = new System.Windows.Forms.CheckBox();
+            this.ckbPrikaziBonus = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -498,7 +499,7 @@ namespace Bilten.UI
             // ckbStampajPoredinacneEOcene
             // 
             this.ckbStampajPoredinacneEOcene.AutoSize = true;
-            this.ckbStampajPoredinacneEOcene.Location = new System.Drawing.Point(150, 456);
+            this.ckbStampajPoredinacneEOcene.Location = new System.Drawing.Point(150, 479);
             this.ckbStampajPoredinacneEOcene.Name = "ckbStampajPoredinacneEOcene";
             this.ckbStampajPoredinacneEOcene.Size = new System.Drawing.Size(208, 17);
             this.ckbStampajPoredinacneEOcene.TabIndex = 56;
@@ -525,6 +526,16 @@ namespace Bilten.UI
             this.ckbPrikaziClanoveEkipe.Text = "Prikazi clanove ekipe";
             this.ckbPrikaziClanoveEkipe.UseVisualStyleBackColor = true;
             // 
+            // ckbPrikaziBonus
+            // 
+            this.ckbPrikaziBonus.AutoSize = true;
+            this.ckbPrikaziBonus.Location = new System.Drawing.Point(150, 456);
+            this.ckbPrikaziBonus.Name = "ckbPrikaziBonus";
+            this.ckbPrikaziBonus.Size = new System.Drawing.Size(89, 17);
+            this.ckbPrikaziBonus.TabIndex = 59;
+            this.ckbPrikaziBonus.Text = "Prikazi bonus";
+            this.ckbPrikaziBonus.UseVisualStyleBackColor = true;
+            // 
             // HeaderFooterForm
             // 
             this.AcceptButton = this.btnOk;
@@ -532,6 +543,7 @@ namespace Bilten.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(695, 538);
+            this.Controls.Add(this.ckbPrikaziBonus);
             this.Controls.Add(this.ckbPrikaziClanoveEkipe);
             this.Controls.Add(this.ckbPrikaziPenalizaciju);
             this.Controls.Add(this.ckbStampajPoredinacneEOcene);
@@ -643,5 +655,6 @@ namespace Bilten.UI
         private System.Windows.Forms.CheckBox ckbStampajPoredinacneEOcene;
         private System.Windows.Forms.CheckBox ckbPrikaziPenalizaciju;
         private System.Windows.Forms.CheckBox ckbPrikaziClanoveEkipe;
+        private System.Windows.Forms.CheckBox ckbPrikaziBonus;
     }
 }

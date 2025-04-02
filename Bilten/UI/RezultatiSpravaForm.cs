@@ -335,7 +335,7 @@ namespace Bilten.UI
             string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaSprava(deoTakKod, takmicenje.FinaleKupa, false);
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, true, false, false, false, false,
-                                                         takmicenje.BrojEOcena > 0, false, false);
+                                                         takmicenje.BrojEOcena > 0, false, false, true);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -439,7 +439,7 @@ namespace Bilten.UI
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
                         obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
                         form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
-                        /*markFirstRows*/false, /*numRowsToMark*/0, brojEOcena, takmicenje));
+                        /*markFirstRows*/false, /*numRowsToMark*/0, brojEOcena, takmicenje, form.PrikaziBonus));
                 }
                 else
                 {
@@ -453,7 +453,7 @@ namespace Bilten.UI
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                             /*markFirstRows*/!kvalColumnVisible(), /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena,
-                            takmicenje));
+                            takmicenje, form.PrikaziBonus));
                     }
                     else
                     {
@@ -463,7 +463,7 @@ namespace Bilten.UI
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                             /*markFirstRows*/!kvalColumnVisible(),
-                            /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena, takmicenje));
+                            /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena, takmicenje, form.PrikaziBonus));
                     }
                 }
 
@@ -951,7 +951,7 @@ namespace Bilten.UI
             string nazivIzvestaja = "Finale po spravama - kvalifikanti i rezerve";
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false, false,
-                                                         false, false);
+                                                         false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

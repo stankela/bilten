@@ -66,6 +66,13 @@ namespace Bilten.Domain
             set { brojDecimalaE = value; }
         }
 
+        private byte brojDecimalaBon = 1;
+        public virtual byte BrojDecimalaBon
+        {
+            get { return brojDecimalaBon; }
+            set { brojDecimalaBon = value; }
+        }
+
         private byte brojDecimalaPen = 1;
         public virtual byte BrojDecimalaPen
         {
@@ -328,11 +335,18 @@ namespace Bilten.Domain
             set { _brojSpravaPoStraniTak3 = value; }
         }
 
-        private bool _prikaziPenalSprave = false;
+        private bool _prikaziPenalSprave = true;
         public virtual bool PrikaziPenalSprave
         {
             get { return _prikaziPenalSprave; }
             set { _prikaziPenalSprave = value; }
+        }
+
+        private bool _prikaziBonus = true;
+        public virtual bool PrikaziBonus
+        {
+            get { return _prikaziBonus; }
+            set { _prikaziBonus = value; }
         }
 
         private bool _stampajRedniBrojNaStartListi = false;

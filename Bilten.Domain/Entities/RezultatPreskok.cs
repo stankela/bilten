@@ -63,6 +63,13 @@ namespace Bilten.Domain
             protected set { e6_2 = value; }
         }
 
+        private Nullable<float> bonus_2 = 0.2f;
+        public virtual Nullable<float> Bonus_2
+        {
+            get { return bonus_2; }
+            protected set { bonus_2 = value; }
+        }
+
         private Nullable<float> penalty_2;
         public virtual Nullable<float> Penalty_2
         {

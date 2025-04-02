@@ -64,6 +64,13 @@ namespace Bilten.Domain
             set { e = value; }
         }
 
+        private Nullable<float> bonus;
+        public virtual Nullable<float> Bonus
+        {
+            get { return bonus; }
+            set { bonus = value; }
+        }
+
         private Nullable<float> penalty;
         public virtual Nullable<float> Penalty
         {

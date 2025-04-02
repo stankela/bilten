@@ -57,6 +57,7 @@ namespace Bilten.UI
                     o.BrojSpravaPoStraniTak3 = form.BrojSpravaPoStrani;
             }
             o.PrikaziPenalSprave = form.PrikaziPenalSprave;
+            o.PrikaziBonus = form.PrikaziBonus;
             o.StampajRedniBrojNaStartListi = form.StampajRedniBrojNaStartListi;
             o.StampajKategoriju = form.StampajKategoriju;
             o.StampajKlub = form.StampajKlub;
@@ -117,6 +118,7 @@ namespace Bilten.UI
                     form.BrojSpravaPoStrani = Opcije.INITIAL_BROJ_SPRAVA_PO_STRANI_TAK3;
             }
             form.PrikaziPenalSprave = o.PrikaziPenalSprave;
+            form.PrikaziBonus = o.PrikaziBonus;
             form.StampajRedniBrojNaStartListi = o.StampajRedniBrojNaStartListi;
             form.StampajKategoriju = o.StampajKategoriju;
             form.StampajKlub = o.StampajKlub;
