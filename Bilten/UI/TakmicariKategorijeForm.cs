@@ -26,6 +26,7 @@ namespace Bilten.UI
         private bool[] tabOpened;
         private StatusBar statusBar;
         private Takmicenje takmicenje;
+        private IDictionary<short, GimnasticarUcesnik> brojeviMap;
 
         private TakmicarskaKategorija ActiveKategorija
         {
@@ -38,6 +39,7 @@ namespace Bilten.UI
         public TakmicariKategorijeForm(int takmicenjeId)
         {
             InitializeComponent();
+            brojeviMap = new Dictionary<short, GimnasticarUcesnik>();
 
             // TODO3: Probaj da nadjes nacin da obavestis korisnika da postoje gimnasticari koji su uneti u kategorije, a
             // nisu uneti u takmicenja (pa nece biti prikazani u rezultatima)
@@ -97,6 +99,14 @@ namespace Bilten.UI
                 List<GimnasticarUcesnik> gimList = new List<GimnasticarUcesnik>(
                     DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO().FindByKategorija(takmicarskeKategorije[i]));
                 gimnasticari[i] = gimList;
+
+                foreach (GimnasticarUcesnik g in gimList)
+                {
+                    if (g.TakmicarskiBroj.HasValue)
+                    {
+                        brojeviMap[g.TakmicarskiBroj.Value] = g;
+                    }
+                }
             }
         }
 
@@ -121,6 +131,7 @@ namespace Bilten.UI
             takmicariKategorijeUserControl1.DataGridViewUserControl
                 .GridColumnHeaderMouseClick += 
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(dataGridViewUserControl_GridColumnHeaderMouseClick);
+            takmicariKategorijeUserControl1.DataGridViewUserControl.DataGridView.MouseUp += DataGridView_MouseUp;
 
             // init other tabs
             for (int i = 1; i < takmicarskeKategorije.Count; i++)
@@ -128,6 +139,17 @@ namespace Bilten.UI
                 TabPage newTab = new TabPage();
                 tabControl1.Controls.Add(newTab);
                 initTab(i, newTab, takmicarskeKategorije[i]);
+            }
+        }
+
+        void DataGridView_MouseUp(object sender, MouseEventArgs e)
+        {
+            DataGridView dgw = (sender as DataGridView);
+            if (e.Button == MouseButtons.Right && dgw.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell)
+            {
+                mnPromeniBrojeve.Enabled = takmicenje.TakBrojevi;
+                mnPonistiBrojeve.Enabled = takmicenje.TakBrojevi;
+                contextMenuStrip1.Show(dgw, new Point(e.X, e.Y));
             }
         }
 
@@ -151,6 +173,9 @@ namespace Bilten.UI
             takmicariKategorijeUserControl.DataGridViewUserControl
                 .GridColumnHeaderMouseClick +=
                 new EventHandler<GridColumnHeaderMouseClickEventArgs>(dataGridViewUserControl_GridColumnHeaderMouseClick);
+            takmicariKategorijeUserControl.DataGridViewUserControl.DataGridView.MouseUp += DataGridView_MouseUp;
+            if (!takmicenje.TakBrojevi)
+                takmicariKategorijeUserControl.DataGridViewUserControl.HideColumn(0);
 
             tabPage.SuspendLayout();    // NOTE: ovo je obavezno, jer bez toga naredba
                 // tabPage.Controls.Add(takmicariKategorijeUserControl) pozicionira
@@ -381,12 +406,36 @@ namespace Bilten.UI
 
             try
             {
+                Nullable<short> oldBroj = selectedItem.TakmicarskiBroj;
                 GimnasticarUcesnikForm form =
-                    new GimnasticarUcesnikForm(selectedItem.Id, ActiveKategorija, takmicenje.Gimnastika);
+                    new GimnasticarUcesnikForm(selectedItem.Id, ActiveKategorija, takmicenje.Gimnastika, brojeviMap);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     GimnasticarUcesnik editedItem = (GimnasticarUcesnik)form.Entity;
                     activeGimnasticari[index] = editedItem;
+
+                    // Ovde postoji mogucnost da su oldBroj i editedItem.TakmicarskiBroj ista vrednost, tako da cemo
+                    // ukloniti i dodati ponovo isti kljuc, sto je reduntantno ali ne utice na korektnost.
+                    if (!oldBroj.HasValue && !editedItem.TakmicarskiBroj.HasValue)
+                    { 
+                        // do nothing
+                    }
+                    else if (!oldBroj.HasValue && editedItem.TakmicarskiBroj.HasValue)
+                    {
+                        brojeviMap.Add(editedItem.TakmicarskiBroj.Value, editedItem);
+                    }
+                    else if (oldBroj.HasValue && !editedItem.TakmicarskiBroj.HasValue)
+                    {
+                        brojeviMap.Remove(oldBroj.Value);
+                    }
+                    else // oldBroj.HasValue && editedItem.TakmicarskiBroj.HasValue
+                    {
+                        if (oldBroj.Value != editedItem.TakmicarskiBroj.Value)
+                        {
+                            brojeviMap.Remove(oldBroj.Value);
+                            brojeviMap.Add(editedItem.TakmicarskiBroj.Value, editedItem);
+                        }
+                    }
 
                     setGimnasticari(activeGimnasticari);
                     if (!getActiveDataGridViewUserControl().isSorted())
@@ -525,7 +574,10 @@ namespace Bilten.UI
                         ocenaDAO.Delete(o);
                     
                     // TODO: Brisi takmicara iz takmicenja II i IV.
-                    
+
+                    if (g.TakmicarskiBroj.HasValue)
+                        brojeviMap.Remove(g.TakmicarskiBroj.Value);
+
                     gimUcesnikDAO.Delete(g);
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
@@ -638,6 +690,159 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
+        }
+
+        private void TakmicariKategorijeForm_Load(object sender, EventArgs e)
+        {
+            // Morao sam da prebacim ovde, jer u initTabs() nema efekta
+            if (!takmicenje.TakBrojevi)
+                takmicariKategorijeUserControl1.DataGridViewUserControl.HideColumn(0);
+
+            getActiveDataGridViewUserControl().clearSelection();
+        }
+
+        private bool promeniTakmicarskiBroj(GimnasticarUcesnik g, short broj)
+        {
+            if (g.TakmicarskiBroj.HasValue && g.TakmicarskiBroj.Value == broj)
+                return false;
+            if (brojeviMap.ContainsKey(broj))
+            {
+                MessageDialogs.showMessage("Postoji gimnasticar sa brojem " + broj.ToString() + ".", this.Text);
+                return false;
+            }
+            if (g.TakmicarskiBroj.HasValue)
+                brojeviMap.Remove(g.TakmicarskiBroj.Value);
+            g.TakmicarskiBroj = broj;
+            brojeviMap.Add(g.TakmicarskiBroj.Value, g);
+            return true;
+        }
+
+        private void mnPromeniBrojeve_Click(object sender, EventArgs e)
+        {
+            IList<GimnasticarUcesnik> selItems = getActiveDataGridViewUserControl()
+                .getSelectedItems<GimnasticarUcesnik>();
+            if (selItems.Count == 0)
+                return;
+
+            PromeniBrojeveForm form = new PromeniBrojeveForm();
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            List<GimnasticarUcesnik> promenjeniGimnasticari = new List<GimnasticarUcesnik>();
+            if (form.Brojevi != null)
+            {
+                int n = Math.Min(form.Brojevi.Count, selItems.Count);
+                for (int i = 0; i < n; ++i)
+                {
+                    // Vidi dole komentar zasto selItems odbrojavam unazad (n-1, n-2, ...)
+                    if (promeniTakmicarskiBroj(selItems[n - 1 - i], form.Brojevi[i]))
+                        promenjeniGimnasticari.Add(selItems[i]);
+                }
+            }
+            else
+            {
+                short broj = form.Broj;
+                // TODO5: Odbrojavam unazad zato sto iz nekog razloga selektovani itemi se nalaze u obrnutom poretku
+                // (prvi selektovani se nalazi poslednji u listi selItems). Proveri zasto se ovo desava. Isto i gore.
+                for (int i = selItems.Count - 1; i >= 0; --i)
+                {
+                    GimnasticarUcesnik g = selItems[i];
+                    if (promeniTakmicarskiBroj(g, broj++))
+                        promenjeniGimnasticari.Add(g);
+                }
+            }
+            if (promenjeniGimnasticari.Count == 0)
+                return;
+
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
+                    foreach (GimnasticarUcesnik g in promenjeniGimnasticari)
+                        gimUcesnikDAO.Update(g);
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            // Moram ovo da uradim jer iz nekog razloga nece da osvezi prikaz sa novim vrednostima brojeva.
+            getActiveDataGridViewUserControl().clearSelection();
+        }
+
+        // TODO5: Proveri da li jos negde treba da se azurira brojeviMap (kao sto je uradjeno kod brisanja)
+
+        // TODO5: Ne radi dobro kada se medju gimnasticarima kojima menjamo broj nalaze i oni koji vec imaju broj
+
+        // TODO5: Dodaj u header form check box za takmicarske brojeve, cija podrazumevana vrednost treba da se
+        // inicializuje iz takmicenje.TakBrojevi
+
+        // TODO5: Kada stampam takmicari kategorije, nakon stampanja se lista u gridu promeni (tj promeni se redosled)
+
+        // TODO5: Proveri sve nazive na englestom
+
+        private void mnPonistiBrojeve_Click(object sender, EventArgs e)
+        {
+            IList<GimnasticarUcesnik> selItems = getActiveDataGridViewUserControl()
+                .getSelectedItems<GimnasticarUcesnik>();
+            if (selItems.Count == 0)
+                return;
+
+            string msg = "Da li zelite da izbrisete brojeve za selektovane gimnasticare?";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+            
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    GimnasticarUcesnikDAO gimUcesnikDAO = DAOFactoryFactory.DAOFactory.GetGimnasticarUcesnikDAO();
+                    foreach (GimnasticarUcesnik g in selItems)
+                    {
+                        if (g.TakmicarskiBroj.HasValue)
+                        {
+                            brojeviMap.Remove(g.TakmicarskiBroj.Value);
+                            g.TakmicarskiBroj = null;
+                            gimUcesnikDAO.Update(g);
+                        }
+                    }
+
+                    takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
+                    takmicenje.LastModified = DateTime.Now;
+                    session.Transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showMessage(ex.Message, this.Text);
+            }
+            finally
+            {
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            // Moram ovo da uradim jer iz nekog razloga nece da osvezi prikaz sa novim vrednostima brojeva.
+            getActiveDataGridViewUserControl().clearSelection();
         }
     }
 }

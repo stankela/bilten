@@ -17,6 +17,7 @@
     </component>
     <property name="NastupaZaDrzavu" column="nastupa_za_drzavu" type="Boolean" />
     <property name="PenaltyViseboj" column="penalty_viseboj" />
+    <property name="TakmicarskiBroj" column="tak_broj" type="Int16" />
     <many-to-one name="TakmicarskaKategorija" class="TakmicarskaKategorija" column="kategorija_id" />
     <many-to-one name="KlubUcesnik" class="KlubUcesnik" column="klub_id" />
     <many-to-one name="DrzavaUcesnik" class="DrzavaUcesnik" column="drzava_id" />

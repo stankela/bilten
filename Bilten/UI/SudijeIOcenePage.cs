@@ -49,6 +49,7 @@ namespace Bilten.UI
             txtBrojDecE.Text = takmicenje.BrojDecimalaE.ToString();
             txtBrojDecPen.Text = takmicenje.BrojDecimalaPen.ToString();
             txtBrojDecTotal.Text = takmicenje.BrojDecimalaTotal.ToString();
+            ckbTakBroj.Checked = takmicenje.TakBrojevi;
         }
 
         private void clearUI()
@@ -59,6 +60,7 @@ namespace Bilten.UI
             txtBrojDecE.Text = String.Empty;
             txtBrojDecPen.Text = String.Empty;
             txtBrojDecTotal.Text = String.Empty;
+            ckbTakBroj.Checked = false;
         }
 
         private void txtBrojESudija_TextChanged(object sender, EventArgs e)
@@ -295,6 +297,12 @@ namespace Bilten.UI
             takmicenje.BrojDecimalaE = byte.Parse(txtBrojDecE.Text);
             takmicenje.BrojDecimalaPen = byte.Parse(txtBrojDecPen.Text);
             takmicenje.BrojDecimalaTotal = byte.Parse(txtBrojDecTotal.Text);
+            takmicenje.TakBrojevi = ckbTakBroj.Checked;
+        }
+
+        private void ckbTakBroj_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
         }
 
     }

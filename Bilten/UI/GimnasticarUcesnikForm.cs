@@ -23,11 +23,14 @@ namespace Bilten.UI
         private string oldPrezime;
         private string oldSrednjeIme;
         private Datum oldDatumRodjenja;
+        private Nullable<short> oldBroj;
         private Gimnastika gimnastika;
         
         private KlubUcesnik emptyKlub;
         private DrzavaUcesnik emptyDrzava;
         private readonly string PRAZNO = "<<Prazno>>";
+
+        private IDictionary<short, GimnasticarUcesnik> brojeviMap;
 
         private KlubUcesnik SelectedKlub
         {
@@ -40,17 +43,18 @@ namespace Bilten.UI
             get { return cmbDrzava.SelectedItem as DrzavaUcesnik; }
             set { cmbDrzava.SelectedItem = value; }
         }
-        
+
         // TODO: Dodaj mogucnost promene kategorije (samo bi se promenila kategorija dok bi sve drugo ostalo
         // isto - gimnasticar bi i dalje bio u istim takmicenjima, ekipama, imao bi iste ocene. Prvo proveri da
         // li je ovo uopste moguce, tj. da li nece da dovede do greske u nekom drugom delu programa).
 
         public GimnasticarUcesnikForm(Nullable<int> gimnasticarUcesnikId,
-            TakmicarskaKategorija kategorija, Gimnastika gimnastika)
+            TakmicarskaKategorija kategorija, Gimnastika gimnastika, IDictionary<short, GimnasticarUcesnik> brojeviMap)
         {
             if (gimnasticarUcesnikId == null)
                 throw new ArgumentException("GimnasticarUcesnikForm only works in edit mode.");
             InitializeComponent();
+            this.brojeviMap = brojeviMap;
 
             this.updateLastModified = true;
             this.gimnastika = gimnastika;
@@ -127,6 +131,7 @@ namespace Bilten.UI
             txtSrednjeIme.Text = String.Empty;
             txtPrezime.Text = String.Empty;
             txtDatumRodj.Text = String.Empty;
+            txtBroj.Text = String.Empty;
 
             cmbKlub.DropDownStyle = ComboBoxStyle.DropDown;
             cmbKlub.DataSource = klubovi;
@@ -160,6 +165,7 @@ namespace Bilten.UI
             oldSrednjeIme = gimnasticar.SrednjeIme;
             oldPrezime = gimnasticar.Prezime;
             oldDatumRodjenja = gimnasticar.DatumRodjenja;
+            oldBroj = gimnasticar.TakmicarskiBroj;
         }
 
         protected override void updateUIFromEntity(DomainObject entity)
@@ -172,6 +178,10 @@ namespace Bilten.UI
             txtDatumRodj.Text = String.Empty;
             if (gimnasticar.DatumRodjenja != null)
                 txtDatumRodj.Text = gimnasticar.DatumRodjenja.ToString("d");
+
+            txtBroj.Text = String.Empty;
+            if (gimnasticar.TakmicarskiBroj != null)
+                txtBroj.Text = gimnasticar.TakmicarskiBroj.ToString();
 
             SelectedKlub = gimnasticar.KlubUcesnik;
             SelectedDrzava = gimnasticar.DrzavaUcesnik;
@@ -205,6 +215,13 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "DatumRodjenja", "Neispravan format za datum ili godinu rodjenja.");
             }
+            short broj;
+            if (txtBroj.Text.Trim() != String.Empty
+                && (!short.TryParse(txtBroj.Text, out broj) || broj < 1 || broj > 999))
+            {
+                notification.RegisterMessage(
+                    "Broj", "Neispravan broj. Broj moze da ima maksimalno 3 cifre.");
+            }
             if (cmbKlub.Text.Trim() != String.Empty && cmbKlub.Text.Trim() != PRAZNO && SelectedKlub == null)
             {
                 notification.RegisterMessage(
@@ -237,6 +254,10 @@ namespace Bilten.UI
                     txtDatumRodj.Focus();
                     break;
 
+                case "Broj":
+                    txtBroj.Focus();
+                    break;
+
                 case "Klub":
                     cmbKlub.Focus();
                     break;
@@ -266,6 +287,11 @@ namespace Bilten.UI
             else
                 gimnasticar.DatumRodjenja = Datum.Parse(txtDatumRodj.Text);
 
+            if (txtBroj.Text.Trim() == String.Empty)
+                gimnasticar.TakmicarskiBroj = null;
+            else
+                gimnasticar.TakmicarskiBroj = short.Parse(txtBroj.Text);
+
             gimnasticar.KlubUcesnik = SelectedKlub;
             if (gimnasticar.KlubUcesnik != null && gimnasticar.KlubUcesnik.Naziv == PRAZNO)
                 gimnasticar.KlubUcesnik = null;
@@ -277,9 +303,23 @@ namespace Bilten.UI
             gimnasticar.NastupaZaDrzavu = rbtDrzava.Checked;
         }
 
+        private void checkBrojExists(GimnasticarUcesnik g)
+        {
+            if (!g.TakmicarskiBroj.HasValue)
+                return;
+            if (oldBroj.HasValue && oldBroj.Value == g.TakmicarskiBroj.Value)
+                return;  // no changes
+            // Ili gimnasticar ranije nije imao broj, ili je imao ali je promenjen
+            if (brojeviMap.ContainsKey(g.TakmicarskiBroj.Value))
+            {
+                throw new BusinessException("Gimnasticar sa datim brojem vec postoji.");
+            }
+        }
+
         protected override void checkBusinessRulesOnUpdate(DomainObject entity)
         {
             GimnasticarUcesnik g = (GimnasticarUcesnik)entity;
+            checkBrojExists(g);
             if (!hasImeSrednjeImePrezimeDatumRodjenjaChanged(g))
                 return;
 

@@ -129,6 +129,7 @@ namespace Bilten.UI
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LogoForm";
+            this.Shown += new System.EventHandler(this.LogoForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSlika)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

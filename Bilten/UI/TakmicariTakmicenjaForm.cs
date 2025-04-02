@@ -535,5 +535,10 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
             }
         }
+
+        private void TakmicariTakmicenjaForm_Load(object sender, EventArgs e)
+        {
+            getActiveDataGridViewUserControl().clearSelection();
+        }
     }
 }

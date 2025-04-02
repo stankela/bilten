@@ -175,6 +175,11 @@ namespace Bilten.UI
             return column;
         }
 
+        public void HideColumn(int index)
+        {
+            dataGridView1.Columns[index].Visible = false;
+        }
+
         public List<T> getItems<T>()
         {
             return DataGridView.DataSource as List<T>;

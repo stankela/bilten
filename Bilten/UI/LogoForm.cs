@@ -82,6 +82,19 @@ namespace Bilten.UI
             listViewLogo.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
+        private void selectFirstLogo()
+        {
+            for (int i = 0; i < listViewLogo.Items.Count; ++i)
+            {
+                ListViewItem item = listViewLogo.Items[i];
+                if (!String.IsNullOrEmpty(item.SubItems[1].Text))
+                {
+                    item.Selected = true;
+                    return;
+                }
+            }
+        }
+
         private string getAppRelativeFileNamePathFromUser()
         {
             OpenFileDialog openFileDlg = new OpenFileDialog();
@@ -264,6 +277,12 @@ namespace Bilten.UI
                 Cursor.Current = Cursors.Arrow;
                 CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
             }
+        }
+
+        private void LogoForm_Shown(object sender, EventArgs e)
+        {
+            listViewLogo.Focus();
+            selectFirstLogo();
         }
     }
 }

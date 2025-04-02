@@ -377,11 +377,20 @@ namespace Bilten.Domain
             set { _jezik = value; }
         }
 
+        // TODO5: Dodaj i za hedere ("Viseboj" ili "All around" itd)
+
         private string redBrojString = "RB";  // "No."
         public virtual string RedBrojString
         {
             get { return redBrojString; }
             set { redBrojString = value; }
+        }
+
+        private string brojString = "Broj";  // "#"
+        public virtual string BrojString
+        {
+            get { return brojString; }
+            set { brojString = value; }
         }
 
         private string rankString = "Rank";  // "Rank"
@@ -396,6 +405,34 @@ namespace Bilten.Domain
         {
             get { return imeString; }
             set { imeString = value; }
+        }
+
+        private string prezimeString = "Prezime";  // "Surname"
+        public virtual string PrezimeString
+        {
+            get { return prezimeString; }
+            set { prezimeString = value; }
+        }
+
+        private string datumRodjenjaString = "Datum rodjenja";  // "Birth date"
+        public virtual string DatumRodjenjaString
+        {
+            get { return datumRodjenjaString; }
+            set { datumRodjenjaString = value; }
+        }
+
+        private string klubString = "Klub";  // "Club"
+        public virtual string KlubString
+        {
+            get { return klubString; }
+            set { klubString = value; }
+        }
+
+        private string drzavaString = "Drzava";  // "National team"
+        public virtual string DrzavaString
+        {
+            get { return drzavaString; }
+            set { drzavaString = value; }
         }
 
         private string klubDrzavaString = "Klub";  // "Club / NT"
@@ -435,6 +472,7 @@ namespace Bilten.Domain
 
         public virtual void UpdateJezik(Jezik jezik)
         {
+            // TODO5
             Jezik = jezik.Naziv;
             RedBrojString = jezik.RedBroj;
             RankString = jezik.Rank;

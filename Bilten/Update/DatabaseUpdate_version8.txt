@@ -1,5 +1,6 @@
 -- 17-Maj-2018 (VERZIJA = 8)
 
+-- TODO5
 create table jezici (
     jezik_id int identity(1,1) primary key,
     naziv nvarchar(64),

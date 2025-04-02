@@ -145,6 +145,7 @@ namespace Bilten.UI
             this.Name = "TakmicariTakmicenjaForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TakmicariTakmicenjaForm";
+            this.Load += new System.EventHandler(this.TakmicariTakmicenjaForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);

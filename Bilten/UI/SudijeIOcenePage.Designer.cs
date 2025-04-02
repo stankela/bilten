@@ -42,6 +42,7 @@ namespace Bilten.UI
             this.lblBrojDecimala = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtBrojEOcena = new System.Windows.Forms.TextBox();
+            this.ckbTakBroj = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblBrojEOcena
@@ -164,9 +165,21 @@ namespace Bilten.UI
             this.txtBrojEOcena.TabIndex = 24;
             this.txtBrojEOcena.TextChanged += new System.EventHandler(this.txtBrojEOcena_TextChanged);
             // 
+            // ckbTakBroj
+            // 
+            this.ckbTakBroj.AutoSize = true;
+            this.ckbTakBroj.Location = new System.Drawing.Point(23, 274);
+            this.ckbTakBroj.Name = "ckbTakBroj";
+            this.ckbTakBroj.Size = new System.Drawing.Size(152, 17);
+            this.ckbTakBroj.TabIndex = 25;
+            this.ckbTakBroj.Text = "Koristi takmicarske brojeve";
+            this.ckbTakBroj.UseVisualStyleBackColor = true;
+            this.ckbTakBroj.CheckedChanged += new System.EventHandler(this.ckbTakBroj_CheckedChanged);
+            // 
             // SudijeIOcenePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.ckbTakBroj);
             this.Controls.Add(this.txtBrojEOcena);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtBrojDecTotal);
@@ -182,7 +195,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblBrojDecimala);
             this.Controls.Add(this.lblBrojEOcena);
             this.Name = "SudijeIOcenePage";
-            this.Size = new System.Drawing.Size(347, 238);
+            this.Size = new System.Drawing.Size(347, 316);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -204,5 +217,6 @@ namespace Bilten.UI
         private System.Windows.Forms.Label lblBrojDecimala;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtBrojEOcena;
+        private System.Windows.Forms.CheckBox ckbTakBroj;
     }
 }

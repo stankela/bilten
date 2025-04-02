@@ -20,7 +20,8 @@ namespace Bilten.Report
             Font itemFont = new Font("Arial", 10);
             Font itemsHeaderFont = new Font("Arial", 10, FontStyle.Bold);
 
-            lista = new TakmicariLista(this, 1, 0f, itemFont, itemsHeaderFont, gimnasticari, gim, formGrid);
+            lista = new TakmicariLista(this, 1, 0f, itemFont, itemsHeaderFont, gimnasticari, gim, formGrid,
+                takmicenje.TakBrojevi);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -42,13 +43,15 @@ namespace Bilten.Report
         private Brush totalAllBrush;
 
         private Gimnastika gimnastika;
+        private bool stampajBroj;
 
         public TakmicariLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<GimnasticarUcesnik> gimnasticari,
-            Gimnastika gim, DataGridView formGrid)
+            Gimnastika gim, DataGridView formGrid, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.gimnastika = gim;
+            this.stampajBroj = stampajBroj;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -73,8 +76,14 @@ namespace Bilten.Report
                 string klub = (g.KlubUcesnik != null) ? g.KlubUcesnik.Naziv : String.Empty;
                 string drzava = (g.DrzavaUcesnik != null) ? g.DrzavaUcesnik.Kod : string.Empty;
                 string datumRodjenja = (g.DatumRodjenja != null) ? g.DatumRodjenja.ToString("d") : string.Empty;
-                result.Add(new object[] { (i+1).ToString(), g.Ime, g.Prezime, datumRodjenja,
-                    klub, drzava });
+                List<object> items = new List<object> { (i+1).ToString(), g.Ime, g.Prezime, datumRodjenja,
+                    klub, drzava };
+                if (stampajBroj)
+                {
+                    string broj = (g.TakmicarskiBroj.HasValue) ? g.TakmicarskiBroj.Value.ToString("D3") : string.Empty;
+                    items.Insert(1, broj);
+                }
+                result.Add(items.ToArray());
             }
             return result;
         }
@@ -99,16 +108,42 @@ namespace Bilten.Report
 
             float rankWidthCm = 0.7f;
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-            
-            float imeWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
-            float prezimeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
-            float godinaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
-            float drzavaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            float brojWidth = 2 * rankWidth;
 
+            float imeWidth;
+            float prezimeWidth;
+            float godinaWidth;
+            float klubWidth;
+            float drzavaWidth;
+            if (!stampajBroj)
+            {
+                imeWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+                prezimeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+                godinaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+                klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+                drzavaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+            }
+            else
+            {
+                imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+                prezimeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+                godinaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+                klubWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+                drzavaWidth = this.formGrid.Columns[5].Width * printWidth / gridWidth;
+            }
 
 			float xRank = contentBounds.X;
-            float xIme = xRank + rankWidth;
+            float xBroj = 0f;
+            float xIme;
+            if (stampajBroj)
+            {
+                xBroj = xRank + rankWidth;
+                xIme = xBroj + brojWidth;
+            }
+            else
+            {
+                xIme = xRank + rankWidth;
+            }
             float xPrezime = xIme + imeWidth;
             float xGodina = xPrezime + prezimeWidth;
             float xKlub = xGodina + godinaWidth;
@@ -120,6 +155,7 @@ namespace Bilten.Report
             if (delta < -contentBounds.X)
                 delta = -contentBounds.X;
             xRank += delta;
+            xBroj += delta;
             xIme += delta;
             xPrezime += delta;
             xGodina += delta;
@@ -128,6 +164,7 @@ namespace Bilten.Report
             xRightEnd += delta;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojFormat = Izvestaj.nearCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
             imeFormat.Alignment = StringAlignment.Near;
@@ -150,24 +187,31 @@ namespace Bilten.Report
             drzavaFormat.LineAlignment = StringAlignment.Center;
 
             StringFormat rankHeaderFormat = Izvestaj.nearCenterFormat;
+            StringFormat brojHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat prezimeHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat godinaHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat drzavaHeaderFormat = Izvestaj.nearCenterFormat;
 
-            String rankTitle = "RB";
-			String imeTitle = "Ime";
-            String prezimeTitle = "Prezime";
-            String godinaTitle = "Datum rodjenja";
-            String klubTitle = "Klub";
-            String drzavaTitle = "Drzava";
+            String rankTitle = Opcije.Instance.RedBrojString;
+            String brojTitle = Opcije.Instance.BrojString;
+            String imeTitle = Opcije.Instance.ImeString;
+            String prezimeTitle = Opcije.Instance.PrezimeString;
+            String godinaTitle = Opcije.Instance.DatumRodjenjaString;
+            String klubTitle = Opcije.Instance.KlubString;
+            String drzavaTitle = Opcije.Instance.DrzavaString;
 
             Columns.Clear();
 
             bool drawItemRect = false;
 			ReportColumn column = addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             column.DrawItemRect = drawItemRect;
+            if (stampajBroj)
+            {
+                column = addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
+                column.DrawItemRect = drawItemRect;
+            }
             column = addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             column.DrawItemRect = drawItemRect;
             column = addColumn(xPrezime, prezimeWidth, prezimeFormat, prezimeTitle, prezimeHeaderFormat);

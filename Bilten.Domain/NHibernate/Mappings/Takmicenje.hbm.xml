@@ -26,6 +26,7 @@
     <property name="Logo4RelPath" column="logo4_rel_path" type="String" length="128"/>
     <property name="Logo5RelPath" column="logo5_rel_path" type="String" length="128"/>
     <property name="LastModified" column="last_modified" />
+    <property name="TakBrojevi" column="tak_brojevi" type="Boolean" />
     <set name="Kategorije" lazy="true" cascade="save-update"
       inverse="true" >
       <key column="takmicenje_id" />

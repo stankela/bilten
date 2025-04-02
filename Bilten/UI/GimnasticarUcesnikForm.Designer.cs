@@ -47,15 +47,17 @@ namespace Bilten.UI
             this.cmbDrzava = new System.Windows.Forms.ComboBox();
             this.lblSrednjeIme = new System.Windows.Forms.Label();
             this.txtSrednjeIme = new System.Windows.Forms.TextBox();
+            this.lblBroj = new System.Windows.Forms.Label();
+            this.txtBroj = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(434, 269);
+            this.btnOk.Location = new System.Drawing.Point(434, 288);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(526, 270);
+            this.btnCancel.Location = new System.Drawing.Point(526, 289);
             // 
             // lblIme
             // 
@@ -109,7 +111,7 @@ namespace Bilten.UI
             // lblKlub
             // 
             this.lblKlub.AutoSize = true;
-            this.lblKlub.Location = new System.Drawing.Point(63, 151);
+            this.lblKlub.Location = new System.Drawing.Point(63, 189);
             this.lblKlub.Name = "lblKlub";
             this.lblKlub.Size = new System.Drawing.Size(28, 13);
             this.lblKlub.TabIndex = 20;
@@ -118,7 +120,7 @@ namespace Bilten.UI
             // lblDrzava
             // 
             this.lblDrzava.AutoSize = true;
-            this.lblDrzava.Location = new System.Drawing.Point(50, 186);
+            this.lblDrzava.Location = new System.Drawing.Point(50, 224);
             this.lblDrzava.Name = "lblDrzava";
             this.lblDrzava.Size = new System.Drawing.Size(41, 13);
             this.lblDrzava.TabIndex = 22;
@@ -162,7 +164,7 @@ namespace Bilten.UI
             // lblNastupaZa
             // 
             this.lblNastupaZa.AutoSize = true;
-            this.lblNastupaZa.Location = new System.Drawing.Point(90, 228);
+            this.lblNastupaZa.Location = new System.Drawing.Point(90, 266);
             this.lblNastupaZa.Name = "lblNastupaZa";
             this.lblNastupaZa.Size = new System.Drawing.Size(64, 13);
             this.lblNastupaZa.TabIndex = 28;
@@ -171,7 +173,7 @@ namespace Bilten.UI
             // rbtKlub
             // 
             this.rbtKlub.AutoSize = true;
-            this.rbtKlub.Location = new System.Drawing.Point(160, 228);
+            this.rbtKlub.Location = new System.Drawing.Point(160, 266);
             this.rbtKlub.Name = "rbtKlub";
             this.rbtKlub.Size = new System.Drawing.Size(46, 17);
             this.rbtKlub.TabIndex = 29;
@@ -182,7 +184,7 @@ namespace Bilten.UI
             // rbtDrzava
             // 
             this.rbtDrzava.AutoSize = true;
-            this.rbtDrzava.Location = new System.Drawing.Point(160, 251);
+            this.rbtDrzava.Location = new System.Drawing.Point(160, 289);
             this.rbtDrzava.Name = "rbtDrzava";
             this.rbtDrzava.Size = new System.Drawing.Size(59, 17);
             this.rbtDrzava.TabIndex = 30;
@@ -193,7 +195,7 @@ namespace Bilten.UI
             // cmbKlub
             // 
             this.cmbKlub.FormattingEnabled = true;
-            this.cmbKlub.Location = new System.Drawing.Point(97, 148);
+            this.cmbKlub.Location = new System.Drawing.Point(97, 186);
             this.cmbKlub.Name = "cmbKlub";
             this.cmbKlub.Size = new System.Drawing.Size(192, 21);
             this.cmbKlub.TabIndex = 31;
@@ -201,7 +203,7 @@ namespace Bilten.UI
             // cmbDrzava
             // 
             this.cmbDrzava.FormattingEnabled = true;
-            this.cmbDrzava.Location = new System.Drawing.Point(97, 183);
+            this.cmbDrzava.Location = new System.Drawing.Point(97, 221);
             this.cmbDrzava.Name = "cmbDrzava";
             this.cmbDrzava.Size = new System.Drawing.Size(192, 21);
             this.cmbDrzava.TabIndex = 32;
@@ -222,12 +224,30 @@ namespace Bilten.UI
             this.txtSrednjeIme.Size = new System.Drawing.Size(100, 20);
             this.txtSrednjeIme.TabIndex = 34;
             // 
+            // lblBroj
+            // 
+            this.lblBroj.AutoSize = true;
+            this.lblBroj.Location = new System.Drawing.Point(67, 147);
+            this.lblBroj.Name = "lblBroj";
+            this.lblBroj.Size = new System.Drawing.Size(25, 13);
+            this.lblBroj.TabIndex = 35;
+            this.lblBroj.Text = "Broj";
+            // 
+            // txtBroj
+            // 
+            this.txtBroj.Location = new System.Drawing.Point(97, 144);
+            this.txtBroj.Name = "txtBroj";
+            this.txtBroj.Size = new System.Drawing.Size(44, 20);
+            this.txtBroj.TabIndex = 36;
+            // 
             // GimnasticarUcesnikForm
             // 
             this.AcceptButton = null;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(623, 308);
+            this.ClientSize = new System.Drawing.Size(623, 326);
+            this.Controls.Add(this.txtBroj);
+            this.Controls.Add(this.lblBroj);
             this.Controls.Add(this.txtSrednjeIme);
             this.Controls.Add(this.lblSrednjeIme);
             this.Controls.Add(this.cmbDrzava);
@@ -270,6 +290,8 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.cmbDrzava, 0);
             this.Controls.SetChildIndex(this.lblSrednjeIme, 0);
             this.Controls.SetChildIndex(this.txtSrednjeIme, 0);
+            this.Controls.SetChildIndex(this.lblBroj, 0);
+            this.Controls.SetChildIndex(this.txtBroj, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -296,5 +318,7 @@ namespace Bilten.UI
         private System.Windows.Forms.ComboBox cmbDrzava;
         private System.Windows.Forms.Label lblSrednjeIme;
         private System.Windows.Forms.TextBox txtSrednjeIme;
+        private System.Windows.Forms.Label lblBroj;
+        private System.Windows.Forms.TextBox txtBroj;
     }
 }

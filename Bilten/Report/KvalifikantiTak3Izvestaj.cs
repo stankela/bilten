@@ -24,7 +24,7 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             reportListe.Add(new KvalifikantiTak3Lista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, sprava,
-                false, 1, formGrid));
+                false, 1, formGrid, takmicenje.TakBrojevi));
 		}
 
         public KvalifikantiTak3Izvestaj(List<RezultatPreskok> rezultati, bool obaPreskoka, string documentName,
@@ -36,7 +36,7 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             reportListe.Add(new KvalifikantiTak3Lista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, obaPreskoka,
-                false, 1, formGrid));
+                false, 1, formGrid, takmicenje.TakBrojevi));
         }
 
         public KvalifikantiTak3Izvestaj(List<List<RezultatSprava>> rezultatiSprave,
@@ -48,6 +48,11 @@ namespace Bilten.Report
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
             bool sveSpraveNaJednojStrani = brojSpravaPoStrani > 3;
+
+            // TODO5: Neka pocetne vrednosti za margine u svim izvestajima budu 0 (ili neka mala vrednost). Svi izvestaji
+            // su svakako centrirani po sredini stranice.
+
+            // TODO5: Dodaj velicinu fonta za iteme u header footer dijalog.
 
             if (sveSpraveNaJednojStrani)
             {
@@ -86,15 +91,15 @@ namespace Bilten.Report
 
                     KvalifikantiTak3Lista lista = new KvalifikantiTak3Lista(this, page, 0f, itemFont, itemsHeaderFont,
                         rezultatiSprave[spravaIndex], sprava, sveSpraveNaJednojStrani, columnNumber,
-                        formGrid);
+                        formGrid, takmicenje.TakBrojevi);
                     lista.RelY = relY;
                     reportListe.Add(lista);
                 }
                 else
                 {
                     KvalifikantiTak3Lista lista = new KvalifikantiTak3Lista(this, page, 0f, itemFont, itemsHeaderFont,
-                        rezultatiPreskok, obaPreskoka, sveSpraveNaJednojStrani, columnNumber,
-                        formGrid);
+                        rezultatiPreskok, obaPreskoka, sveSpraveNaJednojStrani, columnNumber, formGrid,
+                        takmicenje.TakBrojevi);
                     lista.RelY = relY;
                     reportListe.Add(lista);
                 }
@@ -113,10 +118,10 @@ namespace Bilten.Report
                     lista.FirstPageNum = lastPageNum + 1;
                 lista.StartY = contentBounds.Y + lista.RelY * contentBounds.Height;
                 lista.setupContent(g, contentBounds);
-                if (lista.Columns[1].Width > maxImeWidth)
-                    maxImeWidth = lista.Columns[1].Width;
-                if (lista.Columns[2].Width > maxKlubWidth)
-                    maxKlubWidth = lista.Columns[2].Width;
+                if (lista.Columns[lista.getImeColumnIndex()].Width > maxImeWidth)
+                    maxImeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
+                if (lista.Columns[lista.getKlubColumnIndex()].Width > maxKlubWidth)
+                    maxKlubWidth = lista.Columns[lista.getKlubColumnIndex()].Width;
                 lastPageNum = lista.LastPageNum;
             }
 
@@ -143,32 +148,35 @@ namespace Bilten.Report
     public class KvalifikantiTak3Lista : ReportLista
     {
         private Sprava sprava;
-        bool sveSpraveNaJednojStrani;
-        int columnNumber;
-        bool praznaLista;
+        private bool sveSpraveNaJednojStrani;
+        private int columnNumber;
+        private bool praznaLista;
+        private bool stampajBroj;
 
         public KvalifikantiTak3Lista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, List<RezultatSprava> rezultati, Sprava sprava,
-            bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid)
+            bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = sprava;
             this.sveSpraveNaJednojStrani = sveSpraveNaJednojStrani;
             this.columnNumber = columnNumber;
             this.praznaLista = rezultati.Count == 0;
+            this.stampajBroj = stampajBroj;
 
             fetchItems(rezultati);
         }
 
         public KvalifikantiTak3Lista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, List<RezultatPreskok> rezultati, bool obaPreskoka,
-            bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid)
+            bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = Sprava.Preskok;
             this.sveSpraveNaJednojStrani = sveSpraveNaJednojStrani;
             this.columnNumber = columnNumber;
             this.praznaLista = rezultati.Count == 0;
+            this.stampajBroj = stampajBroj;
 
             fetchItems(rezultati, obaPreskoka);
         }
@@ -208,16 +216,31 @@ namespace Bilten.Report
                     ++r;
                     if (r == 1)
                     {
-                        result.Add(new object[] { "", Opcije.Instance.RezerveString, "", "" });
+                        if (stampajBroj)
+                            result.Add(new object[] { "", "", Opcije.Instance.RezerveString, "", "" });
+                        else
+                            result.Add(new object[] { "", Opcije.Instance.RezerveString, "", "" });
                     }
                     redBroj = "R" + r.ToString();
                 }
-                result.Add(new object[] { redBroj, rezultat.Gimnasticar.PrezimeIme, rezultat.Gimnasticar.KlubDrzava,
-                    rezultat.Total});
+                List<object> items = new List<object>() { redBroj, rezultat.Gimnasticar.PrezimeIme,
+                    rezultat.Gimnasticar.KlubDrzava, rezultat.Total};
+                if (stampajBroj)
+                {
+                    string broj = (rezultat.Gimnasticar.TakmicarskiBroj.HasValue)
+                        ? rezultat.Gimnasticar.TakmicarskiBroj.Value.ToString("D3") : string.Empty;
+                    items.Insert(1, broj);
+                }
+                result.Add(items.ToArray());
             }
             if (result.Count == 0)
+            {
                 // hack kojim se obezbedjuje da se stampaju hederi i za liste koje su prazne
-                result.Add(new object[] { "", "", "", "" });
+                if (stampajBroj)
+                    result.Add(new object[] { "", "", "", "", "" });
+                else
+                    result.Add(new object[] { "", "", "", "" });
+            }
             return result;
         }
 
@@ -240,16 +263,31 @@ namespace Bilten.Report
                     ++r;
                     if (r == 1)
                     {
-                        result.Add(new object[] { "", Opcije.Instance.RezerveString, "", "" });
+                        if (stampajBroj)
+                            result.Add(new object[] { "", "", Opcije.Instance.RezerveString, "", "" });
+                        else
+                            result.Add(new object[] { "", Opcije.Instance.RezerveString, "", "" });
                     }
                     redBroj = "R" + r.ToString();
                 }
-                result.Add(new object[] { redBroj, rezultat.Gimnasticar.PrezimeIme, rezultat.Gimnasticar.KlubDrzava,
-                    obaPreskoka ? rezultat.TotalObeOcene : rezultat.Total});
+                List<object> items = new List<object>() { redBroj, rezultat.Gimnasticar.PrezimeIme,
+                    rezultat.Gimnasticar.KlubDrzava, obaPreskoka ? rezultat.TotalObeOcene : rezultat.Total };
+                if (stampajBroj)
+                {
+                    string broj = (rezultat.Gimnasticar.TakmicarskiBroj.HasValue)
+                        ? rezultat.Gimnasticar.TakmicarskiBroj.Value.ToString("D3") : string.Empty;
+                    items.Insert(1, broj);
+                }
+                result.Add(items.ToArray());
             }
             if (result.Count == 0)
+            {
                 // hack kojim se obezbedjuje da se stampaju hederi i za liste koje su prazne
-                result.Add(new object[] { "", "", "", "" });
+                if (stampajBroj)
+                    result.Add(new object[] { "", "", "", "", "" });
+                else
+                    result.Add(new object[] { "", "", "", "" });
+            }
             return result;
         }
 
@@ -287,6 +325,7 @@ namespace Bilten.Report
             float rankWidthCm = 0.7f;
 
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
+            float brojWidth = 2 * rankWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
@@ -296,13 +335,14 @@ namespace Bilten.Report
                 // u Form-u utice na konacnu velicinu kolona. Npr. ako imam dve prazne i dve pune liste, i ako podesim dve
                 // pune liste tako da su kolone manje od kolona prazne liste, konacna velicina kolone ce ipak biti ona u 
                 // praznoj listi. Ovim se to sprecava.
-                rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-                imeWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
-                klubWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
-                ocenaWidth = Izvestaj.convCmToInch(rankWidthCm * 2);
+
+                // rankWidth je kao gore
+                imeWidth = rankWidth * 2;
+                klubWidth = rankWidth * 2;
+                ocenaWidth = rankWidth * 2;
             }
 
-            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth, ocenaWidth);
+            doCreateColumns(g, contentBounds, rankWidth, brojWidth, imeWidth, klubWidth, ocenaWidth);
         }
 
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
@@ -312,16 +352,27 @@ namespace Bilten.Report
 
             float rankWidthCm = 0.7f;
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
+            float brojWidth = 2 * rankWidth;
             float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
 
-            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth, ocenaWidth);
+            doCreateColumns(g, contentBounds, rankWidth, brojWidth, imeWidth, klubWidth, ocenaWidth);
         }
 
-        private void doCreateColumns(Graphics g, RectangleF contentBounds, float rankWidth, float imeWidth, float klubWidth,
-            float ocenaWidth)
+        private void doCreateColumns(Graphics g, RectangleF contentBounds, float rankWidth, float brojWidth, float imeWidth,
+            float klubWidth, float ocenaWidth)
         {
             float xRank = contentBounds.X + (columnNumber - 1) * contentBounds.Width / 2;
-            float xIme = xRank + rankWidth;
+            float xBroj = 0f;
+            float xIme;
+            if (stampajBroj)
+            {
+                xBroj = xRank + rankWidth;
+                xIme = xBroj + brojWidth;
+            }
+            else
+            {
+                xIme = xRank + rankWidth;
+            }
             float xKlub = xIme + imeWidth;
             float xOcena = xKlub + klubWidth;
             float xRightEnd = xOcena + ocenaWidth;
@@ -342,6 +393,7 @@ namespace Bilten.Report
                 if (delta > contentBounds.X)
                     delta = contentBounds.X;
                 xRank -= delta;
+                xBroj -= delta;
                 xIme -= delta;
                 xKlub -= delta;
                 xOcena -= delta;
@@ -353,6 +405,7 @@ namespace Bilten.Report
                 if (delta < 0)
                     delta = 0.0f;
                 xRank += delta;
+                xBroj += delta;
                 xIme += delta;
                 xKlub += delta;
                 xOcena += delta;
@@ -360,6 +413,7 @@ namespace Bilten.Report
             }
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojFormat = Izvestaj.centerCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
             imeFormat.Alignment = StringAlignment.Near;
@@ -372,11 +426,13 @@ namespace Bilten.Report
             StringFormat ocenaFormat = Izvestaj.centerCenterFormat;
 
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat ocenaHeaderFormat = Izvestaj.centerCenterFormat;
 
             String rankTitle = Opcije.Instance.RedBrojString;
+            String brojTitle = Opcije.Instance.BrojString;
             String imeTitle = Opcije.Instance.ImeString;
             String klubTitle = Opcije.Instance.KlubDrzavaString;
             String ocenaTitle = Opcije.Instance.OcenaString;
@@ -389,6 +445,13 @@ namespace Bilten.Report
             column1.Span = true;
 
             ReportColumn column;
+            if (stampajBroj)
+            {
+                column = addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
+                column.Image = SlikeSprava.getImage(sprava);
+                column.Split = true;
+            }
+
             column = addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
@@ -454,6 +517,16 @@ namespace Bilten.Report
                         columnHeaderRect, col.HeaderFormat);
                 }
             }
+        }
+
+        public int getImeColumnIndex()
+        {
+            return stampajBroj ? 2 : 1;
+        }
+
+        public int getKlubColumnIndex()
+        {
+            return stampajBroj ? 3 : 2;
         }
     }
 }

@@ -79,6 +79,13 @@ namespace Bilten.Domain
             set { spraveMask = value; }
         }
 
+        private Nullable<short> takmicarskiBroj;
+        public virtual Nullable<short> TakmicarskiBroj
+        {
+            get { return takmicarskiBroj; }
+            set { takmicarskiBroj = value; }
+        }
+
         public GimnasticarUcesnik()
         { 
         
@@ -257,6 +264,9 @@ namespace Bilten.Domain
             strBuilder.AppendLine(NastupaZaDrzavu.ToString());
             strBuilder.AppendLine(PenaltyViseboj != null ? PenaltyViseboj.Value.ToString() : NULL);
             strBuilder.AppendLine(SpraveMask.ToString());
+            // TODO4: Proveri da li je ispravno da ovde koristim (TakmicarskiBroj != null) umesto TakmicarskiBroj.HasValue.
+            // Ako nije ispravno, proveri na ostalim mestima da li sam napravio to gresku.
+            strBuilder.AppendLine(TakmicarskiBroj.HasValue ? TakmicarskiBroj.Value.ToString() : NULL);
         }
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
@@ -288,6 +298,9 @@ namespace Bilten.Domain
             PenaltyViseboj = penalty != NULL ? float.Parse(penalty) : (float?)null;
         
             SpraveMask = int.Parse(reader.ReadLine());
+
+            string takBroj = reader.ReadLine();
+            TakmicarskiBroj = takBroj != NULL ? short.Parse(takBroj) : (short?)null;
         }
     }
 }

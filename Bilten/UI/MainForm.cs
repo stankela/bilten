@@ -70,6 +70,7 @@ namespace Bilten.UI
             mnEkipe.Enabled = false;
             mnSudijeNaTakmicenju.Enabled = false;
             mnVrhovniSudija.Enabled = false;
+            mnLogo.Enabled = false;
         
             strProgName = Application.ProductName;
             mnTakmicenje1.Visible = false;
@@ -346,6 +347,7 @@ namespace Bilten.UI
             mnEkipe.Enabled = true;
             mnSudijeNaTakmicenju.Enabled = true;
             mnVrhovniSudija.Enabled = true;
+            mnLogo.Enabled = true;
             mnTakmicenje1.Visible = true;
 
             if (newTakmicenje)

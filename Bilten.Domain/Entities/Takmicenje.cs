@@ -203,6 +203,13 @@ namespace Bilten.Domain
             set { logo5RelPath = value; }
         }
 
+        private bool takBrojevi;
+        public virtual bool TakBrojevi
+        {
+            get { return takBrojevi; }
+            set { takBrojevi = value; }
+        }
+
         private Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> takmicenjeDescriptions = 
             new HashedSet<RezultatskoTakmicenjeDescription>();
         public virtual Iesi.Collections.Generic.ISet<RezultatskoTakmicenjeDescription> TakmicenjeDescriptions
@@ -667,7 +674,13 @@ namespace Bilten.Domain
             strBuilder.AppendLine(BrojDecimalaTotal.ToString());
             strBuilder.AppendLine(ZavrsenoTak1.ToString());
             strBuilder.AppendLine(ZrebZaFinalePoSpravama != null ? ZrebZaFinalePoSpravama : NULL);
+            strBuilder.AppendLine(Logo1RelPath != null ? Logo1RelPath : NULL);
+            strBuilder.AppendLine(Logo2RelPath != null ? Logo2RelPath : NULL);
+            strBuilder.AppendLine(Logo3RelPath != null ? Logo3RelPath : NULL);
+            strBuilder.AppendLine(Logo4RelPath != null ? Logo4RelPath : NULL);
+            strBuilder.AppendLine(Logo5RelPath != null ? Logo5RelPath : NULL);
             strBuilder.AppendLine(LastModified.ToString());
+            strBuilder.AppendLine(TakBrojevi.ToString());
 
             strBuilder.AppendLine(TakmicenjeDescriptions.Count.ToString());
             foreach (RezultatskoTakmicenjeDescription d in TakmicenjeDescriptions)
@@ -757,8 +770,21 @@ namespace Bilten.Domain
             string zreb = reader.ReadLine();
             ZrebZaFinalePoSpravama = zreb != NULL ? zreb : null;
 
+            // TODO5: Proveri sta se desava ako dumpujem empty string (dakle, koji nije null).
+            string logo = reader.ReadLine();
+            Logo1RelPath = logo != NULL ? logo : null;
+            logo = reader.ReadLine();
+            Logo2RelPath = logo != NULL ? logo : null;
+            logo = reader.ReadLine();
+            Logo3RelPath = logo != NULL ? logo : null;
+            logo = reader.ReadLine();
+            Logo4RelPath = logo != NULL ? logo : null;
+            logo = reader.ReadLine();
+            Logo5RelPath = logo != NULL ? logo : null;
+           
             LastModified = ParsirajDatum(reader.ReadLine());
-
+            TakBrojevi = bool.Parse(reader.ReadLine());
+            
             int brojTakmicenja = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojTakmicenja; ++i)
             {

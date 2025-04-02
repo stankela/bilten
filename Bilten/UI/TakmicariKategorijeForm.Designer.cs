@@ -28,16 +28,21 @@ namespace Bilten.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.takmicariKategorijeUserControl1 = new Bilten.UI.TakmicariKategorijeUserControl();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnPrint = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnPromeniBrojeve = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnPonistiBrojeve = new System.Windows.Forms.ToolStripMenuItem();
+            this.takmicariKategorijeUserControl1 = new Bilten.UI.TakmicariKategorijeUserControl();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -63,16 +68,6 @@ namespace Bilten.UI
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // takmicariKategorijeUserControl1
-            // 
-            this.takmicariKategorijeUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.takmicariKategorijeUserControl1.Location = new System.Drawing.Point(15, 16);
-            this.takmicariKategorijeUserControl1.Name = "takmicariKategorijeUserControl1";
-            this.takmicariKategorijeUserControl1.Size = new System.Drawing.Size(840, 293);
-            this.takmicariKategorijeUserControl1.TabIndex = 0;
             // 
             // btnAdd
             // 
@@ -124,6 +119,38 @@ namespace Bilten.UI
             this.btnPrint.UseVisualStyleBackColor = true;
             this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnPromeniBrojeve,
+            this.mnPonistiBrojeve});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(162, 48);
+            // 
+            // mnPromeniBrojeve
+            // 
+            this.mnPromeniBrojeve.Name = "mnPromeniBrojeve";
+            this.mnPromeniBrojeve.Size = new System.Drawing.Size(161, 22);
+            this.mnPromeniBrojeve.Text = "Promeni brojeve";
+            this.mnPromeniBrojeve.Click += new System.EventHandler(this.mnPromeniBrojeve_Click);
+            // 
+            // mnPonistiBrojeve
+            // 
+            this.mnPonistiBrojeve.Name = "mnPonistiBrojeve";
+            this.mnPonistiBrojeve.Size = new System.Drawing.Size(161, 22);
+            this.mnPonistiBrojeve.Text = "Izbrisi brojeve";
+            this.mnPonistiBrojeve.Click += new System.EventHandler(this.mnPonistiBrojeve_Click);
+            // 
+            // takmicariKategorijeUserControl1
+            // 
+            this.takmicariKategorijeUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.takmicariKategorijeUserControl1.Location = new System.Drawing.Point(15, 16);
+            this.takmicariKategorijeUserControl1.Name = "takmicariKategorijeUserControl1";
+            this.takmicariKategorijeUserControl1.Size = new System.Drawing.Size(840, 293);
+            this.takmicariKategorijeUserControl1.TabIndex = 0;
+            // 
             // TakmicariKategorijeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,8 +165,10 @@ namespace Bilten.UI
             this.Name = "TakmicariKategorijeForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TakmicariKategorijeForm";
+            this.Load += new System.EventHandler(this.TakmicariKategorijeForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -154,5 +183,8 @@ namespace Bilten.UI
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnPrint;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem mnPromeniBrojeve;
+        private System.Windows.Forms.ToolStripMenuItem mnPonistiBrojeve;
     }
 }

@@ -1,0 +1,6 @@
+-- 31-Mar-2025 (VERZIJA = 14)
+
+alter table gimnasticari_ucesnici add column tak_broj smallint;
+GO
+alter table takmicenja add column tak_brojevi bit;
+GO

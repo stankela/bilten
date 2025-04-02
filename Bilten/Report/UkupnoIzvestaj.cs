@@ -29,7 +29,8 @@ namespace Bilten.Report
                 Margins = new Margins(75, 75, 75, 75);
 
             lista = new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, kvalColumn, penalty, formGrid, stampanjeKvalifikanata, penalizacijaZaSprave);
+                gim, extended, kvalColumn, penalty, formGrid, stampanjeKvalifikanata, penalizacijaZaSprave,
+                takmicenje.TakBrojevi);
 		}
 
         protected override void doSetupContent(Graphics g)
@@ -54,12 +55,13 @@ namespace Bilten.Report
         private bool kvalColumn;
         private bool penalty;
         private Gimnastika gimnastika;
-        bool penalizacijaZaSprave;
+        private bool penalizacijaZaSprave;
+        private bool stampajBroj;
 
 		public UkupnoLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoExtended> rezultati,
             Gimnastika gim, bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, bool stampanjeKvalifikanata,
-            bool penalizacijaZaSprave)
+            bool penalizacijaZaSprave, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.extended = extended;
@@ -67,6 +69,7 @@ namespace Bilten.Report
             this.penalty = penalty;
             this.gimnastika = gim;
             this.penalizacijaZaSprave = penalizacijaZaSprave;
+            this.stampajBroj = stampajBroj;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -110,9 +113,10 @@ namespace Bilten.Report
                     }
                 }
 
+                List<object> items;
                 if (gim == Gimnastika.MSG)
                 {
-                    List<object> items = new List<object> { redBroj, r.PrezimeIme, r.KlubDrzava,
+                    items = new List<object> { redBroj, r.PrezimeIme, r.KlubDrzava,
                             r.Parter, r.Konj, r.Karike, r.Preskok, r.Razboj, r.Vratilo,
                             r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty };
                     if (extended)
@@ -141,11 +145,10 @@ namespace Bilten.Report
                         items.Insert(22, r.RazbojPen);
                         items.Insert(26, r.VratiloPen);
                     }
-                    result.Add(items.ToArray());
                 }
                 else
                 {
-                    List<object> items = new List<object> { redBroj, r.PrezimeIme, r.KlubDrzava,
+                    items = new List<object> { redBroj, r.PrezimeIme, r.KlubDrzava,
                             r.Preskok, r.DvovisinskiRazboj, r.Greda, r.Parter, 
                             r.Total, KvalifikacioniStatusi.toString(r.KvalStatus), r.Penalty };
                     if (extended)
@@ -166,8 +169,14 @@ namespace Bilten.Report
                         items.Insert(14, r.GredaPen);
                         items.Insert(18, r.ParterPen);
                     }
-                    result.Add(items.ToArray());
                 }
+                if (stampajBroj)
+                {
+                    string broj = (r.Gimnasticar.TakmicarskiBroj.HasValue)
+                        ? r.Gimnasticar.TakmicarskiBroj.Value.ToString("D3") : string.Empty;
+                    items.Insert(1, broj);
+                }
+                result.Add(items.ToArray());
             }
             return result;
         }
@@ -199,6 +208,7 @@ namespace Bilten.Report
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
             float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+            float brojWidth = rankWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
 
@@ -206,8 +216,8 @@ namespace Bilten.Report
 
             if (extended && penalizacijaZaSprave)
             {
-                createColumnsExtendedPenalizacija(g, contentBounds, gridWidth, printWidth, rankWidth, imeWidth, klubWidth,
-                    spravaWidth);
+                createColumnsExtendedPenalizacija(g, contentBounds, gridWidth, printWidth, rankWidth, brojWidth, imeWidth,
+                    klubWidth, spravaWidth);
                 return;
             }
 
@@ -218,7 +228,17 @@ namespace Bilten.Report
             float kvalWidth = rankWidth / 2;
 
 			float xRank = contentBounds.X;
-            float xIme = xRank + rankWidth;
+            float xBroj = 0f;
+            float xIme;
+            if (stampajBroj)
+            {
+                xBroj = xRank + rankWidth;
+                xIme = xBroj + brojWidth;
+            }
+            else
+            {
+                xIme = xRank + rankWidth;
+            }
             float xKlub = xIme + imeWidth;
             float xParter = xKlub + klubWidth;
             float xKonj = xParter + spravaWidth;
@@ -261,6 +281,7 @@ namespace Bilten.Report
             if (delta < -contentBounds.X)
                 delta = -contentBounds.X;
             xRank += delta;
+            xBroj += delta;
             xIme += delta;
             xKlub += delta;
             xParter += delta;
@@ -289,6 +310,7 @@ namespace Bilten.Report
             xVratiloTot += delta;
             
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojFormat = Izvestaj.centerCenterFormat;
 
             // TODO3: Ispravi sledece greske gde je umesto Alignment stavljeno ponovljeno LineAlignment. Uradi to i u 
             // ostalim izvestajima.
@@ -306,12 +328,14 @@ namespace Bilten.Report
             StringFormat kvalFormat = Izvestaj.centerCenterFormat;
 
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
             String rankTitle = Opcije.Instance.RankString;
+            String brojTitle = Opcije.Instance.BrojString;
 			String imeTitle = Opcije.Instance.ImeString;
 			String klubTitle = Opcije.Instance.KlubDrzavaString;
             String totalTitle = Opcije.Instance.TotalString;
@@ -320,6 +344,10 @@ namespace Bilten.Report
             Columns.Clear();
 
 			addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            if (stampajBroj)
+            {
+                addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
+            }
 			addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
 			addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
 
@@ -389,7 +417,8 @@ namespace Bilten.Report
         }
 
         private void createColumnsExtendedPenalizacija(Graphics g, RectangleF contentBounds,
-            float gridWidth, float printWidth, float rankWidth, float imeWidth, float klubWidth, float spravaWidth)
+            float gridWidth, float printWidth, float rankWidth, float brojWidth, float imeWidth, float klubWidth,
+            float spravaWidth)
         {
             float penaltyWidth = spravaWidth * (2.0f / 3);
             float totalWidth = spravaWidth;
@@ -397,7 +426,17 @@ namespace Bilten.Report
             spravaWidth = spravaWidth * 2;
 
             float xRank = contentBounds.X;
-            float xIme = xRank + rankWidth;
+            float xBroj = 0f;
+            float xIme;
+            if (stampajBroj)
+            {
+                xBroj = xRank + rankWidth;
+                xIme = xBroj + brojWidth;
+            }
+            else
+            {
+                xIme = xRank + rankWidth;
+            }
             float xKlub = xIme + imeWidth;
             float xParter = xKlub + klubWidth;
             float xKonj = xParter + spravaWidth;
@@ -433,6 +472,7 @@ namespace Bilten.Report
             if (delta < -contentBounds.X)
                 delta = -contentBounds.X;
             xRank += delta;
+            xBroj += delta;
             xIme += delta;
             xKlub += delta;
             xParter += delta;
@@ -454,6 +494,7 @@ namespace Bilten.Report
             xVratiloTot += delta;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojFormat = Izvestaj.centerCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
             imeFormat.LineAlignment = StringAlignment.Near;
@@ -468,12 +509,14 @@ namespace Bilten.Report
             StringFormat kvalFormat = Izvestaj.centerCenterFormat;
 
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
             String rankTitle = Opcije.Instance.RankString;
+            String brojTitle = Opcije.Instance.BrojString;
             String imeTitle = Opcije.Instance.ImeString;
             String klubTitle = Opcije.Instance.KlubDrzavaString;
             String totalTitle = Opcije.Instance.TotalString;
@@ -482,6 +525,10 @@ namespace Bilten.Report
             Columns.Clear();
 
             addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            if (stampajBroj)
+            {
+                addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
+            }
             addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
 

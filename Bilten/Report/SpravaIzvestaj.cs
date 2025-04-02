@@ -22,7 +22,7 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, sprava, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena));
+                kvalColumn, sprava, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena, takmicenje.TakBrojevi));
 		}
 
         public SpravaIzvestaj(bool obaPreskoka, IList<RezultatPreskok> rezultati,
@@ -35,7 +35,8 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, obaPreskoka, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena));
+                kvalColumn, obaPreskoka, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena,
+                takmicenje.TakBrojevi));
         }
 
         public SpravaIzvestaj(List<List<RezultatSprava>> rezultatiSprave,
@@ -73,7 +74,7 @@ namespace Bilten.Report
 
                     SpravaLista lista = new SpravaLista(this, page, 0f, itemFont, itemsHeaderFont,
                         rezultatiSprave[spravaIndex], kvalColumn, sprava, prikaziPenal, formGrid, markFirstRows,
-                        numRowsToMark, brojEOcena);
+                        numRowsToMark, brojEOcena, takmicenje.TakBrojevi);
                     lista.RelY = relY;
                     liste.Add(lista);
                 }
@@ -81,7 +82,7 @@ namespace Bilten.Report
                 {
                     SpravaLista lista = new SpravaLista(this, page, 0f, itemFont, itemsHeaderFont,
                         rezultatiPreskok, kvalColumn, obaPreskoka, prikaziPenal, formGrid, markFirstRows,
-                        numRowsToMark, brojEOcena);
+                        numRowsToMark, brojEOcena, takmicenje.TakBrojevi);
                     lista.RelY = relY;
                     liste.Add(lista);
                 }
@@ -120,11 +121,12 @@ namespace Bilten.Report
         private bool obaPreskoka;
         private bool prikaziPenal;
         private int brojEOcena;
+        private bool stampajBroj;
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatSprava> rezultati,
             bool kvalColumn, Sprava sprava, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
-            int numRowsToMark, int brojEOcena)
+            int numRowsToMark, int brojEOcena, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont,
             itemsHeaderFont, formGrid)
         {
@@ -134,6 +136,7 @@ namespace Bilten.Report
             this.markFirstRows = markFirstRows;
             this.numRowsToMark = numRowsToMark;
             this.brojEOcena = brojEOcena;
+            this.stampajBroj = stampajBroj;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -144,7 +147,7 @@ namespace Bilten.Report
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatPreskok> rezultati,
             bool kvalColumn, bool obaPreskoka, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
-            int numRowsToMark, int brojEOcena)
+            int numRowsToMark, int brojEOcena, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.kvalColumn = kvalColumn;
@@ -154,6 +157,7 @@ namespace Bilten.Report
             this.markFirstRows = markFirstRows;
             this.numRowsToMark = numRowsToMark;
             this.brojEOcena = brojEOcena;
+            this.stampajBroj = stampajBroj;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -193,6 +197,12 @@ namespace Bilten.Report
                 if (brojEOcena > 4) items.Insert(8, rez.E5);
                 if (brojEOcena > 5) items.Insert(9, rez.E6);
                 if (prikaziPenal) items.Insert(5 + brojEOcena, rez.Penalty);
+                if (stampajBroj)
+                {
+                    string broj = (rez.Gimnasticar.TakmicarskiBroj.HasValue)
+                        ? rez.Gimnasticar.TakmicarskiBroj.Value.ToString("D3") : string.Empty;
+                    items.Insert(1, broj);
+                }
                 result.Add(items.ToArray());
             }
             return result;
@@ -205,9 +215,10 @@ namespace Bilten.Report
             foreach (RezultatPreskok rez in rezultati)
             {
                 ++rowNum;
+                List<object> items;
                 if (obaPreskoka)
                 {
-                    List<object> items = new List<object> {rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
+                    items = new List<object> {rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "1", "2",
                             rez.D, rez.D_2, rez.E, rez.E_2, rez.Total, rez.Total_2, 
                             rez.TotalObeOcene, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() };
                     if (brojEOcena > 0) { items.Insert(7, rez.E1); items.Insert(8, rez.E1_2); }
@@ -218,11 +229,10 @@ namespace Bilten.Report
                     if (brojEOcena > 5) { items.Insert(17, rez.E6); items.Insert(18, rez.E6_2); }
                     if (prikaziPenal)
                     { items.Insert(9 + 2 * brojEOcena, rez.Penalty); items.Insert(10 + 2 * brojEOcena, rez.Penalty_2); }
-                    result.Add(items.ToArray());
                 }
                 else
                 {
-                    List<object> items = new List<object> { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
+                    items = new List<object> { rez.Rank, rez.PrezimeIme, rez.KlubDrzava,
                             rez.D, rez.E, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus), rowNum.ToString() };
                     if (brojEOcena > 0) items.Insert(4, rez.E1);
                     if (brojEOcena > 1) items.Insert(5, rez.E2);
@@ -231,8 +241,14 @@ namespace Bilten.Report
                     if (brojEOcena > 4) items.Insert(8, rez.E5);
                     if (brojEOcena > 5) items.Insert(9, rez.E6);
                     if (prikaziPenal) items.Insert(5 + brojEOcena, rez.Penalty);
-                    result.Add(items.ToArray());
                 }
+                if (stampajBroj)
+                {
+                    string broj = (rez.Gimnasticar.TakmicarskiBroj.HasValue)
+                        ? rez.Gimnasticar.TakmicarskiBroj.Value.ToString("D3") : string.Empty;
+                    items.Insert(1, broj);
+                }
+                result.Add(items.ToArray());
             }
             return result;
         }
@@ -266,6 +282,7 @@ namespace Bilten.Report
 
             // skok i kval sam podesio kao polovinu Rank kolone.
             float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+            float brojWidth = rankWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float skokWidth = rankWidth / 2;
@@ -281,7 +298,17 @@ namespace Bilten.Report
                 brojOcena = 3;
 
             float xRank = contentBounds.X;
-            float xIme = xRank + rankWidth;
+            float xBroj = 0f;
+            float xIme;
+            if (stampajBroj)
+            {
+                xBroj = xRank + rankWidth;
+                xIme = xBroj + brojWidth;
+            }
+            else
+            {
+                xIme = xRank + rankWidth;
+            }
             float xKlub = xIme + imeWidth;
             float xSkok = 0.0f;
             float xSprava;
@@ -310,6 +337,7 @@ namespace Bilten.Report
                 delta = -contentBounds.X;
 
             xRank += delta;
+            xBroj += delta;
             xIme += delta;
             xKlub += delta;
             if (obaPreskoka)
@@ -332,6 +360,7 @@ namespace Bilten.Report
             float spravaTotWidth = ocenaWidth;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojFormat = Izvestaj.centerCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
             imeFormat.Alignment = StringAlignment.Near;
@@ -350,6 +379,7 @@ namespace Bilten.Report
             StringFormat kvalFormat = Izvestaj.centerCenterFormat;
 
             StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat brojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat skokHeaderFormat = Izvestaj.centerCenterFormat;
@@ -357,6 +387,7 @@ namespace Bilten.Report
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
             String rankTitle = Opcije.Instance.RankString;
+            String brojTitle = Opcije.Instance.BrojString;
             String imeTitle = Opcije.Instance.ImeString;
             String klubTitle = Opcije.Instance.KlubDrzavaString;
             String skokTitle = ""; // TODO3: Neka bude uspravno (isto i u izvestaju za sudijske formulare).
@@ -367,6 +398,12 @@ namespace Bilten.Report
 
             ReportColumn column = addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             column.IncludeInMarking = true;
+
+            if (stampajBroj)
+            {
+                column = addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
+                column.IncludeInMarking = true;
+            }
 
             column = addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             column.IncludeInMarking = true;

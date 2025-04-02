@@ -13,6 +13,7 @@ namespace Bilten.UI
         {
             dgw.DataGridView.Columns.Clear();
 
+            dgw.AddColumn("Broj", "TakmicarskiBroj", 40, "{0:D3}");
             dgw.AddColumn("Ime", "ImeSrednjeIme", 100);
             dgw.AddColumn("Prezime", "Prezime", 100);
             dgw.AddColumn("Datum rodjenja", "DatumRodjenja", 100, "{0:d}");
