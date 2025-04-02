@@ -255,7 +255,7 @@ namespace Bilten.UI
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false, false,
-                                                         true);
+                                                         true, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -687,7 +687,7 @@ namespace Bilten.UI
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false, false,
-                                                         false);
+                                                         false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

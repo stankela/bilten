@@ -265,7 +265,7 @@ namespace Bilten.UI
             // vazi za sve izvestaje. Razmisli da li to treba uvesti i za
             // ostala polja.
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod,
-                false, false, false, false, false, false, false, false, false);
+                false, false, false, false, false, false, false, false, false, true);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -305,9 +305,17 @@ namespace Bilten.UI
 
                 bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak4();
 
-                p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, ekipaRezultatiUkupnoMap,
-                    ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName,
-                    takmicenje));
+                if (form.PrikaziClanoveEkipe)
+                {
+                    p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, ekipaRezultatiUkupnoMap,
+                        ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName,
+                        takmicenje));
+                }
+                else
+                {
+                    p.setIzvestaj(new UkupnoIzvestaj(rezultatiEkipno, ActiveTakmicenje.Gimnastika, kvalColumn,
+                        dataGridViewUserControl1.DataGridView, documentName, takmicenje));
+                }
                 p.ShowDialog();
             }
             catch (Exception ex)

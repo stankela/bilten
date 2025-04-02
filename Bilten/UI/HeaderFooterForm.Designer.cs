@@ -76,6 +76,7 @@ namespace Bilten.UI
             this.ckbStampajKlub = new System.Windows.Forms.CheckBox();
             this.ckbStampajPoredinacneEOcene = new System.Windows.Forms.CheckBox();
             this.ckbPrikaziPenalizaciju = new System.Windows.Forms.CheckBox();
+            this.ckbPrikaziClanoveEkipe = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -514,6 +515,16 @@ namespace Bilten.UI
             this.ckbPrikaziPenalizaciju.Text = "Prikazi D, E i penalizaciju";
             this.ckbPrikaziPenalizaciju.UseVisualStyleBackColor = true;
             // 
+            // ckbPrikaziClanoveEkipe
+            // 
+            this.ckbPrikaziClanoveEkipe.AutoSize = true;
+            this.ckbPrikaziClanoveEkipe.Location = new System.Drawing.Point(214, 316);
+            this.ckbPrikaziClanoveEkipe.Name = "ckbPrikaziClanoveEkipe";
+            this.ckbPrikaziClanoveEkipe.Size = new System.Drawing.Size(127, 17);
+            this.ckbPrikaziClanoveEkipe.TabIndex = 58;
+            this.ckbPrikaziClanoveEkipe.Text = "Prikazi clanove ekipe";
+            this.ckbPrikaziClanoveEkipe.UseVisualStyleBackColor = true;
+            // 
             // HeaderFooterForm
             // 
             this.AcceptButton = this.btnOk;
@@ -521,6 +532,7 @@ namespace Bilten.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(695, 538);
+            this.Controls.Add(this.ckbPrikaziClanoveEkipe);
             this.Controls.Add(this.ckbPrikaziPenalizaciju);
             this.Controls.Add(this.ckbStampajPoredinacneEOcene);
             this.Controls.Add(this.ckbStampajKlub);
@@ -630,5 +642,6 @@ namespace Bilten.UI
         private System.Windows.Forms.CheckBox ckbStampajKlub;
         private System.Windows.Forms.CheckBox ckbStampajPoredinacneEOcene;
         private System.Windows.Forms.CheckBox ckbPrikaziPenalizaciju;
+        private System.Windows.Forms.CheckBox ckbPrikaziClanoveEkipe;
     }
 }

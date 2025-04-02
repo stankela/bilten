@@ -21,7 +21,7 @@ namespace Bilten.UI
         public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible,
             bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool stampajKategorijuVisible,
             bool stampajKlubVisible, bool brojEOcenaFormularVisible, bool stampajPojedinacneEOceneVisible,
-            bool prikaziPenalizacijuVisebojVisible)
+            bool prikaziPenalizacijuVisebojVisible, bool prikaziClanoveEkipeVisible)
         {
             InitializeComponent();
             this.Text = "Opcije za stampanje";
@@ -34,6 +34,11 @@ namespace Bilten.UI
             ckbPrikaziPenalizaciju.Enabled = prikaziPenalizacijuVisebojVisible;
             if (prikaziPenalizacijuVisebojVisible)
                 ckbPrikaziPenalizaciju.Location = new Point(ckbPrikaziDEOcene.Location.X, ckbPrikaziPenalizaciju.Location.Y);
+
+            ckbPrikaziClanoveEkipe.Visible = prikaziClanoveEkipeVisible;
+            ckbPrikaziClanoveEkipe.Enabled = prikaziClanoveEkipeVisible;
+            if (prikaziClanoveEkipeVisible)
+                ckbPrikaziClanoveEkipe.Location = ckbPrikaziDEOcene.Location;
 
             panel1.Visible = brojSpravaPoStraniVisible;
             panel1.Enabled = brojSpravaPoStraniVisible;
@@ -330,6 +335,17 @@ namespace Bilten.UI
             }
         }
 
+        private bool _prikaziClanoveEkipe;
+        public bool PrikaziClanoveEkipe
+        {
+            get { return _prikaziClanoveEkipe; }
+            set
+            {
+                _prikaziClanoveEkipe = value;
+                ckbPrikaziClanoveEkipe.Checked = value;
+            }
+        }
+
         private bool _stampajPojedinacneEOcene;
         public bool StampajPojedinacneEOcene
         {
@@ -519,6 +535,7 @@ namespace Bilten.UI
 
             _prikaziDEOcene = ckbPrikaziDEOcene.Checked;
             _prikaziPenalizacijuViseboj = ckbPrikaziPenalizaciju.Checked;
+            _prikaziClanoveEkipe = ckbPrikaziClanoveEkipe.Checked;
             _stampajPojedinacneEOcene = ckbStampajPoredinacneEOcene.Checked;
             _stampajSveSprave = rbtSveSprave.Checked;
             if (_stampajSveSprave)

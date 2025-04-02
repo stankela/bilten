@@ -13,6 +13,8 @@ namespace Bilten.Report
     {
    		private EkipeLista lista;
 
+        // TODO5: Svaka ekipa treba da je cela na istoj strani (trenutno nije tako)
+
         public EkipeIzvestaj(List<RezultatEkipno> rezultati, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap,
             Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName, Takmicenje takmicenje)
             : base(takmicenje)

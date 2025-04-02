@@ -972,7 +972,7 @@ namespace Bilten.UI
             string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, false, false,
-                                                         false);
+                                                         false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -1471,7 +1471,8 @@ namespace Bilten.UI
             }
             string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
 
-            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true, false, false);
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true, false,
+                false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);

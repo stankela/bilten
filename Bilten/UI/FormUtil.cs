@@ -43,6 +43,7 @@ namespace Bilten.UI
 
             o.PrikaziDEOcene = form.PrikaziDEOcene;
             o.PrikaziPenalizacijuViseboj = form.PrikaziPenalizacijuViseboj;
+            o.PrikaziClanoveEkipe = form.PrikaziClanoveEkipe;
             if (form.DeoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 o.StampajSveSpraveTak1 = form.StampajSveSprave;
@@ -98,6 +99,7 @@ namespace Bilten.UI
 
             form.PrikaziDEOcene = o.PrikaziDEOcene;
             form.PrikaziPenalizacijuViseboj = o.PrikaziPenalizacijuViseboj;
+            form.PrikaziClanoveEkipe = o.PrikaziClanoveEkipe;
             if (form.DeoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
                 form.StampajSveSprave = o.StampajSveSpraveTak1;

@@ -283,6 +283,13 @@ namespace Bilten.Domain
             set { _prikaziPenalizacijuViseboj = value; }
         }
 
+        private bool _prikaziClanoveEkipe = true;
+        public virtual bool PrikaziClanoveEkipe
+        {
+            get { return _prikaziClanoveEkipe; }
+            set { _prikaziClanoveEkipe = value; }
+        }
+
         private bool _stampajPojedinacneEOcene = false;
         public virtual bool StampajPojedinacneEOcene
         {
@@ -433,6 +440,13 @@ namespace Bilten.Domain
         {
             get { return drzavaString; }
             set { drzavaString = value; }
+        }
+
+        private string ekipaString = "Ekipa";  // "Team"
+        public virtual string EkipaString
+        {
+            get { return ekipaString; }
+            set { ekipaString = value; }
         }
 
         private string klubDrzavaString = "Klub";  // "Club / NT"
