@@ -57,7 +57,6 @@ namespace Bilten.Report
             if (sveSpraveNaJednojStrani)
             {
                 Margins = new Margins(50, 50, 25, 25);
-                kvalifikantiIzvestaj = true;
             }
             
             Sprava[] sprave = Sprave.getSprave(gim);

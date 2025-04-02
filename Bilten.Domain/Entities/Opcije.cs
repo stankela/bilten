@@ -449,6 +449,13 @@ namespace Bilten.Domain
             set { ekipaString = value; }
         }
 
+        private string stranaString = "Strana";  // "Page"
+        public virtual string StranaString
+        {
+            get { return stranaString; }
+            set { stranaString = value; }
+        }
+
         private string klubDrzavaString = "Klub";  // "Club / NT"
         public virtual string KlubDrzavaString
         {

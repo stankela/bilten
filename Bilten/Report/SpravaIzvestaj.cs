@@ -64,7 +64,7 @@ namespace Bilten.Report
                 else
                 {
                     page = i + 1;
-                    relY = 0.0f + 0.03f;
+                    relY = 0.0f /*+ 0.03f*/;
                 }
                 if (sprava != Sprava.Preskok)
                 {

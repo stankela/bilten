@@ -10,12 +10,13 @@ namespace Bilten.Report
 	{
         public static StringFormat centerCenterFormat;
         public static StringFormat nearCenterFormat;
+        public static StringFormat centerNearFormat;
+        public static StringFormat farCenterFormat;
 
 		private StringFormat header1Format;
 		private StringFormat header2Format;
         private StringFormat header3Format;
         private StringFormat header4Format;
-        private StringFormat footerFormat;
         private StringFormat dateFormat;
 
 		private Font header1Font;
@@ -37,6 +38,8 @@ namespace Bilten.Report
         protected RectangleF pageBounds;
         protected RectangleF contentBounds;
         protected RectangleF footerBounds;
+        private RectangleF logoFooterBounds;
+        private RectangleF pageCaptionBounds;
 
 		protected int lastPageNum;
 		public int LastPageNum
@@ -212,15 +215,18 @@ namespace Bilten.Report
             nearCenterFormat.Alignment = StringAlignment.Near;
             nearCenterFormat.LineAlignment = StringAlignment.Center;
 
-            StringFormat centerNearFormat = new StringFormat();
+            centerNearFormat = new StringFormat();
             centerNearFormat.Alignment = StringAlignment.Center;
             centerNearFormat.LineAlignment = StringAlignment.Near;
+
+            farCenterFormat = new StringFormat();
+            farCenterFormat.Alignment = StringAlignment.Far;
+            farCenterFormat.LineAlignment = StringAlignment.Center;
 
             header1Format = centerNearFormat;
             header2Format = centerCenterFormat;
             header3Format = centerCenterFormat;
             header4Format = centerCenterFormat;
-            footerFormat = centerCenterFormat;
 
             dateFormat = new StringFormat();
 			dateFormat.Alignment = StringAlignment.Far;
@@ -293,9 +299,9 @@ namespace Bilten.Report
 		public virtual void drawHeader(Graphics g, int pageNum)
 		{
             /*g.DrawRectangle(pen, headerBounds.X, headerBounds.Y,
-                headerBounds.Width, headerBounds.Height);
+                headerBounds.Width, headerBounds.Height);*/
 
-            g.DrawRectangle(pen, header1Bounds.X, header1Bounds.Y,
+            /*g.DrawRectangle(pen, header1Bounds.X, header1Bounds.Y,
                 header1Bounds.Width, header1Bounds.Height);
             g.DrawRectangle(pen, header2Bounds.X, header2Bounds.Y,
                 header2Bounds.Width, header2Bounds.Height);
@@ -346,8 +352,13 @@ namespace Bilten.Report
 
         private void drawFooter(Graphics g, int pageNum)
         {
-            float height = pageBounds.Bottom - footerBounds.Top;  // ovo je takodje i width za logo
-            float y = footerBounds.Top;
+            /*g.DrawRectangle(pen, footerBounds.X, footerBounds.Y,
+             footerBounds.Width, footerBounds.Height);
+            g.DrawRectangle(pen, contentBounds.X, contentBounds.Y,
+                contentBounds.Width, contentBounds.Height);*/
+
+            float height = logoFooterBounds.Height;  // ovo je takodje i width za logo
+            float y = logoFooterBounds.Top;
 
             float endX = 0.0f;
             if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath)
@@ -390,38 +401,19 @@ namespace Bilten.Report
                 endX = logo5Bounds.Right;
             }
 
-            //g.DrawRectangle(pen, footerBounds.X, footerBounds.Y, footerBounds.Width, footerBounds.Height);
-
-            String page = "Strana";
+            String page = Opcije.Instance.StranaString;
             String from = "/";
             string datum = TimeOfPrint.ToShortDateString();
             string vreme = TimeOfPrint.ToShortTimeString();
             string pageText = String.Format("{0} {1}{2}{3}", page, pageNum, from, LastPageNum);
 
-            if (String.IsNullOrEmpty(takmicenje.Logo3RelPath) && String.IsNullOrEmpty(takmicenje.Logo4RelPath)
-                && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
-            {
-                g.DrawString(FooterText, footerFont, blackBrush, footerBounds, footerFormat);
-                g.DrawString(pageText, pageNumFont, blackBrush,
-                    footerBounds.Right, footerBounds.Top + pageNumFont.GetHeight(g) * 1.5f, dateFormat);
-            }
-            else
-            {
-                // TODO5: Probaj da nadjes neko generalnije resenje.
-                float x = footerBounds.Right + (pageBounds.Right - footerBounds.Right) / 2;
-                float y1 = footerBounds.Y + footerBounds.Height / 2;
-                // Uz desnu ivicu i po sredini gornje linije (racuna se u odnosu na dve linije koje se seku u tacki (x, y1)
-                g.DrawString(FooterText, footerFont, blackBrush, x, y1, dateFormat);
-
-                float y2 = footerBounds.Bottom;
-                StringFormat fmt = new StringFormat();
-                fmt.Alignment = StringAlignment.Far;
-                fmt.LineAlignment = StringAlignment.Near;
-                // Uz desnu i gornju ivicu (racuna se u odnosu na dve linije koje se seku u tacki (x, y2)
-                g.DrawString(pageText, pageNumFont, blackBrush, x, y2, fmt);
-            }
-            // g.DrawString(datum + " " + vreme, pageNumFont, blackBrush,
-            //      footerBounds.Right, footerBounds.Top, dateFormat);
+            /*g.DrawRectangle(pen, pageCaptionBounds.X, pageCaptionBounds.Y, pageCaptionBounds.Width,
+                pageCaptionBounds.Height);*/
+            
+            g.DrawString(FooterText, footerFont, blackBrush, pageCaptionBounds, centerCenterFormat);
+            RectangleF pageCaptionBounds2 = new RectangleF(pageCaptionBounds.Location,
+                new SizeF(pageCaptionBounds.Width - convCmToInch(1.5f), pageCaptionBounds.Height));
+            g.DrawString(pageText, pageNumFont, blackBrush, pageCaptionBounds2, farCenterFormat);
         }
 
         private void drawLogo(Graphics g, RectangleF bounds, Image image)
@@ -445,8 +437,8 @@ namespace Bilten.Report
             this.pageBounds = pageBounds;
 
 			calculateHeaderBounds(g, marginBounds);
-            calculateContentBounds(g, marginBounds);
             calculateFooterBounds(g, marginBounds);
+            calculateContentBounds(g, marginBounds);
             
             doSetupContent(g);
 			contentSetupDone = true;
@@ -536,40 +528,30 @@ namespace Bilten.Report
             headerBounds = new RectangleF(header1TopLeft, new SizeF(width, header4Bounds.Bottom - header1Bounds.Top));
         }
 
-        // TODO3: Nadji bolji nacin za podesavanje velicine hedera i futera
-        protected bool kvalifikantiIzvestaj;
-
-        public virtual float getHeaderHeight(Graphics g, RectangleF marginBounds)
-        {
-            if (kvalifikantiIzvestaj)
-                return convCmToInch(2.5f);
-            else
-                return convCmToInch(3.5f);
-        }
-
         private void calculateContentBounds(Graphics g, RectangleF marginBounds)
 		{
-			float headerHeight = getHeaderHeight(g, marginBounds);
-            float footerHeight = getFooterHeight(g, marginBounds);
-
-            float headerBottom = header4Bounds.Bottom + convCmToInch(0.5f);
+            // TODO5: Probaj da izbacis sve pozive convCmToInch()
+            float headerBottom = headerBounds.Bottom + convCmToInch(0.5f);
             contentBounds = new RectangleF(marginBounds.X, headerBottom,
-                marginBounds.Width, marginBounds.Bottom - headerBottom - footerHeight);
+                marginBounds.Width, footerBounds.Top - headerBottom);
 		}
-
-        public virtual float getFooterHeight(Graphics g, RectangleF marginBounds)
-        {
-            if (kvalifikantiIzvestaj)
-                return convCmToInch(0.3f);
-            else
-                return convCmToInch(1f);
-        }
 
         private void calculateFooterBounds(Graphics g, RectangleF marginBounds)
         {
-            float footerHeight = getFooterHeight(g, marginBounds);
-            footerBounds = new RectangleF(marginBounds.X, marginBounds.Bottom - footerHeight,
-                marginBounds.Width, footerHeight);
+            float pageCaptionHeight = convCmToInch(0.7f);
+            float logoHeight = getHeaderLogoHeight();
+            if (String.IsNullOrEmpty(takmicenje.Logo3RelPath) && String.IsNullOrEmpty(takmicenje.Logo4RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+            {
+                // Ne koristi se za nista, sluzi samo da popuni prazan prostor na dnu strane
+                logoHeight = getHeaderLogoHeight() * 0.3f;
+            }
+            logoFooterBounds = new RectangleF(pageBounds.Left, pageBounds.Bottom - logoHeight, pageBounds.Width,
+                logoHeight);
+            pageCaptionBounds = new RectangleF(pageBounds.Left, logoFooterBounds.Top - pageCaptionHeight,
+                pageBounds.Width, pageCaptionHeight);
+            footerBounds = new RectangleF(pageCaptionBounds.Location,
+                new SizeF(pageBounds.Width, pageCaptionHeight + logoHeight));
         }
 
         protected virtual void doSetupContent(Graphics g)
