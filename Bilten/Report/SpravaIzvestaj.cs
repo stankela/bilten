@@ -315,7 +315,12 @@ namespace Bilten.Report
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float skokWidth = rankWidth / 2;
-            float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+            // TODO5: Ovo je privremeno
+            float ocenaWidth;
+            if (brojEOcena > 0)
+                ocenaWidth = g.MeasureString("00,000", itemFont).Width;
+            else
+                ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
             float kvalWidth = rankWidth / 2;
 
             // TODO5: Smanji sirinu ocena kada ima vise E ocena, da sve moze da stane

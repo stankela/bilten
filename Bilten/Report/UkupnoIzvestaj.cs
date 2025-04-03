@@ -150,6 +150,8 @@ namespace Bilten.Report
                     }
                 }
 
+                // TODO5: Ne crtaj liniju izmedju "D E" i "Total B Pen" kolona
+
                 List<object> items;
                 if (gim == Gimnastika.MSG)
                 {
@@ -174,13 +176,31 @@ namespace Bilten.Report
                     if (penalizacijaZaSprave)
                     {
                         // extended je uvek true kada prikazujemo penalizaciju za sprave
-                        // index se povecava za 4 zato sto imamo D, E, Pen, i Total za svaku spravu
-                        items.Insert(6, r.ParterPen);
-                        items.Insert(10, r.KonjPen);
-                        items.Insert(14, r.KarikePen);
-                        items.Insert(18, r.PreskokPen);
-                        items.Insert(22, r.RazbojPen);
-                        items.Insert(26, r.VratiloPen);
+                        // index se povecava za 5 zato sto imamo D, E, B, Pen, i Total za svaku spravu
+                        string bon = r.ParterBon != null ? "B " + r.ParterBon.ToString() : "";
+                        string pen = r.ParterPen != null ? "P " + r.ParterPen.ToString() : "";
+                        items.Insert(6, bon);
+                        items.Insert(7, pen);
+                        bon = r.KonjBon != null ? "B " + r.KonjBon.ToString() : "";
+                        pen = r.KonjPen != null ? "P " + r.KonjPen.ToString() : "";
+                        items.Insert(11, bon);
+                        items.Insert(12, pen);
+                        bon = r.KarikeBon != null ? "B " + r.KarikeBon.ToString() : "";
+                        pen = r.KarikePen != null ? "P " + r.KarikePen.ToString() : "";
+                        items.Insert(16, bon);
+                        items.Insert(17, pen);
+                        bon = r.PreskokBon != null ? "B " + r.PreskokBon.ToString() : "";
+                        pen = r.PreskokPen != null ? "P " + r.PreskokPen.ToString() : "";
+                        items.Insert(21, bon);
+                        items.Insert(22, pen);
+                        bon = r.RazbojBon != null ? "B " + r.RazbojBon.ToString() : "";
+                        pen = r.RazbojPen != null ? "P " + r.RazbojPen.ToString() : "";
+                        items.Insert(26, bon);
+                        items.Insert(27, pen);
+                        bon = r.VratiloBon != null ? "B " + r.VratiloBon.ToString() : "";
+                        pen = r.VratiloPen != null ? "P " + r.VratiloPen.ToString() : "";
+                        items.Insert(31, bon);
+                        items.Insert(32, pen);
                     }
                 }
                 else
@@ -201,10 +221,22 @@ namespace Bilten.Report
                     }
                     if (penalizacijaZaSprave)
                     {
-                        items.Insert(6, r.PreskokPen);
-                        items.Insert(10, r.DvovisinskiRazbojPen);
-                        items.Insert(14, r.GredaPen);
-                        items.Insert(18, r.ParterPen);
+                        string bon = r.PreskokBon != null ? "B " + r.PreskokBon.ToString() : "";
+                        string pen = r.PreskokPen != null ? "P " + r.PreskokPen.ToString() : "";
+                        items.Insert(6, bon);
+                        items.Insert(7, pen);
+                        bon = r.DvovisinskiRazbojBon != null ? "B " + r.DvovisinskiRazbojBon.ToString() : "";
+                        pen = r.DvovisinskiRazbojPen != null ? "P " + r.DvovisinskiRazbojPen.ToString() : "";
+                        items.Insert(11, bon);
+                        items.Insert(12, pen);
+                        bon = r.GredaBon != null ? "B " + r.GredaBon.ToString() : "";
+                        pen = r.GredaPen != null ? "P " + r.GredaPen.ToString() : "";
+                        items.Insert(16, bon);
+                        items.Insert(17, pen);
+                        bon = r.ParterBon != null ? "B " + r.ParterBon.ToString() : "";
+                        pen = r.ParterPen != null ? "P " + r.ParterPen.ToString() : "";
+                        items.Insert(21, bon);
+                        items.Insert(22, pen);
                     }
                 }
                 if (stampajBroj)
@@ -254,11 +286,11 @@ namespace Bilten.Report
 			createColumns(g, contentBounds);
 
             if (extended && penalizacijaZaSprave)
-                itemHeight = itemFont.GetHeight(g) * 2.9f;
+                itemHeight = itemFont.GetHeight(g) * 4.4f;
             else
                 itemHeight = itemFont.GetHeight(g) * 1.4f;
             if (extended && penalizacijaZaSprave)
-                itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 4.8f;
+                itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 6.0f;
             else if (extended)
 			    itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             else
@@ -624,15 +656,15 @@ namespace Bilten.Report
             ReportColumn prevColumn = column;
             for (int i = 0; i < sprave.Length; i++)
             {
-                ReportColumn column1 = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, x[2 * i], spravaEWidth, fmtE,
+                ReportColumn column1 = addThreeRowColumn(prevColumn.getItemsIndexEnd(), 2, x[2 * i], spravaEWidth, fmtE,
                     spravaFormat, "D\nE", spravaHeaderFormat);
 
                 column1.Image = SlikeSprava.getImage(sprave[i]);
                 column1.Split = true;
                 column1.Span = true;
 
-                column = addDvaPreskokaColumn(column1.getItemsIndexEnd(), 2, x[2 * i + 1], spravaTotWidth, fmtTot,
-                    spravaFormat, "Total\nPen", spravaHeaderFormat);
+                column = addThreeRowColumn(column1.getItemsIndexEnd(), 3, x[2 * i + 1], spravaTotWidth, fmtTot,
+                    spravaFormat, "Total\nB\nPen", spravaHeaderFormat);
                 column.Image = SlikeSprava.getImage(sprave[i]);
                 column.Split = true;
                 column.Brush = totalBrush;
@@ -664,10 +696,10 @@ namespace Bilten.Report
             }
         }
 
-        private DvaPreskokaReportColumn addDvaPreskokaColumn(int itemsIndex, int itemsSpan, float x, float width,
+        private ThreeRowColumn addThreeRowColumn(int itemsIndex, int itemsSpan, float x, float width,
             string format, StringFormat itemRectFormat, string headerTitle, StringFormat headerFormat)
         {
-            DvaPreskokaReportColumn result = new DvaPreskokaReportColumn(
+            ThreeRowColumn result = new ThreeRowColumn(
                 itemsIndex, itemsSpan, x, width, headerTitle);
             result.Format = format;
             result.ItemRectFormat = itemRectFormat;
@@ -732,6 +764,46 @@ namespace Bilten.Report
                     g.DrawString(col.HeaderTitle, itemsHeaderFont, blackBrush,
                         columnHeaderRect, col.HeaderFormat);
                 }
+            }
+        }
+    }
+
+    public class ThreeRowColumn : ReportColumn
+    {
+        public ThreeRowColumn(int itemsIndex, int itemsSpan, float x, float width, string headerTitle)
+            : base(itemsIndex, x, width, headerTitle)
+        {
+            this.itemsSpan = itemsSpan;
+        }
+
+        public override void draw(Graphics g, Pen pen, object[] itemsRow, Font itemFont, Brush blackBrush)
+        {
+            if (this.Brush != null)
+            {
+                g.FillRectangle(this.Brush, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+            if (this.DrawItemRect)
+            {
+                g.DrawRectangle(pen, itemRect.X, itemRect.Y,
+                    itemRect.Width, itemRect.Height);
+            }
+
+            RectangleF itemRect1 = new RectangleF(itemRect.X, itemRect.Y, itemRect.Width, itemRect.Height / 3);
+            RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + itemRect.Height / 3, itemRect.Width,
+                itemRect.Height / 3);
+
+            string item1 = this.getFormattedString(itemsRow, itemsIndex);
+            string item2 = this.getFormattedString(itemsRow, itemsIndex + 1);
+            g.DrawString(item1, itemFont, blackBrush, itemRect1, this.ItemRectFormat);
+            g.DrawString(item2, itemFont, blackBrush, itemRect2, this.ItemRectFormat);
+
+            if (itemsSpan == 3)
+            {
+                RectangleF itemRect3 = new RectangleF(itemRect.X, itemRect.Y + 2 * itemRect.Height / 3, itemRect.Width,
+                    itemRect.Height / 3);
+                string item3 = this.getFormattedString(itemsRow, itemsIndex + 2);
+                g.DrawString(item3, itemFont, blackBrush, itemRect3, this.ItemRectFormat);
             }
         }
     }

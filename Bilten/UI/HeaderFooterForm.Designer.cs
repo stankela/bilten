@@ -511,9 +511,9 @@ namespace Bilten.UI
             this.ckbPrikaziPenalizaciju.AutoSize = true;
             this.ckbPrikaziPenalizaciju.Location = new System.Drawing.Point(214, 339);
             this.ckbPrikaziPenalizaciju.Name = "ckbPrikaziPenalizaciju";
-            this.ckbPrikaziPenalizaciju.Size = new System.Drawing.Size(144, 17);
+            this.ckbPrikaziPenalizaciju.Size = new System.Drawing.Size(179, 17);
             this.ckbPrikaziPenalizaciju.TabIndex = 57;
-            this.ckbPrikaziPenalizaciju.Text = "Prikazi D, E i penalizaciju";
+            this.ckbPrikaziPenalizaciju.Text = "Prikazi D, E, bonus i penalizaciju";
             this.ckbPrikaziPenalizaciju.UseVisualStyleBackColor = true;
             // 
             // ckbPrikaziClanoveEkipe

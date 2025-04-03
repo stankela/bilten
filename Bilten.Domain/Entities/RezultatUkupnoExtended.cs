@@ -39,6 +39,13 @@ namespace Bilten.Domain
             protected set { _parterE = value; }
         }
 
+        private Nullable<float> _parterBon = 0.1f;
+        public virtual Nullable<float> ParterBon
+        {
+            get { return _parterBon; }
+            protected set { _parterBon = value; }
+        }
+
         private Nullable<float> _parterPen;
         public virtual Nullable<float> ParterPen
         {
@@ -58,6 +65,13 @@ namespace Bilten.Domain
         {
             get { return _konjE; }
             protected set { _konjE = value; }
+        }
+
+        private Nullable<float> _konjBon = 0.2f;
+        public virtual Nullable<float> KonjBon
+        {
+            get { return _konjBon; }
+            protected set { _konjBon = value; }
         }
 
         private Nullable<float> _konjPen;
@@ -81,6 +95,13 @@ namespace Bilten.Domain
             protected set { _karikeE = value; }
         }
 
+        private Nullable<float> _karikeBon = 0.3f;
+        public virtual Nullable<float> KarikeBon
+        {
+            get { return _karikeBon; }
+            protected set { _karikeBon = value; }
+        }
+
         private Nullable<float> _karikePen;
         public virtual Nullable<float> KarikePen
         {
@@ -100,6 +121,13 @@ namespace Bilten.Domain
         {
             get { return _preskokE; }
             protected set { _preskokE = value; }
+        }
+
+        private Nullable<float> _preskokBon = 0.4f;
+        public virtual Nullable<float> PreskokBon
+        {
+            get { return _preskokBon; }
+            protected set { _preskokBon = value; }
         }
 
         private Nullable<float> _preskokPen;
@@ -123,6 +151,13 @@ namespace Bilten.Domain
             protected set { _razbojE = value; }
         }
 
+        private Nullable<float> _razbojBon = 0.5f;
+        public virtual Nullable<float> RazbojBon
+        {
+            get { return _razbojBon; }
+            protected set { _razbojBon = value; }
+        }
+
         private Nullable<float> _razbojPen;
         public virtual Nullable<float> RazbojPen
         {
@@ -142,6 +177,13 @@ namespace Bilten.Domain
         {
             get { return _vratiloE; }
             protected set { _vratiloE = value; }
+        }
+
+        private Nullable<float> _vratiloBon = 0.6f;
+        public virtual Nullable<float> VratiloBon
+        {
+            get { return _vratiloBon; }
+            protected set { _vratiloBon = value; }
         }
 
         private Nullable<float> _vratiloPen;
@@ -165,6 +207,13 @@ namespace Bilten.Domain
             protected set { _gredaE = value; }
         }
 
+        private Nullable<float> _gredaBon = 0.7f;
+        public virtual Nullable<float> GredaBon
+        {
+            get { return _gredaBon; }
+            protected set { _gredaBon = value; }
+        }
+
         private Nullable<float> _gredaPen;
         public virtual Nullable<float> GredaPen
         {
@@ -184,6 +233,13 @@ namespace Bilten.Domain
         {
             get { return _dvovisinskiRazbojE; }
             protected set { _dvovisinskiRazbojE = value; }
+        }
+
+        private Nullable<float> _dvovisinskiRazbojBon = 0.8f;
+        public virtual Nullable<float> DvovisinskiRazbojBon
+        {
+            get { return _dvovisinskiRazbojBon; }
+            protected set { _dvovisinskiRazbojBon = value; }
         }
 
         private Nullable<float> _dvovisinskiRazbojPen;
