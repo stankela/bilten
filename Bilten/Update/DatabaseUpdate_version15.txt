@@ -1,0 +1,46 @@
+-- 03-Apr-2025 (VERZIJA = 15)
+
+alter table jezici add column broj nvarchar(64);
+GO
+alter table jezici add column prezime nvarchar(64);
+GO
+alter table jezici add column datum_rodjenja nvarchar(64);
+GO
+alter table jezici add column klub nvarchar(64);
+GO
+alter table jezici add column drzava nvarchar(64);
+GO
+alter table jezici add column ekipa nvarchar(64);
+GO
+alter table jezici add column strana nvarchar(64);
+GO
+
+update jezici set broj = 'Broj' where naziv = 'Srpski';
+GO
+update jezici set prezime = 'Prezime' where naziv = 'Srpski';
+GO
+update jezici set datum_rodjenja = 'Datum rodjenja' where naziv = 'Srpski';
+GO
+update jezici set klub = 'Klub' where naziv = 'Srpski';
+GO
+update jezici set drzava = 'Drzava' where naziv = 'Srpski';
+GO
+update jezici set ekipa = 'Ekipa' where naziv = 'Srpski';
+GO
+update jezici set strana = 'Strana' where naziv = 'Srpski';
+GO
+
+update jezici set broj = '#' where naziv = 'Engleski';
+GO
+update jezici set prezime = 'Surname' where naziv = 'Engleski';
+GO
+update jezici set datum_rodjenja = 'Birth date' where naziv = 'Engleski';
+GO
+update jezici set klub = 'Club' where naziv = 'Engleski';
+GO
+update jezici set drzava = 'National team' where naziv = 'Engleski';
+GO
+update jezici set ekipa = 'Team' where naziv = 'Engleski';
+GO
+update jezici set strana = 'Page' where naziv = 'Engleski';
+GO

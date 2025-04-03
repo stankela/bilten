@@ -182,6 +182,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version15.txt" />
     <EmbeddedResource Include="UI\PromeniBrojeveForm.resx">
       <DependentUpon>PromeniBrojeveForm.cs</DependentUpon>
     </EmbeddedResource>

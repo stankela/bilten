@@ -33,6 +33,13 @@ namespace Bilten.Domain
             set { redBroj = value; }
         }
 
+        private string broj;
+        public virtual string Broj
+        {
+            get { return broj; }
+            set { broj = value; }
+        }
+
         private string rank;
         public virtual string Rank
         {
@@ -45,6 +52,34 @@ namespace Bilten.Domain
         {
             get { return ime; }
             set { ime = value; }
+        }
+
+        private string prezime;
+        public virtual string Prezime
+        {
+            get { return prezime; }
+            set { prezime = value; }
+        }
+
+        private string datumRodjenja;
+        public virtual string DatumRodjenja
+        {
+            get { return datumRodjenja; }
+            set { datumRodjenja = value; }
+        }
+
+        private string klub;
+        public virtual string Klub
+        {
+            get { return klub; }
+            set { klub = value; }
+        }
+
+        private string drzava;
+        public virtual string Drzava
+        {
+            get { return drzava; }
+            set { drzava = value; }
         }
 
         private string klubDrzava;
@@ -75,11 +110,25 @@ namespace Bilten.Domain
             set { ocena = value; }
         }
 
+        private string ekipa;
+        public virtual string Ekipa
+        {
+            get { return ekipa; }
+            set { ekipa = value; }
+        }
+
         private string rezerve;
         public virtual string Rezerve
         {
             get { return rezerve; }
             set { rezerve = value; }
+        }
+
+        private string strana;
+        public virtual string Strana
+        {
+            get { return strana; }
+            set { strana = value; }
         }
     }
 }

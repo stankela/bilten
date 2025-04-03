@@ -649,5 +649,12 @@ create table jezici (
     kategorija nvarchar(64),
     ukupno nvarchar(64),
     ocena nvarchar(64),
-    rezerve nvarchar(64)
+    rezerve nvarchar(64),
+    broj nvarchar(64),
+    prezime nvarchar(64),
+    datum_rodjenja nvarchar(64),
+    klub nvarchar(64),
+    drzava nvarchar(64),
+    ekipa nvarchar(64),
+    strana nvarchar(64)
 );

@@ -17,6 +17,13 @@
     <property name="Ukupno" column="ukupno" type="String"/>
     <property name="Ocena" column="ocena" type="String"/>
     <property name="Rezerve" column="rezerve" type="String"/>
+    <property name="Broj" column="broj" type="String"/>
+    <property name="Prezime" column="prezime" type="String"/>
+    <property name="DatumRodjenja" column="datum_rodjenja" type="String"/>
+    <property name="Klub" column="klub" type="String"/>
+    <property name="Drzava" column="drzava" type="String"/>
+    <property name="Ekipa" column="ekipa" type="String"/>
+    <property name="Strana" column="strana" type="String"/>
   </class>
 
 </hibernate-mapping>

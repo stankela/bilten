@@ -88,23 +88,37 @@ namespace Bilten.UI
             txtRedBroj.Text = jezik.RedBroj;
             txtRank.Text = jezik.Rank;
             txtIme.Text = jezik.Ime;
-            txtKlub.Text = jezik.KlubDrzava;
+            txtKlubDrzava.Text = jezik.KlubDrzava;
             txtKategorija.Text = jezik.Kategorija;
             txtTotal.Text = jezik.Ukupno;
             txtOcena.Text = jezik.Ocena;
             txtRezerve.Text = jezik.Rezerve;
+            txtBroj.Text = jezik.Broj;
+            txtPrezime.Text = jezik.Prezime;
+            txtDatumRodjenja.Text = jezik.DatumRodjenja;
+            txtKlub.Text = jezik.Klub;
+            txtDrzava.Text = jezik.Drzava;
+            txtEkipa.Text = jezik.Ekipa;
+            txtStrana.Text = jezik.Strana;
         }
 
         private void updateJezikFromUI(Jezik jezik)
         {
-             jezik.RedBroj = txtRedBroj.Text;
-             jezik.Rank = txtRank.Text;
-             jezik.Ime = txtIme.Text;
-             jezik.KlubDrzava = txtKlub.Text;
-             jezik.Kategorija = txtKategorija.Text;
-             jezik.Ukupno = txtTotal.Text;
-             jezik.Ocena = txtOcena.Text;
-             jezik.Rezerve = txtRezerve.Text;
+            jezik.RedBroj = txtRedBroj.Text;
+            jezik.Rank = txtRank.Text;
+            jezik.Ime = txtIme.Text;
+            jezik.KlubDrzava = txtKlubDrzava.Text;
+            jezik.Kategorija = txtKategorija.Text;
+            jezik.Ukupno = txtTotal.Text;
+            jezik.Ocena = txtOcena.Text;
+            jezik.Rezerve = txtRezerve.Text;
+            jezik.Broj = txtBroj.Text;
+            jezik.Prezime = txtPrezime.Text;
+            jezik.DatumRodjenja = txtDatumRodjenja.Text;
+            jezik.Klub = txtKlub.Text;
+            jezik.Drzava = txtDrzava.Text;
+            jezik.Ekipa = txtEkipa.Text;
+            jezik.Strana = txtStrana.Text;
         }
 
         private void JezikForm_Shown(object sender, EventArgs e)
@@ -141,10 +155,10 @@ namespace Bilten.UI
                 msg = "Unesite tekst za ime.";
                 txtBox = txtIme;
             }
-            else if (txtKlub.Text.Trim() == String.Empty)
+            else if (txtKlubDrzava.Text.Trim() == String.Empty)
             {
                 msg = "Unesite tekst za klub.";
-                txtBox = txtKlub;
+                txtBox = txtKlubDrzava;
             }
             else if (txtKategorija.Text.Trim() == String.Empty)
             {
@@ -165,6 +179,41 @@ namespace Bilten.UI
             {
                 msg = "Unesite tekst za rezerve.";
                 txtBox = txtRezerve;
+            }
+            else if (txtBroj.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za broj.";
+                txtBox = txtBroj;
+            }
+            else if (txtPrezime.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za prezime.";
+                txtBox = txtPrezime;
+            }
+            else if (txtDatumRodjenja.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za datum rodjenja.";
+                txtBox = txtDatumRodjenja;
+            }
+            else if (txtKlub.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za klub.";
+                txtBox = txtKlub;
+            }
+            else if (txtDrzava.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za drzavu.";
+                txtBox = txtDrzava;
+            }
+            else if (txtEkipa.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za ekipu.";
+                txtBox = txtEkipa;
+            }
+            else if (txtStrana.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za stranu.";
+                txtBox = txtStrana;
             }
 
             if (msg != String.Empty)

@@ -463,13 +463,6 @@ namespace Bilten.Domain
             set { ekipaString = value; }
         }
 
-        private string stranaString = "Strana";  // "Page"
-        public virtual string StranaString
-        {
-            get { return stranaString; }
-            set { stranaString = value; }
-        }
-
         private string klubDrzavaString = "Klub";  // "Club / NT"
         public virtual string KlubDrzavaString
         {
@@ -505,9 +498,15 @@ namespace Bilten.Domain
             set { rezerveString = value; }
         }
 
+        private string stranaString = "Strana";  // "Page"
+        public virtual string StranaString
+        {
+            get { return stranaString; }
+            set { stranaString = value; }
+        }
+
         public virtual void UpdateJezik(Jezik jezik)
         {
-            // TODO5
             Jezik = jezik.Naziv;
             RedBrojString = jezik.RedBroj;
             RankString = jezik.Rank;
@@ -517,6 +516,14 @@ namespace Bilten.Domain
             TotalString = jezik.Ukupno;
             OcenaString = jezik.Ocena;
             RezerveString = jezik.Rezerve;
+
+            BrojString = jezik.Broj;
+            PrezimeString = jezik.Prezime;
+            DatumRodjenjaString = jezik.DatumRodjenja;
+            KlubString = jezik.Klub;
+            DrzavaString = jezik.Drzava;
+            EkipaString = jezik.Ekipa;
+            StranaString = jezik.Strana;
         }
     }
 }
