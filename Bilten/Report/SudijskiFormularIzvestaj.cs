@@ -16,8 +16,8 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public SudijskiFormularIzvestaj(StartListaNaSpravi startLista, string documentName, int brojEOcena, 
-            bool stampajRedniBroj, bool stampajKategoriju, bool stampajKlub, DataGridView formGrid, Takmicenje takmicenje)
-            : base(takmicenje)
+            bool stampajRedniBroj, bool stampajKategoriju, bool stampajKlub, DataGridView formGrid, Takmicenje takmicenje,
+            bool stampajBonus) : base(takmicenje)
 		{
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -28,7 +28,7 @@ namespace Bilten.Report
             Margins = new Margins(30, 30, 75, 75);
 
             SudijskiFormularLista lista = new SudijskiFormularLista(this, 1, 0f, itemFont, itemsHeaderFont, startLista,
-                brojEOcena, stampajRedniBroj, stampajKategoriju, stampajKlub, formGrid, takmicenje.TakBrojevi);
+                brojEOcena, stampajRedniBroj, stampajKategoriju, stampajKlub, formGrid, takmicenje.TakBrojevi, stampajBonus);
             lista.RelY = 0.0f + 0.03f;
             reportListe.Add(lista);
 		}
@@ -36,7 +36,7 @@ namespace Bilten.Report
         public SudijskiFormularIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
             string documentName, int brojEOcena, int brojSpravaPoStrani, bool stampajRedniBroj,
             bool stampajKategoriju, bool stampajKlub, SpravaGridGroupUserControl spravaGridGroupUserControl,
-            Takmicenje takmicenje) : base(takmicenje)
+            Takmicenje takmicenje, bool stampajBonus) : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemFont = new Font("Arial", itemFontSize);
@@ -64,7 +64,8 @@ namespace Bilten.Report
                 }
                 SudijskiFormularLista lista = new SudijskiFormularLista(this, page, 0f, itemFont, itemsHeaderFont,
                     startListe[i], brojEOcena, stampajRedniBroj, stampajKategoriju, stampajKlub,
-                    spravaGridGroupUserControl[sprava].DataGridViewUserControl.DataGridView, takmicenje.TakBrojevi);
+                    spravaGridGroupUserControl[sprava].DataGridViewUserControl.DataGridView, takmicenje.TakBrojevi,
+                    stampajBonus);
                 lista.RelY = relY;
                 reportListe.Add(lista);
             }
@@ -100,10 +101,11 @@ namespace Bilten.Report
         private bool stampajKategoriju;
         private bool stampajKlub;
         private bool stampajBroj;
+        private bool stampajBonus;
 
         public SudijskiFormularLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, StartListaNaSpravi startLista, int brojEOcena, bool stampajRedniBroj,
-            bool stampajKategoriju, bool stampajKlub, DataGridView formGrid, bool stampajBroj)
+            bool stampajKategoriju, bool stampajKlub, DataGridView formGrid, bool stampajBroj, bool stampajBonus)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = startLista.Sprava;
@@ -112,6 +114,7 @@ namespace Bilten.Report
             this.stampajKategoriju = stampajKategoriju;
             this.stampajKlub = stampajKlub;
             this.stampajBroj = stampajBroj;
+            this.stampajBonus = stampajBonus;
 
             fetchItems(startLista);
         }
@@ -136,6 +139,7 @@ namespace Bilten.Report
                 {
                     items = new List<object>() { redBroj, nastup.PrezimeIme, nastup.Kategorija,
                         nastup.KlubDrzava, "", "", "", ""};
+                    if (stampajBonus) items.Add("");
                     if (brojEOcena > 0) items.Add("");
                     if (brojEOcena > 1) items.Add("");
                     if (brojEOcena > 2) items.Add("");
@@ -147,6 +151,7 @@ namespace Bilten.Report
                 {
                     items = new List<object>() { redBroj, nastup.PrezimeIme, nastup.Kategorija,
                         nastup.KlubDrzava, "1", "2", "", "", "", "", "", "", "", "", ""};
+                    if (stampajBonus) items.Add(""); items.Add("");
                     if (brojEOcena > 0) items.Add(""); items.Add("");
                     if (brojEOcena > 1) items.Add(""); items.Add("");
                     if (brojEOcena > 2) items.Add(""); items.Add("");
@@ -234,9 +239,10 @@ namespace Bilten.Report
             }
             else
                 xSprava = xKlub + klubWidth;
-            float xTotal = xSprava + ocenaWidth * (4 + brojEOcena);
+            int brojOcena = stampajBonus ? 5 : 4;
+            float xTotal = xSprava + ocenaWidth * (brojOcena + brojEOcena);
 
-            float xRightEnd = xSprava + ocenaWidth * (4 + brojEOcena);
+            float xRightEnd = xSprava + ocenaWidth * (brojOcena + brojEOcena);
             if (sprava == Sprava.Preskok)
                 xRightEnd += ocenaWidth;
 
@@ -268,7 +274,18 @@ namespace Bilten.Report
                 xE = xSprava + ocenaWidth;
             else
                 xE = xEn[brojEOcena - 1] + ocenaWidth;
-            float xPen = xE + ocenaWidth;
+            float xBonus = 0f;
+            float xCurr;
+            if (stampajBonus)
+            {
+                xBonus = xE + ocenaWidth;
+                xCurr = xBonus;
+            }
+            else
+            {
+                xCurr = xE;
+            }
+            float xPen = xCurr + ocenaWidth;
             float xTot = xPen + ocenaWidth;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
@@ -328,8 +345,10 @@ namespace Bilten.Report
                   skokTitle, skokHeaderFormat, true);
             }
 
+            // TODO5: Ovo nije potrebno jer se ne stampaju nikakve ocene vec samo prazan formular
             string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
             string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
+            string fmtBon = "F" + Opcije.Instance.BrojDecimalaBon;
             string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
@@ -373,6 +392,17 @@ namespace Bilten.Report
                 column = addColumn(xE, ocenaWidth, fmtE, spravaFormat, "E", spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
+
+            if (stampajBonus)
+            {
+                if (sprava == Sprava.Preskok)
+                    column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xBonus, ocenaWidth, fmtBon, spravaFormat,
+                        "B", spravaHeaderFormat, true);
+                else
+                    column = addColumn(xBonus, ocenaWidth, fmtBon, spravaFormat, "B", spravaHeaderFormat);
+                column.Image = SlikeSprava.getImage(sprava);
+                column.Split = true;
+            }
 
             if (sprava == Sprava.Preskok)
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xPen, ocenaWidth, fmtPen, spravaFormat,

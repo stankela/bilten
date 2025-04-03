@@ -1472,7 +1472,9 @@ namespace Bilten.UI
             string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true, false,
-                false, false, false);
+                false, false, true);
+            form.restoreCkbPrikaziBonusLocation();  // hack, da ne moram da dodajem novi parametar u konstruktoru za ovo
+
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -1530,14 +1532,15 @@ namespace Bilten.UI
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, takmicenje.Gimnastika, documentName,
                         brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
                         form.StampajKategoriju, form.StampajKlub,
-                        getActiveSpravaGridGroupUserControl(), takmicenje));
+                        getActiveSpravaGridGroupUserControl(), takmicenje, form.PrikaziBonus));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena,
                         form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
-                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje));
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
+                        form.PrikaziBonus));
                 }
 
                 p.ShowDialog();

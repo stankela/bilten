@@ -18,6 +18,13 @@ namespace Bilten.UI
             set { deoTakKod = value; }
         }
 
+        private Point ckbPrikaziBonusOrigLocation;
+
+        public void restoreCkbPrikaziBonusLocation()
+        {
+            ckbPrikaziBonus.Location = ckbPrikaziBonusOrigLocation;
+        }
+
         public HeaderFooterForm(DeoTakmicenjaKod deoTakKod, bool prikaziDEOceneVisible, bool brojSpravaPoStraniVisible,
             bool prikaziPenalSpravaVisible, bool stampajRedniBrojVisible, bool stampajKategorijuVisible,
             bool stampajKlubVisible, bool brojEOcenaFormularVisible, bool stampajPojedinacneEOceneVisible,
@@ -49,7 +56,10 @@ namespace Bilten.UI
             ckbPrikaziBonus.Visible = prikaziBonusVisible;
             ckbPrikaziBonus.Enabled = prikaziBonusVisible;
             if (prikaziBonusVisible)
+            {
+                ckbPrikaziBonusOrigLocation = ckbPrikaziBonus.Location;
                 ckbPrikaziBonus.Location = ckbStampajKategoriju.Location;
+            }
 
             ckbStampajRedniBroj.Visible = stampajRedniBrojVisible;
             ckbStampajRedniBroj.Enabled = stampajRedniBrojVisible;
