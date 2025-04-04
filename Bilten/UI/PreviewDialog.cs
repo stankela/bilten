@@ -17,6 +17,12 @@ namespace Bilten.UI
     {
         enum RezimRada { Normal, MyPreviewDraw, PageSizeTooSmall };
 
+        // TODO5: Nasao sam sledecu gresku. Kada stampam neki izvestaj koji u portret modu moze da stane ceo na jednu
+        // stranu (npr start liste sa 6 sprava na strani) a u landscape ne moze, ako u PreviewDialog promenim orijentaciju
+        // u landscape, nece azurirati ispis da pise "page 1 od 2" (ostace "page 1 od 1"), ali ako kliknem na desnu
+        // strelicu sve radi korektno jer prelazi na drugu stranu i ispisuje "page 2 od 2". Stampanje takodje radi
+        // korektno (stampaju se obe strane).
+
         private Izvestaj izvestaj;
         private int page;
         private int lastPageToPrint;
@@ -28,7 +34,7 @@ namespace Bilten.UI
         private Graphics screenGraphics;
 
         private readonly string SMALL_PAPER_SIZE_MSG =
-            "Strana stampaca je mala za izvestaj. Izaberite vecu stranu.";
+            "Izvestaj ne moze da stane na stranu stampaca.";
         private readonly string NO_PRINTERS_MSG = "Ne postoje instalirani stampaci.";
         private readonly string PRINTING_FAILURE_MSG = "Neuspesno stampanje.";
 

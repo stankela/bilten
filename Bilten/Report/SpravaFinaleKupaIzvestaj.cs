@@ -163,7 +163,7 @@ namespace Bilten.Report
             if (kvalColumn)
                 xRightEnd += kvalWidth;
 
-            float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
+            float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
             if (delta < -contentBounds.X)
                 delta = -contentBounds.X;
 

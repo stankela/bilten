@@ -388,7 +388,7 @@ namespace Bilten.Report
             float delta;
             if (columnNumber == 1)
             {
-                delta = contentBounds.X - (2 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moza da bude i negativno
+                delta = contentBounds.X - (2 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moze da bude i negativno
                 if (delta > contentBounds.X)
                     delta = contentBounds.X;
                 xRank -= delta;
@@ -400,7 +400,7 @@ namespace Bilten.Report
             }
             else
             {
-                delta = (1 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moza da bude i negativno
+                delta = (1 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moze da bude i negativno
                 if (delta < 0)
                     delta = 0.0f;
                 xRank += delta;

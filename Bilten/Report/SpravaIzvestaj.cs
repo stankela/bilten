@@ -9,7 +9,7 @@ namespace Bilten.Report
 {
     class SpravaIzvestaj : Izvestaj
     {
-        private List<SpravaLista> liste = new List<SpravaLista>();
+        private List<SpravaLista> reportListe = new List<SpravaLista>();
         private bool svakaSpravaNaPosebnojStrani;
         private bool dveKolone;
 
@@ -23,7 +23,7 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
 
-            liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, false, 1,
+            reportListe.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, false, 1,
                 kvalColumn, sprava, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena, takmicenje.TakBrojevi,
                 prikaziBonus));
 		}
@@ -38,7 +38,7 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
 
-            liste.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, false, 1,
+            reportListe.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, false, 1,
                 kvalColumn, obaPreskoka, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena,
                 takmicenje.TakBrojevi, prikaziBonus));
         }
@@ -87,7 +87,7 @@ namespace Bilten.Report
                         rezultatiPreskok, dveKolone, columnNumber, kvalColumn, obaPreskoka, prikaziPenal, formGrid,
                         markFirstRows, numRowsToMark, brojEOcena, takmicenje.TakBrojevi, prikaziBonus);
                 }
-                liste.Add(lista);
+                reportListe.Add(lista);
             }
         }
 
@@ -105,9 +105,9 @@ namespace Bilten.Report
                 prevLista = null;
                 int j = 0;
                 bool prebaciNaSledecuStranu = false;
-                while (j < liste.Count)
+                while (j < reportListe.Count)
                 {
-                    SpravaLista lista = liste[j];
+                    SpravaLista lista = reportListe[j];
                     if (prevLista == null)
                     {
                         lista.FirstPageNum = 1;
@@ -185,7 +185,7 @@ namespace Bilten.Report
 
         public override void drawContent(Graphics g, int pageNum)
         {
-            foreach (SpravaLista lista in liste)
+            foreach (SpravaLista lista in reportListe)
             {
                 lista.drawContent(g, contentBounds, pageNum);
             }
@@ -407,7 +407,6 @@ namespace Bilten.Report
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float skokWidth = rankWidth / 2;
-            // TODO5: Ovo je privremeno
             float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
             float kvalWidth = rankWidth / 2;
 
@@ -454,7 +453,7 @@ namespace Bilten.Report
             if (kvalColumn)
                 xRightEnd += kvalWidth;
 
-            float delta = (contentBounds.Right - xRightEnd) / 2;  // moza da bude i negativno
+            float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
             if (delta < -contentBounds.X)
                 delta = -contentBounds.X;
 

@@ -1030,7 +1030,7 @@ namespace Bilten.UI
                     {
                         startListe.Add(ActiveRaspored.getStartLista(s, ActiveGrupa, ActiveRotacija));
                     }
-                    p.setIzvestaj(new StartListaIzvestaj(startListe, documentName,
+                    p.setIzvestaj(new StartListaIzvestaj(startListe, takmicenje.Gimnastika, documentName,
                         form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi, form.StampajKlub, form.StampajKategoriju,
                         getActiveSpravaGridGroupUserControl(), takmicenje));
                 }
