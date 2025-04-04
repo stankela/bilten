@@ -321,6 +321,7 @@ namespace Bilten.Report
 			set { startY = value; }
 		}
 
+        // TODO5: Izmeni izvestaje tako da ni u jednom nije potrebno RelY, i onda izbrisi ovo svojstvo
         private float relY;
         public float RelY
         {
