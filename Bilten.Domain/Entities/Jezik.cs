@@ -130,5 +130,19 @@ namespace Bilten.Domain
             get { return strana; }
             set { strana = value; }
         }
+
+        private string vrhovniSudijaMuski;
+        public virtual string VrhovniSudijaMuski
+        {
+            get { return vrhovniSudijaMuski; }
+            set { vrhovniSudijaMuski = value; }
+        }
+
+        private string vrhovniSudijaZenski;
+        public virtual string VrhovniSudijaZenski
+        {
+            get { return vrhovniSudijaZenski; }
+            set { vrhovniSudijaZenski = value; }
+        }
     }
 }

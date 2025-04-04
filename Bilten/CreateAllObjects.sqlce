@@ -658,5 +658,7 @@ create table jezici (
     klub nvarchar(64),
     drzava nvarchar(64),
     ekipa nvarchar(64),
-    strana nvarchar(64)
+    strana nvarchar(64),
+    vrhovni_sudija_muski nvarchar(64),
+    vrhovni_sudija_zenski nvarchar(64)
 );

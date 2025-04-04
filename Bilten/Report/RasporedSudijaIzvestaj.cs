@@ -272,9 +272,9 @@ namespace Bilten.Report
             this.vrhovniSudija = true;
 
             if (vrhovniSudija == null || vrhovniSudija.Pol == Pol.Muski)
-                this.ulogaVrhovniSudija = "Vrhovni sudija";
+                this.ulogaVrhovniSudija = Opcije.Instance.VrhovniSudijaMuskiString;
             else
-                this.ulogaVrhovniSudija = "Vrhovna sutkinja";
+                this.ulogaVrhovniSudija = Opcije.Instance.VrhovniSudijaZenskiString;
             string prezimeIme = String.Empty;
             string klubDrzava = String.Empty;
             if (vrhovniSudija != null)

@@ -1,0 +1,16 @@
+-- 04-Apr-2025 (VERZIJA = 17)
+
+alter table jezici add column vrhovni_sudija_muski nvarchar(64);
+GO
+alter table jezici add column vrhovni_sudija_zenski nvarchar(64);
+GO
+
+update jezici set vrhovni_sudija_muski = 'Vrhovni sudija' where naziv = 'Srpski';
+GO
+update jezici set vrhovni_sudija_zenski = 'Vrhovna sutkinja' where naziv = 'Srpski';
+GO
+
+update jezici set vrhovni_sudija_muski = 'Superior Jury' where naziv = 'Engleski';
+GO
+update jezici set vrhovni_sudija_zenski = 'Superior Jury' where naziv = 'Engleski';
+GO

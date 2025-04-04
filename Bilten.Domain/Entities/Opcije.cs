@@ -505,6 +505,20 @@ namespace Bilten.Domain
             set { stranaString = value; }
         }
 
+        private string vrhovniSudijaMuskiString = "Vrhovni sudija";  // "Superior Jury"
+        public virtual string VrhovniSudijaMuskiString
+        {
+            get { return vrhovniSudijaMuskiString; }
+            set { vrhovniSudijaMuskiString = value; }
+        }
+
+        private string vrhovniSudijaZenskiString = "Vrhovna sutkinja";  // "Superior Jury"
+        public virtual string VrhovniSudijaZenskiString
+        {
+            get { return vrhovniSudijaZenskiString; }
+            set { vrhovniSudijaZenskiString = value; }
+        }
+
         public virtual void UpdateJezik(Jezik jezik)
         {
             Jezik = jezik.Naziv;
@@ -524,6 +538,8 @@ namespace Bilten.Domain
             DrzavaString = jezik.Drzava;
             EkipaString = jezik.Ekipa;
             StranaString = jezik.Strana;
+            VrhovniSudijaMuskiString = jezik.VrhovniSudijaMuski;
+            VrhovniSudijaZenskiString = jezik.VrhovniSudijaZenski;
         }
     }
 }

@@ -100,6 +100,8 @@ namespace Bilten.UI
             txtDrzava.Text = jezik.Drzava;
             txtEkipa.Text = jezik.Ekipa;
             txtStrana.Text = jezik.Strana;
+            txtVrhovniSudijaMuski.Text = jezik.VrhovniSudijaMuski;
+            txtVrhovniSudijaZenski.Text = jezik.VrhovniSudijaZenski;
         }
 
         private void updateJezikFromUI(Jezik jezik)
@@ -119,6 +121,8 @@ namespace Bilten.UI
             jezik.Drzava = txtDrzava.Text;
             jezik.Ekipa = txtEkipa.Text;
             jezik.Strana = txtStrana.Text;
+            jezik.VrhovniSudijaMuski = txtVrhovniSudijaMuski.Text;
+            jezik.VrhovniSudijaZenski = txtVrhovniSudijaZenski.Text;
         }
 
         private void JezikForm_Shown(object sender, EventArgs e)
@@ -214,6 +218,16 @@ namespace Bilten.UI
             {
                 msg = "Unesite tekst za stranu.";
                 txtBox = txtStrana;
+            }
+            else if (txtVrhovniSudijaMuski.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za vrhovnog sudiju.";
+                txtBox = txtVrhovniSudijaMuski;
+            }
+            else if (txtVrhovniSudijaZenski.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za vrhovnu sutkinju.";
+                txtBox = txtVrhovniSudijaZenski;
             }
 
             if (msg != String.Empty)

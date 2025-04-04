@@ -24,6 +24,8 @@
     <property name="Drzava" column="drzava" type="String"/>
     <property name="Ekipa" column="ekipa" type="String"/>
     <property name="Strana" column="strana" type="String"/>
+    <property name="VrhovniSudijaMuski" column="vrhovni_sudija_muski" type="String"/>
+    <property name="VrhovniSudijaZenski" column="vrhovni_sudija_zenski" type="String"/>
   </class>
 
 </hibernate-mapping>

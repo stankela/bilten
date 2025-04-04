@@ -62,12 +62,16 @@
             this.txtEkipa = new System.Windows.Forms.TextBox();
             this.lblStrana = new System.Windows.Forms.Label();
             this.txtStrana = new System.Windows.Forms.TextBox();
+            this.lblVrhovniSudijaMuski = new System.Windows.Forms.Label();
+            this.txtVrhovniSudijaMuski = new System.Windows.Forms.TextBox();
+            this.lblVrhovniSudijaZenski = new System.Windows.Forms.Label();
+            this.txtVrhovniSudijaZenski = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(78, 446);
+            this.btnOK.Location = new System.Drawing.Point(24, 469);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 18;
@@ -78,7 +82,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(169, 446);
+            this.btnCancel.Location = new System.Drawing.Point(115, 469);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 19;
@@ -343,13 +347,49 @@
             this.txtStrana.Size = new System.Drawing.Size(100, 20);
             this.txtStrana.TabIndex = 50;
             // 
+            // lblVrhovniSudijaMuski
+            // 
+            this.lblVrhovniSudijaMuski.AutoSize = true;
+            this.lblVrhovniSudijaMuski.Location = new System.Drawing.Point(280, 389);
+            this.lblVrhovniSudijaMuski.Name = "lblVrhovniSudijaMuski";
+            this.lblVrhovniSudijaMuski.Size = new System.Drawing.Size(109, 13);
+            this.lblVrhovniSudijaMuski.TabIndex = 51;
+            this.lblVrhovniSudijaMuski.Text = "Vrhovni sudija (muski)";
+            // 
+            // txtVrhovniSudijaMuski
+            // 
+            this.txtVrhovniSudijaMuski.Location = new System.Drawing.Point(395, 382);
+            this.txtVrhovniSudijaMuski.Name = "txtVrhovniSudijaMuski";
+            this.txtVrhovniSudijaMuski.Size = new System.Drawing.Size(100, 20);
+            this.txtVrhovniSudijaMuski.TabIndex = 52;
+            // 
+            // lblVrhovniSudijaZenski
+            // 
+            this.lblVrhovniSudijaZenski.AutoSize = true;
+            this.lblVrhovniSudijaZenski.Location = new System.Drawing.Point(277, 424);
+            this.lblVrhovniSudijaZenski.Name = "lblVrhovniSudijaZenski";
+            this.lblVrhovniSudijaZenski.Size = new System.Drawing.Size(112, 13);
+            this.lblVrhovniSudijaZenski.TabIndex = 53;
+            this.lblVrhovniSudijaZenski.Text = "Vrhovni sudija (zenski)";
+            // 
+            // txtVrhovniSudijaZenski
+            // 
+            this.txtVrhovniSudijaZenski.Location = new System.Drawing.Point(395, 421);
+            this.txtVrhovniSudijaZenski.Name = "txtVrhovniSudijaZenski";
+            this.txtVrhovniSudijaZenski.Size = new System.Drawing.Size(100, 20);
+            this.txtVrhovniSudijaZenski.TabIndex = 54;
+            // 
             // JezikForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(544, 490);
+            this.ClientSize = new System.Drawing.Size(544, 516);
+            this.Controls.Add(this.txtVrhovniSudijaZenski);
+            this.Controls.Add(this.lblVrhovniSudijaZenski);
+            this.Controls.Add(this.txtVrhovniSudijaMuski);
+            this.Controls.Add(this.lblVrhovniSudijaMuski);
             this.Controls.Add(this.txtStrana);
             this.Controls.Add(this.lblStrana);
             this.Controls.Add(this.txtEkipa);
@@ -432,6 +472,10 @@
         private System.Windows.Forms.TextBox txtEkipa;
         private System.Windows.Forms.Label lblStrana;
         private System.Windows.Forms.TextBox txtStrana;
+        private System.Windows.Forms.Label lblVrhovniSudijaMuski;
+        private System.Windows.Forms.TextBox txtVrhovniSudijaMuski;
+        private System.Windows.Forms.Label lblVrhovniSudijaZenski;
+        private System.Windows.Forms.TextBox txtVrhovniSudijaZenski;
 
     }
 }
