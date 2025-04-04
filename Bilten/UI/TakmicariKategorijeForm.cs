@@ -206,9 +206,20 @@ namespace Bilten.UI
 
             tabOpened[tabControl1.SelectedIndex] = true;
             setGimnasticari(gimnasticari[tabControl1.SelectedIndex]);
-            getActiveDataGridViewUserControl().sort<GimnasticarUcesnik>(
-                new string[] { "Prezime", "Ime" },
-                new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+
+            List<GimnasticarUcesnik> gimList = getActiveDataGridViewUserControl().getItems<GimnasticarUcesnik>();
+            if (takmicenje.TakBrojevi && hasAnyTakBroj(gimList))
+            {
+                getActiveDataGridViewUserControl().sort<GimnasticarUcesnik>(
+                  new string[] { "TakmicarskiBroj" },
+                  new ListSortDirection[] { ListSortDirection.Ascending });
+            }
+            else
+            {
+                getActiveDataGridViewUserControl().sort<GimnasticarUcesnik>(
+                    new string[] { "Prezime", "Ime" },
+                    new ListSortDirection[] { ListSortDirection.Ascending, ListSortDirection.Ascending });
+            }
             updateGimnasticariCount();
         }
 
@@ -663,18 +674,31 @@ namespace Bilten.UI
                     ListSortDirection.Ascending));*/
 
 
-                PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
-                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["DrzavaString"],
-                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubString"],
-                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Prezime"],
-                    TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Ime"]
-                };
-                ListSortDirection[] sortDir = new ListSortDirection[] {
-                    ListSortDirection.Ascending,
-                    ListSortDirection.Ascending,
-                    ListSortDirection.Ascending,
-                    ListSortDirection.Ascending
-                };
+                PropertyDescriptor[] propDesc;
+                ListSortDirection[] sortDir;
+                if (takmicenje.TakBrojevi && hasAnyTakBroj(gimnasticari))
+                {
+                    propDesc = new PropertyDescriptor[] {
+                       TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["TakmicarskiBroj"],                    };
+                    sortDir = new ListSortDirection[] {
+                        ListSortDirection.Ascending
+                    };
+                }
+                else
+                {
+                    propDesc = new PropertyDescriptor[] {
+                        TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["DrzavaString"],
+                        TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubString"],
+                        TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Prezime"],
+                        TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["Ime"]
+                    };
+                    sortDir = new ListSortDirection[] {
+                     ListSortDirection.Ascending,
+                     ListSortDirection.Ascending,
+                        ListSortDirection.Ascending,
+                        ListSortDirection.Ascending
+                    };
+                }
                 gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc, sortDir));
 
                 p.setIzvestaj(new TakmicariIzvestaj(gimnasticari,
@@ -690,6 +714,16 @@ namespace Bilten.UI
                 Cursor.Hide();
                 Cursor.Current = Cursors.Arrow;
             }
+        }
+
+        private bool hasAnyTakBroj(List<GimnasticarUcesnik> gimnasticari)
+        {
+            foreach (GimnasticarUcesnik g in gimnasticari)
+            {
+                if (g.TakmicarskiBroj.HasValue)
+                    return true;
+            }
+            return false;
         }
 
         private void TakmicariKategorijeForm_Load(object sender, EventArgs e)
