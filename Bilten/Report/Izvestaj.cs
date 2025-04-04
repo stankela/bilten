@@ -129,6 +129,8 @@ namespace Bilten.Report
         private Image logo3Image;
         private Image logo4Image;
         private Image logo5Image;
+        private Image logo6Image;
+        private Image logo7Image;
 
         public Izvestaj(Takmicenje takmicenje)
         {
@@ -201,6 +203,28 @@ namespace Bilten.Report
                 catch (Exception)
                 {
                     MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo5RelPath + "\"", "Greska");
+                }
+            }
+            if (!String.IsNullOrEmpty(takmicenje.Logo6RelPath))
+            {
+                try
+                {
+                    logo6Image = Image.FromFile(takmicenje.Logo6RelPath);
+                }
+                catch (Exception)
+                {
+                    MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo6RelPath + "\"", "Greska");
+                }
+            }
+            if (!String.IsNullOrEmpty(takmicenje.Logo7RelPath))
+            {
+                try
+                {
+                    logo7Image = Image.FromFile(takmicenje.Logo7RelPath);
+                }
+                catch (Exception)
+                {
+                    MessageDialogs.showError("Ne mogu da pronadjem sliku \"" + takmicenje.Logo7RelPath + "\"", "Greska");
                 }
             }
         }
@@ -362,7 +386,8 @@ namespace Bilten.Report
 
             float endX = 0.0f;
             if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath)
-                && String.IsNullOrEmpty(takmicenje.Logo4RelPath) && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+                && String.IsNullOrEmpty(takmicenje.Logo4RelPath) && String.IsNullOrEmpty(takmicenje.Logo5RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo6RelPath) && String.IsNullOrEmpty(takmicenje.Logo7RelPath))
             { 
                 // Centriraj logo3 po sredini futera
                 float x = pageBounds.Left + (pageBounds.Width - height) / 2;
@@ -371,7 +396,8 @@ namespace Bilten.Report
                 endX = logo3Bounds.Right;
             }
             else if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath) && !String.IsNullOrEmpty(takmicenje.Logo4RelPath)
-                && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+                && String.IsNullOrEmpty(takmicenje.Logo5RelPath) && String.IsNullOrEmpty(takmicenje.Logo6RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo7RelPath))
             {
                 // Centriraj po sredini futera logo3, logo4
                 float medjuRazmak = height * 0.2f;
@@ -385,20 +411,68 @@ namespace Bilten.Report
                 endX = logo4Bounds.Right;
             }
             else if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath) && !String.IsNullOrEmpty(takmicenje.Logo4RelPath)
-                && !String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+                && !String.IsNullOrEmpty(takmicenje.Logo5RelPath) && String.IsNullOrEmpty(takmicenje.Logo6RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo7RelPath))
             {
                 // Centriraj po sredini futera logo3, logo4, logo5
                 float medjuRazmak = height * 0.2f;
                 float srednjiX = pageBounds.Left + (pageBounds.Width - height) / 2;
                 float leviX = srednjiX - medjuRazmak - height;
-                float desnix = srednjiX + height + medjuRazmak;
+                float desniX = srednjiX + height + medjuRazmak;
                 RectangleF logo3Bounds = new RectangleF(leviX, y, height, height);
                 RectangleF logo4Bounds = new RectangleF(srednjiX, y, height, height);
-                RectangleF logo5Bounds = new RectangleF(desnix, y, height, height);
+                RectangleF logo5Bounds = new RectangleF(desniX, y, height, height);
                 drawLogo(g, logo3Bounds, logo3Image);
                 drawLogo(g, logo4Bounds, logo4Image);
                 drawLogo(g, logo5Bounds, logo5Image);
                 endX = logo5Bounds.Right;
+            }
+            else if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath) && !String.IsNullOrEmpty(takmicenje.Logo4RelPath)
+                && !String.IsNullOrEmpty(takmicenje.Logo5RelPath) && !String.IsNullOrEmpty(takmicenje.Logo6RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo7RelPath))
+            {
+                // TODO5: Kada je neki futer logo izduzen (u landscape modu), ne treba ga sabijati u kvadrat, vec ga treba
+                // stampati izduzeno.
+
+                // Centriraj po sredini futera logo3, logo4, logo5, logo6
+                float medjuRazmak = height * 0.2f;
+                float sredinaStrane = pageBounds.Left + pageBounds.Width / 2;
+                float leviX = sredinaStrane - medjuRazmak / 2 - height;
+                float desniX = sredinaStrane + medjuRazmak / 2;
+                float krajnjeLeviX = leviX - medjuRazmak - height;
+                float krajnjeDesniX = desniX + height + medjuRazmak;
+                RectangleF logo3Bounds = new RectangleF(krajnjeLeviX, y, height, height);
+                RectangleF logo4Bounds = new RectangleF(leviX, y, height, height);
+                RectangleF logo5Bounds = new RectangleF(desniX, y, height, height);
+                RectangleF logo6Bounds = new RectangleF(krajnjeDesniX, y, height, height);
+                drawLogo(g, logo3Bounds, logo3Image);
+                drawLogo(g, logo4Bounds, logo4Image);
+                drawLogo(g, logo5Bounds, logo5Image);
+                drawLogo(g, logo6Bounds, logo6Image);
+                endX = logo6Bounds.Right;
+            }
+            else if (!String.IsNullOrEmpty(takmicenje.Logo3RelPath) && !String.IsNullOrEmpty(takmicenje.Logo4RelPath)
+                && !String.IsNullOrEmpty(takmicenje.Logo5RelPath) && !String.IsNullOrEmpty(takmicenje.Logo6RelPath)
+                && !String.IsNullOrEmpty(takmicenje.Logo7RelPath))
+            {
+                // Centriraj po sredini futera logo3, logo4, logo5, logo6, logo7
+                float medjuRazmak = height * 0.2f;
+                float srednjiX = pageBounds.Left + (pageBounds.Width - height) / 2;
+                float leviX = srednjiX - medjuRazmak - height;
+                float krajnjeLeviX = leviX - medjuRazmak - height;
+                float desniX = srednjiX + height + medjuRazmak;
+                float krajnjeDesniX = desniX + height + medjuRazmak;
+                RectangleF logo3Bounds = new RectangleF(krajnjeLeviX, y, height, height);
+                RectangleF logo4Bounds = new RectangleF(leviX, y, height, height);
+                RectangleF logo5Bounds = new RectangleF(srednjiX, y, height, height);
+                RectangleF logo6Bounds = new RectangleF(desniX, y, height, height);
+                RectangleF logo7Bounds = new RectangleF(krajnjeDesniX, y, height, height);
+                drawLogo(g, logo3Bounds, logo3Image);
+                drawLogo(g, logo4Bounds, logo4Image);
+                drawLogo(g, logo5Bounds, logo5Image);
+                drawLogo(g, logo6Bounds, logo6Image);
+                drawLogo(g, logo7Bounds, logo7Image);
+                endX = logo7Bounds.Right;
             }
 
             String page = Opcije.Instance.StranaString;
@@ -541,7 +615,8 @@ namespace Bilten.Report
             float pageCaptionHeight = convCmToInch(0.7f);
             float logoHeight = getHeaderLogoHeight();
             if (String.IsNullOrEmpty(takmicenje.Logo3RelPath) && String.IsNullOrEmpty(takmicenje.Logo4RelPath)
-                && String.IsNullOrEmpty(takmicenje.Logo5RelPath))
+                && String.IsNullOrEmpty(takmicenje.Logo5RelPath) && String.IsNullOrEmpty(takmicenje.Logo6RelPath)
+                && String.IsNullOrEmpty(takmicenje.Logo7RelPath))
             {
                 // Ne koristi se za nista, sluzi samo da popuni prazan prostor na dnu strane
                 logoHeight = getHeaderLogoHeight() * 0.3f;

@@ -73,12 +73,16 @@ namespace Bilten.UI
             string path3 = String.IsNullOrEmpty(takmicenje.Logo3RelPath) ? "" : takmicenje.Logo3RelPath;
             string path4 = String.IsNullOrEmpty(takmicenje.Logo4RelPath) ? "" : takmicenje.Logo4RelPath;
             string path5 = String.IsNullOrEmpty(takmicenje.Logo5RelPath) ? "" : takmicenje.Logo5RelPath;
+            string path6 = String.IsNullOrEmpty(takmicenje.Logo6RelPath) ? "" : takmicenje.Logo6RelPath;
+            string path7 = String.IsNullOrEmpty(takmicenje.Logo7RelPath) ? "" : takmicenje.Logo7RelPath;
 
             listViewLogo.Items.Add(new ListViewItem(new string[] { "Heder levo", path1 }));
             listViewLogo.Items.Add(new ListViewItem(new string[] { "Heder desno", path2 }));
             listViewLogo.Items.Add(new ListViewItem(new string[] { "Futer 1", path3 }));
             listViewLogo.Items.Add(new ListViewItem(new string[] { "Futer 2", path4 }));
             listViewLogo.Items.Add(new ListViewItem(new string[] { "Futer 3", path5 }));
+            listViewLogo.Items.Add(new ListViewItem(new string[] { "Futer 4", path6 }));
+            listViewLogo.Items.Add(new ListViewItem(new string[] { "Futer 5", path7 }));
             listViewLogo.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
@@ -209,9 +213,17 @@ namespace Bilten.UI
         private bool validate(List<string> paths)
         {
             if (
-                (String.IsNullOrEmpty(paths[2]) && (!String.IsNullOrEmpty(paths[3]) || !String.IsNullOrEmpty(paths[4])))
-                || (String.IsNullOrEmpty(paths[3]) && !String.IsNullOrEmpty(paths[4]))
-                )
+                (String.IsNullOrEmpty(paths[2]) && (!String.IsNullOrEmpty(paths[3])
+                                                    || !String.IsNullOrEmpty(paths[4])
+                                                    || !String.IsNullOrEmpty(paths[5])
+                                                    || !String.IsNullOrEmpty(paths[6])))
+                || (String.IsNullOrEmpty(paths[3]) && (!String.IsNullOrEmpty(paths[4])
+                                                       || !String.IsNullOrEmpty(paths[5])
+                                                       || !String.IsNullOrEmpty(paths[6])))
+                || (String.IsNullOrEmpty(paths[4]) && (!String.IsNullOrEmpty(paths[5])
+                                                       || !String.IsNullOrEmpty(paths[6])))
+                || (String.IsNullOrEmpty(paths[5]) && !String.IsNullOrEmpty(paths[6]))
+             )
             {
                 MessageDialogs.showError("Za futer je moguce izabrati samo uzastopne logoe.", this.Text);
                 return false;
@@ -226,6 +238,8 @@ namespace Bilten.UI
             takmicenje.Logo3RelPath = String.IsNullOrEmpty(paths[2]) ? "" : paths[2];
             takmicenje.Logo4RelPath = String.IsNullOrEmpty(paths[3]) ? "" : paths[3];
             takmicenje.Logo5RelPath = String.IsNullOrEmpty(paths[4]) ? "" : paths[4];
+            takmicenje.Logo6RelPath = String.IsNullOrEmpty(paths[5]) ? "" : paths[5];
+            takmicenje.Logo7RelPath = String.IsNullOrEmpty(paths[6]) ? "" : paths[6];
         }
 
         private void btnOk_Click(object sender, EventArgs e)

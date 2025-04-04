@@ -203,6 +203,20 @@ namespace Bilten.Domain
             set { logo5RelPath = value; }
         }
 
+        private string logo6RelPath;
+        public virtual string Logo6RelPath
+        {
+            get { return logo6RelPath; }
+            set { logo6RelPath = value; }
+        }
+
+        private string logo7RelPath;
+        public virtual string Logo7RelPath
+        {
+            get { return logo7RelPath; }
+            set { logo7RelPath = value; }
+        }
+
         private bool takBrojevi;
         public virtual bool TakBrojevi
         {
@@ -679,6 +693,8 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Logo3RelPath != null ? Logo3RelPath : NULL);
             strBuilder.AppendLine(Logo4RelPath != null ? Logo4RelPath : NULL);
             strBuilder.AppendLine(Logo5RelPath != null ? Logo5RelPath : NULL);
+            strBuilder.AppendLine(Logo6RelPath != null ? Logo6RelPath : NULL);
+            strBuilder.AppendLine(Logo7RelPath != null ? Logo7RelPath : NULL);
             strBuilder.AppendLine(LastModified.ToString());
             strBuilder.AppendLine(TakBrojevi.ToString());
 
@@ -781,7 +797,11 @@ namespace Bilten.Domain
             Logo4RelPath = logo != NULL ? logo : null;
             logo = reader.ReadLine();
             Logo5RelPath = logo != NULL ? logo : null;
-           
+            logo = reader.ReadLine();
+            Logo6RelPath = logo != NULL ? logo : null;
+            logo = reader.ReadLine();
+            Logo7RelPath = logo != NULL ? logo : null;
+
             LastModified = ParsirajDatum(reader.ReadLine());
             TakBrojevi = bool.Parse(reader.ReadLine());
             
