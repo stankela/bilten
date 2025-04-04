@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using Bilten.UI;
+using Bilten.Exceptions;
 
 namespace Bilten.Report
 {
@@ -14,6 +15,7 @@ namespace Bilten.Report
         private List<KvalifikantiTak3Lista> reportListe = new List<KvalifikantiTak3Lista>();
         private float itemFontSize = 9;
         private bool svakaSpravaNaPosebnojStrani;
+        private bool dveKolone;
 
         public KvalifikantiTak3Izvestaj(List<RezultatSprava> rezultati, Sprava sprava, string documentName,
             DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
@@ -22,6 +24,7 @@ namespace Bilten.Report
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
+            dveKolone = false;
 
             reportListe.Add(new KvalifikantiTak3Lista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, sprava,
                 false, 1, formGrid, takmicenje.TakBrojevi));
@@ -34,6 +37,7 @@ namespace Bilten.Report
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
+            dveKolone = false;
 
             reportListe.Add(new KvalifikantiTak3Lista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, obaPreskoka,
                 false, 1, formGrid, takmicenje.TakBrojevi));
@@ -47,92 +51,214 @@ namespace Bilten.Report
             Font itemFont = new Font("Arial", itemFontSize);
             Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
-            bool sveSpraveNaJednojStrani = brojSpravaPoStrani > 3;
+            this.dveKolone = brojSpravaPoStrani > 3;
+            if (dveKolone)
+            {
+                Margins = new Margins(50, 50, 25, 25);
+            }
 
             // TODO5: Neka pocetne vrednosti za margine u svim izvestajima budu 0 (ili neka mala vrednost). Svi izvestaji
             // su svakako centrirani po sredini stranice.
 
             // TODO5: Dodaj velicinu fonta za iteme u header footer dijalog.
-
-            if (sveSpraveNaJednojStrani)
-            {
-                Margins = new Margins(50, 50, 25, 25);
-            }
             
             Sprava[] sprave = Sprave.getSprave(gim);
+            int columnNumber = 1;
             for (int i = 0; i < sprave.Length; i++)
             {
                 Sprava sprava = sprave[i];
-                int page;
-                float relY;
-                int columnNumber = 1;
-                if (sveSpraveNaJednojStrani)
+                if (dveKolone)
                 {
-                    page = 1;
-                    relY = (i / 2) * (1 / 3f) + 0.03f;
                     columnNumber = (i % 2 == 0) ? 1 : 2;
                 }
-                else if (brojSpravaPoStrani == 2 || brojSpravaPoStrani == 3)
-                {
-                    page = (i / brojSpravaPoStrani) + 1;
-                    relY = (i % brojSpravaPoStrani) / (brojSpravaPoStrani * 1f) + 0.03f;
-                }
-                else // brojSpravaPoStrani == 1
-                {
-                    page = i + 1;
-                    relY = 0.0f + 0.03f;
-                }
+
+                KvalifikantiTak3Lista lista;
                 if (sprava != Sprava.Preskok)
                 {
                     int spravaIndex = i;
                     if (i > Sprave.indexOf(Sprava.Preskok, gim))
                         spravaIndex--;
-
-                    KvalifikantiTak3Lista lista = new KvalifikantiTak3Lista(this, page, 0f, itemFont, itemsHeaderFont,
-                        rezultatiSprave[spravaIndex], sprava, sveSpraveNaJednojStrani, columnNumber,
-                        formGrid, takmicenje.TakBrojevi);
-                    lista.RelY = relY;
-                    reportListe.Add(lista);
+                    lista = new KvalifikantiTak3Lista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont,
+                        rezultatiSprave[spravaIndex], sprava, dveKolone, columnNumber, formGrid, takmicenje.TakBrojevi);
                 }
                 else
                 {
-                    KvalifikantiTak3Lista lista = new KvalifikantiTak3Lista(this, page, 0f, itemFont, itemsHeaderFont,
-                        rezultatiPreskok, obaPreskoka, sveSpraveNaJednojStrani, columnNumber, formGrid,
-                        takmicenje.TakBrojevi);
-                    lista.RelY = relY;
-                    reportListe.Add(lista);
+                    lista = new KvalifikantiTak3Lista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont,
+                        rezultatiPreskok, obaPreskoka, dveKolone, columnNumber, formGrid, takmicenje.TakBrojevi);
                 }
+                reportListe.Add(lista);
             }
         }
 
+        // TODO5: Metodi doSetupContent i doSetupContentDveKolone su skoro identicni u nekoliko izvestaja (
+        // RasporedSudijaIzvestaj, SpravaIzvestaj, StartListaIzvestaj, KvalifikantiTak3Izvestaj). Probaj da generalizujes.
+
         protected override void doSetupContent(Graphics g)
         {
-            // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
-            lastPageNum = 0;
-            float maxImeWidth = 0.0f;
-            float maxKlubWidth = 0.0f;
-            foreach (KvalifikantiTak3Lista lista in reportListe)
+            float startYPrvaStrana = contentBounds.Y;
+            float startYOstaleStrane = contentBounds.Y;
+
+            if (dveKolone)
             {
-                if (svakaSpravaNaPosebnojStrani)
-                    lista.FirstPageNum = lastPageNum + 1;
-                lista.StartY = contentBounds.Y + lista.RelY * contentBounds.Height;
-                lista.setupContent(g, contentBounds);
-                if (lista.Columns[lista.getImeColumnIndex()].Width > maxImeWidth)
-                    maxImeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
-                if (lista.Columns[lista.getKlubColumnIndex()].Width > maxKlubWidth)
-                    maxKlubWidth = lista.Columns[lista.getKlubColumnIndex()].Width;
-                lastPageNum = lista.LastPageNum;
+                doSetupContentDveKolone(g, startYPrvaStrana, startYOstaleStrane);
+                return;
             }
 
-            lastPageNum = 0;
-            foreach (KvalifikantiTak3Lista lista in reportListe)
+            // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
+            float maxImeWidth = 0.0f;
+            float maxKlubWidth = 0.0f;
+            KvalifikantiTak3Lista prevLista = null;
+            for (int i = 0; i < 2; ++i)
             {
-                if (svakaSpravaNaPosebnojStrani)
-                    lista.FirstPageNum = lastPageNum + 1;
-                lista.StartY = contentBounds.Y + lista.RelY * contentBounds.Height;
-                lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
-                lastPageNum = lista.LastPageNum;
+                prevLista = null;
+                int j = 0;
+                bool prebaciNaSledecuStranu = false;
+                while (j < reportListe.Count)
+                {
+                    KvalifikantiTak3Lista lista = reportListe[j];
+                    if (prevLista == null)
+                    {
+                        lista.FirstPageNum = 1;
+                        lista.StartY = startYPrvaStrana;
+                    }
+                    else if (svakaSpravaNaPosebnojStrani || prebaciNaSledecuStranu)
+                    {
+                        lista.FirstPageNum = prevLista.LastPageNum + 1;
+                        lista.StartY = startYOstaleStrane;
+                        prebaciNaSledecuStranu = false;
+                    }
+                    else
+                    {
+                        // Nastavak na istoj strani
+                        lista.FirstPageNum = prevLista.LastPageNum;
+                        // Svaka lista ima implicitno dodat prazan prostor nakon liste (koji je jednak velicini vrste),
+                        // i EndY pokazuje nakon tog praznog prostoja.
+                        lista.StartY = prevLista.EndY;
+                    }
+
+                    int firstPageNum = lista.FirstPageNum;
+                    if (i == 0)
+                    {
+                        lista.setupContent(g, contentBounds);
+                        if (lista.Columns[lista.getImeColumnIndex()].Width > maxImeWidth)
+                            maxImeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
+                        if (lista.Columns[lista.getKlubColumnIndex()].Width > maxKlubWidth)
+                            maxKlubWidth = lista.Columns[lista.getKlubColumnIndex()].Width;
+                    }
+                    else
+                    {
+                        lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
+                    }
+
+                    if (lista.LastPageNum == firstPageNum)
+                    {
+                        // Cela lista je stala na istu stranu
+                        ++j;
+                        prevLista = lista;
+                    }
+                    else
+                    {
+                        // Lista nije stala na istu stranu
+                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
+                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
+                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
+                        {
+                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
+                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
+                            ++j;
+                            prevLista = lista;
+                        }
+                        else
+                        {
+                            // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
+                            prebaciNaSledecuStranu = true;
+                        }
+                    }
+                }
             }
+            lastPageNum = prevLista.LastPageNum;
+        }
+
+        private void doSetupContentDveKolone(Graphics g, float startYPrvaStrana, float startYOstaleStrane)
+        {
+            // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
+            float maxImeWidth = 0.0f;
+            float maxKlubWidth = 0.0f;
+            for (int i = 0; i < 2; ++i)
+            {
+                int j = 0;
+                bool prebaciNaSledecuStranu = false;
+                while (j < reportListe.Count)
+                {
+                    KvalifikantiTak3Lista lista = reportListe[j];
+                    if (j == 0 || j == 1)
+                    {
+                        lista.FirstPageNum = 1;
+                        lista.StartY = startYPrvaStrana;
+                    }
+                    else if (prebaciNaSledecuStranu)
+                    {
+                        lista.FirstPageNum = reportListe[j - 1].LastPageNum + 1;
+                        lista.StartY = startYOstaleStrane;
+                        prebaciNaSledecuStranu = false;
+                    }
+                    else if (j % 2 == 0)
+                    {
+                        lista.FirstPageNum = reportListe[j - 1].LastPageNum;
+                        lista.StartY = Math.Max(reportListe[j - 1].EndY, reportListe[j - 2].EndY);
+                    }
+                    else if (j % 2 == 1)
+                    {
+                        // Kopiraj podatke iz liste sa leve strane
+                        lista.FirstPageNum = reportListe[j - 1].FirstPageNum;
+                        lista.StartY = reportListe[j - 1].StartY;
+                    }
+
+                    int firstPageNum = lista.FirstPageNum;
+                    if (i == 0)
+                    {
+                        lista.setupContent(g, contentBounds);
+                        if (lista.Columns[lista.getImeColumnIndex()].Width > maxImeWidth)
+                            maxImeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
+                        if (lista.Columns[lista.getKlubColumnIndex()].Width > maxKlubWidth)
+                            maxKlubWidth = lista.Columns[lista.getKlubColumnIndex()].Width;
+                    }
+                    else
+                    {
+                        lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
+                    }
+
+                    if (lista.LastPageNum == firstPageNum)
+                    {
+                        // Cela lista je stala na istu stranu
+                        ++j;
+                    }
+                    else
+                    {
+                        // Lista nije stala na istu stranu
+                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
+                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
+                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
+                        {
+                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
+                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
+
+                            // TODO5: Hendluj izlomljenu listu za slucaj dve kolone
+                            throw new SmallPageSizeException();
+                            //++j;
+                        }
+                        else
+                        {
+                            prebaciNaSledecuStranu = true;
+                            // Ako lista u desnoj koloni nije stala na istu stranu, moramo da se vratimo na listu u levoj
+                            // koloni, i nju prebacimo na sledecu stranu.
+                            if (j % 2 == 1)
+                                --j;
+                        }
+                    }
+                }
+            }
+            lastPageNum = reportListe[reportListe.Count - 1].LastPageNum;
         }
 
         public override void drawContent(Graphics g, int pageNum)
@@ -147,18 +273,18 @@ namespace Bilten.Report
     public class KvalifikantiTak3Lista : ReportLista
     {
         private Sprava sprava;
-        private bool sveSpraveNaJednojStrani;
+        private bool dveKolone;
         private int columnNumber;
         private bool praznaLista;
         private bool stampajBroj;
 
         public KvalifikantiTak3Lista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, List<RezultatSprava> rezultati, Sprava sprava,
-            bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid, bool stampajBroj)
+            bool dveKolone, int columnNumber, DataGridView formGrid, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = sprava;
-            this.sveSpraveNaJednojStrani = sveSpraveNaJednojStrani;
+            this.dveKolone = dveKolone;
             this.columnNumber = columnNumber;
             this.praznaLista = rezultati.Count == 0;
             this.stampajBroj = stampajBroj;
@@ -168,11 +294,11 @@ namespace Bilten.Report
 
         public KvalifikantiTak3Lista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, List<RezultatPreskok> rezultati, bool obaPreskoka,
-            bool sveSpraveNaJednojStrani, int columnNumber, DataGridView formGrid, bool stampajBroj)
+            bool dveKolone, int columnNumber, DataGridView formGrid, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.sprava = Sprava.Preskok;
-            this.sveSpraveNaJednojStrani = sveSpraveNaJednojStrani;
+            this.dveKolone = dveKolone;
             this.columnNumber = columnNumber;
             this.praznaLista = rezultati.Count == 0;
             this.stampajBroj = stampajBroj;
@@ -377,7 +503,7 @@ namespace Bilten.Report
             float xRightEnd = xOcena + ocenaWidth;
 
             float rightMargin;
-            if (!sveSpraveNaJednojStrani)
+            if (!dveKolone)
                 rightMargin = contentBounds.Right;
             else
                 rightMargin = contentBounds.Right - (2 - columnNumber) * contentBounds.Width / 2;
