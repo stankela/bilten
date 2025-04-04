@@ -397,9 +397,9 @@ namespace Bilten.Report
             {
                 if (sprava == Sprava.Preskok)
                     column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xBonus, ocenaWidth, fmtBon, spravaFormat,
-                        "B", spravaHeaderFormat, true);
+                        "Bonus", spravaHeaderFormat, true);
                 else
-                    column = addColumn(xBonus, ocenaWidth, fmtBon, spravaFormat, "B", spravaHeaderFormat);
+                    column = addColumn(xBonus, ocenaWidth, fmtBon, spravaFormat, "Bonus", spravaHeaderFormat);
                 column.Image = SlikeSprava.getImage(sprava);
                 column.Split = true;
             }

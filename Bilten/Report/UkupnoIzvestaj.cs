@@ -664,7 +664,7 @@ namespace Bilten.Report
                 column1.Span = true;
 
                 column = addThreeRowColumn(column1.getItemsIndexEnd(), 3, x[2 * i + 1], spravaTotWidth, fmtTot,
-                    spravaFormat, "Total\nB\nPen", spravaHeaderFormat);
+                    spravaFormat, "Total\nBonus\nPen", spravaHeaderFormat);
                 column.Image = SlikeSprava.getImage(sprave[i]);
                 column.Split = true;
                 column.Brush = totalBrush;

@@ -13,5 +13,7 @@ namespace Bilten.Dao
         IList<GimnasticarUcesnik> FindByKategorija(TakmicarskaKategorija kategorija);
         IList<GimnasticarUcesnik> FindGimnasticariUcesnici(string ime, string prezime, DrzavaUcesnik drzava,
             TakmicarskaKategorija kategorija, KlubUcesnik klub, int takmicenjeId);
+        bool existsGimnasticarUcesnik(DrzavaUcesnik drzava);
+        bool existsGimnasticarUcesnik(KlubUcesnik klub);
     }
 }

@@ -126,6 +126,34 @@ namespace Bilten.Dao.NHibernate
             return q.List<GimnasticarUcesnik>();
         }
 
+        public bool existsGimnasticarUcesnik(DrzavaUcesnik drzava)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from GimnasticarUcesnik g where g.DrzavaUcesnik = :drzava");
+                q.SetEntity("drzava", drzava);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
+        public bool existsGimnasticarUcesnik(KlubUcesnik klub)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"select count(*) from GimnasticarUcesnik g where g.KlubUcesnik = :klub");
+                q.SetEntity("klub", klub);
+                return (long)q.UniqueResult() > 0;
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         #endregion
     }
 }

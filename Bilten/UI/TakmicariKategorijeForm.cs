@@ -590,6 +590,16 @@ namespace Bilten.UI
                         brojeviMap.Remove(g.TakmicarskiBroj.Value);
 
                     gimUcesnikDAO.Delete(g);
+                    if (!gimUcesnikDAO.existsGimnasticarUcesnik(g.DrzavaUcesnik))
+                    {
+                        DrzavaUcesnikDAO drzavaUcesnikDAO = DAOFactoryFactory.DAOFactory.GetDrzavaUcesnikDAO();
+                        drzavaUcesnikDAO.Delete(g.DrzavaUcesnik);
+                    }
+                    if (!gimUcesnikDAO.existsGimnasticarUcesnik(g.KlubUcesnik))
+                    {
+                        KlubUcesnikDAO klubUcesnikDAO = DAOFactoryFactory.DAOFactory.GetKlubUcesnikDAO();
+                        klubUcesnikDAO.Delete(g.KlubUcesnik);
+                    }
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
                     takmicenje.LastModified = DateTime.Now;
