@@ -177,6 +177,15 @@ namespace Bilten.Domain
                 validateEOcena(notification, eOcene[i - 1], i);
             }
 
+            if (Bonus != null)
+            {
+                if (Bonus < 0)
+                {
+                    notification.RegisterMessage(
+                        prefix + "Bonus", "Bonus ne sme da bude negativan.");
+                }
+            }
+
             if (Penalty != null)
             {
                 if (Penalty < 0)
@@ -213,6 +222,8 @@ namespace Bilten.Domain
 
         private float izracunajEOcenu(int brojDecimala)
         {
+            // TODO5: Dodaj opciju da se sve e ocene ukljucuju
+
             if (BrojEOcena == 0)
                 return E.Value;
 
@@ -263,12 +274,13 @@ namespace Bilten.Domain
             return max + 1;
         }
 
-        public virtual void izracunajOcenu(int brojDecimalaE, int brojDecimalaPen,
+        public virtual void izracunajOcenu(int brojDecimalaE, int brojDecimalaBon, int brojDecimalaPen,
             int brojDecimalaTotal)
         {
             E = izracunajEOcenu(brojDecimalaE);
-            Total = (float)RounderToZero.round((decimal)D.Value + (decimal)E.Value -
-                (decimal)((Penalty != null) ? Penalty.Value : 0), brojDecimalaTotal);
+            Total = (float)RounderToZero.round((decimal)D.Value + (decimal)E.Value
+                + (decimal)((Bonus != null) ? Bonus.Value : 0)
+                - (decimal)((Penalty != null) ? Penalty.Value : 0), brojDecimalaTotal);
             if (Total < 0)
                 Total = 0;
         }
@@ -284,6 +296,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(E5 != null ? E5.Value.ToString() : NULL);
             strBuilder.AppendLine(E6 != null ? E6.Value.ToString() : NULL);            
             strBuilder.AppendLine(E != null ? E.Value.ToString() : NULL);
+            strBuilder.AppendLine(Bonus != null ? Bonus.Value.ToString() : NULL);
             strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
             strBuilder.AppendLine(Total != null ? Total.Value.ToString() : NULL);
             strBuilder.AppendLine(BrojEOcena.ToString());
@@ -315,6 +328,9 @@ namespace Bilten.Domain
 
             line = reader.ReadLine();
             E = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Bonus = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
             Penalty = line != NULL ? float.Parse(line) : (float?)null;

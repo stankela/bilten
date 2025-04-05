@@ -1,0 +1,14 @@
+-- 05-Apr-2025 (VERZIJA = 18)
+
+alter table ocene add column bonus real;
+GO
+alter table rezultati_sprava add column bonus real;
+GO
+alter table rezultati_preskok add column bonus real;
+GO
+alter table rezultati_preskok add column bonus_2 real;
+GO
+alter table takmicenja add column broj_decimala_bon tinyint;
+GO
+alter table opcije add column broj_decimala_bon tinyint;
+GO

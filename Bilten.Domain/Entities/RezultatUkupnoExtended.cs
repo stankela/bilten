@@ -4,6 +4,8 @@ using System.Text;
 
 namespace Bilten.Domain
 {
+    // TODO5: Dodaj bonus i u ostalim rezultatima (npr RezultatUkupnoFinaleKupa, itd)
+
     public class RezultatUkupnoExtended : RezultatUkupno
     {
         public RezultatUkupnoExtended(RezultatUkupno r)
@@ -39,7 +41,7 @@ namespace Bilten.Domain
             protected set { _parterE = value; }
         }
 
-        private Nullable<float> _parterBon = 0.1f;
+        private Nullable<float> _parterBon;
         public virtual Nullable<float> ParterBon
         {
             get { return _parterBon; }
@@ -67,7 +69,7 @@ namespace Bilten.Domain
             protected set { _konjE = value; }
         }
 
-        private Nullable<float> _konjBon = 0.2f;
+        private Nullable<float> _konjBon;
         public virtual Nullable<float> KonjBon
         {
             get { return _konjBon; }
@@ -95,7 +97,7 @@ namespace Bilten.Domain
             protected set { _karikeE = value; }
         }
 
-        private Nullable<float> _karikeBon = 0.3f;
+        private Nullable<float> _karikeBon;
         public virtual Nullable<float> KarikeBon
         {
             get { return _karikeBon; }
@@ -123,7 +125,7 @@ namespace Bilten.Domain
             protected set { _preskokE = value; }
         }
 
-        private Nullable<float> _preskokBon = 0.4f;
+        private Nullable<float> _preskokBon;
         public virtual Nullable<float> PreskokBon
         {
             get { return _preskokBon; }
@@ -151,7 +153,7 @@ namespace Bilten.Domain
             protected set { _razbojE = value; }
         }
 
-        private Nullable<float> _razbojBon = 0.5f;
+        private Nullable<float> _razbojBon;
         public virtual Nullable<float> RazbojBon
         {
             get { return _razbojBon; }
@@ -179,7 +181,7 @@ namespace Bilten.Domain
             protected set { _vratiloE = value; }
         }
 
-        private Nullable<float> _vratiloBon = 0.6f;
+        private Nullable<float> _vratiloBon;
         public virtual Nullable<float> VratiloBon
         {
             get { return _vratiloBon; }
@@ -207,7 +209,7 @@ namespace Bilten.Domain
             protected set { _gredaE = value; }
         }
 
-        private Nullable<float> _gredaBon = 0.7f;
+        private Nullable<float> _gredaBon;
         public virtual Nullable<float> GredaBon
         {
             get { return _gredaBon; }
@@ -235,7 +237,7 @@ namespace Bilten.Domain
             protected set { _dvovisinskiRazbojE = value; }
         }
 
-        private Nullable<float> _dvovisinskiRazbojBon = 0.8f;
+        private Nullable<float> _dvovisinskiRazbojBon;
         public virtual Nullable<float> DvovisinskiRazbojBon
         {
             get { return _dvovisinskiRazbojBon; }
@@ -324,6 +326,47 @@ namespace Bilten.Domain
 
                 case Sprava.Greda:
                     GredaE = value;
+                    break;
+
+                default:
+                    throw new ArgumentException("Nedozvoljena vrednost za spravu.");
+            }
+        }
+
+        public void setBonus(Sprava sprava, Nullable<float> value)
+        {
+            switch (sprava)
+            {
+                case Sprava.Parter:
+                    ParterBon = value;
+                    break;
+
+                case Sprava.Konj:
+                    KonjBon = value;
+                    break;
+
+                case Sprava.Karike:
+                    KarikeBon = value;
+                    break;
+
+                case Sprava.Preskok:
+                    PreskokBon = value;
+                    break;
+
+                case Sprava.Razboj:
+                    RazbojBon = value;
+                    break;
+
+                case Sprava.Vratilo:
+                    VratiloBon = value;
+                    break;
+
+                case Sprava.DvovisinskiRazboj:
+                    DvovisinskiRazbojBon = value;
+                    break;
+
+                case Sprava.Greda:
+                    GredaBon = value;
                     break;
 
                 default:

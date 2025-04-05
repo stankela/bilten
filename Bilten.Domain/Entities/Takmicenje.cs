@@ -112,6 +112,13 @@ namespace Bilten.Domain
             set { brojEOcena = value; }
         }
 
+        private bool odbaciMinMaxEOcenu = true;
+        public virtual bool OdbaciMinMaxEOcenu
+        {
+            get { return odbaciMinMaxEOcenu; }
+            set { odbaciMinMaxEOcenu = value; }
+        }
+
         private byte brojDecimalaD = 1;
         public virtual byte BrojDecimalaD
         {
@@ -131,6 +138,13 @@ namespace Bilten.Domain
         {
             get { return brojDecimalaE; }
             set { brojDecimalaE = value; }
+        }
+
+        private byte brojDecimalaBon = 1;
+        public virtual byte BrojDecimalaBon
+        {
+            get { return brojDecimalaBon; }
+            set { brojDecimalaBon = value; }
         }
 
         private byte brojDecimalaPen = 1;

@@ -315,11 +315,14 @@ namespace Bilten.UI
             onTakmicenjeCreated((Takmicenje)form.Entity);
         }
 
+        // TODO5: Proveri da li je ovo potrebno, tj da li na svim mestima gde se koristi Opcije.Instance.BrojDecimala
+        // moze da se ocitava direktno iz takmicnja.
         private void loadBrojDecimalaUOpcije(Takmicenje t)
         {
             Opcije.Instance.BrojDecimalaD = t.BrojDecimalaD;
             Opcije.Instance.BrojDecimalaE1 = t.BrojDecimalaE1;
             Opcije.Instance.BrojDecimalaE = t.BrojDecimalaE;
+            Opcije.Instance.BrojDecimalaBon = t.BrojDecimalaBon;
             Opcije.Instance.BrojDecimalaPen = t.BrojDecimalaPen;
             Opcije.Instance.BrojDecimalaTotal = t.BrojDecimalaTotal;
         }

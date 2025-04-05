@@ -47,9 +47,14 @@ namespace Bilten.UI
             txtBrojDecD.Text = takmicenje.BrojDecimalaD.ToString();
             txtBrojDecE1.Text = takmicenje.BrojDecimalaE1.ToString();
             txtBrojDecE.Text = takmicenje.BrojDecimalaE.ToString();
+            txtBrojDecBon.Text = takmicenje.BrojDecimalaBon.ToString();
             txtBrojDecPen.Text = takmicenje.BrojDecimalaPen.ToString();
             txtBrojDecTotal.Text = takmicenje.BrojDecimalaTotal.ToString();
             ckbTakBroj.Checked = takmicenje.TakBrojevi;
+
+            ckbOdbaciMinMaxEOcenu.Enabled = takmicenje.BrojEOcena > 0;
+            if (ckbOdbaciMinMaxEOcenu.Enabled)
+                ckbOdbaciMinMaxEOcenu.Checked = takmicenje.OdbaciMinMaxEOcenu;
         }
 
         private void clearUI()
@@ -58,9 +63,11 @@ namespace Bilten.UI
             txtBrojDecD.Text = String.Empty;
             txtBrojDecE1.Text = String.Empty;
             txtBrojDecE.Text = String.Empty;
+            txtBrojDecBon.Text = String.Empty;
             txtBrojDecPen.Text = String.Empty;
             txtBrojDecTotal.Text = String.Empty;
             ckbTakBroj.Checked = false;
+            ckbOdbaciMinMaxEOcenu.Enabled = false;
         }
 
         private void txtBrojESudija_TextChanged(object sender, EventArgs e)
@@ -71,6 +78,9 @@ namespace Bilten.UI
         private void txtBrojEOcena_TextChanged(object sender, EventArgs e)
         {
             dirty = true;
+            byte brojEOcena;
+            ckbOdbaciMinMaxEOcenu.Enabled = txtBrojEOcena.Text.Trim() != String.Empty
+                && byte.TryParse(txtBrojEOcena.Text, out brojEOcena) && brojEOcena > 0;
         }
 
         private void txtBrojDecD_TextChanged(object sender, EventArgs e)
@@ -84,6 +94,11 @@ namespace Bilten.UI
         }
 
         private void txtBrojDecE_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void txtBrojDecBon_TextChanged(object sender, EventArgs e)
         {
             dirty = true;
         }
@@ -163,6 +178,17 @@ namespace Bilten.UI
                     "BrojDecimalaE", "Nepravilan format za broj decimala E ocene.");
             }
 
+            if (txtBrojDecBon.Text.Trim() == String.Empty)
+            {
+                notification.RegisterMessage(
+                    "BrojDecimalaBon", "Broj decimala za bonus je obavezan.");
+            }
+            else if (!byte.TryParse(txtBrojDecBon.Text, out dummyByte))
+            {
+                notification.RegisterMessage(
+                    "BrojDecimalaBon", "Nepravilan format za broj decimala za bonus.");
+            }
+
             if (txtBrojDecPen.Text.Trim() == String.Empty)
             {
                 notification.RegisterMessage(
@@ -215,6 +241,13 @@ namespace Bilten.UI
                     "Broj decimala E ocene mora da bude izmedju 1 i 3.");
             }
 
+            byte brojDecBon = byte.Parse(txtBrojDecBon.Text);
+            if (brojDecBon <= 0 || brojDecBon > 3)
+            {
+                throw new BusinessException("BrojDecimalaBon",
+                    "Broj decimala za bonus mora da bude izmedju 1 i 3.");
+            }
+
             byte brojDecPen = byte.Parse(txtBrojDecPen.Text);
             if (brojDecPen <= 0 || brojDecPen > 3)
             {
@@ -239,6 +272,7 @@ namespace Bilten.UI
             byte brojDecD = byte.Parse(txtBrojDecD.Text);
             byte brojDecE1 = byte.Parse(txtBrojDecE1.Text);
             byte brojDecE = byte.Parse(txtBrojDecE.Text);
+            byte brojDecBon = byte.Parse(txtBrojDecBon.Text);
             byte brojDecPen = byte.Parse(txtBrojDecPen.Text);
             byte brojDecTotal = byte.Parse(txtBrojDecTotal.Text);
 
@@ -255,9 +289,11 @@ namespace Bilten.UI
             else if (brojDecD < takmicenje.BrojDecimalaD
             || brojDecE1 < takmicenje.BrojDecimalaE1
             || brojDecE < takmicenje.BrojDecimalaE
+            || brojDecBon < takmicenje.BrojDecimalaBon
             || brojDecPen < takmicenje.BrojDecimalaPen
             || brojDecTotal < takmicenje.BrojDecimalaTotal)
             {
+                // TODO5: Ovo je nepotrebno, jer se broj decimala koristi samo za stampanje
                 throw new BusinessException("BrojDecimalaD",
                     "Nije dozvoljeno smanjivati broj decimala zato sto " +
                     "vec postoje unete ocene sa vecim brojem decimala.");
@@ -295,9 +331,12 @@ namespace Bilten.UI
             takmicenje.BrojDecimalaD = byte.Parse(txtBrojDecD.Text);
             takmicenje.BrojDecimalaE1 = byte.Parse(txtBrojDecE1.Text);
             takmicenje.BrojDecimalaE = byte.Parse(txtBrojDecE.Text);
+            takmicenje.BrojDecimalaBon = byte.Parse(txtBrojDecBon.Text);
             takmicenje.BrojDecimalaPen = byte.Parse(txtBrojDecPen.Text);
             takmicenje.BrojDecimalaTotal = byte.Parse(txtBrojDecTotal.Text);
             takmicenje.TakBrojevi = ckbTakBroj.Checked;
+            if (takmicenje.BrojEOcena > 0)
+                takmicenje.OdbaciMinMaxEOcenu = ckbOdbaciMinMaxEOcenu.Checked;
         }
 
         private void ckbTakBroj_CheckedChanged(object sender, EventArgs e)
@@ -305,6 +344,10 @@ namespace Bilten.UI
             dirty = true;
         }
 
+        private void ckbOdbaciMinMaxEOcenu_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
     }
 }
 

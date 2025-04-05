@@ -175,7 +175,9 @@
     <EmbeddedResource Include="NHibernate\Mappings\UcesnikTakmicenja4.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="NHibernate\Mappings\Opcije.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Opcije.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="NHibernate\Mappings\RezultatUkupnoZbirViseKola.hbm.xml" />

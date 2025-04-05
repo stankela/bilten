@@ -70,7 +70,7 @@ namespace Bilten.Domain
             protected set { e6 = value; }
         }
 
-        private Nullable<float> bonus = 0.1f;
+        private Nullable<float> bonus;
         public virtual Nullable<float> Bonus
         {
             get { return bonus; }
@@ -96,6 +96,7 @@ namespace Bilten.Domain
                 E4 = o.E4;
                 E5 = o.E5;
                 E6 = o.E6;
+                Bonus = o.Bonus;
                 Penalty = o.Penalty;
                 Total = o.Total;
             }
@@ -109,6 +110,7 @@ namespace Bilten.Domain
                 E4 = null;
                 E5 = null;
                 E6 = null;
+                Bonus = null;
                 Penalty = null;
                 Total = null;
             }
@@ -124,6 +126,7 @@ namespace Bilten.Domain
             E4 = null;
             E5 = null;
             E6 = null;
+            Bonus = null;
             Penalty = null;
             Total = null;
         }
@@ -157,6 +160,7 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
             strBuilder.AppendLine(D != null ? D.Value.ToString() : NULL);
             strBuilder.AppendLine(E != null ? E.Value.ToString() : NULL);
+            strBuilder.AppendLine(Bonus != null ? Bonus.Value.ToString() : NULL);
             strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
         }
 
@@ -172,6 +176,9 @@ namespace Bilten.Domain
 
             line = reader.ReadLine();
             E = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Bonus = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
             Penalty = line != NULL ? float.Parse(line) : (float?)null;

@@ -12,6 +12,7 @@
     <property name="KvalStatus" column="kval_status" type="Byte" />
     <property name="D" column="d" />
     <property name="E" column="e" />
+    <property name="Bonus" column="bonus" />
     <property name="Penalty" column="penalty" />
     <property name="Total" column="total" />
     <many-to-one name="Gimnasticar" class="GimnasticarUcesnik" column="gimnasticar_id" />

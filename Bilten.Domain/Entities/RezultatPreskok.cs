@@ -63,7 +63,7 @@ namespace Bilten.Domain
             protected set { e6_2 = value; }
         }
 
-        private Nullable<float> bonus_2 = 0.2f;
+        private Nullable<float> bonus_2;
         public virtual Nullable<float> Bonus_2
         {
             get { return bonus_2; }
@@ -117,6 +117,7 @@ namespace Bilten.Domain
                 E4_2 = o.Ocena2.E4;
                 E5_2 = o.Ocena2.E5;
                 E6_2 = o.Ocena2.E6;
+                Bonus_2 = o.Ocena2.Bonus;
                 Penalty_2 = o.Ocena2.Penalty;
                 Total_2 = o.Ocena2.Total;
                 TotalObeOcene = o.TotalObeOcene;
@@ -131,6 +132,7 @@ namespace Bilten.Domain
                 E4_2 = null;
                 E5_2 = null;
                 E6_2 = null;
+                Bonus_2 = null;
                 Penalty_2 = null;
                 Total_2 = null;
                 TotalObeOcene = null;
@@ -148,6 +150,7 @@ namespace Bilten.Domain
             E4_2 = null;
             E5_2 = null;
             E6_2 = null;
+            Bonus_2 = null;
             Penalty_2 = null;
             Total_2 = null;
             TotalObeOcene = null;
@@ -159,6 +162,7 @@ namespace Bilten.Domain
             base.dump(strBuilder);
             strBuilder.AppendLine(D_2 != null ? D_2.Value.ToString() : NULL);
             strBuilder.AppendLine(E_2 != null ? E_2.Value.ToString() : NULL);
+            strBuilder.AppendLine(Bonus_2 != null ? Bonus_2.Value.ToString() : NULL);
             strBuilder.AppendLine(Penalty_2 != null ? Penalty_2.Value.ToString() : NULL);
             strBuilder.AppendLine(Total_2 != null ? Total_2.Value.ToString() : NULL);
             strBuilder.AppendLine(TotalObeOcene != null ? TotalObeOcene.Value.ToString() : NULL);
@@ -173,6 +177,9 @@ namespace Bilten.Domain
 
             string e_2 = reader.ReadLine();
             E_2 = e_2 != NULL ? float.Parse(e_2) : (float?)null;
+
+            string bonus_2 = reader.ReadLine();
+            Bonus_2 = bonus_2 != NULL ? float.Parse(bonus_2) : (float?)null;
 
             string penalty_2 = reader.ReadLine();
             Penalty_2 = penalty_2 != NULL ? float.Parse(penalty_2) : (float?)null;

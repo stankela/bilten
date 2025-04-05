@@ -43,12 +43,15 @@ namespace Bilten.UI
             this.label1 = new System.Windows.Forms.Label();
             this.txtBrojEOcena = new System.Windows.Forms.TextBox();
             this.ckbTakBroj = new System.Windows.Forms.CheckBox();
+            this.lblBonus = new System.Windows.Forms.Label();
+            this.txtBrojDecBon = new System.Windows.Forms.TextBox();
+            this.ckbOdbaciMinMaxEOcenu = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblBrojEOcena
             // 
             this.lblBrojEOcena.AutoSize = true;
-            this.lblBrojEOcena.Location = new System.Drawing.Point(16, 18);
+            this.lblBrojEOcena.Location = new System.Drawing.Point(16, 75);
             this.lblBrojEOcena.Name = "lblBrojEOcena";
             this.lblBrojEOcena.Size = new System.Drawing.Size(68, 13);
             this.lblBrojEOcena.TabIndex = 0;
@@ -56,7 +59,7 @@ namespace Bilten.UI
             // 
             // txtBrojDecTotal
             // 
-            this.txtBrojDecTotal.Location = new System.Drawing.Point(87, 200);
+            this.txtBrojDecTotal.Location = new System.Drawing.Point(87, 342);
             this.txtBrojDecTotal.Name = "txtBrojDecTotal";
             this.txtBrojDecTotal.Size = new System.Drawing.Size(32, 20);
             this.txtBrojDecTotal.TabIndex = 21;
@@ -65,7 +68,7 @@ namespace Bilten.UI
             // lblTotal
             // 
             this.lblTotal.AutoSize = true;
-            this.lblTotal.Location = new System.Drawing.Point(20, 203);
+            this.lblTotal.Location = new System.Drawing.Point(20, 345);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(62, 13);
             this.lblTotal.TabIndex = 20;
@@ -73,7 +76,7 @@ namespace Bilten.UI
             // 
             // txtBrojDecPen
             // 
-            this.txtBrojDecPen.Location = new System.Drawing.Point(87, 174);
+            this.txtBrojDecPen.Location = new System.Drawing.Point(87, 316);
             this.txtBrojDecPen.Name = "txtBrojDecPen";
             this.txtBrojDecPen.Size = new System.Drawing.Size(32, 20);
             this.txtBrojDecPen.TabIndex = 19;
@@ -82,7 +85,7 @@ namespace Bilten.UI
             // lblPen
             // 
             this.lblPen.AutoSize = true;
-            this.lblPen.Location = new System.Drawing.Point(44, 177);
+            this.lblPen.Location = new System.Drawing.Point(44, 319);
             this.lblPen.Name = "lblPen";
             this.lblPen.Size = new System.Drawing.Size(37, 13);
             this.lblPen.TabIndex = 18;
@@ -90,7 +93,7 @@ namespace Bilten.UI
             // 
             // txtBrojDecE
             // 
-            this.txtBrojDecE.Location = new System.Drawing.Point(87, 148);
+            this.txtBrojDecE.Location = new System.Drawing.Point(87, 258);
             this.txtBrojDecE.Name = "txtBrojDecE";
             this.txtBrojDecE.Size = new System.Drawing.Size(32, 20);
             this.txtBrojDecE.TabIndex = 17;
@@ -99,7 +102,7 @@ namespace Bilten.UI
             // lblBrojDecE
             // 
             this.lblBrojDecE.AutoSize = true;
-            this.lblBrojDecE.Location = new System.Drawing.Point(68, 151);
+            this.lblBrojDecE.Location = new System.Drawing.Point(68, 261);
             this.lblBrojDecE.Name = "lblBrojDecE";
             this.lblBrojDecE.Size = new System.Drawing.Size(14, 13);
             this.lblBrojDecE.TabIndex = 16;
@@ -107,7 +110,7 @@ namespace Bilten.UI
             // 
             // txtBrojDecE1
             // 
-            this.txtBrojDecE1.Location = new System.Drawing.Point(87, 122);
+            this.txtBrojDecE1.Location = new System.Drawing.Point(87, 232);
             this.txtBrojDecE1.Name = "txtBrojDecE1";
             this.txtBrojDecE1.Size = new System.Drawing.Size(32, 20);
             this.txtBrojDecE1.TabIndex = 15;
@@ -116,7 +119,7 @@ namespace Bilten.UI
             // lblBrojDecE1
             // 
             this.lblBrojDecE1.AutoSize = true;
-            this.lblBrojDecE1.Location = new System.Drawing.Point(44, 125);
+            this.lblBrojDecE1.Location = new System.Drawing.Point(44, 235);
             this.lblBrojDecE1.Name = "lblBrojDecE1";
             this.lblBrojDecE1.Size = new System.Drawing.Size(36, 13);
             this.lblBrojDecE1.TabIndex = 14;
@@ -124,7 +127,7 @@ namespace Bilten.UI
             // 
             // txtBrojDecD
             // 
-            this.txtBrojDecD.Location = new System.Drawing.Point(87, 96);
+            this.txtBrojDecD.Location = new System.Drawing.Point(87, 206);
             this.txtBrojDecD.Name = "txtBrojDecD";
             this.txtBrojDecD.Size = new System.Drawing.Size(32, 20);
             this.txtBrojDecD.TabIndex = 13;
@@ -133,7 +136,7 @@ namespace Bilten.UI
             // lblBrojDecD
             // 
             this.lblBrojDecD.AutoSize = true;
-            this.lblBrojDecD.Location = new System.Drawing.Point(66, 99);
+            this.lblBrojDecD.Location = new System.Drawing.Point(66, 209);
             this.lblBrojDecD.Name = "lblBrojDecD";
             this.lblBrojDecD.Size = new System.Drawing.Size(15, 13);
             this.lblBrojDecD.TabIndex = 12;
@@ -142,7 +145,7 @@ namespace Bilten.UI
             // lblBrojDecimala
             // 
             this.lblBrojDecimala.AutoSize = true;
-            this.lblBrojDecimala.Location = new System.Drawing.Point(16, 73);
+            this.lblBrojDecimala.Location = new System.Drawing.Point(16, 183);
             this.lblBrojDecimala.Name = "lblBrojDecimala";
             this.lblBrojDecimala.Size = new System.Drawing.Size(103, 13);
             this.lblBrojDecimala.TabIndex = 11;
@@ -151,7 +154,7 @@ namespace Bilten.UI
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(84, 38);
+            this.label1.Location = new System.Drawing.Point(84, 95);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(250, 13);
             this.label1.TabIndex = 22;
@@ -159,7 +162,7 @@ namespace Bilten.UI
             // 
             // txtBrojEOcena
             // 
-            this.txtBrojEOcena.Location = new System.Drawing.Point(87, 15);
+            this.txtBrojEOcena.Location = new System.Drawing.Point(87, 72);
             this.txtBrojEOcena.Name = "txtBrojEOcena";
             this.txtBrojEOcena.Size = new System.Drawing.Size(37, 20);
             this.txtBrojEOcena.TabIndex = 24;
@@ -168,7 +171,7 @@ namespace Bilten.UI
             // ckbTakBroj
             // 
             this.ckbTakBroj.AutoSize = true;
-            this.ckbTakBroj.Location = new System.Drawing.Point(23, 274);
+            this.ckbTakBroj.Location = new System.Drawing.Point(19, 14);
             this.ckbTakBroj.Name = "ckbTakBroj";
             this.ckbTakBroj.Size = new System.Drawing.Size(152, 17);
             this.ckbTakBroj.TabIndex = 25;
@@ -176,9 +179,40 @@ namespace Bilten.UI
             this.ckbTakBroj.UseVisualStyleBackColor = true;
             this.ckbTakBroj.CheckedChanged += new System.EventHandler(this.ckbTakBroj_CheckedChanged);
             // 
+            // lblBonus
+            // 
+            this.lblBonus.AutoSize = true;
+            this.lblBonus.Location = new System.Drawing.Point(43, 291);
+            this.lblBonus.Name = "lblBonus";
+            this.lblBonus.Size = new System.Drawing.Size(37, 13);
+            this.lblBonus.TabIndex = 26;
+            this.lblBonus.Text = "Bonus";
+            // 
+            // txtBrojDecBon
+            // 
+            this.txtBrojDecBon.Location = new System.Drawing.Point(87, 288);
+            this.txtBrojDecBon.Name = "txtBrojDecBon";
+            this.txtBrojDecBon.Size = new System.Drawing.Size(32, 20);
+            this.txtBrojDecBon.TabIndex = 18;
+            this.txtBrojDecBon.TextChanged += new System.EventHandler(this.txtBrojDecBon_TextChanged);
+            // 
+            // ckbOdbaciMinMaxEOcenu
+            // 
+            this.ckbOdbaciMinMaxEOcenu.AutoSize = true;
+            this.ckbOdbaciMinMaxEOcenu.Location = new System.Drawing.Point(19, 126);
+            this.ckbOdbaciMinMaxEOcenu.Name = "ckbOdbaciMinMaxEOcenu";
+            this.ckbOdbaciMinMaxEOcenu.Size = new System.Drawing.Size(345, 17);
+            this.ckbOdbaciMinMaxEOcenu.TabIndex = 27;
+            this.ckbOdbaciMinMaxEOcenu.Text = "Odbaci minimalnu i maksimalnu E1, E2, ... ocenu kod izracunavanja";
+            this.ckbOdbaciMinMaxEOcenu.UseVisualStyleBackColor = true;
+            this.ckbOdbaciMinMaxEOcenu.CheckedChanged += new System.EventHandler(this.ckbOdbaciMinMaxEOcenu_CheckedChanged);
+            // 
             // SudijeIOcenePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.ckbOdbaciMinMaxEOcenu);
+            this.Controls.Add(this.txtBrojDecBon);
+            this.Controls.Add(this.lblBonus);
             this.Controls.Add(this.ckbTakBroj);
             this.Controls.Add(this.txtBrojEOcena);
             this.Controls.Add(this.label1);
@@ -195,7 +229,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblBrojDecimala);
             this.Controls.Add(this.lblBrojEOcena);
             this.Name = "SudijeIOcenePage";
-            this.Size = new System.Drawing.Size(347, 316);
+            this.Size = new System.Drawing.Size(378, 384);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -218,5 +252,8 @@ namespace Bilten.UI
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtBrojEOcena;
         private System.Windows.Forms.CheckBox ckbTakBroj;
+        private System.Windows.Forms.Label lblBonus;
+        private System.Windows.Forms.TextBox txtBrojDecBon;
+        private System.Windows.Forms.CheckBox ckbOdbaciMinMaxEOcenu;
     }
 }

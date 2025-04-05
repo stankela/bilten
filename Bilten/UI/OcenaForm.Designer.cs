@@ -64,16 +64,19 @@ namespace Bilten.UI
             this.txtE1_2 = new System.Windows.Forms.TextBox();
             this.txtD_2 = new System.Windows.Forms.TextBox();
             this.txtTotalObeOcene = new System.Windows.Forms.TextBox();
+            this.txtBonus = new System.Windows.Forms.TextBox();
+            this.txtBonus_2 = new System.Windows.Forms.TextBox();
+            this.lblBonus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSprava)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(492, 280);
+            this.btnOk.Location = new System.Drawing.Point(564, 280);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(580, 280);
+            this.btnCancel.Location = new System.Drawing.Point(652, 280);
             // 
             // lblKategorijaTakmicenje
             // 
@@ -227,7 +230,7 @@ namespace Bilten.UI
             // lblPenal
             // 
             this.lblPenal.AutoSize = true;
-            this.lblPenal.Location = new System.Drawing.Point(489, 102);
+            this.lblPenal.Location = new System.Drawing.Point(557, 103);
             this.lblPenal.Name = "lblPenal";
             this.lblPenal.Size = new System.Drawing.Size(63, 13);
             this.lblPenal.TabIndex = 24;
@@ -235,7 +238,7 @@ namespace Bilten.UI
             // 
             // txtPenal
             // 
-            this.txtPenal.Location = new System.Drawing.Point(492, 119);
+            this.txtPenal.Location = new System.Drawing.Point(560, 120);
             this.txtPenal.Name = "txtPenal";
             this.txtPenal.Size = new System.Drawing.Size(48, 20);
             this.txtPenal.TabIndex = 25;
@@ -243,7 +246,7 @@ namespace Bilten.UI
             // lblTotal
             // 
             this.lblTotal.AutoSize = true;
-            this.lblTotal.Location = new System.Drawing.Point(576, 103);
+            this.lblTotal.Location = new System.Drawing.Point(644, 104);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(83, 13);
             this.lblTotal.TabIndex = 26;
@@ -251,7 +254,7 @@ namespace Bilten.UI
             // 
             // txtTotal
             // 
-            this.txtTotal.Location = new System.Drawing.Point(579, 118);
+            this.txtTotal.Location = new System.Drawing.Point(647, 119);
             this.txtTotal.Name = "txtTotal";
             this.txtTotal.Size = new System.Drawing.Size(56, 20);
             this.txtTotal.TabIndex = 27;
@@ -259,7 +262,7 @@ namespace Bilten.UI
             // 
             // btnIzracunaj
             // 
-            this.btnIzracunaj.Location = new System.Drawing.Point(397, 280);
+            this.btnIzracunaj.Location = new System.Drawing.Point(469, 280);
             this.btnIzracunaj.Name = "btnIzracunaj";
             this.btnIzracunaj.Size = new System.Drawing.Size(75, 23);
             this.btnIzracunaj.TabIndex = 55;
@@ -290,7 +293,7 @@ namespace Bilten.UI
             // 
             // txtTotal_2
             // 
-            this.txtTotal_2.Location = new System.Drawing.Point(579, 185);
+            this.txtTotal_2.Location = new System.Drawing.Point(647, 186);
             this.txtTotal_2.Name = "txtTotal_2";
             this.txtTotal_2.Size = new System.Drawing.Size(56, 20);
             this.txtTotal_2.TabIndex = 51;
@@ -298,7 +301,7 @@ namespace Bilten.UI
             // 
             // txtPenal_2
             // 
-            this.txtPenal_2.Location = new System.Drawing.Point(492, 186);
+            this.txtPenal_2.Location = new System.Drawing.Point(560, 187);
             this.txtPenal_2.Name = "txtPenal_2";
             this.txtPenal_2.Size = new System.Drawing.Size(48, 20);
             this.txtPenal_2.TabIndex = 49;
@@ -362,17 +365,43 @@ namespace Bilten.UI
             // 
             // txtTotalObeOcene
             // 
-            this.txtTotalObeOcene.Location = new System.Drawing.Point(579, 228);
+            this.txtTotalObeOcene.Location = new System.Drawing.Point(647, 229);
             this.txtTotalObeOcene.Name = "txtTotalObeOcene";
             this.txtTotalObeOcene.Size = new System.Drawing.Size(56, 20);
             this.txtTotalObeOcene.TabIndex = 53;
             this.txtTotalObeOcene.TabStop = false;
             // 
+            // txtBonus
+            // 
+            this.txtBonus.Location = new System.Drawing.Point(483, 119);
+            this.txtBonus.Name = "txtBonus";
+            this.txtBonus.Size = new System.Drawing.Size(48, 20);
+            this.txtBonus.TabIndex = 24;
+            // 
+            // txtBonus_2
+            // 
+            this.txtBonus_2.Location = new System.Drawing.Point(483, 186);
+            this.txtBonus_2.Name = "txtBonus_2";
+            this.txtBonus_2.Size = new System.Drawing.Size(48, 20);
+            this.txtBonus_2.TabIndex = 48;
+            // 
+            // lblBonus
+            // 
+            this.lblBonus.AutoSize = true;
+            this.lblBonus.Location = new System.Drawing.Point(480, 103);
+            this.lblBonus.Name = "lblBonus";
+            this.lblBonus.Size = new System.Drawing.Size(37, 13);
+            this.lblBonus.TabIndex = 58;
+            this.lblBonus.Text = "Bonus";
+            // 
             // OcenaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(675, 321);
+            this.ClientSize = new System.Drawing.Size(755, 321);
+            this.Controls.Add(this.lblBonus);
+            this.Controls.Add(this.txtBonus_2);
+            this.Controls.Add(this.txtBonus);
             this.Controls.Add(this.txtTotal_2);
             this.Controls.Add(this.txtTotalObeOcene);
             this.Controls.Add(this.txtPenal_2);
@@ -451,6 +480,9 @@ namespace Bilten.UI
             this.Controls.SetChildIndex(this.btnCancel, 0);
             this.Controls.SetChildIndex(this.txtTotalObeOcene, 0);
             this.Controls.SetChildIndex(this.txtTotal_2, 0);
+            this.Controls.SetChildIndex(this.txtBonus, 0);
+            this.Controls.SetChildIndex(this.txtBonus_2, 0);
+            this.Controls.SetChildIndex(this.lblBonus, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSprava)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -495,5 +527,8 @@ namespace Bilten.UI
         private System.Windows.Forms.TextBox txtE1_2;
         private System.Windows.Forms.TextBox txtD_2;
         private System.Windows.Forms.TextBox txtTotalObeOcene;
+        private System.Windows.Forms.TextBox txtBonus;
+        private System.Windows.Forms.TextBox txtBonus_2;
+        private System.Windows.Forms.Label lblBonus;
     }
 }

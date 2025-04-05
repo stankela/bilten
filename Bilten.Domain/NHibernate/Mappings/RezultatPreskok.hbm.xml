@@ -12,10 +12,12 @@
     <property name="KvalStatus" column="kval_status" type="Byte" />
     <property name="D" column="d" />
     <property name="E" column="e" />
+    <property name="Bonus" column="bonus" />
     <property name="Penalty" column="penalty" />
     <property name="Total" column="total" />
     <property name="D_2" column="d_2" />
     <property name="E_2" column="e_2" />
+    <property name="Bonus_2" column="bonus_2" />
     <property name="Penalty_2" column="penalty_2" />
     <property name="Total_2" column="total_2" />
     <property name="TotalObeOcene" column="total_obe_ocene" />

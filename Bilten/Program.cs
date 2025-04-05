@@ -97,7 +97,7 @@ namespace Bilten
         // - Kod racunanja ocene na osnovu oba preskoka treba da postoji izbor da li se ocena racuna na osnovu oba preskoka
         //   ili vece ocene iz oba preskoka.
 
-        public static int VERZIJA_PROGRAMA = 17;
+        public static int VERZIJA_PROGRAMA = 18;
 
         /// <summary>
         /// The main entry point for the application.
@@ -135,7 +135,12 @@ namespace Bilten
                 {
                     CurrentSessionContext.Bind(session);
                     OpcijeDAO opcijeDAO = DAOFactoryFactory.DAOFactory.GetOpcijeDAO();
-                    Opcije opcije = opcijeDAO.FindOpcije();
+                    // TODO5: Opcije ne treba ucitavati preko opcijeDAO vec treba upotrebiti neko custom resenje.
+                    // Zakomentarisan kod je radio tada su opcije prvi put dodate u bazu podataka, ali ne radi u
+                    // situacijama kada treba azurirati opcije, zato sto ce se tabela opcije azurirati tek dole u
+                    // new VersionUpdater().update()
+
+                    /*Opcije opcije = opcijeDAO.FindOpcije();
                     if (opcije == null)
                     {
                         // NOTE: Ova naredba se izvrsava samo pri prvom izvrsavanju aplikacije
@@ -143,7 +148,7 @@ namespace Bilten
                         opcijeDAO.Add(opcije);
                         session.Transaction.Commit();
                     }
-                    Opcije.Instance = opcije;
+                    Opcije.Instance = opcije;*/
                 }
             }
             catch (Exception ex)
@@ -177,6 +182,19 @@ namespace Bilten
                 {
                     CurrentSessionContext.Bind(session);
                     Jezik jezik = DAOFactoryFactory.DAOFactory.GetJezikDAO().FindDefault();
+                    if (Opcije.Instance == null)
+                    {
+                        OpcijeDAO opcijeDAO = DAOFactoryFactory.DAOFactory.GetOpcijeDAO();
+                        Opcije opcije = opcijeDAO.FindOpcije();
+                        if (opcije == null)
+                        {
+                            // NOTE: Ova naredba se izvrsava samo pri prvom izvrsavanju aplikacije
+                            opcije = new Opcije();
+                            opcijeDAO.Add(opcije);
+                            session.Transaction.Commit();
+                        }
+                        Opcije.Instance = opcije;
+                    }
                     Opcije.Instance.UpdateJezik(jezik);
                 }
             }

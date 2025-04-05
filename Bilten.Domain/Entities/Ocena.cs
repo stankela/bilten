@@ -48,13 +48,13 @@ namespace Bilten.Domain
         
         }
 
-        public override void izracunajOcenu(int brojDecimalaE, int brojDecimalaPen,
+        public override void izracunajOcenu(int brojDecimalaE, int brojDecimalaBon, int brojDecimalaPen,
             int brojDecimalaTotal)
         {
-            base.izracunajOcenu(brojDecimalaE, brojDecimalaPen, brojDecimalaTotal);
+            base.izracunajOcenu(brojDecimalaE, brojDecimalaBon, brojDecimalaPen, brojDecimalaTotal);
             if (Ocena2 != null)
             {
-                Ocena2.izracunajOcenu(brojDecimalaE, brojDecimalaPen, brojDecimalaTotal);
+                Ocena2.izracunajOcenu(brojDecimalaE, brojDecimalaBon, brojDecimalaPen, brojDecimalaTotal);
                 TotalObeOcene = getTotalObeOcene(brojDecimalaTotal);
             }
         }
@@ -241,6 +241,26 @@ namespace Bilten.Domain
                     result = E.Value.ToString("F" + Opcije.Instance.BrojDecimalaE);
                 if (Ocena2 != null && Ocena2.E != null)
                     result += Environment.NewLine + Ocena2.E.Value.ToString("F" + Opcije.Instance.BrojDecimalaE);
+                return result;
+            }
+        }
+
+        public virtual string Bonus_2
+        {
+            get
+            {
+                string result = String.Empty;
+                if (Bonus != null)
+                    result = Bonus.Value.ToString("F" + Opcije.Instance.BrojDecimalaBon);
+                if (Ocena2 != null)
+                {
+                    if (Ocena2.Bonus != null)
+                        result += Environment.NewLine + Ocena2.Bonus.Value.ToString("F" + Opcije.Instance.BrojDecimalaBon);
+                    else
+                        // da bi bonus za prvu ocenu bio u istoj liniji sa ostalim
+                        // podacima za prvu ocenu (inace bi ga prikazao po sredini)
+                        result += Environment.NewLine;
+                }
                 return result;
             }
         }

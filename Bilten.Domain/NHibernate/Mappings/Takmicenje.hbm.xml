@@ -16,6 +16,7 @@
     <property name="BrojDecimalaD" column="broj_decimala_d" type="Byte" />
     <property name="BrojDecimalaE1" column="broj_decimala_e1" type="Byte" />
     <property name="BrojDecimalaE" column="broj_decimala_e" type="Byte" />
+    <property name="BrojDecimalaBon" column="broj_decimala_bon" type="Byte" />
     <property name="BrojDecimalaPen" column="broj_decimala_pen" type="Byte" />
     <property name="BrojDecimalaTotal" column="broj_decimala_total" type="Byte" />
     <property name="ZavrsenoTak1" column="zavrseno_tak1" type="Boolean" />

@@ -120,6 +120,7 @@ namespace Bilten.UI
             txtE5_2.Enabled = txtE5_2.Visible = obeOcene && brojEOcena >= 5;
             txtE6_2.Enabled = txtE6_2.Visible = obeOcene && brojEOcena >= 6;
             txtE_2.Enabled = txtE_2.Visible = obeOcene;
+            txtBonus_2.Enabled = txtBonus_2.Visible = obeOcene;
             txtPenal_2.Enabled = txtPenal_2.Visible = obeOcene;
             txtTotal_2.Enabled = txtTotal_2.Visible = obeOcene;
             txtTotalObeOcene.Enabled = txtTotalObeOcene.Visible = obeOcene;
@@ -158,6 +159,7 @@ namespace Bilten.UI
             txtE5.Text = String.Empty;
             txtE6.Text = String.Empty;
             txtE.Text = String.Empty;
+            txtBonus.Text = String.Empty;
             txtPenal.Text = String.Empty;
             txtTotal.Text = String.Empty;
 
@@ -176,6 +178,7 @@ namespace Bilten.UI
             txtE5_2.Text = String.Empty;
             txtE6_2.Text = String.Empty;
             txtE_2.Text = String.Empty;
+            txtBonus_2.Text = String.Empty;
             txtPenal_2.Text = String.Empty;
             txtTotal_2.Text = String.Empty;
             txtTotalObeOcene.Text = String.Empty;
@@ -193,6 +196,7 @@ namespace Bilten.UI
                 txtE5_2.Text.Trim() == String.Empty &&
                 txtE6_2.Text.Trim() == String.Empty &&
                 txtE_2.Text.Trim() == String.Empty &&
+                txtBonus_2.Text.Trim() == String.Empty &&
                 txtPenal_2.Text.Trim() == String.Empty &&
                 txtTotal_2.Text.Trim() == String.Empty &&
                 txtTotalObeOcene.Text.Trim() == String.Empty;        
@@ -205,6 +209,7 @@ namespace Bilten.UI
             string formatD = "F" + takmicenje.BrojDecimalaD;
             string formatE1 = "F" + takmicenje.BrojDecimalaE1;
             string formatE = "F" + takmicenje.BrojDecimalaE;
+            string formatBon = "F" + takmicenje.BrojDecimalaBon;
             string formatPen = "F" + takmicenje.BrojDecimalaPen;
             string formatTotal = "F" + takmicenje.BrojDecimalaTotal;
 
@@ -240,6 +245,10 @@ namespace Bilten.UI
             txtE.Text = String.Empty;
             if (ocena.E != null)
                 txtE.Text = ocena.E.Value.ToString(formatE);
+
+            txtBonus.Text = String.Empty;
+            if (ocena.Bonus != null)
+                txtBonus.Text = ocena.Bonus.Value.ToString(formatBon);
 
             txtPenal.Text = String.Empty;
             if (ocena.Penalty != null)
@@ -286,6 +295,10 @@ namespace Bilten.UI
                 if (ocena2.E != null)
                     txtE_2.Text = ocena2.E.Value.ToString(formatE);
 
+                txtBonus_2.Text = String.Empty;
+                if (ocena2.Bonus != null)
+                    txtBonus_2.Text = ocena2.Bonus.Value.ToString(formatBon);
+
                 txtPenal_2.Text = String.Empty;
                 if (ocena2.Penalty != null)
                     txtPenal_2.Text = ocena2.Penalty.Value.ToString(formatPen);
@@ -307,13 +320,13 @@ namespace Bilten.UI
             // samo proverava format polja koja nisu prazna
 
             requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD, txtE, txtE1,
-                txtE2, txtE3, txtE4, txtE5, txtE6, txtPenal, String.Empty);
+                txtE2, txtE3, txtE4, txtE5, txtE6, txtBonus, txtPenal, String.Empty);
             requiredFieldsAndFormatValidationRucnoUnetaOcena(notification, txtE, txtTotal, String.Empty);
 
             if (!isDrugaOcenaEmpty())
             {
                 requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2, txtE_2,
-                    txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtPenal_2, "DrugaOcena.");
+                    txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtBonus_2, txtPenal_2, "DrugaOcena.");
                 requiredFieldsAndFormatValidationRucnoUnetaOcena(notification, txtE_2, txtTotal_2, "DrugaOcena.");
                 
                 if (txtTotalObeOcene.Text.Trim() != String.Empty)
@@ -359,7 +372,7 @@ namespace Bilten.UI
 
         private void requiredFieldsAndFormatValidationZaIzracunavanje(
             Notification notification, TextBox txtD, TextBox txtE, TextBox txtE1, TextBox txtE2,
-            TextBox txtE3, TextBox txtE4, TextBox txtE5, TextBox txtE6, 
+            TextBox txtE3, TextBox txtE4, TextBox txtE5, TextBox txtE6, TextBox txtBonus,
             TextBox txtPenal, string prefix)
         {
             if (txtD.Text.Trim() != String.Empty)
@@ -396,6 +409,21 @@ namespace Bilten.UI
             for (byte i = 1; i <= takmicenje.BrojEOcena; i++)
             {
                 validateEOcenaFormat(notification, txtEOcene[i - 1], i, prefix);
+            }
+
+            if (txtBonus.Text.Trim() != String.Empty)
+            {
+                if (!isFloat(txtBonus.Text))
+                {
+                    notification.RegisterMessage(
+                        prefix + "Bonus", "Neispravan format za bonus.");
+                }
+                else if (!checkDecimalPlaces(txtBonus.Text, takmicenje.BrojDecimalaBon))
+                {
+                    notification.RegisterMessage(
+                        prefix + "Bonus", String.Format(
+                        "Bonus moze da sadrzi najvise {0} decimala.", takmicenje.BrojDecimalaBon));
+                }
             }
 
             if (txtPenal.Text.Trim() != String.Empty)
@@ -508,6 +536,10 @@ namespace Bilten.UI
                     txtE.Focus();
                     break;
 
+                case "Bonus":
+                    txtBonus.Focus();
+                    break;
+
                 case "Penalty":
                     txtPenal.Focus();
                     break;
@@ -546,6 +578,10 @@ namespace Bilten.UI
 
                 case "DrugaOcena.E":
                     txtE_2.Focus();
+                    break;
+
+                case "DrugaOcena.Bonus":
+                    txtBonus_2.Focus();
                     break;
 
                 case "DrugaOcena.Penalty":
@@ -667,6 +703,11 @@ namespace Bilten.UI
                     ocena.E6 = float.Parse(txtE6.Text);
             }
 
+            if (txtBonus.Text.Trim() == String.Empty)
+                ocena.Bonus = null;
+            else
+                ocena.Bonus = float.Parse(txtBonus.Text);
+            
             if (txtPenal.Text.Trim() == String.Empty)
                 ocena.Penalty = null;
             else
@@ -745,6 +786,11 @@ namespace Bilten.UI
                         ocena2.E6 = float.Parse(txtE6_2.Text);
                 }
 
+                if (txtBonus_2.Text.Trim() == String.Empty)
+                    ocena2.Bonus = null;
+                else
+                    ocena2.Bonus = float.Parse(txtBonus_2.Text);
+                
                 if (txtPenal_2.Text.Trim() == String.Empty)
                     ocena2.Penalty = null;
                 else
@@ -811,11 +857,11 @@ namespace Bilten.UI
             {
                 Notification notification = new Notification();
                 requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD, txtE, txtE1,
-                    txtE2, txtE3, txtE4, txtE5, txtE6, txtPenal, String.Empty);
+                    txtE2, txtE3, txtE4, txtE5, txtE6, txtBonus, txtPenal, String.Empty);
                 if (!isDrugaOcenaEmpty())
                 {
                     requiredFieldsAndFormatValidationZaIzracunavanje(notification, txtD_2, txtE_2,
-                        txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtPenal_2, "DrugaOcena.");
+                        txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2, txtBonus_2, txtPenal_2, "DrugaOcena.");
                 }
                 
                 if (!notification.IsValid())
@@ -835,7 +881,7 @@ namespace Bilten.UI
                 // TODO: Razmisli sta treba da radis kada se u toku takmicenja
                 // (kada su neke ocene vec unete) promene opcije za broj decimala
 
-                o.izracunajOcenu(takmicenje.BrojDecimalaE,
+                o.izracunajOcenu(takmicenje.BrojDecimalaE, takmicenje.BrojDecimalaBon,
                     takmicenje.BrojDecimalaPen, takmicenje.BrojDecimalaTotal);
 
                 izracunato = true;
@@ -959,6 +1005,9 @@ namespace Bilten.UI
                 txtE6_2.TextChanged += new EventHandler(txtBoxOcena2_TextChanged);
             }
 
+            txtBonus.TextChanged += new EventHandler(txtBoxOcena1_TextChanged);
+            txtBonus_2.TextChanged += new EventHandler(txtBoxOcena2_TextChanged);
+            
             txtPenal.TextChanged += new EventHandler(txtBoxOcena1_TextChanged);
             txtPenal_2.TextChanged += new EventHandler(txtBoxOcena2_TextChanged);
         }
