@@ -838,8 +838,6 @@ namespace Bilten.UI
 
         // TODO5: Kada stampam takmicari kategorije, nakon stampanja se lista u gridu promeni (tj promeni se redosled)
 
-        // TODO5: Proveri sve nazive na englestom
-
         private void mnPonistiBrojeve_Click(object sender, EventArgs e)
         {
             IList<GimnasticarUcesnik> selItems = getActiveDataGridViewUserControl()

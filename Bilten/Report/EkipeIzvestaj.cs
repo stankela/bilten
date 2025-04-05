@@ -11,7 +11,7 @@ namespace Bilten.Report
 {
     class EkipeIzvestaj : Izvestaj
     {
-   		private EkipeLista lista;
+        private List<EkipeLista> reportListe = new List<EkipeLista>();
 
         // TODO5: Svaka ekipa treba da je cela na istoj strani (trenutno nije tako)
 
@@ -25,21 +25,101 @@ namespace Bilten.Report
             Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
             Font nazivEkipeFont = new Font("Arial", 10, FontStyle.Bold);
 
-            lista = new EkipeLista(this, 1, 0f, itemFont, itemsHeaderFont, nazivEkipeFont,
-                rezultati, ekipaRezultatiUkupnoMap, gim, kvalColumn, formGrid, takmicenje.TakBrojevi);
+            PropertyDescriptor propDesc =
+                TypeDescriptor.GetProperties(typeof(RezultatEkipno))["RedBroj"];
+            rezultati.Sort(new SortComparer<RezultatEkipno>(propDesc,
+                ListSortDirection.Ascending));
+
+            foreach (RezultatEkipno rez in rezultati)
+            {
+                List<RezultatEkipno> rezList = new List<RezultatEkipno>() { rez };
+                reportListe.Add(new EkipeLista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont, nazivEkipeFont,
+                    rezList, ekipaRezultatiUkupnoMap, gim, kvalColumn, formGrid, takmicenje.TakBrojevi));
+            }
 		}
 
         protected override void doSetupContent(Graphics g)
 		{
-			lista.StartY = contentBounds.Y;
-			lista.setupContent(g, contentBounds);
-			lastPageNum = lista.LastPageNum;
-		}
+            float startYPrvaStrana = contentBounds.Y;
+            float startYOstaleStrane = contentBounds.Y;
+
+            EkipeLista prevLista = null;
+            // Radim samo jedanput setupContent (limit za i je 1).
+            // TODO5: Uradi dvaput setupContent, tako da sirine kolona za ime i klub budu odgovarajuce.
+            for (int i = 0; i < 1; ++i)
+            {
+                prevLista = null;
+                int j = 0;
+                bool prebaciNaSledecuStranu = false;
+                while (j < reportListe.Count)
+                {
+                    EkipeLista lista = reportListe[j];
+                    if (prevLista == null)
+                    {
+                        lista.FirstPageNum = 1;
+                        lista.StartY = startYPrvaStrana;
+                    }
+                    else if (prebaciNaSledecuStranu)
+                    {
+                        lista.FirstPageNum = prevLista.LastPageNum + 1;
+                        lista.StartY = startYOstaleStrane;
+                        prebaciNaSledecuStranu = false;
+                    }
+                    else
+                    {
+                        // Nastavak na istoj strani
+                        lista.FirstPageNum = prevLista.LastPageNum;
+                        // Svaka lista ima implicitno dodat prazan prostor nakon liste (koji je jednak velicini vrste),
+                        // i EndY pokazuje nakon tog praznog prostoja.
+                        lista.StartY = prevLista.EndY;
+                    }
+
+                    int firstPageNum = lista.FirstPageNum;
+                    if (i == 0)
+                    {
+                        lista.setupContent(g, contentBounds);
+                    }
+                    else
+                    {
+                        //lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
+                    }
+
+                    if (lista.LastPageNum == firstPageNum)
+                    {
+                        // Cela lista je stala na istu stranu
+                        ++j;
+                        prevLista = lista;
+                    }
+                    else
+                    {
+                        // Lista nije stala na istu stranu
+                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
+                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
+                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
+                        {
+                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
+                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
+                            ++j;
+                            prevLista = lista;
+                        }
+                        else
+                        {
+                            // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
+                            prebaciNaSledecuStranu = true;
+                        }
+                    }
+                }
+            }
+            lastPageNum = prevLista.LastPageNum;
+        }
 
 		public override void drawContent(Graphics g, int pageNum)
 		{
-			lista.drawContent(g, contentBounds, pageNum);
-		}
+            foreach (EkipeLista lista in reportListe)
+            {
+                lista.drawContent(g, contentBounds, pageNum);
+            }
+        }
     }
 
     public class EkipeLista : ReportLista
@@ -145,6 +225,9 @@ namespace Bilten.Report
             }
             return result;
         }
+
+        // TODO5: Jezicke opcije bi trebale da budu svojstvo takmicenja (kao sto su logoi). Kada se menjaju opcije,
+        // za svaku opciju treba da postoji combo box sa svim vrednostima za tu opciju u prethodnim takmicenjima.
 
         private RezultatEkipno getRezEkipa(int redBrojRezUkupno, List<RezultatEkipno> rezultati)
         {

@@ -35,6 +35,8 @@ namespace Bilten.Report
         // posebnoj strani. Kada je 2 ili 3 stampa se u jednoj koloni, jedno ispod drugog dok ima mesta.
         // To znaci da ako zadamo 2 a na strani ima mesta za 3 sprave, bice stampane 3 sprave.
         // TODO5: Uradi ovako i za sve ostale liste sa manjim brojem elemenata (start liste, kvalifikanti)
+        // TODO5: Neka u HeaderFooterForm budu opcije "Stampaj u jednoj koloni" i "Stampaj u dve kolone". Izbaci opcije
+        //        za broj sprava po strani
 
         public RasporedSudijaIzvestaj(List<SudijskiOdborNaSpravi> odbori, Gimnastika gim,
             string documentName, int brojSpravaPoStrani, SpravaGridGroupUserControl spravaGridGroupUserControl,
