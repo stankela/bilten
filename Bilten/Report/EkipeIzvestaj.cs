@@ -16,14 +16,13 @@ namespace Bilten.Report
         // TODO5: Svaka ekipa treba da je cela na istoj strani (trenutno nije tako)
 
         public EkipeIzvestaj(List<RezultatEkipno> rezultati, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap,
-            Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName, Takmicenje takmicenje)
+            Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName, Takmicenje takmicenje,
+            Font itemFont)
             : base(takmicenje)
 		{
             DocumentName = documentName;
-
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
-            Font nazivEkipeFont = new Font("Arial", 10, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
+            Font nazivEkipeFont = new Font(itemFont.FontFamily.Name, itemFont.Size * 10f / 8f, FontStyle.Bold);
 
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(RezultatEkipno))["RedBroj"];

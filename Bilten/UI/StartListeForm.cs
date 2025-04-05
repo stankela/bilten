@@ -1032,14 +1032,15 @@ namespace Bilten.UI
                     }
                     p.setIzvestaj(new StartListaIzvestaj(startListe, takmicenje.Gimnastika, documentName,
                         form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi, form.StampajKlub, form.StampajKategoriju,
-                        getActiveSpravaGridGroupUserControl(), takmicenje));
+                        getActiveSpravaGridGroupUserControl(), takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
                     p.setIzvestaj(new StartListaIzvestaj(startLista, documentName, form.StampajRedniBrojNaStartListi,
                         form.StampajKlub, form.StampajKategoriju,
-                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje));
+                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize)));
                 }
 
                 p.ShowDialog();

@@ -439,7 +439,8 @@ namespace Bilten.UI
                     p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
                         obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
                         form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
-                        /*markFirstRows*/false, /*numRowsToMark*/0, brojEOcena, takmicenje, form.PrikaziBonus));
+                        /*markFirstRows*/false, /*numRowsToMark*/0, brojEOcena, takmicenje, form.PrikaziBonus,
+                        new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 else
                 {
@@ -453,7 +454,7 @@ namespace Bilten.UI
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                             /*markFirstRows*/!kvalColumnVisible(), /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena,
-                            takmicenje, form.PrikaziBonus));
+                            takmicenje, form.PrikaziBonus, new Font(form.TekstFont, form.TekstFontSize)));
                     }
                     else
                     {
@@ -463,7 +464,8 @@ namespace Bilten.UI
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                             /*markFirstRows*/!kvalColumnVisible(),
-                            /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena, takmicenje, form.PrikaziBonus));
+                            /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena, takmicenje, form.PrikaziBonus,
+                            new Font(form.TekstFont, form.TekstFontSize)));
                     }
                 }
 
@@ -1013,7 +1015,8 @@ namespace Bilten.UI
                     }
                     p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultatiSprave, rezultatiPreskok, obaPresk, 
                         takmicenje.Gimnastika, documentName, form.BrojSpravaPoStrani,
-                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje));
+                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 else
                 {
@@ -1022,14 +1025,16 @@ namespace Bilten.UI
                         List<RezultatSprava> rezultati =
                             ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getKvalifikantiIRezerve();
                         p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, ActiveSprava, documentName,
-                            spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje));
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                            new Font(form.TekstFont, form.TekstFontSize)));
                     }
                     else
                     {
                         List<RezultatPreskok> rezultati =
                             ActiveTakmicenje.getPoredakPreskok(deoTakKod).getKvalifikantiIRezerve(obaPresk);
                         p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, obaPresk, documentName,
-                            spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje));
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                            new Font(form.TekstFont, form.TekstFontSize)));
                     }
                 }
 

@@ -78,6 +78,9 @@ namespace Bilten.UI
             this.ckbPrikaziPenalizaciju = new System.Windows.Forms.CheckBox();
             this.ckbPrikaziClanoveEkipe = new System.Windows.Forms.CheckBox();
             this.ckbPrikaziBonus = new System.Windows.Forms.CheckBox();
+            this.cmbFontTekst = new System.Windows.Forms.ComboBox();
+            this.cmbSizeTekst = new System.Windows.Forms.ComboBox();
+            this.lblTekst = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -536,6 +539,31 @@ namespace Bilten.UI
             this.ckbPrikaziBonus.Text = "Prikazi bonus";
             this.ckbPrikaziBonus.UseVisualStyleBackColor = true;
             // 
+            // cmbTekstFooter
+            // 
+            this.cmbFontTekst.FormattingEnabled = true;
+            this.cmbFontTekst.Location = new System.Drawing.Point(316, 383);
+            this.cmbFontTekst.Name = "cmbTekstFooter";
+            this.cmbFontTekst.Size = new System.Drawing.Size(172, 21);
+            this.cmbFontTekst.TabIndex = 60;
+            // 
+            // cmbSizeTekst
+            // 
+            this.cmbSizeTekst.FormattingEnabled = true;
+            this.cmbSizeTekst.Location = new System.Drawing.Point(494, 383);
+            this.cmbSizeTekst.Name = "cmbSizeTekst";
+            this.cmbSizeTekst.Size = new System.Drawing.Size(44, 21);
+            this.cmbSizeTekst.TabIndex = 61;
+            // 
+            // lblTekst
+            // 
+            this.lblTekst.AutoSize = true;
+            this.lblTekst.Location = new System.Drawing.Point(313, 367);
+            this.lblTekst.Name = "lblTekst";
+            this.lblTekst.Size = new System.Drawing.Size(34, 13);
+            this.lblTekst.TabIndex = 62;
+            this.lblTekst.Text = "Tekst";
+            // 
             // HeaderFooterForm
             // 
             this.AcceptButton = this.btnOk;
@@ -543,6 +571,9 @@ namespace Bilten.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(695, 538);
+            this.Controls.Add(this.lblTekst);
+            this.Controls.Add(this.cmbSizeTekst);
+            this.Controls.Add(this.cmbFontTekst);
             this.Controls.Add(this.ckbPrikaziBonus);
             this.Controls.Add(this.ckbPrikaziClanoveEkipe);
             this.Controls.Add(this.ckbPrikaziPenalizaciju);
@@ -656,5 +687,8 @@ namespace Bilten.UI
         private System.Windows.Forms.CheckBox ckbPrikaziPenalizaciju;
         private System.Windows.Forms.CheckBox ckbPrikaziClanoveEkipe;
         private System.Windows.Forms.CheckBox ckbPrikaziBonus;
+        private System.Windows.Forms.ComboBox cmbFontTekst;
+        private System.Windows.Forms.ComboBox cmbSizeTekst;
+        private System.Windows.Forms.Label lblTekst;
     }
 }

@@ -309,12 +309,13 @@ namespace Bilten.UI
                 {
                     p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, ekipaRezultatiUkupnoMap,
                         ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName,
-                        takmicenje));
+                        takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 else
                 {
                     p.setIzvestaj(new UkupnoIzvestaj(rezultatiEkipno, ActiveTakmicenje.Gimnastika, kvalColumn,
-                        dataGridViewUserControl1.DataGridView, documentName, takmicenje));
+                        dataGridViewUserControl1.DataGridView, documentName, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 p.ShowDialog();
             }

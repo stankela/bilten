@@ -15,11 +15,11 @@ namespace Bilten.Report
 
         public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati,
             bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
-            int numRowsToMark, int brojEOcena, Takmicenje takmicenje, bool prikaziBonus) : base(takmicenje)
+            int numRowsToMark, int brojEOcena, Takmicenje takmicenje, bool prikaziBonus, Font itemFont)
+            : base(takmicenje)
 		{
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
 
@@ -30,11 +30,11 @@ namespace Bilten.Report
 
         public SpravaIzvestaj(bool obaPreskoka, IList<RezultatPreskok> rezultati,
             bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
-            int numRowsToMark, int brojEOcena, Takmicenje takmicenje, bool prikaziBonus) : base(takmicenje)
+            int numRowsToMark, int brojEOcena, Takmicenje takmicenje, bool prikaziBonus, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
 
@@ -47,11 +47,11 @@ namespace Bilten.Report
             List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, Gimnastika gim,
             bool kvalColumn, string documentName, int brojSpravaPoStrani, bool prikaziPenal,
             DataGridView formGrid, bool markFirstRows, int numRowsToMark, int brojEOcena, Takmicenje takmicenje,
-            bool prikaziBonus) : base(takmicenje)
+            bool prikaziBonus, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
             this.dveKolone = brojSpravaPoStrani > 3;
             if (dveKolone)

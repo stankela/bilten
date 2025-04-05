@@ -43,6 +43,9 @@ namespace Bilten.Domain
 
             _footerFont = "Arial";
             _footerFontSize = 8;
+
+            _tekstFont = "Arial";
+            _tekstFontSize = 8;
         }
 
         private byte brojDecimalaD = 3;
@@ -164,6 +167,13 @@ namespace Bilten.Domain
             set { _footerFont = value; }
         }
 
+        private string _tekstFont;
+        public virtual string TekstFont
+        {
+            get { return _tekstFont; }
+            set { _tekstFont = value; }
+        }
+
         private int _header1FontSize;
         public virtual int Header1FontSize
         {
@@ -197,6 +207,13 @@ namespace Bilten.Domain
         {
             get { return _footerFontSize; }
             set { _footerFontSize = value; }
+        }
+
+        private int _tekstFontSize;
+        public virtual int TekstFontSize
+        {
+            get { return _tekstFontSize; }
+            set { _tekstFontSize = value; }
         }
 
         private bool _header1FontBold;

@@ -624,17 +624,17 @@ namespace Bilten.UI
                     }
                     p.setIzvestaj(new RasporedSudijaIzvestaj(odbori, takmicenje.Gimnastika, documentName,
                         form.BrojSpravaPoStrani, getActiveSpravaGridGroupUserControl(), takmicenje.VrhovniSudija,
-                        takmicenje));
+                        takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 else
                 {
                     SudijskiOdborNaSpravi odbor = ActiveRaspored.getOdbor(sprava);
                     p.setIzvestaj(new RasporedSudijaIzvestaj(odbor, documentName,
-                    getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje));
+                    getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
+                    new Font(form.TekstFont, form.TekstFontSize)));
                 }
 
                 p.ShowDialog();
-
             }
             catch (Exception ex)
             {

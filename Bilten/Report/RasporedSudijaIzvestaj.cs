@@ -12,18 +12,15 @@ namespace Bilten.Report
     class RasporedSudijaIzvestaj : Izvestaj
     {
         private List<RasporedSudijaLista> reportListe = new List<RasporedSudijaLista>();
-        private float itemFontSize = 9;
         private bool svakaSpravaNaPosebnojStrani;
         private bool dveKolone;
         private RasporedSudijaLista vrhovniSudijaLista;
         
         public RasporedSudijaIzvestaj(SudijskiOdborNaSpravi odbor, string documentName, DataGridView formGrid,
-            Takmicenje takmicenje) : base(takmicenje)
+            Takmicenje takmicenje, Font itemFont) : base(takmicenje)
         {
             DocumentName = documentName;
-
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
 
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
@@ -40,12 +37,11 @@ namespace Bilten.Report
 
         public RasporedSudijaIzvestaj(List<SudijskiOdborNaSpravi> odbori, Gimnastika gim,
             string documentName, int brojSpravaPoStrani, SpravaGridGroupUserControl spravaGridGroupUserControl,
-            SudijaUcesnik vrhovniSudija, Takmicenje takmicenje) : base(takmicenje)
+            SudijaUcesnik vrhovniSudija, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
 
             this.svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
             this.dveKolone = brojSpravaPoStrani > 3;

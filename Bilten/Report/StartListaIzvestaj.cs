@@ -13,16 +13,15 @@ namespace Bilten.Report
     class StartListaIzvestaj : Izvestaj
     {
         private List<StartListaLista> reportListe = new List<StartListaLista>();
-        private float itemFontSize = 9;
         private bool svakaSpravaNaPosebnojStrani;
         private bool dveKolone;
 
         public StartListaIzvestaj(StartListaNaSpravi startLista, string documentName, bool stampajRedniBroj,
-            bool stampajKlub, bool stampajKategoriju, DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
+            bool stampajKlub, bool stampajKategoriju, DataGridView formGrid, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
 		{
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
 
@@ -33,11 +32,11 @@ namespace Bilten.Report
         public StartListaIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
             string documentName, int brojSpravaPoStrani, bool stampajRedniBroj,
             bool stampajKlub, bool stampajKategoriju, SpravaGridGroupUserControl spravaGridGroupUserControl,
-            Takmicenje takmicenje) : base(takmicenje)
+            Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
             this.dveKolone = brojSpravaPoStrani > 3;
             if (dveKolone)

@@ -15,12 +15,11 @@ namespace Bilten.Report
 
 		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
             bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, string documentName,
-            bool stampanjeKvalifikanata, bool penalizacijaZaSprave, Takmicenje takmicenje) : base(takmicenje)
+            bool stampanjeKvalifikanata, bool penalizacijaZaSprave, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
 		{
             DocumentName = documentName;
-
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
 
             Landscape = extended;
             if (extended)
@@ -35,12 +34,11 @@ namespace Bilten.Report
 
         // Ekipni izvestaj bez clanova ekipe
         public UkupnoIzvestaj(List<RezultatEkipno> rezultati, Gimnastika gim, bool kvalColumn, DataGridView formGrid,
-            string documentName, Takmicenje takmicenje) : base(takmicenje)
+            string documentName, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
 
             Landscape = false;
             Margins = new Margins(75, 75, 75, 75);

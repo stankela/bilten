@@ -13,16 +13,15 @@ namespace Bilten.Report
     class KvalifikantiTak3Izvestaj : Izvestaj
     {
         private List<KvalifikantiTak3Lista> reportListe = new List<KvalifikantiTak3Lista>();
-        private float itemFontSize = 9;
         private bool svakaSpravaNaPosebnojStrani;
         private bool dveKolone;
 
         public KvalifikantiTak3Izvestaj(List<RezultatSprava> rezultati, Sprava sprava, string documentName,
-            DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
+            DataGridView formGrid, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
 		{
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
 
@@ -31,11 +30,11 @@ namespace Bilten.Report
 		}
 
         public KvalifikantiTak3Izvestaj(List<RezultatPreskok> rezultati, bool obaPreskoka, string documentName,
-            DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
+            DataGridView formGrid, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
             dveKolone = false;
 
@@ -45,11 +44,11 @@ namespace Bilten.Report
 
         public KvalifikantiTak3Izvestaj(List<List<RezultatSprava>> rezultatiSprave,
             List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, Gimnastika gim,
-            string documentName, int brojSpravaPoStrani, DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
+            string documentName, int brojSpravaPoStrani, DataGridView formGrid, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
             this.dveKolone = brojSpravaPoStrani > 3;
             if (dveKolone)

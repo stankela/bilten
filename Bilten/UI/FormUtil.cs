@@ -22,12 +22,14 @@ namespace Bilten.UI
             o.Header3Font = form.Header3Font;
             o.Header4Font = form.Header4Font;
             o.FooterFont = form.FooterFont;
+            o.TekstFont = form.TekstFont;
 
             o.Header1FontSize = form.Header1FontSize;
             o.Header2FontSize = form.Header2FontSize;
             o.Header3FontSize = form.Header3FontSize;
             o.Header4FontSize = form.Header4FontSize;
             o.FooterFontSize = form.FooterFontSize;
+            o.TekstFontSize = form.TekstFontSize;
 
             o.Header1FontBold = form.Header1FontBold;
             o.Header2FontBold = form.Header2FontBold;
@@ -79,12 +81,14 @@ namespace Bilten.UI
             form.Header3Font = o.Header3Font;
             form.Header4Font = o.Header4Font;
             form.FooterFont = o.FooterFont;
+            form.TekstFont = o.TekstFont;
 
             form.Header1FontSize = o.Header1FontSize;
             form.Header2FontSize = o.Header2FontSize;
             form.Header3FontSize = o.Header3FontSize;
             form.Header4FontSize = o.Header4FontSize;
             form.FooterFontSize = o.FooterFontSize;
+            form.TekstFontSize = o.TekstFontSize;
 
             form.Header1FontBold = o.Header1FontBold;
             form.Header2FontBold = o.Header2FontBold;

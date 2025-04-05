@@ -108,6 +108,9 @@ namespace Bilten.UI
 
             cmbFontFooter.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbFontFooter.DataSource = createFontNames();
+
+            cmbFontTekst.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFontTekst.DataSource = createFontNames();
         }
 
         private List<string> createFontNames()
@@ -141,6 +144,9 @@ namespace Bilten.UI
 
             cmbSizeFooter.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSizeFooter.DataSource = createFontSizes();
+
+            cmbSizeTekst.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSizeTekst.DataSource = createFontSizes();
         }
 
         private List<int> createFontSizes()
@@ -223,6 +229,13 @@ namespace Bilten.UI
             set { selectFont(cmbFontFooter, value); }
         }
 
+        private string _tekstFont;
+        public string TekstFont
+        {
+            get { return _tekstFont; }
+            set { selectFont(cmbFontTekst, value); }
+        }
+
         private int _header1FontSize;
         public int Header1FontSize
         {
@@ -256,6 +269,13 @@ namespace Bilten.UI
         {
             get { return _footerFontSize; }
             set { selectSize(cmbSizeFooter, value); }
+        }
+
+        private int _tekstFontSize;
+        public int TekstFontSize
+        {
+            get { return _tekstFontSize; }
+            set { selectSize(cmbSizeTekst, value); }
         }
 
         private bool _header1FontBold;
@@ -540,13 +560,15 @@ namespace Bilten.UI
             _header3Font = (string)cmbFont3.SelectedItem;
             _header4Font = (string)cmbFont4.SelectedItem;
             _footerFont = (string)cmbFontFooter.SelectedItem;
+            _tekstFont = (string)cmbFontTekst.SelectedItem;
 
             _header1FontSize = Int32.Parse(cmbSize1.SelectedItem.ToString());
             _header2FontSize = Int32.Parse(cmbSize2.SelectedItem.ToString());
             _header3FontSize = Int32.Parse(cmbSize3.SelectedItem.ToString());
             _header4FontSize = Int32.Parse(cmbSize4.SelectedItem.ToString());
             _footerFontSize = Int32.Parse(cmbSizeFooter.SelectedItem.ToString());
-            
+            _tekstFontSize = Int32.Parse(cmbSizeTekst.SelectedItem.ToString());
+      
             _header1FontBold = ckbBold1.Checked;
             _header2FontBold = ckbBold2.Checked;
             _header3FontBold = ckbBold3.Checked;
