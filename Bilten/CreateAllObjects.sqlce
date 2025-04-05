@@ -83,6 +83,7 @@ create table takmicenja (
 	mesto nvarchar(32),
 	tip_takmicenja tinyint,
 	broj_e_ocena tinyint,
+    odbaci_min_max_e_ocenu bit,
 	broj_decimala_d tinyint,
     broj_decimala_e1 tinyint,
     broj_decimala_e tinyint,
@@ -666,5 +667,13 @@ create table jezici (
     ekipa nvarchar(64),
     strana nvarchar(64),
     vrhovni_sudija_muski nvarchar(64),
-    vrhovni_sudija_zenski nvarchar(64)
+    vrhovni_sudija_zenski nvarchar(64),
+	viseboj nvarchar(64),
+    kval_sprave nvarchar(64),
+    sprave_finalisti nvarchar(64),
+    finale_sprave nvarchar(64),
+    ekipe_rezultati nvarchar(64),
+    kval_start_liste nvarchar(64),
+    finale_start_liste nvarchar(64),
+    raspored_sudija nvarchar(64)
 );

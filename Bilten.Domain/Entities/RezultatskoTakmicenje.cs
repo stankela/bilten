@@ -287,7 +287,7 @@ namespace Bilten.Domain
                     if (Propozicije.OdvojenoTak2)
                         result = "Kvalifikacije za finale vi" + Jezik.shMalo + "eboja";
                     else
-                        result = "Vi" + Jezik.shMalo + "eboj";
+                        result = Opcije.Instance.Viseboj;
                 }
             }
             else
@@ -314,14 +314,14 @@ namespace Bilten.Domain
                 else
                 {
                     if (Propozicije.OdvojenoTak3)
-                        result = "Kvalifikacije za finale po spravama";
+                        result = Opcije.Instance.KvalSprave;
                     else
-                        result = "Finale po spravama";
+                        result = Opcije.Instance.FinaleSprave;
                 }
             }
             else
             {
-                result = "Finale po spravama";
+                result = Opcije.Instance.FinaleSprave;
             }
             return result;
         }

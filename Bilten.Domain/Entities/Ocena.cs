@@ -49,12 +49,12 @@ namespace Bilten.Domain
         }
 
         public override void izracunajOcenu(int brojDecimalaE, int brojDecimalaBon, int brojDecimalaPen,
-            int brojDecimalaTotal)
+            int brojDecimalaTotal, bool odbaciMinMaxEOcenu)
         {
-            base.izracunajOcenu(brojDecimalaE, brojDecimalaBon, brojDecimalaPen, brojDecimalaTotal);
+            base.izracunajOcenu(brojDecimalaE, brojDecimalaBon, brojDecimalaPen, brojDecimalaTotal, odbaciMinMaxEOcenu);
             if (Ocena2 != null)
             {
-                Ocena2.izracunajOcenu(brojDecimalaE, brojDecimalaBon, brojDecimalaPen, brojDecimalaTotal);
+                Ocena2.izracunajOcenu(brojDecimalaE, brojDecimalaBon, brojDecimalaPen, brojDecimalaTotal, odbaciMinMaxEOcenu);
                 TotalObeOcene = getTotalObeOcene(brojDecimalaTotal);
             }
         }

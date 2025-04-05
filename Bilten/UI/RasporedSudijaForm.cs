@@ -553,7 +553,7 @@ namespace Bilten.UI
             string nazivIzvestaja;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
-                nazivIzvestaja = "Raspored sudija - kvalifikacije";
+                nazivIzvestaja = Opcije.Instance.RasporedSudija;
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -561,7 +561,7 @@ namespace Bilten.UI
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
             {
-                nazivIzvestaja = "Raspored sudija - finale po spravama";
+                nazivIzvestaja = Opcije.Instance.RasporedSudija;
             }
             else
             {

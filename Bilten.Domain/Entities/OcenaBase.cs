@@ -220,32 +220,39 @@ namespace Bilten.Domain
             }
         }
 
-        private float izracunajEOcenu(int brojDecimala)
+        private float izracunajEOcenu(int brojDecimala, bool odbaciMinMaxEOcenu)
         {
-            // TODO5: Dodaj opciju da se sve e ocene ukljucuju
-
             if (BrojEOcena == 0)
                 return E.Value;
 
             Nullable<float>[] eOcene = new Nullable<float>[6] { E1, E2, E3, E4, E5, E6 };
-     
-            int min = getMinEOcenaBroj() - 1;
-            int max = getMaxEOcenaBroj() - 1;
-            decimal result = 0;
-            for (int i = 0; i < BrojEOcena; i++)
-            {
-                if (i != min && i != max)
-                    result += (decimal)eOcene[i].Value;
-            }
 
-            if (min != max)
+            decimal result = 0;
+            if (odbaciMinMaxEOcenu)
             {
-                result = result / (BrojEOcena - 2);
+                int min = getMinEOcenaBroj() - 1;
+                int max = getMaxEOcenaBroj() - 1;
+                for (int i = 0; i < BrojEOcena; i++)
+                {
+                    if (i != min && i != max)
+                        result += (decimal)eOcene[i].Value;
+                }
+                if (min != max)
+                {
+                    result = result / (BrojEOcena - 2);
+                }
+                else
+                {
+                    // sve e ocene su jednake, i result sadrzi zbir svih ocena sem jedne
+                    result = result / (BrojEOcena - 1);
+                }
             }
             else
             {
-                // sve e ocene su jednake, i result sadrzi zbir svih ocena sem jedne
-                result = result / (BrojEOcena - 1);
+                for (int i = 0; i < BrojEOcena; i++)
+                {
+                    result += (decimal)eOcene[i].Value;
+                }
             }
             return (float)RounderToZero.round(result, brojDecimala);
         }
@@ -275,9 +282,9 @@ namespace Bilten.Domain
         }
 
         public virtual void izracunajOcenu(int brojDecimalaE, int brojDecimalaBon, int brojDecimalaPen,
-            int brojDecimalaTotal)
+            int brojDecimalaTotal, bool odbaciMinMaxEOcenu)
         {
-            E = izracunajEOcenu(brojDecimalaE);
+            E = izracunajEOcenu(brojDecimalaE, odbaciMinMaxEOcenu);
             Total = (float)RounderToZero.round((decimal)D.Value + (decimal)E.Value
                 + (decimal)((Bonus != null) ? Bonus.Value : 0)
                 - (decimal)((Penalty != null) ? Penalty.Value : 0), brojDecimalaTotal);

@@ -144,5 +144,63 @@ namespace Bilten.Domain
             get { return vrhovniSudijaZenski; }
             set { vrhovniSudijaZenski = value; }
         }
+
+        private string viseboj;
+        public virtual string Viseboj
+        {
+            get { return viseboj; }
+            set { viseboj = value; }
+        }
+
+        private string kvalSprave;
+        public virtual string KvalSprave
+        {
+            get { return kvalSprave; }
+            set { kvalSprave = value; }
+        }
+
+        private string spraveFinalisti;
+        public virtual string SpraveFinalisti
+        {
+            get { return spraveFinalisti; }
+            set { spraveFinalisti = value; }
+        }
+
+        private string finaleSprave;
+        public virtual string FinaleSprave
+        {
+            get { return finaleSprave; }
+            set { finaleSprave = value; }
+        }
+
+        private string ekipeRezultati;
+        public virtual string EkipeRezultati
+        {
+            get { return ekipeRezultati; }
+            set { ekipeRezultati = value; }
+        }
+
+        private string kvalStartListe;
+        public virtual string KvalStartListe
+        {
+            get { return kvalStartListe; }
+            set { kvalStartListe = value; }
+        }
+
+        private string finaleStartListe;
+        public virtual string FinaleStartListe
+        {
+            get { return finaleStartListe; }
+            set { finaleStartListe = value; }
+        }
+
+        private string rasporedSudija;
+        public virtual string RasporedSudija
+        {
+            get { return rasporedSudija; }
+            set { rasporedSudija = value; }
+        }
+
+        // TODO5: Dodaj za formular za ocene
     }
 }

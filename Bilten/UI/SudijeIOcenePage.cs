@@ -81,6 +81,7 @@ namespace Bilten.UI
             byte brojEOcena;
             ckbOdbaciMinMaxEOcenu.Enabled = txtBrojEOcena.Text.Trim() != String.Empty
                 && byte.TryParse(txtBrojEOcena.Text, out brojEOcena) && brojEOcena > 0;
+            ckbOdbaciMinMaxEOcenu.Checked = ckbOdbaciMinMaxEOcenu.Enabled;
         }
 
         private void txtBrojDecD_TextChanged(object sender, EventArgs e)

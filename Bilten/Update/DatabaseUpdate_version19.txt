@@ -1,0 +1,57 @@
+-- 05-Apr-2025 (VERZIJA = 19)
+
+update takmicenja set broj_decimala_bon = 1;
+GO
+alter table takmicenja add column odbaci_min_max_e_ocenu bit;
+GO
+
+alter table jezici add column viseboj nvarchar(64);
+GO
+alter table jezici add column kval_sprave nvarchar(64);
+GO
+alter table jezici add column sprave_finalisti nvarchar(64);
+GO
+alter table jezici add column finale_sprave nvarchar(64);
+GO
+alter table jezici add column ekipe_rezultati nvarchar(64);
+GO
+alter table jezici add column kval_start_liste nvarchar(64);
+GO
+alter table jezici add column finale_start_liste nvarchar(64);
+GO
+alter table jezici add column raspored_sudija nvarchar(64);
+GO
+
+update jezici set viseboj = 'Višeboj' where naziv = 'Srpski';
+GO
+update jezici set kval_sprave = 'Kvalifikacije za finale po spravama' where naziv = 'Srpski';
+GO
+update jezici set sprave_finalisti = 'Finalisti po spravama' where naziv = 'Srpski';
+GO
+update jezici set finale_sprave = 'Finale po spravama' where naziv = 'Srpski';
+GO
+update jezici set ekipe_rezultati = 'Rezultati ekipno' where naziv = 'Srpski';
+GO
+update jezici set kval_start_liste = 'Start liste - kvalifikacije' where naziv = 'Srpski';
+GO
+update jezici set finale_start_liste = 'Start liste - finale po spravama' where naziv = 'Srpski';
+GO
+update jezici set raspored_sudija = 'Raspored sudija' where naziv = 'Srpski';
+GO
+
+update jezici set viseboj = 'ALL AROUND' where naziv = 'Engleski';
+GO
+update jezici set kval_sprave = 'APPARATUS QUALIFICATION' where naziv = 'Engleski';
+GO
+update jezici set sprave_finalisti = 'APPARATUS FINALISTS' where naziv = 'Engleski';
+GO
+update jezici set finale_sprave = 'APPARATUS FINALS' where naziv = 'Engleski';
+GO
+update jezici set ekipe_rezultati = 'TEAM RESULTS' where naziv = 'Engleski';
+GO
+update jezici set kval_start_liste = 'START LISTS - QUALIFICATION' where naziv = 'Engleski';
+GO
+update jezici set finale_start_liste = 'START LISTS - APPARATUS FINALS' where naziv = 'Engleski';
+GO
+update jezici set raspored_sudija = 'JUDGES ASSIGNMENT' where naziv = 'Engleski';
+GO

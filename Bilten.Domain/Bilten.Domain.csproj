@@ -208,7 +208,9 @@
     <EmbeddedResource Include="NHibernate\Mappings\RezultatSpravaFinaleKupa.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="NHibernate\Mappings\Jezik.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Jezik.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

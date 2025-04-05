@@ -26,6 +26,14 @@
     <property name="Strana" column="strana" type="String"/>
     <property name="VrhovniSudijaMuski" column="vrhovni_sudija_muski" type="String"/>
     <property name="VrhovniSudijaZenski" column="vrhovni_sudija_zenski" type="String"/>
+    <property name="Viseboj" column="viseboj" type="String"/>
+    <property name="KvalSprave" column="kval_sprave" type="String"/>
+    <property name="SpraveFinalisti" column="sprave_finalisti" type="String"/>
+    <property name="FinaleSprave" column="finale_sprave" type="String"/>
+    <property name="EkipeRezultati" column="ekipe_rezultati" type="String"/>
+    <property name="KvalStartListe" column="kval_start_liste" type="String"/>
+    <property name="FinaleStartListe" column="finale_start_liste" type="String"/>
+    <property name="RasporedSudija" column="raspored_sudija" type="String"/>
   </class>
 
 </hibernate-mapping>

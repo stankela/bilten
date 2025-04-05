@@ -311,7 +311,7 @@ namespace Bilten.UI
                 if (ocena.TotalObeOcene != null)
                     txtTotalObeOcene.Text = ocena.TotalObeOcene.Value.ToString(formatTotal);
             }
-            selectEOcene();
+            selectEOcene(takmicenje.BrojEOcena, takmicenje.OdbaciMinMaxEOcenu);
         }
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
@@ -882,12 +882,12 @@ namespace Bilten.UI
                 // (kada su neke ocene vec unete) promene opcije za broj decimala
 
                 o.izracunajOcenu(takmicenje.BrojDecimalaE, takmicenje.BrojDecimalaBon,
-                    takmicenje.BrojDecimalaPen, takmicenje.BrojDecimalaTotal);
+                    takmicenje.BrojDecimalaPen, takmicenje.BrojDecimalaTotal, takmicenje.OdbaciMinMaxEOcenu);
 
                 izracunato = true;
                 updateAcceptButton();
                 btnOk.Focus();
-                selectEOcene();
+                selectEOcene(takmicenje.BrojEOcena, takmicenje.OdbaciMinMaxEOcenu);
 
                 disableTextBoxHandlers();
                 updateUIFromEntity(o);
@@ -921,24 +921,24 @@ namespace Bilten.UI
             }
         }
 
-        private void selectEOcene()
+        private void selectEOcene(int brojEOcena, bool odbaciMinMaxEOcenu)
         {
-            if (ckbUnosOcene.Checked)
+            if (ckbUnosOcene.Checked || brojEOcena == 0)
                 return;
 
             Ocena o = (Ocena)entity;
-            selectEOcene1(o.getMinEOcenaBroj(), o.getMaxEOcenaBroj());
+            selectEOcene1(o.getMinEOcenaBroj(), o.getMaxEOcenaBroj(), odbaciMinMaxEOcenu);
             if (obeOcene && !isDrugaOcenaEmpty())
-                selectEOcene2(o.Ocena2.getMinEOcenaBroj(), o.Ocena2.getMaxEOcenaBroj());
+                selectEOcene2(o.Ocena2.getMinEOcenaBroj(), o.Ocena2.getMaxEOcenaBroj(), odbaciMinMaxEOcenu);
         }
 
-        private void selectEOcene1(int minBroj, int maxBroj)
+        private void selectEOcene1(int minBroj, int maxBroj, bool odbaciMinMaxEOcenu)
         {
             doSelectEOcene(new TextBox[] { txtE1, txtE2, txtE3, txtE4, txtE5, txtE6 },
                 minBroj, maxBroj);
         }
 
-        private void selectEOcene2(int minBroj, int maxBroj)
+        private void selectEOcene2(int minBroj, int maxBroj, bool odbaciMinMaxEOcenu)
         {
             doSelectEOcene(new TextBox[] { txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2 },
                 minBroj, maxBroj);

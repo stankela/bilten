@@ -954,7 +954,7 @@ namespace Bilten.UI
             string nazivIzvestaja;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
-                nazivIzvestaja = "Start liste - kvalifikacije";
+                nazivIzvestaja = Opcije.Instance.KvalStartListe;
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -962,7 +962,7 @@ namespace Bilten.UI
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
             {
-                nazivIzvestaja = "Start liste - finale po spravama";
+                nazivIzvestaja = Opcije.Instance.FinaleStartListe;
             }
             else
             {
@@ -1456,7 +1456,8 @@ namespace Bilten.UI
             string nazivIzvestaja;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
-                nazivIzvestaja = "Start liste - kvalifikacije";
+                nazivIzvestaja = "START LISTS - QUALIFICATION";
+                //nazivIzvestaja = "Start liste - kvalifikacije";
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -1464,7 +1465,8 @@ namespace Bilten.UI
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
             {
-                nazivIzvestaja = "Start liste - finale po spravama";
+                nazivIzvestaja = "START LISTS - APPARATUS FINALS";
+                //nazivIzvestaja = "Start liste - finale po spravama";
             }
             else
             {

@@ -66,12 +66,28 @@
             this.txtVrhovniSudijaMuski = new System.Windows.Forms.TextBox();
             this.lblVrhovniSudijaZenski = new System.Windows.Forms.Label();
             this.txtVrhovniSudijaZenski = new System.Windows.Forms.TextBox();
+            this.lblViseboj = new System.Windows.Forms.Label();
+            this.txtViseboj = new System.Windows.Forms.TextBox();
+            this.lblKvalSprave = new System.Windows.Forms.Label();
+            this.txtKvalSprave = new System.Windows.Forms.TextBox();
+            this.lblFinalistiSprave = new System.Windows.Forms.Label();
+            this.txtFinalistiSprave = new System.Windows.Forms.TextBox();
+            this.lblFinaleSprave = new System.Windows.Forms.Label();
+            this.txtFinaleSprave = new System.Windows.Forms.TextBox();
+            this.lblEkipeRezultati = new System.Windows.Forms.Label();
+            this.txtEkipeRezultati = new System.Windows.Forms.TextBox();
+            this.lblKvalStartListe = new System.Windows.Forms.Label();
+            this.txtKvalStartListe = new System.Windows.Forms.TextBox();
+            this.lblFinaleStartListe = new System.Windows.Forms.Label();
+            this.txtFinaleStartListe = new System.Windows.Forms.TextBox();
+            this.lblRasporedSudija = new System.Windows.Forms.Label();
+            this.txtRasporedSudija = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(24, 469);
+            this.btnOK.Location = new System.Drawing.Point(745, 471);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 18;
@@ -82,7 +98,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(115, 469);
+            this.btnCancel.Location = new System.Drawing.Point(836, 471);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 19;
@@ -270,7 +286,7 @@
             // lblDatumRodjenja
             // 
             this.lblDatumRodjenja.AutoSize = true;
-            this.lblDatumRodjenja.Location = new System.Drawing.Point(311, 173);
+            this.lblDatumRodjenja.Location = new System.Drawing.Point(311, 169);
             this.lblDatumRodjenja.Name = "lblDatumRodjenja";
             this.lblDatumRodjenja.Size = new System.Drawing.Size(78, 13);
             this.lblDatumRodjenja.TabIndex = 41;
@@ -278,7 +294,7 @@
             // 
             // txtDatumRodjenja
             // 
-            this.txtDatumRodjenja.Location = new System.Drawing.Point(395, 171);
+            this.txtDatumRodjenja.Location = new System.Drawing.Point(395, 167);
             this.txtDatumRodjenja.Name = "txtDatumRodjenja";
             this.txtDatumRodjenja.Size = new System.Drawing.Size(100, 20);
             this.txtDatumRodjenja.TabIndex = 42;
@@ -318,7 +334,7 @@
             // lblEkipa
             // 
             this.lblEkipa.AutoSize = true;
-            this.lblEkipa.Location = new System.Drawing.Point(355, 304);
+            this.lblEkipa.Location = new System.Drawing.Point(355, 300);
             this.lblEkipa.Name = "lblEkipa";
             this.lblEkipa.Size = new System.Drawing.Size(34, 13);
             this.lblEkipa.TabIndex = 47;
@@ -326,7 +342,7 @@
             // 
             // txtEkipa
             // 
-            this.txtEkipa.Location = new System.Drawing.Point(395, 301);
+            this.txtEkipa.Location = new System.Drawing.Point(395, 297);
             this.txtEkipa.Name = "txtEkipa";
             this.txtEkipa.Size = new System.Drawing.Size(100, 20);
             this.txtEkipa.TabIndex = 48;
@@ -379,13 +395,157 @@
             this.txtVrhovniSudijaZenski.Size = new System.Drawing.Size(100, 20);
             this.txtVrhovniSudijaZenski.TabIndex = 54;
             // 
+            // lblViseboj
+            // 
+            this.lblViseboj.AutoSize = true;
+            this.lblViseboj.Location = new System.Drawing.Point(663, 87);
+            this.lblViseboj.Name = "lblViseboj";
+            this.lblViseboj.Size = new System.Drawing.Size(41, 13);
+            this.lblViseboj.TabIndex = 55;
+            this.lblViseboj.Text = "Viseboj";
+            // 
+            // txtViseboj
+            // 
+            this.txtViseboj.Location = new System.Drawing.Point(713, 83);
+            this.txtViseboj.Name = "txtViseboj";
+            this.txtViseboj.Size = new System.Drawing.Size(100, 20);
+            this.txtViseboj.TabIndex = 56;
+            // 
+            // lblKvalSprave
+            // 
+            this.lblKvalSprave.AutoSize = true;
+            this.lblKvalSprave.Location = new System.Drawing.Point(538, 125);
+            this.lblKvalSprave.Name = "lblKvalSprave";
+            this.lblKvalSprave.Size = new System.Drawing.Size(169, 13);
+            this.lblKvalSprave.TabIndex = 57;
+            this.lblKvalSprave.Text = "Kvalifikacije za finale po spravama";
+            // 
+            // txtKvalSprave
+            // 
+            this.txtKvalSprave.Location = new System.Drawing.Point(713, 122);
+            this.txtKvalSprave.Name = "txtKvalSprave";
+            this.txtKvalSprave.Size = new System.Drawing.Size(198, 20);
+            this.txtKvalSprave.TabIndex = 58;
+            // 
+            // lblFinalistiSprave
+            // 
+            this.lblFinalistiSprave.AutoSize = true;
+            this.lblFinalistiSprave.Location = new System.Drawing.Point(602, 169);
+            this.lblFinalistiSprave.Name = "lblFinalistiSprave";
+            this.lblFinalistiSprave.Size = new System.Drawing.Size(105, 13);
+            this.lblFinalistiSprave.TabIndex = 59;
+            this.lblFinalistiSprave.Text = "Finalisti po spravama";
+            // 
+            // txtFinalistiSprave
+            // 
+            this.txtFinalistiSprave.Location = new System.Drawing.Point(713, 166);
+            this.txtFinalistiSprave.Name = "txtFinalistiSprave";
+            this.txtFinalistiSprave.Size = new System.Drawing.Size(131, 20);
+            this.txtFinalistiSprave.TabIndex = 60;
+            // 
+            // lblFinaleSprave
+            // 
+            this.lblFinaleSprave.AutoSize = true;
+            this.lblFinaleSprave.Location = new System.Drawing.Point(612, 211);
+            this.lblFinaleSprave.Name = "lblFinaleSprave";
+            this.lblFinaleSprave.Size = new System.Drawing.Size(99, 13);
+            this.lblFinaleSprave.TabIndex = 61;
+            this.lblFinaleSprave.Text = "Finale po spravama";
+            // 
+            // txtFinaleSprave
+            // 
+            this.txtFinaleSprave.Location = new System.Drawing.Point(716, 208);
+            this.txtFinaleSprave.Name = "txtFinaleSprave";
+            this.txtFinaleSprave.Size = new System.Drawing.Size(128, 20);
+            this.txtFinaleSprave.TabIndex = 62;
+            // 
+            // lblEkipeRezultati
+            // 
+            this.lblEkipeRezultati.AutoSize = true;
+            this.lblEkipeRezultati.Location = new System.Drawing.Point(621, 255);
+            this.lblEkipeRezultati.Name = "lblEkipeRezultati";
+            this.lblEkipeRezultati.Size = new System.Drawing.Size(83, 13);
+            this.lblEkipeRezultati.TabIndex = 63;
+            this.lblEkipeRezultati.Text = "Rezultati ekipno";
+            // 
+            // txtEkipeRezultati
+            // 
+            this.txtEkipeRezultati.Location = new System.Drawing.Point(713, 252);
+            this.txtEkipeRezultati.Name = "txtEkipeRezultati";
+            this.txtEkipeRezultati.Size = new System.Drawing.Size(100, 20);
+            this.txtEkipeRezultati.TabIndex = 64;
+            // 
+            // lblKvalStartListe
+            // 
+            this.lblKvalStartListe.AutoSize = true;
+            this.lblKvalStartListe.Location = new System.Drawing.Point(593, 300);
+            this.lblKvalStartListe.Name = "lblKvalStartListe";
+            this.lblKvalStartListe.Size = new System.Drawing.Size(114, 13);
+            this.lblKvalStartListe.TabIndex = 65;
+            this.lblKvalStartListe.Text = "Start liste - kvalifikacije";
+            // 
+            // txtKvalStartListe
+            // 
+            this.txtKvalStartListe.Location = new System.Drawing.Point(713, 297);
+            this.txtKvalStartListe.Name = "txtKvalStartListe";
+            this.txtKvalStartListe.Size = new System.Drawing.Size(198, 20);
+            this.txtKvalStartListe.TabIndex = 66;
+            // 
+            // lblFinaleStartListe
+            // 
+            this.lblFinaleStartListe.AutoSize = true;
+            this.lblFinaleStartListe.Location = new System.Drawing.Point(562, 342);
+            this.lblFinaleStartListe.Name = "lblFinaleStartListe";
+            this.lblFinaleStartListe.Size = new System.Drawing.Size(148, 13);
+            this.lblFinaleStartListe.TabIndex = 67;
+            this.lblFinaleStartListe.Text = "Start liste - finale po spravama";
+            // 
+            // txtFinaleStartListe
+            // 
+            this.txtFinaleStartListe.Location = new System.Drawing.Point(716, 342);
+            this.txtFinaleStartListe.Name = "txtFinaleStartListe";
+            this.txtFinaleStartListe.Size = new System.Drawing.Size(195, 20);
+            this.txtFinaleStartListe.TabIndex = 68;
+            // 
+            // lblRasporedSudija
+            // 
+            this.lblRasporedSudija.AutoSize = true;
+            this.lblRasporedSudija.Location = new System.Drawing.Point(624, 385);
+            this.lblRasporedSudija.Name = "lblRasporedSudija";
+            this.lblRasporedSudija.Size = new System.Drawing.Size(83, 13);
+            this.lblRasporedSudija.TabIndex = 69;
+            this.lblRasporedSudija.Text = "Raspored sudija";
+            // 
+            // txtRasporedSudija
+            // 
+            this.txtRasporedSudija.Location = new System.Drawing.Point(713, 382);
+            this.txtRasporedSudija.Name = "txtRasporedSudija";
+            this.txtRasporedSudija.Size = new System.Drawing.Size(131, 20);
+            this.txtRasporedSudija.TabIndex = 70;
+            // 
             // JezikForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(544, 516);
+            this.ClientSize = new System.Drawing.Size(949, 516);
+            this.Controls.Add(this.txtRasporedSudija);
+            this.Controls.Add(this.lblRasporedSudija);
+            this.Controls.Add(this.txtFinaleStartListe);
+            this.Controls.Add(this.lblFinaleStartListe);
+            this.Controls.Add(this.txtKvalStartListe);
+            this.Controls.Add(this.lblKvalStartListe);
+            this.Controls.Add(this.txtEkipeRezultati);
+            this.Controls.Add(this.lblEkipeRezultati);
+            this.Controls.Add(this.txtFinaleSprave);
+            this.Controls.Add(this.lblFinaleSprave);
+            this.Controls.Add(this.txtFinalistiSprave);
+            this.Controls.Add(this.lblFinalistiSprave);
+            this.Controls.Add(this.txtKvalSprave);
+            this.Controls.Add(this.lblKvalSprave);
+            this.Controls.Add(this.txtViseboj);
+            this.Controls.Add(this.lblViseboj);
             this.Controls.Add(this.txtVrhovniSudijaZenski);
             this.Controls.Add(this.lblVrhovniSudijaZenski);
             this.Controls.Add(this.txtVrhovniSudijaMuski);
@@ -476,6 +636,22 @@
         private System.Windows.Forms.TextBox txtVrhovniSudijaMuski;
         private System.Windows.Forms.Label lblVrhovniSudijaZenski;
         private System.Windows.Forms.TextBox txtVrhovniSudijaZenski;
+        private System.Windows.Forms.Label lblViseboj;
+        private System.Windows.Forms.TextBox txtViseboj;
+        private System.Windows.Forms.Label lblKvalSprave;
+        private System.Windows.Forms.TextBox txtKvalSprave;
+        private System.Windows.Forms.Label lblFinalistiSprave;
+        private System.Windows.Forms.TextBox txtFinalistiSprave;
+        private System.Windows.Forms.Label lblFinaleSprave;
+        private System.Windows.Forms.TextBox txtFinaleSprave;
+        private System.Windows.Forms.Label lblEkipeRezultati;
+        private System.Windows.Forms.TextBox txtEkipeRezultati;
+        private System.Windows.Forms.Label lblKvalStartListe;
+        private System.Windows.Forms.TextBox txtKvalStartListe;
+        private System.Windows.Forms.Label lblFinaleStartListe;
+        private System.Windows.Forms.TextBox txtFinaleStartListe;
+        private System.Windows.Forms.Label lblRasporedSudija;
+        private System.Windows.Forms.TextBox txtRasporedSudija;
 
     }
 }

@@ -249,7 +249,7 @@ namespace Bilten.UI
                 if (ActiveTakmicenje.Propozicije.OdvojenoTak4)
                     nazivIzvestaja = "Rezultati ekipno - kvalifikacije";
                 else
-                    nazivIzvestaja = "Rezultati ekipno";
+                    nazivIzvestaja = Opcije.Instance.EkipeRezultati;
             }
             else
             {

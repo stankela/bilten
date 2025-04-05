@@ -950,7 +950,7 @@ namespace Bilten.UI
 
         private void btnStampajKvalifikante_Click(object sender, EventArgs e)
         {
-            string nazivIzvestaja = "Finale po spravama - kvalifikanti i rezerve";
+            string nazivIzvestaja = Opcije.Instance.SpraveFinalisti;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false, false,
                                                          false, false, false);

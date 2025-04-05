@@ -536,6 +536,62 @@ namespace Bilten.Domain
             set { vrhovniSudijaZenskiString = value; }
         }
 
+        private string viseboj = "Višeboj";
+        public virtual string Viseboj
+        {
+            get { return viseboj; }
+            set { viseboj = value; }
+        }
+
+        private string kvalSprave = "Kvalifikacije za finale po spravama";
+        public virtual string KvalSprave
+        {
+            get { return kvalSprave; }
+            set { kvalSprave = value; }
+        }
+
+        private string spraveFinalisti = "Finalisti po spravama";
+        public virtual string SpraveFinalisti
+        {
+            get { return spraveFinalisti; }
+            set { spraveFinalisti = value; }
+        }
+
+        private string finaleSprave = "Finale po spravama";
+        public virtual string FinaleSprave
+        {
+            get { return finaleSprave; }
+            set { finaleSprave = value; }
+        }
+
+        private string ekipeRezultati = "Rezultati ekipno";
+        public virtual string EkipeRezultati
+        {
+            get { return ekipeRezultati; }
+            set { ekipeRezultati = value; }
+        }
+
+        private string kvalStartListe = "Start liste - kvalifikacije";
+        public virtual string KvalStartListe
+        {
+            get { return kvalStartListe; }
+            set { kvalStartListe = value; }
+        }
+
+        private string finaleStartListe = "Start liste - finale po spravama";
+        public virtual string FinaleStartListe
+        {
+            get { return finaleStartListe; }
+            set { finaleStartListe = value; }
+        }
+
+        private string rasporedSudija = "Raspored sudija";
+        public virtual string RasporedSudija
+        {
+            get { return rasporedSudija; }
+            set { rasporedSudija = value; }
+        }
+        
         public virtual void UpdateJezik(Jezik jezik)
         {
             Jezik = jezik.Naziv;
@@ -557,6 +613,15 @@ namespace Bilten.Domain
             StranaString = jezik.Strana;
             VrhovniSudijaMuskiString = jezik.VrhovniSudijaMuski;
             VrhovniSudijaZenskiString = jezik.VrhovniSudijaZenski;
+
+            Viseboj = jezik.Viseboj;
+            KvalSprave = jezik.KvalSprave;
+            SpraveFinalisti = jezik.SpraveFinalisti;
+            FinaleSprave = jezik.FinaleSprave;
+            EkipeRezultati = jezik.EkipeRezultati;
+            KvalStartListe = jezik.KvalStartListe;
+            FinaleStartListe = jezik.FinaleStartListe;
+            RasporedSudija = jezik.RasporedSudija;
         }
     }
 }

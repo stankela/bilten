@@ -102,6 +102,14 @@ namespace Bilten.UI
             txtStrana.Text = jezik.Strana;
             txtVrhovniSudijaMuski.Text = jezik.VrhovniSudijaMuski;
             txtVrhovniSudijaZenski.Text = jezik.VrhovniSudijaZenski;
+            txtViseboj.Text = jezik.Viseboj;
+            txtKvalSprave.Text = jezik.KvalSprave;
+            txtFinalistiSprave.Text = jezik.SpraveFinalisti;
+            txtFinaleSprave.Text = jezik.FinaleSprave;
+            txtEkipeRezultati.Text = jezik.EkipeRezultati;
+            txtKvalStartListe.Text = jezik.KvalStartListe;
+            txtFinaleStartListe.Text = jezik.FinaleStartListe;
+            txtRasporedSudija.Text = jezik.RasporedSudija;
         }
 
         private void updateJezikFromUI(Jezik jezik)
@@ -123,6 +131,14 @@ namespace Bilten.UI
             jezik.Strana = txtStrana.Text;
             jezik.VrhovniSudijaMuski = txtVrhovniSudijaMuski.Text;
             jezik.VrhovniSudijaZenski = txtVrhovniSudijaZenski.Text;
+            jezik.Viseboj = txtViseboj.Text;
+            jezik.KvalSprave = txtKvalSprave.Text;
+            jezik.SpraveFinalisti = txtFinalistiSprave.Text;
+            jezik.FinaleSprave = txtFinaleSprave.Text;
+            jezik.EkipeRezultati = txtEkipeRezultati.Text;
+            jezik.KvalStartListe = txtKvalStartListe.Text;
+            jezik.FinaleStartListe = txtFinaleStartListe.Text;
+            jezik.RasporedSudija = txtRasporedSudija.Text;
         }
 
         private void JezikForm_Shown(object sender, EventArgs e)
@@ -228,6 +244,46 @@ namespace Bilten.UI
             {
                 msg = "Unesite tekst za vrhovnu sutkinju.";
                 txtBox = txtVrhovniSudijaZenski;
+            }
+            else if (txtViseboj.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za viseboj.";
+                txtBox = txtViseboj;
+            }
+            else if (txtKvalSprave.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za kvalifikacije za finale po spravama.";
+                txtBox = txtKvalSprave;
+            }
+            else if (txtFinalistiSprave.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za finaliste po spravama.";
+                txtBox = txtFinalistiSprave;
+            }
+            else if (txtFinaleSprave.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za finale po spravama.";
+                txtBox = txtFinaleSprave;
+            }
+            else if (txtEkipeRezultati.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za rezultate ekipno.";
+                txtBox = txtEkipeRezultati;
+            }
+            else if (txtKvalStartListe.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za start liste za kvalifikacije.";
+                txtBox = txtKvalStartListe;
+            }
+            else if (txtFinaleStartListe.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za start liste za finale.";
+                txtBox = txtFinaleStartListe;
+            }
+            else if (txtRasporedSudija.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za raspored sudija.";
+                txtBox = txtRasporedSudija;
             }
 
             if (msg != String.Empty)

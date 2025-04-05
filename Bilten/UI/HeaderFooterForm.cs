@@ -152,7 +152,7 @@ namespace Bilten.UI
         private List<int> createFontSizes()
         {
             List<int> result = new List<int>();
-            for (int i = 8; i <= 24; i++)
+            for (int i = 7; i <= 24; i++)
             {
                 result.Add(i);
             }

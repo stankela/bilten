@@ -695,9 +695,11 @@ namespace Bilten.Domain
             strBuilder.AppendLine(VrhovniSudija != null ? VrhovniSudija.Id.ToString() : NULL);
 
             strBuilder.AppendLine(BrojEOcena.ToString());
+            strBuilder.AppendLine(OdbaciMinMaxEOcenu.ToString());
             strBuilder.AppendLine(BrojDecimalaD.ToString());
             strBuilder.AppendLine(BrojDecimalaE1.ToString());
             strBuilder.AppendLine(BrojDecimalaE.ToString());
+            strBuilder.AppendLine(BrojDecimalaBon.ToString());
             strBuilder.AppendLine(BrojDecimalaPen.ToString());
             strBuilder.AppendLine(BrojDecimalaTotal.ToString());
             strBuilder.AppendLine(ZavrsenoTak1.ToString());
@@ -790,9 +792,11 @@ namespace Bilten.Domain
             vrhovniSudijaId = vrhovniSudijaIdStr != NULL ? int.Parse(vrhovniSudijaIdStr) : -1;
 
             BrojEOcena = byte.Parse(reader.ReadLine());
+            OdbaciMinMaxEOcenu = bool.Parse(reader.ReadLine());
             BrojDecimalaD = byte.Parse(reader.ReadLine());
             BrojDecimalaE1 = byte.Parse(reader.ReadLine());
             BrojDecimalaE = byte.Parse(reader.ReadLine());
+            BrojDecimalaBon = byte.Parse(reader.ReadLine());
             BrojDecimalaPen = byte.Parse(reader.ReadLine());
             BrojDecimalaTotal = byte.Parse(reader.ReadLine());
             ZavrsenoTak1 = bool.Parse(reader.ReadLine());
