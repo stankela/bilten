@@ -34,6 +34,7 @@
     <property name="KvalStartListe" column="kval_start_liste" type="String"/>
     <property name="FinaleStartListe" column="finale_start_liste" type="String"/>
     <property name="RasporedSudija" column="raspored_sudija" type="String"/>
+    <property name="Rotacija" column="rotacija" type="String"/>
   </class>
 
 </hibernate-mapping>

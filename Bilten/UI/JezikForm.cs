@@ -110,6 +110,7 @@ namespace Bilten.UI
             txtKvalStartListe.Text = jezik.KvalStartListe;
             txtFinaleStartListe.Text = jezik.FinaleStartListe;
             txtRasporedSudija.Text = jezik.RasporedSudija;
+            txtRotacija.Text = jezik.Rotacija;
         }
 
         private void updateJezikFromUI(Jezik jezik)
@@ -139,6 +140,7 @@ namespace Bilten.UI
             jezik.KvalStartListe = txtKvalStartListe.Text;
             jezik.FinaleStartListe = txtFinaleStartListe.Text;
             jezik.RasporedSudija = txtRasporedSudija.Text;
+            jezik.Rotacija = txtRotacija.Text;
         }
 
         private void JezikForm_Shown(object sender, EventArgs e)
@@ -284,6 +286,11 @@ namespace Bilten.UI
             {
                 msg = "Unesite tekst za raspored sudija.";
                 txtBox = txtRasporedSudija;
+            }
+            else if (txtRotacija.Text.Trim() == String.Empty)
+            {
+                msg = "Unesite tekst za rotaciju.";
+                txtBox = txtRotacija;
             }
 
             if (msg != String.Empty)

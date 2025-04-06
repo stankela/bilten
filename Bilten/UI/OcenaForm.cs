@@ -935,20 +935,20 @@ namespace Bilten.UI
         private void selectEOcene1(int minBroj, int maxBroj, bool odbaciMinMaxEOcenu)
         {
             doSelectEOcene(new TextBox[] { txtE1, txtE2, txtE3, txtE4, txtE5, txtE6 },
-                minBroj, maxBroj);
+                minBroj, maxBroj, odbaciMinMaxEOcenu);
         }
 
         private void selectEOcene2(int minBroj, int maxBroj, bool odbaciMinMaxEOcenu)
         {
             doSelectEOcene(new TextBox[] { txtE1_2, txtE2_2, txtE3_2, txtE4_2, txtE5_2, txtE6_2 },
-                minBroj, maxBroj);
+                minBroj, maxBroj, odbaciMinMaxEOcenu);
         }
 
-        private void doSelectEOcene(TextBox[] txtBoxes, int minBroj, int maxBroj)
+        private void doSelectEOcene(TextBox[] txtBoxes, int minBroj, int maxBroj, bool odbaciMinMaxEOcenu)
         {
             for (int i = 0; i < takmicenje.BrojEOcena; i++)
             {
-                if (i != minBroj - 1 && i != maxBroj - 1)
+                if (!odbaciMinMaxEOcenu || (i != minBroj - 1 && i != maxBroj - 1))
                     txtBoxes[i].BackColor = selectionColor;
                 else
                     txtBoxes[i].BackColor = SystemColors.Window;

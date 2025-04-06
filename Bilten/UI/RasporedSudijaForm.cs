@@ -571,6 +571,7 @@ namespace Bilten.UI
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false, false,
                                                          false, false, false);
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -579,14 +580,14 @@ namespace Bilten.UI
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = takmicenje.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorija;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
-                form.Header3Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorija;
             }
 
@@ -613,7 +614,7 @@ namespace Bilten.UI
             try
             {
                 PreviewDialog p = new PreviewDialog();
-                string documentName = nazivIzvestaja + kategorija;
+                string documentName = gym + " - " + nazivIzvestaja + " - " + kategorija;
 
                 if (form.StampajSveSprave)
                 {

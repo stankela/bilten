@@ -253,6 +253,7 @@ namespace Bilten.Domain
                 {
                     result += (decimal)eOcene[i].Value;
                 }
+                result = result / BrojEOcena;
             }
             return (float)RounderToZero.round(result, brojDecimala);
         }

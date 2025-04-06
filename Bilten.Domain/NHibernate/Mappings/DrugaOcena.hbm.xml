@@ -15,6 +15,7 @@
     <property name="E5" column="e5" />
     <property name="E6" column="e6" />
     <property name="E" column="e" />
+    <property name="Bonus" column="bonus" />
     <property name="Penalty" column="penalty" />
     <property name="Total" column="total" />
     <property name="BrojEOcena" column="broj_e_ocena" type="Byte" />

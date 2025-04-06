@@ -151,7 +151,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mappings\RasporedSudija.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\RezultatEkipno.hbm.xml" />
-    <EmbeddedResource Include="NHibernate\Mappings\RezultatPreskok.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatPreskok.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mappings\RezultatskoTakmicenje.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

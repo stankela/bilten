@@ -591,6 +591,13 @@ namespace Bilten.Domain
             get { return rasporedSudija; }
             set { rasporedSudija = value; }
         }
+
+        private string rotacija = "Rotacija";
+        public virtual string Rotacija
+        {
+            get { return rotacija; }
+            set { rotacija = value; }
+        }
         
         public virtual void UpdateJezik(Jezik jezik)
         {
@@ -622,6 +629,7 @@ namespace Bilten.Domain
             KvalStartListe = jezik.KvalStartListe;
             FinaleStartListe = jezik.FinaleStartListe;
             RasporedSudija = jezik.RasporedSudija;
+            Rotacija = jezik.Rotacija;
         }
     }
 }

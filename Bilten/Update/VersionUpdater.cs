@@ -229,6 +229,15 @@ public class VersionUpdater
             converted = true;
         }
 
+        if (verzijaBaze == 19 && Program.VERZIJA_PROGRAMA > 19)
+        {
+            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                "Bilten.Update.DatabaseUpdate_version20.txt", true);
+            SqlCeUtilities.updateDatabaseVersionNumber(20);
+            verzijaBaze = 20;
+            converted = true;
+        }
+
         if (converted)
         {
             string msg = String.Format("Baza podataka je konvertovana iz verzije {0} u verziju {1}.", staraVerzijaBaze,

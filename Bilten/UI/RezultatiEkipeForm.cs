@@ -266,6 +266,7 @@ namespace Bilten.UI
             // ostala polja.
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod,
                 false, false, false, false, false, false, false, false, false, true, false);
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -276,16 +277,16 @@ namespace Bilten.UI
                 form.Header2Text = mestoDatum;
                 // TODO: Ispis za heder3 treba da bude drugaciji ako je jedno ekipno takmicenje za sve kategorije.
                 // Isto vazi i za documentName. Koristi svojstvo NazivEkipnog klase RezultatskoTakmicenje.
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
@@ -299,7 +300,7 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
+                string documentName = gym + " - " + nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
                 List<RezultatEkipno> rezultatiEkipno = ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati();
 

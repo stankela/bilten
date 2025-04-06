@@ -252,10 +252,10 @@ namespace Bilten.UI
             {
                 nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaViseboj(deoTakKod, takmicenje.FinaleKupa, false);
             }
-            string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, true, false, false, false, false, false, false, false,
                                                          true, false, false);
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -264,16 +264,16 @@ namespace Bilten.UI
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
@@ -335,6 +335,7 @@ namespace Bilten.UI
             Cursor.Show();
             try
             {
+                string documentName = gym + " - " + nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, extended,
                     kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, false,

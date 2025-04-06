@@ -193,12 +193,9 @@ namespace Bilten.Report
 
             float rankWidthCm = 0.75f;
             float skokWidthCm = 0.5f;
-            float ocenaWidthCm = 2.0f;
-            if (brojEOcena > 0)
-                ocenaWidthCm = 1.9f;
 
             float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-            float brojWidth = 2 * rankWidth;
+            float brojWidth = 1.3f * rankWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
 
             float kategorijaWidth;
@@ -214,37 +211,51 @@ namespace Bilten.Report
                 klubWidth = 0.0F;
 
             float skokWidth = Izvestaj.convCmToInch(skokWidthCm);
-            float ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);
 
-            float xRank = contentBounds.X;
-            float xBroj = 0f;
+            float ocenaWidthCm = 2.1f;
+            float ocenaWidth;
+
+            float xRank;
+            float xBroj;
             float xIme;
-            if (stampajBroj)
-            {
-                xBroj = xRank + rankWidth;
-                xIme = xBroj + brojWidth;
-            }
-            else
-            {
-                xIme = xRank + rankWidth;
-            }
-            float xKategorija = xIme + imeWidth;
-            float xKlub = xKategorija + kategorijaWidth;
-            float xSkok = 0.0f;
+            float xKategorija;
+            float xKlub;
+            float xSkok;
             float xSprava;
-            if (sprava == Sprava.Preskok)
-            {
-                xSkok = xKlub + klubWidth;
-                xSprava = xSkok + skokWidth;
-            }
-            else
-                xSprava = xKlub + klubWidth;
-            int brojOcena = stampajBonus ? 5 : 4;
-            float xTotal = xSprava + ocenaWidth * (brojOcena + brojEOcena);
+            float xTotal;
+            float xRightEnd;
+            do {
+                ocenaWidthCm -= 0.1f;
+                ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);
 
-            float xRightEnd = xSprava + ocenaWidth * (brojOcena + brojEOcena);
-            if (sprava == Sprava.Preskok)
-                xRightEnd += ocenaWidth;
+                xRank = contentBounds.X;
+                xBroj = 0f;
+                if (stampajBroj)
+                {
+                    xBroj = xRank + rankWidth;
+                    xIme = xBroj + brojWidth;
+                }
+                else
+                {
+                    xIme = xRank + rankWidth;
+                }
+                xKategorija = xIme + imeWidth;
+                xKlub = xKategorija + kategorijaWidth;
+                xSkok = 0.0f;
+                if (sprava == Sprava.Preskok)
+                {
+                    xSkok = xKlub + klubWidth;
+                    xSprava = xSkok + skokWidth;
+                }
+                else
+                    xSprava = xKlub + klubWidth;
+                int brojOcena = stampajBonus ? 5 : 4;
+                xTotal = xSprava + ocenaWidth * (brojOcena + brojEOcena);
+
+                xRightEnd = xSprava + ocenaWidth * (brojOcena + brojEOcena);
+                if (sprava == Sprava.Preskok)
+                    xRightEnd += ocenaWidth;
+            } while (xRightEnd - xRank > contentBounds.Width);
 
             float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
             if (delta < -contentBounds.X)

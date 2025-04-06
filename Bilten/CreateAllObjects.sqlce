@@ -262,6 +262,7 @@ create table druga_ocena (
     e5 real,
     e6 real,
     e real,
+	bonus real,
     penalty real,
     total real,
 	broj_e_ocena tinyint,
@@ -675,5 +676,6 @@ create table jezici (
     ekipe_rezultati nvarchar(64),
     kval_start_liste nvarchar(64),
     finale_start_liste nvarchar(64),
-    raspored_sudija nvarchar(64)
+    raspored_sudija nvarchar(64),
+	rotacija nvarchar(64)
 );

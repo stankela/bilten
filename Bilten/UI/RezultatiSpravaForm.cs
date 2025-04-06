@@ -336,6 +336,7 @@ namespace Bilten.UI
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, true, false, false, false, false,
                                                          takmicenje.BrojEOcena > 0, false, false, true);
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -344,16 +345,16 @@ namespace Bilten.UI
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
@@ -365,16 +366,7 @@ namespace Bilten.UI
             Cursor.Show();
             try
             {
-                string documentName;
-                if (form.StampajSveSprave)
-                {
-                    documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
-                }
-                else
-                {
-                    documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
-                        + ActiveTakmicenje.Kategorija.Naziv;
-                }
+                string documentName = gym + " - " + nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
                 bool obaPreskoka = ActiveTakmicenje.Propozicije.racunajObaPreskoka(deoTakKod);
 
                 Cursor.Current = Cursors.WaitCursor;
@@ -954,6 +946,7 @@ namespace Bilten.UI
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, false, false, false, false, false,
                                                          false, false, false);
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -962,8 +955,8 @@ namespace Bilten.UI
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
                 form.FooterText = mestoDatum;
                 if (takmicenje.Gimnastika == Gimnastika.ZSG)
                     form.BrojSpravaPoStrani = 4;
@@ -974,8 +967,8 @@ namespace Bilten.UI
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
                 form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
-                form.Header3Text = ActiveTakmicenje.Kategorija.Naziv;
-                form.Header4Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
             }
 
             if (form.ShowDialog() != DialogResult.OK)
@@ -989,16 +982,7 @@ namespace Bilten.UI
             {
                 PreviewDialog p = new PreviewDialog();
 
-                string documentName;
-                if (form.StampajSveSprave)
-                {
-                    documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
-                }
-                else
-                {
-                    documentName = nazivIzvestaja + " - " + Sprave.toString(ActiveSprava) + " - "
-                        + ActiveTakmicenje.Kategorija.Naziv;
-                }
+                string documentName = gym + " - " + nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
                 bool obaPresk = ActiveTakmicenje.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
 
                 if (form.StampajSveSprave)

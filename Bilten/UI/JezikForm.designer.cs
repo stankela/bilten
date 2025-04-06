@@ -82,6 +82,8 @@
             this.txtFinaleStartListe = new System.Windows.Forms.TextBox();
             this.lblRasporedSudija = new System.Windows.Forms.Label();
             this.txtRasporedSudija = new System.Windows.Forms.TextBox();
+            this.lblRotacija = new System.Windows.Forms.Label();
+            this.txtRotacija = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnOK
@@ -523,6 +525,22 @@
             this.txtRasporedSudija.Size = new System.Drawing.Size(131, 20);
             this.txtRasporedSudija.TabIndex = 70;
             // 
+            // lblRotacija
+            // 
+            this.lblRotacija.AutoSize = true;
+            this.lblRotacija.Location = new System.Drawing.Point(658, 421);
+            this.lblRotacija.Name = "lblRotacija";
+            this.lblRotacija.Size = new System.Drawing.Size(46, 13);
+            this.lblRotacija.TabIndex = 71;
+            this.lblRotacija.Text = "Rotacija";
+            // 
+            // txtRotacija
+            // 
+            this.txtRotacija.Location = new System.Drawing.Point(713, 417);
+            this.txtRotacija.Name = "txtRotacija";
+            this.txtRotacija.Size = new System.Drawing.Size(100, 20);
+            this.txtRotacija.TabIndex = 72;
+            // 
             // JezikForm
             // 
             this.AcceptButton = this.btnOK;
@@ -530,6 +548,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(949, 516);
+            this.Controls.Add(this.txtRotacija);
+            this.Controls.Add(this.lblRotacija);
             this.Controls.Add(this.txtRasporedSudija);
             this.Controls.Add(this.lblRasporedSudija);
             this.Controls.Add(this.txtFinaleStartListe);
@@ -652,6 +672,8 @@
         private System.Windows.Forms.TextBox txtFinaleStartListe;
         private System.Windows.Forms.Label lblRasporedSudija;
         private System.Windows.Forms.TextBox txtRasporedSudija;
+        private System.Windows.Forms.Label lblRotacija;
+        private System.Windows.Forms.TextBox txtRotacija;
 
     }
 }

@@ -201,6 +201,13 @@ namespace Bilten.Domain
             set { rasporedSudija = value; }
         }
 
+        private string rotacija;
+        public virtual string Rotacija
+        {
+            get { return rotacija; }
+            set { rotacija = value; }
+        }
+
         // TODO5: Dodaj za formular za ocene
     }
 }

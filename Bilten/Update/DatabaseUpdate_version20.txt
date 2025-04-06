@@ -1,0 +1,10 @@
+-- 06-Apr-2025 (VERZIJA = 20)
+
+alter table druga_ocena add column bonus real;
+GO
+alter table jezici add column rotacija nvarchar(64);
+GO
+update jezici set rotacija = 'Rotacija' where naziv = 'Srpski';
+GO
+update jezici set rotacija = 'Rotation' where naziv = 'Engleski';
+GO

@@ -126,7 +126,7 @@ namespace Bilten.UI
             form.StampajRedniBrojNaStartListi = o.StampajRedniBrojNaStartListi;
             form.StampajKategoriju = o.StampajKategoriju;
             form.StampajKlub = o.StampajKlub;
-            form.BrojEOcenaFormular = o.BrojEOcenaFormular;
+            form.BrojEOcenaFormular = o.BrojEOcenaFormular;  // TODO5: Ovo treba uzimati iz takmicenja
             form.StampajPojedinacneEOcene = o.StampajPojedinacneEOcene;
         }
 

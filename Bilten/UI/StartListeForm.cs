@@ -969,10 +969,17 @@ namespace Bilten.UI
                 nazivIzvestaja = "Start liste - finale ekipno";
             }
             // TODO: Verovatno bi trebalo ukljuciti i turnus, ukoliko ima vise turnusa
-            string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
+
+            string kategorijaRotacija = ActiveRaspored.Naziv;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                kategorijaRotacija += " - " + Opcije.Instance.Rotacija + " " + ActiveRotacija.ToString();
+            }
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, false, false,
                                                          false, false, false);
+ 
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -981,7 +988,7 @@ namespace Bilten.UI
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = takmicenje.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
                 form.FooterText = mestoDatum;
                 if (takmicenje.Gimnastika == Gimnastika.ZSG)
@@ -994,7 +1001,7 @@ namespace Bilten.UI
             else
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
-                form.Header3Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
             }
 
@@ -1021,7 +1028,7 @@ namespace Bilten.UI
             try
             {
                 PreviewDialog p = new PreviewDialog();
-                string documentName = nazivIzvestaja + kategorijaRotacija;
+                string documentName = gym + " - " + nazivIzvestaja + " - " + kategorijaRotacija;
 
                 if (form.StampajSveSprave)
                 {
@@ -1456,8 +1463,7 @@ namespace Bilten.UI
             string nazivIzvestaja;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
             {
-                nazivIzvestaja = "START LISTS - QUALIFICATION";
-                //nazivIzvestaja = "Start liste - kvalifikacije";
+                nazivIzvestaja = Opcije.Instance.KvalStartListe;
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje2)
             {
@@ -1465,19 +1471,24 @@ namespace Bilten.UI
             }
             else if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
             {
-                nazivIzvestaja = "START LISTS - APPARATUS FINALS";
-                //nazivIzvestaja = "Start liste - finale po spravama";
+                nazivIzvestaja = Opcije.Instance.FinaleStartListe;
             }
             else
             {
                 nazivIzvestaja = "Start liste - finale ekipno";
             }
-            string kategorijaRotacija = ActiveRaspored.Naziv + ", Rotacija " + ActiveRotacija.ToString();
+
+            string kategorijaRotacija = ActiveRaspored.Naziv;
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
+            {
+                kategorijaRotacija += " - " + Opcije.Instance.Rotacija + " " + ActiveRotacija.ToString();
+            }
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, false, true, true, true, true, false,
                 false, false, true);
             form.restoreCkbPrikaziBonusLocation();  // hack, da ne moram da dodajem novi parametar u konstruktoru za ovo
 
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -1486,14 +1497,14 @@ namespace Bilten.UI
                     + takmicenje.Datum.ToShortDateString();
                 form.Header1Text = takmicenje.Naziv;
                 form.Header2Text = mestoDatum;
-                form.Header3Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
                 form.FooterText = mestoDatum;
             }
             else
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
-                form.Header3Text = nazivIzvestaja;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
             }
 
@@ -1520,7 +1531,7 @@ namespace Bilten.UI
             try
             {
                 PreviewDialog p = new PreviewDialog();
-                string documentName = nazivIzvestaja + kategorijaRotacija;
+                string documentName = gym + " - " + nazivIzvestaja + " - " + kategorijaRotacija;
                 int brojEOcena = form.BrojEOcenaFormular;
 
                 if (form.StampajSveSprave)
