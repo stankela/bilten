@@ -836,8 +836,6 @@ namespace Bilten.UI
         // TODO5: Dodaj u header form check box za takmicarske brojeve, cija podrazumevana vrednost treba da se
         // inicializuje iz takmicenje.TakBrojevi
 
-        // TODO5: Kada stampam takmicari kategorije, nakon stampanja se lista u gridu promeni (tj promeni se redosled)
-
         private void mnPonistiBrojeve_Click(object sender, EventArgs e)
         {
             IList<GimnasticarUcesnik> selItems = getActiveDataGridViewUserControl()

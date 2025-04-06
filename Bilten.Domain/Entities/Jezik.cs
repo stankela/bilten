@@ -207,7 +207,5 @@ namespace Bilten.Domain
             get { return rotacija; }
             set { rotacija = value; }
         }
-
-        // TODO5: Dodaj za formular za ocene
     }
 }

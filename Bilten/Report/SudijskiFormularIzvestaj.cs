@@ -12,16 +12,15 @@ namespace Bilten.Report
     class SudijskiFormularIzvestaj : Izvestaj
     {
         private List<SudijskiFormularLista> reportListe = new List<SudijskiFormularLista>();
-        private float itemFontSize = 10;
         private bool svakaSpravaNaPosebnojStrani;
 
         public SudijskiFormularIzvestaj(StartListaNaSpravi startLista, string documentName, int brojEOcena, 
             bool stampajRedniBroj, bool stampajKategoriju, bool stampajKlub, DataGridView formGrid, Takmicenje takmicenje,
-            bool stampajBonus) : base(takmicenje)
+            bool stampajBonus, Font itemFont)
+            : base(takmicenje)
 		{
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
 
             Landscape = true;
@@ -36,11 +35,11 @@ namespace Bilten.Report
         public SudijskiFormularIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
             string documentName, int brojEOcena, int brojSpravaPoStrani, bool stampajRedniBroj,
             bool stampajKategoriju, bool stampajKlub, SpravaGridGroupUserControl spravaGridGroupUserControl,
-            Takmicenje takmicenje, bool stampajBonus) : base(takmicenje)
+            Takmicenje takmicenje, bool stampajBonus, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", itemFontSize);
-            Font itemsHeaderFont = new Font("Arial", itemFontSize, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
 
             Landscape = true;

@@ -59,8 +59,6 @@ namespace Bilten.Report
             // TODO5: Neka pocetne vrednosti za margine u svim izvestajima budu 0 (ili neka mala vrednost). Svi izvestaji
             // su svakako centrirani po sredini stranice.
 
-            // TODO5: Dodaj velicinu fonta za iteme u header footer dijalog.
-            
             Sprava[] sprave = Sprave.getSprave(gim);
             int columnNumber = 1;
             for (int i = 0; i < sprave.Length; i++)

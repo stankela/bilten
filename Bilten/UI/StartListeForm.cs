@@ -968,7 +968,15 @@ namespace Bilten.UI
             {
                 nazivIzvestaja = "Start liste - finale ekipno";
             }
-            // TODO: Verovatno bi trebalo ukljuciti i turnus, ukoliko ima vise turnusa
+            // TODO5: Verovatno bi trebalo ukljuciti i turnus, ukoliko ima vise turnusa. Dodaj turnus i subdivision
+            // u jezike
+            // Primer: II TURNUS - Juniors - Rotacija 1
+            //         SUBDIVISION II - Juniors - Rotation 1
+            // TODO5: Dodaj kolonu za takmicarski broj u gridu
+            // TODO5: Dodaj skaliranje za ceo program (UI)
+            // TODO5: Proveri zaokruzivanje E ocene, i kako da ga program pravilno obradjuje
+            // TODO5: Kod stampanja kvalifikanata, pored Score treba ponuditi mogucnost da se stampaju i ostale ocene (D,
+            //        E, Bonus, Pen)
 
             string kategorijaRotacija = ActiveRaspored.Naziv;
             if (deoTakKod == DeoTakmicenjaKod.Takmicenje1)
@@ -1500,6 +1508,8 @@ namespace Bilten.UI
                 form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
                 form.FooterText = mestoDatum;
+                //form.TekstFontSize = 10;  // TODO5: Zakomentarisao samo ovo zato sto utice i na ostale izvestaje
+                                            // (font size ostaje 10)
             }
             else
             {
@@ -1546,7 +1556,8 @@ namespace Bilten.UI
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, takmicenje.Gimnastika, documentName,
                         brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
                         form.StampajKategoriju, form.StampajKlub,
-                        getActiveSpravaGridGroupUserControl(), takmicenje, form.PrikaziBonus));
+                        getActiveSpravaGridGroupUserControl(), takmicenje, form.PrikaziBonus,
+                        new Font(form.TekstFont, /*form.TekstFontSize*/10)));
                 }
                 else
                 {
@@ -1554,7 +1565,7 @@ namespace Bilten.UI
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena,
                         form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
-                        form.PrikaziBonus));
+                        form.PrikaziBonus, new Font(form.TekstFont, /*form.TekstFontSize*/10)));
                 }
 
                 p.ShowDialog();

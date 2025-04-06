@@ -285,14 +285,16 @@ namespace Bilten.Domain
                 else
                 {
                     if (Propozicije.OdvojenoTak2)
-                        result = "Kvalifikacije za finale vi" + Jezik.shMalo + "eboja";
+                        result = Opcije.Instance.Viseboj;
+                        // result = "Kvalifikacije za finale vi" + Jezik.shMalo + "eboja";
                     else
                         result = Opcije.Instance.Viseboj;
                 }
             }
             else
             {
-                result = "Finale vi" + Jezik.shMalo + "eboja";
+                //result = "Finale vi" + Jezik.shMalo + "eboja";
+                result = Opcije.Instance.Viseboj;
             }
             return result;
         }
