@@ -43,7 +43,7 @@ namespace Bilten.UI
         {
             clearUI();
             
-            txtBrojEOcena.Text = takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1).ToString();
+            txtBrojEOcena.Text = takmicenje.BrojEOcena.ToString();
             txtBrojDecD.Text = takmicenje.BrojDecimalaD.ToString();
             txtBrojDecE1.Text = takmicenje.BrojDecimalaE1.ToString();
             txtBrojDecE.Text = takmicenje.BrojDecimalaE.ToString();
@@ -51,12 +51,12 @@ namespace Bilten.UI
             txtBrojDecPen.Text = takmicenje.BrojDecimalaPen.ToString();
             txtBrojDecTotal.Text = takmicenje.BrojDecimalaTotal.ToString();
             ckbTakBroj.Checked = takmicenje.TakBrojevi;
-            txtBrojEOcenaTak3.Text = takmicenje.BrojEOcenaTak3.ToString();
 
-            ckbOdbaciMinMaxEOcenu.Enabled = takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1) > 0;
+            ckbOdbaciMinMaxEOcenu.Enabled = takmicenje.BrojEOcena > 0;
             if (ckbOdbaciMinMaxEOcenu.Enabled)
-                ckbOdbaciMinMaxEOcenu.Checked = takmicenje.getOdbaciMinMaxEOcenu(DeoTakmicenjaKod.Takmicenje1);
+                ckbOdbaciMinMaxEOcenu.Checked = takmicenje.OdbaciMinMaxEOcenu;
 
+            txtBrojEOcenaTak3.Text = takmicenje.BrojEOcenaTak3.ToString();
             ckbOdbaciMinMaxEOcenuTak3.Enabled = takmicenje.BrojEOcenaTak3 > 0;
             if (ckbOdbaciMinMaxEOcenuTak3.Enabled)
                 ckbOdbaciMinMaxEOcenuTak3.Checked = takmicenje.OdbaciMinMaxEOcenuTak3;
@@ -314,7 +314,7 @@ namespace Bilten.UI
             // Verovatno bi trebalo brisati ili dodavati e sudijske uloge 
             // u sudijskim odborima
 
-            if (brojEOcena != takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1))
+            if (brojEOcena != takmicenje.BrojEOcena)
             {
                 throw new BusinessException("BrojEOcena",
                     "Nije dozvoljeno menjati broj E ocena zato sto " +
@@ -378,7 +378,7 @@ namespace Bilten.UI
             takmicenje.BrojDecimalaPen = byte.Parse(txtBrojDecPen.Text);
             takmicenje.BrojDecimalaTotal = byte.Parse(txtBrojDecTotal.Text);
             takmicenje.TakBrojevi = ckbTakBroj.Checked;
-            if (takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1) > 0)
+            if (takmicenje.BrojEOcena > 0)
                 takmicenje.OdbaciMinMaxEOcenu = ckbOdbaciMinMaxEOcenu.Checked;
  
             if (txtBrojEOcenaTak3.Text.Trim() != String.Empty)
