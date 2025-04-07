@@ -43,7 +43,7 @@ namespace Bilten.UI
         {
             clearUI();
             
-            txtBrojEOcena.Text = takmicenje.BrojEOcena.ToString();
+            txtBrojEOcena.Text = takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1).ToString();
             txtBrojDecD.Text = takmicenje.BrojDecimalaD.ToString();
             txtBrojDecE1.Text = takmicenje.BrojDecimalaE1.ToString();
             txtBrojDecE.Text = takmicenje.BrojDecimalaE.ToString();
@@ -51,10 +51,15 @@ namespace Bilten.UI
             txtBrojDecPen.Text = takmicenje.BrojDecimalaPen.ToString();
             txtBrojDecTotal.Text = takmicenje.BrojDecimalaTotal.ToString();
             ckbTakBroj.Checked = takmicenje.TakBrojevi;
+            txtBrojEOcenaTak3.Text = takmicenje.BrojEOcenaTak3.ToString();
 
-            ckbOdbaciMinMaxEOcenu.Enabled = takmicenje.BrojEOcena > 0;
+            ckbOdbaciMinMaxEOcenu.Enabled = takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1) > 0;
             if (ckbOdbaciMinMaxEOcenu.Enabled)
-                ckbOdbaciMinMaxEOcenu.Checked = takmicenje.OdbaciMinMaxEOcenu;
+                ckbOdbaciMinMaxEOcenu.Checked = takmicenje.getOdbaciMinMaxEOcenu(DeoTakmicenjaKod.Takmicenje1);
+
+            ckbOdbaciMinMaxEOcenuTak3.Enabled = takmicenje.BrojEOcenaTak3 > 0;
+            if (ckbOdbaciMinMaxEOcenuTak3.Enabled)
+                ckbOdbaciMinMaxEOcenuTak3.Checked = takmicenje.OdbaciMinMaxEOcenuTak3;
         }
 
         private void clearUI()
@@ -68,6 +73,8 @@ namespace Bilten.UI
             txtBrojDecTotal.Text = String.Empty;
             ckbTakBroj.Checked = false;
             ckbOdbaciMinMaxEOcenu.Enabled = false;
+            txtBrojEOcenaTak3.Text = String.Empty;
+            ckbOdbaciMinMaxEOcenuTak3.Enabled = false;
         }
 
         private void txtBrojESudija_TextChanged(object sender, EventArgs e)
@@ -82,6 +89,15 @@ namespace Bilten.UI
             ckbOdbaciMinMaxEOcenu.Enabled = txtBrojEOcena.Text.Trim() != String.Empty
                 && byte.TryParse(txtBrojEOcena.Text, out brojEOcena) && brojEOcena > 0;
             ckbOdbaciMinMaxEOcenu.Checked = ckbOdbaciMinMaxEOcenu.Enabled;
+        }
+
+        private void txtBrojEOcenaTak3_TextChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+            byte brojEOcenaTak3;
+            ckbOdbaciMinMaxEOcenuTak3.Enabled = txtBrojEOcenaTak3.Text.Trim() != String.Empty
+                && byte.TryParse(txtBrojEOcenaTak3.Text, out brojEOcenaTak3) && brojEOcenaTak3 > 0;
+            ckbOdbaciMinMaxEOcenuTak3.Checked = ckbOdbaciMinMaxEOcenuTak3.Enabled;
         }
 
         private void txtBrojDecD_TextChanged(object sender, EventArgs e)
@@ -145,7 +161,13 @@ namespace Bilten.UI
                 notification.RegisterMessage(
                     "BrojEOcena", "Neispravan format za broj E ocena.");
             }
-            
+
+            if (txtBrojEOcenaTak3.Text.Trim() != String.Empty && !byte.TryParse(txtBrojEOcenaTak3.Text, out dummyByte))
+            {
+                notification.RegisterMessage(
+                    "BrojEOcenaTak3", "Neispravan format za broj E ocena za takmicenje III.");
+            }
+       
             if (txtBrojDecD.Text.Trim() == String.Empty)
             {
                 notification.RegisterMessage(
@@ -221,6 +243,17 @@ namespace Bilten.UI
                 throw new BusinessException("BrojEOcena",
                     "Neispravna vrednost za broj E ocena.");
             }
+
+            if (txtBrojEOcenaTak3.Text.Trim() != String.Empty)
+            {
+                brojEOcena = byte.Parse(txtBrojEOcenaTak3.Text);
+                if (brojEOcena < 0 || brojEOcena > 6)
+                {
+                    throw new BusinessException("BrojEOcenaTak3",
+                        "Neispravna vrednost za broj E ocena za takmicenje III.");
+                }
+            }
+
             byte brojDecD = byte.Parse(txtBrojDecD.Text);
             if (brojDecD <= 0 || brojDecD > 3)
             {
@@ -281,7 +314,7 @@ namespace Bilten.UI
             // Verovatno bi trebalo brisati ili dodavati e sudijske uloge 
             // u sudijskim odborima
 
-            if (brojEOcena != takmicenje.BrojEOcena)
+            if (brojEOcena != takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1))
             {
                 throw new BusinessException("BrojEOcena",
                     "Nije dozvoljeno menjati broj E ocena zato sto " +
@@ -298,6 +331,12 @@ namespace Bilten.UI
                 throw new BusinessException("BrojDecimalaD",
                     "Nije dozvoljeno smanjivati broj decimala zato sto " +
                     "vec postoje unete ocene sa vecim brojem decimala.");
+            }
+
+            if (txtBrojEOcenaTak3.Text.Trim() != String.Empty)
+            {
+                // byte brojEOcenaTak3 = byte.Parse(txtBrojEOcenaTak3.Text);
+                // TODO6: Ako vec postoje unesene ocene za takmicenje 3, nije dozvoljeno menjati broj ocena za tak3
             }
         }
 
@@ -336,8 +375,15 @@ namespace Bilten.UI
             takmicenje.BrojDecimalaPen = byte.Parse(txtBrojDecPen.Text);
             takmicenje.BrojDecimalaTotal = byte.Parse(txtBrojDecTotal.Text);
             takmicenje.TakBrojevi = ckbTakBroj.Checked;
-            if (takmicenje.BrojEOcena > 0)
+            if (takmicenje.getBrojEOcena(DeoTakmicenjaKod.Takmicenje1) > 0)
                 takmicenje.OdbaciMinMaxEOcenu = ckbOdbaciMinMaxEOcenu.Checked;
+ 
+            if (txtBrojEOcenaTak3.Text.Trim() != String.Empty)
+            {
+                takmicenje.BrojEOcenaTak3 = byte.Parse(txtBrojEOcenaTak3.Text);
+                if (takmicenje.BrojEOcenaTak3 > 0)
+                    takmicenje.OdbaciMinMaxEOcenuTak3 = ckbOdbaciMinMaxEOcenuTak3.Checked;
+            }
         }
 
         private void ckbTakBroj_CheckedChanged(object sender, EventArgs e)
@@ -346,6 +392,11 @@ namespace Bilten.UI
         }
 
         private void ckbOdbaciMinMaxEOcenu_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void ckbOdbaciMinMaxEOcenuTak3_CheckedChanged(object sender, EventArgs e)
         {
             dirty = true;
         }

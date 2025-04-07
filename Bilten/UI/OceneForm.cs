@@ -179,7 +179,7 @@ namespace Bilten.UI
             }
 
             GridColumnsInitializer.initOcene(
-                getDataGridViewUserControl(), takmicenje, sprava);
+                getDataGridViewUserControl(), takmicenje, sprava, deoTakKod);
             getDataGridViewUserControl().ColumnHeaderSorting = columnHeaderSorting;
         }
 

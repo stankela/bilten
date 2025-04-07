@@ -112,11 +112,41 @@ namespace Bilten.Domain
             set { brojEOcena = value; }
         }
 
+        private byte brojEOcenaTak3 = 0;
+        public virtual byte BrojEOcenaTak3
+        {
+            get { return brojEOcenaTak3; }
+            set { brojEOcenaTak3 = value; }
+        }
+
+        public virtual byte getBrojEOcena(DeoTakmicenjaKod deoTakKod)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+                return BrojEOcenaTak3;
+            else
+                return BrojEOcena;
+        }
+
         private bool odbaciMinMaxEOcenu = true;
         public virtual bool OdbaciMinMaxEOcenu
         {
             get { return odbaciMinMaxEOcenu; }
             set { odbaciMinMaxEOcenu = value; }
+        }
+
+        private bool odbaciMinMaxEOcenuTak3 = true;
+        public virtual bool OdbaciMinMaxEOcenuTak3
+        {
+            get { return odbaciMinMaxEOcenuTak3; }
+            set { odbaciMinMaxEOcenuTak3 = value; }
+        }
+
+        public virtual bool getOdbaciMinMaxEOcenu(DeoTakmicenjaKod deoTakKod)
+        {
+            if (deoTakKod == DeoTakmicenjaKod.Takmicenje3)
+                return OdbaciMinMaxEOcenuTak3;
+            else
+                return OdbaciMinMaxEOcenu;
         }
 
         private byte brojDecimalaD = 1;
@@ -695,7 +725,9 @@ namespace Bilten.Domain
             strBuilder.AppendLine(VrhovniSudija != null ? VrhovniSudija.Id.ToString() : NULL);
 
             strBuilder.AppendLine(BrojEOcena.ToString());
+            strBuilder.AppendLine(BrojEOcenaTak3.ToString());
             strBuilder.AppendLine(OdbaciMinMaxEOcenu.ToString());
+            strBuilder.AppendLine(OdbaciMinMaxEOcenuTak3.ToString());
             strBuilder.AppendLine(BrojDecimalaD.ToString());
             strBuilder.AppendLine(BrojDecimalaE1.ToString());
             strBuilder.AppendLine(BrojDecimalaE.ToString());
@@ -792,7 +824,9 @@ namespace Bilten.Domain
             vrhovniSudijaId = vrhovniSudijaIdStr != NULL ? int.Parse(vrhovniSudijaIdStr) : -1;
 
             BrojEOcena = byte.Parse(reader.ReadLine());
+            BrojEOcenaTak3 = byte.Parse(reader.ReadLine());
             OdbaciMinMaxEOcenu = bool.Parse(reader.ReadLine());
+            OdbaciMinMaxEOcenuTak3 = bool.Parse(reader.ReadLine());
             BrojDecimalaD = byte.Parse(reader.ReadLine());
             BrojDecimalaE1 = byte.Parse(reader.ReadLine());
             BrojDecimalaE = byte.Parse(reader.ReadLine());
@@ -822,7 +856,7 @@ namespace Bilten.Domain
 
             LastModified = ParsirajDatum(reader.ReadLine());
             TakBrojevi = bool.Parse(reader.ReadLine());
-            
+
             int brojTakmicenja = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojTakmicenja; ++i)
             {

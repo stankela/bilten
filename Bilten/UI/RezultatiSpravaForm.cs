@@ -335,7 +335,7 @@ namespace Bilten.UI
             string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaSprava(deoTakKod, takmicenje.FinaleKupa, false);
 
             HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, true, true, false, false, false, false,
-                                                         takmicenje.BrojEOcena > 0, false, false, true);
+                                                         takmicenje.getBrojEOcena(deoTakKod) > 0, false, false, true);
             string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
@@ -415,7 +415,7 @@ namespace Bilten.UI
                 }
 
                 PreviewDialog p = new PreviewDialog();
-                int brojEOcena = form.StampajPojedinacneEOcene ? takmicenje.BrojEOcena : 0;
+                int brojEOcena = form.StampajPojedinacneEOcene ? takmicenje.getBrojEOcena(deoTakKod) : 0;
                 if (form.StampajSveSprave)
                 {
                     List<List<RezultatSprava>> rezultatiSprave = new List<List<RezultatSprava>>();

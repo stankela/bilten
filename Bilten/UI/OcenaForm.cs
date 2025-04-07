@@ -80,7 +80,7 @@ namespace Bilten.UI
             result.Sprava = sprava;
             result.DeoTakmicenjaKod = deoTakKod;
             result.Gimnasticar = gimnasticar;
-            result.BrojEOcena = takmicenje.BrojEOcena;
+            result.BrojEOcena = takmicenje.getBrojEOcena(deoTakKod);
             return result;
         }
 
@@ -102,7 +102,7 @@ namespace Bilten.UI
                 ckbUnosOcene.Checked = Opcije.Instance.UnosOcenaBezIzrZaCeloTak;
             updateUIRucniUnos();
 
-            int brojEOcena = takmicenje.BrojEOcena;
+            int brojEOcena = takmicenje.getBrojEOcena(deoTakKod);
             txtE1.Enabled = txtE1.Visible = lblE1.Visible = brojEOcena >= 1;
             txtE2.Enabled = txtE2.Visible = lblE2.Visible = brojEOcena >= 2;
             txtE3.Enabled = txtE3.Visible = lblE3.Visible = brojEOcena >= 3;
@@ -217,7 +217,7 @@ namespace Bilten.UI
             if (ocena.D != null)
                 txtD.Text = ocena.D.Value.ToString(formatD);
 
-            int brojEOcena = takmicenje.BrojEOcena;
+            int brojEOcena = takmicenje.getBrojEOcena(deoTakKod);
             txtE1.Text = String.Empty;
             if (ocena.E1 != null && brojEOcena >= 1)
                 txtE1.Text = ocena.E1.Value.ToString(formatE1);
@@ -311,7 +311,7 @@ namespace Bilten.UI
                 if (ocena.TotalObeOcene != null)
                     txtTotalObeOcene.Text = ocena.TotalObeOcene.Value.ToString(formatTotal);
             }
-            selectEOcene(takmicenje.BrojEOcena, takmicenje.OdbaciMinMaxEOcenu);
+            selectEOcene(takmicenje.getBrojEOcena(deoTakKod), takmicenje.getOdbaciMinMaxEOcenu(deoTakKod));
         }
 
         protected override void requiredFieldsAndFormatValidation(Notification notification)
@@ -390,7 +390,7 @@ namespace Bilten.UI
                 }
             }
 
-            if (takmicenje.BrojEOcena == 0 && txtE.Text.Trim() != String.Empty)
+            if (takmicenje.getBrojEOcena(deoTakKod) == 0 && txtE.Text.Trim() != String.Empty)
             {
                 if (!isFloat(txtE.Text))
                 {
@@ -406,7 +406,7 @@ namespace Bilten.UI
             }
 
             TextBox[] txtEOcene = new TextBox[6] { txtE1, txtE2, txtE3, txtE4, txtE5, txtE6 };
-            for (byte i = 1; i <= takmicenje.BrojEOcena; i++)
+            for (byte i = 1; i <= takmicenje.getBrojEOcena(deoTakKod); i++)
             {
                 validateEOcenaFormat(notification, txtEOcene[i - 1], i, prefix);
             }
@@ -645,7 +645,7 @@ namespace Bilten.UI
             else
                 ocena.D = float.Parse(txtD.Text);
 
-            int brojEOcena = takmicenje.BrojEOcena;
+            int brojEOcena = takmicenje.getBrojEOcena(deoTakKod);
 
             if (brojEOcena == 0)
             {
@@ -801,7 +801,7 @@ namespace Bilten.UI
         private DrugaOcena createDrugaOcena()
         {
             DrugaOcena result = new DrugaOcena();
-            result.BrojEOcena = takmicenje.BrojEOcena;
+            result.BrojEOcena = takmicenje.getBrojEOcena(deoTakKod);
             return result;
         }
 
@@ -824,9 +824,9 @@ namespace Bilten.UI
             updateAcceptButton();
             clearColors2();
 
-            txtE.TabStop = takmicenje.BrojEOcena == 0 || ckbUnosOcene.Checked;
+            txtE.TabStop = takmicenje.getBrojEOcena(deoTakKod) == 0 || ckbUnosOcene.Checked;
             txtTotal.TabStop = ckbUnosOcene.Checked;
-            txtE_2.TabStop = takmicenje.BrojEOcena == 0 || ckbUnosOcene.Checked;
+            txtE_2.TabStop = takmicenje.getBrojEOcena(deoTakKod) == 0 || ckbUnosOcene.Checked;
             txtTotal_2.TabStop = ckbUnosOcene.Checked;
             txtTotalObeOcene.TabStop = ckbUnosOcene.Checked;
         }
@@ -835,9 +835,9 @@ namespace Bilten.UI
         {
             bool rucniUnos = ckbUnosOcene.Checked;
 
-            txtE.ReadOnly = !rucniUnos && takmicenje.BrojEOcena > 0;
+            txtE.ReadOnly = !rucniUnos && takmicenje.getBrojEOcena(deoTakKod) > 0;
             txtTotal.ReadOnly = !rucniUnos;
-            txtE_2.ReadOnly = !rucniUnos && takmicenje.BrojEOcena > 0;
+            txtE_2.ReadOnly = !rucniUnos && takmicenje.getBrojEOcena(deoTakKod) > 0;
             txtTotal_2.ReadOnly = !rucniUnos;
             txtTotalObeOcene.ReadOnly = !rucniUnos;
             btnIzracunaj.Enabled = !rucniUnos;
@@ -882,12 +882,12 @@ namespace Bilten.UI
                 // (kada su neke ocene vec unete) promene opcije za broj decimala
 
                 o.izracunajOcenu(takmicenje.BrojDecimalaE, takmicenje.BrojDecimalaBon,
-                    takmicenje.BrojDecimalaPen, takmicenje.BrojDecimalaTotal, takmicenje.OdbaciMinMaxEOcenu);
+                    takmicenje.BrojDecimalaPen, takmicenje.BrojDecimalaTotal, takmicenje.getOdbaciMinMaxEOcenu(deoTakKod));
 
                 izracunato = true;
                 updateAcceptButton();
                 btnOk.Focus();
-                selectEOcene(takmicenje.BrojEOcena, takmicenje.OdbaciMinMaxEOcenu);
+                selectEOcene(takmicenje.getBrojEOcena(deoTakKod), takmicenje.getOdbaciMinMaxEOcenu(deoTakKod));
 
                 disableTextBoxHandlers();
                 updateUIFromEntity(o);
@@ -946,7 +946,7 @@ namespace Bilten.UI
 
         private void doSelectEOcene(TextBox[] txtBoxes, int minBroj, int maxBroj, bool odbaciMinMaxEOcenu)
         {
-            for (int i = 0; i < takmicenje.BrojEOcena; i++)
+            for (int i = 0; i < takmicenje.getBrojEOcena(deoTakKod); i++)
             {
                 if (!odbaciMinMaxEOcenu || (i != minBroj - 1 && i != maxBroj - 1))
                     txtBoxes[i].BackColor = selectionColor;
@@ -966,7 +966,7 @@ namespace Bilten.UI
             txtD.TextChanged += new EventHandler(txtBoxOcena1_TextChanged);
             txtD_2.TextChanged += new EventHandler(txtBoxOcena2_TextChanged);
 
-            int brojEOcena = takmicenje.BrojEOcena;
+            int brojEOcena = takmicenje.getBrojEOcena(deoTakKod);
 
             if (brojEOcena == 0)
             {

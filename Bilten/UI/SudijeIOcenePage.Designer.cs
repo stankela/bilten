@@ -46,6 +46,9 @@ namespace Bilten.UI
             this.lblBonus = new System.Windows.Forms.Label();
             this.txtBrojDecBon = new System.Windows.Forms.TextBox();
             this.ckbOdbaciMinMaxEOcenu = new System.Windows.Forms.CheckBox();
+            this.lblBrojEOcenaTak3 = new System.Windows.Forms.Label();
+            this.txtBrojEOcenaTak3 = new System.Windows.Forms.TextBox();
+            this.ckbOdbaciMinMaxEOcenuTak3 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblBrojEOcena
@@ -207,9 +210,40 @@ namespace Bilten.UI
             this.ckbOdbaciMinMaxEOcenu.UseVisualStyleBackColor = true;
             this.ckbOdbaciMinMaxEOcenu.CheckedChanged += new System.EventHandler(this.ckbOdbaciMinMaxEOcenu_CheckedChanged);
             // 
+            // lblBrojEOcenaTak3
+            // 
+            this.lblBrojEOcenaTak3.AutoSize = true;
+            this.lblBrojEOcenaTak3.Location = new System.Drawing.Point(20, 417);
+            this.lblBrojEOcenaTak3.Name = "lblBrojEOcenaTak3";
+            this.lblBrojEOcenaTak3.Size = new System.Drawing.Size(148, 13);
+            this.lblBrojEOcenaTak3.TabIndex = 28;
+            this.lblBrojEOcenaTak3.Text = "Broj E ocena za takmicenje III";
+            // 
+            // txtBrojEOcenaTak3
+            // 
+            this.txtBrojEOcenaTak3.Location = new System.Drawing.Point(184, 414);
+            this.txtBrojEOcenaTak3.Name = "txtBrojEOcenaTak3";
+            this.txtBrojEOcenaTak3.Size = new System.Drawing.Size(37, 20);
+            this.txtBrojEOcenaTak3.TabIndex = 29;
+            this.txtBrojEOcenaTak3.TextChanged += new System.EventHandler(this.txtBrojEOcenaTak3_TextChanged);
+            // 
+            // ckbOdbaciMinMaxEOcenuTak3
+            // 
+            this.ckbOdbaciMinMaxEOcenuTak3.AutoSize = true;
+            this.ckbOdbaciMinMaxEOcenuTak3.Location = new System.Drawing.Point(19, 444);
+            this.ckbOdbaciMinMaxEOcenuTak3.Name = "ckbOdbaciMinMaxEOcenuTak3";
+            this.ckbOdbaciMinMaxEOcenuTak3.Size = new System.Drawing.Size(345, 17);
+            this.ckbOdbaciMinMaxEOcenuTak3.TabIndex = 30;
+            this.ckbOdbaciMinMaxEOcenuTak3.Text = "Odbaci minimalnu i maksimalnu E1, E2, ... ocenu kod izracunavanja";
+            this.ckbOdbaciMinMaxEOcenuTak3.UseVisualStyleBackColor = true;
+            this.ckbOdbaciMinMaxEOcenuTak3.CheckedChanged += new System.EventHandler(this.ckbOdbaciMinMaxEOcenuTak3_CheckedChanged);
+            // 
             // SudijeIOcenePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.ckbOdbaciMinMaxEOcenuTak3);
+            this.Controls.Add(this.txtBrojEOcenaTak3);
+            this.Controls.Add(this.lblBrojEOcenaTak3);
             this.Controls.Add(this.ckbOdbaciMinMaxEOcenu);
             this.Controls.Add(this.txtBrojDecBon);
             this.Controls.Add(this.lblBonus);
@@ -229,7 +263,7 @@ namespace Bilten.UI
             this.Controls.Add(this.lblBrojDecimala);
             this.Controls.Add(this.lblBrojEOcena);
             this.Name = "SudijeIOcenePage";
-            this.Size = new System.Drawing.Size(378, 384);
+            this.Size = new System.Drawing.Size(378, 555);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -255,5 +289,8 @@ namespace Bilten.UI
         private System.Windows.Forms.Label lblBonus;
         private System.Windows.Forms.TextBox txtBrojDecBon;
         private System.Windows.Forms.CheckBox ckbOdbaciMinMaxEOcenu;
+        private System.Windows.Forms.Label lblBrojEOcenaTak3;
+        private System.Windows.Forms.TextBox txtBrojEOcenaTak3;
+        private System.Windows.Forms.CheckBox ckbOdbaciMinMaxEOcenuTak3;
     }
 }

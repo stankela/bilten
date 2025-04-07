@@ -114,7 +114,7 @@ namespace Bilten.UI
         }
 
         public static void initOcene(DataGridViewUserControl dgw, 
-            Takmicenje takmicenje, Sprava sprava)
+            Takmicenje takmicenje, Sprava sprava, DeoTakmicenjaKod deoTakKod)
         {
             int ocenaWidth = 50;
 
@@ -123,8 +123,8 @@ namespace Bilten.UI
             DataGridViewColumn column;
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
-            
-            int brojEOcena = takmicenje.BrojEOcena;
+
+            int brojEOcena = takmicenje.getBrojEOcena(deoTakKod);
             if (sprava == Sprava.Preskok)
             {
                 column = dgw.AddColumn("D", "D_2", ocenaWidth);

@@ -84,6 +84,8 @@ create table takmicenja (
 	tip_takmicenja tinyint,
 	broj_e_ocena tinyint,
     odbaci_min_max_e_ocenu bit,
+	broj_e_ocena_tak3 tinyint,
+    odbaci_min_max_e_ocenu_tak3 bit,
 	broj_decimala_d tinyint,
     broj_decimala_e1 tinyint,
     broj_decimala_e tinyint,

@@ -13,7 +13,9 @@
     <property name="Mesto" />
     <property name="TipTakmicenja" column="tip_takmicenja" type="Byte" />
     <property name="BrojEOcena" column="broj_e_ocena" type="Byte" />
+    <property name="BrojEOcenaTak3" column="broj_e_ocena_tak3" type="Byte" />
     <property name="OdbaciMinMaxEOcenu" column="odbaci_min_max_e_ocenu" type="Boolean" />
+    <property name="OdbaciMinMaxEOcenuTak3" column="odbaci_min_max_e_ocenu_tak3" type="Boolean" />
     <property name="BrojDecimalaD" column="broj_decimala_d" type="Byte" />
     <property name="BrojDecimalaE1" column="broj_decimala_e1" type="Byte" />
     <property name="BrojDecimalaE" column="broj_decimala_e" type="Byte" />
