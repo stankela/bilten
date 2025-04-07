@@ -336,7 +336,10 @@ namespace Bilten.UI
             if (txtBrojEOcenaTak3.Text.Trim() != String.Empty)
             {
                 // byte brojEOcenaTak3 = byte.Parse(txtBrojEOcenaTak3.Text);
-                // TODO6: Ako vec postoje unesene ocene za takmicenje 3, nije dozvoljeno menjati broj ocena za tak3
+                // TODO5: Ako vec postoje unesene ocene za takmicenje 3, nije dozvoljeno menjati broj ocena za tak3
+                // TODO5: Razmisli da li je potrebno apdejtovati sva takmicenja u kojima je broj e ocena bio veci od nula,
+                //        tako da broj e ocena u takmicenju 3 bude isti. (Primetiti da je broj e ocena zapamcen i u
+                //        takmicenju, i u oceni). 
             }
         }
 

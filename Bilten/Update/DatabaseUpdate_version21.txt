@@ -1,0 +1,12 @@
+-- 07-Apr-2025 (VERZIJA = 21)
+
+alter table takmicenja add column broj_e_ocena_tak3 tinyint;
+GO
+alter table takmicenja add column odbaci_min_max_e_ocenu_tak3 bit;
+GO
+
+update takmicenja set broj_e_ocena_tak3 = 0;
+GO
+update takmicenja set odbaci_min_max_e_ocenu_tak3 = 1;
+GO
+
