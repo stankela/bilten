@@ -9,69 +9,123 @@ namespace Bilten.Report
 {
     class SpravaFinaleKupaIzvestaj : Izvestaj
     {
-        private List<SpravaFinaleKupaLista> liste = new List<SpravaFinaleKupaLista>();
+        private List<SpravaFinaleKupaLista> reportListe = new List<SpravaFinaleKupaLista>();
         private bool svakaSpravaNaPosebnojStrani;
 
         public SpravaFinaleKupaIzvestaj(Sprava sprava, IList<RezultatSpravaFinaleKupa> rezultati,
-            bool kvalColumn, string documentName, DataGridView formGrid, Takmicenje takmicenje) : base(takmicenje)
+            bool kvalColumn, string documentName, DataGridView formGrid, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
 
-            liste.Add(new SpravaFinaleKupaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
+            reportListe.Add(new SpravaFinaleKupaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
                 kvalColumn, sprava, formGrid));
         }
 
         public SpravaFinaleKupaIzvestaj(List<List<RezultatSpravaFinaleKupa>> rezultatiSprave,
             Gimnastika gim, bool kvalColumn, string documentName, int brojSpravaPoStrani, DataGridView formGrid,
-            Takmicenje takmicenje) : base(takmicenje)
+            Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
         {
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
 
             Sprava[] sprave = Sprave.getSprave(gim);
             for (int i = 0; i < sprave.Length; i++)
             {
                 Sprava sprava = sprave[i];
-                int page;
-                float relY;
-                if (brojSpravaPoStrani != 1)
-                {
-                    page = (i / brojSpravaPoStrani) + 1;
-                    relY = (i % brojSpravaPoStrani) / (brojSpravaPoStrani * 1f) + 0.03f;
-                }
-                else
-                {
-                    page = i + 1;
-                    relY = 0.0f + 0.03f;
-                }
-                SpravaFinaleKupaLista lista = new SpravaFinaleKupaLista(this, page, 0f, itemFont, itemsHeaderFont,
+                SpravaFinaleKupaLista lista = new SpravaFinaleKupaLista(this, 1, 0f, itemFont, itemsHeaderFont,
                     rezultatiSprave[i], kvalColumn, sprava, formGrid);
-                lista.RelY = relY;
-                liste.Add(lista);
+                reportListe.Add(lista);
             }
         }
 
         protected override void doSetupContent(Graphics g)
         {
-            lastPageNum = 0;
-            foreach (SpravaFinaleKupaLista lista in liste)
+            float startYPrvaStrana = contentBounds.Y;
+            float startYOstaleStrane = contentBounds.Y;
+
+            // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
+            float maxImeWidth = 0.0f;
+            float maxKlubWidth = 0.0f;
+            SpravaFinaleKupaLista prevLista = null;
+            for (int i = 0; i < 2; ++i)
             {
-                if (svakaSpravaNaPosebnojStrani)
-                    lista.FirstPageNum = lastPageNum + 1;
-                lista.StartY = contentBounds.Y + lista.RelY * contentBounds.Height;
-                lista.setupContent(g, contentBounds);
-                lastPageNum = lista.LastPageNum;
+                prevLista = null;
+                int j = 0;
+                bool prebaciNaSledecuStranu = false;
+                while (j < reportListe.Count)
+                {
+                    SpravaFinaleKupaLista lista = reportListe[j];
+                    if (prevLista == null)
+                    {
+                        lista.FirstPageNum = 1;
+                        lista.StartY = startYPrvaStrana;
+                    }
+                    else if (svakaSpravaNaPosebnojStrani || prebaciNaSledecuStranu)
+                    {
+                        lista.FirstPageNum = prevLista.LastPageNum + 1;
+                        lista.StartY = startYOstaleStrane;
+                        prebaciNaSledecuStranu = false;
+                    }
+                    else
+                    {
+                        // Nastavak na istoj strani
+                        lista.FirstPageNum = prevLista.LastPageNum;
+                        // Svaka lista ima implicitno dodat prazan prostor nakon liste (koji je jednak velicini vrste),
+                        // i EndY pokazuje nakon tog praznog prostoja.
+                        lista.StartY = prevLista.EndY;
+                    }
+
+                    int firstPageNum = lista.FirstPageNum;
+                    if (i == 0)
+                    {
+                        lista.setupContent(g, contentBounds);
+                        if (lista.Columns[1].Width > maxImeWidth)
+                            maxImeWidth = lista.Columns[1].Width;
+                        if (lista.Columns[2].Width > maxKlubWidth)
+                            maxKlubWidth = lista.Columns[2].Width;
+                    }
+                    else
+                    {
+                        lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
+                    }
+
+                    if (lista.LastPageNum == firstPageNum)
+                    {
+                        // Cela lista je stala na istu stranu
+                        ++j;
+                        prevLista = lista;
+                    }
+                    else
+                    {
+                        // Lista nije stala na istu stranu
+                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
+                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
+                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
+                        {
+                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
+                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
+                            ++j;
+                            prevLista = lista;
+                        }
+                        else
+                        {
+                            // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
+                            prebaciNaSledecuStranu = true;
+                        }
+                    }
+                }
             }
+            lastPageNum = prevLista.LastPageNum;
         }
 
         public override void drawContent(Graphics g, int pageNum)
         {
-            foreach (SpravaFinaleKupaLista lista in liste)
+            foreach (SpravaFinaleKupaLista lista in reportListe)
             {
                 lista.drawContent(g, contentBounds, pageNum);
             }
@@ -120,10 +174,9 @@ namespace Bilten.Report
             return result;
         }
 
-        public void setupContent(Graphics g, RectangleF contentBounds)
+        // TODO5: Izdvoj ovaj method i u ostalim izvestajima gde radim dvaput setupContent
+        private void createLayout(Graphics g, RectangleF contentBounds)
         {
-            createColumns(g, contentBounds);
-
             itemHeight = itemFont.GetHeight(g) * 2.9f;
             itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             groupHeaderHeight = itemsHeaderHeight;
@@ -133,19 +186,49 @@ namespace Bilten.Report
                 contentBounds);
         }
 
+        public void setupContent(Graphics g, RectangleF contentBounds)
+        {
+            createColumns(g, contentBounds);
+            createLayout(g, contentBounds);
+        }
+
+        public void setupContent(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
+        {
+            createColumns(g, contentBounds, imeWidth, klubWidth);
+            createLayout(g, contentBounds);
+        }
+
         private void createColumns(Graphics g, RectangleF contentBounds)
         {
             float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            // kolo i kval sam podesio kao polovinu Rank kolone.
             float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float koloWidth = rankWidth / 2;
             float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
-            float kvalWidth = rankWidth / 2;
 
+            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth, ocenaWidth);
+        }
+
+        private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
+        {
+            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
+
+            float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
+            float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+
+            doCreateColumns(g, contentBounds, rankWidth, imeWidth, klubWidth, ocenaWidth);
+        }
+
+        private void doCreateColumns(Graphics g, RectangleF contentBounds, float rankWidth, float imeWidth, float klubWidth,
+            float ocenaWidth)
+        {
+            // kolo i kval sam podesio kao polovinu Rank kolone.
+            float koloWidth = rankWidth / 2;
+            float kvalWidth = rankWidth / 2;
+            
             int brojOcena = 3;
 
             float xRank = contentBounds.X;

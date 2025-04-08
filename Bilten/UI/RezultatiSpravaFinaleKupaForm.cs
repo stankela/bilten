@@ -280,7 +280,8 @@ namespace Bilten.UI
                         rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, ActiveTakmicenje.Gimnastika,
                         kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
-                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje));
+                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 else
                 {
@@ -289,7 +290,7 @@ namespace Bilten.UI
 
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati,
                         kvalColumnVisible(), documentName, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
-                        takmicenje));
+                        takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
                 }
 
                 p.ShowDialog();

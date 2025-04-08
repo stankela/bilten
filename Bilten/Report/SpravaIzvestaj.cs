@@ -117,6 +117,8 @@ namespace Bilten.Report
                     if (i == 0)
                     {
                         lista.setupContent(g, contentBounds);
+                        // TODO5: Indeksi nisu dobri kada postoji takmicarski broj. Greska ce postati vidljiva tek kada
+                        // budem dvaput radio setupContent.
                         if (lista.Columns[1].Width > maxImeWidth)
                             maxImeWidth = lista.Columns[1].Width;
                         if (lista.Columns[2].Width > maxKlubWidth)
@@ -364,6 +366,7 @@ namespace Bilten.Report
 
         public void setupContent(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
         {
+            // TODO5: Implementiraj ovo
             setupContent(g, contentBounds);
         }
 
