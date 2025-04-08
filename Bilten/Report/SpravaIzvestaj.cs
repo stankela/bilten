@@ -137,11 +137,6 @@ namespace Bilten.Report
                     }
                     else
                     {
-                        // TODO5: Promeni u RasporedSudijaIzvestaj da i tamo postoji ovaj kod za slucaj da lista nije
-                        // stala na istu stranu. Tamo se lista prebacuje na sledecu stranu, ali to moze da bude
-                        // problematicno u situaciji kada je itemFont toliko povecan da lista ne moze cela da stane na
-                        // istoj strani, jer cemo uci u beskonacnu petlju.
-
                         // Lista nije stala na istu stranu
                         float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
                         float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
@@ -159,6 +154,8 @@ namespace Bilten.Report
 
                             // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
                             prebaciNaSledecuStranu = true;
+
+                            // TODO5: Analiziraj detaljnije koje sve mogucnosti postoje kod izlomljenih lista
 
                             // Ostavi listu izlomljenu
                             //++j;

@@ -298,27 +298,26 @@ namespace Bilten.UI
             Cursor.Show();
             try
             {
-                PreviewDialog p = new PreviewDialog();
+                PreviewDialog form2 = new PreviewDialog();
 
                 string documentName = gym + " - " + nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
-                List<RezultatEkipno> rezultatiEkipno = ActiveTakmicenje.getPoredakEkipno(deoTakKod).getRezultati();
-
+                PoredakEkipno p = ActiveTakmicenje.getPoredakEkipno(deoTakKod);
                 bool kvalColumn = deoTakKod == DeoTakmicenjaKod.Takmicenje1 && ActiveTakmicenje.odvojenoTak4();
 
                 if (form.PrikaziClanoveEkipe)
                 {
-                    p.setIzvestaj(new EkipeIzvestaj(rezultatiEkipno, ekipaRezultatiUkupnoMap,
+                    form2.setIzvestaj(new EkipeIzvestaj(p.getRezultati(), ekipaRezultatiUkupnoMap, p.hasPenalty(),
                         ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName,
                         takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
                 }
                 else
                 {
-                    p.setIzvestaj(new UkupnoIzvestaj(rezultatiEkipno, ActiveTakmicenje.Gimnastika, kvalColumn,
-                        dataGridViewUserControl1.DataGridView, documentName, takmicenje,
+                    form2.setIzvestaj(new UkupnoIzvestaj(p.getRezultati(), ActiveTakmicenje.Gimnastika, kvalColumn,
+                        p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, takmicenje,
                         new Font(form.TekstFont, form.TekstFontSize)));
                 }
-                p.ShowDialog();
+                form2.ShowDialog();
             }
             catch (Exception ex)
             {

@@ -220,6 +220,16 @@ namespace Bilten.Domain
             rankRezultati(rezTak.Propozicije);
         }
 
+        public virtual bool hasPenalty()
+        {
+            foreach (RezultatEkipno r in Rezultati)
+            {
+                if (r.Penalty != null)
+                    return true;
+            }
+            return false;
+        }
+
         public virtual void dumpRezultati(StreamWriter streamWriter)
         {
             string header = DeoTakmicenjaKod == DeoTakmicenjaKod.Takmicenje1 ? "EKIPE" : "EKIPE - FINALE";

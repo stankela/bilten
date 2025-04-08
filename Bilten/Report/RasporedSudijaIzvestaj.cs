@@ -149,10 +149,21 @@ namespace Bilten.Report
                     }
                     else
                     { 
-                        // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani. U ovom slucaju
-                        // mozemo to da uradimo zato sto su liste kratke (krace od strane), ali u generalnom slucaju
-                        // gde se izvestaj proteze na vise strana ne mozemo jer cemo uci u beskonacnu rekurziju.
-                        prebaciNaSledecuStranu = true;
+                        // Lista nije stala na istu stranu
+                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
+                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
+                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
+                        {
+                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
+                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
+                            ++j;
+                            prevLista = lista;
+                        }
+                        else
+                        {
+                            // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
+                            prebaciNaSledecuStranu = true;
+                        }
                     }
                 }
             }

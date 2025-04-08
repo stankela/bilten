@@ -172,14 +172,16 @@ namespace Bilten.UI
         private void btnBrisiSliku_Click(object sender, EventArgs e)
         {
             ListViewItem selItem = getSelectedItem();
-            if (selItem != null)
-            {
-                listViewLogo.Focus();
-                // TODO5: Dodaj proveru da li se zeli brisanje
-                selItem.SubItems[1].Text = "";
-                pictureBoxSlika.Image = null;
-                selItem.Selected = true;
-            }
+            if (selItem == null)
+                return;
+            string msg = "Da li zelite da izbrisete logo \"" + selItem.SubItems[1].Text + "\"";
+            if (!MessageDialogs.queryConfirmation(msg, this.Text))
+                return;
+
+            listViewLogo.Focus();
+            selItem.SubItems[1].Text = "";
+            pictureBoxSlika.Image = null;
+            selItem.Selected = true;
         }
 
         private void listViewLogo_SelectedIndexChanged(object sender, EventArgs e)

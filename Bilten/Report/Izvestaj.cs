@@ -604,7 +604,6 @@ namespace Bilten.Report
 
         private void calculateContentBounds(Graphics g, RectangleF marginBounds)
 		{
-            // TODO5: Probaj da izbacis sve pozive convCmToInch()
             float headerBottom = headerBounds.Bottom + convCmToInch(0.5f);
             contentBounds = new RectangleF(marginBounds.X, headerBottom,
                 marginBounds.Width, footerBounds.Top - headerBottom);

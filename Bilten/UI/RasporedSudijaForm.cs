@@ -59,10 +59,13 @@ namespace Bilten.UI
                     NHibernateUtil.Initialize(takmicenje);
                     // Potrebno za slucaj da ne postoje sudije na spravama vec samo vrhovni sudija.
                     NHibernateUtil.Initialize(takmicenje.VrhovniSudija);
-                    if (takmicenje.VrhovniSudija.DrzavaUcesnik != null)
-                        NHibernateUtil.Initialize(takmicenje.VrhovniSudija.DrzavaUcesnik);
-                    if (takmicenje.VrhovniSudija.KlubUcesnik != null)
-                        NHibernateUtil.Initialize(takmicenje.VrhovniSudija.KlubUcesnik);
+                    if (takmicenje.VrhovniSudija != null)
+                    {
+                        if (takmicenje.VrhovniSudija.DrzavaUcesnik != null)
+                            NHibernateUtil.Initialize(takmicenje.VrhovniSudija.DrzavaUcesnik);
+                        if (takmicenje.VrhovniSudija.KlubUcesnik != null)
+                            NHibernateUtil.Initialize(takmicenje.VrhovniSudija.KlubUcesnik);
+                    }
 
                     // create tabs
                     for (int i = 0; i < rasporedi.Count; i++)

@@ -14,7 +14,7 @@ namespace Bilten.Report
         private List<EkipeLista> reportListe = new List<EkipeLista>();
 
         public EkipeIzvestaj(List<RezultatEkipno> rezultati, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap,
-            Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName, Takmicenje takmicenje,
+            bool penalty, Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName, Takmicenje takmicenje,
             Font itemFont)
             : base(takmicenje)
 		{
@@ -31,7 +31,7 @@ namespace Bilten.Report
             {
                 List<RezultatEkipno> rezList = new List<RezultatEkipno>() { rez };
                 reportListe.Add(new EkipeLista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont, nazivEkipeFont,
-                    rezList, ekipaRezultatiUkupnoMap, gim, kvalColumn, formGrid, takmicenje.TakBrojevi));
+                    rezList, ekipaRezultatiUkupnoMap, gim, kvalColumn, penalty, formGrid, takmicenje.TakBrojevi));
             }
 		}
 
@@ -126,8 +126,10 @@ namespace Bilten.Report
         private Font nazivEkipeFont;
 
         private bool kvalColumn;
+        private bool penalty;
         private Gimnastika gimnastika;
         private String totalTitle;
+        private String penaltyTitle;
         private bool stampajBroj;
 
         private float delta;
@@ -135,11 +137,12 @@ namespace Bilten.Report
         public EkipeLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, Font nazivEkipeFont,
             List<RezultatEkipno> rezultati, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap,
-            Gimnastika gim, bool kvalColumn, DataGridView formGrid, bool stampajBroj)
+            Gimnastika gim, bool kvalColumn, bool penalty, DataGridView formGrid, bool stampajBroj)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.nazivEkipeFont = nazivEkipeFont;
             this.kvalColumn = kvalColumn;
+            this.penalty = penalty;
             this.gimnastika = gim;
             this.stampajBroj = stampajBroj;
 
@@ -202,15 +205,18 @@ namespace Bilten.Report
                 string ekipaNaziv = rezEkipa != null ? rezEkipa.Ekipa.Naziv : rez.KlubDrzava;
 
                 List<object> items;
+                // Dva prazna itema na kraju su za kval status i penalizaciju. Ekipna penalizacija se nikad ne prikazuje
+                // pored gimnasticara vec u futeru pored ekipe. Ispisivanje kval statusa trenutno nije implemetirano,
+                // ali kada bi bilo implementirano, i on se ne bi prikazivao pored gimnasticara vec u hederu ili futeru.
                 if (gim == Gimnastika.MSG)
                 {
                     items = new List<object>() { rez.PrezimeIme, /*rez.KlubDrzava*/ekipaNaziv,
-                            rez.Parter, rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, rez.Vratilo, rez.Total };
+                            rez.Parter, rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, rez.Vratilo, rez.Total, "", "" };
                 }
                 else
                 {
                     items = new List<object>() { rez.PrezimeIme, /*rez.KlubDrzava*/ekipaNaziv,
-                            rez.Preskok, rez.DvovisinskiRazboj, rez.Greda, rez.Parter, rez.Total };
+                            rez.Preskok, rez.DvovisinskiRazboj, rez.Greda, rez.Parter, rez.Total, "", "" };
                 }
                 if (stampajBroj)
                 {
@@ -279,6 +285,7 @@ namespace Bilten.Report
             float imeWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float spravaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+            float penaltyWidth = spravaWidth * (2.0f / 3);
             float totalWidth = spravaWidth;
             float kvalWidth = spravaWidth / 3;
 
@@ -304,6 +311,10 @@ namespace Bilten.Report
             if (gimnastika == Gimnastika.ZSG)
                 xTotal = xRazboj;
 
+            float xPenalty = xTotal;
+            if (penalty)
+                xTotal += penaltyWidth;
+
             float xKval = xTotal + totalWidth;
 
             float xRightEnd = xKval;
@@ -322,6 +333,7 @@ namespace Bilten.Report
             xPreskok += delta;
             xRazboj += delta;
             xVratilo += delta;
+            xPenalty += delta;
             xTotal += delta;
             xKval += delta;
             xRightEnd += delta;
@@ -349,6 +361,7 @@ namespace Bilten.Report
             String brojTitle = Opcije.Instance.BrojString;
             String imeTitle = Opcije.Instance.ImeString;
             String klubTitle = Opcije.Instance.KlubDrzavaString;
+            penaltyTitle = "Pen.";
             totalTitle = Opcije.Instance.TotalString;
             String kvalTitle = String.Empty;
 
@@ -362,6 +375,7 @@ namespace Bilten.Report
             addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
 
             float[] x = { xParter, xKonj, xKarike, xPreskok, xRazboj, xVratilo };
+            string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
             Sprava[] sprave = Sprave.getSprave(gimnastika);
@@ -380,6 +394,17 @@ namespace Bilten.Report
                 column = addColumn(xKval, kvalWidth, kvalFormat, kvalTitle);
                 column.DrawHeaderRect = false;
                 column.DrawItemRect = false;
+            }
+            if (penalty)
+            {
+                column = addColumn(xPenalty, penaltyWidth, fmtPen, totalFormat, penaltyTitle, totalHeaderFormat);
+                if (!kvalColumn)
+                {
+                    // Posto se kvalifikacioni status uvek dodaje u report items, cak i ako ne postoji kolona za
+                    // kval. status, moram da azuriram report item index za penalty ako nije dodata kolona za
+                    // kvalifikacioni status.
+                    column.itemsIndex += 1;
+                }
             }
         }
 
@@ -434,6 +459,7 @@ namespace Bilten.Report
             ReportGrupa gr = groups[groupId];
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
+            int totalIndex = gimnastika == Gimnastika.ZSG ? 6 : 8;
             foreach (ReportColumn col in Columns)
             {
                 RectangleF columnFooterRect = new RectangleF(
@@ -448,32 +474,31 @@ namespace Bilten.Report
                     g.DrawString(text, itemFont, blackBrush,
                         columnFooterRect, Izvestaj.centerCenterFormat);
                 }
+                else if (col.HeaderTitle == penaltyTitle)
+                {
+                    g.FillRectangle(totalBrush, columnFooterRect.X, columnFooterRect.Y,
+                    columnFooterRect.Width, columnFooterRect.Height);
+                    g.DrawRectangle(pen, columnFooterRect.X, columnFooterRect.Y,
+                        columnFooterRect.Width, columnFooterRect.Height);
+
+                    string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
+                    string penalty = getFormattedString(gr.Data, totalIndex + 2, fmtPen);
+                    if (penalty != String.Empty)
+                    {
+                        g.DrawString(penalty, itemFont, blackBrush,
+                            columnFooterRect, Izvestaj.centerCenterFormat);
+                    }
+                }
                 else if (col.HeaderTitle == totalTitle)
                 {
                     g.FillRectangle(totalBrush, columnFooterRect.X, columnFooterRect.Y,
                         columnFooterRect.Width, columnFooterRect.Height);
                     g.DrawRectangle(pen, columnFooterRect.X, columnFooterRect.Y,
                         columnFooterRect.Width, columnFooterRect.Height);
-                    
-                    int totalIndex = 8;
-                    if (gimnastika == Gimnastika.ZSG)
-                        totalIndex = 6;
+
                     string text = getFormattedString(gr.Data, totalIndex, fmtTot);
                     g.DrawString(text, itemFont, blackBrush,
                         columnFooterRect, Izvestaj.centerCenterFormat);
-
-                    string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
-                    string penalty = getFormattedString(gr.Data, totalIndex + 2, fmtPen);
-                    if (penalty != String.Empty)
-                    {
-                        StringFormat format = new StringFormat();
-                        format.Alignment = StringAlignment.Near;
-                        format.LineAlignment = StringAlignment.Center;
-                        RectangleF penaltyRect = columnFooterRect;
-                        penaltyRect.Offset(columnFooterRect.Width, 0);
-                        g.DrawString("Pen. " + penalty, itemFont, blackBrush,
-                            penaltyRect, format);
-                    }
                 }
             }
         }

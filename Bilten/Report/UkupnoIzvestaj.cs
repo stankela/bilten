@@ -33,8 +33,8 @@ namespace Bilten.Report
 		}
 
         // Ekipni izvestaj bez clanova ekipe
-        public UkupnoIzvestaj(List<RezultatEkipno> rezultati, Gimnastika gim, bool kvalColumn, DataGridView formGrid,
-            string documentName, Takmicenje takmicenje, Font itemFont)
+        public UkupnoIzvestaj(List<RezultatEkipno> rezultati, Gimnastika gim, bool kvalColumn, bool penalty,
+            DataGridView formGrid, string documentName, Takmicenje takmicenje, Font itemFont)
             : base(takmicenje)
         {
             DocumentName = documentName;
@@ -43,7 +43,7 @@ namespace Bilten.Report
             Landscape = false;
             Margins = new Margins(75, 75, 75, 75);
 
-            lista = new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, gim, kvalColumn, formGrid);
+            lista = new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, gim, kvalColumn, penalty, formGrid);
         }
 
         protected override void doSetupContent(Graphics g)
@@ -94,12 +94,12 @@ namespace Bilten.Report
         // Za stampanje ekipnih rezultata bez clanova ekipe
         public UkupnoLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatEkipno> rezultati,
-            Gimnastika gim, bool kvalColumn, DataGridView formGrid)
+            Gimnastika gim, bool kvalColumn, bool penalty, DataGridView formGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.extended = false;
             this.kvalColumn = kvalColumn;
-            this.penalty = false;
+            this.penalty = penalty;
             this.gimnastika = gim;
             this.penalizacijaZaSprave = false;
             this.stampajBroj = false;

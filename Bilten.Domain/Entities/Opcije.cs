@@ -415,8 +415,6 @@ namespace Bilten.Domain
             set { _jezik = value; }
         }
 
-        // TODO5: Dodaj i za hedere ("Viseboj" ili "All around" itd)
-
         private string redBrojString = "RB";  // "No."
         public virtual string RedBrojString
         {

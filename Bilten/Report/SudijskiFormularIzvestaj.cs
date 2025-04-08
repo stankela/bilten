@@ -61,6 +61,9 @@ namespace Bilten.Report
             float startYOstaleStrane = contentBounds.Y;
 
             // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
+            // TODO5: Trebalo bi da za svaku listu posebno izracunavam sirinu za ime, klub i kategoriju. Time sprecavam
+            // situaciju sa gimnazijade 2025 gde je bio jedan Brazilac sa jako velikim imenom, i to je uticalo i na start
+            // liste u spravama gde su imena bila kraca.
             float maxImeWidth = 0.0f;
             float maxKlubWidth = 0.0f;
             float maxKategorijaWidth = 0.0f;
@@ -447,19 +450,12 @@ namespace Bilten.Report
                   skokTitle, skokHeaderFormat, true);
             }
 
-            // TODO5: Ovo nije potrebno jer se ne stampaju nikakve ocene vec samo prazan formular
-            string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
-            string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
-            string fmtBon = "F" + Opcije.Instance.BrojDecimalaBon;
-            string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
-            string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
-
             ReportColumn column1;
             if (sprava == Sprava.Preskok)
-                column1 = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSprava, ocenaWidth, fmtD, spravaFormat,
+                column1 = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSprava, ocenaWidth, "", spravaFormat,
                     "D", spravaHeaderFormat, true);
             else
-                column1 = addColumn(xSprava, ocenaWidth, fmtD, spravaFormat, "D", spravaHeaderFormat);
+                column1 = addColumn(xSprava, ocenaWidth, "", spravaFormat, "D", spravaHeaderFormat);
             column1.Image = SlikeSprava.getImage(sprava);
             column1.Split = true;
             column1.Span = true;
@@ -473,11 +469,11 @@ namespace Bilten.Report
                         ReportColumn prevColumn = column;
                         if (i == 0)
                             prevColumn = column1;
-                        column = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, xEn[i], ocenaWidth, fmtE, 
+                        column = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, xEn[i], ocenaWidth, "", 
                             spravaFormat, "E" + (i + 1).ToString(), spravaHeaderFormat, true);
                     }
                     else
-                        column = addColumn(xEn[i], ocenaWidth, fmtE, spravaFormat, "E" + (i + 1).ToString(),
+                        column = addColumn(xEn[i], ocenaWidth, "", spravaFormat, "E" + (i + 1).ToString(),
                             spravaHeaderFormat);
                     column.Image = SlikeSprava.getImage(sprava);
                     column.Split = true;
@@ -488,37 +484,37 @@ namespace Bilten.Report
             if (brojEOcena == 0)
                 prevColumn2 = column1;
             if (sprava == Sprava.Preskok)
-                column = addDvaPreskokaColumn(prevColumn2.getItemsIndexEnd(), 2, xE, ocenaWidth, fmtE, spravaFormat, 
+                column = addDvaPreskokaColumn(prevColumn2.getItemsIndexEnd(), 2, xE, ocenaWidth, "", spravaFormat, 
                     "E", spravaHeaderFormat, true);
             else
-                column = addColumn(xE, ocenaWidth, fmtE, spravaFormat, "E", spravaHeaderFormat);
+                column = addColumn(xE, ocenaWidth, "", spravaFormat, "E", spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 
             if (stampajBonus)
             {
                 if (sprava == Sprava.Preskok)
-                    column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xBonus, ocenaWidth, fmtBon, spravaFormat,
+                    column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xBonus, ocenaWidth, "", spravaFormat,
                         "Bonus", spravaHeaderFormat, true);
                 else
-                    column = addColumn(xBonus, ocenaWidth, fmtBon, spravaFormat, "Bonus", spravaHeaderFormat);
+                    column = addColumn(xBonus, ocenaWidth, "", spravaFormat, "Bonus", spravaHeaderFormat);
                 column.Image = SlikeSprava.getImage(sprava);
                 column.Split = true;
             }
 
             if (sprava == Sprava.Preskok)
-                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xPen, ocenaWidth, fmtPen, spravaFormat,
+                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xPen, ocenaWidth, "", spravaFormat,
                     "Pen.", spravaHeaderFormat, true);
             else
-                column = addColumn(xPen, ocenaWidth, fmtPen, spravaFormat, "Pen.", spravaHeaderFormat);
+                column = addColumn(xPen, ocenaWidth, "", spravaFormat, "Pen.", spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 
             if (sprava == Sprava.Preskok)
-                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, ocenaWidth, fmtTot, spravaFormat, 
+                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, ocenaWidth, "", spravaFormat, 
                     Opcije.Instance.TotalString, spravaHeaderFormat, true);
             else
-                column = addColumn(xTot, ocenaWidth, fmtTot, spravaFormat, Opcije.Instance.TotalString, spravaHeaderFormat);
+                column = addColumn(xTot, ocenaWidth, "", spravaFormat, Opcije.Instance.TotalString, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 
@@ -527,7 +523,7 @@ namespace Bilten.Report
 
             if (sprava == Sprava.Preskok)
             {
-                column = addColumn(column.getItemsIndexEnd(), xTotal, ocenaWidth, fmtTot, totalFormat,
+                column = addColumn(column.getItemsIndexEnd(), xTotal, ocenaWidth, "", totalFormat,
                     totalTitle, totalHeaderFormat);
             }
         }

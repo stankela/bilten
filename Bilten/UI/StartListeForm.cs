@@ -977,10 +977,8 @@ namespace Bilten.UI
             // TODO5: Proveri zaokruzivanje E ocene, i kako da ga program pravilno obradjuje
             // TODO5: Kod stampanja kvalifikanata, pored Score treba ponuditi mogucnost da se stampaju i ostale ocene (D,
             //        E, Bonus, Pen)
-            // TODO5: Dodaj stampanje kvalifikanata iz takmicenja 3, kada se napravi konacna lista kvalifikanata i rezervi.
             // TODO5: Dodaj bonus u grid za rezultate sprave
             // TODO5: Dodaj bonus i u ostalim izvestajima (finale kupa i slicno)
-            // TODO5: Penalizacija za ekipe se ne pojavljuje na izvestaju
             // TODO5: Dodaj OCR za ocitavanje ocena sa sudijskih formulara (npr pogledaj Googlov Tesseract OCR)
 
             string kategorijaRotacija = ActiveRaspored.Naziv;
