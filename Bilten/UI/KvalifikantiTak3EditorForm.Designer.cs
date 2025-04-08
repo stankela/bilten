@@ -125,6 +125,7 @@ namespace Bilten.UI
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "KvalifikantiTak3EditorForm";
+            this.Shown += new System.EventHandler(this.KvalifikantiTak3EditorForm_Shown);
             this.ResumeLayout(false);
 
         }

@@ -87,6 +87,49 @@ namespace Bilten.Report
             }
         }
 
+        public KvalifikantiTak3Izvestaj(IList<UcesnikTakmicenja3> kvalifikanti, IList<UcesnikTakmicenja3> rezerve,
+        Sprava sprava, string documentName, DataGridView formGrid, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
+        {
+            DocumentName = documentName;
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
+            svakaSpravaNaPosebnojStrani = true;
+            dveKolone = false;
+
+            reportListe.Add(new KvalifikantiTak3Lista(this, 1, 0f, itemFont, itemsHeaderFont, kvalifikanti, rezerve,
+                sprava, false, 1, formGrid, takmicenje.TakBrojevi));
+        }
+
+        public KvalifikantiTak3Izvestaj(List<IList<UcesnikTakmicenja3>> kvalifikanti,
+            List<IList<UcesnikTakmicenja3>> rezerve, Gimnastika gim,
+            string documentName, int brojSpravaPoStrani, DataGridView formGrid, Takmicenje takmicenje, Font itemFont)
+            : base(takmicenje)
+        {
+            DocumentName = documentName;
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
+            svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
+            this.dveKolone = brojSpravaPoStrani > 3;
+            if (dveKolone)
+            {
+                Margins = new Margins(50, 50, 25, 25);
+            }
+
+            Sprava[] sprave = Sprave.getSprave(gim);
+            int columnNumber = 1;
+            for (int i = 0; i < sprave.Length; i++)
+            {
+                Sprava sprava = sprave[i];
+                if (dveKolone)
+                {
+                    columnNumber = (i % 2 == 0) ? 1 : 2;
+                }
+                KvalifikantiTak3Lista lista = new KvalifikantiTak3Lista(this, 1/*FirstPageNum*/, 0f, itemFont,
+                    itemsHeaderFont, kvalifikanti[i], rezerve[i], sprava, dveKolone, columnNumber, formGrid,
+                    takmicenje.TakBrojevi);
+                reportListe.Add(lista);
+            }
+        }
+
         // TODO5: Metodi doSetupContent i doSetupContentDveKolone su skoro identicni u nekoliko izvestaja (
         // RasporedSudijaIzvestaj, SpravaIzvestaj, StartListaIzvestaj, KvalifikantiTak3Izvestaj). Probaj da generalizujes.
 
@@ -303,6 +346,20 @@ namespace Bilten.Report
             fetchItems(rezultati, obaPreskoka);
         }
 
+        public KvalifikantiTak3Lista(Izvestaj izvestaj, int pageNum, float y,
+            Font itemFont, Font itemsHeaderFont, IList<UcesnikTakmicenja3> kvalifikanti, IList<UcesnikTakmicenja3> rezerve,
+            Sprava sprava, bool dveKolone, int columnNumber, DataGridView formGrid, bool stampajBroj)
+            : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
+        {
+            this.sprava = sprava;
+            this.dveKolone = dveKolone;
+            this.columnNumber = columnNumber;
+            this.praznaLista = kvalifikanti.Count == 0 && rezerve.Count == 0;
+            this.stampajBroj = stampajBroj;
+
+            fetchItems(kvalifikanti, rezerve);
+        }
+
         private void fetchItems(List<RezultatSprava> rezultati)
         {
             items = getStartListaReportItems(rezultati);
@@ -314,6 +371,14 @@ namespace Bilten.Report
         private void fetchItems(List<RezultatPreskok> rezultati, bool obaPreskoka)
         {
             items = getStartListaReportItems(rezultati, obaPreskoka);
+
+            groups = new List<ReportGrupa>();
+            groups.Add(new ReportGrupa(0, items.Count));
+        }
+
+        private void fetchItems(IList<UcesnikTakmicenja3> kvalifikanti, IList<UcesnikTakmicenja3> rezerve)
+        {
+            items = getStartListaReportItems(kvalifikanti, rezerve);
 
             groups = new List<ReportGrupa>();
             groups.Add(new ReportGrupa(0, items.Count));
@@ -394,6 +459,53 @@ namespace Bilten.Report
                 }
                 List<object> items = new List<object>() { redBroj, rezultat.Gimnasticar.PrezimeIme,
                     rezultat.Gimnasticar.KlubDrzava, obaPreskoka ? rezultat.TotalObeOcene : rezultat.Total };
+                if (stampajBroj)
+                {
+                    string broj = (rezultat.Gimnasticar.TakmicarskiBroj.HasValue)
+                        ? rezultat.Gimnasticar.TakmicarskiBroj.Value.ToString("D3") : string.Empty;
+                    items.Insert(1, broj);
+                }
+                result.Add(items.ToArray());
+            }
+            if (result.Count == 0)
+            {
+                // hack kojim se obezbedjuje da se stampaju hederi i za liste koje su prazne
+                if (stampajBroj)
+                    result.Add(new object[] { "", "", "", "", "" });
+                else
+                    result.Add(new object[] { "", "", "", "" });
+            }
+            return result;
+        }
+
+        private List<object[]> getStartListaReportItems(IList<UcesnikTakmicenja3> kvalifikanti,
+            IList<UcesnikTakmicenja3> rezerve)
+        {
+            IList<UcesnikTakmicenja3> ucesnici = new List<UcesnikTakmicenja3>();
+            foreach (UcesnikTakmicenja3 u in kvalifikanti)
+                ucesnici.Add(u);
+            foreach (UcesnikTakmicenja3 u in rezerve)
+                ucesnici.Add(u);
+            List<object[]> result = new List<object[]>();
+            int r = 0;
+            for (int i = 0; i < ucesnici.Count; i++)
+            {
+                UcesnikTakmicenja3 rezultat = ucesnici[i];
+                string redBroj = rezultat.QualOrder.ToString();
+                if (rezultat.KvalStatus == KvalifikacioniStatus.R)
+                {
+                    ++r;
+                    if (r == 1)
+                    {
+                        if (stampajBroj)
+                            result.Add(new object[] { "", "", Opcije.Instance.RezerveString, "", "" });
+                        else
+                            result.Add(new object[] { "", Opcije.Instance.RezerveString, "", "" });
+                    }
+                    redBroj = "R" + r.ToString();
+                }
+                List<object> items = new List<object>() { redBroj, rezultat.Gimnasticar.PrezimeIme,
+                    rezultat.Gimnasticar.KlubDrzava, rezultat.QualScore};
                 if (stampajBroj)
                 {
                     string broj = (rezultat.Gimnasticar.TakmicarskiBroj.HasValue)

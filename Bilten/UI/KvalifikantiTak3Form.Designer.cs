@@ -35,6 +35,7 @@ namespace Bilten.UI
             this.btnEdit = new System.Windows.Forms.Button();
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.spravaGridUserControl1 = new Bilten.UI.SpravaGridUserControl();
+            this.btnStampaj = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cmbTakmicenje
@@ -67,7 +68,7 @@ namespace Bilten.UI
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(589, 12);
+            this.btnClose.Location = new System.Drawing.Point(678, 12);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 7;
@@ -77,7 +78,7 @@ namespace Bilten.UI
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(445, 12);
+            this.btnEdit.Location = new System.Drawing.Point(534, 12);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(124, 23);
             this.btnEdit.TabIndex = 8;
@@ -87,8 +88,8 @@ namespace Bilten.UI
             // 
             // dataGridViewUserControl1
             // 
-            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(15, 294);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
@@ -97,19 +98,30 @@ namespace Bilten.UI
             // 
             // spravaGridUserControl1
             // 
-            this.spravaGridUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.spravaGridUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.spravaGridUserControl1.Location = new System.Drawing.Point(12, 54);
             this.spravaGridUserControl1.Name = "spravaGridUserControl1";
             this.spravaGridUserControl1.Size = new System.Drawing.Size(754, 208);
             this.spravaGridUserControl1.TabIndex = 2;
+            // 
+            // btnStampaj
+            // 
+            this.btnStampaj.Location = new System.Drawing.Point(443, 12);
+            this.btnStampaj.Name = "btnStampaj";
+            this.btnStampaj.Size = new System.Drawing.Size(75, 23);
+            this.btnStampaj.TabIndex = 9;
+            this.btnStampaj.Text = "Stampaj";
+            this.btnStampaj.UseVisualStyleBackColor = true;
+            this.btnStampaj.Click += new System.EventHandler(this.btnStampaj_Click);
             // 
             // KvalifikantiTak3Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(790, 433);
+            this.Controls.Add(this.btnStampaj);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.dataGridViewUserControl1);
@@ -135,5 +147,6 @@ namespace Bilten.UI
         private DataGridViewUserControl dataGridViewUserControl1;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnEdit;
+        private System.Windows.Forms.Button btnStampaj;
     }
 }

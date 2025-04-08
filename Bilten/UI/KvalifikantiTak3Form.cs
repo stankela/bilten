@@ -12,6 +12,7 @@ using NHibernate;
 using System.Collections;
 using NHibernate.Context;
 using Bilten.Dao;
+using Bilten.Report;
 
 namespace Bilten.UI
 {
@@ -187,7 +188,9 @@ namespace Bilten.UI
                 rezultatiOpened.Add(rezultatiKey);
             }
 
-            refreshKvalifikantiIRezerve();    
+            refreshKvalifikantiIRezerve();
+            spravaGridUserControl1.DataGridViewUserControl.clearSelection();
+            dataGridViewUserControl1.clearSelection();
         }
 
         private void refreshKvalifikantiIRezerve()
@@ -292,6 +295,9 @@ namespace Bilten.UI
                 (CurrencyManager)this.BindingContext[cmbTakmicenje.DataSource];
             currencyManager.Refresh();
             refreshKvalifikantiIRezerve();
+
+            spravaGridUserControl1.DataGridViewUserControl.clearSelection();
+            dataGridViewUserControl1.clearSelection();
         }
 
         private RezultatskoTakmicenje loadRezTakmicenje(int rezTakmicenjeId)
@@ -308,6 +314,88 @@ namespace Bilten.UI
                 NHibernateUtil.Initialize(result.Takmicenje3.PoredakPreskok.Rezultati);
             }
             return result;
+        }
+
+        // TODO5: Fali dugme "Promeni rezerve"
+
+        private void btnStampaj_Click(object sender, EventArgs e)
+        {
+            string nazivIzvestaja = Opcije.Instance.SpraveFinalisti;
+
+            HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje3, false, true, false, false, false, false, false, false,
+                                                         false, false, false);
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
+                form.FooterText = mestoDatum;
+                if (takmicenje.Gimnastika == Gimnastika.ZSG)
+                    form.BrojSpravaPoStrani = 4;
+                else
+                    form.BrojSpravaPoStrani = 6;
+            }
+            else
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = ActiveTakmicenje.Kategorija.Naziv;
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            FormUtil.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                PreviewDialog p = new PreviewDialog();
+
+                string documentName = gym + " - " + nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
+                bool obaPresk = ActiveTakmicenje.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
+
+                if (form.StampajSveSprave)
+                {
+                    List<IList<UcesnikTakmicenja3>> kvalifikanti = new List<IList<UcesnikTakmicenja3>>();
+                    List<IList<UcesnikTakmicenja3>> rezerve = new List<IList<UcesnikTakmicenja3>>();
+                    foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
+                    {
+                        kvalifikanti.Add(ActiveTakmicenje.Takmicenje3.getUcesniciKvalifikanti(s));
+                        rezerve.Add(ActiveTakmicenje.Takmicenje3.getUcesniciRezerve(s));
+                    }
+                    p.setIzvestaj(new KvalifikantiTak3Izvestaj(kvalifikanti, rezerve,
+                        takmicenje.Gimnastika, documentName, form.BrojSpravaPoStrani,
+                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize)));
+                }
+                else
+                {
+                    IList<UcesnikTakmicenja3> kvalifikanti = ActiveTakmicenje.Takmicenje3.getUcesniciKvalifikanti(ActiveSprava);
+                    IList<UcesnikTakmicenja3> rezerve = ActiveTakmicenje.Takmicenje3.getUcesniciRezerve(ActiveSprava);
+                    p.setIzvestaj(new KvalifikantiTak3Izvestaj(kvalifikanti, rezerve, ActiveSprava, documentName,
+                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize)));
+                }
+                p.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
         }
     }
 }

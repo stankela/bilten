@@ -313,5 +313,10 @@ namespace Bilten.UI
             }
             return false;
         }
+
+        private void KvalifikantiTak3EditorForm_Shown(object sender, EventArgs e)
+        {
+            spravaGridUserControl1.clearSelection();
+        }
     }
 }
