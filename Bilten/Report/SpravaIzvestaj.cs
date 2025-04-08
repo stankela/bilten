@@ -11,7 +11,6 @@ namespace Bilten.Report
     {
         private List<SpravaLista> reportListe = new List<SpravaLista>();
         private bool svakaSpravaNaPosebnojStrani;
-        private bool dveKolone;
 
         public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati,
             bool kvalColumn, string documentName, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
@@ -21,9 +20,8 @@ namespace Bilten.Report
             DocumentName = documentName;
             Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
-            dveKolone = false;
 
-            reportListe.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, false, 1,
+            reportListe.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
                 kvalColumn, sprava, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena, takmicenje.TakBrojevi,
                 prikaziBonus));
 		}
@@ -36,9 +34,8 @@ namespace Bilten.Report
             DocumentName = documentName;
             Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = true;
-            dveKolone = false;
 
-            reportListe.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, false, 1,
+            reportListe.Add(new SpravaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
                 kvalColumn, obaPreskoka, prikaziPenal, formGrid, markFirstRows, numRowsToMark, brojEOcena,
                 takmicenje.TakBrojevi, prikaziBonus));
         }
@@ -53,23 +50,11 @@ namespace Bilten.Report
             DocumentName = documentName;
             Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
-            this.dveKolone = brojSpravaPoStrani > 3;
-            if (dveKolone)
-            {
-                // Dve kolone nemaju smisla za rezultate po spravama
-                dveKolone = false;
-                //Margins = new Margins(50, 50, 100, 100);
-            }
 
             Sprava[] sprave = Sprave.getSprave(gim);
-            int columnNumber = 1;
             for (int i = 0; i < sprave.Length; i++)
             {
                 Sprava sprava = sprave[i];
-                if (dveKolone)
-                {
-                    columnNumber = (i % 2 == 0) ? 1 : 2;
-                }
                 SpravaLista lista;
                 if (sprava != Sprava.Preskok)
                 {
@@ -78,13 +63,13 @@ namespace Bilten.Report
                         spravaIndex--;
 
                     lista = new SpravaLista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont,
-                        rezultatiSprave[spravaIndex], dveKolone, columnNumber, kvalColumn, sprava, prikaziPenal, formGrid,
+                        rezultatiSprave[spravaIndex], kvalColumn, sprava, prikaziPenal, formGrid,
                         markFirstRows, numRowsToMark, brojEOcena, takmicenje.TakBrojevi, prikaziBonus);
                 }
                 else
                 {
                     lista = new SpravaLista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont,
-                        rezultatiPreskok, dveKolone, columnNumber, kvalColumn, obaPreskoka, prikaziPenal, formGrid,
+                        rezultatiPreskok, kvalColumn, obaPreskoka, prikaziPenal, formGrid,
                         markFirstRows, numRowsToMark, brojEOcena, takmicenje.TakBrojevi, prikaziBonus);
                 }
                 reportListe.Add(lista);
@@ -204,11 +189,9 @@ namespace Bilten.Report
         private int brojEOcena;
         private bool stampajBroj;
         private bool prikaziBonus;
-        private bool dveKolone;
-        private int columnNumber;
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
-            Font itemFont, Font itemsHeaderFont, IList<RezultatSprava> rezultati, bool dveKolone, int columnNumber,
+            Font itemFont, Font itemsHeaderFont, IList<RezultatSprava> rezultati,
             bool kvalColumn, Sprava sprava, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
             int numRowsToMark, int brojEOcena, bool stampajBroj, bool prikaziBonus)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
@@ -221,8 +204,6 @@ namespace Bilten.Report
             this.brojEOcena = brojEOcena;
             this.stampajBroj = stampajBroj;
             this.prikaziBonus = prikaziBonus;
-            this.dveKolone = dveKolone;
-            this.columnNumber = columnNumber;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -231,7 +212,7 @@ namespace Bilten.Report
         }
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
-            Font itemFont, Font itemsHeaderFont, IList<RezultatPreskok> rezultati, bool dveKolone, int columnNumber,
+            Font itemFont, Font itemsHeaderFont, IList<RezultatPreskok> rezultati,
             bool kvalColumn, bool obaPreskoka, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
             int numRowsToMark, int brojEOcena, bool stampajBroj, bool prikaziBonus)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
@@ -245,8 +226,6 @@ namespace Bilten.Report
             this.brojEOcena = brojEOcena;
             this.stampajBroj = stampajBroj;
             this.prikaziBonus = prikaziBonus;
-            this.dveKolone = dveKolone;
-            this.columnNumber = columnNumber;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -383,8 +362,6 @@ namespace Bilten.Report
                 contentBounds);
         }
 
-        // TODO5: Kada zavrsis StartListaIzvestaj i KvalifikantiTak3Izvestaj, izbrisi ovaj method, izbrisi svojstva
-        // dveKolone i columnNumber, i nemoj dva puta da radis setupContent
         public void setupContent(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
         {
             setupContent(g, contentBounds);

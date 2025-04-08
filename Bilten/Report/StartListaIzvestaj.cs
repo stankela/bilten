@@ -73,6 +73,8 @@ namespace Bilten.Report
             }
         
             // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
+            // TODO5: Maksimumi se odredjuju prema sirini kolona u gridovima za sprave. Odredjuj ih prema sirini teksta
+            // koji se stampa (u svim izvestajima).
             float maxImeWidth = 0.0f;
             float maxKlubWidth = 0.0f;
             float maxKategorijaWidth = 0.0f;
