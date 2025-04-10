@@ -551,6 +551,8 @@ namespace Bilten.Domain
                 {
                     Pair<RezultatskoTakmicenje, RezultatUkupno> rez = new Pair<RezultatskoTakmicenje, RezultatUkupno>(rt, r);
                     if (result.ContainsKey(r.Gimnasticar.Id))
+                        // TODO: Deluje da je ova grana nepotrebna jer svaki gimnasticar ima samo jedan RezultatUkupno,
+                        // bez obzira na to u koliko takmicenja ucestvuje.
                         result[r.Gimnasticar.Id].Add(rez);
                     else
                     {

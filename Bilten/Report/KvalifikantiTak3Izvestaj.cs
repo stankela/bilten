@@ -283,7 +283,6 @@ namespace Bilten.Report
                             // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
                             // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
 
-                            // TODO5: Hendluj izlomljenu listu za slucaj dve kolone
                             throw new SmallPageSizeException();
                             //++j;
                         }

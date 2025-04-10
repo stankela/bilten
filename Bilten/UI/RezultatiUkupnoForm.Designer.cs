@@ -44,6 +44,7 @@ namespace Bilten.UI
             this.dataGridViewUserControl1 = new Bilten.UI.DataGridViewUserControl();
             this.btnStampajKvalifikante = new System.Windows.Forms.Button();
             this.btnStampajSaOgranicenjem = new System.Windows.Forms.Button();
+            this.btnStampajPoKlubovimaIKategorijama = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,7 +59,7 @@ namespace Bilten.UI
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(388, 10);
+            this.btnPrint.Location = new System.Drawing.Point(381, 10);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(75, 23);
             this.btnPrint.TabIndex = 2;
@@ -68,7 +69,7 @@ namespace Bilten.UI
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(998, 10);
+            this.btnClose.Location = new System.Drawing.Point(1170, 10);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -140,7 +141,7 @@ namespace Bilten.UI
             // 
             // btnIzracunaj
             // 
-            this.btnIzracunaj.Location = new System.Drawing.Point(480, 10);
+            this.btnIzracunaj.Location = new System.Drawing.Point(687, 10);
             this.btnIzracunaj.Name = "btnIzracunaj";
             this.btnIzracunaj.Size = new System.Drawing.Size(75, 23);
             this.btnIzracunaj.TabIndex = 4;
@@ -156,14 +157,14 @@ namespace Bilten.UI
             this.dataGridViewUserControl1.ColumnHeaderSorting = true;
             this.dataGridViewUserControl1.Location = new System.Drawing.Point(12, 58);
             this.dataGridViewUserControl1.Name = "dataGridViewUserControl1";
-            this.dataGridViewUserControl1.Size = new System.Drawing.Size(1168, 287);
+            this.dataGridViewUserControl1.Size = new System.Drawing.Size(1235, 287);
             this.dataGridViewUserControl1.TabIndex = 0;
             // 
             // btnStampajKvalifikante
             // 
-            this.btnStampajKvalifikante.Location = new System.Drawing.Point(571, 10);
+            this.btnStampajKvalifikante.Location = new System.Drawing.Point(775, 10);
             this.btnStampajKvalifikante.Name = "btnStampajKvalifikante";
-            this.btnStampajKvalifikante.Size = new System.Drawing.Size(132, 23);
+            this.btnStampajKvalifikante.Size = new System.Drawing.Size(115, 23);
             this.btnStampajKvalifikante.TabIndex = 5;
             this.btnStampajKvalifikante.Text = "Stampaj kvalifikante";
             this.btnStampajKvalifikante.UseVisualStyleBackColor = true;
@@ -171,7 +172,7 @@ namespace Bilten.UI
             // 
             // btnStampajSaOgranicenjem
             // 
-            this.btnStampajSaOgranicenjem.Location = new System.Drawing.Point(718, 10);
+            this.btnStampajSaOgranicenjem.Location = new System.Drawing.Point(899, 10);
             this.btnStampajSaOgranicenjem.Name = "btnStampajSaOgranicenjem";
             this.btnStampajSaOgranicenjem.Size = new System.Drawing.Size(265, 23);
             this.btnStampajSaOgranicenjem.TabIndex = 6;
@@ -179,11 +180,22 @@ namespace Bilten.UI
             this.btnStampajSaOgranicenjem.UseVisualStyleBackColor = true;
             this.btnStampajSaOgranicenjem.Click += new System.EventHandler(this.btnStampajSaOgranicenjem_Click);
             // 
+            // btnStampajPoKlubovimaIKategorijama
+            // 
+            this.btnStampajPoKlubovimaIKategorijama.Location = new System.Drawing.Point(471, 10);
+            this.btnStampajPoKlubovimaIKategorijama.Name = "btnStampajPoKlubovimaIKategorijama";
+            this.btnStampajPoKlubovimaIKategorijama.Size = new System.Drawing.Size(203, 23);
+            this.btnStampajPoKlubovimaIKategorijama.TabIndex = 7;
+            this.btnStampajPoKlubovimaIKategorijama.Text = "Stampaj po klubovima i kategorijama";
+            this.btnStampajPoKlubovimaIKategorijama.UseVisualStyleBackColor = true;
+            this.btnStampajPoKlubovimaIKategorijama.Click += new System.EventHandler(this.btnStampajPoKlubovimaIKategorijama_Click);
+            // 
             // RezultatiUkupnoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1192, 357);
+            this.ClientSize = new System.Drawing.Size(1259, 357);
+            this.Controls.Add(this.btnStampajPoKlubovimaIKategorijama);
             this.Controls.Add(this.btnStampajSaOgranicenjem);
             this.Controls.Add(this.btnStampajKvalifikante);
             this.Controls.Add(this.btnPrint);
@@ -217,5 +229,6 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem mnPenalizacija;
         private System.Windows.Forms.Button btnStampajKvalifikante;
         private System.Windows.Forms.Button btnStampajSaOgranicenjem;
+        private System.Windows.Forms.Button btnStampajPoKlubovimaIKategorijama;
     }
 }

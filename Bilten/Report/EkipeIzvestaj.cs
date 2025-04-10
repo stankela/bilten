@@ -131,6 +131,7 @@ namespace Bilten.Report
         private String totalTitle;
         private String penaltyTitle;
         private bool stampajBroj;
+        private float kvalWidth;
 
         private float delta;
 
@@ -169,23 +170,22 @@ namespace Bilten.Report
                 RezultatEkipno rez = rezultatiEkipno[i];
                 int count = rez.Ekipa.Gimnasticari.Count;
 
-                object[] data;
+                List<object> data;
                 if (gim == Gimnastika.MSG)
                 {
-                    data = new object[] { rez.Rank, rez.Ekipa.Naziv, rez.Parter,
+                    data = new List<object>() { rez.Rank, rez.Ekipa.Naziv, rez.Parter,
                         rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, rez.Vratilo, 
                         rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus), rez.Penalty };
                 }
                 else
                 {
-                    data = new object[] { rez.Rank, rez.Ekipa.Naziv, rez.Preskok,
+                    data = new List<object>() { rez.Rank, rez.Ekipa.Naziv, rez.Preskok,
                         rez.DvovisinskiRazboj, rez.Greda, rez.Parter, rez.Total,
                         KvalifikacioniStatusi.toString(rez.KvalStatus), rez.Penalty };
                 }
-                groups.Add(new ReportGrupa(data, start, count));
+                groups.Add(new ReportGrupa(data.ToArray(), start, count));
                 start += count;
             }
-            
         }
 
         private List<object[]> getEkipeReportItems(List<RezultatEkipno> rezultatiEkipe,
@@ -205,18 +205,25 @@ namespace Bilten.Report
                 string ekipaNaziv = rezEkipa != null ? rezEkipa.Ekipa.Naziv : rez.KlubDrzava;
 
                 List<object> items;
-                // Dva prazna itema na kraju su za kval status i penalizaciju. Ekipna penalizacija se nikad ne prikazuje
-                // pored gimnasticara vec u futeru pored ekipe. Ispisivanje kval statusa trenutno nije implemetirano,
-                // ali kada bi bilo implementirano, i on se ne bi prikazivao pored gimnasticara vec u hederu ili futeru.
                 if (gim == Gimnastika.MSG)
                 {
-                    items = new List<object>() { rez.PrezimeIme, /*rez.KlubDrzava*/ekipaNaziv,
-                            rez.Parter, rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, rez.Vratilo, rez.Total, "", "" };
+                    items = new List<object>() { rez.PrezimeIme, ekipaNaziv,
+                            rez.Parter, rez.Konj, rez.Karike, rez.Preskok, rez.Razboj, rez.Vratilo, rez.Total };
+                    if (penalty)
+                    {
+                        // Penalizacija se prikazuje u futeru ekipe, ali postoji kolona koja je prazna za clanove ekipe.
+                        items.Insert(8, "");
+                    }
+                    // Kval status se ispisuje u hederu ekipe, i ne postoji kolona.
                 }
                 else
                 {
-                    items = new List<object>() { rez.PrezimeIme, /*rez.KlubDrzava*/ekipaNaziv,
-                            rez.Preskok, rez.DvovisinskiRazboj, rez.Greda, rez.Parter, rez.Total, "", "" };
+                    items = new List<object>() { rez.PrezimeIme, ekipaNaziv,
+                            rez.Preskok, rez.DvovisinskiRazboj, rez.Greda, rez.Parter, rez.Total };
+                    if (penalty)
+                    {
+                        items.Insert(6, "");
+                    }
                 }
                 if (stampajBroj)
                 {
@@ -287,7 +294,7 @@ namespace Bilten.Report
             float spravaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float penaltyWidth = spravaWidth * (2.0f / 3);
             float totalWidth = spravaWidth;
-            float kvalWidth = spravaWidth / 3;
+            kvalWidth = spravaWidth / 3;
 
             float xBroj = 0f;
             float xIme;
@@ -363,7 +370,6 @@ namespace Bilten.Report
             String klubTitle = Opcije.Instance.KlubDrzavaString;
             penaltyTitle = "Pen.";
             totalTitle = Opcije.Instance.TotalString;
-            String kvalTitle = String.Empty;
 
             Columns.Clear();
 
@@ -386,26 +392,12 @@ namespace Bilten.Report
                 column.Image = SlikeSprava.getImage(sprave[i]);
                 column.Sprava = sprave[i];
             }
-
-            column = addColumn(xTotal, totalWidth, fmtTot, totalFormat, totalTitle, totalHeaderFormat);
-
-            if (kvalColumn)
-            {
-                column = addColumn(xKval, kvalWidth, kvalFormat, kvalTitle);
-                column.DrawHeaderRect = false;
-                column.DrawItemRect = false;
-            }
             if (penalty)
             {
-                column = addColumn(xPenalty, penaltyWidth, fmtPen, totalFormat, penaltyTitle, totalHeaderFormat);
-                if (!kvalColumn)
-                {
-                    // Posto se kvalifikacioni status uvek dodaje u report items, cak i ako ne postoji kolona za
-                    // kval. status, moram da azuriram report item index za penalty ako nije dodata kolona za
-                    // kvalifikacioni status.
-                    column.itemsIndex += 1;
-                }
+                // Prazna kolona. Penalizacija se prikazuje u futeru.
+                addColumn(xPenalty, penaltyWidth, fmtPen, totalFormat, penaltyTitle, totalHeaderFormat);
             }
+            addColumn(xTotal, totalWidth, fmtTot, totalFormat, totalTitle, totalHeaderFormat);
         }
 
         protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
@@ -417,11 +409,8 @@ namespace Bilten.Report
             ReportGrupa gr = groups[groupId];
             Nullable<short> rank = (Nullable<short>)gr.Data[0];
             string naziv = (string)gr.Data[1];
-            Nullable<float> total;
-            if (gimnastika == Gimnastika.MSG)
-                total = (Nullable<float>)gr.Data[8];
-            else
-                total = (Nullable<float>)gr.Data[6];
+            int totalIndex = gimnastika == Gimnastika.ZSG ? 6 : 8;
+            Nullable<float> total = (Nullable<float>)gr.Data[totalIndex];
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
             string text = rank.ToString() + 
                 (rank != null ? ".  " : "") +
@@ -450,6 +439,14 @@ namespace Bilten.Report
                 {
                     g.DrawString(col.HeaderTitle, itemsHeaderFont, blackBrush,
                         columnHeaderRect, col.HeaderFormat);
+                }
+                if (kvalColumn && col.HeaderTitle == totalTitle)
+                {
+                    // Prikazi kval status desno od Total kolone
+                    RectangleF kvalRect = new RectangleF(columnHeaderRect.Right, columnHeaderRect.Y,
+                        kvalWidth, columnHeaderRect.Height);
+                    g.DrawString((string)gr.Data[totalIndex + 1], itemFont, blackBrush, kvalRect,
+                        Izvestaj.centerCenterFormat);
                 }
             }
         }

@@ -20,6 +20,7 @@ namespace Bilten.UI
     public partial class RezultatiUkupnoForm : Form
     {
         private IList<RezultatskoTakmicenje> rezTakmicenja;
+        private IList<RezultatskoTakmicenje> svaRezTakmicenja;
         private DeoTakmicenjaKod deoTakKod;
         private Takmicenje takmicenje;
         private bool forViewingOnly;
@@ -52,7 +53,7 @@ namespace Bilten.UI
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenjeId);
                     NHibernateUtil.Initialize(takmicenje);
 
-                    IList<RezultatskoTakmicenje> svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
+                    svaRezTakmicenja = loadRezTakmicenja(takmicenjeId);
                     if (svaRezTakmicenja.Count == 0)
                         throw new BusinessException(Strings.NO_KATEGORIJE_I_TAKMICENJA_ERROR_MSG);
 
@@ -245,6 +246,8 @@ namespace Bilten.UI
         {
             stampaj(null, null);
         }
+
+        // TODO5: Treba pitati da li da se stampa bonus, zato sto kod zena nema bonusa
 
         private void stampaj(PoredakUkupno p, string nazivIzvestaja)
         {
@@ -814,6 +817,104 @@ namespace Bilten.UI
 
             string nazivIzvestaja = "Finale vi" + Jezik.shMalo + "eboja";
             stampaj(p, nazivIzvestaja);
+        }
+
+        private void btnStampajPoKlubovimaIKategorijama_Click(object sender, EventArgs e)
+        {
+            List<RezultatUkupno> rezultati = new List<RezultatUkupno>();
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            ISession session = null;
+            try
+            {
+                using (session = NHibernateHelper.Instance.OpenSession())
+                using (session.BeginTransaction())
+                {
+                    CurrentSessionContext.Bind(session);
+                    RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO =
+                        DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
+
+                    // TODO5: Heder sa spravama prikazuj samo za prvu listu na strani
+                    // TODO5: Stampaj ceo bilten sa jednim klikom
+                    // TODO5: Preuredi sve izvestaje tako da se sirine kolona izracunavaju na osnovu teksta, a ne
+                    //        na osnovu grida (to ce biti potrebno za stampanje celog biltena sa jednim klikom)
+                    // TODO5: Kada se prvi put odstampa, ne prikazuju se heder i futer. Nakon sto se odstampa bilo koji
+                    //        drugi izvestaj, stampaju se i heder i futer.
+                    // TODO5: Ovo dugme treba da je omoguceno samo za Takmicenje1
+                    // TODO5: Stampaj kategoriju kod stampanja ekipnih rezultata kada postoji jedno ekipno takmicenje za sve 
+                    //        kategorije (ili dodaj opciju da moze da se izabere da li da se stampa).
+
+                    IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
+                    foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
+                    {
+                        rezultatskoTakmicenjeDAO.Attach(rt, false);
+                        foreach (RezultatUkupno r in rt.getPoredakUkupno(DeoTakmicenjaKod.Takmicenje1).Rezultati)
+                        {
+                            if (!rezultatiMap.ContainsKey(r.Gimnasticar.Id))
+                                rezultatiMap.Add(r.Gimnasticar.Id, r);
+                        }
+                    }
+                    foreach (RezultatUkupno r in rezultatiMap.Values)
+                    {
+                        rezultati.Add(r);
+                    }
+                    PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
+                            TypeDescriptor.GetProperties(typeof(RezultatUkupno))["KlubDrzava"],
+                            TypeDescriptor.GetProperties(typeof(RezultatUkupno))["KategorijaRedBroj"],
+                            TypeDescriptor.GetProperties(typeof(RezultatUkupno))["Total"],
+                            TypeDescriptor.GetProperties(typeof(RezultatUkupno))["PrezimeIme"]
+                    };
+                    ListSortDirection[] sortDir = new ListSortDirection[] {
+                            ListSortDirection.Ascending,
+                            ListSortDirection.Ascending,
+                            ListSortDirection.Descending,
+                            ListSortDirection.Ascending
+                    };
+                    rezultati.Sort(new SortComparer<RezultatUkupno>(propDesc, sortDir));
+                }
+            }
+            catch (Exception ex)
+            {
+                if (session != null && session.Transaction != null && session.Transaction.IsActive)
+                    session.Transaction.Rollback();
+                MessageDialogs.showError(ex.Message, this.Text);
+                return;
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+                CurrentSessionContext.Unbind(NHibernateHelper.Instance.SessionFactory);
+            }
+
+            short redBroj = 0;
+            foreach (RezultatUkupno r in rezultati)
+            {
+                // Ne smem da koristim Rank ili RedBroj da ne bih poremetio poredak po rezultatima ili poredak u gridu.
+                r.RedBrojIzvestaj = ++redBroj;
+            }
+
+            Cursor.Current = Cursors.WaitCursor;
+            Cursor.Show();
+            try
+            {
+                string documentName = takmicenje.Gimnastika + " - " + "Viseboj po klubovima i kategorijama";
+                PreviewDialog form2 = new PreviewDialog();
+                form2.setIzvestaj(new UkupnoIzvestaj(rezultati, takmicenje.Gimnastika,
+                    dataGridViewUserControl1.DataGridView, documentName, takmicenje,
+                    new Font("Arial", 8)));
+                form2.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageDialogs.showError(ex.Message, this.Text);
+            }
+            finally
+            {
+                Cursor.Hide();
+                Cursor.Current = Cursors.Arrow;
+            }
         }
 
     }

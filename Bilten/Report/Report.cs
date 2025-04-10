@@ -468,14 +468,14 @@ namespace Bilten.Report
             return result;
         }
 
-        protected float getColumnMaxWidth(int colIndex, Graphics g, Font f)
+        public float getColumnMaxWidth(int colIndex, Graphics g)
 		{
 			ReportColumn col = columns[colIndex];
 			float max = 0;
 			for (int i = 0; i < items.Count; i++)
 			{
 				object[] itemsRow = items[i];
-                max = Math.Max(max, col.getMaxWidth(g, itemsRow, f));
+                max = Math.Max(max, col.getMaxWidth(g, itemsRow, itemFont));
 			}
 			return max;
 		}

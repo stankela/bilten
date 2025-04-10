@@ -47,6 +47,9 @@ namespace Bilten.UI
                     rezTakmicenja = new List<RezultatskoTakmicenje>();
                     foreach (RezultatskoTakmicenje tak in rezTak)
                     {
+                        // TODO3: U Takmicenje.getRezTakmicenjaEkipe se dodatno proverava i sledece kada se traze
+                        // ekipna rez. takmicenja za Takmicenje1:
+                        // if (StandardnoTakmicenje || ZbirViseKola || (FinaleKupa && (sumaObaKola || rt.odvojenoTak4())))                      
                         if (tak.Propozicije.PostojiTak4 && tak.ImaEkipnoTakmicenje)
                             rezTakmicenja.Add(tak);
                     }

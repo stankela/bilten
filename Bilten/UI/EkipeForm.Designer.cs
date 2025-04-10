@@ -105,7 +105,7 @@ namespace Bilten.UI
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(289, 12);
+            this.btnClose.Location = new System.Drawing.Point(295, 12);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 7;

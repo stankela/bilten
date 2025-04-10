@@ -224,6 +224,35 @@ namespace Bilten.Domain
             }
         }
 
+        public virtual string Kategorija
+        {
+            get
+            {
+                if (Gimnasticar != null)
+                    return Gimnasticar.TakmicarskaKategorija.Naziv;
+                else
+                    return String.Empty;
+            }
+        }
+
+        public virtual string KategorijaRedBroj
+        {
+            get
+            {
+                if (Gimnasticar != null)
+                    return Gimnasticar.TakmicarskaKategorija.RedBroj.ToString();
+                else
+                    return String.Empty;
+            }
+        }
+
+        private short redBrojIzvestaj;
+        public virtual short RedBrojIzvestaj
+        {
+            get { return redBrojIzvestaj; }
+            set { redBrojIzvestaj = value; }
+        }
+
         public virtual void promeniPenalizacijuZaViseboj(Nullable<float> newPenalty)
         {
             Nullable<float> oldPenalty = Gimnasticar.PenaltyViseboj;
