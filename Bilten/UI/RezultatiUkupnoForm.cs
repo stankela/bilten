@@ -821,6 +821,36 @@ namespace Bilten.UI
 
         private void btnStampajPoKlubovimaIKategorijama_Click(object sender, EventArgs e)
         {
+            string nazivIzvestaja = "Vi" + Jezik.shMalo + "eboj po klubovima i kategorijama";
+
+            HeaderFooterForm form = new HeaderFooterForm(deoTakKod, false, false, false, false, false, false, false, false,
+                                                         false, false, false);
+            string gym = GimnastikaUtil.getGimnastikaStr(takmicenje.Gimnastika, Opcije.Instance.Jezik);
+            if (!Opcije.Instance.HeaderFooterInitialized)
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+
+                string mestoDatum = takmicenje.Mesto + "  "
+                    + takmicenje.Datum.ToShortDateString();
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header2Text = mestoDatum;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = "";
+                form.FooterText = mestoDatum;
+            }
+            else
+            {
+                FormUtil.initHeaderFooterFormFromOpcije(form);
+                form.Header1Text = ActiveTakmicenje.TakmicenjeDescription.Naziv;
+                form.Header3Text = gym + " - " + nazivIzvestaja;
+                form.Header4Text = "";
+            }
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+            FormUtil.initHeaderFooterFromForm(form);
+            Opcije.Instance.HeaderFooterInitialized = true;
+            
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>();
 
             Cursor.Current = Cursors.WaitCursor;
@@ -835,15 +865,14 @@ namespace Bilten.UI
                     RezultatskoTakmicenjeDAO rezultatskoTakmicenjeDAO =
                         DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
-                    // TODO5: Heder sa spravama prikazuj samo za prvu listu na strani
                     // TODO5: Stampaj ceo bilten sa jednim klikom
                     // TODO5: Preuredi sve izvestaje tako da se sirine kolona izracunavaju na osnovu teksta, a ne
                     //        na osnovu grida (to ce biti potrebno za stampanje celog biltena sa jednim klikom)
-                    // TODO5: Kada se prvi put odstampa, ne prikazuju se heder i futer. Nakon sto se odstampa bilo koji
-                    //        drugi izvestaj, stampaju se i heder i futer.
                     // TODO5: Ovo dugme treba da je omoguceno samo za Takmicenje1
                     // TODO5: Stampaj kategoriju kod stampanja ekipnih rezultata kada postoji jedno ekipno takmicenje za sve 
                     //        kategorije (ili dodaj opciju da moze da se izabere da li da se stampa).
+                    // TODO5: Dodaj mogucnost da ako je heder 1 predugacak pa nemoze da stane u jedan red, da moze da se
+                    //        odredi gde ce biti novi red.
 
                     IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
                     foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
@@ -899,11 +928,11 @@ namespace Bilten.UI
             Cursor.Show();
             try
             {
-                string documentName = takmicenje.Gimnastika + " - " + "Viseboj po klubovima i kategorijama";
+                string documentName = gym + " - " + nazivIzvestaja;
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(rezultati, takmicenje.Gimnastika,
                     dataGridViewUserControl1.DataGridView, documentName, takmicenje,
-                    new Font("Arial", 8)));
+                    new Font(form.TekstFont, form.TekstFontSize)));
                 form2.ShowDialog();
             }
             catch (Exception ex)

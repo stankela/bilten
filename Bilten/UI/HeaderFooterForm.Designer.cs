@@ -512,7 +512,7 @@ namespace Bilten.UI
             // ckbPrikaziPenalizaciju
             // 
             this.ckbPrikaziPenalizaciju.AutoSize = true;
-            this.ckbPrikaziPenalizaciju.Location = new System.Drawing.Point(214, 339);
+            this.ckbPrikaziPenalizaciju.Location = new System.Drawing.Point(229, 339);
             this.ckbPrikaziPenalizaciju.Name = "ckbPrikaziPenalizaciju";
             this.ckbPrikaziPenalizaciju.Size = new System.Drawing.Size(179, 17);
             this.ckbPrikaziPenalizaciju.TabIndex = 57;
@@ -522,7 +522,7 @@ namespace Bilten.UI
             // ckbPrikaziClanoveEkipe
             // 
             this.ckbPrikaziClanoveEkipe.AutoSize = true;
-            this.ckbPrikaziClanoveEkipe.Location = new System.Drawing.Point(214, 316);
+            this.ckbPrikaziClanoveEkipe.Location = new System.Drawing.Point(229, 316);
             this.ckbPrikaziClanoveEkipe.Name = "ckbPrikaziClanoveEkipe";
             this.ckbPrikaziClanoveEkipe.Size = new System.Drawing.Size(127, 17);
             this.ckbPrikaziClanoveEkipe.TabIndex = 58;
@@ -539,18 +539,18 @@ namespace Bilten.UI
             this.ckbPrikaziBonus.Text = "Prikazi bonus";
             this.ckbPrikaziBonus.UseVisualStyleBackColor = true;
             // 
-            // cmbTekstFooter
+            // cmbFontTekst
             // 
             this.cmbFontTekst.FormattingEnabled = true;
-            this.cmbFontTekst.Location = new System.Drawing.Point(316, 383);
-            this.cmbFontTekst.Name = "cmbTekstFooter";
+            this.cmbFontTekst.Location = new System.Drawing.Point(316, 372);
+            this.cmbFontTekst.Name = "cmbFontTekst";
             this.cmbFontTekst.Size = new System.Drawing.Size(172, 21);
             this.cmbFontTekst.TabIndex = 60;
             // 
             // cmbSizeTekst
             // 
             this.cmbSizeTekst.FormattingEnabled = true;
-            this.cmbSizeTekst.Location = new System.Drawing.Point(494, 383);
+            this.cmbSizeTekst.Location = new System.Drawing.Point(494, 372);
             this.cmbSizeTekst.Name = "cmbSizeTekst";
             this.cmbSizeTekst.Size = new System.Drawing.Size(44, 21);
             this.cmbSizeTekst.TabIndex = 61;
@@ -558,7 +558,7 @@ namespace Bilten.UI
             // lblTekst
             // 
             this.lblTekst.AutoSize = true;
-            this.lblTekst.Location = new System.Drawing.Point(313, 367);
+            this.lblTekst.Location = new System.Drawing.Point(313, 356);
             this.lblTekst.Name = "lblTekst";
             this.lblTekst.Size = new System.Drawing.Size(34, 13);
             this.lblTekst.TabIndex = 62;

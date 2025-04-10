@@ -340,6 +340,13 @@ namespace Bilten.Report
 			set { itemFont = value; }
 		}
 
+        private bool groupHeaderVisible = true;
+        public bool GroupHeaderVisible
+		{
+            get { return groupHeaderVisible; }
+            set { groupHeaderVisible = value; }
+		}
+
 		protected Font itemsHeaderFont;
 		protected Brush blackBrush;
         protected Pen pen;
@@ -616,7 +623,10 @@ namespace Bilten.Report
 				{
 					RectangleF groupHeaderRect = new RectangleF(
 						contentBounds.X, y, contentBounds.Width, groupHeaderHeight);
-					drawGroupHeader(g, part.GroupId, groupHeaderRect);
+                    if (GroupHeaderVisible)
+                    {
+                        drawGroupHeader(g, part.GroupId, groupHeaderRect);
+                    }
 					y += groupHeaderHeight;
 				}
 

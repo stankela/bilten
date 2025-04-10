@@ -115,12 +115,14 @@ namespace Bilten.Report
                     {
                         lista.FirstPageNum = 1;
                         lista.StartY = startYPrvaStrana;
+                        lista.GroupHeaderVisible = true;
                     }
                     else if (prebaciNaSledecuStranu)
                     {
                         lista.FirstPageNum = prevLista.LastPageNum + 1;
                         lista.StartY = startYOstaleStrane;
                         prebaciNaSledecuStranu = false;
+                        lista.GroupHeaderVisible = true;
                     }
                     else
                     {
@@ -129,6 +131,7 @@ namespace Bilten.Report
                         // Svaka lista ima implicitno dodat prazan prostor nakon liste (koji je jednak velicini vrste),
                         // i EndY pokazuje nakon tog praznog prostoja.
                         lista.StartY = prevLista.EndY;
+                        lista.GroupHeaderVisible = false;
                     }
 
                     int firstPageNum = lista.FirstPageNum;
@@ -167,6 +170,7 @@ namespace Bilten.Report
                             // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
                             ++j;
                             prevLista = lista;
+                            // TODO5: Sta raditi ovde sa lista.GroupHeaderVisible?
                         }
                         else
                         {
@@ -522,7 +526,9 @@ namespace Bilten.Report
                 itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             else
                 itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 2.4f;
-            groupHeaderHeight = itemsHeaderHeight;
+            // TODO5: Deluje da je itemsHeaderHeight reduntantno zato sto u svim izvestajima uvek ima istu vrednost kao i
+            // groupHeaderHeight. Proveri da li je i u Soko programu tako.
+            groupHeaderHeight = GroupHeaderVisible ? itemsHeaderHeight : 0f;
             float afterGroupHeight = itemHeight;
 
             createListLayout(groupHeaderHeight, itemHeight, 0f, afterGroupHeight, 0f,
@@ -599,6 +605,7 @@ namespace Bilten.Report
             float rankWidth;
             if (visebojPoKlubovimaIKategorijama)
             {
+                // TODO5: Svugde gde se koristi Izvestaj.convCmToInch(), ne skalira se sa promenom velicine fonta.
                 rankWidth = Izvestaj.convCmToInch(1f);
             }
             else
@@ -614,7 +621,7 @@ namespace Bilten.Report
             }
             else if (visebojPoKlubovimaIKategorijama)
             {
-                spravaWidth = Izvestaj.convCmToInch(1.2f);
+                spravaWidth = g.MeasureString("00.000", itemFont).Width;
             }
             else
             {
