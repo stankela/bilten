@@ -79,6 +79,8 @@ namespace Bilten.UI
 
             label1.Visible = brojEOcenaFormularVisible;
             txtBrojEOcena.Visible = brojEOcenaFormularVisible;
+
+            rbtSirinaTeksta.Checked = true;
             
             Cursor.Current = Cursors.WaitCursor;
             Cursor.Show();
@@ -87,7 +89,6 @@ namespace Bilten.UI
 
             Cursor.Hide();
             Cursor.Current = Cursors.Arrow;
- 
             
             initSize();
         }
@@ -485,6 +486,12 @@ namespace Bilten.UI
             }
         }
 
+        private bool _resizeByGrid;
+        public bool ResizeByGrid
+        {
+            get { return _resizeByGrid; }
+        }
+
         private void selectFont(ComboBox cmb, string value)
         {
             List<string> fontNames = cmb.DataSource as List<string>;
@@ -594,6 +601,7 @@ namespace Bilten.UI
             _stampajKategoriju = ckbStampajKategoriju.Checked;
             _stampajKlub = ckbStampajKlub.Checked;
             _brojEOcenaFormular = Int32.Parse(txtBrojEOcena.Text);
+            _resizeByGrid = rbtSirinaKolona.Checked;
         }
 
         private string getSelectedFont(ComboBox cmb)

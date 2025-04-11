@@ -342,7 +342,7 @@ namespace Bilten.UI
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, extended,
                     kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, false,
-                    penalizacijaZaSprave, takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
+                    penalizacijaZaSprave, takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 form2.ShowDialog();
             }
             catch (Exception ex)
@@ -759,7 +759,7 @@ namespace Bilten.UI
                 form2.setIzvestaj(new UkupnoIzvestaj(getKvalifikantiIRezerve(rezultatiEx), ActiveTakmicenje.Gimnastika,
                     Opcije.Instance.PrikaziDEOcene, false, p.hasPenalty(),
                     dataGridViewUserControl1.DataGridView, documentName, true, false, takmicenje,
-                    new Font(form.TekstFont, form.TekstFontSize)));
+                    new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 form2.ShowDialog();
             }
             catch (Exception ex)
@@ -873,6 +873,7 @@ namespace Bilten.UI
                     //        kategorije (ili dodaj opciju da moze da se izabere da li da se stampa).
                     // TODO5: Dodaj mogucnost da ako je heder 1 predugacak pa nemoze da stane u jedan red, da moze da se
                     //        odredi gde ce biti novi red.
+                    // TODO5: U hederu 2, gde stoji datum takmicenja, treba da postoji mogucnost za od-do
 
                     IDictionary<int, RezultatUkupno> rezultatiMap = new Dictionary<int, RezultatUkupno>();
                     foreach (RezultatskoTakmicenje rt in svaRezTakmicenja)
@@ -932,7 +933,7 @@ namespace Bilten.UI
                 PreviewDialog form2 = new PreviewDialog();
                 form2.setIzvestaj(new UkupnoIzvestaj(rezultati, takmicenje.Gimnastika,
                     dataGridViewUserControl1.DataGridView, documentName, takmicenje,
-                    new Font(form.TekstFont, form.TekstFontSize)));
+                    new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 form2.ShowDialog();
             }
             catch (Exception ex)

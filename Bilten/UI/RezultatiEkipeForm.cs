@@ -315,7 +315,7 @@ namespace Bilten.UI
                 {
                     form2.setIzvestaj(new UkupnoIzvestaj(p.getRezultati(), ActiveTakmicenje.Gimnastika, kvalColumn,
                         p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize)));
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 form2.ShowDialog();
             }

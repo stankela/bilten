@@ -366,6 +366,7 @@ namespace Bilten.Report
         protected float groupFooterHeight;
         protected float masterGroupHeaderHeight;
 
+        // TODO5: Ovo bi trebalo da moze da se menja iz programa
         protected const string RANK_MAX_TEXT = "0000";
         protected const string BROJ_MAX_TEXT = "00000";
         protected const string D_MAX_TEXT_UKUPNO = "00.0";

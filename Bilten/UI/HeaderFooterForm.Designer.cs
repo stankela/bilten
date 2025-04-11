@@ -81,7 +81,12 @@ namespace Bilten.UI
             this.cmbFontTekst = new System.Windows.Forms.ComboBox();
             this.cmbSizeTekst = new System.Windows.Forms.ComboBox();
             this.lblTekst = new System.Windows.Forms.Label();
+            this.lblSirineKolona = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.rbtSirinaTeksta = new System.Windows.Forms.RadioButton();
+            this.rbtSirinaKolona = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblHeader1
@@ -365,7 +370,7 @@ namespace Bilten.UI
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(493, 484);
+            this.btnOk.Location = new System.Drawing.Point(596, 490);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 40;
@@ -376,7 +381,7 @@ namespace Bilten.UI
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(590, 484);
+            this.btnCancel.Location = new System.Drawing.Point(693, 490);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 41;
@@ -564,13 +569,55 @@ namespace Bilten.UI
             this.lblTekst.TabIndex = 62;
             this.lblTekst.Text = "Tekst";
             // 
+            // lblSirineKolona
+            // 
+            this.lblSirineKolona.AutoSize = true;
+            this.lblSirineKolona.Location = new System.Drawing.Point(578, 341);
+            this.lblSirineKolona.Name = "lblSirineKolona";
+            this.lblSirineKolona.Size = new System.Drawing.Size(68, 13);
+            this.lblSirineKolona.TabIndex = 63;
+            this.lblSirineKolona.Text = "Širine kolona";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.rbtSirinaKolona);
+            this.panel2.Controls.Add(this.rbtSirinaTeksta);
+            this.panel2.Location = new System.Drawing.Point(568, 357);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(200, 47);
+            this.panel2.TabIndex = 64;
+            // 
+            // rbtSirinaTeksta
+            // 
+            this.rbtSirinaTeksta.AutoSize = true;
+            this.rbtSirinaTeksta.Location = new System.Drawing.Point(14, 3);
+            this.rbtSirinaTeksta.Name = "rbtSirinaTeksta";
+            this.rbtSirinaTeksta.Size = new System.Drawing.Size(110, 17);
+            this.rbtSirinaTeksta.TabIndex = 0;
+            this.rbtSirinaTeksta.TabStop = true;
+            this.rbtSirinaTeksta.Text = "Prema širini teksta";
+            this.rbtSirinaTeksta.UseVisualStyleBackColor = true;
+            // 
+            // rbtSirinaKolona
+            // 
+            this.rbtSirinaKolona.AutoSize = true;
+            this.rbtSirinaKolona.Location = new System.Drawing.Point(13, 26);
+            this.rbtSirinaKolona.Name = "rbtSirinaKolona";
+            this.rbtSirinaKolona.Size = new System.Drawing.Size(169, 17);
+            this.rbtSirinaKolona.TabIndex = 1;
+            this.rbtSirinaKolona.TabStop = true;
+            this.rbtSirinaKolona.Text = "Prema širini kolona u programu";
+            this.rbtSirinaKolona.UseVisualStyleBackColor = true;
+            // 
             // HeaderFooterForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(695, 538);
+            this.ClientSize = new System.Drawing.Size(798, 538);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.lblSirineKolona);
             this.Controls.Add(this.lblTekst);
             this.Controls.Add(this.cmbSizeTekst);
             this.Controls.Add(this.cmbFontTekst);
@@ -630,6 +677,8 @@ namespace Bilten.UI
             this.Shown += new System.EventHandler(this.HeaderFooterForm_Shown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -690,5 +739,9 @@ namespace Bilten.UI
         private System.Windows.Forms.ComboBox cmbFontTekst;
         private System.Windows.Forms.ComboBox cmbSizeTekst;
         private System.Windows.Forms.Label lblTekst;
+        private System.Windows.Forms.Label lblSirineKolona;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.RadioButton rbtSirinaKolona;
+        private System.Windows.Forms.RadioButton rbtSirinaTeksta;
     }
 }
