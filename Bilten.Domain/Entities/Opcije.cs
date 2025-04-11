@@ -499,6 +499,29 @@ namespace Bilten.Domain
             set { totalString = value; }
         }
 
+        // TODO5: D, E i Pen. nisu u jeziku i nemoguce ih je menjati. Razmisli da li je potrebno
+
+        private string dString = "D";
+        public virtual string DString
+        {
+            get { return dString; }
+            set { dString = value; }
+        }
+
+        private string eString = "E";
+        public virtual string EString
+        {
+            get { return eString; }
+            set { eString = value; }
+        }
+
+        private string penaltyString = "Pen.";
+        public virtual string PenaltyString
+        {
+            get { return penaltyString; }
+            set { penaltyString = value; }
+        }
+
         private string ocenaString = "Ocena";  // "Score"
         public virtual string OcenaString
         {

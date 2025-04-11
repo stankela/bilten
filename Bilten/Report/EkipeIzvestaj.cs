@@ -347,6 +347,9 @@ namespace Bilten.Report
 
             StringFormat brojFormat = Izvestaj.centerCenterFormat;
 
+            // TODO5: Ispravi sledece greske gde je umesto Alignment stavljeno ponovljeno LineAlignment. Uradi to i u 
+            // ostalim izvestajima.
+
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
             imeFormat.LineAlignment = StringAlignment.Near;
             imeFormat.LineAlignment = StringAlignment.Center;

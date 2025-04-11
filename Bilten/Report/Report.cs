@@ -30,7 +30,6 @@ namespace Bilten.Report
 
         protected int itemsSpan = 1;
 
-        private string format;
 		private StringFormat itemRectFormat = new StringFormat();
 
         private Image _image;
@@ -121,7 +120,8 @@ namespace Bilten.Report
 			set { width = value; }
 		}
 
-		public string Format
+        private string format;
+        public string Format
 		{
 			set { format = value; }
 		}
@@ -151,19 +151,24 @@ namespace Bilten.Report
 			set { headerFormat = value; }
 		}
 
+        protected string getFormattedString(object[] itemsRow, int itemsIndex, string fmt)
+        {
+            object item = itemsRow[itemsIndex];
+            if (item == null)
+                return String.Empty;
+            else if (String.IsNullOrEmpty(fmt))
+                return item.ToString();
+            else
+            {
+                fmt = "{0:" + fmt + "}";
+                return String.Format(fmt, item);
+            }
+        }
+
         public string getFormattedString(object[] itemsRow, int itemsIndex)
-		{
-			object item = itemsRow[itemsIndex];
-			if (item == null)
-				return String.Empty;
-			else if (String.IsNullOrEmpty(format))
-				return item.ToString();
-			else
-			{
-				string fmt = "{0:" + format + "}";
-				return String.Format(fmt, item);
-			}
-		}
+        {
+            return getFormattedString(itemsRow, itemsIndex, format);
+        }
 
         protected RectangleF itemRect;
         public RectangleF getItemRect()
@@ -360,6 +365,24 @@ namespace Bilten.Report
 		protected float itemsHeaderHeight;
         protected float groupFooterHeight;
         protected float masterGroupHeaderHeight;
+
+        protected const string RANK_MAX_TEXT = "0000";
+        protected const string BROJ_MAX_TEXT = "00000";
+        protected const string D_MAX_TEXT_UKUPNO = "00.0";
+        protected const string E_MAX_TEXT_UKUPNO = "00.000";
+        protected const string PENALTY_MAX_TEXT_UKUPNO = "000.0";
+        protected const string TOTAL_MAX_TEXT_UKUPNO = "000.000";
+        protected const string TOTAL_MAX_TEXT_UKUPNO_BON_PEN = "0000.000";
+        protected const string QUAL_MAX_TEXT = "QQ";
+
+        protected float getColumnWidth(Graphics g, string maxText, string columnTitle)
+        {
+            float textWidth = g.MeasureString(maxText, itemFont).Width;
+            if (String.IsNullOrEmpty(columnTitle))
+                return textWidth;
+            float headerWidth = g.MeasureString(columnTitle, itemsHeaderFont).Width;
+            return Math.Max(textWidth, headerWidth);
+        }
 
 		protected List<object[]> items;
         public List<object[]> Items
@@ -667,7 +690,6 @@ namespace Bilten.Report
         {
 
         }
-
     }
 
 	public class ReportGroupPart
