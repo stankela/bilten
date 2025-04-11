@@ -144,16 +144,13 @@ namespace Bilten.Report
                     if (i == 0)
                     {
                         lista.setupContent(g, contentBounds);
-                        if (lista.getImeColumnIndex() != -1)
-                        {
-                            float imeWidth;
-                            if (lista.ResizeByGrid)
-                                imeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
-                            else
-                                imeWidth = lista.getColumnMaxWidth(lista.getImeColumnIndex(), g);
-                            if (imeWidth > maxImeWidth)
-                                maxImeWidth = imeWidth;
-                        }
+                        float imeWidth;
+                        if (lista.ResizeByGrid)
+                            imeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
+                        else
+                            imeWidth = lista.getColumnMaxWidth(lista.getImeColumnIndex(), g);
+                        if (imeWidth > maxImeWidth)
+                            maxImeWidth = imeWidth;
                         if (lista.getKlubColumnIndex() != -1)
                         {
                             float klubWidth;
@@ -602,7 +599,7 @@ namespace Bilten.Report
                 // TODO5: Indekse grid kolona treba menjati za sve gridove gde se dodaje kolona Broj
                 imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
                 klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-                kategorijaWidth = 0f;  // Kategorija je uvek resized by content
+                kategorijaWidth = 1f;  // Kategorija je uvek resized by content
             }
             else
             { 

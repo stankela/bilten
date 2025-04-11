@@ -232,7 +232,6 @@ namespace Bilten.UI
                 dgw.AddColumn("", "KvalStatus", 30);
         }
 
-
         // TODO: Indexi kolona bi trebali da budu konstante (i na svim ostalim mestima gde se koristi
         // DataGridView.Columns[])
         public static void maximizeColumnsRezultatiUkupno(DataGridViewUserControl dgw, 
@@ -412,12 +411,14 @@ namespace Bilten.UI
         }
 
         public static void initRezultatiUkupnoZaEkipe(DataGridViewUserControl dgw,
-            Takmicenje takmicenje)
+            Takmicenje takmicenje, bool addKategorija)
         {
             dgw.DataGridView.Columns.Clear();
 
             dgw.AddColumn("Ime", "PrezimeIme", 170);
             dgw.AddColumn("Klub/Drzava", "KlubDrzava", 130);
+            if (addKategorija)
+                dgw.AddColumn("Kategorija", "Kategorija", 100);
 
             Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
 

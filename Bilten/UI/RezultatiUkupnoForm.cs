@@ -866,11 +866,7 @@ namespace Bilten.UI
                         DAOFactoryFactory.DAOFactory.GetRezultatskoTakmicenjeDAO();
 
                     // TODO5: Stampaj ceo bilten sa jednim klikom
-                    // TODO5: Preuredi sve izvestaje tako da se sirine kolona izracunavaju na osnovu teksta, a ne
-                    //        na osnovu grida (to ce biti potrebno za stampanje celog biltena sa jednim klikom)
                     // TODO5: Ovo dugme treba da je omoguceno samo za Takmicenje1
-                    // TODO5: Stampaj kategoriju kod stampanja ekipnih rezultata kada postoji jedno ekipno takmicenje za sve 
-                    //        kategorije (ili dodaj opciju da moze da se izabere da li da se stampa).
                     // TODO5: Dodaj mogucnost da ako je heder 1 predugacak pa nemoze da stane u jedan red, da moze da se
                     //        odredi gde ce biti novi red.
                     // TODO5: U hederu 2, gde stoji datum takmicenja, treba da postoji mogucnost za od-do

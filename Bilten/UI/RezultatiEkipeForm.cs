@@ -169,7 +169,7 @@ namespace Bilten.UI
         private void setRezultatiUkupno(Ekipa e)
         {
             dataGridViewUserControl2.setItems<RezultatUkupno>(ekipaRezultatiUkupnoMap[e.Id]);
-            dataGridViewUserControl2.sort<RezultatUkupno>("PrezimeIme", ListSortDirection.Ascending);
+            dataGridViewUserControl2.sort<RezultatUkupno>("Total", ListSortDirection.Descending);
             dataGridViewUserControl2.clearSelection();
         }
 
@@ -198,7 +198,8 @@ namespace Bilten.UI
         private void onSelectedTakmicenjeChanged()
         {
             GridColumnsInitializer.initRezultatiEkipno(dataGridViewUserControl1, takmicenje, kvalColumnVisible(), true);
-            GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2, takmicenje);
+            GridColumnsInitializer.initRezultatiUkupnoZaEkipe(dataGridViewUserControl2, takmicenje,
+                ActiveTakmicenje.KombinovanoEkipnoTak);
             List<string> imena = new List<string>();
             List<string> klubovi = new List<string>();
             foreach (List<RezultatUkupno> rezultati in ekipaRezultatiUkupnoMap.Values)
@@ -309,7 +310,8 @@ namespace Bilten.UI
                 {
                     form2.setIzvestaj(new EkipeIzvestaj(p.getRezultati(), ekipaRezultatiUkupnoMap, p.hasPenalty(),
                         ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName,
-                        takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
+                        takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid,
+                        ActiveTakmicenje.KombinovanoEkipnoTak));
                 }
                 else
                 {
