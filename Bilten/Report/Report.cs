@@ -353,11 +353,11 @@ namespace Bilten.Report
             set { groupHeaderVisible = value; }
 		}
 
-        private bool showHeaderOnSecondListOnPage = true;
-        public bool ShowHeaderOnSecondListOnPage
+        private bool showHeaderForSecondListOnPage = true;
+        public bool ShowHeaderForSecondListOnPage
 		{
-            get { return showHeaderOnSecondListOnPage; }
-            set { showHeaderOnSecondListOnPage = value; }
+            get { return showHeaderForSecondListOnPage; }
+            set { showHeaderForSecondListOnPage = value; }
 		}
 
         protected float xRightEnd;  // TODO5: Izbrisi ovaj member kada preuredis sve izvestaje
@@ -533,7 +533,9 @@ namespace Bilten.Report
 			return max;
 		}
 
-        public virtual List<int> getColumnIndexes()
+        // Kolone za koje mozemo da podesavamo sirinu kolona (ili pomocu grida, ili na osnovu maksimalne duzine teksta
+        // u ovoj koloni u svim listama)
+        public virtual List<int> getAdjustableColumnIndexes()
         {
             List<int> result = new List<int>();
             return result;

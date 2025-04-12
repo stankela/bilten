@@ -636,7 +636,11 @@ namespace Bilten.Report
 		
 		}
 
-        protected void poredjajListeUJednuKolonu(Graphics g, RectangleF contentBounds, List<ReportLista> liste)
+        // Slaganje listi jedna ispod druge, u jednoj koloni, centrirano po sredini strane. Izlomljena lista se prebacuje
+        // na sledecu stranu (osim u slucaju kada je pocela na vrhu strane). svakaListaNaPosebnojStrani kontrolise da li
+        // svaku listu pocinjemo na novoj strani.
+        protected void poredjajListeUJednuKolonu(Graphics g, RectangleF contentBounds, List<ReportLista> liste,
+            bool svakaListaNaPosebnojStrani)
         {
             float startYPrvaStrana = contentBounds.Y;
             float startYOstaleStrane = contentBounds.Y;
@@ -654,17 +658,20 @@ namespace Bilten.Report
                 prevLista = null;
                 int j = 0;
                 bool prebaciNaSledecuStranu = false;
+                bool prvaListaNaStrani;
                 while (j < liste.Count)
                 {
                     ReportLista lista = liste[j];
                     if (prevLista == null)
                     {
+                        prvaListaNaStrani = true;
                         lista.FirstPageNum = 1;
                         lista.StartY = startYPrvaStrana;
                         lista.GroupHeaderVisible = true;
                     }
-                    else if (prebaciNaSledecuStranu)
+                    else if (svakaListaNaPosebnojStrani || prebaciNaSledecuStranu)
                     {
+                        prvaListaNaStrani = true;
                         lista.FirstPageNum = prevLista.LastPageNum + 1;
                         lista.StartY = startYOstaleStrane;
                         prebaciNaSledecuStranu = false;
@@ -673,15 +680,16 @@ namespace Bilten.Report
                     else
                     {
                         // Nastavak na istoj strani
+                        prvaListaNaStrani = false;
                         lista.FirstPageNum = prevLista.LastPageNum;
                         // Svaka lista ima implicitno dodat prazan prostor nakon liste (koji je jednak velicini vrste),
                         // i EndY pokazuje nakon tog praznog prostoja.
                         lista.StartY = prevLista.EndY;
-                        lista.GroupHeaderVisible = lista.ShowHeaderOnSecondListOnPage;
+                        lista.GroupHeaderVisible = lista.ShowHeaderForSecondListOnPage;
                     }
 
                     int firstPageNum = lista.FirstPageNum;
-                    columnIndexes = lista.getColumnIndexes();
+                    columnIndexes = lista.getAdjustableColumnIndexes();
                     lista.setupContent(g, contentBounds, i, columnIndexes, columnMaxWidths);
 
                     if (lista.LastPageNum == firstPageNum)
@@ -690,23 +698,19 @@ namespace Bilten.Report
                         ++j;
                         prevLista = lista;
                     }
+                    else if (prvaListaNaStrani)
+                    {
+                        // Lista nije stala na istu stranu ali je pocela sa vrha strane, pa je ostavlamo izlomljenu
+                        // (prvi deo na jednoj strani, drugi deo na drugoj strani). Prebacivanjem na sledecu stranu
+                        // ne bi dobili nista.
+                        ++j;
+                        prevLista = lista;
+                    }
                     else
                     {
-                        // Lista nije stala na istu stranu
-                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
-                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
-                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
-                        {
-                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
-                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
-                            ++j;
-                            prevLista = lista;
-                        }
-                        else
-                        {
-                            // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
-                            prebaciNaSledecuStranu = true;
-                        }
+                        // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
+                        // TODO5: Ovde treba opcija da li da prebacujemo na novu stranu ili da ostavljamo izlomljeno.
+                        prebaciNaSledecuStranu = true;
                     }
                 }
             }

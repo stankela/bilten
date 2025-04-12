@@ -9,7 +9,6 @@ namespace Bilten.Report
 {
     class SpravaIzvestaj : Izvestaj
     {
-        private List<SpravaLista> reportListe = new List<SpravaLista>();
         private bool svakaSpravaNaPosebnojStrani;
 
         public SpravaIzvestaj(Sprava sprava, IList<RezultatSprava> rezultati,
@@ -76,119 +75,14 @@ namespace Bilten.Report
             }
         }
 
+        // TODO5: Kada stampam Memorijal 2024 ZSG rezultati sprave u takmicenju III, sa 3 sprave po strani, razmak izmedju
+        // preskoka i dvovisiniskog razboja nije isti kao razmak izmedju dvovisinskog razboja i grede. Ovo se desava
+        // zato sto se nakon svake sprave dodaje razmak koji je jednak visini jedne item vrste, a za preskok su ove
+        // vrste duple visine. Razmisli da li da ovaj razmak ucinimo uvek istim, da ne zavisi od visine item vrste.
+
         protected override void doSetupContent(Graphics g)
         {
-            float startYPrvaStrana = contentBounds.Y;
-            float startYOstaleStrane = contentBounds.Y;
-
-            // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
-            float maxImeWidth = 0.0f;
-            float maxKlubWidth = 0.0f;
-            SpravaLista prevLista = null;
-            for (int i = 0; i < 2; ++i)
-            {
-                prevLista = null;
-                int j = 0;
-                bool prebaciNaSledecuStranu = false;
-                while (j < reportListe.Count)
-                {
-                    SpravaLista lista = reportListe[j];
-                    if (prevLista == null)
-                    {
-                        lista.FirstPageNum = 1;
-                        lista.StartY = startYPrvaStrana;
-                    }
-                    else if (svakaSpravaNaPosebnojStrani || prebaciNaSledecuStranu)
-                    {
-                        lista.FirstPageNum = prevLista.LastPageNum + 1;
-                        lista.StartY = startYOstaleStrane;
-                        prebaciNaSledecuStranu = false;
-                    }
-                    else
-                    {
-                        // Nastavak na istoj strani
-                        lista.FirstPageNum = prevLista.LastPageNum;
-                        // Svaka lista ima implicitno dodat prazan prostor nakon liste (koji je jednak velicini vrste),
-                        // i EndY pokazuje nakon tog praznog prostoja.
-                        lista.StartY = prevLista.EndY;
-                    }
-
-                    int firstPageNum = lista.FirstPageNum;
-                    if (i == 0)
-                    {
-                        lista.setupContent(g, contentBounds);
-                        // TODO5: Indeksi nisu dobri kada postoji takmicarski broj. Greska ce postati vidljiva tek kada
-                        // budem dvaput radio setupContent.
-
-                        float imeWidth;
-                        if (lista.ResizeByGrid)
-                            imeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
-                        else
-                            imeWidth = lista.getColumnMaxWidth(lista.getImeColumnIndex(), g);
-                        if (imeWidth > maxImeWidth)
-                            maxImeWidth = imeWidth;
-
-                        float klubWidth;
-                        if (lista.ResizeByGrid)
-                            klubWidth = lista.Columns[lista.getKlubColumnIndex()].Width;
-                        else
-                            klubWidth = lista.getColumnMaxWidth(lista.getKlubColumnIndex(), g);
-                        if (klubWidth > maxKlubWidth)
-                            maxKlubWidth = klubWidth;
-                    }
-                    else
-                    {
-                        lista.setupContent(g, contentBounds, maxImeWidth, maxKlubWidth);
-                    }
-
-                    if (lista.LastPageNum == firstPageNum)
-                    {
-                        // Cela lista je stala na istu stranu
-                        ++j;
-                        prevLista = lista;
-                    }
-                    else
-                    {
-                        // Lista nije stala na istu stranu
-                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
-                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
-                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
-                        {
-                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
-                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
-                            ++j;
-                            prevLista = lista;
-                        }
-                        else
-                        {
-                            // TODO5: Ovde fali opcija (za svaki izvestaj) da li da ostavim listu izlomljenu, ili da
-                            // pocinjem na novoj strani.
-
-                            // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
-                            prebaciNaSledecuStranu = true;
-
-                            // TODO5: Analiziraj detaljnije koje sve mogucnosti postoje kod izlomljenih lista
-
-                            // Ostavi listu izlomljenu
-                            //++j;
-                            //prevLista = lista;
-                        }
-                    }
-                }
-            }
-            lastPageNum = prevLista.LastPageNum;
-
-            foreach (SpravaLista lista in reportListe)
-            {
-                // Center the list horizontally
-                float delta = (contentBounds.Right - lista.getRightEnd()) / 2;  // moze da bude i negativno
-                if (delta < -contentBounds.X)
-                    delta = -contentBounds.X;
-                foreach (ReportColumn c in lista.Columns)
-                {
-                    c.X += delta;
-                }
-            }
+            poredjajListeUJednuKolonu(g, contentBounds, reportListe, svakaSpravaNaPosebnojStrani);
         }
 
         public override void drawContent(Graphics g, int pageNum)
@@ -381,8 +275,53 @@ namespace Bilten.Report
             return result;
         }
 
-        public void createLayout(Graphics g, RectangleF contentBounds)
+        public override List<int> getAdjustableColumnIndexes()
         {
+            List<int> result = new List<int>();
+            result.Add(getImeColumnIndex());
+            result.Add(getKlubColumnIndex());
+            return result;
+        }
+
+        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+         List<bool> rszByGrid)
+        {
+            // First, create columns
+
+            float imeWidth;
+            float klubWidth;
+            if (columnWidths.Count == 0)
+            {
+                if (resizeByGrid)
+                {
+                    float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+                    float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
+                    imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+                    klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+                }
+                else
+                {
+                    // Resize by content
+                    // Proizvoljna vrednost. Koristi se u prvom pozivu setupContent. U drugom pozivu setupContent, imeWidth
+                    // i klubWidth ce dobiti pravu vrednost, koja je dovoljna da i najduzi tekst stane bez
+                    // odsecanja.
+                    imeWidth = 1f;
+                    klubWidth = 1f;
+                }
+            }
+            else if (columnWidths.Count == 2)
+            {
+                imeWidth = columnWidths[0];
+                klubWidth = columnWidths[1];
+            }
+            else
+            {
+                throw new Exception("Trenutno, samo 0 ili 2 kolone mogu da se podesavaju");
+            }
+            createColumns(g, contentBounds, imeWidth, klubWidth);
+
+            // Then, layout contents vertically
+
             if (obaPreskoka)
                 itemHeight = itemFont.GetHeight(g) * 2.9f;
             else
@@ -393,42 +332,6 @@ namespace Bilten.Report
 
             createListLayout(groupHeaderHeight, itemHeight, 0f, afterGroupHeight, 0f,
                 contentBounds);
-        }
-
-        public void setupContent(Graphics g, RectangleF contentBounds)
-        {
-            createColumns(g, contentBounds);
-            createLayout(g, contentBounds);
-        }
-
-        public void setupContent(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
-        {
-            createColumns(g, contentBounds, imeWidth, klubWidth);
-            createLayout(g, contentBounds);
-        }
-
-        private void createColumns(Graphics g, RectangleF contentBounds)
-        {
-            float imeWidth;
-            float klubWidth;
-            if (resizeByGrid)
-            {
-                float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
-                float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
-                imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
-                klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            }
-            else
-            {
-                // Resize by content
-                // Proizvoljna vrednost. Koristi se u prvom pozivu setupContent. U drugom pozivu setupContent, imeWidth
-                // i klubWidth ce dobiti pravu vrednost, koja je dovoljna da i najduzi tekst stane bez
-                // odsecanja.
-                imeWidth = 1f;
-                klubWidth = 1f;
-            }
-            createColumns(g, contentBounds, imeWidth, klubWidth);
-
         }
 
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)

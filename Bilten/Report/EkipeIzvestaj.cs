@@ -36,7 +36,7 @@ namespace Bilten.Report
 
         protected override void doSetupContent(Graphics g)
         {
-            poredjajListeUJednuKolonu(g, contentBounds, reportListe);
+            poredjajListeUJednuKolonu(g, contentBounds, reportListe, false);
         }
 
 		public override void drawContent(Graphics g, int pageNum)
@@ -221,7 +221,7 @@ namespace Bilten.Report
             return result;
         }
 
-        public override List<int> getColumnIndexes()
+        public override List<int> getAdjustableColumnIndexes()
         {
             List<int> result = new List<int>();
             result.Add(getImeColumnIndex());

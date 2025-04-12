@@ -81,18 +81,18 @@ namespace Bilten.Report
         }
 
         // TODO5: Promeni i ostale izvestaje kao sto je promenjen ovaj izvestaj
-        //        - Dodaj parametar resizeByGrid
-        //        - Promeni izvestaj.doSetupContent da uzima u obzir resizeByGrid
+        //        - Promeni izvestaj.doSetupContent da poziva poredjajListeUJednuKolonu
         //        - Dodaj sve metode tipa lista.getImeColumnIndex()
-        //        - Izdvoj metod lista.createLayout
-        //        - Promeni lista.createColumns(Graphics g, RectangleF contentBounds) da uzima u obzir resizeByGrid
-        //        - Promeni lista.doCreateColumns da uzima u obzir TOTAL_MAX_TEXT_UKUPNO itd
+        //        - Dodaj metod lista.getAdjustableColumnIndexes()
+        //        - Dodaj metod lista.doSetupContent()
+        //        - Samo jedan metod lista.createColumns() treba da postoji
+        //        - Promeni lista.createColumns da uzima u obzir TOTAL_MAX_TEXT_UKUPNO itd
         //        - Naslove kolona direktno stavljaj u addColumn() pozive.
-        //        - Prebaci deo "Center columns horizontally" u Izvestaj, na kraj metoda doSetupContent
+        //        - Izbaci deo "Center columns horizontally"
 
         protected override void doSetupContent(Graphics g)
         {
-            poredjajListeUJednuKolonu(g, contentBounds, reportListe);
+            poredjajListeUJednuKolonu(g, contentBounds, reportListe, false);
         }
 
 		public override void drawContent(Graphics g, int pageNum)
@@ -175,7 +175,7 @@ namespace Bilten.Report
             this.resizeByGrid = resizeByGrid;
 
             this.visebojPoKlubovimaIKategorijama = true;
-            this.ShowHeaderOnSecondListOnPage = false;
+            this.ShowHeaderForSecondListOnPage = false;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -439,7 +439,7 @@ namespace Bilten.Report
             return result;
         }
 
-        public override List<int> getColumnIndexes()
+        public override List<int> getAdjustableColumnIndexes()
         {
             List<int> result = new List<int>();
             result.Add(getImeColumnIndex());
