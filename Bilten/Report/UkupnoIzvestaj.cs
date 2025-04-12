@@ -89,6 +89,7 @@ namespace Bilten.Report
         //        - Promeni lista.createColumns(Graphics g, RectangleF contentBounds) da uzima u obzir resizeByGrid
         //        - Promeni lista.doCreateColumns da uzima u obzir TOTAL_MAX_TEXT_UKUPNO itd
         //        - Naslove kolona direktno stavljaj u addColumn() pozive.
+        //        - Prebaci deo "Center columns horizontally" u Izvestaj, na kraj metoda doSetupContent
 
         protected override void doSetupContent(Graphics g)
         {
@@ -144,6 +145,7 @@ namespace Bilten.Report
                     if (i == 0)
                     {
                         lista.setupContent(g, contentBounds);
+
                         float imeWidth;
                         if (lista.ResizeByGrid)
                             imeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
@@ -202,6 +204,18 @@ namespace Bilten.Report
                 }
             }
             lastPageNum = prevLista.LastPageNum;
+
+            foreach (UkupnoLista lista in reportListe)
+            {
+                // Center the list horizontally
+                float delta = (contentBounds.Right - lista.getRightEnd()) / 2;  // moze da bude i negativno
+                if (delta < -contentBounds.X)
+                    delta = -contentBounds.X;
+                foreach (ReportColumn c in lista.Columns)
+                {
+                    c.X += delta;
+                }
+            }
         }
 
 		public override void drawContent(Graphics g, int pageNum)
@@ -694,7 +708,7 @@ namespace Bilten.Report
 
             float xKval = xTotal + totalWidth;
 
-            float xRightEnd = xKval;
+            xRightEnd = xKval;
             if (kvalColumn)
                 xRightEnd += kvalWidth;
 
@@ -710,39 +724,6 @@ namespace Bilten.Report
             float xRazbojTot = xRazbojE + spravaEWidth;
             float xVratiloE = xVratilo + spravaDWidth;
             float xVratiloTot = xVratiloE + spravaEWidth;
-
-            float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
-            if (delta < -contentBounds.X)
-                delta = -contentBounds.X;
-            xRank += delta;
-            xBroj += delta;
-            xIme += delta;
-            xKlub += delta;
-            xKategorija += delta;
-            xParter += delta;
-            xKonj += delta;
-            xKarike += delta;
-            xPreskok += delta;
-            xRazboj += delta;
-            xVratilo += delta;
-            xPenalty += delta;
-            xTotal += delta;
-            xKval += delta;
-            xRightEnd += delta;
-
-            xParterE += delta;
-            xKonjE += delta;
-            xKarikeE += delta;
-            xPreskokE += delta;
-            xRazbojE += delta;
-            xVratiloE += delta;
-
-            xParterTot += delta;
-            xKonjTot += delta;
-            xKarikeTot += delta;
-            xPreskokTot += delta;
-            xRazbojTot += delta;
-            xVratiloTot += delta;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
             StringFormat brojFormat = Izvestaj.centerCenterFormat;
@@ -884,7 +865,7 @@ namespace Bilten.Report
 
             float xKval = xTotal + totalWidth;
 
-            float xRightEnd = xKval;
+            xRightEnd = xKval;
             if (kvalColumn)
                 xRightEnd += kvalWidth;
 
@@ -894,31 +875,6 @@ namespace Bilten.Report
             float xPreskokTot = xPreskok + spravaEWidth;
             float xRazbojTot = xRazboj + spravaEWidth;
             float xVratiloTot = xVratilo + spravaEWidth;
-
-            float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
-            if (delta < -contentBounds.X)
-                delta = -contentBounds.X;
-            xRank += delta;
-            xBroj += delta;
-            xIme += delta;
-            xKlub += delta;
-            xParter += delta;
-            xKonj += delta;
-            xKarike += delta;
-            xPreskok += delta;
-            xRazboj += delta;
-            xVratilo += delta;
-            xPenalty += delta;
-            xTotal += delta;
-            xKval += delta;
-            xRightEnd += delta;
-
-            xParterTot += delta;
-            xKonjTot += delta;
-            xKarikeTot += delta;
-            xPreskokTot += delta;
-            xRazbojTot += delta;
-            xVratiloTot += delta;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
             StringFormat brojFormat = Izvestaj.centerCenterFormat;
@@ -1109,8 +1065,8 @@ namespace Bilten.Report
             RectangleF itemRect2 = new RectangleF(itemRect.X, itemRect.Y + itemRect.Height / 3, itemRect.Width,
                 itemRect.Height / 3);
 
-            string item1 = this.getFormattedString(itemsRow, itemsIndex);
-            string item2 = this.getFormattedString(itemsRow, itemsIndex + 1, this.format2);
+            string item1 = getFormattedString(itemsRow, itemsIndex);
+            string item2 = getFormattedString(itemsRow, itemsIndex + 1, this.format2);
             g.DrawString(item1, itemFont, blackBrush, itemRect1, this.ItemRectFormat);
             g.DrawString(item2, itemFont, blackBrush, itemRect2, this.ItemRectFormat);
 
@@ -1118,7 +1074,7 @@ namespace Bilten.Report
             {
                 RectangleF itemRect3 = new RectangleF(itemRect.X, itemRect.Y + 2 * itemRect.Height / 3, itemRect.Width,
                     itemRect.Height / 3);
-                string item3 = this.getFormattedString(itemsRow, itemsIndex + 2, this.format3);
+                string item3 = getFormattedString(itemsRow, itemsIndex + 2, this.format3);
                 g.DrawString(item3, itemFont, blackBrush, itemRect3, this.ItemRectFormat);
             }
         }

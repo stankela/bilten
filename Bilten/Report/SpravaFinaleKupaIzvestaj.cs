@@ -242,7 +242,7 @@ namespace Bilten.Report
             float xTotal = xSprava + (ocenaWidth * brojOcena);
             float xKval = xTotal + ocenaWidth;
 
-            float xRightEnd = xKval;
+            xRightEnd = xKval;
             if (kvalColumn)
                 xRightEnd += kvalWidth;
 

@@ -395,7 +395,7 @@ namespace Bilten.Report
             }
             float xKlub = xIme + imeWidth;
             float xKategorija = xKlub + klubWidth;
-            float xRightEnd = xKategorija + kategorijaWidth;
+            xRightEnd = xKategorija + kategorijaWidth;
 
             float rightMargin;
             if (!dveKolone)

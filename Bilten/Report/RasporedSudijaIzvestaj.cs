@@ -388,7 +388,7 @@ namespace Bilten.Report
             float xFunkcija = contentBounds.X + (columnNumber - 1) * contentBounds.Width / 2;
             float xIme = xFunkcija + funkcijaWidth;
             float xKlub = xIme + imeWidth;
-            float xRightEnd = xKlub + klubWidth;
+            xRightEnd = xKlub + klubWidth;
 
             float rightMargin;
             if (!dveKolone)

@@ -317,7 +317,6 @@ namespace Bilten.Report
             float xSkok;
             float xSprava;
             float xTotal;
-            float xRightEnd;
             do {
                 ocenaWidthCm -= 0.1f;
                 ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);

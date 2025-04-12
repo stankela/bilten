@@ -151,7 +151,8 @@ namespace Bilten.Report
 			set { headerFormat = value; }
 		}
 
-        protected string getFormattedString(object[] itemsRow, int itemsIndex, string fmt)
+        // static method
+        public static string getFormattedString(object[] itemsRow, int itemsIndex, string fmt)
         {
             object item = itemsRow[itemsIndex];
             if (item == null)
@@ -352,7 +353,13 @@ namespace Bilten.Report
             set { groupHeaderVisible = value; }
 		}
 
-		protected Font itemsHeaderFont;
+        protected float xRightEnd;  // TODO5: Izbrisi ovaj member kada preuredis sve izvestaje
+        public float getRightEnd()
+        {
+            return columns[columns.Count - 1].X + columns[columns.Count - 1].Width;
+        }
+
+        protected Font itemsHeaderFont;
 		protected Brush blackBrush;
         protected Pen pen;
 
@@ -375,6 +382,8 @@ namespace Bilten.Report
         protected const string TOTAL_MAX_TEXT_UKUPNO = "000.000";
         protected const string TOTAL_MAX_TEXT_UKUPNO_BON_PEN = "0000.000";
         protected const string QUAL_MAX_TEXT = "QQ";
+
+        protected const string SKOK_MAX_TEXT = "00";
 
         protected float getColumnWidth(Graphics g, string maxText, string columnTitle)
         {
@@ -627,7 +636,7 @@ namespace Bilten.Report
 			return false;
 		}
 
-		public void drawContent(Graphics g, RectangleF contentBounds, int pageNum)
+        public void drawContent(Graphics g, RectangleF contentBounds, int pageNum)
 		{
             if (!listLayout.ContainsKey(pageNum))
                 return;
@@ -639,14 +648,14 @@ namespace Bilten.Report
 				if (part.MasterGroupHeader)
 				{
 					RectangleF masterGroupHeaderRect = new RectangleF(
-						contentBounds.X, y, contentBounds.Width, masterGroupHeaderHeight);
+                        columns[0].X, y, getRightEnd() - columns[0].X, masterGroupHeaderHeight);
 					drawMasterGroupHeader(g, part.GroupId, masterGroupHeaderRect);
 					y += masterGroupHeaderHeight;
 				}
 				if (part.GroupHeader)
 				{
 					RectangleF groupHeaderRect = new RectangleF(
-						contentBounds.X, y, contentBounds.Width, groupHeaderHeight);
+                        columns[0].X, y, getRightEnd() - columns[0].X, groupHeaderHeight);
                     if (GroupHeaderVisible)
                     {
                         drawGroupHeader(g, part.GroupId, groupHeaderRect);
@@ -671,7 +680,7 @@ namespace Bilten.Report
                 if (part.GroupFooter)
                 {
                     RectangleF groupFooterRect = new RectangleF(
-                        contentBounds.X, columns[0].getItemRect().Y, contentBounds.Width, groupFooterHeight);
+                        columns[0].X, columns[0].getItemRect().Y, getRightEnd() - columns[0].X, groupFooterHeight);
                     drawGroupFooter(g, part.GroupId, groupFooterRect);
                 }
 			}

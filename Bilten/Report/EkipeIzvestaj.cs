@@ -78,6 +78,7 @@ namespace Bilten.Report
                     if (i == 0)
                     {
                         lista.setupContent(g, contentBounds);
+
                         float imeWidth;
                         if (lista.ResizeByGrid)
                             imeWidth = lista.Columns[lista.getImeColumnIndex()].Width;
@@ -138,6 +139,18 @@ namespace Bilten.Report
                 }
             }
             lastPageNum = prevLista.LastPageNum;
+
+            foreach (EkipeLista lista in reportListe)
+            {
+                // Center the list horizontally
+                float delta = (contentBounds.Right - lista.getRightEnd()) / 2;  // moze da bude i negativno
+                if (delta < -contentBounds.X)
+                    delta = -contentBounds.X;
+                foreach (ReportColumn c in lista.Columns)
+                {
+                    c.X += delta;
+                }
+            }
         }
 
 		public override void drawContent(Graphics g, int pageNum)
@@ -163,8 +176,6 @@ namespace Bilten.Report
         private bool stampajBroj;
         private float kvalWidth;
         private bool prikaziKategoriju;
-
-        private float delta;
 
         private bool resizeByGrid;
         public bool ResizeByGrid
@@ -330,6 +341,7 @@ namespace Bilten.Report
             return result;
         }
 
+        // TODO5: Bolje ime za ovaj metod je layoutContentsVertically()
         private void createLayout(Graphics g, RectangleF contentBounds)
         {
             itemHeight = itemFont.GetHeight(g) * 1.4f;
@@ -434,27 +446,9 @@ namespace Bilten.Report
 
             float xKval = xTotal + totalWidth;
 
-            float xRightEnd = xKval;
+            xRightEnd = xKval;
             if (kvalColumn)
                 xRightEnd += kvalWidth;
-
-            delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
-            if (delta < -contentBounds.X)
-                delta = -contentBounds.X;
-            xBroj += delta;
-            xIme += delta;
-            xKlub += delta;
-            xKategorija += delta;
-            xParter += delta;
-            xKonj += delta;
-            xKarike += delta;
-            xPreskok += delta;
-            xRazboj += delta;
-            xVratilo += delta;
-            xPenalty += delta;
-            xTotal += delta;
-            xKval += delta;
-            xRightEnd += delta;
 
             StringFormat brojFormat = Izvestaj.centerCenterFormat;
             StringFormat imeFormat = Izvestaj.nearCenterFormat;
@@ -511,7 +505,7 @@ namespace Bilten.Report
         protected override void drawGroupHeader(Graphics g, int groupId, RectangleF groupHeaderRect)
         {
             float headerHeight = groupHeaderRect.Height / 2;
-            RectangleF nazivEkipeRectangle = new RectangleF(groupHeaderRect.X + delta,
+            RectangleF nazivEkipeRectangle = new RectangleF(groupHeaderRect.X,
                 groupHeaderRect.Y, groupHeaderRect.Width, headerHeight);
 
             ReportGrupa gr = groups[groupId];
@@ -575,7 +569,7 @@ namespace Bilten.Report
                         columnFooterRect.Width, columnFooterRect.Height);
                     g.DrawRectangle(pen, columnFooterRect.X, columnFooterRect.Y,
                         columnFooterRect.Width, columnFooterRect.Height);
-                    string text = getFormattedString(gr.Data, getSpravaGroupIndex(col.Sprava), fmtTot);
+                    string text = ReportColumn.getFormattedString(gr.Data, getSpravaGroupIndex(col.Sprava), fmtTot);
                     g.DrawString(text, itemFont, blackBrush,
                         columnFooterRect, Izvestaj.centerCenterFormat);
                 }
@@ -587,7 +581,7 @@ namespace Bilten.Report
                         columnFooterRect.Width, columnFooterRect.Height);
 
                     string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
-                    string penalty = getFormattedString(gr.Data, totalIndex + 2, fmtPen);
+                    string penalty = ReportColumn.getFormattedString(gr.Data, totalIndex + 2, fmtPen);
                     if (penalty != String.Empty)
                     {
                         g.DrawString(penalty, itemFont, blackBrush,
@@ -601,7 +595,7 @@ namespace Bilten.Report
                     g.DrawRectangle(pen, columnFooterRect.X, columnFooterRect.Y,
                         columnFooterRect.Width, columnFooterRect.Height);
 
-                    string text = getFormattedString(gr.Data, totalIndex, fmtTot);
+                    string text = ReportColumn.getFormattedString(gr.Data, totalIndex, fmtTot);
                     g.DrawString(text, itemFont, blackBrush,
                         columnFooterRect, Izvestaj.centerCenterFormat);
                 }
@@ -631,7 +625,6 @@ namespace Bilten.Report
 
                     case Sprava.Vratilo:
                         return 7;
-
                 }
             }
             else
@@ -652,20 +645,6 @@ namespace Bilten.Report
                 }
             }
             return 0;
-        }
-
-        private string getFormattedString(object[] data, int index, string format)
-        {
-            object item = data[index];
-            if (item == null)
-                return String.Empty;
-            else if (String.IsNullOrEmpty(format))
-                return item.ToString();
-            else
-            {
-                string fmt = "{0:" + format + "}";
-                return String.Format(fmt, item);
-            }
         }
     }
 }

@@ -140,7 +140,7 @@ namespace Bilten.Report
             float xTotal = xVratilo + spravaWidth;
             if (gimnastika == Gimnastika.ZSG)
                 xTotal = xRazboj;
-            float xRightEnd = xTotal + totalWidth;
+            xRightEnd = xTotal + totalWidth;
 
             float dWidth = (xKonj - xParter) / 3;
 

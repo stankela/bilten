@@ -140,7 +140,7 @@ namespace Bilten.Report
 
             float xKval = xTotal + totalWidth;
 
-            float xRightEnd = xKval;
+            xRightEnd = xKval;
             if (kvalColumn)
                 xRightEnd += kvalWidth;
 

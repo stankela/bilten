@@ -149,7 +149,7 @@ namespace Bilten.Report
             float xKlub = xGodina + godinaWidth;
             float xDrzava = xKlub + klubWidth;
             
-            float xRightEnd = xDrzava + drzavaWidth;
+            xRightEnd = xDrzava + drzavaWidth;
             
             float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
             if (delta < -contentBounds.X)

@@ -432,7 +432,7 @@ namespace Bilten.UI
                         obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
                         form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                         /*markFirstRows*/false, /*numRowsToMark*/0, brojEOcena, takmicenje, form.PrikaziBonus,
-                        new Font(form.TekstFont, form.TekstFontSize)));
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 else
                 {
@@ -446,7 +446,7 @@ namespace Bilten.UI
                             kvalColumnVisible(), documentName, form.PrikaziPenalSprave,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                             /*markFirstRows*/!kvalColumnVisible(), /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena,
-                            takmicenje, form.PrikaziBonus, new Font(form.TekstFont, form.TekstFontSize)));
+                            takmicenje, form.PrikaziBonus, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                     }
                     else
                     {
@@ -457,7 +457,7 @@ namespace Bilten.UI
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView,
                             /*markFirstRows*/!kvalColumnVisible(),
                             /*numRowsToMark*/getNumMedalists(rezultati), brojEOcena, takmicenje, form.PrikaziBonus,
-                            new Font(form.TekstFont, form.TekstFontSize)));
+                            new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                     }
                 }
 
