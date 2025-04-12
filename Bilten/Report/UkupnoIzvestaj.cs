@@ -81,6 +81,7 @@ namespace Bilten.Report
         }
 
         // TODO5: Promeni i ostale izvestaje kao sto je promenjen ovaj izvestaj
+        //        - Dodaj resizeByGrid u Izvestaj i Liste
         //        - Promeni izvestaj.doSetupContent da poziva poredjajListeUJednuKolonu
         //        - Dodaj sve metode tipa lista.getImeColumnIndex()
         //        - Dodaj metod lista.getAdjustableColumnIndexes()

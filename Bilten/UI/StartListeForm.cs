@@ -1560,7 +1560,7 @@ namespace Bilten.UI
                         brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
                         form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl(), takmicenje, form.PrikaziBonus,
-                        new Font(form.TekstFont, /*form.TekstFontSize*/10)));
+                        new Font(form.TekstFont, /*form.TekstFontSize*/10), form.ResizeByGrid));
                 }
                 else
                 {
@@ -1568,7 +1568,7 @@ namespace Bilten.UI
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena,
                         form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
-                        form.PrikaziBonus, new Font(form.TekstFont, /*form.TekstFontSize*/10)));
+                        form.PrikaziBonus, new Font(form.TekstFont, /*form.TekstFontSize*/10), form.ResizeByGrid));
                 }
 
                 p.ShowDialog();
