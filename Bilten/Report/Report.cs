@@ -353,10 +353,23 @@ namespace Bilten.Report
             set { groupHeaderVisible = value; }
 		}
 
+        private bool showHeaderOnSecondListOnPage = true;
+        public bool ShowHeaderOnSecondListOnPage
+		{
+            get { return showHeaderOnSecondListOnPage; }
+            set { showHeaderOnSecondListOnPage = value; }
+		}
+
         protected float xRightEnd;  // TODO5: Izbrisi ovaj member kada preuredis sve izvestaje
         public float getRightEnd()
         {
             return columns[columns.Count - 1].X + columns[columns.Count - 1].Width;
+        }
+
+        protected bool resizeByGrid;
+        public bool ResizeByGrid
+        {
+            get { return resizeByGrid; }
         }
 
         protected Font itemsHeaderFont;
@@ -519,6 +532,60 @@ namespace Bilten.Report
 			}
 			return max;
 		}
+
+        public virtual List<int> getColumnIndexes()
+        {
+            List<int> result = new List<int>();
+            return result;
+        }
+
+        public virtual void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+            List<bool> resizeByGrid)
+        {
+
+        }
+
+        public void setupContent(Graphics g, RectangleF contentBounds, int passIndex, List<int> columnIndexes,
+            List<float> columnMaxWidths)
+        {
+            if (columnMaxWidths.Count == 0)
+            {
+                // Ova grana se izvrsava samo pri prvom pozivu za prvu listu u izvestaju
+                for (int i = 0; i < columnIndexes.Count; ++i)
+                {
+                    columnMaxWidths.Add(0.0f);
+                }
+            }
+            if (passIndex == 0)
+            {
+                List<bool> rszByGrid = new List<bool>();
+                for (int i = 0; i < columnIndexes.Count; ++i)
+                {
+                    // Koristimo vrednost koja je podesena za listu, ali dozvoljavamo izvedenoj klasi da promeni za neku
+                    // od kolona ako je potrebno. Npr. u stampanju viseboja po klubovima i kategorijama nemamo kategoriju u
+                    // gridu, tako da resize by grid mora da bude false
+                    rszByGrid.Add(ResizeByGrid);
+                }
+                doSetupContent(g, contentBounds, new List<float>()/* ne koristi se u prvom pasu */, rszByGrid);
+                for (int i = 0; i < columnIndexes.Count; ++i)
+                {
+                    if (columnIndexes[i] != -1)
+                    {
+                        float width;
+                        if (rszByGrid[i])
+                            width = Columns[columnIndexes[i]].Width;
+                        else
+                            width = getColumnMaxWidth(columnIndexes[i], g);
+                        if (width > columnMaxWidths[i])
+                            columnMaxWidths[i] = width;
+                    }
+                }
+            }
+            else
+            {
+                doSetupContent(g, contentBounds, columnMaxWidths, new List<bool>() /* ne koristi se u drugom pasu */);
+            }
+        }
 
 		protected void createListLayout(float groupHeaderHeight, float itemHeight, 
             float groupFooterHeight,

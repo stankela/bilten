@@ -3,6 +3,7 @@ using System.Drawing;
 using Bilten.Domain;
 using System.Drawing.Printing;
 using Bilten.UI;
+using System.Collections.Generic;
 
 namespace Bilten.Report
 {
@@ -131,6 +132,8 @@ namespace Bilten.Report
         private Image logo5Image;
         private Image logo6Image;
         private Image logo7Image;
+
+        protected List<ReportLista> reportListe = new List<ReportLista>();
 
         public Izvestaj(Takmicenje takmicenje)
         {
@@ -633,7 +636,96 @@ namespace Bilten.Report
 		
 		}
 
-		public virtual void drawContent(Graphics g, int pageNum)
+        protected void poredjajListeUJednuKolonu(Graphics g, RectangleF contentBounds, List<ReportLista> liste)
+        {
+            float startYPrvaStrana = contentBounds.Y;
+            float startYOstaleStrane = contentBounds.Y;
+
+            // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
+
+            // Za one kolone cije se sirine razlikuju od liste do liste (npr ime, klub, kategorija), a koje zelimo da u
+            // celom izvestaju imaju istu sirinu. 
+            List<int> columnIndexes;
+            List<float> columnMaxWidths = new List<float>();
+
+            ReportLista prevLista = null;
+            for (int i = 0; i < 2; ++i)
+            {
+                prevLista = null;
+                int j = 0;
+                bool prebaciNaSledecuStranu = false;
+                while (j < liste.Count)
+                {
+                    ReportLista lista = liste[j];
+                    if (prevLista == null)
+                    {
+                        lista.FirstPageNum = 1;
+                        lista.StartY = startYPrvaStrana;
+                        lista.GroupHeaderVisible = true;
+                    }
+                    else if (prebaciNaSledecuStranu)
+                    {
+                        lista.FirstPageNum = prevLista.LastPageNum + 1;
+                        lista.StartY = startYOstaleStrane;
+                        prebaciNaSledecuStranu = false;
+                        lista.GroupHeaderVisible = true;
+                    }
+                    else
+                    {
+                        // Nastavak na istoj strani
+                        lista.FirstPageNum = prevLista.LastPageNum;
+                        // Svaka lista ima implicitno dodat prazan prostor nakon liste (koji je jednak velicini vrste),
+                        // i EndY pokazuje nakon tog praznog prostoja.
+                        lista.StartY = prevLista.EndY;
+                        lista.GroupHeaderVisible = lista.ShowHeaderOnSecondListOnPage;
+                    }
+
+                    int firstPageNum = lista.FirstPageNum;
+                    columnIndexes = lista.getColumnIndexes();
+                    lista.setupContent(g, contentBounds, i, columnIndexes, columnMaxWidths);
+
+                    if (lista.LastPageNum == firstPageNum)
+                    {
+                        // Cela lista je stala na istu stranu
+                        ++j;
+                        prevLista = lista;
+                    }
+                    else
+                    {
+                        // Lista nije stala na istu stranu
+                        float prvaStranaListHeight = contentBounds.Bottom - lista.StartY;
+                        float zadnjaStranaListHeight = lista.EndY - contentBounds.Top;
+                        if (prvaStranaListHeight + zadnjaStranaListHeight >= contentBounds.Height)
+                        {
+                            // Lista ne moze cela da stane na stranu cak i da pocnemo sa vrha strane, pa mora da ostane
+                            // izlomljena (prvi deo na jednoj strani, drugi deo na drugoj strani).
+                            ++j;
+                            prevLista = lista;
+                        }
+                        else
+                        {
+                            // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
+                            prebaciNaSledecuStranu = true;
+                        }
+                    }
+                }
+            }
+            lastPageNum = prevLista.LastPageNum;
+
+            foreach (ReportLista lista in liste)
+            {
+                // Center the list horizontally
+                float delta = (contentBounds.Right - lista.getRightEnd()) / 2;  // moze da bude i negativno
+                if (delta < -contentBounds.X)
+                    delta = -contentBounds.X;
+                foreach (ReportColumn c in lista.Columns)
+                {
+                    c.X += delta;
+                }
+            }
+        }
+
+        public virtual void drawContent(Graphics g, int pageNum)
 		{
 
 		}

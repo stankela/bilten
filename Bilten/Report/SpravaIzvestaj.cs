@@ -213,12 +213,6 @@ namespace Bilten.Report
         private bool stampajBroj;
         private bool prikaziBonus;
 
-        private bool resizeByGrid;
-        public bool ResizeByGrid
-        {
-            get { return resizeByGrid; }
-        }
-
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatSprava> rezultati,
             bool kvalColumn, Sprava sprava, bool prikaziPenal, DataGridView formGrid, bool markFirstRows,
