@@ -555,10 +555,10 @@ namespace Bilten.Report
             float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            float rankWidthCm = 0.7f;
+            float redBrojWidthCm = 0.7f;
 
-            float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-            float brojWidth = 2 * rankWidth;
+            float redBrojWidth = Izvestaj.convCmToInch(redBrojWidthCm);
+            float brojWidth = 2 * redBrojWidth;
             float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
             float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
             float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
@@ -569,13 +569,13 @@ namespace Bilten.Report
                 // pune liste tako da su kolone manje od kolona prazne liste, konacna velicina kolone ce ipak biti ona u 
                 // praznoj listi. Ovim se to sprecava.
 
-                // rankWidth je kao gore
-                imeWidth = rankWidth * 2;
-                klubWidth = rankWidth * 2;
-                ocenaWidth = rankWidth * 2;
+                // redBrojWidth je kao gore
+                imeWidth = redBrojWidth * 2;
+                klubWidth = redBrojWidth * 2;
+                ocenaWidth = redBrojWidth * 2;
             }
 
-            doCreateColumns(g, contentBounds, rankWidth, brojWidth, imeWidth, klubWidth, ocenaWidth);
+            doCreateColumns(g, contentBounds, redBrojWidth, brojWidth, imeWidth, klubWidth, ocenaWidth);
         }
 
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
@@ -583,28 +583,28 @@ namespace Bilten.Report
             float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
             float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
 
-            float rankWidthCm = 0.7f;
-            float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-            float brojWidth = 2 * rankWidth;
+            float redBrojWidthCm = 0.7f;
+            float redBrojWidth = Izvestaj.convCmToInch(redBrojWidthCm);
+            float brojWidth = 2 * redBrojWidth;
             float ocenaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
 
-            doCreateColumns(g, contentBounds, rankWidth, brojWidth, imeWidth, klubWidth, ocenaWidth);
+            doCreateColumns(g, contentBounds, redBrojWidth, brojWidth, imeWidth, klubWidth, ocenaWidth);
         }
 
-        private void doCreateColumns(Graphics g, RectangleF contentBounds, float rankWidth, float brojWidth, float imeWidth,
-            float klubWidth, float ocenaWidth)
+        private void doCreateColumns(Graphics g, RectangleF contentBounds, float redBrojWidth, float brojWidth,
+            float imeWidth, float klubWidth, float ocenaWidth)
         {
-            float xRank = contentBounds.X + (columnNumber - 1) * contentBounds.Width / 2;
+            float xRedBroj = contentBounds.X + (columnNumber - 1) * contentBounds.Width / 2;
             float xBroj = 0f;
             float xIme;
             if (stampajBroj)
             {
-                xBroj = xRank + rankWidth;
+                xBroj = xRedBroj + redBrojWidth;
                 xIme = xBroj + brojWidth;
             }
             else
             {
-                xIme = xRank + rankWidth;
+                xIme = xRedBroj + redBrojWidth;
             }
             float xKlub = xIme + imeWidth;
             float xOcena = xKlub + klubWidth;
@@ -625,7 +625,7 @@ namespace Bilten.Report
                 delta = contentBounds.X - (2 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moze da bude i negativno
                 if (delta > contentBounds.X)
                     delta = contentBounds.X;
-                xRank -= delta;
+                xRedBroj -= delta;
                 xBroj -= delta;
                 xIme -= delta;
                 xKlub -= delta;
@@ -637,7 +637,7 @@ namespace Bilten.Report
                 delta = (1 / 3.0f) * (contentBounds.X - (xRightEnd - rightMargin));  // moze da bude i negativno
                 if (delta < 0)
                     delta = 0.0f;
-                xRank += delta;
+                xRedBroj += delta;
                 xBroj += delta;
                 xIme += delta;
                 xKlub += delta;
@@ -645,7 +645,7 @@ namespace Bilten.Report
                 xRightEnd += delta;
             }
 
-            StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat redBrojFormat = Izvestaj.centerCenterFormat;
             StringFormat brojFormat = Izvestaj.centerCenterFormat;
 
             StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
@@ -658,13 +658,13 @@ namespace Bilten.Report
 
             StringFormat ocenaFormat = Izvestaj.centerCenterFormat;
 
-            StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat redBrojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat brojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat ocenaHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String rankTitle = Opcije.Instance.RedBrojString;
+            String redBrojTitle = Opcije.Instance.RedBrojString;
             String brojTitle = Opcije.Instance.BrojString;
             String imeTitle = Opcije.Instance.ImeString;
             String klubTitle = Opcije.Instance.KlubDrzavaString;
@@ -672,7 +672,7 @@ namespace Bilten.Report
 
             Columns.Clear();
 
-            ReportColumn column1 = addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            ReportColumn column1 = addColumn(xRedBroj, redBrojWidth, redBrojFormat, redBrojTitle, redBrojHeaderFormat);
             column1.Image = SlikeSprava.getImage(sprava);
             column1.Split = true;
             column1.Span = true;

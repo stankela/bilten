@@ -596,7 +596,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Sprava sprava = Sprava.Undefined;

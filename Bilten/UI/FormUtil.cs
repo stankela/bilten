@@ -8,7 +8,7 @@ namespace Bilten.UI
 {
     class FormUtil
     {
-        public static void initHeaderFooterFromForm(HeaderFooterForm form)
+        public static void initOpcijeFromHeaderFooterForm(HeaderFooterForm form)
         {
             Opcije o = Opcije.Instance;
             o.Header1Text = form.Header1Text;

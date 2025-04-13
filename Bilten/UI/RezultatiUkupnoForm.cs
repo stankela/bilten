@@ -281,7 +281,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             if (p == null)
@@ -716,7 +716,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             PoredakUkupno p = ActiveTakmicenje.getPoredakUkupno(deoTakKod);
@@ -847,7 +847,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
             
             List<RezultatUkupno> rezultati = new List<RezultatUkupno>();

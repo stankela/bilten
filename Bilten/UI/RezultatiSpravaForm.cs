@@ -359,7 +359,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;
@@ -973,7 +973,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;

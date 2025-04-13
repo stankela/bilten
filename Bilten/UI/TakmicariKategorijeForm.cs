@@ -638,6 +638,7 @@ namespace Bilten.UI
         private void btnPrint_Click(object sender, EventArgs e)
         {
             string nazivIzvestaja;
+            // TODO5: Dodaj ovo u jezik
             if (takmicenje.Gimnastika == Gimnastika.MSG)
                 nazivIzvestaja = "Gimnasti" + Jezik.chMalo + "ari";
             else
@@ -664,9 +665,22 @@ namespace Bilten.UI
                 form.Header4Text = nazivIzvestaja;
             }
 
+            // TODO5: Datum rodjenja prikazuj sa svih 8 cifara dd.mm.gggg, osim ako je samo godina u pitanju. I u prozoru
+            // i u izvestaju.
+
+            // Takmicari kategorije imaju poseban font size za tekst
+            form.TekstFontSize = Opcije.Instance.TakmicariKategorijeFontSize;
+
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+
+            // Azuriraj Opcije. TekstFontSize treba da ostane nepromenjen, a TakmicariKategorijeFontSize treba da dobije
+            // novu vrednost
+            int oldTekstFontSize = Opcije.Instance.TekstFontSize;
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
+            Opcije.Instance.TekstFontSize = oldTekstFontSize;
+            Opcije.Instance.TakmicariKategorijeFontSize = form.TekstFontSize;
+
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;
@@ -682,7 +696,6 @@ namespace Bilten.UI
                     TypeDescriptor.GetProperties(typeof(GimnasticarUcesnik))["KlubDrzava"];
                 gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc,
                     ListSortDirection.Ascending));*/
-
 
                 PropertyDescriptor[] propDesc;
                 ListSortDirection[] sortDir;
@@ -711,8 +724,8 @@ namespace Bilten.UI
                 }
                 gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc, sortDir));
 
-                p.setIzvestaj(new TakmicariIzvestaj(gimnasticari,
-                    takmicenje.Gimnastika, getActiveDataGridViewUserControl().DataGridView, nazivIzvestaja, takmicenje));
+                p.setIzvestaj(new TakmicariIzvestaj(gimnasticari, getActiveDataGridViewUserControl().DataGridView,
+                    nazivIzvestaja, takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 p.ShowDialog();
             }
             catch (Exception ex)

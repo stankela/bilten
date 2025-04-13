@@ -33,14 +33,6 @@ namespace Bilten.Report
 		{
             poredjajListeUJednuKolonu(g, contentBounds, reportListe, false);
         }
-
-		public override void drawContent(Graphics g, int pageNum)
-		{
-            foreach (UkupnoFinaleKupaLista lista in reportListe)
-            {
-                lista.drawContent(g, contentBounds, pageNum);
-            }
-        }
     }
 
 	public class UkupnoFinaleKupaLista : ReportLista

@@ -85,7 +85,6 @@ namespace Bilten.UI
         {
             AddColumn("Ime", "Ime", 100);
             AddColumn("Prezime", "Prezime", 100);
-            AddColumn("Pol", "Pol", 100);
             AddColumn("Klub", "KlubUcesnik", 150);
             AddColumn("Drzava", "DrzavaUcesnik", 100);
         }
@@ -243,6 +242,8 @@ namespace Bilten.UI
 
         protected override void delete(SudijaUcesnik s)
         {
+            // TODO5: Da li ce se ovde kod brisanja pojaviti isti problem koji sam imao i kod brisanja takmicari kategorije
+            // kada nije brisao i klub/drzavu ucesnika kada je izbrisan zadnji gimnasticar iz tog kluba/drzave.
             DAOFactoryFactory.DAOFactory.GetSudijaUcesnikDAO().Delete(s);
         }
 
@@ -287,6 +288,7 @@ namespace Bilten.UI
 
         private void btnStampaj_Click(object sender, EventArgs e)
         {
+            // TODO5: Dodaj u jezik
             string nazivIzvestaja = "Sudije na takmi" + Jezik.chMalo + "enju";
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
@@ -310,9 +312,19 @@ namespace Bilten.UI
                 form.Header4Text = "";
             }
 
+            // Sudije ucesnici imaju poseban font size za tekst, isti kao takmicari kategorije
+            form.TekstFontSize = Opcije.Instance.TakmicariKategorijeFontSize;
+            
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+
+            // Azuriraj Opcije. TekstFontSize treba da ostane nepromenjen, a TakmicariKategorijeFontSize treba da dobije
+            // novu vrednost
+            int oldTekstFontSize = Opcije.Instance.TekstFontSize;
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
+            Opcije.Instance.TekstFontSize = oldTekstFontSize;
+            Opcije.Instance.TakmicariKategorijeFontSize = form.TekstFontSize;
+
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Cursor.Current = Cursors.WaitCursor;
@@ -328,7 +340,6 @@ namespace Bilten.UI
                 gimnasticari.Sort(new SortComparer<GimnasticarUcesnik>(propDesc,
                     ListSortDirection.Ascending));*/
 
-
                 PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
                     TypeDescriptor.GetProperties(typeof(SudijaUcesnik))["DrzavaString"],
                     TypeDescriptor.GetProperties(typeof(SudijaUcesnik))["KlubString"],
@@ -343,8 +354,8 @@ namespace Bilten.UI
                 };
                 sudije.Sort(new SortComparer<SudijaUcesnik>(propDesc, sortDir));
 
-                p.setIzvestaj(new SudijeUcesniciIzvestaj(sudije,
-                    dataGridViewUserControl1.DataGridView, nazivIzvestaja, takmicenje));
+                p.setIzvestaj(new SudijeUcesniciIzvestaj(sudije, dataGridViewUserControl1.DataGridView, nazivIzvestaja,
+                    takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 p.ShowDialog();
             }
             catch (Exception ex)

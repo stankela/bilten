@@ -401,6 +401,8 @@ namespace Bilten.Report
         protected const string TOTAL_MAX_TEXT_UKUPNO_FINALE_KUPA = "0000.000";
         protected const string KOLO_MAX_TEXT = "00";
 
+        protected const string REDNI_BROJ_MAX_TEXT = "0000";
+
         protected float getColumnWidth(Graphics g, string maxText, string columnTitle)
         {
             float textWidth = g.MeasureString(maxText, itemFont).Width;
@@ -410,7 +412,13 @@ namespace Bilten.Report
             return Math.Max(textWidth, headerWidth);
         }
 
-		protected List<object[]> items;
+        protected float getColumnWidth(Graphics g, float columnWidth, string columnTitle)
+        {
+            float headerWidth = g.MeasureString(columnTitle, itemsHeaderFont).Width;
+            return Math.Max(columnWidth, headerWidth);
+        }
+
+        protected List<object[]> items;
         public List<object[]> Items
 		{
 			get { return items; }

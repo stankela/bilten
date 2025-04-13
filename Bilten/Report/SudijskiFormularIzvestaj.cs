@@ -235,14 +235,15 @@ namespace Bilten.Report
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth,
             float kategorijaWidth)
         {
-            float rankWidth = getColumnWidth(g, RANK_MAX_TEXT, Opcije.Instance.RankString);
+            float redBrojWidth = getColumnWidth(g, REDNI_BROJ_MAX_TEXT, Opcije.Instance.RedBrojString);
             float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, Opcije.Instance.BrojString);
             float skokWidth = getColumnWidth(g, SKOK_MAX_TEXT, "");
-            
-            float ocenaWidthCm = 2.1f;
+
+            float ocenaWidthCm = 2.1f * (itemFont.Size / 10f);  // Izraz u zagradi omogucuje skaliranje ako promenim
+                                                                // font size. Vrednost 2.1f odgovara fontu 10
             float ocenaWidth;
 
-            float xRank;
+            float xRedBroj;
             float xBroj;
             float xIme;
             float xKategorija;
@@ -254,16 +255,16 @@ namespace Bilten.Report
                 ocenaWidthCm -= 0.1f;
                 ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);
 
-                xRank = contentBounds.X;
+                xRedBroj = contentBounds.X;
                 xBroj = 0f;
                 if (stampajBroj)
                 {
-                    xBroj = xRank + rankWidth;
+                    xBroj = xRedBroj + redBrojWidth;
                     xIme = xBroj + brojWidth;
                 }
                 else
                 {
-                    xIme = xRank + rankWidth;
+                    xIme = xRedBroj + redBrojWidth;
                 }
                 xKlub = xIme + imeWidth;
                 xKategorija = xKlub + klubWidth;
@@ -281,7 +282,7 @@ namespace Bilten.Report
                 xRightEnd = xSprava + ocenaWidth * (brojOcena + brojEOcena);
                 if (sprava == Sprava.Preskok)
                     xRightEnd += ocenaWidth;
-            } while (xRightEnd - xRank > contentBounds.Width);
+            } while (xRightEnd - xRedBroj > contentBounds.Width);
 
             float[] xEn = new float[6];
             for (int i = 0; i < brojEOcena; i++)
@@ -310,7 +311,7 @@ namespace Bilten.Report
             float xPen = xCurr + ocenaWidth;
             float xTot = xPen + ocenaWidth;
 
-            StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat redBrojFormat = Izvestaj.centerCenterFormat;
             StringFormat brojFormat = Izvestaj.centerCenterFormat;
             StringFormat imeFormat = Izvestaj.nearCenterFormat;
             StringFormat klubFormat = Izvestaj.nearCenterFormat;
@@ -319,7 +320,7 @@ namespace Bilten.Report
             StringFormat spravaFormat = Izvestaj.centerCenterFormat;
             StringFormat totalFormat = Izvestaj.centerCenterFormat;
 
-            StringFormat rankHeaderFormat = Izvestaj.centerCenterFormat;
+            StringFormat redBrojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat brojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.centerCenterFormat;
@@ -330,7 +331,7 @@ namespace Bilten.Report
 
             Columns.Clear();
 
-            addColumn(xRank, rankWidth, rankFormat, Opcije.Instance.RedBrojString, rankHeaderFormat);
+            addColumn(xRedBroj, redBrojWidth, redBrojFormat, Opcije.Instance.RedBrojString, redBrojHeaderFormat);
             if (stampajBroj)
             {
                 addColumn(xBroj, brojWidth, brojFormat, Opcije.Instance.BrojString, brojHeaderFormat);

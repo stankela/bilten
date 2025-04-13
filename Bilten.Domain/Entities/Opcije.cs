@@ -216,6 +216,21 @@ namespace Bilten.Domain
             set { _tekstFontSize = value; }
         }
 
+
+        private int _takmicariKategorijeFontSize = 10;
+        public virtual int TakmicariKategorijeFontSize
+        {
+            get { return _takmicariKategorijeFontSize; }
+            set { _takmicariKategorijeFontSize = value; }
+        }
+
+        private int _sudijskiFormularFontSize = 10;
+        public virtual int SudijskiFormularFontSize
+        {
+            get { return _sudijskiFormularFontSize; }
+            set { _sudijskiFormularFontSize = value; }
+        }
+
         private bool _header1FontBold;
         public virtual bool Header1FontBold
         {
@@ -422,7 +437,7 @@ namespace Bilten.Domain
             set { redBrojString = value; }
         }
 
-        private string brojString = "Broj";  // "#"
+        private string brojString = "Broj";  // "Bib"
         public virtual string BrojString
         {
             get { return brojString; }

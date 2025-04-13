@@ -11,30 +11,20 @@ namespace Bilten.Report
 {
 	public class TakmicariIzvestaj : Izvestaj
 	{
-		private TakmicariLista lista;
-
-        public TakmicariIzvestaj(IList<GimnasticarUcesnik> gimnasticari, Gimnastika gim, DataGridView formGrid,
-            string documentName, Takmicenje takmicenje) : base(takmicenje)
+        public TakmicariIzvestaj(IList<GimnasticarUcesnik> gimnasticari, DataGridView formGrid, string documentName,
+            Takmicenje takmicenje, Font itemFont, bool resizeByGrid) : base(takmicenje)
 		{
             DocumentName = documentName;
-            Font itemFont = new Font("Arial", 10);
-            Font itemsHeaderFont = new Font("Arial", 10, FontStyle.Bold);
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
 
-            lista = new TakmicariLista(this, 1, 0f, itemFont, itemsHeaderFont, gimnasticari, gim, formGrid,
-                takmicenje.TakBrojevi);
+            reportListe.Add(new TakmicariLista(this, 1, 0f, itemFont, itemsHeaderFont, gimnasticari, takmicenje.Gimnastika,
+                formGrid, takmicenje.TakBrojevi, resizeByGrid));
 		}
 
         protected override void doSetupContent(Graphics g)
 		{
-			lista.StartY = contentBounds.Y;
-			lista.setupContent(g, contentBounds);
-			lastPageNum = lista.LastPageNum;
-		}
-
-		public override void drawContent(Graphics g, int pageNum)
-		{
-			lista.drawContent(g, contentBounds, pageNum);
-		}
+            poredjajListeUJednuKolonu(g, contentBounds, reportListe, false);
+        }
     }
 
 	public class TakmicariLista : ReportLista
@@ -47,16 +37,42 @@ namespace Bilten.Report
 
         public TakmicariLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<GimnasticarUcesnik> gimnasticari,
-            Gimnastika gim, DataGridView formGrid, bool stampajBroj)
+            Gimnastika gim, DataGridView formGrid, bool stampajBroj, bool resizeByGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.gimnastika = gim;
             this.stampajBroj = stampajBroj;
+            this.resizeByGrid = resizeByGrid;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
 
             fetchItems(gimnasticari, gim);
+        }
+
+        public int getImeColumnIndex()
+        {
+            return stampajBroj ? 2 : 1;
+        }
+
+        public int getPrezimeColumnIndex()
+        {
+            return stampajBroj ? 3 : 2;
+        }
+
+        public int getDatumRodjenjaColumnIndex()
+        {
+            return stampajBroj ? 4 : 3;
+        }
+
+        public int getKlubColumnIndex()
+        {
+            return stampajBroj ? 5 : 4;
+        }
+
+        public int getDrzavaColumnIndex()
+        {
+            return stampajBroj ? 6 : 5;
         }
 
         private void fetchItems(IList<GimnasticarUcesnik> gimnasticari, Gimnastika gim)
@@ -88,137 +104,146 @@ namespace Bilten.Report
             return result;
         }
 
-		public void setupContent(Graphics g, RectangleF contentBounds)
-		{
-			createColumns(g, contentBounds);
+        public override List<int> getAdjustableColumnIndexes()
+        {
+            List<int> result = new List<int>();
+            result.Add(getImeColumnIndex());
+            result.Add(getPrezimeColumnIndex());
+            result.Add(getDatumRodjenjaColumnIndex());
+            result.Add(getKlubColumnIndex());
+            result.Add(getDrzavaColumnIndex());
+            return result;
+        }
 
-			itemHeight = itemFont.GetHeight(g) * 1.4f;
-            itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 2.4f;
-            groupHeaderHeight = itemsHeaderHeight;
-			float afterGroupHeight = itemHeight;
-
-			createListLayout(groupHeaderHeight, itemHeight, 0f, afterGroupHeight, 0f,
-				contentBounds);
-		}
-
-		private void createColumns(Graphics g, RectangleF contentBounds)
-		{
-            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
-            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
-
-            float rankWidthCm = 0.7f;
-            float rankWidth = Izvestaj.convCmToInch(rankWidthCm);
-            float brojWidth = 2 * rankWidth;
+        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+         List<bool> rszByGrid)
+        {
+            // First, create columns
 
             float imeWidth;
             float prezimeWidth;
-            float godinaWidth;
+            float datumRodjenjaWidth;
             float klubWidth;
             float drzavaWidth;
-            if (!stampajBroj)
+            if (columnWidths.Count == 0)
             {
-                imeWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
-                prezimeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
-                godinaWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-                klubWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
-                drzavaWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+                // Prvi pass
+                if (resizeByGrid)
+                {
+                    // Indeksi kolona u gridu su dobri, cak i u slucaju kada se ne prikazuje Broj kao prva kolona, zato sto
+                    // je kolona Broj kreirana ali je sakrivena
+                    float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+                    float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
+                    imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+                    prezimeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+                    datumRodjenjaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
+                    klubWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
+                    drzavaWidth = this.formGrid.Columns[5].Width * printWidth / gridWidth;
+                }
+                else
+                {
+                    // Resize by content
+                    // Proizvoljna vrednost. Koristi se u prvom pozivu setupContent. U drugom pozivu setupContent, imeWidth,
+                    // klubWidth i kategorijaWidth ce dobiti pravu vrednost, koja je dovoljna da i najduzi tekst stane bez
+                    // odsecanja.
+                    imeWidth = 1f;
+                    prezimeWidth = 1f;
+                    datumRodjenjaWidth = 1f;
+                    klubWidth = 1f;
+                    drzavaWidth = 1f;
+                }
+            }
+            else if (columnWidths.Count == 5)
+            {
+                // Drugi pass, sirine kolona su podesene
+                imeWidth = columnWidths[0];
+                prezimeWidth = columnWidths[1];
+                datumRodjenjaWidth = columnWidths[2];
+                klubWidth = columnWidths[3];
+                drzavaWidth = columnWidths[4];
             }
             else
             {
-                imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
-                prezimeWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-                godinaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
-                klubWidth = this.formGrid.Columns[4].Width * printWidth / gridWidth;
-                drzavaWidth = this.formGrid.Columns[5].Width * printWidth / gridWidth;
+                throw new Exception("Trenutno, samo 5 kolona mogu da se podesavaju");
             }
+            createColumns(g, contentBounds, imeWidth, prezimeWidth, datumRodjenjaWidth, klubWidth, drzavaWidth);
 
-			float xRank = contentBounds.X;
+            // Then, layout contents vertically
+
+            itemHeight = itemFont.GetHeight(g) * 1.4f;
+            itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 2.4f;
+            groupHeaderHeight = itemsHeaderHeight;
+            float afterGroupHeight = itemHeight;
+
+            createListLayout(groupHeaderHeight, itemHeight, 0f, afterGroupHeight, 0f,
+                contentBounds);
+        }
+
+		private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float prezimeWidth,
+            float datumRodjenjaWidth, float klubWidth, float drzavaWidth)
+		{
+            float redBrojWidth = getColumnWidth(g, REDNI_BROJ_MAX_TEXT, Opcije.Instance.RedBrojString);
+            float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, Opcije.Instance.BrojString);
+
+            // U koloni drzava se prikazuje skraceni kod (koji je manji od hedera kolone koji je obicno "Drzava" ili
+            // "Country code"), pa moram da prosirim kolonu
+            String drzavaTitle = Opcije.Instance.DrzavaString;
+            drzavaWidth = getColumnWidth(g, drzavaWidth, drzavaTitle);
+
+			float xRedniBroj = contentBounds.X;
             float xBroj = 0f;
             float xIme;
             if (stampajBroj)
             {
-                xBroj = xRank + rankWidth;
+                xBroj = xRedniBroj + redBrojWidth;
                 xIme = xBroj + brojWidth;
             }
             else
             {
-                xIme = xRank + rankWidth;
+                xIme = xRedniBroj + redBrojWidth;
             }
             float xPrezime = xIme + imeWidth;
-            float xGodina = xPrezime + prezimeWidth;
-            float xKlub = xGodina + godinaWidth;
+            float xDatumRodjenja = xPrezime + prezimeWidth;
+            float xKlub = xDatumRodjenja + datumRodjenjaWidth;
             float xDrzava = xKlub + klubWidth;
             
             xRightEnd = xDrzava + drzavaWidth;
             
-            float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
-            if (delta < -contentBounds.X)
-                delta = -contentBounds.X;
-            xRank += delta;
-            xBroj += delta;
-            xIme += delta;
-            xPrezime += delta;
-            xGodina += delta;
-            xKlub += delta;
-            xDrzava += delta;
-            xRightEnd += delta;
-
-            StringFormat rankFormat = Izvestaj.centerCenterFormat;
+            StringFormat redBrojFormat = Izvestaj.centerCenterFormat;
             StringFormat brojFormat = Izvestaj.nearCenterFormat;
+            StringFormat imeFormat = Izvestaj.nearCenterFormat;
+            StringFormat prezimeFormat = Izvestaj.nearCenterFormat;
+            StringFormat datumRodjenjaFormat = Izvestaj.nearCenterFormat;
+            StringFormat klubFormat = Izvestaj.nearCenterFormat;
+            StringFormat drzavaFormat = Izvestaj.nearCenterFormat;
 
-            StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
-            imeFormat.Alignment = StringAlignment.Near;
-            imeFormat.LineAlignment = StringAlignment.Center;
-
-            StringFormat prezimeFormat = new StringFormat(StringFormatFlags.NoWrap);
-            prezimeFormat.Alignment = StringAlignment.Near;
-            prezimeFormat.LineAlignment = StringAlignment.Center;
-
-            StringFormat godinaFormat = new StringFormat(StringFormatFlags.NoWrap);
-            godinaFormat.Alignment = StringAlignment.Near;
-            godinaFormat.LineAlignment = StringAlignment.Center;
-
-            StringFormat klubFormat = new StringFormat(StringFormatFlags.NoWrap);
-            klubFormat.Alignment = StringAlignment.Near;
-            klubFormat.LineAlignment = StringAlignment.Center;
-
-            StringFormat drzavaFormat = new StringFormat(StringFormatFlags.NoWrap);
-            drzavaFormat.Alignment = StringAlignment.Near;
-            drzavaFormat.LineAlignment = StringAlignment.Center;
-
-            StringFormat rankHeaderFormat = Izvestaj.nearCenterFormat;
+            StringFormat redBrojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat brojHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat prezimeHeaderFormat = Izvestaj.nearCenterFormat;
-            StringFormat godinaHeaderFormat = Izvestaj.nearCenterFormat;
+            StringFormat datumRodjenjaHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat klubHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat drzavaHeaderFormat = Izvestaj.nearCenterFormat;
-
-            String rankTitle = Opcije.Instance.RedBrojString;
-            String brojTitle = Opcije.Instance.BrojString;
-            String imeTitle = Opcije.Instance.ImeString;
-            String prezimeTitle = Opcije.Instance.PrezimeString;
-            String godinaTitle = Opcije.Instance.DatumRodjenjaString;
-            String klubTitle = Opcije.Instance.KlubString;
-            String drzavaTitle = Opcije.Instance.DrzavaString;
 
             Columns.Clear();
 
             bool drawItemRect = false;
-			ReportColumn column = addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            ReportColumn column = addColumn(xRedniBroj, redBrojWidth, redBrojFormat, Opcije.Instance.RedBrojString,
+                redBrojHeaderFormat);
             column.DrawItemRect = drawItemRect;
             if (stampajBroj)
             {
-                column = addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
+                column = addColumn(xBroj, brojWidth, brojFormat, Opcije.Instance.BrojString, brojHeaderFormat);
                 column.DrawItemRect = drawItemRect;
             }
-            column = addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
+            column = addColumn(xIme, imeWidth, imeFormat, Opcije.Instance.ImeString, imeHeaderFormat);
             column.DrawItemRect = drawItemRect;
-            column = addColumn(xPrezime, prezimeWidth, prezimeFormat, prezimeTitle, prezimeHeaderFormat);
+            column = addColumn(xPrezime, prezimeWidth, prezimeFormat, Opcije.Instance.PrezimeString, prezimeHeaderFormat);
             column.DrawItemRect = drawItemRect;
-            column = addColumn(xGodina, godinaWidth, godinaFormat, godinaTitle, godinaHeaderFormat);
+            column = addColumn(xDatumRodjenja, datumRodjenjaWidth, datumRodjenjaFormat, Opcije.Instance.DatumRodjenjaString,
+                datumRodjenjaHeaderFormat);
             column.DrawItemRect = drawItemRect;
-            column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            column = addColumn(xKlub, klubWidth, klubFormat, Opcije.Instance.KlubString, klubHeaderFormat);
             column.DrawItemRect = drawItemRect;
             column = addColumn(xDrzava, drzavaWidth, drzavaFormat, drzavaTitle, drzavaHeaderFormat);
             column.DrawItemRect = drawItemRect;

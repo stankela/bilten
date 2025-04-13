@@ -1018,7 +1018,7 @@ namespace Bilten.UI
 
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Sprava sprava = Sprava.Undefined;
@@ -1521,9 +1521,19 @@ namespace Bilten.UI
                 form.Header4Text = kategorijaRotacija;
             }
 
+            // Sudijski formular ima poseban font size za tekst
+            form.TekstFontSize = Opcije.Instance.SudijskiFormularFontSize;
+            
             if (form.ShowDialog() != DialogResult.OK)
                 return;
-            FormUtil.initHeaderFooterFromForm(form);
+
+            // Azuriraj Opcije. TekstFontSize treba da ostane nepromenjen, a SudijskiFormularFontSize treba da dobije
+            // novu vrednost
+            int oldTekstFontSize = Opcije.Instance.TekstFontSize;
+            FormUtil.initOpcijeFromHeaderFooterForm(form);
+            Opcije.Instance.TekstFontSize = oldTekstFontSize;
+            Opcije.Instance.SudijskiFormularFontSize = form.TekstFontSize;
+
             Opcije.Instance.HeaderFooterInitialized = true;
 
             Sprava sprava = Sprava.Undefined;
@@ -1559,7 +1569,7 @@ namespace Bilten.UI
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, documentName, brojEOcena, form.BrojSpravaPoStrani,
                         form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl(), takmicenje, form.PrikaziBonus,
-                        new Font(form.TekstFont, /*form.TekstFontSize*/10), form.ResizeByGrid));
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 else
                 {
@@ -1567,7 +1577,7 @@ namespace Bilten.UI
                     p.setIzvestaj(new SudijskiFormularIzvestaj(startLista, documentName, brojEOcena,
                         form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
-                        form.PrikaziBonus, new Font(form.TekstFont, /*form.TekstFontSize*/10), form.ResizeByGrid));
+                        form.PrikaziBonus, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 p.ShowDialog();
             }
