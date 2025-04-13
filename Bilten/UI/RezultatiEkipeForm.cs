@@ -309,8 +309,8 @@ namespace Bilten.UI
                 if (form.PrikaziClanoveEkipe)
                 {
                     form2.setIzvestaj(new EkipeIzvestaj(p.getRezultati(), ekipaRezultatiUkupnoMap, p.hasPenalty(),
-                        ActiveTakmicenje.Gimnastika, kvalColumn, dataGridViewUserControl2.DataGridView, documentName,
-                        takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid,
+                        kvalColumn, dataGridViewUserControl2.DataGridView, documentName, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid,
                         ActiveTakmicenje.KombinovanoEkipnoTak));
                 }
                 else

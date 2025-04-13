@@ -40,17 +40,16 @@ namespace Bilten.Report
         }
 
         public SpravaIzvestaj(List<List<RezultatSprava>> rezultatiSprave,
-            List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, Gimnastika gim,
-            bool kvalColumn, string documentName, int brojSpravaPoStrani, bool prikaziPenal,
-            DataGridView formGrid, bool markFirstRows, int numRowsToMark, int brojEOcena, Takmicenje takmicenje,
-            bool prikaziBonus, Font itemFont, bool resizeByGrid)
+            List<RezultatPreskok> rezultatiPreskok, bool obaPreskoka, bool kvalColumn, string documentName,
+            int brojSpravaPoStrani, bool prikaziPenal, DataGridView formGrid, bool markFirstRows, int numRowsToMark,
+            int brojEOcena, Takmicenje takmicenje, bool prikaziBonus, Font itemFont, bool resizeByGrid)
             : base(takmicenje)
         {
             DocumentName = documentName;
             Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
 
-            Sprava[] sprave = Sprave.getSprave(gim);
+            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
             for (int i = 0; i < sprave.Length; i++)
             {
                 Sprava sprava = sprave[i];
@@ -58,7 +57,7 @@ namespace Bilten.Report
                 if (sprava != Sprava.Preskok)
                 {
                     int spravaIndex = i;
-                    if (i > Sprave.indexOf(Sprava.Preskok, gim))
+                    if (i > Sprave.indexOf(Sprava.Preskok, takmicenje.Gimnastika))
                         spravaIndex--;
 
                     lista = new SpravaLista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont,
@@ -311,6 +310,7 @@ namespace Bilten.Report
             }
             else if (columnWidths.Count == 2)
             {
+                // Podesene sirine kolona
                 imeWidth = columnWidths[0];
                 klubWidth = columnWidths[1];
             }

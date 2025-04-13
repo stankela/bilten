@@ -1556,9 +1556,8 @@ namespace Bilten.UI
                     {
                         startListe.Add(ActiveRaspored.getStartLista(s, ActiveGrupa, ActiveRotacija));
                     }
-                    p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, takmicenje.Gimnastika, documentName,
-                        brojEOcena, form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi,
-                        form.StampajKategoriju, form.StampajKlub,
+                    p.setIzvestaj(new SudijskiFormularIzvestaj(startListe, documentName, brojEOcena, form.BrojSpravaPoStrani,
+                        form.StampajRedniBrojNaStartListi, form.StampajKategoriju, form.StampajKlub,
                         getActiveSpravaGridGroupUserControl(), takmicenje, form.PrikaziBonus,
                         new Font(form.TekstFont, /*form.TekstFontSize*/10), form.ResizeByGrid));
                 }
@@ -1570,9 +1569,7 @@ namespace Bilten.UI
                         getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
                         form.PrikaziBonus, new Font(form.TekstFont, /*form.TekstFontSize*/10), form.ResizeByGrid));
                 }
-
                 p.ShowDialog();
-
             }
             catch (Exception ex)
             {

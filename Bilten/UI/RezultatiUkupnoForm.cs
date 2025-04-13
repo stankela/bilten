@@ -340,9 +340,9 @@ namespace Bilten.UI
             {
                 string documentName = gym + " - " + nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
                 PreviewDialog form2 = new PreviewDialog();
-                form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, ActiveTakmicenje.Gimnastika, extended,
-                    kvalColumnVisible(), p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, false,
-                    penalizacijaZaSprave, takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
+                form2.setIzvestaj(new UkupnoIzvestaj(rezultatiEx, extended, kvalColumnVisible(), p.hasPenalty(),
+                    dataGridViewUserControl1.DataGridView, documentName, false, penalizacijaZaSprave, takmicenje,
+                    new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 form2.ShowDialog();
             }
             catch (Exception ex)
@@ -756,9 +756,8 @@ namespace Bilten.UI
             try
             {
                 PreviewDialog form2 = new PreviewDialog();
-                form2.setIzvestaj(new UkupnoIzvestaj(getKvalifikantiIRezerve(rezultatiEx), ActiveTakmicenje.Gimnastika,
-                    Opcije.Instance.PrikaziDEOcene, false, p.hasPenalty(),
-                    dataGridViewUserControl1.DataGridView, documentName, true, false, takmicenje,
+                form2.setIzvestaj(new UkupnoIzvestaj(getKvalifikantiIRezerve(rezultatiEx), Opcije.Instance.PrikaziDEOcene,
+                    false, p.hasPenalty(), dataGridViewUserControl1.DataGridView, documentName, true, false, takmicenje,
                     new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 form2.ShowDialog();
             }

@@ -12,7 +12,7 @@ namespace Bilten.Report
     class EkipeIzvestaj : Izvestaj
     {
         public EkipeIzvestaj(List<RezultatEkipno> rezultati, IDictionary<int, List<RezultatUkupno>> ekipaRezultatiUkupnoMap,
-            bool penalty, Gimnastika gim, bool kvalColumn, DataGridView formGrid, string documentName, Takmicenje takmicenje,
+            bool penalty, bool kvalColumn, DataGridView formGrid, string documentName, Takmicenje takmicenje,
             Font itemFont, bool resizeByGrid, bool prikaziKategoriju)
             : base(takmicenje)
 		{
@@ -29,8 +29,8 @@ namespace Bilten.Report
             {
                 List<RezultatEkipno> rezList = new List<RezultatEkipno>() { rez };
                 reportListe.Add(new EkipeLista(this, 1/*FirstPageNum*/, 0f, itemFont, itemsHeaderFont, nazivEkipeFont,
-                    rezList, ekipaRezultatiUkupnoMap, gim, kvalColumn, penalty, formGrid, takmicenje.TakBrojevi,
-                    resizeByGrid, prikaziKategoriju));
+                    rezList, ekipaRezultatiUkupnoMap, takmicenje.Gimnastika, kvalColumn, penalty, formGrid,
+                    takmicenje.TakBrojevi, resizeByGrid, prikaziKategoriju));
             }
 		}
 
@@ -262,6 +262,7 @@ namespace Bilten.Report
             }
             else if (columnWidths.Count == 3)
             {
+                // Podesene sirine kolona
                 imeWidth = columnWidths[0];
                 klubWidth = columnWidths[1];
                 kategorijaWidth = columnWidths[2];
@@ -291,7 +292,6 @@ namespace Bilten.Report
             float kategorijaWidth)
         {
             float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, Opcije.Instance.BrojString);
-
             float spravaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, "");
             float penaltyWidth = getColumnWidth(g, PENALTY_MAX_TEXT_UKUPNO, Opcije.Instance.PenaltyString);
             float totalWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, Opcije.Instance.TotalString);

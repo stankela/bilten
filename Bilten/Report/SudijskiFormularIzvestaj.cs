@@ -30,10 +30,10 @@ namespace Bilten.Report
                 resizeByGrid));
 		}
 
-        public SudijskiFormularIzvestaj(List<StartListaNaSpravi> startListe, Gimnastika gim,
-            string documentName, int brojEOcena, int brojSpravaPoStrani, bool stampajRedniBroj,
-            bool stampajKategoriju, bool stampajKlub, SpravaGridGroupUserControl spravaGridGroupUserControl,
-            Takmicenje takmicenje, bool stampajBonus, Font itemFont, bool resizeByGrid)
+        public SudijskiFormularIzvestaj(List<StartListaNaSpravi> startListe, string documentName, int brojEOcena,
+            int brojSpravaPoStrani, bool stampajRedniBroj, bool stampajKategoriju, bool stampajKlub,
+            SpravaGridGroupUserControl spravaGridGroupUserControl, Takmicenje takmicenje, bool stampajBonus, Font itemFont,
+            bool resizeByGrid)
             : base(takmicenje)
         {
             DocumentName = documentName;
@@ -43,7 +43,7 @@ namespace Bilten.Report
             Landscape = true;
             Margins = new Margins(30, 30, 75, 75);
             
-            Sprava[] sprave = Sprave.getSprave(gim);
+            Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
             for (int i = 0; i < sprave.Length; i++)
             {
                 Sprava sprava = sprave[i];
@@ -214,6 +214,7 @@ namespace Bilten.Report
             }
             else if (columnWidths.Count == 3)
             {
+                // Podesene sirine kolona
                 imeWidth = columnWidths[0];
                 klubWidth = columnWidths[1];
                 kategorijaWidth = columnWidths[2];

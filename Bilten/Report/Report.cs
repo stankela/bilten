@@ -398,6 +398,9 @@ namespace Bilten.Report
 
         protected const string SKOK_MAX_TEXT = "00";
 
+        protected const string TOTAL_MAX_TEXT_UKUPNO_FINALE_KUPA = "0000.000";
+        protected const string KOLO_MAX_TEXT = "00";
+
         protected float getColumnWidth(Graphics g, string maxText, string columnTitle)
         {
             float textWidth = g.MeasureString(maxText, itemFont).Width;

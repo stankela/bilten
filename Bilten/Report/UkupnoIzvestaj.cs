@@ -11,11 +11,9 @@ namespace Bilten.Report
 {
 	public class UkupnoIzvestaj : Izvestaj
 	{
-        private bool visebojPoKlubovimaIKategorijama = false;
-
-		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, Gimnastika gim,
-            bool extended, bool kvalColumn, bool penalty, DataGridView formGrid, string documentName,
-            bool stampanjeKvalifikanata, bool penalizacijaZaSprave, Takmicenje takmicenje, Font itemFont, bool resizeByGrid)
+		public UkupnoIzvestaj(IList<RezultatUkupnoExtended> rezultati, bool extended, bool kvalColumn, bool penalty,
+            DataGridView formGrid, string documentName, bool stampanjeKvalifikanata, bool penalizacijaZaSprave,
+            Takmicenje takmicenje, Font itemFont, bool resizeByGrid)
             : base(takmicenje)
 		{
             DocumentName = documentName;
@@ -27,8 +25,8 @@ namespace Bilten.Report
             else
                 Margins = new Margins(75, 75, 75, 75);
 
-            reportListe.Add(new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, kvalColumn, penalty, formGrid, stampanjeKvalifikanata, penalizacijaZaSprave,
+            reportListe.Add(new UkupnoLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati, takmicenje.Gimnastika,
+                extended, kvalColumn, penalty, formGrid, stampanjeKvalifikanata, penalizacijaZaSprave,
                 takmicenje.TakBrojevi, resizeByGrid));
 		}
 
@@ -54,7 +52,6 @@ namespace Bilten.Report
         {
             DocumentName = documentName;
             Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
-            visebojPoKlubovimaIKategorijama = true;
 
             Landscape = false;
             Margins = new Margins(75, 75, 75, 75);
@@ -81,6 +78,7 @@ namespace Bilten.Report
         }
 
         // TODO5: Promeni i ostale izvestaje kao sto je promenjen ovaj izvestaj
+        //        - Izbaci Gimnastika iz Izvestaj konstruktora
         //        - Dodaj resizeByGrid u Izvestaj i Liste
         //        - Promeni izvestaj.doSetupContent da poziva poredjajListeUJednuKolonu
         //        - Dodaj sve metode tipa lista.getImeColumnIndex()
@@ -492,6 +490,7 @@ namespace Bilten.Report
             }
             else if (columnWidths.Count == 3)
             {
+                // Podesene sirine kolona
                 imeWidth = columnWidths[0];
                 klubWidth = columnWidths[1];
                 kategorijaWidth = columnWidths[2];

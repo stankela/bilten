@@ -428,10 +428,10 @@ namespace Bilten.UI
                         else
                             rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getRezultati();
                     }
-                    p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok,
-                        obaPreskoka, ActiveTakmicenje.Gimnastika, kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
-                        form.PrikaziPenalSprave, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
-                        /*markFirstRows*/false, /*numRowsToMark*/0, brojEOcena, takmicenje, form.PrikaziBonus,
+                    p.setIzvestaj(new SpravaIzvestaj(rezultatiSprave, rezultatiPreskok, obaPreskoka, kvalColumnVisible(),
+                        documentName, form.BrojSpravaPoStrani, form.PrikaziPenalSprave,
+                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, /*markFirstRows*/false,
+                        /*numRowsToMark*/0, brojEOcena, takmicenje, form.PrikaziBonus,
                         new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 else

@@ -226,9 +226,9 @@ namespace Bilten.UI
                 List<RezultatUkupnoFinaleKupa> rezultati
                     = ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa.getRezultati();
                 
-                p.setIzvestaj(new UkupnoFinaleKupaIzvestaj(rezultati, ActiveTakmicenje.Gimnastika,
-                    Opcije.Instance.PrikaziDEOcene, kvalColumnVisible(), dataGridViewUserControl1.DataGridView,
-                    documentName, takmicenje));
+                p.setIzvestaj(new UkupnoFinaleKupaIzvestaj(rezultati, Opcije.Instance.PrikaziDEOcene, kvalColumnVisible(),
+                    dataGridViewUserControl1.DataGridView, documentName, takmicenje,
+                    new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 p.ShowDialog();
             }
             catch (Exception ex)
