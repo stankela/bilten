@@ -185,6 +185,7 @@ namespace Bilten.Report
             float kategorijaWidth;
             if (columnWidths.Count == 0)
             {
+                // Prvi pass
                 if (resizeByGrid)
                 {
                     float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
@@ -206,14 +207,14 @@ namespace Bilten.Report
             }
             else if (columnWidths.Count == 3)
             {
-                // Podesene sirine kolona
+                // Drugi pass, sirine kolona su podesene
                 imeWidth = columnWidths[0];
                 klubWidth = columnWidths[1];
                 kategorijaWidth = columnWidths[2];
             }
             else
             {
-                throw new Exception("Trenutno, samo 0 ili 3 kolone mogu da se podesavaju");
+                throw new Exception("Trenutno, samo 3 kolone mogu da se podesavaju");
             }
             createColumns(g, contentBounds, imeWidth, klubWidth, kategorijaWidth);
 

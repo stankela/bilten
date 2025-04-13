@@ -181,9 +181,9 @@ namespace Bilten.UI
                 List<RezultatEkipnoZbirViseKola> rezultatiEkipno =
                     ActiveTakmicenje.Takmicenje1.PoredakEkipnoZbirViseKola.getRezultati();
 
-                p.setIzvestaj(new EkipeZbirViseKolaIzvestaj(rezultatiEkipno,
-                    ActiveTakmicenje.Gimnastika, dataGridViewUserControl1.DataGridView,
-                    nazivIzvestaja, takmicenje.getBrojKola(), takmicenje));
+                p.setIzvestaj(new EkipeZbirViseKolaIzvestaj(rezultatiEkipno, dataGridViewUserControl1.DataGridView,
+                    nazivIzvestaja, takmicenje.getBrojKola(), takmicenje, new Font(form.TekstFont, form.TekstFontSize),
+                    form.ResizeByGrid));
                 p.ShowDialog();
             }
             catch (Exception ex)
