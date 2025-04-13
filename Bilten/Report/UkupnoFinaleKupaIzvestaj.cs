@@ -148,7 +148,7 @@ namespace Bilten.Report
         }
 
         public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
-        List<bool> rszByGrid)
+            List<bool> rszByGrid)
         {
             // First, create columns
 
@@ -203,7 +203,7 @@ namespace Bilten.Report
 		{
             float rankWidth = getColumnWidth(g, RANK_MAX_TEXT, Opcije.Instance.RankString);
             float koloWidth = getColumnWidth(g, KOLO_MAX_TEXT, "");
-            float spravaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, Opcije.Instance.TotalString);
+            float spravaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, "");
             float totalWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO_FINALE_KUPA, Opcije.Instance.TotalString);
             if (extended)
             {

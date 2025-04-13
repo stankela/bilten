@@ -731,8 +731,11 @@ namespace Bilten.Report
 
         public virtual void drawContent(Graphics g, int pageNum)
 		{
-
-		}
+            foreach (ReportLista lista in reportListe)
+            {
+                lista.drawContent(g, contentBounds, pageNum);
+            }
+        }
 		
 		public void QueryPageSettings(object sender, System.Drawing.Printing.QueryPageSettingsEventArgs e)
 		{

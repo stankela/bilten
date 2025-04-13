@@ -81,6 +81,7 @@ namespace Bilten.Report
         //        - Izbaci Gimnastika iz Izvestaj konstruktora
         //        - Dodaj resizeByGrid u Izvestaj i Liste
         //        - Promeni izvestaj.doSetupContent da poziva poredjajListeUJednuKolonu
+        //        - Izbaci metod drawContent ukoliko samo poziva drawContent za liste
         //        - Dodaj sve metode tipa lista.getImeColumnIndex()
         //        - Dodaj metod lista.getAdjustableColumnIndexes()
         //        - Dodaj metod lista.doSetupContent()
@@ -89,17 +90,11 @@ namespace Bilten.Report
         //        - Naslove kolona direktno stavljaj u addColumn() pozive.
         //        - Izbaci deo "Center columns horizontally"
 
+        // TODO5: Prebaci ovo u klasu Izvestaj. Kreiraj enum za tip izvestaja, i onda pozivaj ili poredjajListeUJednuKolonu
+        // ili poredjajListeUDveKolone
         protected override void doSetupContent(Graphics g)
         {
             poredjajListeUJednuKolonu(g, contentBounds, reportListe, false);
-        }
-
-		public override void drawContent(Graphics g, int pageNum)
-		{
-            foreach (UkupnoLista lista in reportListe)
-            {
-                lista.drawContent(g, contentBounds, pageNum);
-            }
         }
     }
 
@@ -914,6 +909,9 @@ namespace Bilten.Report
         }
     }
 
+    // TODO5: Postoji nekoliko ReportColumn klasa koje mogu da prikazuju iteme u vise vrsta (2, 3 ili 5). Proveri da li
+    // mozes da kreiras common klasu. Podji od ove klase jer sam jedino u njoj implementirao razlicite formate za
+    // vrstu1, vrstu2 i vrstu3.
     public class ThreeRowColumn : ReportColumn
     {
         private string format2;

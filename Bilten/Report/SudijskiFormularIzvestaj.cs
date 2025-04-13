@@ -63,14 +63,6 @@ namespace Bilten.Report
         {
             poredjajListeUJednuKolonu(g, contentBounds, reportListe, svakaSpravaNaPosebnojStrani);
         }
-
-        public override void drawContent(Graphics g, int pageNum)
-        {
-            foreach (SudijskiFormularLista lista in reportListe)
-            {
-                lista.drawContent(g, contentBounds, pageNum);
-            }
-        }
     }
 
     public class SudijskiFormularLista : ReportLista

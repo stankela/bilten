@@ -11,17 +11,13 @@ namespace Bilten.Report
 {
 	public class UkupnoZbirViseKolaIzvestaj : Izvestaj
 	{
-        private UkupnoZbirViseKolaLista lista;
-
-        public UkupnoZbirViseKolaIzvestaj(IList<RezultatUkupnoZbirViseKola> rezultati, Gimnastika gim,
-            bool extended, DataGridView formGrid, string documentName, int brojKola, Takmicenje takmicenje)
+        public UkupnoZbirViseKolaIzvestaj(IList<RezultatUkupnoZbirViseKola> rezultati, bool extended, DataGridView formGrid,
+            string documentName, int brojKola, Takmicenje takmicenje, Font itemFont, bool resizeByGrid)
             : base(takmicenje)
 		{
             DocumentName = documentName;
+            Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             extended = false;
-
-            Font itemFont = new Font("Arial", 8);
-            Font itemsHeaderFont = new Font("Arial", 8, FontStyle.Bold);
 
             Landscape = extended;
             if (extended)
@@ -29,21 +25,14 @@ namespace Bilten.Report
             else
                 Margins = new Margins(75, 75, 75, 75);
 
-            lista = new UkupnoZbirViseKolaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                gim, extended, formGrid, brojKola);
+            reportListe.Add(new UkupnoZbirViseKolaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
+                takmicenje.Gimnastika, extended, formGrid, brojKola, resizeByGrid));
 		}
 
         protected override void doSetupContent(Graphics g)
 		{
-			lista.StartY = contentBounds.Y;
-			lista.setupContent(g, contentBounds);
-			lastPageNum = lista.LastPageNum;
-		}
-
-		public override void drawContent(Graphics g, int pageNum)
-		{
-			lista.drawContent(g, contentBounds, pageNum);
-		}
+            poredjajListeUJednuKolonu(g, contentBounds, reportListe, true);
+        }
     }
 
 	public class UkupnoZbirViseKolaLista : ReportLista
@@ -57,17 +46,28 @@ namespace Bilten.Report
 
         public UkupnoZbirViseKolaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatUkupnoZbirViseKola> rezultati,
-            Gimnastika gim, bool extended, DataGridView formGrid, int brojKola)
+            Gimnastika gim, bool extended, DataGridView formGrid, int brojKola, bool resizeByGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
 		{
             this.extended = extended;
             this.gimnastika = gim;
             this.brojKola = brojKola;
+            this.resizeByGrid = resizeByGrid;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
 
             fetchItems(rezultati, gim, extended);
+        }
+
+        public int getImeColumnIndex()
+        {
+            return 1;
+        }
+
+        public int getKlubColumnIndex()
+        {
+            return 2;
         }
 
         private void fetchItems(IList<RezultatUkupnoZbirViseKola> rezultati, 
@@ -139,34 +139,72 @@ namespace Bilten.Report
             return result;
         }
 
-		public void setupContent(Graphics g, RectangleF contentBounds)
-		{
-			createColumns(g, contentBounds);
+        public override List<int> getAdjustableColumnIndexes()
+        {
+            List<int> result = new List<int>();
+            result.Add(getImeColumnIndex());
+            result.Add(getKlubColumnIndex());
+            return result;
+        }
 
-			itemHeight = itemFont.GetHeight(g) * (6.6f / 5 * (brojKola + 1));
+        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+          List<bool> rszByGrid)
+        {
+            // First, create columns
+
+            float imeWidth;
+            float klubWidth;
+            if (columnWidths.Count == 0)
+            {
+                if (resizeByGrid)
+                {
+                    float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
+                    float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
+                    imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
+                    klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
+                }
+                else
+                {
+                    // Resize by content
+                    // Proizvoljna vrednost. Koristi se u prvom pozivu setupContent. U drugom pozivu setupContent, imeWidth,
+                    // klubWidth i kategorijaWidth ce dobiti pravu vrednost, koja je dovoljna da i najduzi tekst stane bez
+                    // odsecanja.
+                    imeWidth = 1f;
+                    klubWidth = 1f;
+                }
+            }
+            else if (columnWidths.Count == 2)
+            {
+                // Podesene sirine kolona
+                imeWidth = columnWidths[0];
+                klubWidth = columnWidths[1];
+            }
+            else
+            {
+                throw new Exception("Trenutno, samo 0 ili 2 kolone mogu da se podesavaju");
+            }
+            createColumns(g, contentBounds, imeWidth, klubWidth);
+
+            // Then, layout contents vertically
+
+            itemHeight = itemFont.GetHeight(g) * (6.6f / 5 * (brojKola + 1));
             if (extended)
-			    itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
+                itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 3.6f;
             else
                 itemsHeaderHeight = itemsHeaderFont.GetHeight(g) * 2.4f;
             groupHeaderHeight = itemsHeaderHeight;
-			float afterGroupHeight = itemHeight;
+            float afterGroupHeight = itemHeight;
 
-			createListLayout(groupHeaderHeight, itemHeight, 0f, afterGroupHeight, 0f,
-				contentBounds);
-		}
+            createListLayout(groupHeaderHeight, itemHeight, 0f, afterGroupHeight, 0f,
+                contentBounds);
+        }
 
-		private void createColumns(Graphics g, RectangleF contentBounds)
+        private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
 		{
-            float gridWidth = getGridTextWidth(this.formGrid, TEST_TEXT);
-            float printWidth = g.MeasureString(TEST_TEXT, itemFont).Width;
-
-            float rankWidth = this.formGrid.Columns[0].Width * printWidth / gridWidth;
-            float imeWidth = this.formGrid.Columns[1].Width * printWidth / gridWidth;
-            float klubWidth = this.formGrid.Columns[2].Width * printWidth / gridWidth;
-            float koloWidth = rankWidth / 2;
-
-            float spravaWidth = this.formGrid.Columns[3].Width * printWidth / gridWidth;
-            float totalWidth = spravaWidth;
+            float rankWidth = getColumnWidth(g, RANK_MAX_TEXT, Opcije.Instance.RankString);
+            float koloWidth = getColumnWidth(g, KOLO_MAX_TEXT, "");
+            float spravaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, "");
+            float totalWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO_FINALE_KUPA, Opcije.Instance.TotalString);
             if (extended)
                 spravaWidth = spravaWidth * 2.3f;
 
@@ -200,54 +238,14 @@ namespace Bilten.Report
             float xVratiloE = xVratilo + dWidth;
             float xVratiloTot = xVratiloE + dWidth;
 
-            float delta = (contentBounds.Right - xRightEnd) / 2;  // moze da bude i negativno
-            if (delta < -contentBounds.X)
-                delta = -contentBounds.X;
-            xRank += delta;
-            xIme += delta;
-            xKlub += delta;
-            xKolo += delta;
-            xParter += delta;
-            xKonj += delta;
-            xKarike += delta;
-            xPreskok += delta;
-            xRazboj += delta;
-            xVratilo += delta;
-            xTotal += delta;
-            xRightEnd += delta;
-
-            xParterE += delta;
-            xKonjE += delta;
-            xKarikeE += delta;
-            xPreskokE += delta;
-            xRazbojE += delta;
-            xVratiloE += delta;
-
-            xParterTot += delta;
-            xKonjTot += delta;
-            xKarikeTot += delta;
-            xPreskokTot += delta;
-            xRazbojTot += delta;
-            xVratiloTot += delta;
-
             float spravaDWidth = dWidth;
             float spravaEWidth = dWidth;
             float spravaTotWidth = xKonj - xParter - 2*dWidth;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
-
-            StringFormat imeFormat = new StringFormat(StringFormatFlags.NoWrap);
-            imeFormat.Alignment = StringAlignment.Near;
-            imeFormat.LineAlignment = StringAlignment.Center;
-
-            StringFormat klubFormat = new StringFormat(StringFormatFlags.NoWrap);
-            klubFormat.Alignment = StringAlignment.Near;
-            klubFormat.LineAlignment = StringAlignment.Center;
-
-            StringFormat koloFormat = new StringFormat(StringFormatFlags.NoWrap);
-            koloFormat.Alignment = StringAlignment.Center;
-            koloFormat.LineAlignment = StringAlignment.Center;
-
+            StringFormat imeFormat = Izvestaj.nearCenterFormat;
+            StringFormat klubFormat = Izvestaj.nearCenterFormat;
+            StringFormat koloFormat = Izvestaj.centerCenterFormat;
             StringFormat spravaFormat = Izvestaj.centerCenterFormat;
             StringFormat totalFormat = Izvestaj.centerCenterFormat;
             StringFormat kvalFormat = Izvestaj.centerCenterFormat;
@@ -259,20 +257,14 @@ namespace Bilten.Report
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
-            String rankTitle = "Rank";
-			String imeTitle = "Ime";
-			String klubTitle = "Klub";
-            String koloTitle = "";
-            String totalTitle = "Total";
-            String kvalTitle = String.Empty;
-
             Columns.Clear();
 
-			addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
-			addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
-            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            addColumn(xRank, rankWidth, rankFormat, Opcije.Instance.RankString, rankHeaderFormat);
+            addColumn(xIme, imeWidth, imeFormat, Opcije.Instance.ImeString, imeHeaderFormat);
+            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, Opcije.Instance.KlubDrzavaString,
+                klubHeaderFormat);
             column = addKoloColumn(column.getItemsIndexEnd(), 4, xKolo, koloWidth, null, koloFormat,
-                koloTitle, koloHeaderFormat);
+                "", koloHeaderFormat);
 
             string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
             string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
@@ -316,8 +308,8 @@ namespace Bilten.Report
                 }
             }
 
-            column = addTotalColumn(column.getItemsIndexEnd(), 5, xTotal, totalWidth, fmtTot, totalFormat, 
-                totalTitle, totalHeaderFormat);
+            column = addTotalColumn(column.getItemsIndexEnd(), 5, xTotal, totalWidth, fmtTot, totalFormat,
+                Opcije.Instance.TotalString, totalHeaderFormat);
             column.Brush = totalAllBrush;
         }
 

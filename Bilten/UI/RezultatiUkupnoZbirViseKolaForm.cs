@@ -223,9 +223,9 @@ namespace Bilten.UI
                 List<RezultatUkupnoZbirViseKola> rezultati
                     = ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.getRezultati();
 
-                p.setIzvestaj(new UkupnoZbirViseKolaIzvestaj(rezultati, ActiveTakmicenje.Gimnastika,
-                    Opcije.Instance.PrikaziDEOcene, dataGridViewUserControl1.DataGridView,
-                    documentName, takmicenje.getBrojKola(), takmicenje));
+                p.setIzvestaj(new UkupnoZbirViseKolaIzvestaj(rezultati, Opcije.Instance.PrikaziDEOcene,
+                    dataGridViewUserControl1.DataGridView, documentName, takmicenje.getBrojKola(), takmicenje,
+                    new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 p.ShowDialog();
             }
             catch (Exception ex)
