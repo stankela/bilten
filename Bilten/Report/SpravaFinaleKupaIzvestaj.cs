@@ -89,6 +89,8 @@ namespace Bilten.Report
             groups.Add(new ReportGrupa(0, items.Count));
         }
 
+        // TODO5: Dodaj bonus i penalizaciju u sprave finale kupa izvestaj
+
         private List<object[]> getSpravaFinaleKupaReportItems(IList<RezultatSpravaFinaleKupa> rezultati)
         {
             List<object[]> result = new List<object[]>();

@@ -566,7 +566,6 @@ namespace Bilten.Report
             string spravaETitle = Opcije.Instance.EString;
             float spravaEWidth = getColumnWidth(g, E_MAX_TEXT_UKUPNO, spravaETitle);
 
-            string spravaTotTitle = Opcije.Instance.TotalString;
             float spravaTotalWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, totalTitle);
 
             // Kolone za sprave nemaju tekst nego sliku

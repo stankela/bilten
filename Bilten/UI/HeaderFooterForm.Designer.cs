@@ -83,8 +83,8 @@ namespace Bilten.UI
             this.lblTekst = new System.Windows.Forms.Label();
             this.lblSirineKolona = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.rbtSirinaTeksta = new System.Windows.Forms.RadioButton();
             this.rbtSirinaKolona = new System.Windows.Forms.RadioButton();
+            this.rbtSirinaTeksta = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -539,9 +539,9 @@ namespace Bilten.UI
             this.ckbPrikaziBonus.AutoSize = true;
             this.ckbPrikaziBonus.Location = new System.Drawing.Point(150, 456);
             this.ckbPrikaziBonus.Name = "ckbPrikaziBonus";
-            this.ckbPrikaziBonus.Size = new System.Drawing.Size(89, 17);
+            this.ckbPrikaziBonus.Size = new System.Drawing.Size(96, 17);
             this.ckbPrikaziBonus.TabIndex = 59;
-            this.ckbPrikaziBonus.Text = "Prikazi bonus";
+            this.ckbPrikaziBonus.Text = "Stampaj bonus";
             this.ckbPrikaziBonus.UseVisualStyleBackColor = true;
             // 
             // cmbFontTekst
@@ -587,17 +587,6 @@ namespace Bilten.UI
             this.panel2.Size = new System.Drawing.Size(200, 47);
             this.panel2.TabIndex = 64;
             // 
-            // rbtSirinaTeksta
-            // 
-            this.rbtSirinaTeksta.AutoSize = true;
-            this.rbtSirinaTeksta.Location = new System.Drawing.Point(14, 3);
-            this.rbtSirinaTeksta.Name = "rbtSirinaTeksta";
-            this.rbtSirinaTeksta.Size = new System.Drawing.Size(110, 17);
-            this.rbtSirinaTeksta.TabIndex = 0;
-            this.rbtSirinaTeksta.TabStop = true;
-            this.rbtSirinaTeksta.Text = "Prema širini teksta";
-            this.rbtSirinaTeksta.UseVisualStyleBackColor = true;
-            // 
             // rbtSirinaKolona
             // 
             this.rbtSirinaKolona.AutoSize = true;
@@ -608,6 +597,17 @@ namespace Bilten.UI
             this.rbtSirinaKolona.TabStop = true;
             this.rbtSirinaKolona.Text = "Prema širini kolona u programu";
             this.rbtSirinaKolona.UseVisualStyleBackColor = true;
+            // 
+            // rbtSirinaTeksta
+            // 
+            this.rbtSirinaTeksta.AutoSize = true;
+            this.rbtSirinaTeksta.Location = new System.Drawing.Point(14, 3);
+            this.rbtSirinaTeksta.Name = "rbtSirinaTeksta";
+            this.rbtSirinaTeksta.Size = new System.Drawing.Size(110, 17);
+            this.rbtSirinaTeksta.TabIndex = 0;
+            this.rbtSirinaTeksta.TabStop = true;
+            this.rbtSirinaTeksta.Text = "Prema širini teksta";
+            this.rbtSirinaTeksta.UseVisualStyleBackColor = true;
             // 
             // HeaderFooterForm
             // 

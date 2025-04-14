@@ -96,7 +96,7 @@ namespace Bilten.Report
         private bool prikaziPenal;
         private int brojEOcena;
         private bool stampajBroj;
-        private bool prikaziBonus;
+        private bool stampajBonus;
 
         public SpravaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatSprava> rezultati,
@@ -111,7 +111,7 @@ namespace Bilten.Report
             this.numRowsToMark = numRowsToMark;
             this.brojEOcena = brojEOcena;
             this.stampajBroj = stampajBroj;
-            this.prikaziBonus = prikaziBonus;
+            this.stampajBonus = prikaziBonus;
             this.resizeByGrid = resizeByGrid;
 
             totalBrush = Brushes.White;
@@ -134,7 +134,7 @@ namespace Bilten.Report
             this.numRowsToMark = numRowsToMark;
             this.brojEOcena = brojEOcena;
             this.stampajBroj = stampajBroj;
-            this.prikaziBonus = prikaziBonus;
+            this.stampajBonus = prikaziBonus;
             this.resizeByGrid = resizeByGrid;
 
             totalBrush = Brushes.White;
@@ -184,10 +184,10 @@ namespace Bilten.Report
                 if (brojEOcena > 3) items.Insert(7, rez.E4);
                 if (brojEOcena > 4) items.Insert(8, rez.E5);
                 if (brojEOcena > 5) items.Insert(9, rez.E6);
-                if (prikaziBonus) items.Insert(5 + brojEOcena, rez.Bonus);
+                if (stampajBonus) items.Insert(5 + brojEOcena, rez.Bonus);
                 if (prikaziPenal)
                 {
-                    if (prikaziBonus)
+                    if (stampajBonus)
                         items.Insert(6 + brojEOcena, rez.Penalty);
                     else
                         items.Insert(5 + brojEOcena, rez.Penalty);
@@ -222,11 +222,11 @@ namespace Bilten.Report
                     if (brojEOcena > 3) { items.Insert(13, rez.E4); items.Insert(14, rez.E4_2); }
                     if (brojEOcena > 4) { items.Insert(15, rez.E5); items.Insert(16, rez.E5_2); }
                     if (brojEOcena > 5) { items.Insert(17, rez.E6); items.Insert(18, rez.E6_2); }
-                    if (prikaziBonus)
+                    if (stampajBonus)
                     { items.Insert(9 + 2 * brojEOcena, rez.Bonus); items.Insert(10 + 2 * brojEOcena, rez.Bonus_2); }
                     if (prikaziPenal)
                     {
-                        if (prikaziBonus)
+                        if (stampajBonus)
                         {
                             items.Insert(11 + 2 * brojEOcena, rez.Penalty); items.Insert(12 + 2 * brojEOcena, rez.Penalty_2);
                         }
@@ -246,10 +246,10 @@ namespace Bilten.Report
                     if (brojEOcena > 3) items.Insert(7, rez.E4);
                     if (brojEOcena > 4) items.Insert(8, rez.E5);
                     if (brojEOcena > 5) items.Insert(9, rez.E6);
-                    if (prikaziBonus) items.Insert(5 + brojEOcena, rez.Bonus);
+                    if (stampajBonus) items.Insert(5 + brojEOcena, rez.Bonus);
                     if (prikaziPenal)
                     {
-                        if (prikaziBonus)
+                        if (stampajBonus)
                             items.Insert(6 + brojEOcena, rez.Penalty);
                         else
                             items.Insert(5 + brojEOcena, rez.Penalty);
@@ -329,28 +329,44 @@ namespace Bilten.Report
 
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
         {
-            // TODO3: Ne bi trebalo pristupati kolonama po fixnom indexu (kao u sledecoj liniji) zato sto je moguce da se
-            // index promeni (ako npr. dodam novu kolonu). Isto i u ostalim izvestajima.
+            string rankTitle = Opcije.Instance.RankString;
+            float rankWidth = getColumnWidth(g, RANK_MAX_TEXT, rankTitle);
 
-            // TODO3: Trenutno se velicine svih kolona za ocene podesavaju prema velicini prve kolone (D). Promeni da se
-            // svaka podesava odvojeno. (i u ostalim izvestajima)
+            string brojTitle = Opcije.Instance.BrojString;
+            float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, brojTitle);
 
-            float rankWidth = getColumnWidth(g, RANK_MAX_TEXT, Opcije.Instance.RankString);
-            float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, Opcije.Instance.BrojString);
+            string imeTitle = Opcije.Instance.ImeString;
+            imeWidth = getColumnWidth(g, imeWidth, imeTitle);
 
-            float skokWidth = getColumnWidth(g, SKOK_MAX_TEXT, "");
+            string klubTitle = Opcije.Instance.KlubDrzavaString;
+            klubWidth = getColumnWidth(g, klubWidth, klubTitle);
+
+            string skokTitle = "";  // TODO3: Neka bude uspravno (isto i u izvestaju za sudijske formulare).
+            float skokWidth = getColumnWidth(g, SKOK_MAX_TEXT, skokTitle);
+
             float ocenaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, "");
 
-            String kvalTitle = String.Empty;
+            string spravaDTitle = Opcije.Instance.DString;
+            float spravaDWidth = getColumnWidth(g, ocenaWidth, spravaDTitle);
+
+            string spravaETitle = Opcije.Instance.EString;
+            float spravaEWidth = getColumnWidth(g, ocenaWidth, spravaETitle);
+
+            string spravaBonusTitle = Opcije.Instance.BonusString;
+            float spravaBonusWidth = getColumnWidth(g, ocenaWidth, spravaBonusTitle);
+
+            string spravaPenTitle = Opcije.Instance.PenaltyString;
+            float spravaPenWidth = getColumnWidth(g, ocenaWidth, spravaPenTitle);
+
+            string totalTitle = Opcije.Instance.TotalString;
+            float totalWidth = getColumnWidth(g, ocenaWidth, totalTitle);
+
+            float totalObaPreskokaWidth = getColumnWidth(g, ocenaWidth, totalTitle);
+
+            string kvalTitle = "";
             float kvalWidth = getColumnWidth(g, QUAL_MAX_TEXT, kvalTitle);
 
             // TODO5: Smanji sirinu ocena kada ima vise E ocena, da sve moze da stane
-
-            int brojOcena = 3;
-            if (prikaziBonus)
-                ++brojOcena;
-            if (prikaziPenal)
-                ++brojOcena;
 
             float xRank = contentBounds.X;
             float xBroj = 0f;
@@ -375,37 +391,35 @@ namespace Bilten.Report
             else
                 xSprava = xKlub + klubWidth;
 
-            float xKval = xSprava + (ocenaWidth * (brojOcena + brojEOcena));
-            float xTotalObaPreskoka = 0.0f;  // Total oba preskoka
-            if (obaPreskoka)
-            {
-                xTotalObaPreskoka = xKval;
-                xKval = xTotalObaPreskoka + ocenaWidth;
-            }
-
-            xRightEnd = xKval;
-            if (kvalColumn)
-                xRightEnd += kvalWidth;
-
-            float xE = xSprava + ocenaWidth;
-            float xCurr = xE + (1 + brojEOcena) * ocenaWidth;
+            float xE = xSprava + spravaDWidth;
+            float xCurr = xE + (1 + brojEOcena) * spravaEWidth;
             float xBonus = 0f;
-            if (prikaziBonus)
+            if (stampajBonus)
             {
                 xBonus = xCurr;
-                xCurr += ocenaWidth;
+                xCurr += spravaBonusWidth;
             }
             float xPen = 0f;
             if (prikaziPenal)
             {
                 xPen = xCurr;
-                xCurr += ocenaWidth;
+                xCurr += spravaPenWidth;
             }
             float xTot = xCurr;
+            xCurr += totalWidth;
 
-            float spravaDWidth = ocenaWidth;
-            float spravaEWidth = ocenaWidth;
-            float spravaTotWidth = ocenaWidth;
+            float xTotalObaPreskoka = 0.0f;
+            if (obaPreskoka)
+            {
+                xTotalObaPreskoka = xCurr;
+                xCurr += totalObaPreskokaWidth;
+            }
+
+            float xKval = xCurr;
+            if (kvalColumn)
+                xCurr += kvalWidth;
+
+            xRightEnd = xCurr;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
             StringFormat brojFormat = Izvestaj.centerCenterFormat;
@@ -426,24 +440,23 @@ namespace Bilten.Report
 
             Columns.Clear();
 
-            ReportColumn column = addColumn(xRank, rankWidth, rankFormat, Opcije.Instance.RankString, rankHeaderFormat);
+            ReportColumn column = addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
             column.IncludeInMarking = true;
 
             if (stampajBroj)
             {
-                column = addColumn(xBroj, brojWidth, brojFormat, Opcije.Instance.BrojString, brojHeaderFormat);
+                column = addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
                 column.IncludeInMarking = true;
             }
 
-            column = addColumn(xIme, imeWidth, imeFormat, Opcije.Instance.ImeString, imeHeaderFormat);
+            column = addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             column.IncludeInMarking = true;
 
-            column = addColumn(xKlub, klubWidth, klubFormat, Opcije.Instance.KlubDrzavaString, klubHeaderFormat);
+            column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
             column.IncludeInMarking = true;
 
             if (obaPreskoka)
             {
-                String skokTitle = ""; // TODO3: Neka bude uspravno (isto i u izvestaju za sudijske formulare).
                 column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSkok, skokWidth, null, skokFormat,
                   skokTitle, skokHeaderFormat);
             }
@@ -456,10 +469,10 @@ namespace Bilten.Report
 
             ReportColumn column1;
             if (obaPreskoka)
-                column1 = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSprava, spravaDWidth, fmtD,
-                  spravaFormat, Opcije.Instance.DString, spravaHeaderFormat);
+                column1 = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSprava, spravaDWidth, fmtD, spravaFormat,
+                    spravaDTitle, spravaHeaderFormat);
             else
-                column1 = addColumn(xSprava, spravaDWidth, fmtD, spravaFormat, Opcije.Instance.DString, spravaHeaderFormat);
+                column1 = addColumn(xSprava, spravaDWidth, fmtD, spravaFormat, spravaDTitle, spravaHeaderFormat);
             column1.Image = SlikeSprava.getImage(sprava);
             column1.Split = true;
             column1.Span = true;
@@ -467,7 +480,7 @@ namespace Bilten.Report
             ReportColumn prevColumn = column1;
             for (int i = 0; i < brojEOcena; ++i)
             {
-                string eOcenaHeader = Opcije.Instance.EString + (i + 1).ToString();
+                string eOcenaHeader = spravaETitle + (i + 1).ToString();
                 if (obaPreskoka)
                     column = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, xE, spravaEWidth, fmtE, spravaFormat,
                       eOcenaHeader, spravaHeaderFormat);
@@ -481,19 +494,19 @@ namespace Bilten.Report
 
             if (obaPreskoka)
                 column = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, xE, spravaEWidth, fmtE, spravaFormat,
-                  Opcije.Instance.EString, spravaHeaderFormat);
+                  spravaETitle, spravaHeaderFormat);
             else
-                column = addColumn(xE, spravaEWidth, fmtE, spravaFormat, Opcije.Instance.EString, spravaHeaderFormat);
+                column = addColumn(xE, spravaEWidth, fmtE, spravaFormat, spravaETitle, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 
-            if (prikaziBonus)
+            if (stampajBonus)
             {
                 if (obaPreskoka)
-                    column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xBonus, ocenaWidth, fmtBon, spravaFormat,
-                      "Bonus", spravaHeaderFormat);
+                    column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xBonus, spravaBonusWidth, fmtBon,
+                        spravaFormat, spravaBonusTitle, spravaHeaderFormat);
                 else
-                    column = addColumn(xBonus, ocenaWidth, fmtBon, spravaFormat, "Bonus", spravaHeaderFormat);
+                    column = addColumn(xBonus, spravaBonusWidth, fmtBon, spravaFormat, spravaBonusTitle, spravaHeaderFormat);
                 column.Image = SlikeSprava.getImage(sprava);
                 column.Split = true;
             }
@@ -501,20 +514,19 @@ namespace Bilten.Report
             if (prikaziPenal)
             {
                 if (obaPreskoka)
-                    column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xPen, ocenaWidth, fmtPen, spravaFormat,
-                      "Pen.", spravaHeaderFormat);
+                    column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xPen, spravaPenWidth, fmtPen, spravaFormat,
+                      spravaPenTitle, spravaHeaderFormat);
                 else
-                    column = addColumn(xPen, ocenaWidth, fmtPen, spravaFormat, "Pen.", spravaHeaderFormat);
+                    column = addColumn(xPen, spravaPenWidth, fmtPen, spravaFormat, spravaPenTitle, spravaHeaderFormat);
                 column.Image = SlikeSprava.getImage(sprava);
                 column.Split = true;
             }
 
-            string title = Opcije.Instance.TotalString;
             if (obaPreskoka)
-                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, spravaTotWidth, fmtTot, spravaFormat,
-                    title, spravaHeaderFormat);
+                column = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xTot, totalWidth, fmtTot, spravaFormat,
+                    totalTitle, spravaHeaderFormat);
             else
-                column = addColumn(xTot, spravaTotWidth, fmtTot, spravaFormat, title, spravaHeaderFormat);
+                column = addColumn(xTot, totalWidth, fmtTot, spravaFormat, totalTitle, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
             column.Brush = totalBrush;
@@ -524,8 +536,8 @@ namespace Bilten.Report
 
             if (obaPreskoka)
             {
-                column = addColumn(column.getItemsIndexEnd(), xTotalObaPreskoka, ocenaWidth, fmtTot, totalFormat,
-                    Opcije.Instance.TotalString, totalHeaderFormat);
+                column = addColumn(column.getItemsIndexEnd(), xTotalObaPreskoka, totalObaPreskokaWidth, fmtTot, totalFormat,
+                    totalTitle, totalHeaderFormat);
                 column.Brush = totalAllBrush;
             }
 

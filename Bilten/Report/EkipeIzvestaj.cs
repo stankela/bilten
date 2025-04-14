@@ -49,8 +49,8 @@ namespace Bilten.Report
         private bool kvalColumn;
         private bool penalty;
         private Gimnastika gimnastika;
-        private String totalTitle;
-        private String penaltyTitle;
+        private string penaltyTitle;
+        private string totalTitle;
         private bool stampajBroj;
         private float kvalWidth;
         private bool prikaziKategoriju;
@@ -284,13 +284,29 @@ namespace Bilten.Report
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth,
             float kategorijaWidth)
         {
-            float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, Opcije.Instance.BrojString);
-            float spravaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, "");
-            float penaltyWidth = getColumnWidth(g, PENALTY_MAX_TEXT_UKUPNO, Opcije.Instance.PenaltyString);
-            float totalWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, Opcije.Instance.TotalString);
+            string brojTitle = Opcije.Instance.BrojString;
+            float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, brojTitle);
 
-            String kvalTitle = String.Empty;
-            kvalWidth = getColumnWidth(g, QUAL_MAX_TEXT, kvalTitle);
+            string imeTitle = Opcije.Instance.ImeString;
+            imeWidth = getColumnWidth(g, imeWidth, imeTitle);
+
+            string klubTitle = Opcije.Instance.KlubDrzavaString;
+            klubWidth = getColumnWidth(g, klubWidth, klubTitle);
+
+            string kategorijaTitle = Opcije.Instance.KategorijaString;
+            kategorijaWidth = getColumnWidth(g, kategorijaWidth, kategorijaTitle);
+
+            // Kolone za sprave nemaju tekst nego sliku
+            float spravaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, "");
+
+            penaltyTitle = Opcije.Instance.PenaltyString;
+            float penaltyWidth = getColumnWidth(g, PENALTY_MAX_TEXT_UKUPNO, penaltyTitle);
+
+            totalTitle = Opcije.Instance.TotalString;
+            float totalWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, totalTitle);
+
+            string kvalTitle = "";
+            float kvalWidth = getColumnWidth(g, QUAL_MAX_TEXT, kvalTitle);
 
             float xBroj = 0f;
             float xIme;
@@ -349,21 +365,17 @@ namespace Bilten.Report
             StringFormat spravaHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat totalHeaderFormat = Izvestaj.centerCenterFormat;
 
-            penaltyTitle = Opcije.Instance.PenaltyString;
-            totalTitle = Opcije.Instance.TotalString;
-
             Columns.Clear();
 
             if (stampajBroj)
             {
-                addColumn(xBroj, brojWidth, brojFormat, Opcije.Instance.BrojString, brojHeaderFormat);
+                addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
             }
-            addColumn(xIme, imeWidth, imeFormat, Opcije.Instance.ImeString, imeHeaderFormat);
-            addColumn(xKlub, klubWidth, klubFormat, Opcije.Instance.KlubDrzavaString, klubHeaderFormat);
+            addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
+            addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
             if (getKategorijaColumnIndex() != -1)
             {
-                addColumn(xKategorija, kategorijaWidth, kategorijaFormat, Opcije.Instance.KategorijaString,
-                    kategorijaHeaderFormat);
+                addColumn(xKategorija, kategorijaWidth, kategorijaFormat, kategorijaTitle, kategorijaHeaderFormat);
             }
 
             float[] x = { xParter, xKonj, xKarike, xPreskok, xRazboj, xVratilo };
