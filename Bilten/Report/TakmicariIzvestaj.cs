@@ -182,12 +182,25 @@ namespace Bilten.Report
 		private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float prezimeWidth,
             float datumRodjenjaWidth, float klubWidth, float drzavaWidth)
 		{
-            float redBrojWidth = getColumnWidth(g, REDNI_BROJ_MAX_TEXT, Opcije.Instance.RedBrojString);
-            float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, Opcije.Instance.BrojString);
+            string redBrojTitle = Opcije.Instance.RedBrojString;
+            float redBrojWidth = getColumnWidth(g, REDNI_BROJ_MAX_TEXT, redBrojTitle);
 
-            // U koloni drzava se prikazuje skraceni kod (koji je manji od hedera kolone koji je obicno "Drzava" ili
-            // "Country code"), pa moram da prosirim kolonu
-            String drzavaTitle = Opcije.Instance.DrzavaString;
+            string brojTitle = Opcije.Instance.BrojString;
+            float brojWidth = getColumnWidth(g, BROJ_MAX_TEXT, brojTitle);
+
+            string imeTitle = Opcije.Instance.ImeString;
+            imeWidth = getColumnWidth(g, imeWidth, imeTitle);
+
+            string prezimeTitle = Opcije.Instance.PrezimeString;
+            prezimeWidth = getColumnWidth(g, prezimeWidth, prezimeTitle);
+
+            string datumRodjenjaTitle = Opcije.Instance.DatumRodjenjaString;
+            datumRodjenjaWidth = getColumnWidth(g, datumRodjenjaWidth, datumRodjenjaTitle);     
+            
+            string klubTitle = Opcije.Instance.KlubString;
+            klubWidth = getColumnWidth(g, klubWidth, klubTitle);
+
+            string drzavaTitle = Opcije.Instance.DrzavaString;
             drzavaWidth = getColumnWidth(g, drzavaWidth, drzavaTitle);
 
 			float xRedniBroj = contentBounds.X;
@@ -228,22 +241,21 @@ namespace Bilten.Report
             Columns.Clear();
 
             bool drawItemRect = false;
-            ReportColumn column = addColumn(xRedniBroj, redBrojWidth, redBrojFormat, Opcije.Instance.RedBrojString,
-                redBrojHeaderFormat);
+            ReportColumn column = addColumn(xRedniBroj, redBrojWidth, redBrojFormat, redBrojTitle, redBrojHeaderFormat);
             column.DrawItemRect = drawItemRect;
             if (stampajBroj)
             {
-                column = addColumn(xBroj, brojWidth, brojFormat, Opcije.Instance.BrojString, brojHeaderFormat);
+                column = addColumn(xBroj, brojWidth, brojFormat, brojTitle, brojHeaderFormat);
                 column.DrawItemRect = drawItemRect;
             }
-            column = addColumn(xIme, imeWidth, imeFormat, Opcije.Instance.ImeString, imeHeaderFormat);
+            column = addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
             column.DrawItemRect = drawItemRect;
-            column = addColumn(xPrezime, prezimeWidth, prezimeFormat, Opcije.Instance.PrezimeString, prezimeHeaderFormat);
+            column = addColumn(xPrezime, prezimeWidth, prezimeFormat, prezimeTitle, prezimeHeaderFormat);
             column.DrawItemRect = drawItemRect;
-            column = addColumn(xDatumRodjenja, datumRodjenjaWidth, datumRodjenjaFormat, Opcije.Instance.DatumRodjenjaString,
+            column = addColumn(xDatumRodjenja, datumRodjenjaWidth, datumRodjenjaFormat, datumRodjenjaTitle,
                 datumRodjenjaHeaderFormat);
             column.DrawItemRect = drawItemRect;
-            column = addColumn(xKlub, klubWidth, klubFormat, Opcije.Instance.KlubString, klubHeaderFormat);
+            column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
             column.DrawItemRect = drawItemRect;
             column = addColumn(xDrzava, drzavaWidth, drzavaFormat, drzavaTitle, drzavaHeaderFormat);
             column.DrawItemRect = drawItemRect;

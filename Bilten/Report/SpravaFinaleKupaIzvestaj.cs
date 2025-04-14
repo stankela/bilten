@@ -161,37 +161,48 @@ namespace Bilten.Report
 
         private void createColumns(Graphics g, RectangleF contentBounds, float imeWidth, float klubWidth)
         {
-            float rankWidth = getColumnWidth(g, RANK_MAX_TEXT, Opcije.Instance.RankString);
-            float koloWidth = getColumnWidth(g, KOLO_MAX_TEXT, "");
+            string rankTitle = Opcije.Instance.RankString;
+            float rankWidth = getColumnWidth(g, RANK_MAX_TEXT, rankTitle);
+
+            string imeTitle = Opcije.Instance.ImeString;
+            imeWidth = getColumnWidth(g, imeWidth, imeTitle);
+
+            string klubTitle = Opcije.Instance.KlubDrzavaString;
+            klubWidth = getColumnWidth(g, klubWidth, klubTitle);
+
+            string koloTitle = "";
+            float koloWidth = getColumnWidth(g, KOLO_MAX_TEXT, koloTitle);
+
             float ocenaWidth = getColumnWidth(g, TOTAL_MAX_TEXT_UKUPNO, "");
 
-            String kvalTitle = String.Empty;
+            string spravaDTitle = Opcije.Instance.DString;
+            float spravaDWidth = getColumnWidth(g, ocenaWidth, spravaDTitle);
+
+            string spravaETitle = Opcije.Instance.EString;
+            float spravaEWidth = getColumnWidth(g, ocenaWidth, spravaETitle);
+
+            string spravaTotTitle = Opcije.Instance.TotalString;
+            float spravaTotWidth = getColumnWidth(g, ocenaWidth, spravaTotTitle);
+
+            string totalTitle = Opcije.Instance.TotalString;
+            float totalWidth = getColumnWidth(g, ocenaWidth, totalTitle);
+
+            string kvalTitle = "";
             float kvalWidth = getColumnWidth(g, QUAL_MAX_TEXT, kvalTitle);
             
-            int brojOcena = 3;
-
             float xRank = contentBounds.X;
             float xIme = xRank + rankWidth;
             float xKlub = xIme + imeWidth;
-            float xKolo = 0.0f;
-            float xSprava;
-            xKolo = xKlub + klubWidth;
-            xSprava = xKolo + koloWidth;
-
-            float xTotal = xSprava + (ocenaWidth * brojOcena);
-            float xKval = xTotal + ocenaWidth;
+            float xKolo = xKlub + klubWidth;
+            float xSprava = xKolo + koloWidth;
+            float xE = xSprava + spravaDWidth;
+            float xTot = xE + spravaEWidth;
+            float xTotal = xTot + spravaTotWidth;
+            float xKval = xTotal + totalWidth;
 
             xRightEnd = xKval;
             if (kvalColumn)
                 xRightEnd += kvalWidth;
-
-            float xE = xSprava + ocenaWidth;
-            float xPen = xE + ocenaWidth;
-            float xTot = xPen;
-
-            float spravaDWidth = ocenaWidth;
-            float spravaEWidth = ocenaWidth;
-            float spravaTotWidth = ocenaWidth;
 
             StringFormat rankFormat = Izvestaj.centerCenterFormat;
             StringFormat imeFormat = Izvestaj.nearCenterFormat;
@@ -210,11 +221,10 @@ namespace Bilten.Report
 
             Columns.Clear();
 
-            addColumn(xRank, rankWidth, rankFormat, Opcije.Instance.RankString, rankHeaderFormat);
-            addColumn(xIme, imeWidth, imeFormat, Opcije.Instance.ImeString, imeHeaderFormat);
-            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, Opcije.Instance.KlubDrzavaString,
-                klubHeaderFormat);
-            column = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xKolo, koloWidth, null, koloFormat, "",
+            addColumn(xRank, rankWidth, rankFormat, rankTitle, rankHeaderFormat);
+            addColumn(xIme, imeWidth, imeFormat, imeTitle, imeHeaderFormat);
+            ReportColumn column = addColumn(xKlub, klubWidth, klubFormat, klubTitle, klubHeaderFormat);
+            column = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xKolo, koloWidth, null, koloFormat, koloTitle,
                 koloHeaderFormat);
 
             string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
@@ -223,19 +233,19 @@ namespace Bilten.Report
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
             ReportColumn column1;
-            column1 = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xSprava, spravaDWidth, fmtD,
-                spravaFormat, Opcije.Instance.DString, spravaHeaderFormat);
+            column1 = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xSprava, spravaDWidth, fmtD, spravaFormat,
+                spravaDTitle, spravaHeaderFormat);
             column1.Image = SlikeSprava.getImage(sprava);
             column1.Split = true;
             column1.Span = true;
 
             column = addSpravaFinaleKupaColumn(column1.getItemsIndexEnd(), 2, xE, spravaEWidth, fmtE, spravaFormat,
-                Opcije.Instance.EString, spravaHeaderFormat);
+                spravaETitle, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 
             column = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xTot, spravaTotWidth, fmtTot, spravaFormat,
-                Opcije.Instance.TotalString, spravaHeaderFormat);
+                spravaTotTitle, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
             column.Brush = totalBrush;
@@ -243,8 +253,8 @@ namespace Bilten.Report
             if (column1.Span)
                 column1.SpanEndColumn = column;
 
-            column = addColumn(column.getItemsIndexEnd(), xTotal, ocenaWidth, fmtTot, totalFormat,
-                Opcije.Instance.TotalString, totalHeaderFormat);
+            column = addColumn(column.getItemsIndexEnd(), xTotal, totalWidth, fmtTot, totalFormat, totalTitle,
+                totalHeaderFormat);
             column.Brush = totalAllBrush;
 
             if (kvalColumn)
