@@ -215,9 +215,13 @@ namespace Bilten.Report
             string kvalTitle = "";
             float kvalWidth = getColumnWidth(g, QUAL_MAX_TEXT, kvalTitle);
 
-            float spravaDWidth = spravaWidth;
-            float spravaEWidth = spravaWidth;
-            float spravaTotWidth = spravaWidth;
+            string spravaDTitle = Opcije.Instance.DString;
+            string spravaETitle = Opcije.Instance.EString;
+            string spravaTotalTitle = Opcije.Instance.TotalString;
+            float spravaDWidth = getColumnWidth(g, spravaWidth, spravaDTitle);
+            float spravaEWidth = getColumnWidth(g, spravaWidth, spravaETitle);
+            float spravaTotWidth = getColumnWidth(g, spravaWidth, spravaTotalTitle);
+
             if (extended)
             {
                 spravaWidth = spravaDWidth + spravaEWidth + spravaTotWidth;
@@ -295,16 +299,18 @@ namespace Bilten.Report
                     xRazboj, xRazbojE, xRazbojTot, xVratilo, xVratiloE, xVratiloTot };
                 for (int i = 0; i < sprave.Length; i++)
                 {
-                    ReportColumn column1 = addColumn(x[3 * i], spravaDWidth, fmtD, spravaFormat, "D", spravaHeaderFormat);
+                    ReportColumn column1 = addColumn(x[3 * i], spravaDWidth, fmtD, spravaFormat, spravaDTitle,
+                        spravaHeaderFormat);
                     column1.Image = SlikeSprava.getImage(sprave[i]);
                     column1.Split = true;
                     column1.Span = true;
 
-                    column = addColumn(x[3 * i + 1], spravaEWidth, fmtE, spravaFormat, "E", spravaHeaderFormat);
+                    column = addColumn(x[3 * i + 1], spravaEWidth, fmtE, spravaFormat, spravaETitle, spravaHeaderFormat);
                     column.Image = SlikeSprava.getImage(sprave[i]);
                     column.Split = true;
 
-                    column = addColumn(x[3 * i + 2], spravaTotWidth, fmtTot, spravaFormat, "Total", spravaHeaderFormat);
+                    column = addColumn(x[3 * i + 2], spravaTotWidth, fmtTot, spravaFormat, spravaTotalTitle,
+                        spravaHeaderFormat);
                     column.Image = SlikeSprava.getImage(sprave[i]);
                     column.Split = true;
                     column.Brush = totalBrush;

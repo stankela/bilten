@@ -514,7 +514,7 @@ namespace Bilten.Domain
             set { totalString = value; }
         }
 
-        // TODO5: D, E i Pen. nisu u jeziku i nemoguce ih je menjati. Razmisli da li je potrebno
+        // TODO5: D, E, Bonus i Pen. nisu u jeziku i nemoguce ih je menjati. Razmisli da li je potrebno
 
         private string dString = "D";
         public virtual string DString
@@ -528,6 +528,13 @@ namespace Bilten.Domain
         {
             get { return eString; }
             set { eString = value; }
+        }
+
+        private string bonusString = "Bonus";
+        public virtual string BonusString
+        {
+            get { return bonusString; }
+            set { bonusString = value; }
         }
 
         private string penaltyString = "Pen.";
