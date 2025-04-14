@@ -101,7 +101,7 @@ namespace Bilten.Report
         // a klub je podesen kao "National team" (u pitanju je Gimnazijada 2025). Mozda nije lose da se razdvoje ove dve
         // opcije (klub za gimnasticare i klub za sudije), zato sto je za sudije ucesnike smisao klub kolone uvek Klub.
 
-        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+        protected override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
             List<bool> rszByGrid)
         {
             // First, create columns
@@ -183,7 +183,7 @@ namespace Bilten.Report
             StringFormat klubFormat = Izvestaj.nearCenterFormat;
             StringFormat drzavaFormat = Izvestaj.nearCenterFormat;
 
-            StringFormat redBrojHeaderFormat = Izvestaj.nearCenterFormat;
+            StringFormat redBrojHeaderFormat = Izvestaj.centerCenterFormat;
             StringFormat imeHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat prezimeHeaderFormat = Izvestaj.nearCenterFormat;
             StringFormat polHeaderFormat = Izvestaj.nearCenterFormat;

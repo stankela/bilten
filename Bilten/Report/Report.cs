@@ -552,7 +552,7 @@ namespace Bilten.Report
             return result;
         }
 
-        public virtual void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+        protected virtual void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
             List<bool> resizeByGrid)
         {
 

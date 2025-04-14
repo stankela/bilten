@@ -638,7 +638,7 @@ namespace Bilten.UI
         private void btnPrint_Click(object sender, EventArgs e)
         {
             string nazivIzvestaja;
-            // TODO5: Dodaj ovo u jezik
+            // TODO5: Dodaj ovo u jezik. Korsiti istu vrednost u TakmicariTakmicenjaForm
             if (takmicenje.Gimnastika == Gimnastika.MSG)
                 nazivIzvestaja = "Gimnasti" + Jezik.chMalo + "ari";
             else

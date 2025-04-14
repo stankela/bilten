@@ -442,7 +442,7 @@ namespace Bilten.Report
             return result;
         }
 
-        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+        protected override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
             List<bool> rszByGrid /* output parameter */)
         {
             // First, create columns

@@ -274,8 +274,8 @@ namespace Bilten.Report
             return result;
         }
 
-        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
-         List<bool> rszByGrid)
+        protected override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+            List<bool> rszByGrid)
         {
             // First, create columns
 
@@ -457,9 +457,9 @@ namespace Bilten.Report
             ReportColumn column1;
             if (obaPreskoka)
                 column1 = addDvaPreskokaColumn(column.getItemsIndexEnd(), 2, xSprava, spravaDWidth, fmtD,
-                  spravaFormat, "D", spravaHeaderFormat);
+                  spravaFormat, Opcije.Instance.DString, spravaHeaderFormat);
             else
-                column1 = addColumn(xSprava, spravaDWidth, fmtD, spravaFormat, "D", spravaHeaderFormat);
+                column1 = addColumn(xSprava, spravaDWidth, fmtD, spravaFormat, Opcije.Instance.DString, spravaHeaderFormat);
             column1.Image = SlikeSprava.getImage(sprava);
             column1.Split = true;
             column1.Span = true;
@@ -467,7 +467,7 @@ namespace Bilten.Report
             ReportColumn prevColumn = column1;
             for (int i = 0; i < brojEOcena; ++i)
             {
-                string eOcenaHeader = "E" + (i + 1).ToString();
+                string eOcenaHeader = Opcije.Instance.EString + (i + 1).ToString();
                 if (obaPreskoka)
                     column = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, xE, spravaEWidth, fmtE, spravaFormat,
                       eOcenaHeader, spravaHeaderFormat);
@@ -481,9 +481,9 @@ namespace Bilten.Report
 
             if (obaPreskoka)
                 column = addDvaPreskokaColumn(prevColumn.getItemsIndexEnd(), 2, xE, spravaEWidth, fmtE, spravaFormat,
-                  "E", spravaHeaderFormat);
+                  Opcije.Instance.EString, spravaHeaderFormat);
             else
-                column = addColumn(xE, spravaEWidth, fmtE, spravaFormat, "E", spravaHeaderFormat);
+                column = addColumn(xE, spravaEWidth, fmtE, spravaFormat, Opcije.Instance.EString, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
 

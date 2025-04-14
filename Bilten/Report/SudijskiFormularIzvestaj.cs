@@ -175,7 +175,7 @@ namespace Bilten.Report
             return result;
         }
 
-        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+        protected override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
             List<bool> rszByGrid)
         {
             // First, create columns
@@ -252,6 +252,7 @@ namespace Bilten.Report
             float xSprava;
             float xTotal;
             do {
+                // Smanjuj ocenaWidth dok sve ne stane na stranu
                 ocenaWidthCm -= 0.1f;
                 ocenaWidth = Izvestaj.convCmToInch(ocenaWidthCm);
 

@@ -223,7 +223,7 @@ namespace Bilten.Report
         }
 
         // TODO5: Bolje ime za ovaj metod je layoutContentsVertically()
-        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+        protected override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
             List<bool> rszByGrid)
         {
             // First, create columns

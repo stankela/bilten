@@ -103,7 +103,7 @@ namespace Bilten.Report
 
         // TODO5: Ovaj metod je skoro identican u svim izvestajima, jedino se deo "layout contents vertically" razlikuje.
         // Napravi common metod.
-        public override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
+        protected override void doSetupContent(Graphics g, RectangleF contentBounds, List<float> columnWidths,
             List<bool> rszByGrid)
         {
             // First, create columns

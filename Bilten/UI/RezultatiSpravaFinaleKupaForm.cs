@@ -278,19 +278,18 @@ namespace Bilten.UI
 
                     foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
                         rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
-                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, ActiveTakmicenje.Gimnastika,
-                        kvalColumnVisible(), documentName, form.BrojSpravaPoStrani,
-                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize)));
+                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, kvalColumnVisible(), documentName,
+                        form.BrojSpravaPoStrani, spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 else
                 {
                     List<RezultatSpravaFinaleKupa> rezultati =
                         ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati();
 
-                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati,
-                        kvalColumnVisible(), documentName, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
-                        takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
+                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati, kvalColumnVisible(), documentName,
+                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
 
                 p.ShowDialog();
