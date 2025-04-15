@@ -230,7 +230,7 @@ namespace Bilten.UI
             string nazivIzvestaja = ActiveTakmicenje.getNazivIzvestajaSprava(DeoTakmicenjaKod.Takmicenje1, true, true);
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
-                false, true, false, false, false, false, false, false, false, false, false /*TODO5: Verovatno treba true*/);
+                false, true, true, false, false, false, false, false, false, false, true);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -280,7 +280,8 @@ namespace Bilten.UI
                         rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, kvalColumnVisible(), documentName,
                         form.BrojSpravaPoStrani, spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
+                        new Font(form.TekstFont, form.TekstFontSize), form.PrikaziPenalSprave, form.PrikaziBonus,
+                        form.ResizeByGrid));
                 }
                 else
                 {
@@ -289,7 +290,8 @@ namespace Bilten.UI
 
                     p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati, kvalColumnVisible(), documentName,
                         spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
+                        new Font(form.TekstFont, form.TekstFontSize), form.PrikaziPenalSprave, form.PrikaziBonus,
+                        form.ResizeByGrid));
                 }
 
                 p.ShowDialog();

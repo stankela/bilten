@@ -1,0 +1,10 @@
+-- 15-Apr-2025 (VERZIJA = 22)
+
+alter table rezultati_sprava_finale_kupa add column bonus_prvo_kolo real;
+GO
+alter table rezultati_sprava_finale_kupa add column pen_prvo_kolo real;
+GO
+alter table rezultati_sprava_finale_kupa add column bonus_drugo_kolo real;
+GO
+alter table rezultati_sprava_finale_kupa add column pen_drugo_kolo real;
+GO

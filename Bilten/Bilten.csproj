@@ -182,6 +182,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
+    <EmbeddedResource Include="Update\DatabaseUpdate_version22.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version21.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version20.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version19.txt" />

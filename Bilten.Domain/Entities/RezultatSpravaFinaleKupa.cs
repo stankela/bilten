@@ -28,6 +28,20 @@ namespace Bilten.Domain
             set { e_PrvoKolo = value; }
         }
 
+        private Nullable<float> pen_PrvoKolo;
+        public virtual Nullable<float> Pen_PrvoKolo
+        {
+            get { return pen_PrvoKolo; }
+            set { pen_PrvoKolo = value; }
+        }
+
+        private Nullable<float> bonus_PrvoKolo;
+        public virtual Nullable<float> Bonus_PrvoKolo
+        {
+            get { return bonus_PrvoKolo; }
+            set { bonus_PrvoKolo = value; }
+        }
+
         private Nullable<float> _totalPrvoKolo;
         public virtual Nullable<float> TotalPrvoKolo
         {
@@ -49,6 +63,20 @@ namespace Bilten.Domain
             set { e_DrugoKolo = value; }
         }
 
+        private Nullable<float> pen_DrugoKolo;
+        public virtual Nullable<float> Pen_DrugoKolo
+        {
+            get { return pen_DrugoKolo; }
+            set { pen_DrugoKolo = value; }
+        }
+
+        private Nullable<float> bonus_DrugoKolo;
+        public virtual Nullable<float> Bonus_DrugoKolo
+        {
+            get { return bonus_DrugoKolo; }
+            set { bonus_DrugoKolo = value; }
+        }
+
         private Nullable<float> _totalDrugoKolo;
         public virtual Nullable<float> TotalDrugoKolo
         {
@@ -60,6 +88,8 @@ namespace Bilten.Domain
         {
             D_PrvoKolo = r.D;
             E_PrvoKolo = r.E;
+            Bonus_PrvoKolo = r.Bonus;
+            Pen_PrvoKolo = r.Penalty;
             TotalPrvoKolo = r.Total;
         }
 
@@ -67,6 +97,8 @@ namespace Bilten.Domain
         {
             D_DrugoKolo = r.D;
             E_DrugoKolo = r.E;
+            Bonus_DrugoKolo = r.Bonus;
+            Pen_DrugoKolo = r.Penalty;
             TotalDrugoKolo = r.Total;
         }
 
@@ -81,8 +113,11 @@ namespace Bilten.Domain
                 initPrvoKolo(r);
             else
             {
+                // TODO5: Prikazuj kompletan prvi i drugi preskok (D, E, Pen, Bonus) za oba kola u izvestaju
                 D_PrvoKolo = null;
                 E_PrvoKolo = null;
+                Bonus_PrvoKolo = null;
+                Pen_PrvoKolo = null;
                 TotalPrvoKolo = r.TotalObeOcene;
             }
         }
@@ -95,6 +130,8 @@ namespace Bilten.Domain
             {
                 D_DrugoKolo = null;
                 E_DrugoKolo = null;
+                Bonus_DrugoKolo = null;
+                Pen_DrugoKolo = null;
                 TotalDrugoKolo = r.TotalObeOcene;
             }
         }
@@ -156,9 +193,13 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Gimnasticar != null ? Gimnasticar.Id.ToString() : NULL);
             strBuilder.AppendLine(D_PrvoKolo != null ? D_PrvoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(E_PrvoKolo != null ? E_PrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(Bonus_PrvoKolo != null ? Bonus_PrvoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(Pen_PrvoKolo != null ? Pen_PrvoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(TotalPrvoKolo != null ? TotalPrvoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(D_DrugoKolo != null ? D_DrugoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(E_DrugoKolo != null ? E_DrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(Bonus_DrugoKolo != null ? Bonus_DrugoKolo.Value.ToString() : NULL);
+            strBuilder.AppendLine(Pen_DrugoKolo != null ? Pen_DrugoKolo.Value.ToString() : NULL);
             strBuilder.AppendLine(TotalDrugoKolo != null ? TotalDrugoKolo.Value.ToString() : NULL);
         }
 
@@ -176,6 +217,12 @@ namespace Bilten.Domain
             E_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
+            Bonus_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Pen_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
             TotalPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
@@ -183,6 +230,12 @@ namespace Bilten.Domain
 
             line = reader.ReadLine();
             E_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Bonus_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
+            line = reader.ReadLine();
+            Pen_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
             TotalDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;

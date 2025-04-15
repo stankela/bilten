@@ -12,9 +12,13 @@
     <property name="KvalStatus" column="kval_status" type="Byte" />
     <property name="D_PrvoKolo" column="d_prvo_kolo" />
     <property name="E_PrvoKolo" column="e_prvo_kolo" />
+    <property name="Bonus_PrvoKolo" column="bonus_prvo_kolo" />
+    <property name="Pen_PrvoKolo" column="pen_prvo_kolo" />
     <property name="TotalPrvoKolo" column="total_prvo_kolo" />
     <property name="D_DrugoKolo" column="d_drugo_kolo" />
     <property name="E_DrugoKolo" column="e_drugo_kolo" />
+    <property name="Bonus_DrugoKolo" column="bonus_drugo_kolo" />
+    <property name="Pen_DrugoKolo" column="pen_drugo_kolo" />
     <property name="TotalDrugoKolo" column="total_drugo_kolo" />
     <property name="Total" column="total" />
     <many-to-one name="Gimnasticar" class="GimnasticarUcesnik" column="gimnasticar_id" />

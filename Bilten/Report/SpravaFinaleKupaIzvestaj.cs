@@ -12,7 +12,8 @@ namespace Bilten.Report
         private bool svakaSpravaNaPosebnojStrani;
 
         public SpravaFinaleKupaIzvestaj(Sprava sprava, IList<RezultatSpravaFinaleKupa> rezultati, bool kvalColumn,
-            string documentName, DataGridView formGrid, Takmicenje takmicenje, Font itemFont, bool resizeByGrid)
+            string documentName, DataGridView formGrid, Takmicenje takmicenje, Font itemFont, bool prikaziPenal,
+            bool prikaziBonus, bool resizeByGrid)
             : base(takmicenje)
         {
             DocumentName = documentName;
@@ -20,12 +21,12 @@ namespace Bilten.Report
             svakaSpravaNaPosebnojStrani = true;
 
             reportListe.Add(new SpravaFinaleKupaLista(this, 1, 0f, itemFont, itemsHeaderFont, rezultati,
-                kvalColumn, sprava, formGrid, resizeByGrid));
+                kvalColumn, sprava, formGrid, prikaziPenal, prikaziBonus, resizeByGrid));
         }
 
         public SpravaFinaleKupaIzvestaj(List<List<RezultatSpravaFinaleKupa>> rezultatiSprave, bool kvalColumn,
             string documentName, int brojSpravaPoStrani, DataGridView formGrid, Takmicenje takmicenje, Font itemFont,
-            bool resizeByGrid)
+            bool prikaziPenal, bool prikaziBonus, bool resizeByGrid)
             : base(takmicenje)
         {
             DocumentName = documentName;
@@ -37,7 +38,7 @@ namespace Bilten.Report
             {
                 Sprava sprava = sprave[i];
                 SpravaFinaleKupaLista lista = new SpravaFinaleKupaLista(this, 1, 0f, itemFont, itemsHeaderFont,
-                    rezultatiSprave[i], kvalColumn, sprava, formGrid, resizeByGrid);
+                    rezultatiSprave[i], kvalColumn, sprava, formGrid, prikaziPenal, prikaziBonus, resizeByGrid);
                 reportListe.Add(lista);
             }
         }
@@ -55,15 +56,19 @@ namespace Bilten.Report
 
         private bool kvalColumn;
         private Sprava sprava;
+        private bool prikaziPenal;
+        private bool prikaziBonus;
 
         public SpravaFinaleKupaLista(Izvestaj izvestaj, int pageNum, float y,
             Font itemFont, Font itemsHeaderFont, IList<RezultatSpravaFinaleKupa> rezultati,
-            bool kvalColumn, Sprava sprava, DataGridView formGrid, bool resizeByGrid)
+            bool kvalColumn, Sprava sprava, DataGridView formGrid, bool prikaziPenal, bool prikaziBonus, bool resizeByGrid)
             : base(izvestaj, pageNum, y, itemFont, itemsHeaderFont, formGrid)
         {
             this.kvalColumn = kvalColumn;
             this.sprava = sprava;
             this.resizeByGrid = resizeByGrid;
+            this.prikaziPenal = prikaziPenal;
+            this.prikaziBonus = prikaziBonus;
 
             totalBrush = Brushes.White;
             totalAllBrush = Brushes.White;
@@ -89,16 +94,25 @@ namespace Bilten.Report
             groups.Add(new ReportGrupa(0, items.Count));
         }
 
-        // TODO5: Dodaj bonus i penalizaciju u sprave finale kupa izvestaj
-
         private List<object[]> getSpravaFinaleKupaReportItems(IList<RezultatSpravaFinaleKupa> rezultati)
         {
             List<object[]> result = new List<object[]>();
             foreach (RezultatSpravaFinaleKupa rez in rezultati)
             {
-                result.Add(new object[] { rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "I", "II",
+                List<object> items = new List<object>() { rez.Rank, rez.PrezimeIme, rez.KlubDrzava, "I", "II",
                             rez.D_PrvoKolo, rez.D_DrugoKolo, rez.E_PrvoKolo, rez.E_DrugoKolo, rez.TotalPrvoKolo,
-                            rez.TotalDrugoKolo, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) });
+                            rez.TotalDrugoKolo, rez.Total, KvalifikacioniStatusi.toString(rez.KvalStatus) };
+                if (prikaziPenal)
+                {
+                    items.Insert(9, rez.Pen_PrvoKolo);
+                    items.Insert(10, rez.Pen_DrugoKolo);
+                }
+                if (prikaziBonus)
+                {
+                    items.Insert(9, rez.Bonus_PrvoKolo);
+                    items.Insert(10, rez.Bonus_DrugoKolo);
+                }
+                result.Add(items.ToArray());
             }
             return result;
         }
@@ -183,6 +197,12 @@ namespace Bilten.Report
             string spravaETitle = Opcije.Instance.EString;
             float spravaEWidth = getColumnWidth(g, ocenaWidth, spravaETitle);
 
+            string spravaBonusTitle = Opcije.Instance.BonusString;
+            float spravaBonusWidth = getColumnWidth(g, ocenaWidth, spravaBonusTitle);
+
+            string spravaPenTitle = Opcije.Instance.PenaltyString;
+            float spravaPenWidth = getColumnWidth(g, ocenaWidth, spravaPenTitle);
+
             string spravaTotTitle = Opcije.Instance.TotalString;
             float spravaTotWidth = getColumnWidth(g, ocenaWidth, spravaTotTitle);
 
@@ -198,7 +218,20 @@ namespace Bilten.Report
             float xKolo = xKlub + klubWidth;
             float xSprava = xKolo + koloWidth;
             float xE = xSprava + spravaDWidth;
-            float xTot = xE + spravaEWidth;
+            float xCurr = xE + spravaEWidth;
+            float xBonus = 0f;
+            if (prikaziBonus)
+            {
+                xBonus = xCurr;
+                xCurr += spravaBonusWidth;
+            }
+            float xPen = 0f;
+            if (prikaziPenal)
+            {
+                xPen = xCurr;
+                xCurr += spravaPenWidth;
+            }
+            float xTot = xCurr;
             float xTotal = xTot + spravaTotWidth;
             float xKval = xTotal + totalWidth;
 
@@ -231,6 +264,7 @@ namespace Bilten.Report
 
             string fmtD = "F" + Opcije.Instance.BrojDecimalaD;
             string fmtE = "F" + Opcije.Instance.BrojDecimalaE;
+            string fmtBon = "F" + Opcije.Instance.BrojDecimalaBon;
             string fmtPen = "F" + Opcije.Instance.BrojDecimalaPen;
             string fmtTot = "F" + Opcije.Instance.BrojDecimalaTotal;
 
@@ -245,6 +279,22 @@ namespace Bilten.Report
                 spravaETitle, spravaHeaderFormat);
             column.Image = SlikeSprava.getImage(sprava);
             column.Split = true;
+
+            if (prikaziBonus)
+            {
+                column = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xBonus, spravaBonusWidth, fmtBon,
+                    spravaFormat, spravaBonusTitle, spravaHeaderFormat);
+                column.Image = SlikeSprava.getImage(sprava);
+                column.Split = true;
+            }
+
+            if (prikaziPenal)
+            {
+                column = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xPen, spravaPenWidth, fmtPen, spravaFormat,
+                    spravaPenTitle, spravaHeaderFormat);
+                column.Image = SlikeSprava.getImage(sprava);
+                column.Split = true;
+            }
 
             column = addSpravaFinaleKupaColumn(column.getItemsIndexEnd(), 2, xTot, spravaTotWidth, fmtTot, spravaFormat,
                 spravaTotTitle, spravaHeaderFormat);

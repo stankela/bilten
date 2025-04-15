@@ -188,7 +188,7 @@ namespace Bilten.UI
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
-                true, false, false, false, false, false, false, false, false, false, false);
+                false, false, false, false, false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -223,9 +223,8 @@ namespace Bilten.UI
                 List<RezultatUkupnoZbirViseKola> rezultati
                     = ActiveTakmicenje.Takmicenje1.PoredakUkupnoZbirViseKola.getRezultati();
 
-                p.setIzvestaj(new UkupnoZbirViseKolaIzvestaj(rezultati, Opcije.Instance.PrikaziDEOcene,
-                    dataGridViewUserControl1.DataGridView, documentName, takmicenje.getBrojKola(), takmicenje,
-                    new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
+                p.setIzvestaj(new UkupnoZbirViseKolaIzvestaj(rezultati, dataGridViewUserControl1.DataGridView, documentName,
+                    takmicenje.getBrojKola(), takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 p.ShowDialog();
             }
             catch (Exception ex)

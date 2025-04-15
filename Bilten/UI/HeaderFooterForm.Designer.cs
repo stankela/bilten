@@ -453,9 +453,9 @@ namespace Bilten.UI
             this.ckbPenalSprave.AutoSize = true;
             this.ckbPenalSprave.Location = new System.Drawing.Point(12, 433);
             this.ckbPenalSprave.Name = "ckbPenalSprave";
-            this.ckbPenalSprave.Size = new System.Drawing.Size(115, 17);
+            this.ckbPenalSprave.Size = new System.Drawing.Size(122, 17);
             this.ckbPenalSprave.TabIndex = 50;
-            this.ckbPenalSprave.Text = "Prikazi penalizaciju";
+            this.ckbPenalSprave.Text = "Stampaj penalizaciju";
             this.ckbPenalSprave.UseVisualStyleBackColor = true;
             // 
             // ckbStampajRedniBroj

@@ -191,7 +191,7 @@ namespace Bilten.UI
             string documentName = nazivIzvestaja + " - " + ActiveTakmicenje.Kategorija.Naziv;
 
             HeaderFooterForm form = new HeaderFooterForm(DeoTakmicenjaKod.Takmicenje1,
-                true, false, false, false, false, false, false, false, false, false, false);
+                false, false, false, false, false, false, false, false, false, false, false);
             if (!Opcije.Instance.HeaderFooterInitialized)
             {
                 FormUtil.initHeaderFooterFormFromOpcije(form);
@@ -226,7 +226,7 @@ namespace Bilten.UI
                 List<RezultatUkupnoFinaleKupa> rezultati
                     = ActiveTakmicenje.Takmicenje1.PoredakUkupnoFinaleKupa.getRezultati();
                 
-                p.setIzvestaj(new UkupnoFinaleKupaIzvestaj(rezultati, Opcije.Instance.PrikaziDEOcene, kvalColumnVisible(),
+                p.setIzvestaj(new UkupnoFinaleKupaIzvestaj(rezultati, kvalColumnVisible(),
                     dataGridViewUserControl1.DataGridView, documentName, takmicenje,
                     new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 p.ShowDialog();
