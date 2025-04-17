@@ -7,23 +7,30 @@ using System.IO;
 
 namespace Bilten.Domain
 {
-    public class PoredakSpravaFinaleKupa : DomainObject
+    public class PoredakPreskokFinaleKupa : DomainObject
     {
-        private Sprava _sprava;
-        public virtual Sprava Sprava
+        private bool koristiTotalObeOcenePrvoKolo;
+        public virtual bool KoristiTotalObeOcenePrvoKolo
         {
-            get { return _sprava; }
-            set { _sprava = value; }
+            get { return koristiTotalObeOcenePrvoKolo; }
+            set { koristiTotalObeOcenePrvoKolo = value; }
         }
 
-        private IList<RezultatSpravaFinaleKupa> _rezultati = new List<RezultatSpravaFinaleKupa>();
-        public virtual IList<RezultatSpravaFinaleKupa> Rezultati
+        private bool koristiTotalObeOceneDrugoKolo;
+        public virtual bool KoristiTotalObeOceneDrugoKolo
+        {
+            get { return koristiTotalObeOceneDrugoKolo; }
+            set { koristiTotalObeOceneDrugoKolo = value; }
+        }
+        
+        private IList<RezultatPreskokFinaleKupa> _rezultati = new List<RezultatPreskokFinaleKupa>();
+        public virtual IList<RezultatPreskokFinaleKupa> Rezultati
         {
             get { return _rezultati; }
             protected set { _rezultati = value; }
         }
 
-        public PoredakSpravaFinaleKupa()
+        public PoredakPreskokFinaleKupa()
         {
 
         }
@@ -31,53 +38,67 @@ namespace Bilten.Domain
         public virtual void create(RezultatskoTakmicenje rezTak, RezultatskoTakmicenje rezTak1,
             RezultatskoTakmicenje rezTak2)
         {
-            IDictionary<GimnasticarUcesnik, RezultatSpravaFinaleKupa> rezultatiMap =
-                new Dictionary<GimnasticarUcesnik, RezultatSpravaFinaleKupa>();
+            IDictionary<GimnasticarUcesnik, RezultatPreskokFinaleKupa> rezultatiMap =
+                new Dictionary<GimnasticarUcesnik, RezultatPreskokFinaleKupa>();
             foreach (GimnasticarUcesnik g in rezTak.Takmicenje1.Gimnasticari)
             {
-                RezultatSpravaFinaleKupa rezultat = new RezultatSpravaFinaleKupa();
+                RezultatPreskokFinaleKupa rezultat = new RezultatPreskokFinaleKupa(this);
                 rezultat.Gimnasticar = g;
                 rezultatiMap.Add(g, rezultat);
             }
 
-            foreach (RezultatSprava r in rezTak1.Takmicenje1.getPoredakSprava(Sprava).Rezultati)
+            // TODO4: Razmisli da li treba uvoditi opciju u propozicijama sta da se radi kada u nekom od prethodnih kola
+            // deo takmicara ima obe ocene za preskok a deo ima samo jednu (ili se kao i do sada oslanjati na to kako je
+            // to specifikovano u propozicijama za 1. i 2. kolo, sto mislim da je bolja varijanta)
+
+            // Ovo takodje obradjuje situaciju kada je u propozicijama za prvo kolo stavljeno
+            // da se preskok racuna na osnovu oba preskoka, ali ni za jednog gimnasticara ne
+            // postoji ocena za oba preskoka. Ova situacija najverovatnije nastaje kada se u
+            // prvom kolu kao prvi preskok unosila konacna ocena za oba preskoka.
+            // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
+            this.koristiTotalObeOcenePrvoKolo = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
+                && rezTak1.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+
+            foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                {
                     rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
+                }
             }
-            foreach (RezultatSprava r in rezTak2.Takmicenje1.getPoredakSprava(Sprava).Rezultati)
+
+            this.koristiTotalObeOceneDrugoKolo = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
+                && rezTak2.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+            foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                {
                     rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
+                }
             }
 
             Rezultati.Clear();
-            foreach (RezultatSpravaFinaleKupa r in rezultatiMap.Values)
+            foreach (RezultatPreskokFinaleKupa r in rezultatiMap.Values)
             {
-                // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
-                // na isti nacin.
                 r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak3);
                 Rezultati.Add(r);
             }
             rankRezultati(rezTak.Propozicije);
         }
 
-        // TODO3: Za sve poretke (ukupno, sprava, ekipno, kako za finale kupa, tako i za obicna takmicenja) specifikuj
-        // pravila razresavanja istih ocena.
-
         public virtual void rankRezultati(Propozicije propozicije)
         {
-            List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(Rezultati);
+            List<RezultatPreskokFinaleKupa> rezultati = new List<RezultatPreskokFinaleKupa>(Rezultati);
 
             PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
-                TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["Total"],
-                TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["PrezimeIme"]
+                TypeDescriptor.GetProperties(typeof(RezultatPreskokFinaleKupa))["Total"],
+                TypeDescriptor.GetProperties(typeof(RezultatPreskokFinaleKupa))["PrezimeIme"]
             };
             ListSortDirection[] sortDir = new ListSortDirection[] {
                 ListSortDirection.Descending,
                 ListSortDirection.Ascending
             };
-            rezultati.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc, sortDir));
+            rezultati.Sort(new SortComparer<RezultatPreskokFinaleKupa>(propDesc, sortDir));
 
             float prevTotal = -1f;
             short prevRank = 0;
@@ -108,15 +129,15 @@ namespace Bilten.Domain
         {
             if (!propozicije.odvojenoTak3())
             {
-                foreach (RezultatSpravaFinaleKupa r in Rezultati)
+                foreach (RezultatPreskokFinaleKupa r in Rezultati)
                     r.KvalStatus = KvalifikacioniStatus.None;
                 return;
             }
-            
-            List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(Rezultati);
+
+            List<RezultatPreskokFinaleKupa> rezultati = new List<RezultatPreskokFinaleKupa>(Rezultati);
             PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["RedBroj"];
-            rezultati.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc,
+                TypeDescriptor.GetProperties(typeof(RezultatPreskokFinaleKupa))["RedBroj"];
+            rezultati.Sort(new SortComparer<RezultatPreskokFinaleKupa>(propDesc,
                 ListSortDirection.Ascending));
 
             // moram da koristim dve mape zato sto je moguca situacija da klub i 
@@ -128,7 +149,7 @@ namespace Bilten.Domain
             int rezCount = 0;
             for (int i = 0; i < rezultati.Count; i++)
             {
-                RezultatSpravaFinaleKupa rezultat = rezultati[i];
+                RezultatPreskokFinaleKupa rezultat = rezultati[i];
                 if (rezultat.Total == null)
                 {
                     rezultat.KvalStatus = KvalifikacioniStatus.None;
@@ -233,7 +254,7 @@ namespace Bilten.Domain
 
         public virtual void calculateTotal(Propozicije propozicije)
         {
-            foreach (RezultatSpravaFinaleKupa r in Rezultati)
+            foreach (RezultatPreskokFinaleKupa r in Rezultati)
                 r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak3);
             rankRezultati(propozicije);
         }
@@ -241,10 +262,12 @@ namespace Bilten.Domain
         public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
             RezultatskoTakmicenje rezTak1, RezultatskoTakmicenje rezTak2)
         {
-            RezultatSpravaFinaleKupa rezultat = new RezultatSpravaFinaleKupa();
+            RezultatPreskokFinaleKupa rezultat = new RezultatPreskokFinaleKupa(this);
             rezultat.Gimnasticar = g;
 
-            foreach (RezultatSprava r in rezTak1.Takmicenje1.getPoredakSprava(Sprava).Rezultati)
+            this.koristiTotalObeOcenePrvoKolo = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
+                && rezTak1.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+            foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
@@ -252,7 +275,10 @@ namespace Bilten.Domain
                     break;
                 }
             }
-            foreach (RezultatSprava r in rezTak2.Takmicenje1.getPoredakSprava(Sprava).Rezultati)
+
+            this.koristiTotalObeOceneDrugoKolo = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
+                && rezTak2.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+            foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
@@ -268,7 +294,7 @@ namespace Bilten.Domain
 
         public virtual void deleteGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak)
         {
-            RezultatSpravaFinaleKupa r = getRezultat(g);
+            RezultatPreskokFinaleKupa r = getRezultat(g);
             if (r != null)
             {
                 Rezultati.Remove(r);
@@ -276,9 +302,9 @@ namespace Bilten.Domain
             }
         }
 
-        private RezultatSpravaFinaleKupa getRezultat(GimnasticarUcesnik g)
+        private RezultatPreskokFinaleKupa getRezultat(GimnasticarUcesnik g)
         {
-            foreach (RezultatSpravaFinaleKupa r in Rezultati)
+            foreach (RezultatPreskokFinaleKupa r in Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                     return r;
@@ -286,13 +312,13 @@ namespace Bilten.Domain
             return null;
         }
 
-        public virtual List<RezultatSpravaFinaleKupa> getRezultati()
+        public virtual List<RezultatPreskokFinaleKupa> getRezultati()
         {
-            List<RezultatSpravaFinaleKupa> result = new List<RezultatSpravaFinaleKupa>(Rezultati);
+            List<RezultatPreskokFinaleKupa> result = new List<RezultatPreskokFinaleKupa>(Rezultati);
 
             PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["RedBroj"];
-            result.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc, ListSortDirection.Ascending));
+                TypeDescriptor.GetProperties(typeof(RezultatPreskokFinaleKupa))["RedBroj"];
+            result.Sort(new SortComparer<RezultatPreskokFinaleKupa>(propDesc, ListSortDirection.Ascending));
 
             return result;
         }
@@ -300,7 +326,7 @@ namespace Bilten.Domain
         public virtual IList<GimnasticarUcesnik> getKvalifikanti()
         {
             IList<GimnasticarUcesnik> result = new List<GimnasticarUcesnik>();
-            foreach (RezultatSpravaFinaleKupa r in getRezultati())
+            foreach (RezultatPreskokFinaleKupa r in getRezultati())
             {
                 if (r.KvalStatus == KvalifikacioniStatus.Q)
                     result.Add(r.Gimnasticar);
@@ -308,14 +334,14 @@ namespace Bilten.Domain
             return result;
         }
 
-        // NOTE: Nisu implementirani Equals i GetHashCode (iako se PoredakSpravaFinaleKupa cuva u setovima) zato sto je
+        // NOTE: Nisu implementirani Equals i GetHashCode (iako se PoredakPreskokFinaleKupa cuva u setovima) zato sto je
         // podrazumevani Equals dovoljan.
 
         public virtual void dumpRezultati(StreamWriter streamWriter)
         {
-            string header = Sprave.toString(Sprava).ToUpper() + " - FINALE";
+            string header = Sprava.Preskok.ToString().ToUpper() + " - FINALE";
             streamWriter.WriteLine(header);
-            foreach (RezultatSpravaFinaleKupa r in getRezultati())
+            foreach (RezultatPreskokFinaleKupa r in getRezultati())
             {
                 string line = r.Rank + ". " + r.Gimnasticar.ImeSrednjeImePrezimeDatumRodjenja + "   " + r.Total;
                 streamWriter.WriteLine(line);
@@ -325,22 +351,19 @@ namespace Bilten.Domain
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
-            strBuilder.AppendLine(Sprava.ToString());
 
             strBuilder.AppendLine(Rezultati.Count.ToString());
-            foreach (RezultatSpravaFinaleKupa r in Rezultati)
+            foreach (RezultatPreskokFinaleKupa r in Rezultati)
                 r.dump(strBuilder);
         }
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
-            Sprava = (Sprava)Enum.Parse(typeof(Sprava), reader.ReadLine());
-
             int brojRezultata = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojRezultata; ++i)
             {
                 reader.ReadLine();  // id
-                RezultatSpravaFinaleKupa r = new RezultatSpravaFinaleKupa();
+                RezultatPreskokFinaleKupa r = new RezultatPreskokFinaleKupa(this);
                 r.loadFromDump(reader, map);
                 Rezultati.Add(r);
             }

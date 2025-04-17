@@ -127,6 +127,13 @@ namespace Bilten.Domain
             return null;
         }
 
+        private PoredakPreskokFinaleKupa _poredakPreskokFinaleKupa;
+        public virtual PoredakPreskokFinaleKupa PoredakPreskokFinaleKupa
+        {
+            get { return _poredakPreskokFinaleKupa; }
+            set { _poredakPreskokFinaleKupa = value; }
+        }
+
         private PoredakEkipnoFinaleKupa _poredakEkipnoFinaleKupa;
         public virtual PoredakEkipnoFinaleKupa PoredakEkipnoFinaleKupa
         {
@@ -163,6 +170,13 @@ namespace Bilten.Domain
             else if (takmicenje.FinaleKupa)
             {
                 _poredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
+                foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+                {
+                    PoredakSpravaFinaleKupa poredak = new PoredakSpravaFinaleKupa();
+                    poredak.Sprava = s;
+                    _poredakSpravaFinaleKupa.Add(poredak);
+                }
+                _poredakPreskokFinaleKupa = new PoredakPreskokFinaleKupa();
                 _poredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();
             }
 
@@ -174,16 +188,6 @@ namespace Bilten.Domain
             }
             _poredakPreskok = new PoredakPreskok(DeoTakmicenjaKod.Takmicenje1);
             _poredakEkipno = new PoredakEkipno(DeoTakmicenjaKod.Takmicenje1);
-        }
-
-        public virtual void initPoredakSpravaFinaleKupa(Gimnastika gimnastika)
-        {
-            foreach (Sprava s in Sprave.getSprave(gimnastika))
-            {
-                PoredakSpravaFinaleKupa poredak = new PoredakSpravaFinaleKupa();
-                poredak.Sprava = s;
-                _poredakSpravaFinaleKupa.Add(poredak);
-            }
         }
 
         public virtual void updateRezultatiOnOcenaAdded(Ocena o, RezultatskoTakmicenje rezTak)
@@ -249,6 +253,7 @@ namespace Bilten.Domain
 
             foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
                 p.addGimnasticar(g, rezTak, rezTak1, rezTak2);
+            PoredakPreskokFinaleKupa.addGimnasticar(g, rezTak, rezTak1, rezTak2);
             
             if (rezTak.odvojenoTak2())
                 PoredakUkupno.addGimnasticar(g, ocene, rezTak);
@@ -288,6 +293,7 @@ namespace Bilten.Domain
                 PoredakUkupnoFinaleKupa.deleteGimnasticar(g, rezTak);
             foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
                 p.deleteGimnasticar(g, rezTak);
+            PoredakPreskokFinaleKupa.deleteGimnasticar(g, rezTak);
 
             if (PoredakUkupnoZbirViseKola != null)
                 PoredakUkupnoZbirViseKola.deleteGimnasticar(g, rezTak);
@@ -380,6 +386,11 @@ namespace Bilten.Domain
             foreach (PoredakSpravaFinaleKupa p in PoredakSpravaFinaleKupa)
                 p.dump(strBuilder);
 
+            if (PoredakPreskokFinaleKupa == null)
+                strBuilder.AppendLine(NULL);
+            else
+                PoredakPreskokFinaleKupa.dump(strBuilder);
+
             if (PoredakEkipnoFinaleKupa == null)
                 strBuilder.AppendLine(NULL);
             else
@@ -466,6 +477,15 @@ namespace Bilten.Domain
                 p.loadFromDump(reader, map);
                 PoredakSpravaFinaleKupa.Add(p);
             }
+
+            id = reader.ReadLine();
+            PoredakPreskokFinaleKupa poredakPreskokFinaleKupa = null;
+            if (id != NULL)
+            {
+                poredakPreskokFinaleKupa = new PoredakPreskokFinaleKupa();
+                poredakPreskokFinaleKupa.loadFromDump(reader, map);
+            }
+            PoredakPreskokFinaleKupa = poredakPreskokFinaleKupa;
 
             id = reader.ReadLine();
             PoredakEkipnoFinaleKupa poredakEkipnoFinaleKupa = null;

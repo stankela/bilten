@@ -169,6 +169,8 @@ namespace Bilten.Report
             groups.Add(new ReportGrupa(0, items.Count));
         }
 
+        // TODO5: Pronadji fajl "Zabeleske o poboljsanju programa.txt" posto se negde izgubio
+
         private List<object[]> getSpravaReportItems(IList<RezultatSprava> rezultati)
         {
             List<object[]> result = new List<object[]>();

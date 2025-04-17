@@ -31,6 +31,8 @@
       <key column="takmicenje1_id" />
       <one-to-many class="PoredakSpravaFinaleKupa" />
     </set>
+    <many-to-one name="PoredakPreskokFinaleKupa" class="PoredakPreskokFinaleKupa" column="poredak_preskok_finale_kupa_id"
+      cascade="all" />
     <many-to-one name="PoredakEkipnoFinaleKupa" class="PoredakEkipnoFinaleKupa"
       column="poredak_ekipno_finale_kupa_id" cascade="all" />
     <many-to-one name="PoredakUkupnoZbirViseKola" class="PoredakUkupnoZbirViseKola"

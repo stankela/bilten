@@ -548,6 +548,11 @@ namespace Bilten.UI
                         klubovi.Add(r.Gimnasticar.KlubDrzava);
                     }
                 }
+                foreach (RezultatPreskokFinaleKupa r in rt.Takmicenje1.PoredakPreskokFinaleKupa.getRezultati())
+                {
+                    imena.Add(r.Gimnasticar.PrezimeIme);
+                    klubovi.Add(r.Gimnasticar.KlubDrzava);
+                }
             }
             if (imena.Count > 0)
                 dgw.DataGridView.Columns[1].Width = GridColumnsInitializer.getMaxWidth(imena, dgw.DataGridView);

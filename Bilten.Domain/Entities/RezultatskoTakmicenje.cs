@@ -708,11 +708,13 @@ namespace Bilten.Domain
             {
                 foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
                     p.calculateTotal(Propozicije);
+                Takmicenje1.PoredakPreskokFinaleKupa.calculateTotal(Propozicije);
             }
             else if (rankPoredakSpravaFinaleKupa)
             {
                 foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
                     p.rankRezultati(Propozicije);
+                Takmicenje1.PoredakPreskokFinaleKupa.rankRezultati(Propozicije);
             }
             if (calculatePoredakEkipnoFinaleKupa)
                 Takmicenje1.PoredakEkipnoFinaleKupa.calculateTotal(Propozicije);

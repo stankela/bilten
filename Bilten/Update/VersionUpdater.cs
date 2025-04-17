@@ -256,6 +256,16 @@ public class VersionUpdater
             converted = true;
         }
 
+        if (verzijaBaze == 22 && Program.VERZIJA_PROGRAMA > 22)
+        {
+            SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                "Bilten.Update.DatabaseUpdate_version23.txt", true);
+            brisiRedundantneSpraveFinaleKupa();
+            SqlCeUtilities.updateDatabaseVersionNumber(23);
+            verzijaBaze = 23;
+            converted = true;
+        }
+
         if (converted)
         {
             string msg = String.Format("Baza podataka je konvertovana iz verzije {0} u verziju {1}.", staraVerzijaBaze,
@@ -265,6 +275,382 @@ public class VersionUpdater
             if (File.Exists("NHibernateConfig"))
                 File.Delete("NHibernateConfig");
         }
+    }
+
+    class RezultatSpravaFinaleKupaDTO
+    {
+ 	    public int rezultat_id;
+	    public short red_broj;
+	    public Nullable<short> rank;
+	    public byte kval_status;
+	    public Nullable<float> d_prvo_kolo;
+        public Nullable<float> e_prvo_kolo;
+        public Nullable<float> bonus_prvo_kolo;
+        public Nullable<float> pen_prvo_kolo;
+        public Nullable<float> total_prvo_kolo;
+        public Nullable<float> d_drugo_kolo;
+        public Nullable<float> e_drugo_kolo;
+        public Nullable<float> bonus_drugo_kolo;
+        public Nullable<float> pen_drugo_kolo;
+        public Nullable<float> total_drugo_kolo;
+        public Nullable<float> total;
+	    public int gimnasticar_id;
+        public int poredak_id;
+    };
+
+    Nullable<float> getNullableFloat(object o)
+    {
+        if (o.GetType().Equals(typeof(DBNull)))
+            return null;
+        else
+            return (float)o;
+    }
+
+    Nullable<short> getNullableShort(object o)
+    {
+        if (o.GetType().Equals(typeof(DBNull)))
+            return null;
+        else
+            return (short)o;
+    }
+
+    object getParamValue(Nullable<float> o)
+    {
+        if (o.HasValue)
+            return o.Value;
+        else
+            return DBNull.Value;
+    }
+
+    object getParamValue(Nullable<short> o)
+    {
+        if (o.HasValue)
+            return o.Value;
+        else
+            return DBNull.Value;
+    }
+
+    public void brisiRedundantneSpraveFinaleKupa()
+    {
+        // 1. Pronadji sve poretke sprave finale kupa za svako takmicenje1
+
+        string sql = @"
+select t.takmicenje1_id, p.poredak_id
+FROM poredak_sprava_finale_kupa p JOIN takmicenje1 t
+ON t.takmicenje1_id = p.takmicenje1_id
+WHERE p.sprava = @sprava;";
+
+        Dictionary<int, List<int>> result1 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result2 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result3 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result4 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result5 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result6 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result7 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result8 = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> result = null;
+        List<int> duplicates = new List<int>();
+
+        string ConnectionString = ConfigurationParameters.ConnectionString;
+        // can throw InfrastructureException
+        for (int sprava = 1; sprava <= 8; ++sprava)
+        {
+            if (sprava == 1) result = result1;
+            else if (sprava == 2) result = result2;
+            else if (sprava == 3) result = result3;
+            else if (sprava == 4) result = result4;
+            else if (sprava == 5) result = result5;
+            else if (sprava == 6) result = result6;
+            else if (sprava == 7) result = result7;
+            else if (sprava == 8) result = result8;
+
+            SqlCeCommand cmd = new SqlCeCommand(sql);
+            cmd.Parameters.Add("@sprava", SqlDbType.TinyInt).Value = sprava;
+            SqlCeDataReader rdr = SqlCeUtilities.executeReader(cmd, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
+
+            while (rdr.Read())
+            {
+                int val1 = (int)rdr[0];
+                int val2 = (int)rdr[1];
+                if (result.ContainsKey(val1))
+                {
+                    duplicates.Add(val1);
+                    duplicates.Add(val2);
+                }
+                else
+                {
+                    result.Add(val1, new List<int>());
+                }
+                result[val1].Add(val2);
+            }
+            rdr.Close(); // obavezno, da bi se zatvorila konekcija otvorena u executeReader
+        }
+
+        // 2. Izbrisi sve poretke osim onog sa najvisim id, koji je poslednji kreiran i sadrzi tacan poredak
+        
+        SqlCeConnection conn = new SqlCeConnection(ConfigurationParameters.ConnectionString);
+        string errMsg = "Neuspesna promena baze.";
+        SqlCeTransaction tr = null;
+
+        try
+        {
+            conn.Open();
+            tr = conn.BeginTransaction();
+
+            for (int sprava = 1; sprava <= 8; ++sprava)
+            {
+                if (sprava == 1) result = result1;
+                else if (sprava == 2) result = result2;
+                else if (sprava == 3) result = result3;
+                else if (sprava == 4) result = result4;
+                else if (sprava == 5) result = result5;
+                else if (sprava == 6) result = result6;
+                else if (sprava == 7) result = result7;
+                else if (sprava == 8) result = result8;
+
+                foreach (int takmicenje1 in result.Keys)
+                {
+                    List<int> poretci = result[takmicenje1];
+                    if (poretci.Count == 1)
+                    {
+                        if (sprava == 4)
+                        {
+                            updatePoredakPreskokFinaleKupaZaTakmicenje1(takmicenje1, poretci[0], conn, tr);
+                        }
+                    }
+                    else
+                    {
+                        int maxPoredak = -1;
+                        foreach (int i in poretci)
+                        {
+                            if (i > maxPoredak)
+                                maxPoredak = i;
+                        }
+                        if (maxPoredak == -1)
+                            throw new Exception("Greska u programu, finale kupa nema nijedan poredak po spravama");
+                        foreach (int i in poretci)
+                        {
+                            if (i != maxPoredak)
+                                deletePoredakSpravaFinaleKupa(i, conn, tr);
+                        }
+                        if (sprava == 4)
+                        {
+                            updatePoredakPreskokFinaleKupaZaTakmicenje1(takmicenje1, maxPoredak, conn, tr);
+                        }
+                    }
+                }
+            }
+            tr.Commit();
+        }
+        catch (SqlCeException e)
+        {
+            // in Open()
+            if (tr != null)
+                tr.Rollback(); // TODO: this can throw Exception and InvalidOperationException
+            throw new InfrastructureException(errMsg, e);
+        }
+        catch (InvalidOperationException e)
+        {
+            // in ExecuteNonQuery(), ExecureScalar()
+            if (tr != null)
+                tr.Rollback();
+            throw new InfrastructureException(errMsg, e);
+        }
+        // za svaki slucaj
+        catch (Exception)
+        {
+            if (tr != null)
+                tr.Rollback();
+            throw;
+        }
+        finally
+        {
+            conn.Close();
+        }
+
+        // 3. Pronadji sve rezultate preskoka za finale kupa
+
+        string sql2 = @"
+select r.*
+FROM rezultati_sprava_finale_kupa r JOIN poredak_sprava_finale_kupa p
+ON r.poredak_id = p.poredak_id
+WHERE p.sprava = 4;";
+
+        // can throw InfrastructureException
+        SqlCeCommand cmd2 = new SqlCeCommand(sql2);
+        SqlCeDataReader rdr2 = SqlCeUtilities.executeReader(cmd2, Strings.DATABASE_ACCESS_ERROR_MSG, ConnectionString);
+
+        List<RezultatSpravaFinaleKupaDTO> rezultatiSpravaFinaleKupa = new List<RezultatSpravaFinaleKupaDTO>();
+        while (rdr2.Read())
+        {
+            RezultatSpravaFinaleKupaDTO rez = new RezultatSpravaFinaleKupaDTO();
+            rez.rezultat_id = (int)rdr2["rezultat_id"];
+            rez.red_broj = (short)rdr2["red_broj"];
+            rez.rank = getNullableShort(rdr2["rank"]);
+            rez.kval_status = (byte)rdr2["kval_status"];
+
+            rez.d_prvo_kolo = getNullableFloat(rdr2["d_prvo_kolo"]);
+            rez.e_prvo_kolo = getNullableFloat(rdr2["e_prvo_kolo"]);
+            rez.bonus_prvo_kolo = getNullableFloat(rdr2["bonus_prvo_kolo"]);
+            rez.pen_prvo_kolo = getNullableFloat(rdr2["pen_prvo_kolo"]);
+            rez.total_prvo_kolo = getNullableFloat(rdr2["total_prvo_kolo"]);
+            rez.d_drugo_kolo = getNullableFloat(rdr2["d_drugo_kolo"]);
+            rez.e_drugo_kolo = getNullableFloat(rdr2["e_drugo_kolo"]);
+            rez.bonus_drugo_kolo = getNullableFloat(rdr2["bonus_drugo_kolo"]);
+            rez.pen_drugo_kolo = getNullableFloat(rdr2["pen_drugo_kolo"]);
+            rez.total_drugo_kolo = getNullableFloat(rdr2["total_drugo_kolo"]);
+            rez.total = getNullableFloat(rdr2["total"]);
+
+            rez.gimnasticar_id = (int)rdr2["gimnasticar_id"];
+            rez.poredak_id = (int)rdr2["poredak_id"];
+
+            rezultatiSpravaFinaleKupa.Add(rez);
+        }
+        rdr2.Close(); // obavezno, da bi se zatvorila konekcija otvorena u executeReader
+
+        conn = new SqlCeConnection(ConfigurationParameters.ConnectionString);
+        tr = null;
+
+        try
+        {
+            conn.Open();
+            tr = conn.BeginTransaction();
+
+            // 4. Prebaci sve rezultate sprave u novu tabelu za preskok
+
+            string sql3 = @"
+INSERT INTO rezultati_preskok_finale_kupa (red_broj, rank, kval_status, d_prvo_kolo, e_prvo_kolo, bonus_prvo_kolo,
+pen_prvo_kolo, total_prvo_kolo, d_drugo_kolo, e_drugo_kolo, bonus_drugo_kolo, pen_drugo_kolo, total_drugo_kolo, total,
+gimnasticar_id, poredak_id)
+VALUES (@red_broj, @rank, @kval_status, @d_prvo_kolo, @e_prvo_kolo, @bonus_prvo_kolo, @pen_prvo_kolo, @total_prvo_kolo,
+@d_drugo_kolo, @e_drugo_kolo, @bonus_drugo_kolo, @pen_drugo_kolo, @total_drugo_kolo, @total, @gimnasticar_id, @poredak_id)";
+
+            foreach (RezultatSpravaFinaleKupaDTO rez in rezultatiSpravaFinaleKupa)
+            {
+                SqlCeCommand cmd3 = new SqlCeCommand(sql3);
+                cmd3.Connection = conn;
+                cmd3.Transaction = tr;
+                cmd3.Parameters.Add("@red_broj", SqlDbType.SmallInt).Value = rez.red_broj;
+                cmd3.Parameters.Add("@rank", SqlDbType.SmallInt).Value = getParamValue(rez.rank);
+                cmd3.Parameters.Add("@kval_status", SqlDbType.TinyInt).Value = rez.kval_status;
+                cmd3.Parameters.Add("@d_prvo_kolo", SqlDbType.Float).Value = getParamValue(rez.d_prvo_kolo);
+                cmd3.Parameters.Add("@e_prvo_kolo", SqlDbType.Float).Value = getParamValue(rez.e_prvo_kolo);
+                cmd3.Parameters.Add("@bonus_prvo_kolo", SqlDbType.Float).Value = getParamValue(rez.bonus_prvo_kolo);
+                cmd3.Parameters.Add("@pen_prvo_kolo", SqlDbType.Float).Value = getParamValue(rez.pen_prvo_kolo);
+                cmd3.Parameters.Add("@total_prvo_kolo", SqlDbType.Float).Value = getParamValue(rez.total_prvo_kolo);
+                cmd3.Parameters.Add("@d_drugo_kolo", SqlDbType.Float).Value = getParamValue(rez.d_drugo_kolo);
+                cmd3.Parameters.Add("@e_drugo_kolo", SqlDbType.Float).Value = getParamValue(rez.e_drugo_kolo);
+                cmd3.Parameters.Add("@bonus_drugo_kolo", SqlDbType.Float).Value = getParamValue(rez.bonus_drugo_kolo);
+                cmd3.Parameters.Add("@pen_drugo_kolo", SqlDbType.Float).Value = getParamValue(rez.pen_drugo_kolo);
+                cmd3.Parameters.Add("@total_drugo_kolo", SqlDbType.Float).Value = getParamValue(rez.total_drugo_kolo);
+                cmd3.Parameters.Add("@total", SqlDbType.Float).Value = getParamValue(rez.total);
+                cmd3.Parameters.Add("@gimnasticar_id", SqlDbType.Int).Value = rez.gimnasticar_id;
+                cmd3.Parameters.Add("@poredak_id", SqlDbType.Int).Value = rez.poredak_id;
+                cmd3.ExecuteNonQuery();
+            }
+
+            // 5. Izbrisi sve rezultate sprave finale kupa za preskok iz stare tabele
+
+            string sql4 = @"
+DELETE FROM rezultati_sprava_finale_kupa
+WHERE rezultat_id = @rezultat_id;";
+
+            foreach (RezultatSpravaFinaleKupaDTO rez in rezultatiSpravaFinaleKupa)
+            {
+                SqlCeCommand cmd4 = new SqlCeCommand(sql4);
+                cmd4.Connection = conn;
+                cmd4.Transaction = tr;
+                cmd4.Parameters.Add("@rezultat_id", SqlDbType.Int).Value = rez.rezultat_id;
+                cmd4.ExecuteNonQuery();
+            }
+
+            // 6. Postavi LastModified na nisku vrednost, tako da svaki put kada otvaramo finale kupa, ponovo ce se
+            // izracunati poredak. Time obezbedjujemo da se rezultati za preskok azuriraju sa prvim i drugim kolom.
+
+            string sql5 = @"
+UPDATE takmicenja SET last_modified = '2010-12-01'
+WHERE tip_takmicenja = 1;";
+
+            SqlCeCommand cmd5 = new SqlCeCommand(sql5);
+            cmd5.Connection = conn;
+            cmd5.Transaction = tr;
+            cmd5.ExecuteNonQuery();
+
+            tr.Commit();
+        }
+        catch (SqlCeException e)
+        {
+            // in Open()
+            if (tr != null)
+                tr.Rollback(); // TODO: this can throw Exception and InvalidOperationException
+            throw new InfrastructureException(errMsg, e);
+        }
+        catch (InvalidOperationException e)
+        {
+            // in ExecuteNonQuery(), ExecureScalar()
+            if (tr != null)
+                tr.Rollback();
+            throw new InfrastructureException(errMsg, e);
+        }
+        // za svaki slucaj
+        catch (Exception)
+        {
+            if (tr != null)
+                tr.Rollback();
+            throw;
+        }
+        finally
+        {
+            conn.Close();
+        }
+    }
+
+    private void deletePoredakSpravaFinaleKupa(int poredak_id, SqlCeConnection conn, SqlCeTransaction tr)
+    {
+        string sql1 = @"
+DELETE FROM rezultati_sprava_finale_kupa
+WHERE poredak_id = @poredak;";
+
+        SqlCeCommand cmd1 = new SqlCeCommand(sql1);
+        cmd1.Connection = conn;
+        cmd1.Transaction = tr;
+        cmd1.Parameters.Add("@poredak", SqlDbType.Int).Value = poredak_id;
+        cmd1.ExecuteNonQuery();
+
+        string sql2 = @"
+DELETE FROM poredak_sprava_finale_kupa
+WHERE poredak_id = @poredak;";
+
+        SqlCeCommand cmd2 = new SqlCeCommand(sql2);
+        cmd2.Connection = conn;
+        cmd2.Transaction = tr;
+        cmd2.Parameters.Add("@poredak", SqlDbType.Int).Value = poredak_id;
+        cmd2.ExecuteNonQuery();
+    }
+
+    private void updatePoredakPreskokFinaleKupaZaTakmicenje1(int takmicenje1_id, int poredak_id, SqlCeConnection conn,
+        SqlCeTransaction tr)
+    {
+        string sql1 = @"
+UPDATE takmicenje1 SET poredak_preskok_finale_kupa_id = @poredak
+WHERE takmicenje1_id = @takmicenje1;";
+
+        SqlCeCommand cmd1 = new SqlCeCommand(sql1);
+        cmd1.Connection = conn;
+        cmd1.Transaction = tr;
+        cmd1.Parameters.Add("@poredak", SqlDbType.Int).Value = poredak_id;
+        cmd1.Parameters.Add("@takmicenje1", SqlDbType.Int).Value = takmicenje1_id;
+        cmd1.ExecuteNonQuery();
+
+        string sql2 = @"
+UPDATE poredak_sprava_finale_kupa SET takmicenje1_id = null
+WHERE poredak_id = @poredak;";
+
+        SqlCeCommand cmd2 = new SqlCeCommand(sql2);
+        cmd2.Connection = conn;
+        cmd2.Transaction = tr;
+        cmd2.Parameters.Add("@poredak", SqlDbType.Int).Value = poredak_id;
+        cmd2.ExecuteNonQuery();
     }
 
     public void updateVersion3()

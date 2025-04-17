@@ -1282,7 +1282,12 @@ namespace Bilten.UI
                         {
                             IList<GimnasticarUcesnik> kvalifikanti;
                             if (finaleKupa)
-                                kvalifikanti = rt.Takmicenje1.getPoredakSpravaFinaleKupa(sprava).getKvalifikanti();
+                            {
+                                if (sprava != Sprava.Preskok)
+                                    kvalifikanti = rt.Takmicenje1.getPoredakSpravaFinaleKupa(sprava).getKvalifikanti();
+                                else
+                                    kvalifikanti = rt.Takmicenje1.PoredakPreskokFinaleKupa.getKvalifikanti();
+                            }
                             else
                                 kvalifikanti = rt.Takmicenje3.getGimnasticariKvalifikanti(sprava);
                             StartListaNaSpravi startLista = newRaspored.getStartLista(sprava, 1, 1);

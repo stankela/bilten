@@ -1,0 +1,36 @@
+-- 17-Apr-2025 (VERZIJA = 23)
+
+create table rezultati_preskok_finale_kupa (
+	rezultat_id int identity(1,1) primary key,
+	red_broj smallint,
+	rank smallint,
+	kval_status tinyint,
+	d_prvo_kolo real,
+	e_prvo_kolo real,
+	bonus_prvo_kolo real,
+	pen_prvo_kolo real,
+	total_prvo_kolo real,
+	d_drugo_kolo real,
+	e_drugo_kolo real,
+	bonus_drugo_kolo real,
+	pen_drugo_kolo real,
+	total_drugo_kolo real,
+	d_2_prvo_kolo real,
+	e_2_prvo_kolo real,
+	bonus_2_prvo_kolo real,
+	pen_2_prvo_kolo real,
+	total_2_prvo_kolo real,
+	total_obe_ocene_prvo_kolo real,
+	d_2_drugo_kolo real,
+	e_2_drugo_kolo real,
+	bonus_2_drugo_kolo real,
+	pen_2_drugo_kolo real,
+	total_2_drugo_kolo real,
+	total_obe_ocene_drugo_kolo real,
+	total real,
+	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
+	poredak_id int references poredak_sprava_finale_kupa(poredak_id)
+);
+GO
+alter table takmicenje1 add column poredak_preskok_finale_kupa_id int references poredak_sprava_finale_kupa(poredak_id);
+GO

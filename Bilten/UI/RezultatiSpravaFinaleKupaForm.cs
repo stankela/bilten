@@ -105,6 +105,7 @@ namespace Bilten.UI
                 NHibernateUtil.Initialize(rt.Propozicije);
                 foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
                     NHibernateUtil.Initialize(p.Rezultati);
+                NHibernateUtil.Initialize(rt.Takmicenje1.PoredakPreskokFinaleKupa.Rezultati);
             }
             return result;
         }
@@ -179,8 +180,16 @@ namespace Bilten.UI
 
         private void setItems()
         {
-            spravaGridUserControl1.DataGridViewUserControl.setItems<RezultatSpravaFinaleKupa>(
-                ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati());
+            if (ActiveSprava != Sprava.Preskok)
+            {
+                spravaGridUserControl1.DataGridViewUserControl.setItems<RezultatSpravaFinaleKupa>(
+                    ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati());
+            }
+            else
+            {
+                spravaGridUserControl1.DataGridViewUserControl.setItems<RezultatPreskokFinaleKupa>(
+                    ActiveTakmicenje.Takmicenje1.PoredakPreskokFinaleKupa.getRezultati());
+            }
             spravaGridUserControl1.DataGridViewUserControl.clearSelection();
         }
 
@@ -275,23 +284,42 @@ namespace Bilten.UI
                 if (form.StampajSveSprave)
                 {
                     List<List<RezultatSpravaFinaleKupa>> rezultatiSprave = new List<List<RezultatSpravaFinaleKupa>>();
+                    List<RezultatPreskokFinaleKupa> rezultatiPreskok = null;
 
                     foreach (Sprava s in Sprave.getSprave(ActiveTakmicenje.Gimnastika))
-                        rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
-                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, kvalColumnVisible(), documentName,
-                        form.BrojSpravaPoStrani, spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize), form.PrikaziPenalSprave, form.PrikaziBonus,
-                        form.ResizeByGrid));
+                    {
+                        if (s != Sprava.Preskok)
+                            rezultatiSprave.Add(ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(s).getRezultati());
+                        else
+                            rezultatiPreskok = ActiveTakmicenje.Takmicenje1.PoredakPreskokFinaleKupa.getRezultati();
+                    }
+                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultatiSprave, rezultatiPreskok, kvalColumnVisible(),
+                        documentName, form.BrojSpravaPoStrani, spravaGridUserControl1.DataGridViewUserControl.DataGridView,
+                        takmicenje, new Font(form.TekstFont, form.TekstFontSize), form.PrikaziPenalSprave,
+                        form.PrikaziBonus, form.ResizeByGrid));
                 }
                 else
                 {
-                    List<RezultatSpravaFinaleKupa> rezultati =
-                        ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati();
+                    if (ActiveSprava != Sprava.Preskok)
+                    {
+                        List<RezultatSpravaFinaleKupa> rezultati =
+                            ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava).getRezultati();
 
-                    p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati, kvalColumnVisible(), documentName,
-                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize), form.PrikaziPenalSprave, form.PrikaziBonus,
-                        form.ResizeByGrid));
+                        p.setIzvestaj(new SpravaFinaleKupaIzvestaj(ActiveSprava, rezultati, kvalColumnVisible(),
+                            documentName, spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                            new Font(form.TekstFont, form.TekstFontSize), form.PrikaziPenalSprave, form.PrikaziBonus,
+                            form.ResizeByGrid));
+                    }
+                    else
+                    {
+                        List<RezultatPreskokFinaleKupa> rezultati =
+                            ActiveTakmicenje.Takmicenje1.PoredakPreskokFinaleKupa.getRezultati();
+
+                        p.setIzvestaj(new SpravaFinaleKupaIzvestaj(rezultati, kvalColumnVisible(), documentName,
+                            spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                            new Font(form.TekstFont, form.TekstFontSize), form.PrikaziPenalSprave, form.PrikaziBonus,
+                            form.ResizeByGrid));
+                    }
                 }
 
                 p.ShowDialog();

@@ -102,49 +102,28 @@ namespace Bilten.Domain
             TotalDrugoKolo = r.Total;
         }
 
-        public virtual void initPrvoKolo(RezultatPreskok r, bool naOsnovuObaPreskoka, bool postojeObaPreskoka)
+        public virtual Nullable<float> getTotalPrvoKolo()
         {
-            if (!naOsnovuObaPreskoka || !postojeObaPreskoka)
-                // Ovo takodje obradjuje situaciju kada je u propozicijama za prvo kolo stavljeno
-                // da se preskok racuna na osnovu oba preskoka, ali ni za jednog gimnasticara ne
-                // postoji ocena za oba preskoka. Ova situacija najverovatnije nastaje kada se u
-                // prvom kolu kao prvi preskok unosila konacna ocena za oba preskoka.
-                // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
-                initPrvoKolo(r);
-            else
-            {
-                // TODO5: Prikazuj kompletan prvi i drugi preskok (D, E, Pen, Bonus) za oba kola u izvestaju
-                D_PrvoKolo = null;
-                E_PrvoKolo = null;
-                Bonus_PrvoKolo = null;
-                Pen_PrvoKolo = null;
-                TotalPrvoKolo = r.TotalObeOcene;
-            }
+            return this.TotalPrvoKolo;
         }
 
-        public virtual void initDrugoKolo(RezultatPreskok r, bool naOsnovuObaPreskoka, bool postojeObaPreskoka)
+        public virtual Nullable<float> getTotalDrugoKolo()
         {
-            if (!naOsnovuObaPreskoka || !postojeObaPreskoka)
-                initDrugoKolo(r);
-            else
-            {
-                D_DrugoKolo = null;
-                E_DrugoKolo = null;
-                Bonus_DrugoKolo = null;
-                Pen_DrugoKolo = null;
-                TotalDrugoKolo = r.TotalObeOcene;
-            }
+            return this.TotalDrugoKolo;
         }
 
         public virtual void calculateTotal(NacinRacunanjaOceneFinaleKupa nacin)
         {
-            if (TotalPrvoKolo == null && TotalDrugoKolo == null)
+            Nullable<float> totalPrvoKolo = getTotalPrvoKolo();
+            Nullable<float> totalDrugoKolo = getTotalDrugoKolo();
+
+            if (totalPrvoKolo == null && totalDrugoKolo == null)
             {
                 Total = null;
                 return;
             }
-            float total1 = TotalPrvoKolo == null ? 0 : TotalPrvoKolo.Value;
-            float total2 = TotalDrugoKolo == null ? 0 : TotalDrugoKolo.Value;
+            float total1 = totalPrvoKolo == null ? 0 : totalPrvoKolo.Value;
+            float total2 = totalDrugoKolo == null ? 0 : totalDrugoKolo.Value;
             float total;
 
             if (nacin == NacinRacunanjaOceneFinaleKupa.Zbir)
@@ -157,7 +136,7 @@ namespace Bilten.Domain
                 // zbira vise kola).
                 total = (total1 + total2) / 2;
                 if (nacin == NacinRacunanjaOceneFinaleKupa.ProsekSamoAkoPostojeObeOcene
-                    && (TotalPrvoKolo == null || TotalDrugoKolo == null))
+                    && (totalPrvoKolo == null || totalDrugoKolo == null))
                 {
                     total = total1 + total2;
                 }

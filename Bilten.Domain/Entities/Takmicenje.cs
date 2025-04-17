@@ -696,9 +696,9 @@ namespace Bilten.Domain
                 {
                     rt.Takmicenje1.PoredakUkupnoFinaleKupa.create(rt, rezTak1, rezTak2);
 
-                    rt.Takmicenje1.initPoredakSpravaFinaleKupa(Gimnastika);
                     foreach (PoredakSpravaFinaleKupa p in rt.Takmicenje1.PoredakSpravaFinaleKupa)
                         p.create(rt, rezTak1, rezTak2);
+                    rt.Takmicenje1.PoredakPreskokFinaleKupa.create(rt, rezTak1, rezTak2);
 
                     // TODO4: Obradi slucaj kombinovanog ekipnog takmicenja (na svim mestima gde se racuna).
                     rt.Takmicenje1.PoredakEkipnoFinaleKupa.create(rt, rezTak1, rezTak2);

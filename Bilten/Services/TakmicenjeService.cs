@@ -561,6 +561,14 @@ namespace Bilten.Services
                 }
             }
 
+            // TODO5: Kad implementiras stampanje biltena sa jednim klikom, ako bude implementirana opcija da se stampa
+            // i kada takmicenje nije otvoreno (npr iz OtvoriTakmicenjeForm), prvo proveri da li takmicenje treba da
+            // se azurira (sto se desava kod finala kupa i zbira vise kola, kada je LastModified u nekom od kola kasniji
+            // od LastModified od finala ili zbira vise kola). Ako treba, odbij stampanje.
+
+            // TODO5: Napravi kod koji ce automatski proveriti strukturu baze podataka. Ideja je da se pronadju greske
+            // kao sto je postojala greska da se ne brisu se prethodni rezultati kada se azurira finale vise kupa. 
+
             takmicenje.kreirajRezultateViseKola(rezTakmicenja, rezTakmicenjaPrethodnaKola);
 
             foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)

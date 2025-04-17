@@ -496,9 +496,17 @@ namespace Bilten
                                 rt.Takmicenje1.PoredakUkupnoFinaleKupa.dumpRezultati(logStreamWriter);
                             foreach (Sprava s in Sprave.getSprave(t.Gimnastika))
                             {
-                                PoredakSpravaFinaleKupa p = rt.Takmicenje1.getPoredakSpravaFinaleKupa(s);
-                                if (p != null)
-                                    p.dumpRezultati(logStreamWriter);
+                                if (s != Sprava.Preskok)
+                                {
+                                    PoredakSpravaFinaleKupa p = rt.Takmicenje1.getPoredakSpravaFinaleKupa(s);
+                                    if (p != null)
+                                        p.dumpRezultati(logStreamWriter);
+                                }
+                                else
+                                {
+                                    if (rt.Takmicenje1.PoredakPreskokFinaleKupa != null)
+                                        rt.Takmicenje1.PoredakPreskokFinaleKupa.dumpRezultati(logStreamWriter);
+                                }
                             }
                             if (rt.Takmicenje1.PoredakEkipnoFinaleKupa != null)
                                 rt.Takmicenje1.PoredakEkipnoFinaleKupa.dumpRezultati(logStreamWriter);

@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Entities\Jezik.cs" />
     <Compile Include="Entities\NacinRacunanjaOceneFinaleKupa.cs" />
+    <Compile Include="Entities\PoredakPreskokFinaleKupa.cs" />
+    <Compile Include="Entities\RezultatPreskokFinaleKupa.cs" />
     <Compile Include="Entities\Zreb.cs" />
     <Compile Include="IdMap.cs" />
     <Compile Include="Entities\Datum.cs" />
@@ -168,7 +170,9 @@
     <EmbeddedResource Include="NHibernate\Mappings\Takmicenje.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje1.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Mappings\Takmicenje1.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mappings\Takmicenje2.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\Takmicenje3.hbm.xml" />
     <EmbeddedResource Include="NHibernate\Mappings\Takmicenje4.hbm.xml" />
@@ -213,6 +217,14 @@
     <EmbeddedResource Include="NHibernate\Mappings\Jezik.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NHibernate\Mappings\RezultatPreskokFinaleKupa.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NHibernate\Mappings\PoredakPreskokFinaleKupa.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

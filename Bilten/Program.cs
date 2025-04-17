@@ -97,7 +97,7 @@ namespace Bilten
         // - Kod racunanja ocene na osnovu oba preskoka treba da postoji izbor da li se ocena racuna na osnovu oba preskoka
         //   ili vece ocene iz oba preskoka.
 
-        public static int VERZIJA_PROGRAMA = 22;
+        public static int VERZIJA_PROGRAMA = 23;
 
         /// <summary>
         /// The main entry point for the application.
