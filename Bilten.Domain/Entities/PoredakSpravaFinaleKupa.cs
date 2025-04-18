@@ -54,21 +54,16 @@ namespace Bilten.Domain
             Rezultati.Clear();
             foreach (RezultatSpravaFinaleKupa r in rezultatiMap.Values)
             {
-                // Total moze da bude krajnja finalna ocena ili ulazna finalna ocena. U oba slucaja se Total izracunava
-                // na isti nacin.
-                r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak3);
                 Rezultati.Add(r);
             }
-            rankRezultati(rezTak.Propozicije);
+            calculateTotalAndRankRezultati(rezTak.Propozicije);
         }
 
         // TODO3: Za sve poretke (ukupno, sprava, ekipno, kako za finale kupa, tako i za obicna takmicenja) specifikuj
         // pravila razresavanja istih ocena.
 
-        public virtual void rankRezultati(Propozicije propozicije)
+        public static void rankRezultati(Propozicije propozicije, List<RezultatSpravaFinaleKupa> rezultati)
         {
-            List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(Rezultati);
-
             PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
                 TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["Total"],
                 TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["PrezimeIme"]
@@ -101,19 +96,24 @@ namespace Bilten.Domain
                     prevRank = rezultati[i].Rank.Value;
                 }
             }
-            updateKvalStatus(propozicije);
+            updateKvalStatus(propozicije, rezultati);
         }
 
-        private void updateKvalStatus(Propozicije propozicije)
+        public virtual void rankRezultati(Propozicije propozicije)
+        {
+            rankRezultati(propozicije, new List<RezultatSpravaFinaleKupa>(Rezultati));
+
+        }
+
+        public static void updateKvalStatus(Propozicije propozicije, List<RezultatSpravaFinaleKupa> rezultati)
         {
             if (!propozicije.odvojenoTak3())
             {
-                foreach (RezultatSpravaFinaleKupa r in Rezultati)
+                foreach (RezultatSpravaFinaleKupa r in rezultati)
                     r.KvalStatus = KvalifikacioniStatus.None;
                 return;
             }
-            
-            List<RezultatSpravaFinaleKupa> rezultati = new List<RezultatSpravaFinaleKupa>(Rezultati);
+
             PropertyDescriptor propDesc =
                 TypeDescriptor.GetProperties(typeof(RezultatSpravaFinaleKupa))["RedBroj"];
             rezultati.Sort(new SortComparer<RezultatSpravaFinaleKupa>(propDesc,
@@ -231,7 +231,12 @@ namespace Bilten.Domain
             }
         }
 
-        public virtual void calculateTotal(Propozicije propozicije)
+        private void updateKvalStatus(Propozicije propozicije)
+        {
+            updateKvalStatus(propozicije, new List<RezultatSpravaFinaleKupa>(Rezultati));
+        }
+
+        public virtual void calculateTotalAndRankRezultati(Propozicije propozicije)
         {
             foreach (RezultatSpravaFinaleKupa r in Rezultati)
                 r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak3);

@@ -399,8 +399,17 @@ namespace Bilten.UI
                 {
                     CurrentSessionContext.Bind(session);
                     rez.KvalStatus = kvalStatus;
-                    DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(
-                        ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava));
+
+                    if (ActiveSprava != Sprava.Preskok)
+                    {
+                        DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(
+                            ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava));
+                    }
+                    else
+                    {
+                        DAOFactoryFactory.DAOFactory.GetPoredakPreskokFinaleKupaDAO().Update(
+                            ActiveTakmicenje.Takmicenje1.PoredakPreskokFinaleKupa);
+                    }
 
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
                     takmicenje.LastModified = DateTime.Now;
@@ -449,15 +458,26 @@ namespace Bilten.UI
                         takmicenje.PrvoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
                     RezultatskoTakmicenje rezTak2 = rezultatskoTakmicenjeDAO.FindByTakmicenjeKatDescFetch_Tak1_Gimnasticari(
                         takmicenje.DrugoKolo.Id, ActiveTakmicenje.Kategorija.Naziv, 0);
-                    
-                    PoredakSpravaFinaleKupa p = ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava);
-                        p.create(ActiveTakmicenje, rezTak1, rezTak2);
-                    
-                    rezultatskoTakmicenjeDAO.Evict(rezTak1);
-                    rezultatskoTakmicenjeDAO.Evict(rezTak2);
-                    
-                    DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(p);
 
+                    if (ActiveSprava != Sprava.Preskok)
+                    {
+                        PoredakSpravaFinaleKupa p = ActiveTakmicenje.Takmicenje1.getPoredakSpravaFinaleKupa(ActiveSprava);
+                        p.create(ActiveTakmicenje, rezTak1, rezTak2);
+
+                        rezultatskoTakmicenjeDAO.Evict(rezTak1);
+                        rezultatskoTakmicenjeDAO.Evict(rezTak2);
+                        DAOFactoryFactory.DAOFactory.GetPoredakSpravaFinaleKupaDAO().Update(p);
+                    }
+                    else
+                    {
+                        PoredakPreskokFinaleKupa p = ActiveTakmicenje.Takmicenje1.PoredakPreskokFinaleKupa;
+                        p.create(ActiveTakmicenje, rezTak1, rezTak2);
+
+                        rezultatskoTakmicenjeDAO.Evict(rezTak1);
+                        rezultatskoTakmicenjeDAO.Evict(rezTak2);
+                        DAOFactoryFactory.DAOFactory.GetPoredakPreskokFinaleKupaDAO().Update(p);
+                    }
+                    
                     takmicenje = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO().FindById(takmicenje.Id);
                     takmicenje.LastModified = DateTime.Now;
                     session.Transaction.Commit();

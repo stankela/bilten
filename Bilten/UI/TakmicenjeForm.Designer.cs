@@ -132,7 +132,7 @@ namespace Bilten.UI
             this.btnIzaberiPrvaDvaKola.Location = new System.Drawing.Point(24, 367);
             this.btnIzaberiPrvaDvaKola.Name = "btnIzaberiPrvaDvaKola";
             this.btnIzaberiPrvaDvaKola.Size = new System.Drawing.Size(130, 23);
-            this.btnIzaberiPrvaDvaKola.TabIndex = 12;
+            this.btnIzaberiPrvaDvaKola.TabIndex = 9;
             this.btnIzaberiPrvaDvaKola.Text = "Izaberi I kolo i II kolo";
             this.btnIzaberiPrvaDvaKola.UseVisualStyleBackColor = true;
             this.btnIzaberiPrvaDvaKola.Click += new System.EventHandler(this.btnIzaberiPrvaDvaKola_Click);
@@ -152,7 +152,7 @@ namespace Bilten.UI
             this.cmbTipTakmicenja.Location = new System.Drawing.Point(24, 246);
             this.cmbTipTakmicenja.Name = "cmbTipTakmicenja";
             this.cmbTipTakmicenja.Size = new System.Drawing.Size(183, 21);
-            this.cmbTipTakmicenja.TabIndex = 15;
+            this.cmbTipTakmicenja.TabIndex = 8;
             // 
             // ckbKopirajPrethTak
             // 

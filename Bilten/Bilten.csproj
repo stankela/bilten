@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -119,6 +119,7 @@
     <Compile Include="Dao\NHibernate\PoredakEkipnoFinaleKupaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakEkipnoZbirViseKolaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakPreskokDAOImpl.cs" />
+    <Compile Include="Dao\NHibernate\PoredakPreskokFinaleKupaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakSpravaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakSpravaFinaleKupaDAOImpl.cs" />
     <Compile Include="Dao\NHibernate\PoredakUkupnoDAOImpl.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Dao\PoredakEkipnoFinaleKupaDAO.cs" />
     <Compile Include="Dao\PoredakEkipnoZbirViseKolaDAO.cs" />
     <Compile Include="Dao\PoredakPreskokDAO.cs" />
+    <Compile Include="Dao\PoredakPreskokFinaleKupaDAO.cs" />
     <Compile Include="Dao\PoredakSpravaDAO.cs" />
     <Compile Include="Dao\PoredakSpravaFinaleKupaDAO.cs" />
     <Compile Include="Dao\PoredakUkupnoDAO.cs" />

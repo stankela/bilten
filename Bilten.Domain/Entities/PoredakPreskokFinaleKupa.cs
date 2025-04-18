@@ -9,20 +9,40 @@ namespace Bilten.Domain
 {
     public class PoredakPreskokFinaleKupa : DomainObject
     {
-        private bool koristiTotalObeOcenePrvoKolo;
+        private bool postojeObaPreskokaPrvoKolo = false;
+        private bool propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka;
+
         public virtual bool KoristiTotalObeOcenePrvoKolo
         {
-            get { return koristiTotalObeOcenePrvoKolo; }
-            set { koristiTotalObeOcenePrvoKolo = value; }
+            // TODO4: Razmisli da li treba uvoditi opciju u propozicijama sta da se radi kada u nekom od prethodnih kola
+            // deo takmicara ima obe ocene za preskok a deo ima samo jednu (ili se kao i do sada oslanjati na to kako je
+            // to specifikovano u propozicijama za 1. i 2. kolo, sto mislim da je bolja varijanta)
+
+            // Ovo takodje obradjuje situaciju kada je u propozicijama za prvo kolo stavljeno
+            // da se preskok racuna na osnovu oba preskoka, ali ni za jednog gimnasticara ne
+            // postoji ocena za oba preskoka. Ova situacija najverovatnije nastaje kada se u
+            // prvom kolu kao prvi preskok unosila konacna ocena za oba preskoka.
+            // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
+            get { return propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka && postojeObaPreskokaPrvoKolo; }
         }
 
-        private bool koristiTotalObeOceneDrugoKolo;
+        private bool postojeObaPreskokaDrugoKolo = false;
+        private bool propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka;
+
         public virtual bool KoristiTotalObeOceneDrugoKolo
         {
-            get { return koristiTotalObeOceneDrugoKolo; }
-            set { koristiTotalObeOceneDrugoKolo = value; }
+            get { return propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka && postojeObaPreskokaDrugoKolo; }
         }
-        
+
+        // Ovo svojstvo se ne koristi nigde, ali morao sam da ga ostavim jer inace NHibernate generise prazan insert
+        // statement "INSERT INTO poredak_sprava_finale_kupa VALUES ()", a SQL Server to prijavljuje kao gresku
+        private Sprava _sprava = Sprava.Preskok;
+        public virtual Sprava Sprava
+        {
+            get { return _sprava; }
+            protected set { _sprava = value; }
+        }
+
         private IList<RezultatPreskokFinaleKupa> _rezultati = new List<RezultatPreskokFinaleKupa>();
         public virtual IList<RezultatPreskokFinaleKupa> Rezultati
         {
@@ -47,18 +67,7 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            // TODO4: Razmisli da li treba uvoditi opciju u propozicijama sta da se radi kada u nekom od prethodnih kola
-            // deo takmicara ima obe ocene za preskok a deo ima samo jednu (ili se kao i do sada oslanjati na to kako je
-            // to specifikovano u propozicijama za 1. i 2. kolo, sto mislim da je bolja varijanta)
-
-            // Ovo takodje obradjuje situaciju kada je u propozicijama za prvo kolo stavljeno
-            // da se preskok racuna na osnovu oba preskoka, ali ni za jednog gimnasticara ne
-            // postoji ocena za oba preskoka. Ova situacija najverovatnije nastaje kada se u
-            // prvom kolu kao prvi preskok unosila konacna ocena za oba preskoka.
-            // U tom slucaju, za ocenu prvog kola treba uzeti prvu ocenu.
-            this.koristiTotalObeOcenePrvoKolo = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
-                && rezTak1.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
-
+            this.propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
             foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
@@ -67,8 +76,7 @@ namespace Bilten.Domain
                 }
             }
 
-            this.koristiTotalObeOceneDrugoKolo = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
-                && rezTak2.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+            this.propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
             foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (rezultatiMap.ContainsKey(r.Gimnasticar))
@@ -80,183 +88,48 @@ namespace Bilten.Domain
             Rezultati.Clear();
             foreach (RezultatPreskokFinaleKupa r in rezultatiMap.Values)
             {
-                r.calculateTotal(rezTak.Propozicije.NacinRacunanjaOceneFinaleKupaTak3);
                 Rezultati.Add(r);
             }
-            rankRezultati(rezTak.Propozicije);
+            calculateTotalAndRankRezultati(rezTak.Propozicije);
         }
 
         public virtual void rankRezultati(Propozicije propozicije)
         {
-            List<RezultatPreskokFinaleKupa> rezultati = new List<RezultatPreskokFinaleKupa>(Rezultati);
-
-            PropertyDescriptor[] propDesc = new PropertyDescriptor[] {
-                TypeDescriptor.GetProperties(typeof(RezultatPreskokFinaleKupa))["Total"],
-                TypeDescriptor.GetProperties(typeof(RezultatPreskokFinaleKupa))["PrezimeIme"]
-            };
-            ListSortDirection[] sortDir = new ListSortDirection[] {
-                ListSortDirection.Descending,
-                ListSortDirection.Ascending
-            };
-            rezultati.Sort(new SortComparer<RezultatPreskokFinaleKupa>(propDesc, sortDir));
-
-            float prevTotal = -1f;
-            short prevRank = 0;
-            for (int i = 0; i < rezultati.Count; i++)
-            {
-                rezultati[i].KvalStatus = KvalifikacioniStatus.None;
-                rezultati[i].RedBroj = (short)(i + 1);
-
-                if (rezultati[i].Total == null)
-                {
-                    rezultati[i].Rank = null;
-                }
-                else
-                {
-                    if (rezultati[i].Total != prevTotal)
-                        rezultati[i].Rank = (short)(i + 1);
-                    else
-                        rezultati[i].Rank = prevRank;
-
-                    prevTotal = rezultati[i].Total.Value;
-                    prevRank = rezultati[i].Rank.Value;
-                }
-            }
-            updateKvalStatus(propozicije);
+            PoredakSpravaFinaleKupa.rankRezultati(propozicije, new List<RezultatSpravaFinaleKupa>(Rezultati));
         }
 
         private void updateKvalStatus(Propozicije propozicije)
         {
-            if (!propozicije.odvojenoTak3())
-            {
-                foreach (RezultatPreskokFinaleKupa r in Rezultati)
-                    r.KvalStatus = KvalifikacioniStatus.None;
-                return;
-            }
-
-            List<RezultatPreskokFinaleKupa> rezultati = new List<RezultatPreskokFinaleKupa>(Rezultati);
-            PropertyDescriptor propDesc =
-                TypeDescriptor.GetProperties(typeof(RezultatPreskokFinaleKupa))["RedBroj"];
-            rezultati.Sort(new SortComparer<RezultatPreskokFinaleKupa>(propDesc,
-                ListSortDirection.Ascending));
-
-            // moram da koristim dve mape zato sto je moguca situacija da klub i 
-            // drzava imaju isti id
-            IDictionary<int, int> brojTakmicaraKlubMap = new Dictionary<int, int>();
-            IDictionary<int, int> brojTakmicaraDrzavaMap = new Dictionary<int, int>();
-
-            int finCount = 0;
-            int rezCount = 0;
-            for (int i = 0; i < rezultati.Count; i++)
-            {
-                RezultatPreskokFinaleKupa rezultat = rezultati[i];
-                if (rezultat.Total == null)
-                {
-                    rezultat.KvalStatus = KvalifikacioniStatus.None;
-                    continue;
-                }
-
-                int id;
-                IDictionary<int, int> brojTakmicaraMap;
-
-                if (propozicije.MaxBrojTakmicaraTak3VaziZaDrzavu)
-                {
-                    if (rezultat.Gimnasticar.DrzavaUcesnik != null)
-                    {
-                        id = rezultat.Gimnasticar.DrzavaUcesnik.Id;
-                        brojTakmicaraMap = brojTakmicaraDrzavaMap;
-                    }
-                    else
-                    {
-                        id = rezultat.Gimnasticar.KlubUcesnik.Id;
-                        brojTakmicaraMap = brojTakmicaraKlubMap;
-                    }
-                }
-                else
-                {
-                    if (rezultat.Gimnasticar.KlubUcesnik != null)
-                    {
-                        id = rezultat.Gimnasticar.KlubUcesnik.Id;
-                        brojTakmicaraMap = brojTakmicaraKlubMap;
-                    }
-                    else
-                    {
-                        id = rezultat.Gimnasticar.DrzavaUcesnik.Id;
-                        brojTakmicaraMap = brojTakmicaraDrzavaMap;
-                    }
-                }
-
-                if (!brojTakmicaraMap.ContainsKey(id))
-                    brojTakmicaraMap.Add(id, 0);
-
-                if (finCount < propozicije.BrojFinalistaTak3)
-                {
-                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak3)
-                    {
-                        finCount++;
-                        rezultat.KvalStatus = KvalifikacioniStatus.Q;
-                    }
-                    else
-                    {
-                        if (brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak3)
-                        {
-                            finCount++;
-                            brojTakmicaraMap[id]++;
-                            rezultat.KvalStatus = KvalifikacioniStatus.Q;
-                        }
-                        else
-                        {
-                            if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
-                            && rezCount < propozicije.BrojRezerviTak3)
-                            {
-                                rezCount++;
-                                rezultat.KvalStatus = KvalifikacioniStatus.R;
-                            }
-                            else
-                                rezultat.KvalStatus = KvalifikacioniStatus.None;
-                        }
-                    }
-                }
-                else if (rezCount < propozicije.BrojRezerviTak3)
-                {
-                    if (propozicije.NeogranicenBrojTakmicaraIzKlubaTak3)
-                    {
-                        rezCount++;
-                        rezultat.KvalStatus = KvalifikacioniStatus.R;
-                    }
-                    else
-                    {
-                        if (brojTakmicaraMap[id] < propozicije.MaxBrojTakmicaraIzKlubaTak3)
-                        {
-                            rezCount++;
-                            brojTakmicaraMap[id]++;
-                            rezultat.KvalStatus = KvalifikacioniStatus.R;
-                        }
-                        else
-                        {
-                            if (Opcije.Instance.UzimajPrvuSlobodnuRezervu
-                            && rezCount < propozicije.BrojRezerviTak3)
-                            {
-                                rezCount++;
-                                rezultat.KvalStatus = KvalifikacioniStatus.R;
-                            }
-                            else
-                                rezultat.KvalStatus = KvalifikacioniStatus.None;
-                        }
-                    }
-                }
-                else
-                {
-                    rezultat.KvalStatus = KvalifikacioniStatus.None;
-                }
-            }
+            PoredakSpravaFinaleKupa.updateKvalStatus(propozicije, new List<RezultatSpravaFinaleKupa>(Rezultati));
         }
 
-        public virtual void calculateTotal(Propozicije propozicije)
+        public virtual void calculateTotalAndRankRezultati(Propozicije propozicije)
         {
             foreach (RezultatPreskokFinaleKupa r in Rezultati)
                 r.calculateTotal(propozicije.NacinRacunanjaOceneFinaleKupaTak3);
             rankRezultati(propozicije);
+        }
+
+        private void calculatePostojeObaPreskoka()
+        {
+            postojeObaPreskokaPrvoKolo = false;
+            foreach (RezultatPreskokFinaleKupa r in Rezultati)
+            {
+                if (r.TotalObeOcene_PrvoKolo != null)
+                {
+                    postojeObaPreskokaPrvoKolo = true;
+                    break;
+                }
+            }
+            postojeObaPreskokaDrugoKolo = false;
+            foreach (RezultatPreskokFinaleKupa r in Rezultati)
+            {
+                if (r.TotalObeOcene_DrugoKolo != null)
+                {
+                    postojeObaPreskokaDrugoKolo = true;
+                    break;
+                }
+            }
         }
 
         public virtual void addGimnasticar(GimnasticarUcesnik g, RezultatskoTakmicenje rezTak,
@@ -265,24 +138,30 @@ namespace Bilten.Domain
             RezultatPreskokFinaleKupa rezultat = new RezultatPreskokFinaleKupa(this);
             rezultat.Gimnasticar = g;
 
-            this.koristiTotalObeOcenePrvoKolo = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
-                && rezTak1.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+            propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
             foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
                     rezultat.initPrvoKolo(r);
+                    if (r.TotalObeOcene != null)
+                    {
+                        postojeObaPreskokaPrvoKolo = true;
+                    }
                     break;
                 }
             }
 
-            this.koristiTotalObeOceneDrugoKolo = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka
-                && rezTak2.Takmicenje1.PoredakPreskok.postojeObaPreskoka();
+            propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
             foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
             {
                 if (r.Gimnasticar.Equals(g))
                 {
                     rezultat.initDrugoKolo(r);
+                    if (r.TotalObeOcene != null)
+                    {
+                        postojeObaPreskokaDrugoKolo = true;
+                    }
                     break;
                 }
             }
@@ -298,6 +177,7 @@ namespace Bilten.Domain
             if (r != null)
             {
                 Rezultati.Remove(r);
+                calculatePostojeObaPreskoka();
                 rankRezultati(rezTak.Propozicije);
             }
         }
@@ -351,6 +231,7 @@ namespace Bilten.Domain
         public virtual void dump(StringBuilder strBuilder)
         {
             strBuilder.AppendLine(Id.ToString());
+            strBuilder.AppendLine(Sprava.ToString());
 
             strBuilder.AppendLine(Rezultati.Count.ToString());
             foreach (RezultatPreskokFinaleKupa r in Rezultati)
@@ -359,6 +240,8 @@ namespace Bilten.Domain
 
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
+            Sprava = (Sprava)Enum.Parse(typeof(Sprava), reader.ReadLine());
+            
             int brojRezultata = int.Parse(reader.ReadLine());
             for (int i = 0; i < brojRezultata; ++i)
             {

@@ -172,9 +172,12 @@ namespace Bilten.Domain
                 _poredakUkupnoFinaleKupa = new PoredakUkupnoFinaleKupa();
                 foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
                 {
-                    PoredakSpravaFinaleKupa poredak = new PoredakSpravaFinaleKupa();
-                    poredak.Sprava = s;
-                    _poredakSpravaFinaleKupa.Add(poredak);
+                    if (s != Sprava.Preskok)
+                    {
+                        PoredakSpravaFinaleKupa poredak = new PoredakSpravaFinaleKupa();
+                        poredak.Sprava = s;
+                        _poredakSpravaFinaleKupa.Add(poredak);
+                    }
                 }
                 _poredakPreskokFinaleKupa = new PoredakPreskokFinaleKupa();
                 _poredakEkipnoFinaleKupa = new PoredakEkipnoFinaleKupa();

@@ -266,6 +266,9 @@ public class VersionUpdater
             converted = true;
         }
 
+        // TODO5: Neka sledeci update bude da se otvaraju redom sva finala kupa. To ce ponovo kreirati sve rezultate,
+        // i popuniti rezultate preskok.
+
         if (converted)
         {
             string msg = String.Format("Baza podataka je konvertovana iz verzije {0} u verziju {1}.", staraVerzijaBaze,

@@ -37,6 +37,7 @@ namespace Bilten.Dao
         public abstract PoredakUkupnoDAO GetPoredakUkupnoDAO();
         public abstract PoredakUkupnoFinaleKupaDAO GetPoredakUkupnoFinaleKupaDAO();
         public abstract PoredakSpravaFinaleKupaDAO GetPoredakSpravaFinaleKupaDAO();
+        public abstract PoredakPreskokFinaleKupaDAO GetPoredakPreskokFinaleKupaDAO();
         public abstract PoredakUkupnoZbirViseKolaDAO GetPoredakUkupnoZbirViseKolaDAO();
         public abstract PoredakEkipnoFinaleKupaDAO GetPoredakEkipnoFinaleKupaDAO();
         public abstract PoredakEkipnoZbirViseKolaDAO GetPoredakEkipnoZbirViseKolaDAO();

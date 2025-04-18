@@ -707,8 +707,8 @@ namespace Bilten.Domain
             if (calculatePoredakSpravaFinaleKupa)
             {
                 foreach (PoredakSpravaFinaleKupa p in Takmicenje1.PoredakSpravaFinaleKupa)
-                    p.calculateTotal(Propozicije);
-                Takmicenje1.PoredakPreskokFinaleKupa.calculateTotal(Propozicije);
+                    p.calculateTotalAndRankRezultati(Propozicije);
+                Takmicenje1.PoredakPreskokFinaleKupa.calculateTotalAndRankRezultati(Propozicije);
             }
             else if (rankPoredakSpravaFinaleKupa)
             {

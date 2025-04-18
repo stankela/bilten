@@ -16,7 +16,7 @@ namespace Bilten.Domain
             set { deoTakKod = value; }
         }
 
-        private Sprava _sprava;
+        private Sprava _sprava = Sprava.Preskok;
         public virtual Sprava Sprava
         {
             get { return _sprava; }
