@@ -31,8 +31,8 @@ namespace Bilten.Dao
             // we'll use the SqlServerCe connection object to get the database file path
             using (SqlCeConnection localConnection = new SqlCeConnection(connectionString))
             {
-                // The SqlCeConnection.Database property contains the file parth portion
-                // of the database from the full connectionstring
+                // The SqlCeConnection.Database property contains the file path portion
+                // of the database from the full connection string
                 if (File.Exists(localConnection.Database))
                 {
                     if (overwrite)
@@ -45,6 +45,16 @@ namespace Bilten.Dao
                 {
                     sqlCeEngine.CreateDatabase();
                 }
+
+                // Fajl CreateAllObjects.sqlce je takodje moguce dobiti koristeci tool exportsqlce (imam ga u VS2010).
+                // Komanda je:
+                // ExportSqlCE.exe "Data Source=C:\Users\sale\Documents\Visual Studio 2012\Projects\
+                //    Bilten\Bilten\bin\Release\BiltenPodaci.sdf" bilten_podaci.sql
+                // Primeri koriscenja se dobijaju kada se pokrene bez ikakvih opcija. Npr, moguce je generisati
+                // samo semu, samo podatke, i semu i podatke, itd. GO delimiter u skipt fajlu je neophodan
+                // (SqlCeUtilities.ExecuteScript razdvaja ceo skipt fajl na individualne komande ocekujuci GO kao delimiter) 
+                SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, "",
+                    "Bilten.CreateAllObjects.sqlce", true);
             }
             return true;
         }

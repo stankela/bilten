@@ -26,6 +26,10 @@ namespace Bilten.Domain
             get { return propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka && postojeObaPreskokaPrvoKolo; }
         }
 
+        // TODO5: Napravi da mogu da se izvezu sva takmicenja. Zatim kreiraj praznu bazu (pomocu CreateAllObjects.sqlce)
+        // i uvezi sva takmicenja. Zatim ponovo izvezi sva takmicenja (iz nove baze), i proveri da li su fajlovi isti.
+        // Zatim izbrisi sva takmicenja, i proveri da li je baza prazna.
+
         private bool postojeObaPreskokaDrugoKolo = false;
         private bool propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka;
 
@@ -96,11 +100,6 @@ namespace Bilten.Domain
         public virtual void rankRezultati(Propozicije propozicije)
         {
             PoredakSpravaFinaleKupa.rankRezultati(propozicije, new List<RezultatSpravaFinaleKupa>(Rezultati));
-        }
-
-        private void updateKvalStatus(Propozicije propozicije)
-        {
-            PoredakSpravaFinaleKupa.updateKvalStatus(propozicije, new List<RezultatSpravaFinaleKupa>(Rezultati));
         }
 
         public virtual void calculateTotalAndRankRezultati(Propozicije propozicije)

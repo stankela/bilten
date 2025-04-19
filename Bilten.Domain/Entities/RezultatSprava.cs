@@ -164,7 +164,8 @@ namespace Bilten.Domain
             strBuilder.AppendLine(Penalty != null ? Penalty.Value.ToString() : NULL);
         }
 
-        // TODO5: Da li ovde treba override?. Proveri i ostale metode loadFromDump, kao i metod dump za istu gresku
+        // TODO5: Da li ovde treba override? Proveri i ostale metode loadFromDump, kao i metod dump za istu gresku. Obrati
+        // paznju da postoje dve signature: loadFromDump(StringReader) i loadFromDump(StringReader, IdMap)
         public virtual void loadFromDump(StringReader reader, IdMap map)
         {
             base.loadFromDump(reader);

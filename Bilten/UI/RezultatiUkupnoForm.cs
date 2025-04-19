@@ -866,7 +866,7 @@ namespace Bilten.UI
 
                     // TODO5: Stampaj ceo bilten sa jednim klikom
                     // TODO5: Ovo dugme treba da je omoguceno samo za Takmicenje1
-                    // TODO5: Dodaj mogucnost da ako je heder 1 predugacak pa nemoze da stane u jedan red, da moze da se
+                    // TODO5: Dodaj mogucnost da ako je heder 1 predugacak pa ne moze da stane u jedan red, da moze da se
                     //        odredi gde ce biti novi red.
                     // TODO5: U hederu 2, gde stoji datum takmicenja, treba da postoji mogucnost za od-do
 

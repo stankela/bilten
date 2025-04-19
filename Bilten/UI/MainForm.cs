@@ -82,6 +82,8 @@ namespace Bilten.UI
 
             mnTakmicenje1RasporedSudija.Visible = true;
             mnTakmicenje1StartListe.Visible = true;
+
+            refreshAdminModeUI(Opcije.Instance.AdminMode);
         }
 
         protected override void OnMove(EventArgs ea)
@@ -1484,6 +1486,25 @@ namespace Bilten.UI
             catch (Exception ex)
             {
                 MessageDialogs.showError(ex.Message, strProgName);
+            }
+        }
+
+        private void refreshAdminModeUI(bool adminMode)
+        {
+            mnAdmin.Visible = adminMode;
+            mnAdmin.Enabled = adminMode;
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.Shift && e.KeyCode == Keys.S)
+            {
+                LozinkaForm f = new LozinkaForm(Opcije.Instance.AdminLozinka, false, true);
+                if (f.ShowDialog() == DialogResult.OK)
+                {
+                    Opcije.Instance.AdminMode = f.AdminMode;
+                    refreshAdminModeUI(Opcije.Instance.AdminMode);
+                }
             }
         }
     }

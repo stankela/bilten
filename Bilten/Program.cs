@@ -12,6 +12,7 @@ using NHibernate.Context;
 using Bilten.Data;
 using Bilten.Misc;
 using NHibernate;
+using Bilten.UI;
 
 namespace Bilten
 {

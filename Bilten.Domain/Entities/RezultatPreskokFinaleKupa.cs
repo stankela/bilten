@@ -156,59 +156,41 @@ namespace Bilten.Domain
 
         public override void loadFromDump(StringReader reader, IdMap map)
         {
-            base.loadFromDump(reader);
+            base.loadFromDump(reader, map);
 
             string line = reader.ReadLine();
-            D_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
-            line = reader.ReadLine();
             D_2_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
-            line = reader.ReadLine();
-            E_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
             line = reader.ReadLine();
             E_2_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
-            Bonus_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
-            line = reader.ReadLine();
             Bonus_2_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
-            line = reader.ReadLine();
-            Pen_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
             line = reader.ReadLine();
             Pen_2_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
-            TotalPrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
-            line = reader.ReadLine();
             Total_2_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
             line = reader.ReadLine();
             TotalObeOcene_PrvoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
-            D_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
-            line = reader.ReadLine();
             D_2_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
-            line = reader.ReadLine();
-            E_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
             line = reader.ReadLine();
             E_2_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
-            Bonus_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
-            line = reader.ReadLine();
             Bonus_2_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
-            line = reader.ReadLine();
-            Pen_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
             line = reader.ReadLine();
             Pen_2_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
 
             line = reader.ReadLine();
-            TotalDrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
-            line = reader.ReadLine();
             Total_2_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
+
             line = reader.ReadLine();
             TotalObeOcene_DrugoKolo = line != NULL ? float.Parse(line) : (float?)null;
         }

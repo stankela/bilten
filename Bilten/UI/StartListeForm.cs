@@ -978,7 +978,6 @@ namespace Bilten.UI
             // TODO5: Kod stampanja kvalifikanata, pored Score treba ponuditi mogucnost da se stampaju i ostale ocene (D,
             //        E, Bonus, Pen)
             // TODO5: Dodaj bonus u grid za rezultate sprave
-            // TODO5: Dodaj bonus i u ostalim izvestajima (finale kupa i slicno)
             // TODO5: Dodaj OCR za ocitavanje ocena sa sudijskih formulara (npr pogledaj Googlov Tesseract OCR)
 
             string kategorijaRotacija = ActiveRaspored.Naziv;
@@ -1516,8 +1515,6 @@ namespace Bilten.UI
                 form.Header3Text = gym + " - " + nazivIzvestaja;
                 form.Header4Text = kategorijaRotacija;
                 form.FooterText = mestoDatum;
-                //form.TekstFontSize = 10;  // TODO5: Zakomentarisao samo ovo zato sto utice i na ostale izvestaje
-                                            // (font size ostaje 10)
             }
             else
             {

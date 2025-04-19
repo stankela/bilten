@@ -54,6 +54,7 @@ namespace Bilten.UI
             this.mnEkipe = new System.Windows.Forms.ToolStripMenuItem();
             this.mnSudijeNaTakmicenju = new System.Windows.Forms.ToolStripMenuItem();
             this.mnVrhovniSudija = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnLogo = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnTakmicenje1RasporedSudija = new System.Windows.Forms.ToolStripMenuItem();
             this.mnPrvoDrugoKoloViseboj = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,7 +84,8 @@ namespace Bilten.UI
             this.mnRezultatiTak4 = new System.Windows.Forms.ToolStripMenuItem();
             this.opcijeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnJezik = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnLogo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnAdmin = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnControlPanel = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,10 +99,11 @@ namespace Bilten.UI
             this.mnTakmicenje2,
             this.mnTakmicenje3,
             this.mnTakmicenje4,
-            this.opcijeToolStripMenuItem});
+            this.opcijeToolStripMenuItem,
+            this.mnAdmin});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(698, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(738, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -299,6 +302,13 @@ namespace Bilten.UI
             this.mnVrhovniSudija.Size = new System.Drawing.Size(196, 22);
             this.mnVrhovniSudija.Text = "Vrhovni sudija";
             this.mnVrhovniSudija.Click += new System.EventHandler(this.mnVrhovniSudija_Click);
+            // 
+            // mnLogo
+            // 
+            this.mnLogo.Name = "mnLogo";
+            this.mnLogo.Size = new System.Drawing.Size(196, 22);
+            this.mnLogo.Text = "Logo";
+            this.mnLogo.Click += new System.EventHandler(this.mnLogo_Click);
             // 
             // mnTakmicenje1
             // 
@@ -520,28 +530,36 @@ namespace Bilten.UI
             // mnJezik
             // 
             this.mnJezik.Name = "mnJezik";
-            this.mnJezik.Size = new System.Drawing.Size(98, 22);
+            this.mnJezik.Size = new System.Drawing.Size(152, 22);
             this.mnJezik.Text = "Jezik";
             this.mnJezik.Click += new System.EventHandler(this.mnJezik_Click);
             // 
-            // mnLogo
+            // mnAdmin
             // 
-            this.mnLogo.Name = "mnLogo";
-            this.mnLogo.Size = new System.Drawing.Size(196, 22);
-            this.mnLogo.Text = "Logo";
-            this.mnLogo.Click += new System.EventHandler(this.mnLogo_Click);
+            this.mnAdmin.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnControlPanel});
+            this.mnAdmin.Name = "mnAdmin";
+            this.mnAdmin.Size = new System.Drawing.Size(55, 20);
+            this.mnAdmin.Text = "Admin";
+            // 
+            // mnControlPanel
+            // 
+            this.mnControlPanel.Name = "mnControlPanel";
+            this.mnControlPanel.Size = new System.Drawing.Size(152, 22);
+            this.mnControlPanel.Text = "Control panel";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(698, 312);
+            this.ClientSize = new System.Drawing.Size(738, 312);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -607,6 +625,8 @@ namespace Bilten.UI
         private System.Windows.Forms.ToolStripMenuItem opcijeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mnJezik;
         private System.Windows.Forms.ToolStripMenuItem mnLogo;
+        private System.Windows.Forms.ToolStripMenuItem mnAdmin;
+        private System.Windows.Forms.ToolStripMenuItem mnControlPanel;
     }
 }
 

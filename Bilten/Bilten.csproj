@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -184,6 +184,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
+    <EmbeddedResource Include="UI\LozinkaForm.resx">
+      <DependentUpon>LozinkaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Update\DatabaseUpdate_version0.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version23.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version22.txt" />
     <EmbeddedResource Include="Update\DatabaseUpdate_version21.txt" />
@@ -263,7 +267,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
-    <None Include="CreateAllObjects.sqlce" />
+    <EmbeddedResource Include="CreateAllObjects.sqlce" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -445,6 +449,12 @@
     </Compile>
     <Compile Include="UI\KvalifikantiTak3Form.Designer.cs">
       <DependentUpon>KvalifikantiTak3Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\LozinkaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\LozinkaForm.Designer.cs">
+      <DependentUpon>LozinkaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>

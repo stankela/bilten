@@ -423,6 +423,20 @@ namespace Bilten.Domain
             set { _unosOcenaBezIzrZaCeloTak = value; }
         }
 
+        private string adminLozinka = "Bilten!73";
+        public virtual string AdminLozinka
+        {
+            get { return adminLozinka; }
+            set { adminLozinka = value; }
+        }
+
+        private bool adminMode = false;
+        public virtual bool AdminMode
+        {
+            get { return adminMode; }
+            set { adminMode = value; }
+        }
+
         private string _jezik = "Srpski";
         public virtual string Jezik
         {

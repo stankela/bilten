@@ -11,6 +11,7 @@ using NHibernate;
 using NHibernate.Context;
 using Bilten.Dao;
 using Bilten.Misc;
+using System.IO;
 
 namespace Bilten
 {
@@ -39,6 +40,26 @@ namespace Bilten
 
         protected override void OnCreateSplashScreen()
         {
+            if (!File.Exists(ConfigurationParameters.DatabaseFile))
+            {
+                string programName = "Bilten";
+                if (MessageDialogs.queryConfirmation("Ne postoji baza podataka '"
+                    + ConfigurationParameters.DatabaseFile + "'. Da li zelite da kreirate novu praznu bazu "
+                    + "podataka?", programName))
+                {
+                    SqlCeUtilities.CreateDatabase(ConfigurationParameters.DatabaseFile,
+                        ConfigurationParameters.Password, false);
+                    // Update broj verzije baze
+                    SqlCeUtilities.ExecuteScript(ConfigurationParameters.DatabaseFile, ConfigurationParameters.Password,
+                        "Bilten.Update.DatabaseUpdate_version0.txt", true);
+                    SqlCeUtilities.updateDatabaseVersionNumber(Program.VERZIJA_PROGRAMA);
+
+                    MessageDialogs.showMessage("Kreirana nova prazna baza podataka.", programName);
+                    if (File.Exists("NHibernateConfig"))
+                        File.Delete("NHibernateConfig");
+                }
+            }
+
             if (VersionUpdater.hasUpdates())
             {
                 WaitForm wf = new WaitForm();

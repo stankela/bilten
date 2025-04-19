@@ -27,6 +27,11 @@ namespace Bilten
             get { return "BiltenPodaci.sdf"; }
         }
 
+        public static string Password
+        {
+            get { return ""; }
+        }
+
         public static string ConnectionString
         {
             get { return String.Format("Data Source={0}", DatabaseFile); }

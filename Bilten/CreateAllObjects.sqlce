@@ -2,11 +2,13 @@ create table verzija_baze (
 	verzija_id int primary key,
 	broj_verzije int
 );
+GO
 
 create table mesta (
 	mesto_id int identity(1,1) primary key,
 	naziv nvarchar(32)
 );
+GO
 
 create table klubovi (
 	klub_id int identity(1,1) primary key,
@@ -14,18 +16,21 @@ create table klubovi (
 	kod nvarchar(7),
 	mesto_id int references mesta(mesto_id)
 );
+GO
 
 create table kategorije_gimnasticara (
 	kategorija_id int identity(1,1) primary key,
 	naziv nvarchar(32),
 	gimnastika tinyint
 );
+GO
 
 create table drzave (
 	drzava_id int identity(1,1) primary key,
 	naziv nvarchar(32),
 	kod nvarchar(3)
 );
+GO
 
 create table gimnasticari (
 	gimnasticar_id int identity(1,1) primary key,
@@ -44,6 +49,7 @@ create table gimnasticari (
 	klub_id int references klubovi(klub_id),
 	drzava_id int references drzave(drzava_id)
 );
+GO
 
 create table propozicije (
 	propozicije_id int identity (1,1) primary key,
@@ -74,6 +80,7 @@ create table propozicije (
 	broj_ekipa_u_finalu tinyint,
 	nacin_racunanja_ocene_finale_kupa_tak4 tinyint
 );
+GO
 
 create table takmicenja (
 	takmicenje_id int identity(1,1) primary key,
@@ -103,12 +110,13 @@ create table takmicenja (
     logo7_rel_path nvarchar(128),
     tak_brojevi bit,
 	last_modified datetime,
-	vrhovni_sudija_id int references sudija_ucesnik(sudija_id),
+	vrhovni_sudija_id int, -- constraint za "references sudija_ucesnik(sudija_id)" dodat dole (FK_takmicenja_12345)
 	prvo_kolo_id int references takmicenja(takmicenje_id),
 	drugo_kolo_id int references takmicenja(takmicenje_id),
 	trece_kolo_id int references takmicenja(takmicenje_id),
 	cetvrto_kolo_id int references takmicenja(takmicenje_id)
 );
+GO
 
 create table takmicarske_kategorije (
 	kategorija_id int identity(1,1) primary key,
@@ -116,6 +124,7 @@ create table takmicarske_kategorije (
 	naziv nvarchar(32),
 	redBroj tinyint
 );
+GO
 
 create table rezultatsko_takmicenje_description (
 	description_id int identity(1,1) primary key,
@@ -124,43 +133,74 @@ create table rezultatsko_takmicenje_description (
 	takmicenje_id int references takmicenja(takmicenje_id),
 	propozicije_id int references propozicije(propozicije_id)
 );
+GO
 
 create table poredak_ukupno (
 	poredak_id int identity(1,1) primary key,
 	deo_takmicenja_kod tinyint
 );
+GO
 
 create table poredak_ekipno (
 	poredak_id int identity(1,1) primary key,
 	deo_takmicenja_kod tinyint
 );
+GO
+
+create table poredak_ukupno_finale_kupa (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+GO
+
+create table poredak_ukupno_zbir_vise_kola (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+GO
+
+create table poredak_ekipno_finale_kupa (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+GO
+
+create table poredak_ekipno_zbir_vise_kola (
+	poredak_id int identity(1,1) primary key,
+	deo_takmicenja_kod tinyint
+);
+GO
 
 create table takmicenje1 (
 	takmicenje1_id int identity(1,1) primary key,
 	poredak_ukupno_id int references poredak_ukupno(poredak_id),
-	poredak_preskok_id int references poredak_sprava(poredak_id),
+	poredak_preskok_id int, -- constraint za "references poredak_sprava(poredak_id)" dodat dole (FK_takmicenje1_12345)
 	poredak_ekipno_id int references poredak_ekipno(poredak_id),
 	poredak_ukupno_finale_kupa_id int references poredak_ukupno_finale_kupa(poredak_id),
-	poredak_preskok_finale_kupa_id int references poredak_sprava_finale_kupa(poredak_id),
+	poredak_preskok_finale_kupa_id int, -- constraint za "references poredak_sprava_finale_kupa(poredak_id)" dodat dole (FK_takmicenje1_12346)
 	poredak_ukupno_zbir_vise_kola_id int references poredak_ukupno_zbir_vise_kola(poredak_id),
 	poredak_ekipno_finale_kupa_id int references poredak_ekipno_finale_kupa(poredak_id),
 	poredak_ekipno_zbir_vise_kola_id int references poredak_ekipno_zbir_vise_kola(poredak_id)
 );
+GO
 
 create table takmicenje2 (
 	takmicenje2_id int identity(1,1) primary key,
 	poredak_id int references poredak_ukupno(poredak_id)
 );
+GO
 
 create table takmicenje3 (
 	takmicenje3_id int identity(1,1) primary key,
-	poredak_preskok_id int references poredak_sprava(poredak_id)
+	poredak_preskok_id int -- constraint za "references poredak_sprava(poredak_id)" dodat dole (FK_takmicenje3_12345)
 );
+GO
 
 create table takmicenje4 (
 	takmicenje4_id int identity(1,1) primary key,
 	poredak_id int references poredak_ekipno(poredak_id)
 );
+GO
 
 create table rezultatsko_takmicenje (
 	rez_takmicenje_id int identity(1,1) primary key,
@@ -177,6 +217,7 @@ create table rezultatsko_takmicenje (
 	ima_ekipno_tak bit,
 	komb_ekipno_tak bit
 );
+GO
 
 create table poredak_sprava (
 	poredak_id int identity(1,1) primary key,
@@ -185,6 +226,43 @@ create table poredak_sprava (
 	takmicenje1_id int references takmicenje1(takmicenje1_id),
 	takmicenje3_id int references takmicenje3(takmicenje3_id)
 );
+GO
+
+ALTER TABLE [takmicenje1] ADD CONSTRAINT [FK_takmicenje1_12345]
+FOREIGN KEY ([poredak_preskok_id])
+REFERENCES [poredak_sprava]([poredak_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+ALTER TABLE [takmicenje3] ADD CONSTRAINT [FK_takmicenje3_12345]
+FOREIGN KEY ([poredak_preskok_id])
+REFERENCES [poredak_sprava]([poredak_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+create table klubovi_ucesnici (
+	klub_id int identity(1,1) primary key,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	naziv nvarchar(128),
+	kod nvarchar(7)
+);
+GO
+
+create table drzave_ucesnici (
+	drzava_id int identity(1,1) primary key,
+	takmicenje_id int references takmicenja(takmicenje_id),
+	naziv nvarchar(32),
+	kod nvarchar(3)
+);
+GO
+
+create table ekipe (
+	ekipa_id int identity(1,1) primary key,
+	naziv nvarchar(64),
+	kod nvarchar(7),
+	penalty real,
+	sprave_mask int,
+	takmicenje1_id int references takmicenje1(takmicenje1_id)
+);
+GO
 
 create table gimnasticari_ucesnici (
 	gimnasticar_id int identity(1,1) primary key,
@@ -202,20 +280,7 @@ create table gimnasticari_ucesnici (
 	drzava_id int references drzave_ucesnici(drzava_id),
 	ekipa_id int references ekipe(ekipa_id)
 );
-
-create table klubovi_ucesnici (
-	klub_id int identity(1,1) primary key,
-	takmicenje_id int references takmicenja(takmicenje_id),
-	naziv nvarchar(128),
-	kod nvarchar(7)
-);
-
-create table drzave_ucesnici (
-	drzava_id int identity(1,1) primary key,
-	takmicenje_id int references takmicenja(takmicenje_id),
-	naziv nvarchar(32),
-	kod nvarchar(3)
-);
+GO
 
 create table sudije (
 	sudija_id int identity(1,1) primary key,
@@ -225,15 +290,7 @@ create table sudije (
 	klub_id int references klubovi(klub_id),
 	drzava_id int references drzave(drzava_id)
 );
-
-create table ekipe (
-	ekipa_id int identity(1,1) primary key,
-	naziv nvarchar(64),
-	kod nvarchar(7),
-	penalty real,
-	sprave_mask int,
-	takmicenje1_id int references takmicenje1(takmicenje1_id)
-);
+GO
 
 create table ekipa_gimnasticar (
 	ekipa_id int references ekipe(ekipa_id),
@@ -241,11 +298,15 @@ create table ekipa_gimnasticar (
    	constraint PK_ekipa_gimnasticar 
 		primary key (ekipa_id, gimnasticar_id)
 );
+GO
 
 create table raspored_sudija (
 	raspored_sud_id int identity(1,1) primary key,
-	deo_takmicenja_kod tinyint
+	deo_takmicenja_kod tinyint,
+    naziv nvarchar(256),
+	takmicenje_id int references takmicenja(takmicenje_id)
 );
+GO
 
 create table raspored_nastupa (
 	raspored_nastupa_id int identity(1,1) primary key,
@@ -254,6 +315,7 @@ create table raspored_nastupa (
 	pauze_mask int,
 	takmicenje_id int references takmicenja(takmicenje_id)
 );
+GO
 
 create table druga_ocena (
 	ocena2_id int identity(1,1) primary key,
@@ -271,6 +333,7 @@ create table druga_ocena (
 	broj_e_ocena tinyint,
 	rucno_uneta_ocena bit
 );
+GO
 
 create table ocene (
 	ocena_id int identity(1,1) primary key,
@@ -293,6 +356,7 @@ create table ocene (
 	ocena2_id int references druga_ocena(ocena2_id),
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id)
 );
+GO
 
 create table sudija_ucesnik (
 	sudija_id int identity(1,1) primary key,
@@ -304,6 +368,12 @@ create table sudija_ucesnik (
     drzava_id int references drzave_ucesnici(drzava_id),
 	takmicenje_id int references takmicenja(takmicenje_id)
 );
+GO
+
+ALTER TABLE [takmicenja] ADD CONSTRAINT [FK_takmicenja_12345]
+FOREIGN KEY ([vrhovni_sudija_id])
+REFERENCES [sudija_ucesnik]([sudija_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 create table sud_odbor_na_spravi (
     sud_odbor_id int identity(1,1) primary key,
@@ -318,6 +388,7 @@ create table sud_odbor_na_spravi (
     numerisane_lin_sudije bit,
 	raspored_sud_id int references raspored_sudija(raspored_sud_id)
 );
+GO
 
 create table sudija_na_spravi (
     sud_odbor_id int references sud_odbor_na_spravi(sud_odbor_id),
@@ -325,6 +396,7 @@ create table sudija_na_spravi (
    	constraint PK_sudija_na_spravi primary key (sud_odbor_id, uloga),
 	sudija_id int references sudija_ucesnik(sudija_id)
 );
+GO
 
 create table start_lista_sprava (
 	start_lista_id int identity(1,1) primary key,
@@ -334,6 +406,7 @@ create table start_lista_sprava (
     nacin_rotacije tinyint,
 	raspored_nastupa_id int references raspored_nastupa(raspored_nastupa_id)
 );
+GO
 
 create table nastup_na_spravi (
     nastup_id int identity(1,1) primary key,
@@ -342,6 +415,7 @@ create table nastup_na_spravi (
 	start_lista_id int references start_lista_sprava(start_lista_id),
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id)
 );
+GO
 
 create table opcije (
 	opcije_id int identity(1,1) primary key,
@@ -352,6 +426,7 @@ create table opcije (
     broj_decimala_pen tinyint,
     broj_decimala_total tinyint
 );
+GO
 
 create table ucesnici_tak1 (
 	takmicenje1_id int references takmicenje1(takmicenje1_id),
@@ -359,6 +434,7 @@ create table ucesnici_tak1 (
    	constraint PK_ucesnici_tak1 
 		primary key (takmicenje1_id, gimnasticar_id)
 );
+GO
 
 create table ucesnici_tak2 (
 	ucesnik_tak2_id int identity(1,1) primary key,
@@ -369,6 +445,7 @@ create table ucesnici_tak2 (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	takmicenje2_id int references takmicenje2(takmicenje2_id)
 );
+GO
 
 create table ucesnici_tak3 (
 	ucesnik_tak3_id int identity(1,1) primary key,
@@ -380,6 +457,7 @@ create table ucesnici_tak3 (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	takmicenje3_id int references takmicenje3(takmicenje3_id)
 );
+GO
 
 create table ucesnici_tak4 (
 	ucesnik_tak4_id int identity(1,1) primary key,
@@ -390,6 +468,7 @@ create table ucesnici_tak4 (
 	ekipa_id int references ekipe(ekipa_id),
 	takmicenje4_id int references takmicenje4(takmicenje4_id)
 );
+GO
 
 create table rezultati_ukupno (
 	rezultat_id int identity(1,1) primary key,
@@ -408,6 +487,7 @@ create table rezultati_ukupno (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_ukupno(poredak_id)
 );
+GO
 
 create table rezultati_sprava (
 	rezultat_id int identity(1,1) primary key,
@@ -422,6 +502,7 @@ create table rezultati_sprava (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_sprava(poredak_id)
 );
+GO
 
 create table rezultati_preskok (
 	rezultat_id int identity(1,1) primary key,
@@ -442,6 +523,7 @@ create table rezultati_preskok (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_sprava(poredak_id)
 );
+GO
 
 create table rezultati_ekipno (
 	rezultat_id int identity(1,1) primary key,
@@ -460,11 +542,7 @@ create table rezultati_ekipno (
 	ekipa_id int references ekipe(ekipa_id),
 	poredak_id int references poredak_ekipno(poredak_id)
 );
-
-create table poredak_ukupno_zbir_vise_kola (
-	poredak_id int identity(1,1) primary key,
-	deo_takmicenja_kod tinyint
-);
+GO
 
 create table rezultati_ukupno_zbir_vise_kola (
 	rezultat_id int identity(1,1) primary key,
@@ -511,11 +589,7 @@ create table rezultati_ukupno_zbir_vise_kola (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_ukupno_zbir_vise_kola(poredak_id)
 );
-
-create table poredak_ekipno_zbir_vise_kola (
-	poredak_id int identity(1,1) primary key,
-	deo_takmicenja_kod tinyint
-);
+GO
 
 create table rezultati_ekipno_zbir_vise_kola (
 	rezultat_id int identity(1,1) primary key,
@@ -562,11 +636,7 @@ create table rezultati_ekipno_zbir_vise_kola (
 	ekipa_id int references ekipe(ekipa_id),
 	poredak_id int references poredak_ekipno_zbir_vise_kola(poredak_id)
 );
-
-create table poredak_ukupno_finale_kupa (
-	poredak_id int identity(1,1) primary key,
-	deo_takmicenja_kod tinyint
-);
+GO
 
 create table rezultati_ukupno_finale_kupa (
 	rezultat_id int identity(1,1) primary key,
@@ -595,11 +665,7 @@ create table rezultati_ukupno_finale_kupa (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_ukupno_finale_kupa(poredak_id)
 );
-
-create table poredak_ekipno_finale_kupa (
-	poredak_id int identity(1,1) primary key,
-	deo_takmicenja_kod tinyint
-);
+GO
 
 create table rezultati_ekipno_finale_kupa (
 	rezultat_id int identity(1,1) primary key,
@@ -628,12 +694,19 @@ create table rezultati_ekipno_finale_kupa (
 	ekipa_id int references ekipe(ekipa_id),
 	poredak_id int references poredak_ekipno_finale_kupa(poredak_id)
 );
+GO
 
 create table poredak_sprava_finale_kupa (
 	poredak_id int identity(1,1) primary key,
 	sprava tinyint,
 	takmicenje1_id int references takmicenje1(takmicenje1_id)
 );
+GO
+
+ALTER TABLE [takmicenje1] ADD CONSTRAINT [FK_takmicenje1_12346]
+FOREIGN KEY ([poredak_preskok_finale_kupa_id])
+REFERENCES [poredak_sprava_finale_kupa]([poredak_id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 create table rezultati_sprava_finale_kupa (
 	rezultat_id int identity(1,1) primary key,
@@ -654,6 +727,7 @@ create table rezultati_sprava_finale_kupa (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_sprava_finale_kupa(poredak_id)
 );
+GO
 
 create table rezultati_preskok_finale_kupa (
 	rezultat_id int identity(1,1) primary key,
@@ -686,6 +760,7 @@ create table rezultati_preskok_finale_kupa (
 	gimnasticar_id int references gimnasticari_ucesnici(gimnasticar_id),
 	poredak_id int references poredak_sprava_finale_kupa(poredak_id)
 );
+GO
 
 create table jezici (
     jezik_id int identity(1,1) primary key,
@@ -718,3 +793,4 @@ create table jezici (
     raspored_sudija nvarchar(64),
 	rotacija nvarchar(64)
 );
+GO

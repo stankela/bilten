@@ -1,0 +1,97 @@
+-- (VERZIJA = 0) - Prazna baza
+-- Stvari koje moraju biti u bazi nakon sto program startuje sa praznom bazom
+
+INSERT INTO verzija_baze (verzija_id, broj_verzije) VALUES (1, 0);
+GO
+
+INSERT INTO jezici (naziv, red_broj, rank, ime, klub_drzava, kategorija, ukupno, ocena, rezerve)
+VALUES ('Srpski', 'RB', 'Rank', 'Ime', 'Klub', 'Kategorija', 'Ukupno', 'Ocena', 'REZERVE');
+GO
+
+INSERT INTO jezici (naziv, red_broj, rank, ime, klub_drzava, kategorija, ukupno, ocena, rezerve)
+VALUES ('Engleski', 'No.', 'Rank', 'Name', 'Club / NT', 'Category', 'Total', 'Score', 'RESERVES');
+GO
+
+update jezici set default_jezik = 1 where naziv = 'Srpski';
+GO
+update jezici set default_jezik = 0 where naziv = 'Engleski';
+GO
+
+update jezici set broj = 'Broj' where naziv = 'Srpski';
+GO
+update jezici set prezime = 'Prezime' where naziv = 'Srpski';
+GO
+update jezici set datum_rodjenja = 'Datum rodjenja' where naziv = 'Srpski';
+GO
+update jezici set klub = 'Klub' where naziv = 'Srpski';
+GO
+update jezici set drzava = 'Drzava' where naziv = 'Srpski';
+GO
+update jezici set ekipa = 'Ekipa' where naziv = 'Srpski';
+GO
+update jezici set strana = 'Strana' where naziv = 'Srpski';
+GO
+
+update jezici set broj = '#' where naziv = 'Engleski';
+GO
+update jezici set prezime = 'Surname' where naziv = 'Engleski';
+GO
+update jezici set datum_rodjenja = 'Birth date' where naziv = 'Engleski';
+GO
+update jezici set klub = 'Club' where naziv = 'Engleski';
+GO
+update jezici set drzava = 'National team' where naziv = 'Engleski';
+GO
+update jezici set ekipa = 'Team' where naziv = 'Engleski';
+GO
+update jezici set strana = 'Page' where naziv = 'Engleski';
+GO
+
+update jezici set vrhovni_sudija_muski = 'Vrhovni sudija' where naziv = 'Srpski';
+GO
+update jezici set vrhovni_sudija_zenski = 'Vrhovna sutkinja' where naziv = 'Srpski';
+GO
+
+update jezici set vrhovni_sudija_muski = 'Superior Jury' where naziv = 'Engleski';
+GO
+update jezici set vrhovni_sudija_zenski = 'Superior Jury' where naziv = 'Engleski';
+GO
+
+update jezici set viseboj = 'Višeboj' where naziv = 'Srpski';
+GO
+update jezici set kval_sprave = 'Kvalifikacije za finale po spravama' where naziv = 'Srpski';
+GO
+update jezici set sprave_finalisti = 'Finalisti po spravama' where naziv = 'Srpski';
+GO
+update jezici set finale_sprave = 'Finale po spravama' where naziv = 'Srpski';
+GO
+update jezici set ekipe_rezultati = 'Rezultati ekipno' where naziv = 'Srpski';
+GO
+update jezici set kval_start_liste = 'Start liste - kvalifikacije' where naziv = 'Srpski';
+GO
+update jezici set finale_start_liste = 'Start liste - finale po spravama' where naziv = 'Srpski';
+GO
+update jezici set raspored_sudija = 'Raspored sudija' where naziv = 'Srpski';
+GO
+
+update jezici set viseboj = 'ALL AROUND' where naziv = 'Engleski';
+GO
+update jezici set kval_sprave = 'APPARATUS QUALIFICATION' where naziv = 'Engleski';
+GO
+update jezici set sprave_finalisti = 'APPARATUS FINALISTS' where naziv = 'Engleski';
+GO
+update jezici set finale_sprave = 'APPARATUS FINALS' where naziv = 'Engleski';
+GO
+update jezici set ekipe_rezultati = 'TEAM RESULTS' where naziv = 'Engleski';
+GO
+update jezici set kval_start_liste = 'START LISTS - QUALIFICATION' where naziv = 'Engleski';
+GO
+update jezici set finale_start_liste = 'START LISTS - APPARATUS FINALS' where naziv = 'Engleski';
+GO
+update jezici set raspored_sudija = 'JUDGES ASSIGNMENT' where naziv = 'Engleski';
+GO
+
+update jezici set rotacija = 'Rotacija' where naziv = 'Srpski';
+GO
+update jezici set rotacija = 'Rotation' where naziv = 'Engleski';
+GO

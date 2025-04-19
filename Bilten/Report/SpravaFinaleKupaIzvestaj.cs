@@ -47,7 +47,6 @@ namespace Bilten.Report
             Font itemsHeaderFont = new Font(itemFont.FontFamily.Name, itemFont.Size, FontStyle.Bold);
             svakaSpravaNaPosebnojStrani = brojSpravaPoStrani == 1;
 
-
             Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
             for (int i = 0; i < sprave.Length; i++)
             {

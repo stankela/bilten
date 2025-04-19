@@ -4,8 +4,6 @@ using System.Text;
 
 namespace Bilten.Domain
 {
-    // TODO5: Dodaj bonus i u ostalim rezultatima (npr RezultatUkupnoFinaleKupa, itd)
-
     public class RezultatUkupnoExtended : RezultatUkupno
     {
         public RezultatUkupnoExtended(RezultatUkupno r)
