@@ -23,6 +23,7 @@ namespace Bilten.UI
         {
             InitializeComponent();
             this.lozinka = lozinka;
+            this.Text = "";  // Namerno stavljam prazan tekst, za slucaj da neko slucajno otvori ovaj dijalog
             if (usePasswordChar)
             {
                 txtLozinka.PasswordChar = '*';

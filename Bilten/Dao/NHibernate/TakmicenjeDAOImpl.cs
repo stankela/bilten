@@ -129,6 +129,22 @@ namespace Bilten.Dao.NHibernate
             }
         }
 
+        public IList<Takmicenje> FindByTipTakmicenja(TipTakmicenja tip)
+        {
+            try
+            {
+                IQuery q = Session.CreateQuery(@"
+                    from Takmicenje t
+                    where t.TipTakmicenja = :tip");
+                q.SetByte("tip", (byte)tip);
+                return q.List<Takmicenje>();
+            }
+            catch (HibernateException ex)
+            {
+                throw new InfrastructureException(Strings.getFullDatabaseAccessExceptionMessage(ex), ex);
+            }
+        }
+
         public bool existsTakmicenje(string naziv, Gimnastika gim, DateTime datum)
         {
             try

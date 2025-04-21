@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{205A8BBE-E310-4F80-8C55-E02747642E0C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bilten</RootNamespace>
     <AssemblyName>Bilten</AssemblyName>
@@ -184,6 +184,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="CHANGE_LOG.txt" />
+    <EmbeddedResource Include="UI\AdminForm.resx">
+      <DependentUpon>AdminForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\LozinkaForm.resx">
       <DependentUpon>LozinkaForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -307,6 +310,12 @@
     <Compile Include="Test\RegistrovaniGimnasticariParser.cs" />
     <Compile Include="Test\StartListaParser.cs" />
     <Compile Include="Test\SudijeParser.cs" />
+    <Compile Include="UI\AdminForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AdminForm.Designer.cs">
+      <DependentUpon>AdminForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\BaseEntityListForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -3,6 +3,7 @@ using Bilten.Dao;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using Bilten.UI;
 using Bilten.Util;
 using NHibernate;
 using NHibernate.Context;
@@ -567,12 +568,17 @@ WHERE rezultat_id = @rezultat_id;";
                 cmd4.ExecuteNonQuery();
             }
 
-            // 6. Postavi LastModified na nisku vrednost, tako da svaki put kada otvaramo finale kupa, ponovo ce se
-            // izracunati poredak. Time obezbedjujemo da se rezultati za preskok azuriraju sa prvim i drugim kolom.
+            // NOTE: 6. Postavljam LastModified na danasnji datum, da bih izbegao azuriranje poretka kada se otvori finale
+            // kupa. Time izbegavam potencijalnu gresku ako prethodna kola ne sadrze sve ocene (npr ako je takmicenje
+            // uvezeno sa drugog laptopa koji jedini ima sve ocene za prethodna kola). To istovremeno znaci da rezultati za
+            // preskok nece biti azurirani sa kompletnim prvim i drugim kolom, tj sadrzavace samo total prvog i drugog kola
+            // i konacni total za oba kola.
 
-            string sql5 = @"
-UPDATE takmicenja SET last_modified = '2010-12-01'
-WHERE tip_takmicenja = 1;";
+            DateTime date = DateTime.Now;
+            string datum = date.Year + "-" + date.Month + "-" + date.Day;
+            string sql5 =
+"UPDATE takmicenja SET last_modified = '" + datum + "' " + 
+"WHERE tip_takmicenja = 1;";
 
             SqlCeCommand cmd5 = new SqlCeCommand(sql5);
             cmd5.Connection = conn;
@@ -606,6 +612,17 @@ WHERE tip_takmicenja = 1;";
         {
             conn.Close();
         }
+
+        // Ispravi reference na prethodna kola
+        AdminForm.ispraviFinalaKupa();
+        AdminForm.ispraviZbirViseKola();
+
+        // TODO5: Kod izvozenja finala kupa i zbira prethodnih kola, izvezi i sva kola. Kod uvozenja finala kupa i zbira
+        // prethodnih kola, prvo proveri da li su reference na prethodna kola ispravne, i ako nisu ispravi ih kao u metodima
+        // AdminForm.ispraviFinalaKupa() i AdminForm.ispraviZbirViseKola(). Zatim proveri da li su ocene u izvezenim
+        // prethodnim kolima identicne kao ucene u prethodnim kolima na laptopu gde se uvozi takmicenje. Ako nisu, treba
+        // prikazati poruku koje se ocene razlikuju, i verovatno ponuditi izbor koje prethodno kolo da se koristi - da li
+        // ono izvezeno, ili ono na laptopu gde se uvozi takmicenje.
     }
 
     private void deletePoredakSpravaFinaleKupa(int poredak_id, SqlCeConnection conn, SqlCeTransaction tr)

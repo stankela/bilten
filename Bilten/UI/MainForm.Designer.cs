@@ -547,6 +547,7 @@ namespace Bilten.UI
             this.mnControlPanel.Name = "mnControlPanel";
             this.mnControlPanel.Size = new System.Drawing.Size(152, 22);
             this.mnControlPanel.Text = "Control panel";
+            this.mnControlPanel.Click += new System.EventHandler(this.mnControlPanel_Click);
             // 
             // MainForm
             // 

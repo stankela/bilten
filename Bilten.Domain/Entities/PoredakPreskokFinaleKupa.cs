@@ -10,7 +10,7 @@ namespace Bilten.Domain
     public class PoredakPreskokFinaleKupa : DomainObject
     {
         private bool postojeObaPreskokaPrvoKolo = false;
-        private bool propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka;
+        private bool propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka = false;
 
         public virtual bool KoristiTotalObeOcenePrvoKolo
         {
@@ -31,7 +31,7 @@ namespace Bilten.Domain
         // Zatim izbrisi sva takmicenja, i proveri da li je baza prazna.
 
         private bool postojeObaPreskokaDrugoKolo = false;
-        private bool propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka;
+        private bool propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka = false;
 
         public virtual bool KoristiTotalObeOceneDrugoKolo
         {
@@ -71,21 +71,27 @@ namespace Bilten.Domain
                 rezultatiMap.Add(g, rezultat);
             }
 
-            this.propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
-            foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
+            if (rezTak1 != null)
             {
-                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                this.propozicijePrvoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak1.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
+                foreach (RezultatPreskok r in rezTak1.Takmicenje1.PoredakPreskok.Rezultati)
                 {
-                    rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
+                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                    {
+                        rezultatiMap[r.Gimnasticar].initPrvoKolo(r);
+                    }
                 }
             }
 
-            this.propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
-            foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
+            if (rezTak2 != null)
             {
-                if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                this.propozicijeDrugoKoloTak1PreskokNaOsnovuObaPreskoka = rezTak2.Propozicije.Tak1PreskokNaOsnovuObaPreskoka;
+                foreach (RezultatPreskok r in rezTak2.Takmicenje1.PoredakPreskok.Rezultati)
                 {
-                    rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
+                    if (rezultatiMap.ContainsKey(r.Gimnasticar))
+                    {
+                        rezultatiMap[r.Gimnasticar].initDrugoKolo(r);
+                    }
                 }
             }
 

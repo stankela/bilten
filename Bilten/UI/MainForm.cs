@@ -439,6 +439,7 @@ namespace Bilten.UI
                 using (session.BeginTransaction())
                 {
                     CurrentSessionContext.Bind(session);
+
                     TakmicenjeDAO takmicenjeDAO = DAOFactoryFactory.DAOFactory.GetTakmicenjeDAO();
                     takmicenjeDAO.Attach(t, false);
                     bool shouldUpdate = t.PrvoKolo != null && t.PrvoKolo.LastModified > t.LastModified
@@ -1506,6 +1507,12 @@ namespace Bilten.UI
                     refreshAdminModeUI(Opcije.Instance.AdminMode);
                 }
             }
+        }
+
+        private void mnControlPanel_Click(object sender, EventArgs e)
+        {
+            AdminForm form = new AdminForm();
+            form.ShowDialog();
         }
     }
 }

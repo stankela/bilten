@@ -3,6 +3,7 @@ using Bilten.Dao;
 using Bilten.Data;
 using Bilten.Domain;
 using Bilten.Exceptions;
+using Bilten.UI;
 using Bilten.Util;
 using NHibernate;
 using System;
@@ -520,9 +521,18 @@ namespace Bilten.Services
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
+                for (int i = 0; i < rezTakmicenjaPrethodnaKola.Count; ++i)
                 {
+                    IList<RezultatskoTakmicenje> rezTakmicenjaPrethKolo = rezTakmicenjaPrethodnaKola[i];
                     RezultatskoTakmicenje rtFrom = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethKolo, 0, rt.Kategorija);
+                    if (rtFrom == null)
+                    {
+                        string msg = "Kategorija '" + rt.Kategorija + "' ne postoji u " + (i + 1) + ". kolu.\n\n";
+                        msg += "Gimnasticari, ekipe i rezultati za kategoriju '" + rt.Kategorija + "' nece biti uvezeni iz "
+                            + (i + 1) + ". kola.";
+                        MessageDialogs.showMessage(msg, "");
+                        continue;
+                    }
                     foreach (GimnasticarUcesnik g in rtFrom.Takmicenje1.Gimnasticari)
                     {
                         if (rt.Takmicenje1.Gimnasticari.Contains(g))
@@ -544,9 +554,14 @@ namespace Bilten.Services
 
             foreach (RezultatskoTakmicenje rt in rezTakmicenja)
             {
-                foreach (List<RezultatskoTakmicenje> rezTakmicenjaPrethKolo in rezTakmicenjaPrethodnaKola)
+                for (int i = 0; i < rezTakmicenjaPrethodnaKola.Count; ++i)
                 {
+                    IList<RezultatskoTakmicenje> rezTakmicenjaPrethKolo = rezTakmicenjaPrethodnaKola[i];
                     RezultatskoTakmicenje rtFrom = Takmicenje.getRezTakmicenje(rezTakmicenjaPrethKolo, 0, rt.Kategorija);
+                    if (rtFrom == null)
+                    {
+                        continue;
+                    }
                     foreach (Ekipa e in rtFrom.Takmicenje1.Ekipe)
                     {
                         if (rt.Takmicenje1.Ekipe.Contains(e))

@@ -42,15 +42,21 @@ namespace Bilten.Domain
                 rezultatiMap.Add(e, rezultat);
             }
 
-            foreach (RezultatEkipno r in rezTak1.Takmicenje1.PoredakEkipno.Rezultati)
+            if (rezTak1 != null)
             {
-                if (rezultatiMap.ContainsKey(r.Ekipa))
-                    rezultatiMap[r.Ekipa].initPrvoKolo(r);
+                foreach (RezultatEkipno r in rezTak1.Takmicenje1.PoredakEkipno.Rezultati)
+                {
+                    if (rezultatiMap.ContainsKey(r.Ekipa))
+                        rezultatiMap[r.Ekipa].initPrvoKolo(r);
+                }
             }
-            foreach (RezultatEkipno r in rezTak2.Takmicenje1.PoredakEkipno.Rezultati)
+            if (rezTak2 != null)
             {
-                if (rezultatiMap.ContainsKey(r.Ekipa))
-                    rezultatiMap[r.Ekipa].initDrugoKolo(r);
+                foreach (RezultatEkipno r in rezTak2.Takmicenje1.PoredakEkipno.Rezultati)
+                {
+                    if (rezultatiMap.ContainsKey(r.Ekipa))
+                        rezultatiMap[r.Ekipa].initDrugoKolo(r);
+                }
             }
 
             Rezultati.Clear();
