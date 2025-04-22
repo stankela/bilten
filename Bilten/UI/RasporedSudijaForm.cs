@@ -619,23 +619,29 @@ namespace Bilten.UI
                 PreviewDialog p = new PreviewDialog();
                 string documentName = gym + " - " + nazivIzvestaja + " - " + kategorija;
 
+                // TODO5: Za izvestaje za raspored sudija i start liste, u HeaderFooterForm treba promeniti opis opcije
+                // kojom se stampa prema sirini kolona. Opis treba da bude "Prema sirini prve sprave u programu", zato sto
+                // se samo prva sprava koristi za podesavanje. Za KvalifikanteTak3Izvestaj ne treba, zato sto je tamo uvek
+                // prikazana jedna sprava (U ResultatiSpraveForm ili UcesniciTak3Form), i ona se koristi za podesavanja
+                Sprava[] sprave = Sprave.getSprave(takmicenje.Gimnastika);
+                DataGridView formGrid = getActiveSpravaGridGroupUserControl()[sprave[0]].DataGridViewUserControl
+                    .DataGridView;
                 if (form.StampajSveSprave)
                 {
                     List<SudijskiOdborNaSpravi> odbori = new List<SudijskiOdborNaSpravi>();
-                    foreach (Sprava s in Sprave.getSprave(takmicenje.Gimnastika))
+                    foreach (Sprava s in sprave)
                     {
                         odbori.Add(ActiveRaspored.getOdbor(s));
                     }
-                    p.setIzvestaj(new RasporedSudijaIzvestaj(odbori, takmicenje.Gimnastika, documentName,
-                        form.BrojSpravaPoStrani, getActiveSpravaGridGroupUserControl(), takmicenje.VrhovniSudija,
-                        takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
+                    p.setIzvestaj(new RasporedSudijaIzvestaj(odbori, documentName, form.BrojSpravaPoStrani, formGrid,
+                        takmicenje.VrhovniSudija, takmicenje, new Font(form.TekstFont, form.TekstFontSize),
+                        form.ResizeByGrid));
                 }
                 else
                 {
                     SudijskiOdborNaSpravi odbor = ActiveRaspored.getOdbor(sprava);
-                    p.setIzvestaj(new RasporedSudijaIzvestaj(odbor, documentName,
-                    getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
-                    new Font(form.TekstFont, form.TekstFontSize)));
+                    p.setIzvestaj(new RasporedSudijaIzvestaj(odbor, documentName, formGrid, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
 
                 p.ShowDialog();

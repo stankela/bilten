@@ -366,6 +366,11 @@ namespace Bilten.Report
             return columns[columns.Count - 1].X + columns[columns.Count - 1].Width;
         }
 
+        public float getLeftEnd()
+        {
+            return columns[0].X;
+        }
+
         protected bool resizeByGrid;
         public bool ResizeByGrid
         {
@@ -728,14 +733,14 @@ namespace Bilten.Report
 				if (part.MasterGroupHeader)
 				{
 					RectangleF masterGroupHeaderRect = new RectangleF(
-                        columns[0].X, y, getRightEnd() - columns[0].X, masterGroupHeaderHeight);
+                        columns[0].X, y, getRightEnd() - getLeftEnd(), masterGroupHeaderHeight);
 					drawMasterGroupHeader(g, part.GroupId, masterGroupHeaderRect);
 					y += masterGroupHeaderHeight;
 				}
 				if (part.GroupHeader)
 				{
 					RectangleF groupHeaderRect = new RectangleF(
-                        columns[0].X, y, getRightEnd() - columns[0].X, groupHeaderHeight);
+                        columns[0].X, y, getRightEnd() - getLeftEnd(), groupHeaderHeight);
                     if (GroupHeaderVisible)
                     {
                         drawGroupHeader(g, part.GroupId, groupHeaderRect);
@@ -760,7 +765,7 @@ namespace Bilten.Report
                 if (part.GroupFooter)
                 {
                     RectangleF groupFooterRect = new RectangleF(
-                        columns[0].X, columns[0].getItemRect().Y, getRightEnd() - columns[0].X, groupFooterHeight);
+                        columns[0].X, columns[0].getItemRect().Y, getRightEnd() - getLeftEnd(), groupFooterHeight);
                     drawGroupFooter(g, part.GroupId, groupFooterRect);
                 }
 			}

@@ -997,10 +997,9 @@ namespace Bilten.UI
                         else
                             rezultatiPreskok = ActiveTakmicenje.getPoredakPreskok(deoTakKod).getKvalifikantiIRezerve(obaPresk);
                     }
-                    p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultatiSprave, rezultatiPreskok, obaPresk, 
-                        takmicenje.Gimnastika, documentName, form.BrojSpravaPoStrani,
-                        spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize)));
+                    p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultatiSprave, rezultatiPreskok, obaPresk, documentName,
+                        form.BrojSpravaPoStrani, spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 else
                 {
@@ -1010,7 +1009,7 @@ namespace Bilten.UI
                             ActiveTakmicenje.getPoredakSprava(deoTakKod, ActiveSprava).getKvalifikantiIRezerve();
                         p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, ActiveSprava, documentName,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                            new Font(form.TekstFont, form.TekstFontSize)));
+                            new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                     }
                     else
                     {
@@ -1018,7 +1017,7 @@ namespace Bilten.UI
                             ActiveTakmicenje.getPoredakPreskok(deoTakKod).getKvalifikantiIRezerve(obaPresk);
                         p.setIzvestaj(new KvalifikantiTak3Izvestaj(rezultati, obaPresk, documentName,
                             spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                            new Font(form.TekstFont, form.TekstFontSize)));
+                            new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                     }
                 }
 

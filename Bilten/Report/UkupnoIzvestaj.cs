@@ -82,6 +82,7 @@ namespace Bilten.Report
         //        - Dodaj resizeByGrid u Izvestaj i Liste
         //        - Promeni izvestaj.doSetupContent da poziva poredjajListeUJednuKolonu
         //        - Izbaci metod drawContent ukoliko samo poziva drawContent za liste
+        //        - Za izvestaje u dve kolone, iz liste izbrisi membere dveKolone i columnNumber i parametre konstruktora
         //        - Dodaj sve metode tipa lista.getImeColumnIndex()
         //        - Dodaj metod lista.getAdjustableColumnIndexes()
         //        - Dodaj metod lista.doSetupContent()

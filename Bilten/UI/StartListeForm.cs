@@ -1040,6 +1040,8 @@ namespace Bilten.UI
                 PreviewDialog p = new PreviewDialog();
                 string documentName = gym + " - " + nazivIzvestaja + " - " + kategorijaRotacija;
 
+                DataGridView formGrid = getActiveSpravaGridGroupUserControl()[Sprave.getSprava(1, takmicenje.Gimnastika)]
+                    .DataGridViewUserControl.DataGridView;
                 if (form.StampajSveSprave)
                 {
                     List<StartListaNaSpravi> startListe = new List<StartListaNaSpravi>();
@@ -1047,17 +1049,17 @@ namespace Bilten.UI
                     {
                         startListe.Add(ActiveRaspored.getStartLista(s, ActiveGrupa, ActiveRotacija));
                     }
-                    p.setIzvestaj(new StartListaIzvestaj(startListe, takmicenje.Gimnastika, documentName,
-                        form.BrojSpravaPoStrani, form.StampajRedniBrojNaStartListi, form.StampajKlub, form.StampajKategoriju,
-                        getActiveSpravaGridGroupUserControl(), takmicenje, new Font(form.TekstFont, form.TekstFontSize)));
+                    p.setIzvestaj(new StartListaIzvestaj(startListe, documentName, form.BrojSpravaPoStrani,
+                        form.StampajRedniBrojNaStartListi, form.StampajKlub, form.StampajKategoriju, formGrid, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize),
+                        form.ResizeByGrid));
                 }
                 else
                 {
                     StartListaNaSpravi startLista = ActiveRaspored.getStartLista(sprava, ActiveGrupa, ActiveRotacija);
                     p.setIzvestaj(new StartListaIzvestaj(startLista, documentName, form.StampajRedniBrojNaStartListi,
-                        form.StampajKlub, form.StampajKategoriju,
-                        getActiveSpravaGridGroupUserControl()[sprava].DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize)));
+                        form.StampajKlub, form.StampajKategoriju, formGrid, takmicenje,
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
 
                 p.ShowDialog();

@@ -640,9 +640,9 @@ namespace Bilten.Report
         // na sledecu stranu (osim u slucaju kada je pocela na vrhu strane). svakaListaNaPosebnojStrani kontrolise da li
         // svaku listu pocinjemo na novoj strani.
         protected void poredjajListeUJednuKolonu(Graphics g, RectangleF contentBounds, List<ReportLista> liste,
-            bool svakaListaNaPosebnojStrani)
+            bool svakaListaNaPosebnojStrani, int startPageNum = 1, float startYOffsetPrvaStrana = 0.0f)
         {
-            float startYPrvaStrana = contentBounds.Y;
+            float startYPrvaStrana = contentBounds.Y + startYOffsetPrvaStrana;
             float startYOstaleStrane = contentBounds.Y;
 
             // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
@@ -665,7 +665,7 @@ namespace Bilten.Report
                     if (prevLista == null)
                     {
                         prvaListaNaStrani = true;
-                        lista.FirstPageNum = 1;
+                        lista.FirstPageNum = startPageNum;
                         lista.StartY = startYPrvaStrana;
                         lista.GroupHeaderVisible = true;
                     }
@@ -725,6 +725,150 @@ namespace Bilten.Report
                 foreach (ReportColumn c in lista.Columns)
                 {
                     c.X += delta;
+                }
+            }
+        }
+
+        protected void poredjajListeUDveKolone(Graphics g, RectangleF contentBounds, List<ReportLista> liste,
+            int startPageNum = 1, float startYOffsetPrvaStrana = 0.0f)
+        {
+            float startYPrvaStrana = contentBounds.Y + startYOffsetPrvaStrana;
+            float startYOstaleStrane = contentBounds.Y;
+
+            // Radim dvaput setupContent. Prvi put sluzi samo da odredim maximume kolona ime i klub u svim listama.
+
+            // Za one kolone cije se sirine razlikuju od liste do liste (npr ime, klub, kategorija), a koje zelimo da u
+            // celom izvestaju imaju istu sirinu. 
+            List<int> columnIndexes;
+            List<float> columnMaxWidths = new List<float>();
+
+            for (int i = 0; i < 2; ++i)
+            {
+                int j = 0;
+                bool prebaciNaSledecuStranu = false;
+                bool prvaListaNaStrani;
+                while (j < reportListe.Count)
+                {
+                    ReportLista lista = reportListe[j];
+                    if (j == 0 || j == 1)
+                    {
+                        prvaListaNaStrani = true;
+                        lista.FirstPageNum = startPageNum;
+                        lista.StartY = startYPrvaStrana;
+                    }
+                    else if (prebaciNaSledecuStranu)
+                    {
+                        prvaListaNaStrani = true;
+                        if (j % 2 == 0)
+                        {
+                            lista.FirstPageNum = reportListe[j - 1].LastPageNum + 1;
+                            lista.StartY = startYOstaleStrane;
+                            // prebaciNaSledecuStranu ostaje true i u sledecoj iteraciji
+                        }
+                        else
+                        {
+                            // Kopiraj podatke iz liste sa leve strane
+                            lista.FirstPageNum = reportListe[j - 1].FirstPageNum;
+                            lista.StartY = reportListe[j - 1].StartY;
+                            prebaciNaSledecuStranu = false;
+                        }
+                    }
+                    else if (j % 2 == 0)
+                    {
+                        prvaListaNaStrani = false;
+                        lista.FirstPageNum = reportListe[j - 1].LastPageNum;
+                        lista.StartY = Math.Max(reportListe[j - 1].EndY, reportListe[j - 2].EndY);
+                    }
+                    else // (j % 2 == 1)
+                    {
+                        prvaListaNaStrani = false;
+                        // Kopiraj podatke iz liste sa leve strane
+                        lista.FirstPageNum = reportListe[j - 1].FirstPageNum;
+                        lista.StartY = reportListe[j - 1].StartY;
+                    }
+
+                    int firstPageNum = lista.FirstPageNum;
+                    columnIndexes = lista.getAdjustableColumnIndexes();
+                    lista.setupContent(g, contentBounds, i, columnIndexes, columnMaxWidths);
+
+                    if (lista.LastPageNum == firstPageNum)
+                    {
+                        // Cela lista je stala na istu stranu
+                        ++j;
+                    }
+                    else if (prvaListaNaStrani)
+                    {
+                        // Lista nije stala na istu stranu ali je pocela sa vrha strane, pa je ostavlamo izlomljenu
+                        // (prvi deo na jednoj strani, drugi deo na drugoj strani). Prebacivanjem na sledecu stranu
+                        // ne bi dobili nista.
+                        ++j;
+                    }
+                    else
+                    {
+                        // Lista nije stala na istu stranu pa je prebacujemo da pocinje na sledecoj strani.
+                        // TODO5: Ovde treba opcija da li da prebacujemo na novu stranu ili da ostavljamo izlomljeno, za
+                        // slucaj dve kolone.
+                        prebaciNaSledecuStranu = true;
+
+                        // Ako lista u desnoj koloni nije stala na istu stranu, moramo da se vratimo na listu u levoj
+                        // koloni, i nju prebacimo na sledecu stranu.
+                        if (j % 2 == 1)
+                            --j;
+                    }
+                }
+            }
+            lastPageNum = reportListe[reportListe.Count - 1].LastPageNum;
+
+            float prvaKolonaWidth = 0f;
+            float drugaKolonaWidth = 0f;
+            for (int i = 0; i < liste.Count; ++i)
+            {
+                ReportLista lista = liste[i];
+                float width = lista.getRightEnd() - lista.getLeftEnd();
+                if (i % 2 == 0)
+                {
+                    if (width > prvaKolonaWidth)
+                        prvaKolonaWidth = width;
+                }
+                else
+                {
+                    if (width > drugaKolonaWidth)
+                        drugaKolonaWidth = width;
+                }
+            }
+            // Razmak izmedju tabela podesavam da bude isti kao i razmak sa leve i desne strane.
+            float prvaKolonaDelta = 0f;
+            float drugaKolonaDelta = 0f;
+            if (prvaKolonaWidth + drugaKolonaWidth < contentBounds.Width)
+            {
+                prvaKolonaDelta = (contentBounds.Width - (prvaKolonaWidth + drugaKolonaWidth)) / 3f;
+                drugaKolonaDelta = 2 * prvaKolonaDelta + prvaKolonaWidth;
+            }
+            else if (prvaKolonaWidth + drugaKolonaWidth < pageBounds.Width)
+            {
+                float delta = (pageBounds.Width - (prvaKolonaWidth + drugaKolonaWidth)) / 3f;
+                // Sve kolone pocinju na x koordinati contentBounds.X, tako da -contentBounds.X to neutralise
+                prvaKolonaDelta = -contentBounds.X + delta;
+                drugaKolonaDelta = -contentBounds.X + 2 * delta + prvaKolonaWidth;
+            }
+            else
+            {
+                prvaKolonaDelta = -contentBounds.X;
+                drugaKolonaDelta = prvaKolonaDelta + prvaKolonaWidth;  // nema razmaka izmedju kolona
+            }
+            for (int i = 0; i < liste.Count; ++i)
+            {
+                ReportLista lista = liste[i];
+                foreach (ReportColumn c in lista.Columns)
+                {
+                    if (i % 2 == 0)
+                    {
+                        c.X += prvaKolonaDelta;
+                    }
+                    else
+                    {
+                        c.X += drugaKolonaDelta;
+                    }
                 }
             }
         }

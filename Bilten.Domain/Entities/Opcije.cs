@@ -655,7 +655,15 @@ namespace Bilten.Domain
             get { return rotacija; }
             set { rotacija = value; }
         }
-        
+
+        // TODO5: Dodaj i ovo u jezik, da moze da se menja
+        private string funkcija = "Funkcija";
+        public virtual string Funkcija
+        {
+            get { return funkcija; }
+            set { funkcija = value; }
+        }
+
         public virtual void UpdateJezik(Jezik jezik)
         {
             Jezik = jezik.Naziv;

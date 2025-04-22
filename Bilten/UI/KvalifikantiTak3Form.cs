@@ -372,10 +372,9 @@ namespace Bilten.UI
                         kvalifikanti.Add(ActiveTakmicenje.Takmicenje3.getUcesniciKvalifikanti(s));
                         rezerve.Add(ActiveTakmicenje.Takmicenje3.getUcesniciRezerve(s));
                     }
-                    p.setIzvestaj(new KvalifikantiTak3Izvestaj(kvalifikanti, rezerve,
-                        takmicenje.Gimnastika, documentName, form.BrojSpravaPoStrani,
+                    p.setIzvestaj(new KvalifikantiTak3Izvestaj(kvalifikanti, rezerve, documentName, form.BrojSpravaPoStrani,
                         spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize)));
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 else
                 {
@@ -383,7 +382,7 @@ namespace Bilten.UI
                     IList<UcesnikTakmicenja3> rezerve = ActiveTakmicenje.Takmicenje3.getUcesniciRezerve(ActiveSprava);
                     p.setIzvestaj(new KvalifikantiTak3Izvestaj(kvalifikanti, rezerve, ActiveSprava, documentName,
                         spravaGridUserControl1.DataGridViewUserControl.DataGridView, takmicenje,
-                        new Font(form.TekstFont, form.TekstFontSize)));
+                        new Font(form.TekstFont, form.TekstFontSize), form.ResizeByGrid));
                 }
                 p.ShowDialog();
             }
